@@ -1,0 +1,35 @@
+
+<div class="component-container album-drawing" [ngClass]="{ 'album' : state == 'album', 'swiper' : state == 'swiper' }">
+    
+    <div class="final-thumbnail" [ngClass]="{ 'selected' : selected }" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+        <img [src]="thumbnail_picture">
+        <div class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
+            
+            <!--********************-->
+            <!--Title container-->
+            <!--********************-->
+            <div class="title-container">
+                <span class="title">{{title}}</span>
+            </div>
+            <div class="add-button" *ngIf="!selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+                <span>Ajouter</span>
+            </div>
+            <div class="remove-button" *ngIf="selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+                <span>Retirer</span>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    
+    <!--<div class="add-button" *ngIf="!selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+        <span>Ajouter</span>
+    </div>
+    <div class="remove-button" *ngIf="selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+        <span>Retirer</span>
+    </div>-->
+
+</div>    

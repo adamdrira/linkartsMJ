@@ -1,0 +1,77 @@
+
+
+<div *ngIf="validated_chapter" class="hidden-chapter">
+    <span>Chapitre téléchargé</span>
+</div>
+
+<div *ngIf="!validated_chapter" class="serie-upload-container">                
+
+
+    
+    <div #swiperController class="swiper-container-thumbnails">
+        <div class="swiper-wrapper">
+
+
+            <div class="swiper-slide" *ngFor="let item of componentRef; let i = index" 
+            (click)="setSwiperSlide(i+1);setSwiperThumbnailsSlide(i+1);"
+            [ngClass]="{ 'selected' : swiper.activeIndex == i }">
+
+                <div class="page-number">
+                    Page {{ item.instance.page + 1 }}
+                </div>
+
+                <div class="img-container">
+                    <ng-container *ngIf="!item.instance.uploader.queue[0]">
+                        <span>Aucune image téléchargée</span>
+                    </ng-container>
+                    <ng-container *ngIf="item.instance.uploader.queue[0]">
+                        <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                    </ng-container>
+                 </div>
+
+                <button mat-button class="remove_page_button" [disabled]="validated_chapter" (click)="remove_page(i);">
+                    Retirer
+                </button>
+
+            </div>
+
+            <div class="swiper-slide add-page">
+                <button class="add-page-button" [disabled]="validated_chapter" (click)="add_page();">
+                    <div class="icon1"></div>
+                    <span>Nouvelle page</span>
+                </button>
+            </div>
+
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-scrollbar"></div>
+    </div>
+    
+    <div class="options-container">
+        
+        <div class="pages-controller-container">
+            Chapitre {{chapter+1}} &nbsp; &nbsp; | &nbsp; &nbsp;
+            Aller à la page :
+            <input type="text" aria-label="" role="navigation" size="5">
+            <!--<span>3</span>-->
+            <div class="total-pages">
+                <span (click)="initialize_swiper();">/ 37</span>
+            </div>
+        </div>
+    </div>
+    
+    <div #swiperContainer class="swiper-container456">
+        <div  class="swiper-wrapper">
+            <ng-container #targetUpload></ng-container>
+        </div>
+    </div>
+
+    
+    <button mat-raised-button class="validate-chapter-button style0" *ngIf="!validated_chapter" (click)="validateAll();">
+        <span>Valider ce chapitre</span>
+    </button>
+
+</div>
+
+

@@ -1,0 +1,38 @@
+
+
+@import '../../thumbnail-writing-styles.css';
+
+
+.comic-container {
+    overflow:hidden;
+  }
+  
+  // CODE POUR CONTENU BD
+  
+  .col-writing {
+    position: relative;
+    width: 280px;
+    margin:40px auto 30px auto;
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  
+  /*
+  .col-book:empty {
+    height: 0;
+    width:250px
+  }*/
+  
+  .col-writing .empty {
+    width:280px !important;
+    height:1px !important;
+  }
+  
+  
+  .swiper-slide {
+    backface-visibility: visible;
+  }
+
+  

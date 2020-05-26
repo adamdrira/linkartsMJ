@@ -1,0 +1,71 @@
+
+<div class="component-container album-writing" [ngClass]="{ 'selected' : selected, 'album' : state == 'album' }">
+
+
+    
+    <!--Slide recto-->
+    <div class="writing-container">
+        <div class="element-writing border-recto">
+
+            <div class="miniature">
+                <img [src]="thumbnail_picture">
+            </div>
+
+            <div #thumbnailRecto class="absolute-thumbnail-data">
+                <!--********************-->
+                <!--Title container-->
+                <!--********************-->
+                <div class="title-container">
+                    <span class="title">{{writing_element.title}}</span>
+                </div>
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="author-container">
+                    <div class="left-container">
+                        <img [src]="profile_picture">
+                    </div>
+                    <div class="right-container">
+                        <span class="author-name">{{author_name}}</span>
+                        <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                    </div>
+                </div>
+                <!--********************-->
+                <!--Data container-->
+                <!--********************-->
+                <div class="stats-container">
+                    <div class="figure-container-views">
+                        <span>{{writing_element.viewnumber}}</span>
+                        <div class="view-logo">
+                        </div>
+                    </div>
+                    <div class="figure-container-likes">
+                        <span>{{writing_element.likesnumber}}</span>
+                        <div class="like-logo">
+                        </div>
+                    </div>
+                    <div class="figure-container-loves">
+                        <span>{{writing_element.lovesnumber}}</span>
+                        <div class="love-logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+    <button mat-raised-button class="add-button" *ngIf="state=='swiper'"
+    (click)="add_or_remove(); $event.stopPropagation();"
+    [ngClass]="{ 'style0' : selected, 'style1' : !selected }">
+        <span *ngIf="!selected">
+            Ajouter
+        </span>
+        <span *ngIf="selected">
+            Retirer
+        </span>
+    </button>
+
+</div>

@@ -1,0 +1,393 @@
+.thumbnail-cover-album-container {
+    display: inline-block;
+    width: 300px;
+    border-radius: 0px 0px 15px 0px;
+    box-shadow: 4px 4px 14px 0px rgba(32, 56, 100, 0.6);
+    background: rgb(209, 224, 251);
+}
+
+.thumbnails {
+    width:100%;
+    height: 200px;
+    overflow:hidden;
+    border-bottom: 2px solid white;
+}
+
+.thumbnail-cover-album-container .thumbnail-data {
+    padding: 10px;
+}
+
+.thumbnail-cover-album-container .thumbnail-data .title {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(32, 56, 100);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thumbnail-cover-album-container .thumbnail-data .artworks-number {
+}
+
+
+
+/**********************************************/
+/**********************************************/
+// 1 PICTURE
+/**********************************************/
+/**********************************************/
+.picturesNumber1 {
+    height:100%;
+    width:100%;
+}
+.picturesNumber1 img {
+    height:100%;
+    width:100%;
+    object-fit: cover;
+}
+
+
+/**********************************************/
+/**********************************************/
+//2 PICTURES
+/**********************************************/
+/**********************************************/
+.picturesNumber2 {
+    height:100%;
+    width:100%;
+    display:flex;
+}
+.picturesNumber2 .img {
+    height:100%;
+    width:calc(50% - 1px);
+    object-fit: cover;
+}
+.picturesNumber2 .img img {
+    height:100%;
+    width: 100%;
+    object-fit: cover;
+}
+.picturesNumber2 .vertical-divider {
+    height:100%;
+    width:2px;
+    background:white;
+}
+
+
+/**********************************************/
+/**********************************************/
+//3 PICTURES
+/**********************************************/
+/**********************************************/
+.picturesNumber3 {
+    height:100%;
+    width:100%;
+    display:flex;
+}
+
+.picturesNumber3 > .img {
+    height:100%;
+    width:calc( 60% - 2px );
+}
+.picturesNumber3 > .img img {
+    object-fit: cover;
+    height:100%;
+    width: 100%;
+}
+.picturesNumber3 .vertical-divider {
+    height:100%;
+    width:2px;
+    background:white;
+}
+.picturesNumber3 .column-2 {
+    width:40%;
+}
+
+.picturesNumber3 .column-2 .img {
+    height:calc( 50% - 2px );
+    width:100%;
+}
+.picturesNumber3 .column-2 .img img {
+    object-fit: cover;
+    height:100%;
+    width:100%;
+}
+
+.picturesNumber3 .column-2 .img2 {
+    height:calc( 50% - 2px );
+    width:100%;
+}
+.picturesNumber3 .column-2 .img2 img {
+    object-fit: cover;
+    height:100%;
+    width:100%;
+}
+
+.picturesNumber3 .column-2 .horizontal-divider {
+    height:4px;
+    width:100%;
+    background:white;
+}
+
+
+/**********************************************/
+/**********************************************/
+//4 PICTURES
+/**********************************************/
+/**********************************************/
+
+.picturesNumber4 {
+    height:100%;
+    width:100%;
+    display:flex;
+}
+
+.picturesNumber4 .column {
+    height:100%;
+    width:calc(50% - 1px);
+}
+
+.picturesNumber4 .vertical-divider {
+    width:2px;
+    height:100%;
+    background:white;
+}
+
+.picturesNumber4 .column .img {
+    height:calc(50% - 2px);
+    width:100%;
+}
+
+.picturesNumber4 .column .img img {
+    object-fit: cover;
+    height:100%;
+    width:100%;
+}
+
+.picturesNumber4 .column .img2 {
+    height:calc(50% - 2px);
+    width:100%;
+}
+
+.picturesNumber4 .column .img2 img {
+    object-fit: cover;
+    height:100%;
+    width:100%;
+}
+
+.picturesNumber4 .column .horizontal-divider {
+    height:4px;
+    width:100%;
+    background:white;
+}
+
+
+/**********************************************/
+/**********************************************/
+//5 PICTURES
+/**********************************************/
+/**********************************************/
+
+.picturesNumber5 {
+    height:100%;
+    width:100%;
+}
+
+.picturesNumber5 .line1 {
+    display:flex;
+    height:calc(50% - 2px);
+    width:100%;
+}
+
+
+
+.picturesNumber5 .line1 .img {
+    width: calc(66.66% - 1px);
+    height:100%;
+}
+
+.picturesNumber5 .line1 .img img {
+    object-fit: cover;
+    width: 100%;
+    height:100%;
+}
+
+
+.picturesNumber5 .line1 .vertical-divider {
+    width:2px;
+    height:100%;
+    background:white;
+}
+
+
+.picturesNumber5 .line1 .img2 {
+    width: calc(33.33% - 1px);
+    height:100%;
+}
+.picturesNumber5 .line1 .img2 img {
+    object-fit: cover;
+    width: 100%;
+    height:100%;
+}
+
+.picturesNumber5 .horizontal-divider {
+    height:4px;
+    width:100%;
+    background:white;
+}
+
+.picturesNumber5 .line2 {
+    display:flex;
+    height:calc(50% - 2px);
+    width:100%;
+}
+
+.picturesNumber5 .line2 .vertical-divider{
+    width:2px;
+    height:100%;
+    background:white;
+}
+
+.picturesNumber5 .line2 .img {
+    width: calc(33.33% - 1px);
+    height:100%;
+}
+.picturesNumber5 .line2 .img img {
+    object-fit: cover;
+    width: 100%;
+    height:100%;
+}
+
+.picturesNumber5 .line2 .img2 {
+    width: calc(33.33% - 2px);
+    height:100%;
+}
+.picturesNumber5 .line2 .img2 img {
+    object-fit: cover;
+    width:100%;
+    height:100%;
+}
+
+.picturesNumber5 .line2 .img3 {
+    width: calc(33.33% - 1px);
+    height:100%;
+}
+
+.picturesNumber5 .line2 .img3 img {
+    object-fit: cover;
+    width: 100%;
+    height:100%;
+}
+
+
+/**********************************************/
+/**********************************************/
+//6 PICTURES
+/**********************************************/
+/**********************************************/
+
+.picturesNumber6 {
+    height:100%;
+    width:100%;
+    display:flex;
+}
+.picturesNumber6 .column1 {
+    width:calc(33.33% - 1px);
+    height:100%;
+}
+.picturesNumber6 .column1 .img {
+    width:100%;
+    height:calc(50% - 2px);
+}
+.picturesNumber6 .column1 .img img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.picturesNumber6 .column1 .img2 {
+    width:100%;
+    height:calc(50% - 2px);
+}
+.picturesNumber6 .column1 .img2 img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.picturesNumber6 .column1 .horizontal-divider {
+    width:100%;
+    height:4px;
+    background:white;
+}
+
+.picturesNumber6 .vertical-divider{
+    height:100%;
+    width:2px;
+    background:white;
+}
+
+.picturesNumber6 .column2 {
+    width:calc(33.33% - 2px);
+    height:100%;
+}
+
+
+.picturesNumber6 .column2 .img {
+    width:100%;
+    height:calc(33.33% - 2px);
+}
+.picturesNumber6 .column2 .img img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+
+.picturesNumber6 .column2 .img2 {
+    width:100%;
+    height:calc(66.66% - 2px);
+}
+.picturesNumber6 .column2 .img2 img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.picturesNumber6 .column2 .horizontal-divider {
+    width:100%;
+    height:4px;
+    background:white;
+}
+
+.picturesNumber6 .column3 {
+    width:calc(33.33% - 1px);
+    height:100%;
+}
+
+
+.picturesNumber6 .column3 .img {
+    width:100%;
+    height:calc(50% - 2px);
+}
+.picturesNumber6 .column3 .img img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.picturesNumber6 .column3 .img2 {
+    width:100%;
+    height:calc(50% - 2px);
+}
+.picturesNumber6 .column3 .img2 img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.picturesNumber6 .column3 .horizontal-divider {
+    width:100%;
+    height:4px;
+    background:white;
+}

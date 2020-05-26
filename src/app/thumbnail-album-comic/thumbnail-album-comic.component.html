@@ -1,0 +1,75 @@
+
+<div class="component-container album-comic" [ngClass]="{ 'selected' : selected, 'album' : state == 'album' }">
+    
+    <div class="element-book border-recto">
+
+        <div class="miniature">
+            
+            <img [src]="thumbnail_picture">
+        </div>
+
+
+        <div #thumbnailRecto class="absolute-thumbnail-data">
+            <!--********************-->
+            <!--Title container-->
+            <!--********************-->
+            <div class="title-container">
+                <span class="title">{{bd_element.title}}</span>
+            </div>
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="author-container">
+                <div class="left-container">
+                    <img [src]="profile_picture">
+                </div>
+                <div class="right-container">
+                    <span class="author-name">{{author_name}}</span>
+                    <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                </div>
+            </div>
+            <!--********************-->
+            <!--Data container-->
+            <!--********************-->
+            <div class="stats-container">
+                <div class="figure-container-views">
+                    <span>{{bd_element.viewnumber}}</span>
+                    <div class="view-logo">
+                    </div>
+                </div>
+                <div class="figure-container-likes">
+                    <span>{{bd_element.likesnumber}}</span>
+                    <div class="like-logo">
+                    </div>
+                </div>
+                <div class="figure-container-loves">
+                    <span>{{bd_element.lovesnumber}}</span>
+                    <div class="love-logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    <!--<div class="add-button" *ngIf="!selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+        <span>Ajouter</span>
+    </div>
+    <div class="remove-button" *ngIf="selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
+        <span>Retirer</span>
+    </div>-->
+
+    
+    <button mat-raised-button class="add-button" *ngIf="state=='swiper'"
+    (click)="add_or_remove(); $event.stopPropagation();"
+    [ngClass]="{ 'style0' : selected, 'style1' : !selected }">
+        <span *ngIf="!selected">
+            Ajouter
+        </span>
+        <span *ngIf="selected">
+            Retirer
+        </span>
+    </button>
+
+</div>    

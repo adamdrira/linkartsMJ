@@ -1,0 +1,103 @@
+<div *ngIf="thumbnail_picture_received" class="global-container">
+
+    <div class="left-container">
+        <img [src]="thumbnail_picture">
+        
+        <!--********************-->
+        <!--Data container-->
+        <!--********************-->
+        <div class="stats-container">
+            <div class="figure-container-views">
+                <span>{{viewnumber}}</span>
+                <div class="view-logo">
+                </div>
+            </div>
+            <div class="figure-container-likes">
+                <span>{{likesnumber}}</span>
+                <div class="like-logo">
+                </div>
+            </div>
+            <div class="figure-container-loves">
+                <span>{{lovesnumber}}</span>
+                <div class="love-logo">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="right-container">
+
+        <div class="name">
+            <span>{{title}}</span>
+            <div class="buttons-container">
+                
+                <button mat-raised-button class="button">
+                    <div class="button0"></div>
+                </button>
+                <button mat-raised-button class="button">
+                    <div class="button1"></div>
+                </button>
+
+                <button mat-raised-button class="button" [matMenuTriggerFor]="artworkOptions">
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions="matMenu">
+                    <button class="mat-menu-item" mat-menu-item> 	
+                        <mat-icon class="item-icon">monetization_on</mat-icon>
+                        <span>Monétiser l'œuvre</span>
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+
+        <!--********************-->
+        <!--Author container-->
+        <!--********************-->
+        <div class="author-container">
+            <div class="left-container">
+                <img [src]="profile_picture">
+            </div>
+            <div class="right-container">
+                <span class="author-name">{{author_name}}</span>
+                <span class="author-description">{{primary_description}}</span>
+            </div>
+        </div>
+
+
+        <!--********************-->
+        <!--Type container-->
+        <!--********************-->
+        <div class="verso-type">
+            <span>• {{format}}</span>
+        </div>
+        <!--********************-->
+        <!--Categories container-->
+        <!--********************-->
+        <div class="categories-container">  
+            <span class="categories">• category :</span>
+            <span > &nbsp; {{firsttag}}</span>
+            <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
+            <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
+        </div>
+
+        
+        <!--********************-->
+        <!--Description container-->
+        <!--********************-->
+        <div class="verso-description">
+            <span>{{highlight}}</span>
+        </div>
+
+
+        <!--********************-->
+        <!--Date container-->
+        <!--********************-->
+        <div class="date-container">
+            <span>{{date_upload_to_show}}</span>
+        </div>
+
+    </div>
+
+
+</div>

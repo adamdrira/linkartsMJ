@@ -1,0 +1,175 @@
+
+
+
+<div class="comic-container">
+
+
+    <div #thumbnail class="col-book text-center" style="display:flex;">
+        
+        <!--Slide recto-->
+        <div class="swiper-slide">
+            <div class="element-book border-recto">
+
+                <div class="miniature">
+                    
+                    <div *ngIf="afficheruploader" class="uploader-container">
+                        <div class="dropzone">
+                            <div class="icon-container">
+                                <div class="upload-icon"></div>
+                                <label>
+                                    <div class="select-button">
+                                        Sélectionner un fichier
+                                    </div>
+                                    <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container  *ngIf="afficherpreview">
+                        <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}">
+                        <div class="buttons-container">
+
+                            <ng-container *ngIf="!uploader.queue[0].isSuccess">
+                                <button mat-raised-button class="button style1"
+                                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                                    <span>Valider</span> 
+                                </button>
+                                <button mat-raised-button class="button style0"
+                                        (click)="remove_beforeupload(uploader.queue[0]);">
+                                    <span class="">Recommencer</span> 
+                                </button>
+                            </ng-container>
+
+                            <ng-container *ngIf="uploader.queue[0].isSuccess">
+                                <button mat-raised-button class="button style0"
+                                        (click)="remove_afterupload(uploader.queue[0]);">
+                                    <span class="">Recommencer</span> 
+                                </button>
+                            </ng-container>
+
+                        </div>
+                    </ng-container>
+
+                </div>
+
+
+                <div #thumbnailRecto class="absolute-thumbnail-data">
+                    <!--********************-->
+                    <!--Title container-->
+                    <!--********************-->
+                    <div class="title-container">
+                        <span *ngIf="name==''" class="title">
+                            Nom de l'oeuvre
+                        </span>
+                        <span *ngIf="name!=''" class="title">
+                            {{name}}
+                        </span>
+                    </div>
+                    <!--********************-->
+                    <!--Author container-->
+                    <!--********************-->
+                    <div class="author-container">
+                        <div class="left-container">
+                            <img [src]="profile_picture">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">{{author_name}}</span>
+                            <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                        </div>
+                    </div>
+                    <!--********************-->
+                    <!--Data container-->
+                    <!--********************-->
+                    <div class="stats-container">
+                        <div class="figure-container-views">
+                            <span></span>
+                            <div class="view-logo">
+                            </div>
+                        </div>
+                        <div class="figure-container-likes">
+                            <span></span>
+                            <div class="like-logo">
+                            </div>
+                        </div>
+                        <div class="figure-container-loves">
+                            <span></span>
+                            <div class="love-logo">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+
+
+        <!--Slide verso-->
+        <div class="swiper-slide">
+        
+            <div #thumbnailVerso class="element-book border-verso">
+            
+                
+                <!--********************-->
+                <!--Title container-->
+                <!--********************-->
+                <div class="verso-resume">
+                    <span class="resume">Résumé</span>
+                </div>
+                <div class="horizontal-line">
+                </div>
+                <!--********************-->
+                <!--Description container-->
+                <!--********************-->
+                <div class="verso-description">
+                    <span *ngIf="description==''">
+                        Description de l'oeuvre
+                    </span>
+                    <span *ngIf="description!=''">
+                        {{description}}
+                    </span>
+                </div>
+                <!--********************-->
+                <!--Type container-->
+                <!--********************-->
+                <div class="verso-type">
+                    <span>{{format}}</span>
+                </div>
+                <!--********************-->
+                <!--Categories container-->
+                <!--********************-->
+                <div class="categories-container">  
+                    <span class="categories">Catégorie et genres</span>
+                </div>
+                <!--********************-->
+                <!--Date container-->
+                <!--********************-->
+                <div class="date-container">
+                    <span>Date de publication</span>
+                </div>
+
+            
+            </div>
+            
+        </div>
+
+
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,288 @@
+.global-container {
+    display:flex;
+    height:330px;
+    width: 850px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px 1px #cccccc;
+    overflow: hidden;
+}
+
+.global-container > .left-container {
+    height:100%;
+    position: relative;
+}
+
+.global-container > .left-container img {
+    height:100%;
+    
+}
+
+
+.stats-container {    
+    position:absolute;
+    bottom:10px;
+    justify-content: space-around;
+    width: 100%;
+    height: 22px;
+    font-size: 1.1rem;
+    color: #3b3b3b;
+    display: flex;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    font-size: 1rem;
+}
+
+.figure-container-views,
+.figure-container-likes,
+.figure-container-loves
+{
+    display: flex;
+    border-radius: 6px;
+    align-items: center;
+    width: 65px;
+    height: 25px;
+}
+
+
+.figure-container-views {
+    background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+}
+
+.figure-container-likes {
+    background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+}
+
+.figure-container-loves {    
+    background-image: linear-gradient(to left, #8a0101, #e60000);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+}
+
+.figure-container-views span,
+.figure-container-likes span,
+.figure-container-loves span
+{
+    margin:auto 5px auto auto;
+}
+
+
+
+.view-logo {
+    width:20px;
+    height:20px;
+    margin:auto auto auto 0px;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask:  url("../../assets/img/svg/eye.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/eye.svg") no-repeat 50% 50%;
+}
+
+.like-logo {
+    width:18px;
+    height:18px;
+    margin:2px auto auto 0px;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask:  url("../../assets/img/svg/like-2.svg") no-repeat 50% 50%;
+    mask: url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
+}
+
+.love-logo {
+    width:14px;
+    height:14px;
+    margin:auto auto auto 0px;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask:  url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
+}
+
+
+
+.global-container > .right-container {
+    height: 100%;
+    overflow: overlay;
+    display:flex;
+    flex-direction: column;
+    width: -webkit-fill-available;
+    padding: 10px 10px 10px 18px;
+}
+
+.global-container > .right-container .name {
+    position: relative;
+    display:flex;
+    font-size: 18px;
+    font-weight: bold;
+    height: 45px;
+}
+
+.global-container > .right-container .name span {
+    line-height: 19px;
+    padding-top: 5px;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+}
+
+.global-container > .right-container .name .buttons-container {
+    display: flex;
+    margin-left: auto;
+}
+
+.global-container > .right-container .name .buttons-container .button {
+    outline: none;
+    padding: unset !important;
+    box-shadow: unset !important;
+    min-width: unset;
+    width: 35px;
+    min-height: unset;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.global-container > .right-container .name .button0 {
+    width: 20px;
+    height: 20px;
+    margin:auto auto;
+    background-color: black;
+    -webkit-mask:  url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
+}
+.global-container > .right-container .name .button1 {
+    width: 20px;
+    height: 20px;
+    margin:auto auto;
+    background-color: black;
+    -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
+}
+
+
+.author-container {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.author-container .left-container {
+    width: 32px;
+    height: 32px;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    margin: 0px 5px auto 0px;
+}
+
+.author-container .left-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+}
+
+.author-container .right-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: calc( 100% - 40px );
+    margin: 0px 10px auto 5px;
+}
+.author-container .right-container span.author-name {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight:bold;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.author-container .right-container span.author-description {
+    font-size:15px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+
+.verso-type {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+    line-height: 1.15rem;
+}
+
+.verso-type span {
+    font-size:14px;
+}
+    
+    
+.categories-container {
+    width:100%;
+    white-space: nowrap;
+    text-align:left;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.categories-container span {
+    font-size: 14px;
+}
+
+
+.verso-description {    
+    width: 100%;
+    height: 120px;
+    text-align: left;
+    line-height: 1.5rem;
+    margin-top: 15px;
+    overflow-y: auto;
+    word-break: break-word;
+}
+
+.verso-description span {
+    margin: auto auto;
+    font-size: 15px;
+    line-height: 22px;
+    width: 100%;
+}
+
+.date-container {
+    width:100%;
+    margin-top: auto;
+    line-height: 1.3rem;
+    text-align:left;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.date-container span {
+    font-size:13px;
+}
+
+
+
+::-webkit-scrollbar {
+    width: 4px;
+    height:4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #dedede;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #565656;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(8, 8, 8);  
+}

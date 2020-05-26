@@ -1,0 +1,201 @@
+
+.display-flex {
+    display:flex;
+    margin-left:auto;
+    margin-right:auto;
+
+}
+
+.display-flex .chapters-controller {
+    width:500px;
+    height:fit-content;
+    margin:30px;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+
+.display-flex .chapters-title {
+    display:flex;
+    height:50px;
+    background-color: rgb(192, 209, 241);
+    border-radius: 10px 10px 0px 0px;
+}
+
+.display-flex .chapters-title > span {
+    font-size:1.2rem;
+    margin:auto auto auto 20px;
+}
+
+.display-flex .chapters-controller .add-chapter-button {
+    display:flex;
+    margin:auto 20px auto auto;
+    padding-left:10px;
+    padding-right:10px;
+    height:30px;
+    background-image:linear-gradient(90deg, #2491ee 0, #1cc7f2 100%);
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.display-flex .chapters-controller .add-chapter-button .plus-icon {
+    width:15px;
+    height:15px;
+    margin:auto 5px auto 5px;
+    background-color: white;
+    -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+}
+
+.display-flex .chapters-controller .add-chapter-button span {
+    color:white;
+    margin:auto 5px auto 5px;
+    cursor:pointer;
+}
+
+.display-flex .chapters-list {
+    background-color:rgb(250,250,250);
+    height:fit-content;
+    max-height: calc( 80vh - 50px );
+    overflow-y:scroll;
+}
+
+.display-flex .chapters-list .chapter {
+    display:flex;
+    padding-top:12px;
+    padding-bottom:12px;
+    border-top:1px solid rgb(230,230,230);
+}
+
+.display-flex .chapters-list .selected {
+    background:rgb(242, 245, 249);
+}
+
+.display-flex .chapters-list .chapter:hover {
+    background:rgb(242, 245, 249);
+}
+
+.display-flex .chapters-list .chapter .chapter-number {
+    padding-left:5px;
+    width:20%;
+    //background:red;
+}
+
+.display-flex .chapters-list .chapter .chapter-name {
+    display:flex;
+    padding-left:5px;
+    width:65%;
+    //background:blue;
+}
+
+.display-flex .chapters-list .chapter .chapter-name input {
+    width: calc( 100% - 30px );
+}
+
+.display-flex .chapters-list .chapter .chapter-icons {
+    width:15%;
+    height: 30px;
+    display:flex;
+    //background:grey;
+}
+
+
+.display-flex .chapters-list .chapter .button {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto;
+    border:1px solid rgb(201, 201, 201);
+    border-radius:4px;
+    background:white;
+    cursor:pointer;
+}
+
+.display-flex .chapters-list .chapter .button-name {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto auto 5px;
+    border:1px solid rgb(201, 201, 201);
+    border-radius:4px;
+    background:white;
+    cursor:pointer;
+}
+
+.display-flex .chapters-list .chapter .button-name .validate-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(40, 40, 40);
+    -webkit-mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+}
+
+
+.display-flex .chapters-list .chapter .button-empty {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto;
+}
+
+.display-flex .chapters-list .chapter .button .empty-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(40, 40, 40);
+}
+
+
+.display-flex .chapters-list .chapter .button .modify-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(40, 40, 40);
+    -webkit-mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
+}
+
+
+.display-flex .chapters-list .chapter .button .delete-icon {
+    
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background:blue;
+    background-color: rgb(40, 40, 40);
+    -webkit-mask:  url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
+}
+
+
+
+.display-flex .pages-controller {
+    width:calc(100% - 600px);
+    min-height: 600px;
+    height: 80vh;
+    margin:30px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+
+}
+
+
+//ScrollBar
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;  
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999;  
+}

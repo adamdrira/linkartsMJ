@@ -1,0 +1,44 @@
+
+
+@import '../../thumbnail-comic-styles.css';
+
+
+.component-container {
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    transition:background-color 200ms;
+}
+
+.component-container.album {
+  
+}
+
+.component-container.selected {
+  background-color:rgb(32,56,100);
+}
+
+
+
+.add-button {
+  cursor: pointer;
+  display: flex;
+  margin: 15px auto auto auto;
+  width: 110px;
+  font-size: 15px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.remove-button {
+  cursor: pointer;
+  margin: 0px auto 20px auto;
+  width: 110px;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: rgb(150, 205, 80);
+  border:1px solid white;
+  color: white;
+  border-radius: 30px;
+}

@@ -1,0 +1,130 @@
+
+
+<div class="comic-container">
+
+
+    <div #thumbnail class="col-book text-center">
+        
+        
+        <div class="swiper-container artbook-thumbnail">
+            
+            <div class="swiper-wrapper" >
+
+                    <!--Slide recto-->
+                    <div class="swiper-slide">
+                        
+                        <a href='/artwork-comic/{{format}}/{{title}}/{{bd_id}}'>
+                            <div class="element-book border-recto">
+
+                                <div class="miniature">
+                                    
+                                        <img [src]="thumbnail_picture">
+                                </div>
+
+
+                                <div #thumbnailRecto class="absolute-thumbnail-data">
+                                    <!--********************-->
+                                    <!--Title container-->
+                                    <!--********************-->
+                                    <div class="title-container">
+                                        <span class="title">{{title}}</span>
+                                    </div>
+                                    <!--********************-->
+                                    <!--Author container-->
+                                    <!--********************-->
+                                    <div class="author-container">
+                                        <div class="left-container">
+                                            <img [src]="profile_picture">
+                                        </div>
+                                        <div class="right-container">
+                                            <span class="author-name">{{author_name}}</span>
+                                            <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                                        </div>
+                                    </div>
+                                    <!--********************-->
+                                    <!--Data container-->
+                                    <!--********************-->
+                                    <div class="stats-container">
+                                        <div class="figure-container-views">
+                                            <span>{{viewnumber}}</span>
+                                            <div class="view-logo">
+                                            </div>
+                                        </div>
+                                        <div class="figure-container-likes">
+                                            <span>{{likesnumber}}</span>
+                                            <div class="like-logo">
+                                            </div>
+                                        </div>
+                                        <div class="figure-container-loves">
+                                            <span>{{lovesnumber}}</span>
+                                            <div class="love-logo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </a>
+
+                    </div>
+
+
+                    <!--Slide verso-->
+                    <div class="swiper-slide">
+                    
+                        <a href='/artwork-comic/{{format}}/{{title}}/{{bd_id}}'>
+                            <div #thumbnailVerso class="element-book border-verso">
+                            
+                                
+                                <!--********************-->
+                                <!--Title container-->
+                                <!--********************-->
+                                <div class="verso-resume">
+                                    <span class="resume">Résumé</span>
+                                </div>
+                                <div class="horizontal-line">
+                                </div>
+                                <!--********************-->
+                                <!--Description container-->
+                                <!--********************-->
+                                <div class="verso-description">
+                                    <span>{{highlight}}</span>
+                                </div>
+                                <!--********************-->
+                                <!--Categories container-->
+                                <!--********************-->
+                                <div class="categories-container">  
+                                    <span class="categories">{{category}} :</span>
+                                    <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
+                                    <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
+                                    <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
+                                </div>
+                                <!--********************-->
+                                <!--Type container-->
+                                <!--********************-->
+                                <div class="verso-type">
+                                    <span>{{format}}</span>
+                                </div>
+                                <!--********************-->
+                                <!--Date container-->
+                                <!--********************-->
+                                <div class="date-container">
+                                    <span>{{date_upload_to_show}}</span>
+                                </div>
+
+                            
+                            </div>
+                        </a>
+                        
+                    </div>
+                
+            </div>
+            
+            
+        </div>
+
+    </div>
+    
+</div>
+
+

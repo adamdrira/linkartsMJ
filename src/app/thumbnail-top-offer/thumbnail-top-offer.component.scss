@@ -1,0 +1,152 @@
+
+ //CODE POUR DESSINS
+
+ .col-offer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding:20px;
+    margin-top:40px;
+    /*width:calc(100%/$image_per_line);
+    height:height;*/
+    //margin: 0px 0px 0px 0px;
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+    transition:border 200ms ease-out;
+ }
+
+ .max-dimensions {
+     width:100%;
+     height:100%;
+     display: flex;
+     flex-direction: column;
+ }
+
+.col-offer .element-offer {
+
+    height:100%;
+    width:100%;
+    border-radius: 5px 5px 5px 5px;
+    background:rgb(32, 56, 100);
+    box-shadow:0 4px 15px 0 dimgrey;
+}
+
+
+.col-offer .element-offer .swiper-container {
+    overflow:hidden;
+    color:white !important;
+    height:100%;
+    width:100%;
+}
+
+
+.col-offer .element-offer .swiper-slide img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+
+.col-offer .element-offer .swiper-slide .title {
+    width:40%;
+    margin:10px auto 10px auto;
+    border-bottom:1px solid white;
+    text-align: center;
+}
+.col-offer .element-offer .swiper-slide .description {
+    width:80%;
+    margin: 0px auto 20px auto;
+    overflow-y:scroll;
+    text-align: center;
+}
+
+.col-offer .element-offer .swiper-slide .description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.col-offer .element-offer .swiper-slide .description::-webkit-scrollbar-thumb {
+    background: rgb(17, 33, 63); 
+}
+  
+
+
+
+.col-offer .element-offer .offer-container {
+    display:flex;
+    color:white;
+}
+
+
+.col-offer .element-offer .offer-container .left-container {
+    margin:10px auto 10px 10px;
+}
+
+.col-offer .element-offer .offer-container .left-container img {
+    width:90px;
+    height:90px;
+    border: 1px solid rgb(191, 241, 255);
+    border-radius: 2px;
+}
+
+
+.col-offer .element-offer .offer-container .right-container {
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    margin:10px 10px 10px 10px;
+    line-height: 1rem;
+    font-size:1rem;
+}
+
+
+.col-offer .element-offer .offer-container .right-container .top {
+    color:rgb(96, 218, 252);
+    font-size:1.1rem;
+    text-align: left;
+}
+
+.col-offer .element-offer .offer-container .right-container .bottom {
+    display:flex;
+    margin-top: auto;
+    line-height: 1.2rem;
+}
+
+.col-offer .element-offer .offer-container .right-container .bottom div {
+    line-height: 1.2rem;
+}
+
+.col-offer .element-offer .offer-container .right-container .bottom .bottom-left {
+    display:grid;
+    margin: auto auto 0px 0px;
+    text-align:left;
+}
+
+.col-offer .element-offer .offer-container .right-container .bottom .bottom-right {
+    display:grid;
+    margin: auto 0px 0px auto;
+    text-align:right;
+}
+
+
+
+//ng-deep 
+
+.icon {
+    color: rgb(96, 218, 252);
+    margin: auto 5px auto 0px;
+    font-size: 1.1rem;
+    height:20px;
+}
+
+::ng-deep .top-offer .swiper-button-prev, ::ng-deep .top-offer .swiper-button-next  {
+    outline:none !important;
+    color:white !important;
+    /*width:60px !important;
+    height:60px !important;
+    background:rgb(32,56,100,0.8);
+    border-radius: 50%;*/
+}
+
+::ng-deep .top-offer .swiper-scrollbar-drag {
+    background:white !important;
+}

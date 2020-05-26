@@ -1,0 +1,164 @@
+
+
+<div class="thumbnail-cover-album-container">
+
+    <div class="thumbnails">
+
+        <!----------------------------------------------------------->
+        <!----------------------1 PICTURE---------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==1" class="picturesNumber1">
+            <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+        </div>
+
+        <!----------------------------------------------------------->
+        <!----------------------2 PICTURES--------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==2" class="picturesNumber2">
+            <div class="img">
+                <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+            </div>
+
+            <div class="vertical-divider"></div>
+
+            <div class="img">
+                <img *ngIf="pictures_list && pictures_list[1]" [src]="pictures_list[1]">
+            </div>
+        </div>
+
+        <!----------------------------------------------------------->
+        <!----------------------3 PICTURES--------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==3" class="picturesNumber3">
+            
+            <div class="img">
+                <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+            </div>
+            <div class="vertical-divider"></div>
+            <div class="column-2">
+                
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[1]" [src]="pictures_list[1]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[2]" [src]="pictures_list[2]">
+                </div>
+            </div>
+        </div>
+
+        <!----------------------------------------------------------->
+        <!----------------------4 PICTURES--------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==4" class="picturesNumber4">
+            <div class="column">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[1]" [src]="pictures_list[1]">
+                </div>
+            </div>
+            <div class="vertical-divider"></div>
+            <div class="column">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[2]" [src]="pictures_list[2]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[3]" [src]="pictures_list[3]">
+                </div>
+            </div>
+        </div>
+
+        <!----------------------------------------------------------->
+        <!----------------------5 PICTURES--------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==5" class="picturesNumber5">
+            <div class="line1">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+                </div>
+                <div class="vertical-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[1]" [src]="pictures_list[1]">
+                </div>
+            </div>
+            <div class="horizontal-divider"></div>
+            <div class="line2">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[2]" [src]="pictures_list[2]">
+                </div>
+                <div class="vertical-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[3]" [src]="pictures_list[3]">
+                </div>
+                <div class="vertical-divider"></div>
+                <div class="img3">
+                    <img *ngIf="pictures_list && pictures_list[4]" [src]="pictures_list[4]">
+                </div>
+            </div>
+        </div>
+
+        <!----------------------------------------------------------->
+        <!----------------------6 PICTURES--------------------------->
+        <!----------------------------------------------------------->
+        <div *ngIf="pictures_number==6" class="picturesNumber6">
+            <div class="column1">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[0]" [src]="pictures_list[0]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[1]" [src]="pictures_list[1]">
+                </div>
+            </div>
+            <div class="vertical-divider"></div>
+            <div class="column2">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[2]" [src]="pictures_list[2]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[3]" [src]="pictures_list[3]">
+                </div>
+            </div>
+            <div class="vertical-divider"></div>
+            <div class="column3">
+                <div class="img">
+                    <img *ngIf="pictures_list && pictures_list[4]" [src]="pictures_list[4]">
+                </div>
+                <div class="horizontal-divider"></div>
+                <div class="img2">
+                    <img *ngIf="pictures_list && pictures_list[5]" [src]="pictures_list[5]">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="thumbnail-data">
+        <div class="title">
+            <span *ngIf="album_name">{{album_name}}</span>
+            <span *ngIf="!album_name">Aucun titre ajouté</span>
+        </div>
+        <div class="artworks-number">
+            <span *ngIf="pictures_list.length == 0">Aucune œuvre</span>
+            <span *ngIf="pictures_list.length == 1">{{pictures_list.length}} œuvre</span>
+            <span *ngIf="pictures_list.length >1">{{pictures_list.length}} œuvres</span>
+        </div>
+    </div>
+    
+
+</div>
+
+
+<!--<ng-template *ngIf="pictures_number==1">
+
+</ng-template>
+
+
+<div *ngFor="let element of pictures_list">
+    <img [src]="element">
+</div>-->
