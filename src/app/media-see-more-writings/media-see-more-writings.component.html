@@ -1,0 +1,11 @@
+
+
+<div *ngIf="new_sorted_artpieces_added" class="container-homepage d-flex flex-wrap">
+    <div *ngFor="let item of new_sorted_artpieces">
+        <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
+        [item]=item
+        now_in_seconds={{now_in_seconds}}
+    ></app-thumbnail-writing>
+    </div>
+</div>
+

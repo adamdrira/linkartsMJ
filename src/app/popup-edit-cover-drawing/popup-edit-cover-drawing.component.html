@@ -1,0 +1,128 @@
+
+
+
+<form [formGroup]="fd" class="form" novalidate>
+
+    <div class="form-container">
+
+        <div class="form-container-flex">
+
+                    
+            <!--******************************************************-->
+            <!--Couleur-->
+            <!--******************************************************-->
+            <div class="form-group">
+                <label for="artworkColor">Couleur de fond</label>
+                <select formControlName="fdColor" class="drawingSelectColor" style="height: 100%;">
+                    <option selected value="" disabled="true">Sélectionner une couleur de fond</option>
+                    <option>Bleu</option>
+                    <option>Noir</option>
+                    <option>Vert</option>
+                    <option>Jaune</option>
+                    <option>Rouge</option>
+                    <option>Violet</option>
+                    <option>Rose</option>
+                    <option>Marron</option>
+                    <option>Orange</option>
+                    <option>Gris</option>
+                </select>
+                <p *ngIf="fdDisplayErrors">Veuillez sélectionner une couleur de fond</p>
+            </div>
+
+
+            <div class="thumbnail-container">
+
+
+                <div class="img-container">
+                    <div class="full-crop">
+                        <img #image *ngIf="data.format=='one-shot'" [src]="data.thumbnail_picture_oneshot" crossorigin>
+                        <img #image *ngIf="data.format=='artbook'" [src]="data.thumbnail_picture_artbook" crossorigin>
+                    </div>
+                    <div class="buttons-container">
+                        <button mat-raised-button class="style0" (click)="set_crop();">Rogner</button>
+                    </div>
+                </div>
+
+
+                <div class="crop">
+
+                    <span *ngIf="imageDestination == ''">Aucune miniature sélectionnée</span>
+
+                    <div *ngIf="imageDestination != ''" class="img-preview">
+
+                        <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+                            <img [src]="imageDestination">
+                            <div #displayOnHover class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
+                                
+                                <!--********************-->
+                                <!--Title container-->
+                                <!--********************-->
+                                <div class="title-container">
+                                    <span class="title">{{data.title}}</span>
+                                </div>
+                                <!--********************-->
+                                <!--Author container-->
+                                <!--********************-->
+                                <div class="author-container">
+                                    <div class="left-container">
+                                        <img [src]="data.profile_picture">
+                                    </div>
+                                    <div class="right-container">
+                                        <span class="author-name">{{data.author_name}}</span>
+                                        <span class="author-description" *ngIf="data.primary_description!=null">{{data.primary_description}}</span>
+                                    </div>
+                                </div>
+                                <!--********************-->
+                                <!--Data container-->
+                                <!--********************-->
+                                <div class="stats-container">
+                                    <div class="figure-container-views">
+                                        <span>__</span>
+                                        <div class="view-logo">
+                                        </div>
+                                    </div>
+                                    <div class="figure-container-likes">
+                                        <span>__</span>
+                                        <div class="like-logo">
+                                        </div>
+                                    </div>
+                                    <div class="figure-container-loves">
+                                        <span>__</span>
+                                        <div class="love-logo">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--********************-->
+                                <!--Categories container-->
+                                <!--********************-->
+                                <div class="categories-container">  
+                                    <span class="categories">{{data.style}} :</span>
+                                    <span *ngIf="data.firsttag"> &nbsp; {{data.firsttag}}</span>
+                                    <span *ngIf="data.secondtag"> &nbsp; {{data.secondtag}}</span>
+                                    <span *ngIf="data.thirdtag"> &nbsp; {{data.thirdtag}}</span>
+                                </div>
+                                <!--********************-->
+                                <!--Date container-->
+                                <!--********************-->
+                                <div class="date-container">
+                                    <span>Publié il y a __</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button mat-raised-button class="validate-form-button style1" *ngIf="imageDestination != ''" (click)="validate_all();">
+                        Valider
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</form>

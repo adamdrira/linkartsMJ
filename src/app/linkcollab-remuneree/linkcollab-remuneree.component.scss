@@ -1,0 +1,33 @@
+   
+   @media (max-width: 768px) {
+    [role="main"] {
+      padding-top: 0px; /* Space for fixed navbar */
+    }
+  }  
+
+  @media (min-width: 1500px) {
+    [role="main"] {
+      padding-top: 180px; /* Space for fixed navbar */
+      width:1500px;
+      margin:auto auto;
+    }
+  }
+  
+  .container-fluid {
+    background-color:rgb(255, 255, 255);
+  }
+
+
+  *{
+    font-size: 1.20rem;
+  }
+  
+  
+
+  .searchbar {
+     width:100%;
+     width:1000px;
+     margin:20px auto 60px auto;
+     z-index:1000;
+     position:relative;
+  }

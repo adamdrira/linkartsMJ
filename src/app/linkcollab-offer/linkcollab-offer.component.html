@@ -1,0 +1,131 @@
+
+
+<div class="container-fluid">
+    <main role="main">
+        
+        
+        <div class="offer-container">
+
+            <div class="top-container">
+
+                <div class="profile-container">
+                    <div class="icon-profile">
+                    </div>
+                    <div class="name-profile">
+                        Adamdrira9610
+                    </div>
+                </div>
+
+
+                <div class="title-container">
+                    <div class="title">
+                        Scénariste recherche dessinateur pour projet Manga
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    
+                    <div class="apply-button">
+                        Postuler
+                    </div>
+                    <div class="icon-option">
+                    </div>
+                    <div class="more-information">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item>
+                          <mat-icon>people</mat-icon>
+                          <span>Voir les annonces</span>
+                        </button>
+                        <button mat-menu-item>
+                          <mat-icon>no_encryption</mat-icon>
+                          <span>Signaler</span>
+                        </button>
+                        <button mat-menu-item>
+                          <mat-icon>cloud_download</mat-icon>
+                          <span>Archiver</span>
+                        </button>
+                      </mat-menu>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="middle-container">
+
+                <div class="left-container">
+
+                    <div class="category">
+                        <div #category class="category-description" [ngClass]="status1" (mouseover)="status1='hovered'" (mouseout)="status1=''" (click)="open_category(0);">Description</div>
+                        <div #category class="category-attachments" [ngClass]="status2" (mouseover)="status2='hovered'" (mouseout)="status2=''" (click)="open_category(1);">Pièces-jointes</div>
+                    </div>
+                    
+                    <div class="category-content-1">
+                        <div *ngIf="category_index==0" class="description-container">
+                            <ul>
+                                <li>Animation-Série courte</li>
+                                <li>Humour</li>
+                                <li>En cours</li>
+                            </ul> 
+                            Gon Freecss a presque douze ans, et rêve de devenir "Hunter".
+                            Les Hunters sont des aventuriers d'élite qui peuvent être chasseurs de prime,
+                            chefs-cuisinier ou consultants dans divers domaines.
+                            
+                        </div>
+                        <div *ngIf="category_index==1" class="attachments-container">
+                            Attachments...
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="right-container">
+                    <div class="category">
+                        <div class="category-description active" style="cursor:default;">Compléments visuels</div>
+                    </div>
+
+                    <div class="category-content-2">
+                        
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                            <div class="swiper-slide">Slide 1</div>
+                            <div class="swiper-slide">Slide 2</div>
+                            <div class="swiper-slide">Slide 3</div>
+                            <div class="swiper-slide">Slide 4</div>
+                            <div class="swiper-slide">Slide 5</div>
+                            <div class="swiper-slide">Slide 6</div>
+                            <div class="swiper-slide">Slide 7</div>
+                            <div class="swiper-slide">Slide 8</div>
+                            <div class="swiper-slide">Slide 9</div>
+                            <div class="swiper-slide">Slide 10</div>
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="footer-content">
+                        <div class="footer-description">
+                            23 retours
+                        </div>
+                        <div class="footer-description">
+                            Posté le 21/01/2020
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </main>
+</div>

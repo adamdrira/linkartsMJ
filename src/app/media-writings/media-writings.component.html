@@ -1,0 +1,62 @@
+<div *ngFor="let style of sorted_style_list; index as i1">
+
+    <div class="category"><span>{{style}}</span></div>
+    <div class="container-writings d-flex flex-wrap">
+
+        <ng-container *ngIf="style==='Roman illustré'">
+            <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel; let i = index">
+                <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="style==='Roman'">
+            <ng-container *ngFor="let item of sorted_artpieces_roman; let i = index">
+                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public'"
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>
+            </ng-container>
+        </ng-container>
+
+
+        <ng-container *ngIf="style==='Scénario'">
+            <ng-container *ngFor="let item of sorted_artpieces_scenario; let i = index">
+                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public' "
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="style==='Article'">
+            <ng-container *ngFor="let item of sorted_artpieces_article; let i = index">
+                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public' "
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>
+            </ng-container>
+        </ng-container>
+
+
+        <ng-container *ngIf=" list_of_contents_sorted">
+            <div *ngIf="!show_more[sorted_style_list.indexOf(style)]" class="see-more" (click)="see_more(style)">
+                <div class="icon">
+                </div>
+            </div>
+            <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
+                <app-media-see-more-writings
+                    [style]=style
+                    [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
+                    [sorted_artpieces_roman]=sorted_artpieces_roman
+                    [sorted_artpieces_scenario]=sorted_artpieces_scenario
+                    [sorted_artpieces_article]=sorted_artpieces_article
+                    now_in_seconds={{now_in_seconds}}
+                ></app-media-see-more-writings>
+            </ng-container>        
+        </ng-container>                
+
+    </div>
+</div>

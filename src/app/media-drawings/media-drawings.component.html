@@ -1,0 +1,51 @@
+<div *ngFor="let item of sorted_style_list; index as i1">
+
+    <div class="category"><span>{{item}}</span></div>
+    <div class="container-homepage d-flex flex-wrap">
+        
+        <ng-container *ngIf="item==='Traditionnel'">
+            <ng-container *ngFor="let item of sorted_artpieces_traditional; let i = index">
+                <app-thumbnail-drawing class="thumbnail-component-container" *ngIf="item.status=='public'"
+                    [item]=item
+                    [format]=sorted_artpieces_traditional_format[i]
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="item==='Digital'">
+            <ng-container *ngFor="let item of sorted_artpieces_digital; let i = index">
+                <app-thumbnail-drawing class="thumbnail-component-container" *ngIf="item.status=='public'"
+                    [item]=item
+                    [format]=sorted_artpieces_digital_format[i]
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing>
+            </ng-container>
+        </ng-container>
+
+
+
+
+        <ng-container *ngIf=" list_of_contents_sorted">
+            <div *ngIf="!show_more[sorted_style_list.indexOf(item)]" class="see-more" (click)="see_more(item)">
+                <div class="icon">
+                </div>
+            </div>
+            <ng-container *ngIf="show_more[sorted_style_list.indexOf(item)]">
+                <app-media-see-more-drawings
+                    [style]=item
+                    [sorted_artpieces_traditional]=sorted_artpieces_traditional
+                    [sorted_artpieces_digital]=sorted_artpieces_digital
+                    now_in_seconds={{now_in_seconds}}
+                ></app-media-see-more-drawings>
+            </ng-container>        
+        </ng-container>   
+    </div>
+</div>
+
+
+
+
+
+
+

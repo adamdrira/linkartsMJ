@@ -1,0 +1,9 @@
+
+<div *ngIf="new_sorted_artpieces_added" class="container-homepage d-flex flex-wrap">
+    <div *ngFor="let item of new_sorted_artpieces">
+        <app-thumbnail-comics *ngIf="item.chaptersnumber == null && item.status=='public'" 
+        [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+        <app-thumbnail-comics *ngIf="item.chaptersnumber>=0 && item.status=='public'"
+        [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+    </div>
+</div>

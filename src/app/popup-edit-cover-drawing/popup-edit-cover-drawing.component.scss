@@ -1,0 +1,213 @@
+
+.thumbnail-container {
+    display:flex;
+    padding-top:20px;
+    padding-bottom:20px;
+}
+
+.thumbnail-container .image-container {
+  display:flex;
+  width: calc( 100% - 340px );
+  margin-top:30px;
+  margin-bottom:30px;
+}
+
+.thumbnail-container .image-container label {
+    margin: auto auto;
+}
+
+.thumbnail-container .image-container .select-button {
+    cursor: pointer;
+    font-size: 1rem;
+    background: rgb(32,56,100);
+    color:white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cecece;
+    box-shadow: 0px 0px 5px 0px #98bcff;
+  }
+
+ .thumbnail-container .image-container span {
+  margin:auto 
+  auto;
+}
+
+
+ .thumbnail-container .crop-container {
+  width: 50%;
+  height: 100%;
+  border-right: 1px solid rgb(228, 228, 228);
+  display:flex;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+ .thumbnail-container .crop {
+  display: block;
+  width: 50%;
+  height: fit-content;
+  margin: auto auto;
+  text-align: center;
+}
+
+.thumbnail-container .crop button {
+    margin-top: 20px;
+    font-size: 15px;
+    padding: 5px 20px 5px 20px;
+}
+
+ .thumbnail-container .img-container {
+  height:100%;
+  width:50%;
+  display:flex;
+  flex-direction: column;
+  margin:auto auto auto auto;
+}
+
+ .thumbnail-container .img-container .full-crop {
+  height:500px;
+  width:100%;
+  border-radius:7px;
+  margin:auto auto;
+  overflow:hidden;
+}
+
+
+ .thumbnail-container .img-container .buttons-container {
+  display:flex;
+}
+
+ .thumbnail-container .img-container .buttons-container button {
+  margin: 10px auto 10px auto;
+  display: flex;
+  outline: none;
+  width: 150px;
+}
+
+
+
+ .thumbnail-container .img-preview {
+  display:flex;
+  min-height:180px;
+  width:300px !important;
+  margin: auto auto;
+  box-shadow: 0px 0px 12px rgb(119, 119, 119);
+  border-radius: 12px;
+  color: black;
+  background: white;
+}
+
+ .thumbnail-container .img-preview > span {
+  margin:auto auto;
+}
+
+.thumbnail-container .img-preview .final-thumbnail {
+  position:relative;
+  width: 100%;
+  height: 100%;
+  border-radius:12px;
+}
+.thumbnail-container .img-preview .final-thumbnail > img {
+  width:100%;
+  height:100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+
+
+.form {
+  width:100%;
+  max-height:800px !important;
+  margin-top:20px;
+  margin-bottom:20px;
+  margin-left:auto;
+  margin-right: auto;
+}
+
+.form-container {
+  width:800px;
+  margin:0px auto 0px auto;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.form-container .form-container-data {
+  width:95%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  margin:20px auto 20px auto;
+}
+
+.form-container .form-container-flex {
+  display:flex;
+  flex-direction: column;
+  width:95%;
+  margin:0px auto 0px auto;
+}
+
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom:5px;
+}
+
+.form-group p {
+  font-size: 15px;
+  margin-top: 5px;
+  margin-bottom: 0px !important;
+  color:rgb(97, 0, 0);
+}
+
+.validate-form-button {
+  display:flex;
+  font-size:20px;
+  height:50px;
+  width:300px;
+  margin:20px auto 30px auto;
+
+}
+
+
+
+//ng-deeps
+::ng-deep .form-control {
+  height:45px;
+  font-size:unset;
+  color:unset;
+}
+
+::ng-deep .form-container .SumoSelect {
+  display:block;
+  width:unset;
+  height:45px;
+  background:white;
+  border:1px solid rgb(204,204,204);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  border-radius:4px;
+}
+
+::ng-deep .form-container .optWrapper .options .opt.disabled {
+  display:none;
+}
+
+::ng-deep .bootstrap-tagsinput {
+  display:flex;
+  height:45px;
+  line-height: unset;
+}
+
+::ng-deep .bootstrap-tagsinput .label-info {
+  border-radius:5px;
+  padding-left:10px;
+  padding-right:10px;
+  height: 80%;
+  margin-top: auto;
+  margin-bottom: auto;
+  background-color:rgb(114, 203, 221);
+  color:rgb(50, 50, 50);
+}
+
+
+@import '../../material-styles.css';
+@import '../../thumbnail-drawing-styles.css';

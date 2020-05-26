@@ -1,0 +1,31 @@
+
+  
+    <div class="form-container">
+
+            
+
+            <!--******************************************************-->
+            <!--Miniature-->
+            <!--******************************************************-->
+
+            <div class="form-group" style="text-align:center;">
+
+                <app-uploader-bd-cover
+                    [author_name]=data.author_name
+                    [primary_description]=data.primary_description
+                    [profile_picture]=data.profile_picture
+                    name={{data.title}}
+                    description={{data.primary_description}}
+                    category={{data.style}}
+                    format={{data.format}}
+                ></app-uploader-bd-cover>
+
+            </div>
+
+    </div>
+    <button mat-raised-button class="validate-form-button style1" (click)="validateForm00();">Valider</button>
+
+
+
+
+

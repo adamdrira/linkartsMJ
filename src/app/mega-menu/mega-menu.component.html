@@ -1,0 +1,88 @@
+
+
+
+    <div class="mega-menu-container-relative"
+        (mouseleave)="close_all()">
+        
+            
+        <div class="mega-menu-container-absolute">
+            <div class="row category-filter justify-content-md-center">
+                <ng-container *ngFor="let element of categories_data; let i=index">
+
+                    <ng-container *ngIf="i==2">
+                        <div class="col text-center">
+                            <a href>
+                                <div class="content-action active">
+                                    Recommandations
+                                </div>
+                            </a>
+                        </div>
+                    </ng-container>
+
+                    <div class="col text-center">
+                        <a href>
+                            <!--<div class="content-action" [ngClass]="{'active': element.opened == 1}" (mouseenter)="open_subcategory(i)" [@enterAnimation]>
+                                {{ element.category }}
+                            </div>-->
+                        </a>
+                    </div>
+
+                </ng-container>
+            </div>
+            
+            <ng-container *ngFor="let element of categories_data; let i0=index">
+                <div class="row subcategory-filter justify-content-md-center"
+                *ngIf="element.opened == 1" [@enterAnimation]>
+                    <div *ngFor="let element2 of element.subcategories; let i1=index">
+                        <div class="col text-center">
+                                <a href>
+                                    <div class="content-action" (mouseenter)="open_panel(element2.id_panel)">
+                                        {{ element2.name }}
+                                    </div>
+                                </a>
+                            </div>
+                    </div>
+                </div>
+            </ng-container>
+
+
+            <div *ngFor="let element of panels_data; let i0=index" class="panel">
+                <div class="row"
+                    *ngIf="element[0][0].opened==1" [@enterAnimation]>
+                    
+                    <section class="col-md-12 col-sm-12 col-10">
+                        <div class="row">
+
+                            <ul *ngFor="let element2 of element; let i1=index; let first=first" class="list-unstyled col-md-2 col-sm-12 col-10"
+                                [class.col-md-3]="first">
+
+                                <ng-container *ngFor="let element3 of element2; let i2=index">
+                                        
+                                    <div><b> {{ element3.title }} </b></div>
+
+                                        <li *ngFor="let element4 of element3.values; let i3=index" 
+                                        (click)="click_checkbox(i0,i1,i2,i3)">
+                                            <div>
+                                                {{ element4.value }}
+                                            </div>
+                                            <div class="checkbox">
+                                                <div class="checkbox--content" *ngIf="element4.checked == 1" [@enterAnimation]></div>
+                                            </div>
+                                        </li>
+
+                                </ng-container>
+
+                            </ul>
+                            <ul class="list-unstyled col-md-3 col-sm-12 col-10">
+                                    <span class="all_categories">photo</span>
+                            </ul>
+
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+        </div>
+        
+    </div>

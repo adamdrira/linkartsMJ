@@ -1,0 +1,96 @@
+    
+    
+    <div class="fixed-top" *ngIf="navbar.visible" [ngClass]="{'navbarBoxShadow': navbarBoxShadow }">
+
+
+
+      <!--Navbar : ligne 1 : logo / searchbar / icones-->
+      <div class="navbar-container">
+        <nav class="navbar first-navbar">
+          
+
+          <!--Logo-->
+          <div #navbarLogo class="navbar-l1-linkarts-logo-container">
+            <div class="navbar-l1-linkarts-logo">
+              LinkArts
+            </div>
+          </div>
+          
+
+          <!--Barre de recherche-->
+          <div #navbarSearchbar class="navbar-l1-searchbar-container">
+              <div class="left-container">
+                  <input #input
+                  (click)="activateFocus()"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Rechercher'"
+                  class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+              </div>
+              <div class="right-container">
+                  <select name="somename" class="NavbarSelectBox" style="height: 100%;">
+                    <option value="0">Artistes</option>
+                    <option value="1">Annonces</option>
+                    <option value="2">Livres</option>
+                    <option value="3">Maisons d'édition</option>
+                    <option value="4">Posters</option>
+                    <option value="5">Publications</option>
+                  </select>
+              </div>
+          </div>
+
+          
+          <!--Icônes (notification, messagerie, etc.)-->
+          <div class="navbar-l1-icons-container">
+                <div class="icon-container">
+                  <div class="icon icon-profile">
+                  </div>
+                  <div class="title">Mon compte</div>
+                </div>
+
+                <div class="icon-container">
+                  <div class="icon icon-bell">
+                  </div>
+                  <div class="title">Notifications</div>
+                </div>
+
+                <div class="icon-container">
+                  <div class="icon icon-messenger">
+                  </div>
+                  <div class="title">Messagerie</div>
+                </div>
+
+                <div class="icon-container">
+                  <div class="icon icon-basket">
+                  </div>
+                  <div class="title">Panier</div>
+                </div>
+          </div>
+          
+
+
+        </nav>
+      </div>
+
+
+      
+      <!--Navbar : ligne 2 : choix de la section-->
+      <div class="blue-background">
+        <div class="navbar-container">
+          <nav class="navbar2 flex-md-nowrap p-0">
+            <div class="category" [ngClass]="{'opened': navbar.active_section==0 }">COMMUNAUTÉ</div>
+            <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">COLLABORATIONS</div>
+            <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">MAISONS D'ÉDITION</div>
+            <!--<div class="category" [ngClass]="{'opened': navbar.active_section==3 }">POSTERS</div>-->
+            <div class="category" [ngClass]="{'opened': navbar.active_section==4 }">ESPACE COMMERCIAL</div>
+            
+          </nav>
+        </div>
+      </div>
+
+
+
+
+
+    </div>
+
+<div class="navbar-margin"></div>
