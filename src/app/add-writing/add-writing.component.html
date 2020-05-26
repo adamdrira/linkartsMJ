@@ -1,0 +1,156 @@
+
+
+    <button mat-raised-button class="step-back-button style0" (click)="back_home();">
+        <div class="back-icon"></div>
+        <span>Retour</span>
+    </button>
+
+    <form [formGroup]="fw" novalidate>
+
+        <div class="form-container">
+
+            <div class="form-container-name">
+                <span>Présentation du projet</span>
+            </div>
+
+            <div class="form-container-flex">
+
+                <!--*********************************************************-->
+                <!--Partie gauche du formulaire-->
+                <!--*********************************************************-->
+                <div class="flex-left-container">
+
+
+                    <!--*********************************************************-->
+                    <!--Titre-->
+                    <!--*********************************************************-->
+                    <div class="form-group">
+                        <label for="artworkTitle">Titre</label>
+                        <input type="text" formControlName="fwTitle" class="form-control" placeholder="Nom de l'œuvre (30 caractères max)" autocomplete="off" required/>
+                        <p *ngIf="!fwTitle.valid  && fwDisplayErrors">Veuillez saisir un titre valide</p>
+                    </div>
+
+                    <!--*********************************************************-->
+                    <!--Format-->
+                    <!--*********************************************************-->
+                    <div class="form-group">
+                        <label for="artworkFormat">Format</label>
+                        <select formControlName="fwFormat" class="fwselect0" style="height: 100%;">
+                            <option value="" disabled="true">Sélectionner un format</option>
+                            <option label="Oeuvre unique">One shot</option>
+                            <option label="Artbook">Série</option>
+                        </select>
+                        <p *ngIf="fwFormat.value == '' && fwDisplayErrors">Veuillez sélectionner un format</p>
+                    </div>
+
+                    <!--*********************************************************-->
+                    <!--Catégorie-->
+                    <!--*********************************************************-->
+                    <div class="form-group">
+                        <label for="artworkCategory">Catégorie</label>
+                        <select formControlName="fwCategory" class="fwselect1" style="height: 100%;">
+                            <option value="" disabled="true">Sélectionner une catégorie</option>
+                            <option label="Traditionnel">Roman illustré</option>
+                            <option label="Digital">Roman</option>
+                            <option label="Traditionnel">Scénario</option>
+                            <option label="Traditionnel">Article</option>
+                        </select>
+                        <p *ngIf="fwCategory.value == '' && fwDisplayErrors">Veuillez sélectionner une catégorie</p>
+                        <p> Bien que vos œuvres ne peuvent être téléchargées, nous vous invitons à prendre les
+                            dispositions nécessaires pour vous protéger contre le plagiat en dehors du site
+                            et à ne pas publier entièrement vos scénarios.
+                        </p>
+                    </div>
+
+                    <!--*********************************************************-->
+                    <!--Genres-->
+                    <!--*********************************************************-->
+                    <div class="form-group">
+                        <label for="artworkTags">Genres</label>
+                        <select formControlName="fwTags" class="multipleSelectfw" placeholder="Sélectionner des genres (max : 3)" multiple name="language">
+                            <option value="Bangladesh">Bangladesh</option>
+                            <option value="Barbados">Barbados</option>
+                            <option value="Belarus1">Belarus1</option>
+                            <option value="Belgium2">Belgium2</option>
+                            <option value="Belarus3">Belarus3</option>
+                            <option value="Belgium4">Belgium4</option>
+                            <option value="Belarus5">Belarus5</option>
+                            <option value="Belgium6">Belgium6</option>
+                        </select>
+                        <p *ngIf="!tagsValidator && fwDisplayErrors">Veuillez sélectionner au moins un genre</p>
+                    </div>
+                    
+
+                </div>
+
+
+                <!--*********************************************************-->
+                <!--Partie droite du formulation-->
+                <!--*********************************************************-->
+                <div class="flex-right-container">
+
+
+                    <!--*********************************************************-->
+                    <!--Description-->
+                    <!--*********************************************************-->
+                    <div class="form-group">
+                        <label for="artworkDescription">Description</label>
+                        <textarea type="text" formControlName="fwDescription" maxlength="500" style="height: 200px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
+                        </textarea>
+                        <p *ngIf="!fwDescription.valid && fwDisplayErrors">Veuillez saisir une description valide</p>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Monétisation</label>
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
+                                Je souhaite monétiser mon œuvre
+                            </mat-slide-toggle>
+                            &nbsp; 
+                            &nbsp; 
+                            <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                        </div>
+                    </div>
+                    
+                    <!--*********************************************************-->
+                    <!--Uploader-->
+                    <!--*********************************************************-->
+                    <div style="margin-top:30px;">
+                        <app-uploader-writting></app-uploader-writting>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        
+        <div class="form-container">
+
+            <div class="form-container-name">
+                <span>Edition de la miniature</span>
+            </div>
+
+
+            <app-uploader-cover-writing
+                author_name={{author_name}} 
+                primary_description={{primary_description}}
+                [profile_picture]=profile_picture
+
+                name={{fw.value.fwTitle}} 
+                description={{fw.value.fwDescription}}
+                category={{fw.value.fwCategory}}
+                format={{fw.value.fwFormat}}>
+            </app-uploader-cover-writing>
+
+        </div>
+
+        
+        <button mat-raised-button class="submit-button style1" (click)="validate_form_writing()">
+            <span>Valider</span>
+        </button>
+
+    </form>
+

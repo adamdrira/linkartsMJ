@@ -1,0 +1,132 @@
+.add-album-container {
+    width:100%;
+    display:flex;
+    flex-direction: column;
+    margin-top:20px;
+    margin-bottom:20px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.add-album-container form {
+    text-align: center;
+}
+
+.album-name-input {
+    width:300px;
+    margin: 30px auto 0px auto;
+}
+
+.search-input {
+    width:300px;
+    margin:20px auto 0px 10px;
+}
+
+.add-album-container .artwork-selector {
+    position:relative;
+    width:100%;
+    //padding-left:50px;
+    //padding-right:50px;
+}
+
+
+.album-preview {
+    width:95%;
+    padding:30px 45px;
+    text-align:left;
+    margin:20px auto 20px auto;
+    background:rgb(216, 216, 216);
+    box-shadow:0 0px 15px 0 dimgrey;
+    border-radius:40px;
+}
+
+.album-preview .album-name {
+    margin-bottom: 20px;
+    font-size:23px;
+    font-weight: bold;
+}
+
+.matInput {
+    line-height:1px !important;
+}
+
+
+.album-preview .no-artwork {
+    margin:20px auto 60px auto;
+    font-size:1.2rem;
+    text-align: center;
+}
+
+
+.no-result {
+    display:none;
+    height:100%;
+    width:100%;
+}
+
+.no-result span {
+    margin:auto auto;
+    font-size:1.5rem;
+}
+
+
+.submit-button {
+    display:flex;
+    cursor:pointer;
+    margin-top:30px;
+    margin-bottom:50px;
+    margin-left:auto;
+    margin-right: auto;
+    width:95%;
+    height:60px;
+    font-size: 21px;
+    transition:box-shadow 200ms;
+    border-radius:10px;
+}
+
+//Swiper
+.swiper-container {
+    margin:auto 0px auto auto;
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+    //transition:width 200ms;
+    background:rgb(228, 228, 228);
+    height:520px;
+    overflow:hidden;
+}
+
+.swiper-slide {
+    display:flex;
+    width:330px;
+}
+
+
+
+::ng-deep .swiper-button-prev, ::ng-deep .swiper-button-next  {
+    outline:none !important;
+    color:rgb(0, 0, 0) !important;
+}
+
+
+//grid
+.grid {
+    position: relative;
+}
+
+::ng-deep .grid > * {
+    display: block;
+    position: absolute !important;
+}
+
+
+::ng-deep .grid > .muuri-item-dragging {
+    z-index: 3;
+}
+::ng-deep .grid > .muuri-item-releasing {
+    z-index: 2;
+}
+::ng-deep .grid > .muuri-item-hidden {
+    z-index: 0;
+}
+

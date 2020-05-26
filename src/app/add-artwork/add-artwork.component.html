@@ -1,0 +1,66 @@
+
+<div class="top-container">
+    <span class="logo">Linkarts</span>
+
+</div>
+
+<div class="container-fluid">
+
+
+    <ng-container *ngIf="(opened_category$ | async)==-1">
+        
+        <div class="categories-container">
+
+            <span class="title">Commençons !</span>
+
+            <button mat-raised-button class="category-choice style0" (click)="open_category(0);">
+                <span>Publier une bande dessinée</span>
+            </button>
+            <button mat-raised-button class="category-choice style0" (click)="open_category(1);">
+                <span>Publier un dessin</span>
+            </button>
+            <button mat-raised-button class="category-choice style0" (click)="open_category(2);">
+                <span>Publier un écrit</span>
+            </button>
+
+        </div>
+
+
+    </ng-container>
+
+
+    <!--For book type artworks-->
+    <div *ngIf="(opened_category$ | async)==0" class="form">
+        <app-add-comic 
+            author_name={{author_name}} 
+            primary_description={{primary_description}} 
+            [profile_picture]=profile_picture
+            
+            (cancelled)="step_back();">
+        </app-add-comic>
+    </div>
+    
+    <!--For drawing type artworks-->
+    <div *ngIf="(opened_category$ | async)==1" class="form">
+        <app-add-drawing 
+            author_name={{author_name}} 
+            primary_description={{primary_description}} 
+            [profile_picture]=profile_picture
+
+            (cancelled)="step_back();">
+        </app-add-drawing>
+    </div>
+
+    <!--For writing type artworks-->
+    <div *ngIf="(opened_category$ | async)==2" class="form">
+        <app-add-writing 
+            author_name={{author_name}} 
+            primary_description={{primary_description}} 
+            [profile_picture]=profile_picture
+
+            (cancelled)="step_back();">
+        </app-add-writing>
+    </div>
+
+    
+</div>

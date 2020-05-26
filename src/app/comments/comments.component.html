@@ -1,0 +1,78 @@
+
+<div class="comments-container">
+    <div *ngIf='display_my_comments'>
+        <div *ngFor="let item of my_comments_list; let i = index" class="comments">
+
+            <app-comment-element style="width:calc(100% - 28px);"
+
+                (changed)="comment_changed();"
+                [comment_id]=i
+                [editable_comment]=editable_comment
+                [now_in_seconds]=now_in_seconds
+                [comment_information]=item>
+            </app-comment-element>
+            <button mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
+                <mat-icon class="optionsButton">more_vert</mat-icon>
+            </button>
+            <mat-menu  #commentOptions="matMenu">
+                <button class="mat-menu-item" (click)="edit_comment(i)" mat-menu-item > 	
+                    <mat-icon class="item-icon">edit</mat-icon>
+                    <span>Editer</span>
+                </button>
+                <button class="mat-menu-item" (click)="remove_comment(i)" mat-menu-item > 	
+                    <mat-icon class="item-icon" >view_carousel</mat-icon>
+                    <span>Supprimer</span>
+                </button>
+            </mat-menu>
+
+        </div>
+    </div>
+
+    <div *ngIf='display_comments && visitor_mode_retrieved'>
+        <div *ngFor="let item of comments_list; let i = index" class="comments">
+
+            <app-comment-element style="width:calc(100% - 28px);"
+
+                (changed)="comment_changed();"
+                [comment_id]=i
+                [editable_comment]=editable_comment
+                [now_in_seconds]=now_in_seconds
+                [comment_information]=item>
+            </app-comment-element>
+            <button  mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
+                <mat-icon class="optionsButton">more_vert</mat-icon>
+            </button>
+            <mat-menu  #commentOptions="matMenu">
+                <button class="mat-menu-item" mat-menu-item > 	
+                    <mat-icon class="item-icon">edit</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                <button *ngIf="!visitor_mode" class="mat-menu-item" (click)="remove_other_comment(i)" mat-menu-item > 	
+                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                    <span>Supprimer</span>
+                </button>
+
+            </mat-menu>
+
+        </div>
+    </div>
+
+    <div class="add-comment">
+
+        <div class="left-container">
+
+            <div class="image-container">
+                <img [src]="profile_picture">
+            </div>
+
+        </div>
+
+        <div class="right-container">
+
+            <textarea type="text" class="textarea-add-comment" style="resize:none;" autocomplete="off" placeholder="Ajouter un commentaire ..."></textarea>
+                                    
+        </div>
+
+    </div>
+
+</div>

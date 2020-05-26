@@ -1,0 +1,104 @@
+<div class="categories-container">
+    <div class="category-filter">
+        <div #category class="content-action text-center opened" (click)="open_category(0);">
+            Bandes dessinées
+        </div>
+        <div class="divider-vertical"></div>
+        <div #category class="content-action text-center" (click)="open_category(1);">
+            Dessins
+        </div>
+        <div class="divider-vertical"></div>
+        <div #category class="content-action text-center" (click)="open_category(2);">
+            Écrits
+        </div>
+        <div #category class="content-action text-center" (click)="open_category(3);">
+            Annonces
+        </div>
+    </div>
+</div>
+
+<div class="albums-container">
+    <div class="albums-filter">
+        <!-- archives de contenus d'autres utilsiateurs-->
+        <ng-container *ngIf="opened_category==0 || opened_category==1 || opened_category==2 || opened_category==3 ">
+            <div  *ngFor="let element of titles_archives; let i=index" class="content-action text-center" 
+            (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
+                        {{element}}  
+             </div>                           
+        </ng-container>
+    </div>
+</div>
+
+<div class="artworks-container">
+    <!--bandes dessinées-->
+    <div *ngIf="opened_category==0">
+        <div *ngIf="opened_album==0" class="bd-container" >
+            <div *ngIf="list_of_comics_added">
+                <div *ngFor="let item of list_of_comics">
+                    <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
+                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+                    <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
+                    [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="opened_album==1" class="bd-container" >
+            <div *ngIf="private_list_of_comics_series_received">
+                Séries
+                <div *ngFor="let item of private_list_of_comics_series">
+                    <app-thumbnail-comics 
+                    [item]=item format='serie' now_in_seconds={{now_in_seconds}}>
+                    </app-thumbnail-comics> 
+                </div>
+            </div>
+            <div *ngIf="private_list_of_comics_oneshots_received">
+            One-shots
+                <div *ngFor="let item of private_list_of_comics_oneshots">
+                    <app-thumbnail-comics 
+                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}>
+                    </app-thumbnail-comics> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--dessins-->
+    <div *ngIf="opened_category==1">
+        <div *ngIf="opened_album==1">
+            <div *ngIf="private_list_of_drawings_artbooks_received">
+                Artbooks
+                <div *ngFor="let item of private_list_of_drawings_artbooks; let i = index">
+                    <app-thumbnail-drawing 
+                        [item]=item
+                        format='artbook'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                </div>
+            </div>
+            <div *ngIf="private_list_of_drawings_oneshots_received">
+                One-shots
+                <div *ngFor="let item of private_list_of_drawings_oneshots; let i = index">
+                    <app-thumbnail-drawing 
+                        [item]=item
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--writings-->
+    <div *ngIf="opened_category==2">
+        <div *ngIf="opened_album==1">
+            <div *ngIf="private_list_of_writings_received">
+                <div *ngFor="let item of private_list_of_writings; let i = index">
+                    <app-thumbnail-writing
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-writing>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

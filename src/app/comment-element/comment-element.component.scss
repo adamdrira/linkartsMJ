@@ -1,0 +1,225 @@
+.comment {
+    display:flex;
+    width:100%;
+    margin-bottom:10px;
+}
+
+.comment .left-container {
+    display:flex;
+    width:50px;
+}
+
+.comment .left-container .img-container {
+    margin:0px 5px auto 5px;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    overflow: hidden;
+}
+
+.comment .left-container .img-container img {
+    object-fit:cover;
+    width:100%;
+    height:100%;
+}
+
+
+.comment .right-container {
+    width:calc( 100% - 50px );
+}
+
+.comment .right-container .comment-container {
+    width:100%;
+    background: rgb(100, 128, 179);
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 5px 10px 5px 10px;
+    word-break: break-word;
+}
+
+.comment .right-container .comment-container .author-name{
+    cursor:pointer;
+}
+
+.comment .right-container .comment-container .see-more {
+    cursor:pointer;
+    color:rgb(32,56,100);
+}
+.comment .right-container .comment-container .see-more:hover {
+    text-decoration: underline;
+}
+
+.comment .right-container .comment-container .author-name {
+    color:rgb(32,56,100);
+    font-weight: bold;
+}
+
+
+.comment .right-container .options-container {
+    display:flex;
+    font-size:14px;
+}
+
+.comment .right-container .options-container .action {
+    cursor:pointer;
+    display:flex;
+}
+
+.comment .right-container .options-container .separator {
+    margin-left:5px;
+    margin-right:5px;
+    cursor:default;
+}
+
+.comment .right-container .options-container .action .likesnumber{
+    margin:auto auto;
+}
+.comment .right-container .options-container .action .like-icon{
+    margin: auto auto auto 4px;
+    width: 18px;
+    height: 18px;
+    background-color: rgb(77, 141, 255);
+    -webkit-mask:  url("../../assets/img/svg/like-3.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/like-3.svg") no-repeat 50% 50%;
+}
+
+.comment .right-container .options-container .date-container {
+    margin:auto 0px auto auto;
+    cursor:default;
+}
+
+
+.comment .right-container .response {
+    display:flex;
+    width:100%;
+    margin-top:10px;
+}
+
+.comment .right-container .response .left-container {
+    display:flex;
+    width:40px;
+}
+
+.comment .right-container .response .left-container .img-container {
+    display: flex;
+    margin: 0px auto auto auto;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    overflow: hidden;
+}
+
+.comment .right-container .response .left-container .img-container img {
+    object-fit:cover;
+    width:100%;
+    height:100%;
+}
+
+
+.comment .right-container .response .right-container {
+    width:calc( 100% - 40px );
+}
+
+.comment .right-container .response .right-container .comment-container {
+    width:100%;
+    background: rgb(100, 128, 179);
+    border-radius: 8px;
+    padding: 5px 10px 5px 10px;
+    word-break: break-word;
+}
+
+
+.comment .right-container .response-input {
+    display:flex;
+    margin-top:10px;
+    width:100%;
+}
+
+.comment .right-container .response-input .left-container {
+    display:flex;
+    width:40px;
+}
+
+.comment .right-container .response-input .left-container .img-container {
+    display: flex;
+    margin: 0px auto auto auto;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    overflow: hidden;
+}
+
+.comment .right-container .response-input .left-container .img-container img {
+    object-fit:cover;
+    width:100%;
+    height:100%;
+}
+
+
+.comment .right-container .response-input .right-container {
+    width:calc( 100% - 40px - 28px );
+}
+
+.comment .right-container .response-input .right-container .comment-container {
+    width:100%;
+    background: rgb(100, 128, 179);
+    border-radius: 8px;
+    padding: 5px 10px 5px 10px;
+    word-break: break-word;
+}
+
+.response-input .textarea-respond-to-comment {
+    outline:none;
+    height:42px;
+    width:100%;
+    background: rgb(100, 128, 179);
+    color: white;
+    padding: 5px 10px 5px 10px;
+    border: 1px solid rgb(32, 56, 100);
+    font-size: 15px;
+    border-radius: 8px;
+    line-height:20px;
+    transition: width 0.25s;
+    resize:none;
+    overflow:hidden;
+
+}
+
+::placeholder {
+    color:white;
+}
+
+.textarea {
+    resize: none;
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+}
+
+.read {
+    cursor:default;
+}
+
+.write {
+    cursor:text;
+}
+
+::ng-deep .response .optionsMenu.mat-icon-button {
+    outline:none;
+    width:28px !important;
+    height:28px !important;
+    line-height: 23px !important;
+}
+::ng-deep .response .optionsMenu .mat-button-wrapper {
+    display:flex !important;
+    margin: auto auto !important;
+}
+
+::ng-deep .response .optionsMenu .optionsButton {
+    margin:auto auto !important;
+    font-size:23px !important;
+    width: unset !important;
+    height: unset !important;
+}

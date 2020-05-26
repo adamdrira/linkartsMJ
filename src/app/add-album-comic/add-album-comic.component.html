@@ -1,0 +1,100 @@
+
+
+<div class="add-album-container">
+
+        
+    <form [formGroup]="albumForm" novalidate>
+
+        <mat-form-field class="album-name-input">
+            <mat-label>Nom de l'album</mat-label>
+            <input matInput class="matInput" formControlName="formName" autocomplete="off" required placeholder="Saisir un nom">
+        </mat-form-field>
+
+    </form>
+
+
+    <mat-form-field class="search-input">
+        <mat-label>Rechercher par nom</mat-label>
+        <input matInput placeholder="Nom de l'oeuvre" [(ngModel)]="searchText">
+    </mat-form-field>
+
+
+    <div class="artwork-selector">
+
+        
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                
+
+                <app-thumbnail-album-comic #thumbnailAlbum class="swiper-slide" *ngFor="let item of list_bd_oneshot | filterAlbum : searchText; let i = index"
+                    [primary_description]=primary_description
+                    [author_name]=author_name
+                    [bd_element]=item
+                    format='one-shot'
+                    [now_in_seconds]=now_in_seconds
+                    state="swiper"
+                    
+                    (elementSelected)="add_to_album($event);"
+                    (elementRemoved)="remove_from_album($event);">
+
+                </app-thumbnail-album-comic>
+
+                <app-thumbnail-album-comic #thumbnailAlbum class="swiper-slide" *ngFor="let item of list_bd_series | filterAlbum : searchText; let i = index"
+                    [primary_description]=primary_description
+                    [author_name]=author_name
+                    [bd_element]=item
+                    format='serie'
+                    [now_in_seconds]=now_in_seconds
+                    state="swiper"
+                    
+                    (elementSelected)="add_to_album($event);"
+                    (elementRemoved)="remove_from_album($event);">
+
+                </app-thumbnail-album-comic>
+
+                <div #noResult class="no-result">
+                    <span>Aucun résultat</span>
+                </div>
+                
+
+
+                
+            </div>
+            <!-- Swiper -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <!-- Add Scrollbar -->
+            <div class="swiper-scrollbar"></div>
+        </div>
+
+
+    </div>
+
+
+    <div class="album-preview">
+
+        <div class="album-name">{{albumForm.value.formName}}</div>
+
+        <div *ngIf="album_list.length == 0" class="no-artwork">
+            Aucune œuvre sélectionnée
+        </div>
+
+        <div class="container-comics d-flex flex-wrap grid">
+            
+
+            <ng-template #target>
+            </ng-template>
+
+        </div>
+
+
+    </div>
+
+
+
+    <button mat-raised-button class="submit-button style1" (click)="get_solution();">
+        <span>Valider</span>
+    </button>
+
+    
+</div>

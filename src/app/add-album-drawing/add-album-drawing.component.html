@@ -1,0 +1,154 @@
+
+
+<div class="add-album-container">
+        
+    <form [formGroup]="albumForm" novalidate>
+
+        <mat-form-field class="album-name-input">
+            <mat-label>Nom de l'album</mat-label>
+            <input matInput class="matInput" formControlName="formName" autocomplete="off" maxlength="30" required placeholder="Saisir un nom">
+        </mat-form-field>
+
+    </form>
+
+
+    <mat-form-field class="search-input">
+        <mat-label>Rechercher par nom</mat-label>
+        <input matInput placeholder="Nom de l'oeuvre" [(ngModel)]="searchText" (input)="resize_event();">
+    </mat-form-field>
+
+
+    <div class="artwork-selector">
+
+        <div class="container-selection-drawings">
+            <div class="d-flex flex-wrap" >
+
+                <ng-container >
+                    <app-thumbnail-album-drawing #thumbnailAlbum class="thumbnail-drawing" 
+                    *ngFor="let item of list_drawings_onepage | filterAlbum : searchText; let i = index; let last = last"
+                        [primary_description]=primary_description
+                        [author_name]=author_name
+                        [item]=item
+                        format='one-shot'
+                        [now_in_seconds]=now_in_seconds
+                        state="swiper"
+                        
+                        (elementSelected)="add_to_album($event);"
+                        (elementRemoved)="remove_from_album($event);">
+
+                    </app-thumbnail-album-drawing>
+        
+                    <app-thumbnail-album-drawing #thumbnailAlbum class="thumbnail-drawing" 
+                    *ngFor="let item of list_drawings_artbook | filterAlbum : searchText; let i = index; let last = last"
+                        [primary_description]=primary_description
+                        [author_name]=author_name
+                        [item]=item
+                        format='artbook'
+                        [now_in_seconds]=now_in_seconds
+                        state="swiper"
+                        
+                        (elementSelected)="add_to_album($event);"
+                        (elementRemoved)="remove_from_album($event);">
+                        
+
+                    </app-thumbnail-album-drawing>
+                </ng-container>
+            </div>
+
+            <div #noResult class="no-result">
+                <span>Aucun résultat</span>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="album-preview">
+
+        <div class="album-name">{{albumForm.value.formName}}</div>
+        <div *ngIf="album_list.length == 0" class="no-artwork">
+            Aucune œuvre sélectionnée
+        </div>
+
+        <div class="container-drawings d-flex flex-wrap gridAlbum">
+            <ng-template #target>
+            </ng-template>
+        </div>
+
+    </div>
+
+
+
+        
+    <div class="swiper-container thumbnails-swiper">
+        <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(1);" [ngClass]="{ 'selected' : cover_album_number == 1 }"
+                [pictures_number]=1
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(2);" [ngClass]="{ 'selected' : cover_album_number == 2 }"
+                [pictures_number]=2
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(3);" [ngClass]="{ 'selected' : cover_album_number == 3 }"
+                [pictures_number]=3
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(4);" [ngClass]="{ 'selected' : cover_album_number == 4 }"
+                [pictures_number]=4
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(5);" [ngClass]="{ 'selected' : cover_album_number == 5 }"
+                [pictures_number]=5
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+            <div class="swiper-slide">
+                <app-thumbnail-cover-album-drawing (click)="set_cover_album(6);" [ngClass]="{ 'selected' : cover_album_number == 6 }"
+                [pictures_number]=6
+                [pictures_list]=array_of_selected_safeurls
+                [album_name]=albumForm.value.formName
+                >
+                
+                </app-thumbnail-cover-album-drawing>
+            </div>
+
+        </div>
+        <!-- Swiper -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+
+    <button mat-raised-button class="submit-button style1" (click)="get_solution();">
+        <span>Valider</span>
+    </button>
+
+    
+</div>

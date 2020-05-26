@@ -1,0 +1,146 @@
+
+<div class="comment">
+    
+    <div class="left-container">
+        <div class="img-container">
+            <img [src]=profile_picture>
+        </div>
+    </div>
+
+    <div class="right-container">
+
+        <div class="comment-container">
+            <a class="author-name" href='/account/{{pseudo}}/{{authorid}}'>{{user_name}}</a>&nbsp;
+
+            <ng-container *ngIf="show_see_more_button">
+
+                <textarea #textareaREAD (keydown)="onKeydown($event);resize_textareas();" type="text" autocomplete="off" 
+                class="textarea" [ngClass]="{'read': !edit_comment, 'write': edit_comment}" [readonly]="!edit_comment">{{truncated_comment}}[...]</textarea>
+
+                <!--<span>{{truncated_comment}}[...]</span>&nbsp;-->
+                <br>
+                <span (click)="see_more();" class="see-more">Voir plus ...</span>
+            </ng-container>
+
+            <ng-container *ngIf="!show_see_more_button">
+                
+                <!--<span>{{comment}}</span>&nbsp;-->
+
+                <textarea #textareaREAD (keydown)="onKeydown($event);resize_textareas();" type="text" autocomplete="off" 
+                class="textarea" [ngClass]="{'read': !edit_comment, 'write': edit_comment}" [readonly]="!edit_comment">{{comment}}</textarea>
+
+            </ng-container>
+
+
+        </div>
+        
+        <div  class="options-container">
+            <ng-container *ngIf="likes_checked" >
+                <div class="action">Likes</div>
+                <div class="separator">•</div>
+
+                <div (click)="add_or_remove_like()" class="action">
+                    <div class="likesnumber">{{number_of_likes}}</div>
+                    <div class="like-icon"></div>
+                </div>
+            </ng-container>
+            
+
+            <div class="date-container">
+                {{date_upload_to_show}}
+            </div>
+        </div>
+
+        <div *ngIf="answers_retrieved" class="options-container">
+            <ng-container *ngIf="responses_list.length && !see_responses">
+                <div class="action" (click)="show_responses();">Voir les réponses ({{responses_list.length}})</div>
+            </ng-container>
+            <ng-container *ngIf="!responses_list.length && !see_responses">
+                <div class="action" (click)="show_responses();">Répondre</div>
+            </ng-container>
+            <ng-container *ngIf="see_responses">
+                <div class="action" (click)="show_less_responses();">Voir moins</div>
+            </ng-container>
+        </div>
+        
+
+
+        <ng-container *ngIf="see_responses">
+            <div *ngFor="let item of responses_list;let i=index" class="response">
+                <div class="left-container">
+                    <div class="img-container">
+                        <img [src]=profile_picture_list[i]>
+                    </div>
+                </div>
+                <div class="right-container">
+                    <div class="comment-container">
+                        <a class="author-name" href='/account/{{pseudo_list[i]}}/{{item.authorid}}'>{{author_name_list[i]}}</a>&nbsp;
+            
+                        <ng-container *ngIf="!show_see_more_button">
+                            <textarea #textareaRESPONSE (keydown)="onKeydownResponse($event, i);resize_textareas();" type="text" autocomplete="off" 
+                            class="textarea" [ngClass]="{'read': editable_response!=i, 'write': editable_response==i}" [readonly]="editable_response!=i">{{item.comment}}</textarea>
+
+                            <!--<span>{{item.comment}}</span>&nbsp;-->
+                        </ng-container>
+
+                    </div>
+                    <div class="options-container">
+                        <div class="action">Likes</div>
+                        <div class="separator">•</div>
+            
+                        <div (click)="add_or_remove_answer_like(i)" class="action">
+                            <div  class="likesnumber">{{item.likesnumber}}</div>
+                            <div class="like-icon"></div>
+                        </div>
+            
+                        <div class="date-container">
+                            {{item.date}}
+                        </div>
+                    </div>
+                </div>
+
+                <button *ngIf="!visitor_mode_list[i]" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #commentOptions="matMenu">
+                    <button class="mat-menu-item" mat-menu-item (click)="edit_response(i);"> 	
+                        <mat-icon class="item-icon">edit</mat-icon>
+                        <span>Editer</span>
+                    </button>
+                    <button class="mat-menu-item" (click)="remove_comment_answer(i)" mat-menu-item > 	
+                        <mat-icon class="item-icon" >view_carousel</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+                </mat-menu>
+
+            </div>
+
+
+            <div  class="response-input">
+                
+                <div class="left-container">
+                    <div class="img-container">
+                        <img [src]=profile_picture>
+                    </div>
+                </div>
+                <div class="right-container">
+                    <div class="comment-container">
+                        <textarea #textareaRESPONSEtoCOMMENT (keydown)="onKeydownResponseToComment($event);resize_textareas();" type="text" autocomplete="off" 
+                        class="textarea" placeholder="Ajouter une réponse ..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+        </ng-container>
+
+    </div>
+
+
+    <!--{{comment_id}}
+    {{user_name}}
+    {{primary_description}}-->
+
+</div>
+
+

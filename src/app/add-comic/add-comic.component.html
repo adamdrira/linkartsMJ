@@ -1,0 +1,229 @@
+
+
+        <!--Forms : adding cartoon strip-->
+        <div class="steps">
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                <div class="step">
+                    <span>1</span>
+                </div>
+                <span>Présentation du projet</span>
+            </div>
+            <div class="horizontal-line">
+            </div>
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                <div class="step">
+                    <span>2</span>
+                </div>
+                <span>Téléchargement</span>
+            </div>
+        </div>
+
+
+
+        <!--*****************************************************************************-->
+        <!--*****************************************************************************-->
+        <!--***************f00 : CATEGORY 0 : CARTOON STRIP - STEP 0*********************-->
+        <!--*****************************************************************************-->
+        <!--*****************************************************************************-->
+        <div *ngIf="REAL_step>=0 || CURRENT_step==0" [hidden]="CURRENT_step!=0">
+
+
+            <button mat-raised-button class="step-back-button style0" (click)="back_home();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+
+            <!--<div class="step-back-button" (click)="back_home();">
+                <div class="icon-container"></div>
+                <span>Retour</span>
+            </div>-->
+            
+            <form [formGroup]="f00" novalidate>
+                <div class="form-container">
+                    <div class="form-container-name">
+                        <span>Présentation du projet</span>
+                    </div>
+
+                    <div class="form-container-flex">
+                        <div class="flex-left-container">
+
+                            <!--******************************************************-->
+                            <!--Titre-->
+                            <!--******************************************************-->
+                            <div class="form-group">
+                                <label for="artworkTitle">Titre</label>
+                                <input type="text" formControlName="f00Title" class="form-control" placeholder="Nom de l'œuvre (30 caractères max)" autocomplete="off" required/>
+                                <p *ngIf="!f00Title.valid  && f00DisplayErrors">Veuillez saisir un titre valide</p>
+                            </div>
+                            <!--******************************************************-->
+                            <!--Format-->
+                            <!--******************************************************-->
+                            <div class="form-group">
+                                <label for="artworkTitle">Format</label>
+                                <select formControlName="f00Format" class="f00select1" style="height: 100%;">
+                                    <option value="" disabled="true">Sélectionner un format</option>
+                                    <option label="One-shot">One-shot</option>
+                                    <option label="Serie">Série</option>
+                                </select>
+                                <p *ngIf="f00Format.value == '' && f00DisplayErrors">Veuillez sélectionner un format</p>
+                                <!--<p>Attention, changer le format annulera toute la sélection de l'étape 2.</p>-->
+                            </div>
+                            <div class="form-group" *ngIf="f00Format.value == 'Série'" >
+                                <label>Titre du premier chapitre</label>
+                                <input type="text" formControlName="f00SerieFirstChapter" (keyup)="update_view();" class="form-control" placeholder="Titre du premier chapitre (30 caractères max)" autocomplete="off" required/>
+                                <p *ngIf="!f00SerieFirstChapter.valid && f00DisplayErrors">Veuillez saisir un titre valide</p>
+                            </div>
+                            <!--******************************************************-->
+                            <!--Catégorie-->
+                            <!--******************************************************-->
+                            <div class="form-group">
+                                <label for="artworkTitle">Style</label>
+                                <!--Dropdown de opened_category, puis values, puis dropdown 0, titres-->
+                                <select formControlName="f00Category" class="f00select0" placeholder="Sélectionner une catégorie" style="height: 100%;">
+                                    <option value="" hidden disabled="true">Sélectionner un style</option>
+                                    <option> BD </option>
+                                    <option> Comics </option>
+                                    <option> Manga </option>
+                                    <option> Webtoon </option>
+                                </select>
+                                <p *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</p>
+                                <p *ngIf="f00Category.value == '' && f00DisplayErrors">Veuillez sélectionner un style</p>
+                            </div>
+                            <!--******************************************************-->
+                            <!--Genres-->
+                            <!--******************************************************-->
+                            <div class="form-group">
+                                <label for="artworkTitle">Genres</label>
+                                <select formControlName="f00Tags" class="multipleSelect" placeholder="Sélectionner au moins un genre (max : 3)" multiple name="language">
+                                    <option value="Action">Action</option>
+                                    <option value="Aventure">Aventure</option>
+                                    <option value="Esotérisme">Esotérisme</option>
+                                    <option value="Fantaisie">Fantaisie</option>
+                                    <option value="Fantastique">Fantastique</option>
+                                    <option value="Histoire">Histoire</option>
+                                    <option value="Horreur">Horreur</option>
+                                    <option value="Humour">Humour</option>
+                                    <option value="Kids">Kids</option>
+                                    <option value="Kodomo">Kodomo</option>
+                                    <option value="Philosophie">Philosophie</option>
+                                    <option value="Policier">Policier</option>
+                                    <option value="Religion">Religion</option>
+                                    <option value="Science-fiction">Science-fiction</option>
+                                    <option value="Seinen">Seinen</option>
+                                    <option value="Shojo">Shojo</option>
+                                    <option value="Shonen">Shonen</option>
+                                    <option value="Thriller">Thriller</option>
+                                    <option value="Western">Western</option>
+                                </select>
+                                <p *ngIf="!tagsValidator && f00DisplayErrors">Veuillez sélectionner au moins un genre</p>
+                            </div>
+
+                        </div>
+                        <div class="flex-right-container">
+                            <!--******************************************************-->
+                            <!--Description-->
+                            <!--******************************************************-->
+                            <div class="form-group">
+                                <label for="artworkDescription">Description</label>
+                                <textarea type="text" formControlName="f00Description" maxlength="500" style="height: 100px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
+                                </textarea>
+                                <p *ngIf="!f00Description.valid && f00DisplayErrors">Veuillez saisir une description valide</p>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Monétisation</label>
+                                <div class="monetisation-container">
+                                    <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
+                                        Je souhaite monétiser mon œuvre
+                                    </mat-slide-toggle>
+                                    &nbsp; 
+                                    &nbsp; 
+                                    <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                
+
+                <div class="form-container">
+                    <div class="form-container-name">
+                        <span>Edition de la miniature</span>
+                    </div>
+                    <div class="form-container-data">
+
+
+                        <!--******************************************************-->
+                        <!--Miniature-->
+                        <!--******************************************************-->
+
+                        <div class="form-group" style="text-align:center;">
+
+                            <app-uploader-bd-cover
+
+                                author_name={{author_name}} 
+                                primary_description={{primary_description}}
+                                [profile_picture]=profile_picture
+
+                                name={{f00.value.f00Title}} 
+                                description={{f00.value.f00Description}}
+                                category={{f00.value.f00Category}}
+                                format={{f00.value.f00Format}}
+                            ></app-uploader-bd-cover>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                
+                <button mat-raised-button class="submit-button style1" (click)="validateForm00();">
+                    <span>Valider</span>
+                </button>
+
+            </form>
+
+            
+        </div>
+
+        
+
+
+        <!--*****************************************************************************-->
+        <!--***********f01 : CATEGORY 0 : CARTOON STRIP - STEP 1 - One-shot**************-->
+        <!--*****************************************************************************-->
+        <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='One-shot' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='One-shot'">
+            
+            <button mat-raised-button class="step-back-button style0" (click)="step_back();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+
+            <app-swiper-upload-oneshot [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
+
+
+        </div>
+
+
+        <!--*****************************************************************************-->
+        <!--***********f01 : CATEGORY 0 : CARTOON STRIP - STEP 1 - Série**************-->
+        <!--*****************************************************************************-->
+        <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='Série' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='Série'">
+            
+            <button mat-raised-button class="step-back-button style0" (click)="step_back();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+            
+            <app-form-serie [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
+
+
+        </div>
+
+
+
