@@ -1,0 +1,22 @@
+<div class="stories-bar swiper-container">
+    <div *ngIf="users_retrieved" class="swiper-wrapper">
+
+        <div *ngFor="let item of list_of_profile_pictures;let i=index" class="swiper-slide">
+            <div class="story">
+
+
+                <div class="img-container" (click)="watch_story(i)">
+                        <img class="img" [src]="item">
+                </div>
+
+                <div class="author" *ngIf="i==0" (click)="watch_story(i)">Ma story</div>
+
+                <div class="author" *ngIf="i>0"  (click)="watch_story(i)">{{list_of_author_names[i]}}</div>
+        </div>
+
+    </div>
+    
+</div>
+<!-- Add Arrows -->
+<div class="swiper-button-prev"></div>
+<div class="swiper-button-next"></div>

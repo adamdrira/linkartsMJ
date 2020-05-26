@@ -1,0 +1,113 @@
+<ng-container *ngIf=" list_of_new_contents_sorted">
+    <div *ngFor="let item of list_of_new_contents; let i = index">
+        new
+        <div *ngIf="item.drawing_id == null && item.writing_id == null">
+            <div *ngIf="item.chaptersnumber > 0 ">
+                <app-thumbnail-comics 
+                    [item]=item
+                    format='serie'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-comics> 
+            </div>
+            <div *ngIf="item.chaptersnumber == null">
+                <app-thumbnail-comics 
+                    [item]=item
+                    format='one-shot'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-comics> 
+            </div>
+        </div>
+
+        <div *ngIf="item.drawing_id == null && item.bd_id == null">
+                <app-thumbnail-writing
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>     
+        </div>
+
+        <div *ngIf="item.bd_id == null && item.writing_id == null">
+            <div *ngIf="item.pagesnumber > 0 ">
+                <app-thumbnail-drawing
+                    [item]=item
+                    format='artbook'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing> 
+            </div>
+            <div *ngIf="item.pagesnumber == null">
+                <app-thumbnail-drawing 
+                    [item]=item
+                    format='one-shot'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing> 
+            </div>
+        </div>
+
+    </div>
+
+
+</ng-container>
+
+<ng-container *ngIf=" list_of_contents_sorted">
+    <div *ngFor="let item of list_of_contents; let i = index">
+        <div *ngIf="item.drawing_id == null && item.writing_id == null">
+            <div *ngIf="item.chaptersnumber > 0 ">
+                <app-thumbnail-comics 
+                    [item]=item
+                    format='serie'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-comics> 
+            </div>
+            <div *ngIf="item.chaptersnumber == null">
+                <app-thumbnail-comics 
+                    [item]=item
+                    format='one-shot'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-comics> 
+            </div>
+        </div>
+
+        <div *ngIf="item.drawing_id == null && item.bd_id == null">
+                <app-thumbnail-writing
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>     
+        </div>
+
+        <div *ngIf="item.bd_id == null && item.writing_id == null">
+            <div *ngIf="item.pagesnumber > 0 ">
+                <app-thumbnail-drawing
+                    [item]=item
+                    format='artbook'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing> 
+            </div>
+            <div *ngIf="item.pagesnumber == null">
+                <app-thumbnail-drawing 
+                    [item]=item
+                    format='one-shot'
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-drawing> 
+            </div>
+        </div>
+
+    </div>
+
+
+</ng-container>
+
+
+<ng-container *ngIf=" list_of_contents_sorted">
+    <button *ngIf="!show_more" (click)="see_more()">see more contents</button>
+    <ng-container *ngIf=" show_more">
+        <app-subscribings-see-more
+            [list_of_users]=list_of_users
+            [now_in_seconds]=now_in_seconds
+            [last_timestamp]=last_timestamp
+            ></app-subscribings-see-more>
+    </ng-container>
+</ng-container>
+ 
+<!--<ng-container *ngIf=" list_of_contents_sorted">
+    <button (click)="see_more_contents()">see_more_contents</button>
+</ng-container>-->
+ 
