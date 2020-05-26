@@ -1,0 +1,40 @@
+<div class="button-container" *ngIf="!afficherpreview">
+    <label>
+        <div class="select-button">
+            <span>Télécharger l'écrit en pdf</span>
+        </div>
+        <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+    </label>
+
+    
+</div>
+
+
+<div class="name-container" *ngIf="afficherpreview">
+    <span><b>Fichier sélectionné :</b> {{ uploader.queue[0]?.file?.name }}</span>
+
+    <ng-container *ngIf="!uploader.queue[0].isSuccess">
+
+        <button mat-raised-button class="button style1"
+            (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || confirmation_for_extension">
+            <span>Valider</span> 
+        </button>
+
+        <button mat-raised-button class="button style0"
+            (click)="remove_beforeupload(uploader.queue[0]);">
+            <span class="">Recommencer</span> 
+        </button>
+    </ng-container>
+
+    <ng-container *ngIf="uploader.queue[0].isSuccess">
+        <button mat-raised-button class="button style0"
+            (click)="remove_afterupload(uploader.queue[0]);">
+        <span class="">Recommencer</span> 
+        </button>
+    </ng-container>
+
+</div>
+
+<div *ngIf="confirmation_for_extension">Veuillez sélectionner un fichier sous format pdf</div>
+
+
