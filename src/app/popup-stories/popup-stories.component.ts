@@ -59,12 +59,10 @@ export class PopupStoriesComponent implements OnInit {
         el: '.swiper-pagination',
       },
       on: {
-        slideNextTransitionEnd: function () {
+        slideChange: function () {
           THIS.refresh_stories_status();
-        },
-        slidePrevTransitionEnd: function () {
-          THIS.refresh_stories_status();
-        },
+          THIS.cd.detectChanges();
+        }
       },
       navigation: {
         nextEl: '.swiper-container-stories .swiper-button-next',
@@ -73,11 +71,36 @@ export class PopupStoriesComponent implements OnInit {
     });
 
 
-    let index_debut = 3;
+
+
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /*******************************AAAAAAAAAADDDDDDDDDDDAAAAAAAAAAMMMMMMMMMMMMMM************************************* */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /**ICI ON FIXE LES INDEX DE DEBUT POUR CHAQUE STORY, J'AI MIS 3 PARTOUT */
+    let index_debut = 2;
     for(let i = 0; i < this.data.list_of_users.length ; i++ ) {
       this.createStory( this.data.list_of_users[i], index_debut );
     }
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /*******************************AAAAAAAAAADDDDDDDDDDDAAAAAAAAAAMMMMMMMMMMMMMM************************************* */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+    /***************************************************************************************************************** */
+
+
+
     this.refresh_stories_status();
+
+
+    this.swiper.slideTo( this.data.index_id_of_user, false, false );
+    this.refresh_stories_status();
+
 
   }
 
@@ -121,15 +144,18 @@ export class PopupStoriesComponent implements OnInit {
   }
 
   prev_story() {
+
     if( this.swiper.activeIndex == 0 ) {
       return;
     }
     this.swiper.slideTo( this.swiper.activeIndex - 1 );
     this.refresh_stories_status();
+
     this.cd.detectChanges();
   }
 
   refresh_stories_status() {
+
     for( let i = 0; i < this.componentRef.length; i ++ ) {
       this.componentRef[ i ].instance.currently_readed = ( i == this.swiper.activeIndex );
     }

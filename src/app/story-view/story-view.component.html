@@ -1,0 +1,53 @@
+
+
+<div #swiperStory class="swiper-container-story">
+
+    <div class="header author-container">
+        <!--********************-->
+        <!--Author container-->
+        <!--********************-->
+        <img [src]="profile_picture">
+        <span class="author-name">{{author_name}}</span>
+
+        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="storyOptions">
+            <mat-icon class="optionsButton">more_horiz</mat-icon>
+        </button>
+        <mat-menu  #storyOptions="matMenu">
+            <button class="mat-menu-item" mat-menu-item> 	
+                <mat-icon class="item-icon">edit</mat-icon>
+                <span>Modifier les informations</span>
+            </button>
+        </mat-menu>
+
+    </div>
+    <div class="story-counter" *ngIf="swiper">
+
+        <div class="story-bar" *ngFor="let item of pictures_links; let i = index"
+        [ngClass]="{'opened': swiper.activeIndex > i }">
+    
+            <div #storyBarFill [ngStyle]="{'width': ( -10*(timeLeft-10) )+'%'}" *ngIf="swiper.activeIndex == i" class="story-bar-fill">
+            </div>
+
+        </div>
+        
+    </div>
+    <div class="swiper-wrapper">
+
+        <div *ngFor="let item of pictures_links" class="swiper-slide">
+
+            <img [src]=item>
+            
+            <div class="left-absolute-container" (click)="previous_slide();"></div>
+            <div class="right-absolute-container" (click)="next_slide();"></div>
+
+        </div>
+
+
+    </div>   
+    
+    <div class="swiper-pause" (click)="clickPause();">
+        <div class="pause-text" *ngIf="!paused">Mettre en pause</div>
+        <div class="pause-text" *ngIf="paused">Reprendre</div>
+    </div>
+
+</div>
