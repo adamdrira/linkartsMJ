@@ -34,8 +34,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   author_name:string;
   primary_description:string;
   pseudo:string='';
-  authorid:number=0;
-
   /*Inputs*/
   file_name: string;
   title: string;
@@ -75,7 +73,6 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.primary_description=r[0].primary_description;
       this.pseudo = r[0].nickname;
-      this.authorid=r[0].authorid;
     });
 
     if(this.category=="comics"){
