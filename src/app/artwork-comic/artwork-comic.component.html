@@ -312,7 +312,11 @@
                                 <img [src]="profile_picture">
                             </div>
                             <div class="right-container">
-                                <span class="author-name" *ngIf="pseudo!=''">{{user_name}}</span>
+                                <span class="author-name" *ngIf="pseudo!=''">
+                                    <a href="/account/{{pseudo}}/{{authorid}}">
+                                        {{user_name}}
+                                    </a>
+                                </span>
                                 <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
                             </div>
                     </div>

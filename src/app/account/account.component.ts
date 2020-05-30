@@ -201,6 +201,18 @@ export class AccountComponent implements OnInit {
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    
+    
+    this.Profile_Edition_Service.get_user_id_by_pseudo( this.pseudo ).subscribe(l=>{
+      /*alert(l);
+      if( l != this.user_id ) {
+        this.router.navigateByUrl('/');
+      }*/
+    });
+
+
+
+
     this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
@@ -268,7 +280,7 @@ export class AccountComponent implements OnInit {
     });
     
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-      if (this.pseudo == l[0].nickname){
+      if (this.pseudo == l[0].nickname && this.user_id == l[0].user_id){
         this.mode_visiteur = false;
         this.mode_visiteur_added = true;
       }

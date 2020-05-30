@@ -1,8 +1,9 @@
 .global-container {
     display:flex;
-    height:330px;
-    width: 850px;
-    border-radius: 5px;
+    
+    width: 950px;
+    padding:20px;
+    border-radius: 10px;
     box-shadow: 0px 4px 10px 1px #cccccc;
     overflow: hidden;
 }
@@ -13,9 +14,18 @@
 }
 
 .global-container > .left-container img {
-    height:100%;
-    
+    width:400px !important;
+    height:572.4px !important;
+    border-radius:10px;
+    object-fit: cover;
 }
+
+.global-container > .left-container.drawing img {
+    width:400px !important;
+    height:unset !important;
+    object-fit: unset !important;
+}
+
 
 
 .stats-container {    
@@ -101,8 +111,8 @@
 
 
 .global-container > .right-container {
-    height: 100%;
     overflow: overlay;
+    cursor:default;
     display:flex;
     flex-direction: column;
     width: -webkit-fill-available;
@@ -119,6 +129,7 @@
 
 .global-container > .right-container .name span {
     line-height: 19px;
+    font-size: 22px;
     padding-top: 5px;
     word-break: break-word;
     display: -webkit-box;
@@ -134,28 +145,40 @@
     margin-left: auto;
 }
 
-.global-container > .right-container .name .buttons-container .button {
+.global-container > .right-container .name .buttons-container button {
     outline: none;
-    padding: unset !important;
+    //padding: unset !important;
+    margin-left:5px;
     box-shadow: unset !important;
     min-width: unset;
-    width: 35px;
+    width: 40px;
     min-height: unset;
-    height: 35px;
+    height: 40px;
     border-radius: 50%;
 }
 
+.mat-menu-item {
+    outline:none !important;
+}
+
+
+.global-container > .right-container .name .buttons-container button mat-icon {
+    margin:auto auto !important;
+    font-size: 35px;
+    width: 40px;
+}
+
 .global-container > .right-container .name .button0 {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     margin:auto auto;
     background-color: black;
     -webkit-mask:  url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
 }
 .global-container > .right-container .name .button1 {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     margin:auto auto;
     background-color: black;
     -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
@@ -170,10 +193,10 @@
 }
 
 .author-container .left-container {
-    width: 32px;
-    height: 32px;
-    min-width: 32px !important;
-    min-height: 32px !important;
+    width: 40px;
+    height: 40px;
+    min-width: 40px !important;
+    min-height: 40px !important;
     margin: 0px 5px auto 0px;
 }
 
@@ -191,8 +214,8 @@
     margin: 0px 10px auto 5px;
 }
 .author-container .right-container span.author-name {
-    font-size: 16px;
-    line-height: 18px;
+    font-size: 17px;
+    line-height: 22px;
     font-weight:bold;
     white-space: nowrap;
     overflow: hidden !important;
@@ -200,7 +223,7 @@
 }
 
 .author-container .right-container span.author-description {
-    font-size:15px;
+    font-size:14px;
     line-height: 20px;
     white-space: nowrap;
     overflow: hidden !important;
@@ -216,7 +239,7 @@
 }
 
 .verso-type span {
-    font-size:14px;
+    font-size:15px;
 }
     
     
@@ -231,7 +254,7 @@
 }
 
 .categories-container span {
-    font-size: 14px;
+    font-size:15px;
 }
 
 
@@ -263,7 +286,7 @@
 }
 
 .date-container span {
-    font-size:13px;
+    font-size:15px;
 }
 
 

@@ -33,6 +33,9 @@ export class ThumbnailArtworkComponent implements OnInit {
   profile_picture:SafeUrl;
   author_name:string;
   primary_description:string;
+  pseudo:string='';
+  authorid:number=0;
+
   /*Inputs*/
   file_name: string;
   title: string;
@@ -71,6 +74,8 @@ export class ThumbnailArtworkComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.primary_description=r[0].primary_description;
+      this.pseudo = r[0].nickname;
+      this.authorid=r[0].authorid;
     });
 
     if(this.category=="comics"){

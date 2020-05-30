@@ -1,6 +1,6 @@
 <div *ngIf="thumbnail_picture_received" class="global-container">
 
-    <div class="left-container">
+    <div class="left-container" [ngClass]="{'drawing': category=='drawing' }">
         <img [src]="thumbnail_picture">
         
         <!--********************-->
@@ -31,17 +31,17 @@
         <div class="name">
             <span>{{title}}</span>
             <div class="buttons-container">
-                
-                <button mat-raised-button class="button">
+
+                <button mat-icon-button>
                     <div class="button0"></div>
                 </button>
-                <button mat-raised-button class="button">
+                <button mat-icon-button>
                     <div class="button1"></div>
                 </button>
-
-                <button mat-raised-button class="button" [matMenuTriggerFor]="artworkOptions">
+                <button mat-icon-button [matMenuTriggerFor]="artworkOptions">
                     <mat-icon>more_horiz</mat-icon>
                 </button>
+
                 <mat-menu  #artworkOptions="matMenu">
                     <button class="mat-menu-item" mat-menu-item> 	
                         <mat-icon class="item-icon">monetization_on</mat-icon>
