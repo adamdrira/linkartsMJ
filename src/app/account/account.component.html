@@ -123,14 +123,14 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">whatshot</mat-icon>
                     Tendances (4)
                 </button>
-                <!--<button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
+                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">thumb_up</mat-icon>
                     J'aime (5,212)
                 </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">favorite</mat-icon>
                     J'adore (4,304)
-                </button>-->
+                </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 8 }" (click)="open_section(8);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
@@ -254,135 +254,132 @@
                     <div class="albums-filter">
                         <!-- Titres des albums bd-->
                         <ng-container *ngIf="opened_category==0 && list_albums_bd_added">
-                            <div *ngFor="let element of list_titles_albums_bd; let i=index">
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_bd_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
-                                (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                                    
 
-                                    <!--MODE MON COMPTE-->
-                                    <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
-                                    
-                                    <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 )">{{element}} 
-                                        <button mat-icon-button class="optionsMenu"  [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                            <button mat-raised-button *ngFor="let element of list_titles_albums_bd; let i=index" class="content-action text-center" 
+                            (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
+                                
+
+                                <!--MODE MON COMPTE-->
+                                <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
+                                
+                                <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 )">{{element}} 
+                                    <button mat-icon-button class="optionsMenu"  [matMenuTriggerFor]="albumOptions">
+                                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu  #albumOptions="matMenu">
+                                        <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,true)"> 	
+                                            <mat-icon class="item-icon">visibility_off</mat-icon>
+                                            <span>Rendre privé</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
-
-                                    <div *ngIf="!mode_visiteur && i>2">{{element}}
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                                        <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,false)"> 	
+                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                            <span>Rendre public</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='public'" mat-menu-item (click)="change_bd_album_status(i,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='private'" mat-menu-item (click)="change_bd_album_status(i,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                            <button class="mat-menu-item" mat-menu-item (click)="remove_bd_album(i)"> 	
-                                                <mat-icon class="item-icon">cancel</mat-icon>
-                                                <span>Supprimer cet album</span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
+                                    </mat-menu>
+                                </div>
+
+                                <div *ngIf="!mode_visiteur && i>2">{{element}}
+                                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
+                                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu  #albumOptions="matMenu">
+                                        <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='public'" mat-menu-item (click)="change_bd_album_status(i,true)"> 	
+                                            <mat-icon class="item-icon">visibility_off</mat-icon>
+                                            <span>Rendre privé</span>
+                                        </button>
+                                        <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='private'" mat-menu-item (click)="change_bd_album_status(i,false)"> 	
+                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                            <span>Rendre public</span>
+                                        </button>
+                                        <button class="mat-menu-item" mat-menu-item (click)="remove_bd_album(i)"> 	
+                                            <mat-icon class="item-icon">cancel</mat-icon>
+                                            <span>Supprimer cet album</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
 
 
-                                    <!--MODE VISITEUR-->
-                                    <div *ngIf="mode_visiteur && i==0">
-                                            {{element}}                      
-                                    </div>
-                                    <div *ngIf="i==1 || i==2">
-                                        <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='standard'">
-                                            {{element}}
-                                        </div>                              
-                                    </div>
-                                    <div *ngIf="i>2">
-                                        <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='public'">
-                                            {{element}}
-                                        </div>                              
-                                    </div>
+                                <!--MODE VISITEUR-->
+                                <div *ngIf="mode_visiteur && i==0">
+                                        {{element}}                      
+                                </div>
+                                <div *ngIf="i==1 || i==2">
+                                    <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='standard'">
+                                        {{element}}
+                                    </div>                              
+                                </div>
+                                <div *ngIf="i>2">
+                                    <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='public'">
+                                        {{element}}
+                                    </div>                              
+                                </div>
 
 
-                                </button>
-                            </div>
+                            </button>
 
                         </ng-container>
                         <!-- Titres des albums drawing-->
                         <ng-container *ngIf="opened_category==1 && list_albums_drawings_added">
-                            <div *ngFor="let element of list_titles_albums_drawings; let i=index">
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_drawing_albums_status[i-1]!=='hidden')" class="content-action text-center" 
-                                (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
+                            <button mat-raised-button *ngFor="let element of list_titles_albums_drawings; let i=index" class="content-action text-center" 
+                            (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
 
 
-                                    <!--MODE MON COMPTE-->
-                                    <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
+                                <!--MODE MON COMPTE-->
+                                <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
 
-                                    <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 ) ">{{element}}
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                                <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 ) ">{{element}}
+                                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
+                                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu  #albumOptions="matMenu">
+                                        <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,true)"> 	
+                                            <mat-icon class="item-icon">visibility_off</mat-icon>
+                                            <span>Rendre privé</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
-
-                                    <div *ngIf="!mode_visiteur && i>2">{{element}}
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                                        <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,false)"> 	
+                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                            <span>Rendre public</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='public'" mat-menu-item (click)="change_drawing_album_status(i,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='private'" mat-menu-item (click)="change_drawing_album_status(i,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                            <button class="mat-menu-item" mat-menu-item (click)="remove_drawing_album(i)"> 	
-                                                <mat-icon class="item-icon">cancel</mat-icon>
-                                                <span>Supprimer cet album</span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
+                                    </mat-menu>
+                                </div>
+
+                                <div *ngIf="!mode_visiteur && i>2">{{element}}
+                                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
+                                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu  #albumOptions="matMenu">
+                                        <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='public'" mat-menu-item (click)="change_drawing_album_status(i,true)"> 	
+                                            <mat-icon class="item-icon">visibility_off</mat-icon>
+                                            <span>Rendre privé</span>
+                                        </button>
+                                        <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='private'" mat-menu-item (click)="change_drawing_album_status(i,false)"> 	
+                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                            <span>Rendre public</span>
+                                        </button>
+                                        <button class="mat-menu-item" mat-menu-item (click)="remove_drawing_album(i)"> 	
+                                            <mat-icon class="item-icon">cancel</mat-icon>
+                                            <span>Supprimer cet album</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
 
 
-                                    <!--MODE VISITEUR-->
-                                    <div *ngIf="mode_visiteur && i==0">
-                                            {{element}}                      
-                                    </div>
-                                    <div *ngIf="i==1 || i==2">
-                                        <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='standard'">
-                                            {{element}}
-                                        </div>                              
-                                    </div>
-                                    <div *ngIf="i>2">
-                                        <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='public'">
-                                            {{element}}
-                                        </div>                              
-                                    </div>
+                                <!--MODE VISITEUR-->
+                                <div *ngIf="mode_visiteur && i==0">
+                                        {{element}}                      
+                                </div>
+                                <div *ngIf="i==1 || i==2">
+                                    <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='standard'">
+                                        {{element}}
+                                    </div>                              
+                                </div>
+                                <div *ngIf="i>2">
+                                    <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='public'">
+                                        {{element}}
+                                    </div>                              
+                                </div>
 
-                                </button>
-                            </div>
+                            </button>
 
 
                         </ng-container>
@@ -390,35 +387,34 @@
 
                         <!-- Titres des albums writing-->
                         <ng-container *ngIf="opened_category==2">
-                            <div *ngFor="let element of list_titles_albums_writings; let i=index">
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_writings_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
-                                (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
 
-                                    <!--MODE MON COMPTE-->
-                                    <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
-                                    
-                                    <div *ngIf="!mode_visiteur && i>0">{{element}}
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                            <button mat-raised-button *ngFor="let element of list_titles_albums_writings; let i=index" class="content-action text-center" 
+                            (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
+
+                                <!--MODE MON COMPTE-->
+                                <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
+                                
+                                <div *ngIf="!mode_visiteur && i>0">{{element}}
+                                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
+                                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu  #albumOptions="matMenu">
+                                        <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='public'" mat-menu-item (click)="change_writing_album_status(i-1,true)"> 	
+                                            <mat-icon class="item-icon">visibility_off</mat-icon>
+                                            <span>Rendre privé</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='public'" mat-menu-item (click)="change_writing_album_status(i-1,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='private'" mat-menu-item (click)="change_writing_album_status(i-1,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                            <button class="mat-menu-item" mat-menu-item (click)="remove_writing_album(i-1)"> 	
-                                                <mat-icon class="item-icon">cancel</mat-icon>
-                                                <span>Supprimer cet album</span>
-                                            </button>
-                                        </mat-menu>
-                                    </div>
+                                        <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='private'" mat-menu-item (click)="change_writing_album_status(i-1,false)"> 	
+                                            <mat-icon class="item-icon">visibility</mat-icon>
+                                            <span>Rendre public</span>
+                                        </button>
+                                        <button class="mat-menu-item" mat-menu-item (click)="remove_writing_album(i-1)"> 	
+                                            <mat-icon class="item-icon">cancel</mat-icon>
+                                            <span>Supprimer cet album</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
 
-                                </button>
-                            </div>
+                            </button>
 
                         </ng-container>
 
