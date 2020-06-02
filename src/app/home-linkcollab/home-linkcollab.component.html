@@ -1,0 +1,108 @@
+
+
+
+<div class="container-fluid">
+    <main role="main">
+      
+      
+        <div class="logos-container">
+
+            <div class="logo">
+                <div class="image1"></div>
+                <span>
+                    Trouvez les collaborateurs idéaux pour réalisez vos projets les plus ambitieux.
+                </span>
+            </div>
+            <div class="logo">
+                <div class="image2"></div>
+                <span>
+                    Avancez  seul ou en équipe jusqu’à vous ouvrir les portes des maisons d’édition.
+                </span>
+            </div>
+
+            <div class="logo">
+                <div class="image3"></div>
+                <span>
+                    Réalisez ou soumettez des demandes de prestations de services reliées à notre univers artistique.
+                </span>
+            </div>
+
+
+        </div>
+
+
+        <div class="panel-controller">
+            <div class="left-container">
+                <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
+                    Collaborations bénévoles
+                </div>
+                <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
+                    Collaborations rémunérées
+                </div>
+            </div>
+
+
+            <div class="right-container">
+
+                <div class="dropdowns-container" *ngIf="subcategory==0">
+                    <select name="somename" class="SelectBox1" placeholder="Type" style="height: 100%;">
+                        <option disabled selected value="Offre ou demande"></option>
+                        <option>Offres</option>
+                        <option>Demandes</option>
+                    </select>
+                    <select name="somename" class="SelectBox2" placeholder="Projet" style="height: 100%;">
+                        <option disabled selected value="Projet"></option>
+                        <option>Projet manga</option>
+                        <option>Projet tacos</option>
+                    </select>
+                    <select name="somename" class="SelectBox3" placeholder="Auteur" style="height: 100%;">
+                        <option disabled selected value="Auteur"></option>
+                        <option>Scénariste</option>
+                        <option>Dessinateur</option>
+                    </select>
+                    <select name="somename" class="SelectBox4" placeholder="Cible" style="height: 100%;">
+                        <option disabled selected value="Cible"></option>
+                        <option>Scénariste</option>
+                        <option>Dessinateur</option>
+                    </select>
+                    
+                </div>
+
+                <div class="dropdowns-container" *ngIf="subcategory==1">
+                    <select name="somename" class="SelectBox1" placeholder="Type" style="height: 100%;">
+                        <option disabled selected value="Offre ou demande"></option>
+                        <option>Offres</option>
+                        <option>Demandes</option>
+                    </select>
+                    <select name="somename" class="SelectBox2" placeholder="Projet" style="height: 100%;">
+                        <option disabled selected value="Projet"></option>
+                        <option>Projet manga</option>
+                        <option>Projet tacos</option>
+                    </select>
+                    <select name="somename" class="SelectBox3" placeholder="Auteur" style="height: 100%;">
+                        <option disabled selected value="Auteur"></option>
+                        <option>Scénariste</option>
+                        <option>Dessinateur</option>
+                    </select>
+                    <select name="somename" class="SelectBox4" placeholder="Cible" style="height: 100%;">
+                        <option disabled selected value="Cible"></option>
+                        <option>Scénariste</option>
+                        <option>Dessinateur</option>
+                    </select>
+                    
+                </div>
+                
+
+                
+
+
+            </div>
+        </div>
+
+        
+        <!--<app-media-top-offers></app-media-top-offers>-->
+
+        
+
+    </main>
+</div>
