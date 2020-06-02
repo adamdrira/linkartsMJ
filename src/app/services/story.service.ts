@@ -23,11 +23,11 @@ export class Story_service {
   
 
   get_stories_by_user_id(id_user){
-   return this.httpClient.get(`http://localhost:4600/routes/get_stories_by_user_id/${id_user}`, {withCredentials:true
-  }).pipe(map(information=>{
-       return information
-  }));
- };
+    return this.httpClient.get(`http://localhost:4600/routes/get_stories_by_user_id/${id_user}`, {withCredentials:true
+      }).pipe(map(information=>{
+          return information
+      }));
+  };
 
  retrieve_story(file_name){
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_story/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
@@ -35,10 +35,40 @@ export class Story_service {
     }));
 };
 
-check_if_story_already_seen(id){
-    return this.httpClient.post('http://localhost:4600/routes/check_if_story_already_seen', {id: id}, {withCredentials:true}).pipe(map(information=>{
+check_if_story_already_seen(id_story){
+    return this.httpClient.post('http://localhost:4600/routes/check_if_story_already_seen', {id_story: id_story}, {withCredentials:true}).pipe(map(information=>{
     return information;
   }));
+}
+
+check_if_all_stories_seen(id_user){
+  return this.httpClient.get(`http://localhost:4600/routes/check_if_all_stories_seen/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+        return information
+    }));
+};
+
+get_total_number_of_views(authorid){
+  return this.httpClient.get(`http://localhost:4600/routes/get_total_number_of_views/${authorid}`, {withCredentials:true}).pipe(map(information=>{
+        return information
+    }));
+};
+
+get_last_seen_story(authorid){
+  return this.httpClient.post('http://localhost:4600/routes/get_last_seen_story', {authorid: authorid}, {withCredentials:true}).pipe(map(information=>{
+    return information;
+  }));
+}
+
+add_view(authorid,id_story,bool){
+  return this.httpClient.post('http://localhost:4600/routes/add_view', {authorid: authorid, id_story:id_story, bool:bool}, {withCredentials:true}).pipe(map(information=>{
+    return information;
+  }));
+}
+
+delete_story(id:number){
+  return this.httpClient.delete(`http://localhost:4600/routes/delete_story/${id}`, {withCredentials:true}).pipe(map(information=>{
+        return information
+    }));
 }
   
 

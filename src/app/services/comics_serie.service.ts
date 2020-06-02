@@ -170,7 +170,8 @@ export class BdSerieService {
 
   retrieve_bd_page(bd_id,chapter_number,bd_page){
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_bd_chapter_page/${bd_id}/${chapter_number}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
-      return information;   
+        console.log(information);
+        return [information,bd_page];   
     }));
   }
 

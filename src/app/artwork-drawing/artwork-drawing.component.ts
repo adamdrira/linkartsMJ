@@ -296,7 +296,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
-          if (l[0].publication_id==this.drawing_id){
+          if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
           }
         }
@@ -429,7 +429,7 @@ export class ArtworkDrawingComponent implements OnInit {
       });
       this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
-          if (l[0].publication_id==this.drawing_id){
+          if (l[0].publication_id==this.drawing_id && l[0].publication_category=="drawing" && l[0].format==this.type){
             this.content_emphasized=true;
           }
         }
@@ -643,9 +643,9 @@ export class ArtworkDrawingComponent implements OnInit {
     
       for( var i=0; i< total_pages; i++ ) {
         this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
-          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
           let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_drawing_pages.push(SafeURL);
+          this.list_drawing_pages[r[1]]=(SafeURL);
         });
       };
 

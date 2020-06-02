@@ -127,7 +127,7 @@ export class BdOneShotService {
 
     retrieve_bd_page(bd_id,bd_page){
       return this.httpClient.get(`http://localhost:4600/routes/retrieve_bd_oneshot_page/${bd_id}/${bd_page}`,{responseType:'blob'}).pipe(map(information=>{
-         return information;   
+         return [information,bd_page];   
       }));
     }
 

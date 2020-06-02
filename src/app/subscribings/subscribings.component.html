@@ -3,42 +3,81 @@
         new
         <div *ngIf="item.drawing_id == null && item.writing_id == null">
             <div *ngIf="item.chaptersnumber > 0 ">
-                <app-thumbnail-comics 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='comics'
+                    subscribing_format='serie'
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-comics 
                     [item]=item
                     format='serie'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+                ></app-thumbnail-comics>--> 
             </div>
             <div *ngIf="item.chaptersnumber == null">
-                <app-thumbnail-comics 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='comics'
+                    subscribing_format='one-shot'
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-comics 
                     [item]=item
                     format='one-shot'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+                ></app-thumbnail-comics>-->
             </div>
         </div>
 
         <div *ngIf="item.drawing_id == null && item.bd_id == null">
-                <app-thumbnail-writing
+            <div class="highlighted_artwork">
+                <app-thumbnail-artwork 
+                [item]=item
+                now_in_seconds={{now_in_seconds}}
+                subscribing_category='writing'
+                ></app-thumbnail-artwork>
+           </div>
+                <!--<app-thumbnail-writing
                     [item]=item
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>     
+                ></app-thumbnail-writing> -->    
         </div>
 
         <div *ngIf="item.bd_id == null && item.writing_id == null">
             <div *ngIf="item.pagesnumber > 0 ">
-                <app-thumbnail-drawing
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='drawing'
+                    subscribing_format="artbook"
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-drawing
                     [item]=item
                     format='artbook'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
+                ></app-thumbnail-drawing> -->
             </div>
             <div *ngIf="item.pagesnumber == null">
-                <app-thumbnail-drawing 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='drawing'
+                    subscribing_format="one-shot"
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-drawing 
                     [item]=item
                     format='one-shot'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
+                ></app-thumbnail-drawing> -->
             </div>
         </div>
 
@@ -51,42 +90,81 @@
     <div *ngFor="let item of list_of_contents; let i = index">
         <div *ngIf="item.drawing_id == null && item.writing_id == null">
             <div *ngIf="item.chaptersnumber > 0 ">
-                <app-thumbnail-comics 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='comics'
+                    subscribing_format='serie'
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-comics 
                     [item]=item
                     format='serie'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+                ></app-thumbnail-comics>--> 
             </div>
             <div *ngIf="item.chaptersnumber == null">
-                <app-thumbnail-comics 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='comics'
+                    subscribing_format='one-shot'
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-comics 
                     [item]=item
                     format='one-shot'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+                ></app-thumbnail-comics>-->
             </div>
         </div>
 
         <div *ngIf="item.drawing_id == null && item.bd_id == null">
-                <app-thumbnail-writing
+            <div class="highlighted_artwork">
+                <app-thumbnail-artwork 
+                [item]=item
+                now_in_seconds={{now_in_seconds}}
+                subscribing_category='writing'
+                ></app-thumbnail-artwork>
+           </div>
+                <!--<app-thumbnail-writing
                     [item]=item
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>     
+                ></app-thumbnail-writing> -->    
         </div>
 
         <div *ngIf="item.bd_id == null && item.writing_id == null">
             <div *ngIf="item.pagesnumber > 0 ">
-                <app-thumbnail-drawing
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='drawing'
+                    subscribing_format="artbook"
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-drawing
                     [item]=item
                     format='artbook'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
+                ></app-thumbnail-drawing> -->
             </div>
             <div *ngIf="item.pagesnumber == null">
-                <app-thumbnail-drawing 
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='drawing'
+                    subscribing_format="one-shot"
+                    ></app-thumbnail-artwork>
+               </div>
+                <!--<app-thumbnail-drawing 
                     [item]=item
                     format='one-shot'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
+                ></app-thumbnail-drawing> -->
             </div>
         </div>
 

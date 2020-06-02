@@ -132,7 +132,7 @@ export class Drawings_Artbook_Service {
 
   retrieve_drawing_page_ofartbook(drawing_id,drawing_page){
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_drawing_page_ofartbook/${drawing_id}/${drawing_page}`,{responseType:'blob'}).pipe(map(information=>{
-      return information;   
+      return [information,drawing_page];   
     }));
   }
 

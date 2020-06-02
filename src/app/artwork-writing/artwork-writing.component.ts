@@ -251,7 +251,7 @@ export class ArtworkWritingComponent implements OnInit {
       });
       this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
         if (l[0]!=null && l[0]!=undefined){
-          if (l[0].publication_id==this.writing_id){
+          if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
             this.content_emphasized=true;
           }
         }

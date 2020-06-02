@@ -9,9 +9,16 @@
                         <img class="img" [src]="item">
                 </div>
 
-                <div class="author" *ngIf="i==0" (click)="watch_story(i)">Ma story</div>
+                <div class="author" *ngIf="i==0" (click)="watch_story(i)">Ma story
+                    <span *ngIf="list_of_state[i]">&nbsp; New</span>
+                    <span *ngIf="!list_of_state[i]">&nbsp; Old</span>
+                </div>
 
-                <div class="author" *ngIf="i>0"  (click)="watch_story(i)">{{list_of_author_names[i]}}</div>
+                <div class="author" *ngIf="i>0"  (click)="watch_story(i)">
+                    {{list_of_author_names[i]}}
+                    <span *ngIf="list_of_state[i]">&nbsp; New</span>
+                    <span *ngIf="!list_of_state[i]">&nbsp; Old</span>
+                </div>
         </div>
 
     </div>
