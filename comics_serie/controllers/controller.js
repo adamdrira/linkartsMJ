@@ -696,6 +696,8 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
       const bd_id = parseInt(req.params.bd_id);
       const chapter_number = req.params.chapter_number;
       const bd_page = parseInt(req.params.bd_page);
+      console.log("pistache");
+      console.log(bd_page);
 
       page = await pages_bd_serie.findOne({
         where: {

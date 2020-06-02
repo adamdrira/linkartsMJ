@@ -296,9 +296,8 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         .then(contents=>{
             contents.destroy({
                 truncate: false
-              })
-                .then(contents=>{res.status(200).send([contents])})        
-            })
+              })})
+        res.status(200).send([contents])
             
         })();
         

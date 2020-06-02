@@ -24,9 +24,10 @@ exports.list_of_stories = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true
       },
+      authorid: DataTypes.INTEGER,
       id_user_who_looks: DataTypes.INTEGER,
       id_story: DataTypes.INTEGER,
-      view_time: DataTypes.INTEGER,
+      view:DataTypes.INTEGER,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name
@@ -50,13 +51,13 @@ stories.belongsTo(User, {
 });
 
 User.hasMany(views, {
-  foreignKey: 'id_user_who_looks',
+  foreignKey: 'authorid',
   as: 'users',  
   onDelete: 'CASCADE',
 });
 
 views.belongsTo(User, {
-  foreignKey: 'id_user_who_looks',
+  foreignKey: 'authorid',
   as: 'users',  
   onDelete: 'CASCADE',
 });
