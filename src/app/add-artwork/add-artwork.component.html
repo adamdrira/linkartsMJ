@@ -65,5 +65,17 @@
         </app-add-writing>
     </div>
 
+    <!--For writing type artworks-->
+    <div *ngIf="(opened_category$ | async)==3" class="form">
+        <app-add-ad 
+            author_name={{author_name}} 
+            primary_description={{primary_description}} 
+            [profile_picture]=profile_picture
+
+            (cancelled)="step_back();">
+        </app-add-ad>
+    </div>
+
+
     
 </div>

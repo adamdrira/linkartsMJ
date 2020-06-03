@@ -45,7 +45,7 @@ const routes: Routes = [
   {path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 0}},
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 2}},
-  {path:'add-artwork/ad', component:AddAdComponent, canActivate: [AuthGuard], data: {section: 3}},
+  {path:'add-artwork/ad', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 3}},
 
   //Catégories Linkarts
   {path:'classement', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 1}},
