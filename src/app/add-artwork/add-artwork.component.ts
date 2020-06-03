@@ -131,6 +131,7 @@ export class AddArtworkComponent implements OnInit {
     if( (i == 0) ) { this.location.go("/add-artwork/comic") }
     if( (i == 1) ) { this.location.go("add-artwork/drawing"); }
     if( (i == 2) ) { this.location.go("add-artwork/writing"); }
+    if( (i == 3) ) { this.location.go("add-artwork/ad"); }
     this.cd.detectChanges();
 
   }

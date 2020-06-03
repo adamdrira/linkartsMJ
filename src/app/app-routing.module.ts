@@ -21,7 +21,7 @@ import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.compo
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
 import { SubscribingsComponent } from './subscribings/subscribings.component';
 import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
-
+import { AddAdComponent } from './add-ad/add-ad.component';
 import { StoriesViewComponent } from './stories-view/stories-view.component';
 
 const routes: Routes = [
@@ -45,6 +45,7 @@ const routes: Routes = [
   {path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 0}},
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 2}},
+  {path:'add-artwork/ad', component:AddAdComponent, canActivate: [AuthGuard], data: {section: 3}},
 
   //Catégories Linkarts
   {path:'classement', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 1}},

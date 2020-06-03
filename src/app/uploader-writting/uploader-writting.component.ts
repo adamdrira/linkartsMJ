@@ -30,6 +30,7 @@ export class UploaderWrittingComponent implements OnInit {
     ){
     this.uploader = new FileUploader({
       url: URL,
+      headers:[],
       //itemAlias:"writing",
     });
  
@@ -46,30 +47,30 @@ export class UploaderWrittingComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
+
   ngOnInit(): void {
 
     this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation); 
    
     this.uploader.onAfterAddingFile = async (file) => {
 
-      console.log( this.uploader.queue );
+      console.log( this.uploader);
       var re = /(?:\.([^.]+))?$/;
 
       if(re.exec(file._file.name)[1]!="pdf"){
 
-        console.log( this.uploader.queue );
+        
         this.uploader.queue.pop();
-        console.log( this.uploader.queue );
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez sélectionner un fichier PDF'},
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf ou .docx'},
         });
 
         
       }
       else{
-        console.log("pdf")
         file.withCredentials = true; 
         this.afficherpreview = true;
+        //this.uploader.setOptions({ headers: [{name:'type',value:re.exec(file._file.name)[1]}]});
       }
       
     };

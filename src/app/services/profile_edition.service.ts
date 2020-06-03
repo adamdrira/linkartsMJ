@@ -76,7 +76,7 @@ export class Profile_Edition_Service {
   }
 
  get_current_user(){
-    return this.httpClient.get('http://localhost:4600/api/userid',{withCredentials:true} ).pipe(map((information)=>{
+    return this.httpClient.get('http://localhost:4600/api/userid',{withCredentials:true} ).pipe(map((information)=>{   
       return information;
     }));
   }

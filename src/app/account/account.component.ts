@@ -1,13 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { UploadService } from '../services/upload.service';
-
+import { Emphasize_service } from '../services/emphasize.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
@@ -52,7 +51,7 @@ export class AccountComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Albums_service:Albums_service,
     public dialog: MatDialog,
-
+    private Emphasize_service:Emphasize_service,
     ) {
     //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
@@ -201,7 +200,8 @@ export class AccountComponent implements OnInit {
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    this.Subscribing_service.get_emphasized_content(this.user_id).subscribe(r=>{
+    
+    this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
         this.emphasized_artwork_added=true;
@@ -313,14 +313,16 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.Subscribing_service.get_all_users_subscribed_to(this.user_id).subscribe(information=>{
+    this.Subscribing_service.get_all_users_subscribed_to_before_today(this.user_id).subscribe(information=>{
       if(Object.keys(information).length>0){
-        this.users_subscribed_to_list=information[0];
+        let first_list=information[0];
         this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
           if(Object.keys(info).length>0){
-            this.users_subscribed_to_list=this.users_subscribed_to_list.concat(info[0]);
+            this.users_subscribed_to_list=first_list.concat(info[0]);
           }
-          
+          else{
+            this.users_subscribed_to_list=first_list;
+          }
         })
       }
     });

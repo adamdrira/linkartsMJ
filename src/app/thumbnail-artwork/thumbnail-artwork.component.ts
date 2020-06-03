@@ -30,6 +30,9 @@ export class ThumbnailArtworkComponent implements OnInit {
   @Input() item: any;
   @Input() now_in_seconds: number;
 
+  @Input() subscribing_category: any;
+  @Input() subscribing_format: any;
+
   profile_picture:SafeUrl;
   author_name:string;
   primary_description:string;
@@ -60,163 +63,318 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.category=this.item.publication_category;
-    this.format=this.item.format;
+    if(this.item.subscribing_category==null || this.item.subscribing_category==undefined){
 
-    this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
-    });
+      this.category=this.item.publication_category;
+      this.format=this.item.format;
 
-    this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
-      this.primary_description=r[0].primary_description;
-      this.pseudo = r[0].nickname;
-    });
+      this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.profile_picture = SafeURL;
+      });
 
-    if(this.category=="comics"){
-      if(this.format=="one-shot"){
-        this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
-          this.file_name = r[0].name_coverpage
-          this.title = r[0].title
-          this.style = r[0].category
-          this.highlight = r[0].highlight
-          this.firsttag = r[0].firsttag
-          this.secondtag = r[0].secondtag
-          this.thirdtag = r[0].thirdtag
-          this.pagesnumber = r[0].pagesnumber
-          this.viewnumber = r[0].viewnumber
-          this.likesnumber = r[0].likesnumber
-          this.lovesnumber = r[0].lovesnumber
-          this.chaptersnumber = r[0].chaptersnumber
-          this.date_upload = r[0].createdAt
+      this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
+        this.author_name = r[0].firstname + ' ' + r[0].lastname;
+        this.primary_description=r[0].primary_description;
+        this.pseudo = r[0].nickname;
+      });
 
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+      if(this.category=="comics"){
+        if(this.format=="one-shot"){
+          this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+            this.file_name = r[0].name_coverpage
+            this.title = r[0].title
+            this.style = r[0].category
+            this.highlight = r[0].highlight
+            this.firsttag = r[0].firsttag
+            this.secondtag = r[0].secondtag
+            this.thirdtag = r[0].thirdtag
+            this.pagesnumber = r[0].pagesnumber
+            this.viewnumber = r[0].viewnumber
+            this.likesnumber = r[0].likesnumber
+            this.lovesnumber = r[0].lovesnumber
+            this.chaptersnumber = r[0].chaptersnumber
+            this.date_upload = r[0].createdAt
 
-          this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
-            this.thumbnail_picture_received=true;
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
+          });
+        }
+        else{
+          this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+            this.file_name = r[0].name_coverpage
+            this.title = r[0].title
+            this.style = r[0].category
+            this.highlight = r[0].highlight
+            this.firsttag = r[0].firsttag
+            this.secondtag = r[0].secondtag
+            this.thirdtag = r[0].thirdtag
+            this.pagesnumber = r[0].pagesnumber
+            this.viewnumber = r[0].viewnumber
+            this.likesnumber = r[0].likesnumber
+            this.lovesnumber = r[0].lovesnumber
+            this.chaptersnumber = r[0].chaptersnumber
+            this.date_upload = r[0].createdAt
+
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
           });
 
-        });
+        }
       }
-      else{
-        this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
-          this.file_name = r[0].name_coverpage
-          this.title = r[0].title
-          this.style = r[0].category
-          this.highlight = r[0].highlight
-          this.firsttag = r[0].firsttag
-          this.secondtag = r[0].secondtag
-          this.thirdtag = r[0].thirdtag
-          this.pagesnumber = r[0].pagesnumber
-          this.viewnumber = r[0].viewnumber
-          this.likesnumber = r[0].likesnumber
-          this.lovesnumber = r[0].lovesnumber
-          this.chaptersnumber = r[0].chaptersnumber
-          this.date_upload = r[0].createdAt
 
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+      if(this.category=="drawing"){
+        if(this.format=="one-shot"){
+          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).subscribe(r=>{
+            this.file_name = r[0].name_coverpage
+            this.title = r[0].title
+            this.style = r[0].category
+            this.highlight = r[0].highlight
+            this.firsttag = r[0].firsttag
+            this.secondtag = r[0].secondtag
+            this.thirdtag = r[0].thirdtag
+            this.pagesnumber = r[0].pagesnumber
+            this.viewnumber = r[0].viewnumber
+            this.likesnumber = r[0].likesnumber
+            this.lovesnumber = r[0].lovesnumber
+            this.chaptersnumber = r[0].chaptersnumber
+            this.date_upload = r[0].createdAt
 
-          this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
-            this.thumbnail_picture_received=true;
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
+          });
+        }
+        else{
+          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
+            this.file_name = r[0].name_coverpage
+            this.title = r[0].title
+            this.style = r[0].category
+            this.highlight = r[0].highlight
+            this.firsttag = r[0].firsttag
+            this.secondtag = r[0].secondtag
+            this.thirdtag = r[0].thirdtag
+            this.pagesnumber = r[0].pagesnumber
+            this.viewnumber = r[0].viewnumber
+            this.likesnumber = r[0].likesnumber
+            this.lovesnumber = r[0].lovesnumber
+            this.chaptersnumber = r[0].chaptersnumber
+            this.date_upload = r[0].createdAt
+            
+
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
           });
 
-        });
-
+        }
       }
+
+      if(this.category=="writing"){
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
+            this.file_name = r[0].name_coverpage
+            this.title = r[0].title
+            this.style = r[0].category
+            this.highlight = r[0].highlight
+            this.firsttag = r[0].firsttag
+            this.secondtag = r[0].secondtag
+            this.thirdtag = r[0].thirdtag
+            this.pagesnumber = r[0].pagesnumber
+            this.viewnumber = r[0].viewnumber
+            this.likesnumber = r[0].likesnumber
+            this.lovesnumber = r[0].lovesnumber
+            this.chaptersnumber = r[0].chaptersnumber
+            this.date_upload = r[0].createdAt
+
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
+          });
     }
+    else if (this.item.subscribing_category!=undefined){
+      
 
-    if(this.category=="drawing"){
-      if(this.format=="one-shot"){
-        this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).subscribe(r=>{
-          this.file_name = r[0].name_coverpage
-          this.title = r[0].title
-          this.style = r[0].category
-          this.highlight = r[0].highlight
-          this.firsttag = r[0].firsttag
-          this.secondtag = r[0].secondtag
-          this.thirdtag = r[0].thirdtag
-          this.pagesnumber = r[0].pagesnumber
-          this.viewnumber = r[0].viewnumber
-          this.likesnumber = r[0].likesnumber
-          this.lovesnumber = r[0].lovesnumber
-          this.chaptersnumber = r[0].chaptersnumber
-          this.date_upload = r[0].createdAt
+      this.category=this.subscribing_category;
+      this.format=this.subscribing_format;
 
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+      this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.profile_picture = SafeURL;
+      });
 
-          this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
-            this.thumbnail_picture_received=true;
-          });
+      this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
+        this.author_name = r[0].firstname + ' ' + r[0].lastname;
+        this.primary_description=r[0].primary_description;
+        this.pseudo = r[0].nickname;
+      });
 
-        });
+      if(this.category=="comics"){
+        if(this.format=="one-shot"){
+            this.file_name = this.item.name_coverpage
+            this.title = this.item.title
+            this.style = this.item.category
+            this.highlight = this.item.highlight
+            this.firsttag = this.item.firsttag
+            this.secondtag = this.item.secondtag
+            this.thirdtag = this.item.thirdtag
+            this.pagesnumber = this.item.pagesnumber
+            this.viewnumber = this.item.viewnumber
+            this.likesnumber = this.item.likesnumber
+            this.lovesnumber = this.item.lovesnumber
+            this.chaptersnumber = this.item.chaptersnumber
+            this.date_upload = this.item.createdAt
+
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+        }
+        else{
+            this.file_name = this.item.name_coverpage
+            this.title = this.item.title
+            this.style = this.item.category
+            this.highlight = this.item.highlight
+            this.firsttag = this.item.firsttag
+            this.secondtag = this.item.secondtag
+            this.thirdtag = this.item.thirdtag
+            this.pagesnumber = this.item.pagesnumber
+            this.viewnumber = this.item.viewnumber
+            this.likesnumber = this.item.likesnumber
+            this.lovesnumber = this.item.lovesnumber
+            this.chaptersnumber = this.item.chaptersnumber
+            this.date_upload = this.item.createdAt
+
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
+
+        }
       }
-      else{
-        this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
-          this.file_name = r[0].name_coverpage
-          this.title = r[0].title
-          this.style = r[0].category
-          this.highlight = r[0].highlight
-          this.firsttag = r[0].firsttag
-          this.secondtag = r[0].secondtag
-          this.thirdtag = r[0].thirdtag
-          this.pagesnumber = r[0].pagesnumber
-          this.viewnumber = r[0].viewnumber
-          this.likesnumber = r[0].likesnumber
-          this.lovesnumber = r[0].lovesnumber
-          this.chaptersnumber = r[0].chaptersnumber
-          this.date_upload = r[0].createdAt
 
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+      if(this.category=="drawing"){
+        if(this.format=="one-shot"){
+            this.file_name = this.item.name_coverpage
+            this.title = this.item.title
+            this.style = this.item.category
+            this.highlight = this.item.highlight
+            this.firsttag = this.item.firsttag
+            this.secondtag = this.item.secondtag
+            this.thirdtag = this.item.thirdtag
+            this.pagesnumber = this.item.pagesnumber
+            this.viewnumber = this.item.viewnumber
+            this.likesnumber = this.item.likesnumber
+            this.lovesnumber = this.item.lovesnumber
+            this.chaptersnumber = this.item.chaptersnumber
+            this.date_upload = this.item.createdAt
 
-          this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
-            this.thumbnail_picture_received=true;
-          });
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
 
-        });
+            this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+        }
+        else{
+          
+            this.file_name = this.item.name_coverpage
+            this.title = this.item.title
+            this.style = this.item.category
+            this.highlight = this.item.highlight
+            this.firsttag = this.item.firsttag
+            this.secondtag = this.item.secondtag
+            this.thirdtag = this.item.thirdtag
+            this.pagesnumber = this.item.pagesnumber
+            this.viewnumber = this.item.viewnumber
+            this.likesnumber = this.item.likesnumber
+            this.lovesnumber = this.item.lovesnumber
+            this.chaptersnumber = this.item.chaptersnumber
+            this.date_upload = this.item.createdAt
 
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+            this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+
+
+        }
       }
-    }
 
-    if(this.category=="writing"){
-        this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
-          this.file_name = r[0].name_coverpage
-          this.title = r[0].title
-          this.style = r[0].category
-          this.highlight = r[0].highlight
-          this.firsttag = r[0].firsttag
-          this.secondtag = r[0].secondtag
-          this.thirdtag = r[0].thirdtag
-          this.pagesnumber = r[0].pagesnumber
-          this.viewnumber = r[0].viewnumber
-          this.likesnumber = r[0].likesnumber
-          this.lovesnumber = r[0].lovesnumber
-          this.chaptersnumber = r[0].chaptersnumber
-          this.date_upload = r[0].createdAt
+      if(this.category=="writing"){
+          
+            this.file_name = this.item.name_coverpage
+            this.title = this.item.title
+            this.style = this.item.category
+            this.highlight = this.item.highlight
+            this.firsttag = this.item.firsttag
+            this.secondtag = this.item.secondtag
+            this.thirdtag = this.item.thirdtag
+            this.pagesnumber = this.item.pagesnumber
+            this.viewnumber = this.item.viewnumber
+            this.likesnumber = this.item.likesnumber
+            this.lovesnumber = this.item.lovesnumber
+            this.chaptersnumber = this.item.chaptersnumber
+            this.date_upload = this.item.createdAt
 
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+            this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
 
-          this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.thumbnail_picture = SafeURL;
-            this.thumbnail_picture_received=true;
-          });
+            this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.thumbnail_picture = SafeURL;
+              this.thumbnail_picture_received=true;
+            });
+      }
 
-        });
     }
 
 
@@ -226,6 +384,9 @@ export class ThumbnailArtworkComponent implements OnInit {
 
     
     
+    
+
+    }
     
   }
 
