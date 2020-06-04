@@ -33,12 +33,10 @@ const routes: Routes = [
   //Type : BD, dessin, ou écrit.
   //Step : étape 1, 2 ou 3.
   {path:'account/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 0}},
-  {path:'account/ads/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1}},
-  {path:'account/trends/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 3}},
-  {path:'account/likes/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 5}},
-  {path:'account/loves/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 6}},
-  {path:'account/about/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 7}},
-  {path:'account/archives/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 8}},
+  {path:'account/:pseudo/:id/artworks', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1}},
+  {path:'account/:pseudo/:id/ads', component:AccountComponent, canActivate: [AuthGuard], data: {section: 2}},
+  {path:'account/:pseudo/:id/about', component:AccountComponent, canActivate: [AuthGuard], data: {section: 5}},
+  {path:'account/:pseudo/:id/archives', component:AccountComponent, canActivate: [AuthGuard], data: {section: 6}},
 
   
   {path:'add-artwork', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: -1}},
