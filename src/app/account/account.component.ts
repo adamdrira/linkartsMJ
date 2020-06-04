@@ -201,6 +201,14 @@ export class AccountComponent implements OnInit {
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     
+    
+    this.Profile_Edition_Service.get_pseudo_by_user_id( this.user_id ).subscribe( r => {
+      if( this.pseudo != r[0].nickname ) {
+        this.router.navigateByUrl('/');
+      }
+    });
+
+
     this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
@@ -501,14 +509,11 @@ export class AccountComponent implements OnInit {
     this.opened_category = -1;
     this.opened_section=i;
     
-    if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/home`); }
+    if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
     else if( i == 1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); }
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
-    else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/trends`); }
-    else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/likes`); }
-    else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/loves`); }
-    else if( i == 8 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
-    else if( i == 9 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); };
+    else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
+    else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
 
   }
 

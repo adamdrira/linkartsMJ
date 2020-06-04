@@ -25,6 +25,11 @@
                         <div class="picture-icon"></div>
                         <span>Changer de photo de profil</span>
                     </button>
+
+                    <button mat-raised-button *ngIf="!mode_visiteur" class="change-story-picture style0" (click)="add_story();">
+                        <mat-icon class="icon">play_circle_outline</mat-icon>
+                        <span>Ajouter une story</span>
+                    </button>
                     
                 </div>
                
@@ -83,13 +88,6 @@
                     <div class="change-profile-icon"></div>
                 </button>
 
-                <button mat-raised-button *ngIf="!mode_visiteur" class="style0" (click)="add_story();">
-                    <span>Ajouter une story</span>
-                    <div class="change-profile-icon"></div>
-                </button>
-
-
-
                 
             </div>
         </div>
@@ -131,11 +129,11 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">favorite</mat-icon>
                     J'adore (4,304)
                 </button>-->
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 8 }" (click)="open_section(8);">
+                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 9 }" (click)="open_section(9);">
+                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
                     Archives ({{number_of_archives}})
                 </button>
@@ -181,39 +179,60 @@
             <div class="title">
                 <span>Nouveautés</span>
             </div>
+
+
             <div *ngIf="new_comic_contents_added">
-                Bandes dessinées
-                <div *ngFor="let item of new_comic_contents">
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
-                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
-                    [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                
+                <div class="artwork-type-title">
+                    Bandes dessinées
+                </div>
+                <div class="container-comics">
+                    <div *ngFor="let item of new_comic_contents" class="new-artwork">
+                        <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
+                        [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+                        <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
+                        [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                    </div>
                 </div>
             </div>
 
             <div *ngIf="new_drawing_contents_added">
-                Dessins
-                <div *ngFor="let item of new_drawing_contents">
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
-                        [item]=item
-                        format='one-shot'
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-drawing>
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
-                        [item]=item 
-                        format='artbook'
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-drawing>
+                
+                <div class="artwork-type-title">
+                    Dessins
+                </div>
+
+                <div class="container-drawings">
+                    <div *ngFor="let item of new_drawing_contents" style="height:300px; margin:40px 0px 30px 0px;" class="new-artwork">
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                            [item]=item
+                            format='one-shot'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                            [item]=item 
+                            format='artbook'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                    </div>
                 </div>
                 
             </div>
+
+            
             <div *ngIf="new_writing_contents_added">
-                Écrits
-                <div *ngFor="let item of new_writing_contents">
-                    <app-thumbnail-writing
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-writing>
+                
+                <div class="artwork-type-title">
+                    Écrits
+                </div>
+
+                <div class="container-writings">
+                    <div *ngFor="let item of new_writing_contents" style="height:300px;" class="new-artwork">
+                        <app-thumbnail-writing
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-writing>
+                    </div>
                 </div>
                 
             </div>

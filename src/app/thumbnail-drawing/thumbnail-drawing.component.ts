@@ -60,7 +60,10 @@ export class ThumbnailDrawingComponent implements OnInit {
   @Input() now_in_seconds: number;
   @Input() format: string;
  
-  
+
+  @ViewChild("thumbnail", {static:true}) thumbnail: ElementRef;
+    
+
   tagsSplit: string;
   showDrawingDetails:boolean = false;
   
@@ -121,8 +124,66 @@ export class ThumbnailDrawingComponent implements OnInit {
   ngAfterViewInit() {
     
     this.resize_drawing();
+    this.set_color();
   }
 
+
+
+  set_color() {
+
+
+    if( this.thumbnail_color == "Bleu" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Noir" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Vert" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Jaune" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Rouge" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Violet" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Rose" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Marron" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Orange" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Gris" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
+      }
+    }
+
+  }
 
 
 
@@ -207,12 +268,9 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   resize_drawing() {
 
-    var cwwithmargin = this.get_drawing_size()+60;
-
-    $('.element-drawing').css({'width': this.get_drawing_size() +'px'});
-    $('.element-drawing').css({'height': '240px'});
-    $('.col-drawing .empty').css({'width':cwwithmargin+'px'});
-    $('.col-drawing .empty').css({'height':cwwithmargin+'px'});
+    if( $('.container-drawings') ) {
+      $('.drawing-container').css({'width': this.get_drawing_size() +'px'});
+    }
   }
 
   get_drawing_size() {
@@ -222,21 +280,22 @@ export class ThumbnailDrawingComponent implements OnInit {
   drawings_per_line() {
     var width = window.innerWidth;
 
-    if( width > 1600 ) {
+    if( width > 1800 ) {
       return 5;
     }
-    else if( width > 1200 ) {
-      return 5;
-    }
-    else if( width > 1000) {
+    else if( width > 1400 ) {
       return 4;
     }
-    else if( width > 600) {
+    else if( width > 1100) {
       return 3;
     }
-    else {
+    else if( width > 700) {
       return 2;
     }
+    else {
+      return 1;
+    }
+
   }
 
 

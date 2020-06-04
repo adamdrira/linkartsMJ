@@ -1,95 +1,34 @@
 
-<a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}">
-    <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
-
-        <img [src]="thumbnail_picture">
-        <div class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
-            
-            <!--********************-->
-            <!--Title container-->
-            <!--********************-->
-            <div class="title-container">
-                <span class="title">{{title}}</span>
-            </div>
-            <!--********************-->
-            <!--Author container-->
-            <!--********************-->
-            <div class="author-container">
-                <div class="left-container">
-                    <img [src]="profile_picture">
-                </div>
-                <div class="right-container">
-                    <span class="author-name">{{author_name}}</span>
-                    <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
-                </div>
-            </div>
-            <!--********************-->
-            <!--Data container-->
-            <!--********************-->
-            <div class="stats-container">
-                <div class="figure-container-views">
-                    <span>{{viewnumber}}</span>
-                    <div class="view-logo">
-                    </div>
-                </div>
-                <div class="figure-container-likes">
-                    <span>{{likesnumber}}</span>
-                    <div class="like-logo">
-                    </div>
-                </div>
-                <div class="figure-container-loves">
-                    <span>{{lovesnumber}}</span>
-                    <div class="love-logo">
-                    </div>
-                </div>
-            </div>
-            <!--********************-->
-            <!--Categories container-->
-            <!--********************-->
-            <div class="categories-container">  
-                <span>{{category}} :</span>
-                <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
-                <span *ngIf="secondtag!=null"> &nbsp; {{secondtag}}</span>
-                <span *ngIf="thirdtag!=null"> &nbsp; {{thirdtag}}</span>
-            </div>
-            <!--********************-->
-            <!--Date container-->
-            <!--********************-->
-            <div class="date-container">
-                <span>{{date_upload_to_show}}</span>
-            </div>
-
-        </div>
-
-    </div>
-</a>
-
-
-
-
-
-
-
-
-
+<div class="drawing-container">
+        
     
-    <!--<div class="col-drawing text-center">
-        <div #elementDrawing class="element-drawing">
+    <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}">
+        <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
-            <div #drawing_details_to_show class="display-on-hover">
-
+            <img [src]="thumbnail_picture">
+            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
+                
+                <!--********************-->
+                <!--Title container-->
+                <!--********************-->
                 <div class="title-container">
                     <span class="title">{{title}}</span>
                 </div>
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
                 <div class="author-container">
                     <div class="left-container">
                         <img [src]="profile_picture">
                     </div>
                     <div class="right-container">
                         <span class="author-name">{{author_name}}</span>
-                        <span class="author-description">{{primary_description}}</span>
+                        <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
                     </div>
                 </div>
+                <!--********************-->
+                <!--Data container-->
+                <!--********************-->
                 <div class="stats-container">
                     <div class="figure-container-views">
                         <span>{{viewnumber}}</span>
@@ -107,27 +46,91 @@
                         </div>
                     </div>
                 </div>
-                <div class="category-container">
-                    <span >{{category}} :</span>
+                <!--********************-->
+                <!--Categories container-->
+                <!--********************-->
+                <div class="categories-container">  
+                    <span>{{category}} :</span>
                     <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
                     <span *ngIf="secondtag!=null"> &nbsp; {{secondtag}}</span>
                     <span *ngIf="thirdtag!=null"> &nbsp; {{thirdtag}}</span>
                 </div>
+                <!--********************-->
+                <!--Date container-->
+                <!--********************-->
                 <div class="date-container">
                     <span>{{date_upload_to_show}}</span>
                 </div>
-                <div class="small-trait"></div>
-                <div class="description-container">
-                    <span>{{highlight}}                    
-                    </span>
-                </div>
 
-                
-            </div>
-
-            <div #drawing_thumbnail_container class="thumbnail-container">
-                <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}"><img #drawing_image [src]="thumbnail_picture"></a>
             </div>
 
         </div>
-    </div>-->
+    </a>
+
+</div>
+
+
+
+
+
+
+
+        
+        <!--<div class="col-drawing text-center">
+            <div #elementDrawing class="element-drawing">
+
+                <div #drawing_details_to_show class="display-on-hover">
+
+                    <div class="title-container">
+                        <span class="title">{{title}}</span>
+                    </div>
+                    <div class="author-container">
+                        <div class="left-container">
+                            <img [src]="profile_picture">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">{{author_name}}</span>
+                            <span class="author-description">{{primary_description}}</span>
+                        </div>
+                    </div>
+                    <div class="stats-container">
+                        <div class="figure-container-views">
+                            <span>{{viewnumber}}</span>
+                            <div class="view-logo">
+                            </div>
+                        </div>
+                        <div class="figure-container-likes">
+                            <span>{{likesnumber}}</span>
+                            <div class="like-logo">
+                            </div>
+                        </div>
+                        <div class="figure-container-loves">
+                            <span>{{lovesnumber}}</span>
+                            <div class="love-logo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category-container">
+                        <span >{{category}} :</span>
+                        <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
+                        <span *ngIf="secondtag!=null"> &nbsp; {{secondtag}}</span>
+                        <span *ngIf="thirdtag!=null"> &nbsp; {{thirdtag}}</span>
+                    </div>
+                    <div class="date-container">
+                        <span>{{date_upload_to_show}}</span>
+                    </div>
+                    <div class="small-trait"></div>
+                    <div class="description-container">
+                        <span>{{highlight}}                    
+                        </span>
+                    </div>
+
+                    
+                </div>
+
+                <div #drawing_thumbnail_container class="thumbnail-container">
+                    <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}"><img #drawing_image [src]="thumbnail_picture"></a>
+                </div>
+
+            </div>
+        </div>-->
