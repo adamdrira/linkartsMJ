@@ -1,0 +1,215 @@
+
+a {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  display: flex;
+}
+
+.final-thumbnail {
+    position:relative;
+    width: 300px !important;
+    border-radius:12px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .final-thumbnail > img {
+    width:100%;
+    height:100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  
+  
+  
+  .final-thumbnail .display-on-hover {
+    cursor:pointer;
+    position:absolute;
+    display:flex;
+    flex-direction: column;
+    padding: 10px 10px 5px 10px;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background: rgba(255, 0, 0, 0.5);
+    opacity:0;
+    transition:opacity 200ms;
+    color: white;
+    border-radius:12px;
+  }
+  
+  .visible {
+    opacity: 1 !important;
+  }
+  
+  
+  .final-thumbnail .display-on-hover .title-container {
+    text-align: left;
+    word-break: break-word;
+    margin: 0px auto auto 0px;
+    font-size: 20px;
+  }
+  
+   .title-container span.title {
+    font-weight: bold;
+    line-height: 22px;
+    font-size: 18px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+  }
+  
+  
+  .author-container {
+    display: flex;
+    width: 100%;
+  }
+  
+   .author-container .left-container {
+    width: 40px;
+    height: 40px;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 3px 5px auto 0px;
+  }
+  
+   .author-container .left-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+  }
+  
+   .author-container .right-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: calc( 100% - 70px );
+    margin: 0px 10px auto 5px;
+  }
+   .author-container .right-container span.author-name {
+    font-size: 16px;
+    font-weight:bold;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+  
+   .author-container .right-container span.author-description {
+    font-size:15px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+  
+   .stats-container {    
+    width: 100%;
+    height: 22px;
+    font-size: 1.1rem;
+    color: #3b3b3b;
+    display: flex;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    font-size: 1rem;
+    justify-content: left;
+  }
+  
+  .figure-container-views,
+  .figure-container-likes,
+  .figure-container-loves
+  {
+  display: flex;
+  border-radius: 6px;
+  align-items: center;
+  width: 65px;
+  height: 25px;
+  }
+  
+  
+  .figure-container-views {
+    background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    margin-right:15px;
+  }
+  
+  .figure-container-likes {
+    background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    margin-right:15px;
+  }
+  
+  .figure-container-loves {    
+    background-image: linear-gradient(to left, #8a0101, #e60000);
+    color:white;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+  }
+  
+  .figure-container-views span,
+  .figure-container-likes span,
+  .figure-container-loves span
+  {
+  margin:auto 5px auto auto;
+  }
+  
+  
+  .view-logo {
+  width:20px;
+  height:20px;
+  margin:auto auto auto 0px;
+  background-color: rgb(255, 255, 255);
+  -webkit-mask:  url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
+  mask: url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
+  }
+  
+  .like-logo {
+   width:18px;
+   height:18px;
+   margin:2px auto auto 0px;
+   background-color: rgb(255, 255, 255);
+   -webkit-mask:  url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
+   mask: url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
+  }
+  
+  .love-logo {
+  width:14px;
+  height:14px;
+  margin:auto auto auto 0px;
+  background-color: rgb(255, 255, 255);
+  -webkit-mask:  url("/assets/img/svg/love.svg") no-repeat 50% 50%;
+  mask: url("/assets/img/svg/love.svg") no-repeat 50% 50%;
+  }
+  
+  
+  .categories-container {
+    width:100%;
+    white-space: nowrap;
+    text-align:left;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+   .categories-container span {
+    font-size:1rem;
+  }
+  
+  .date-container {
+    width:100%;
+    line-height: 1.3rem;
+    text-align:left;
+  }
+  
+   .date-container span {
+    font-style:italic;
+    font-size:1rem;
+  }
+  
