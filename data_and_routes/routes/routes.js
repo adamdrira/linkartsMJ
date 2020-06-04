@@ -16,6 +16,7 @@ const profile_notation= require('../../publications_notation/controller/controll
 const controller_subscribings= require('../../p_subscribings_archives_contents/controller/controller');
 const controller_stories= require('../../p_stories/controller/controller');
 const controller_albums= require('../../albums_edition/controller/controller');
+const controller_ads= require('../../ads/controller/controller');
 const bd_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const bd_serie_seq= require('../../comics_serie/models/sequelize');
 const drawings_one_page_seq= require('../../drawings_one_shot_and_cover/models/sequelize');
@@ -24,6 +25,7 @@ const writings_seq= require('../../writings/models/sequelize');
 const profile_notation_seq= require('../../publications_notation/model/sequelize');
 const subscribings_seq= require('../../p_subscribings_archives_contents/model/sequelize');
 const stories_seq= require('../../p_stories/model/sequelize');
+const ads_seq= require('../../ads/model/sequelize');
 const albums_seq = require('../../albums_edition/model/sequelize');
 const authentification = require('../../authentication/db.config');
 
@@ -101,6 +103,7 @@ profile_notation(
 controller_subscribings(router, subscribings_seq.list_of_subscribings, subscribings_seq.list_of_contents, subscribings_seq.list_of_archives );
 controller_albums(router, albums_seq.list_of_albums);
 controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
+controller_ads(router, ads_seq.list_of_ads);
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
   console.log('l\'artiste');
