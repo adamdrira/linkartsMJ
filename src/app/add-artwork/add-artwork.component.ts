@@ -65,6 +65,7 @@ export class AddArtworkComponent implements OnInit {
   author_name:string;
   primary_description:string;
   profile_picture:SafeUrl;
+  pseudo:string;
 
   
   
@@ -100,6 +101,7 @@ export class AddArtworkComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data( l[0].id ).subscribe(r=>{
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
+        this.pseudo=r[0].nickname;
       });
 
       this.Profile_Edition_Service.retrieve_profile_picture( l[0].id ).subscribe(r=> {

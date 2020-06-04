@@ -1,12 +1,14 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
+import { Ads_service} from '../services/ads.service';
 import { Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-
+import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { UploaderPicturesAdComponent } from '../uploader-pictures-ad/uploader-pictures-ad.component';
 import { SafeUrl } from '@angular/platform-browser';
 
 
@@ -15,9 +17,15 @@ declare var $: any;
 @Component({
   selector: 'app-add-ad',
   templateUrl: './add-ad.component.html',
-  styleUrls: ['./add-ad.component.scss']
+  styleUrls: ['./add-ad.component.scss'],
 })
 export class AddAdComponent implements OnInit {
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload($event) { 
+    this.cancel_all();
+  }
+
 
 
   constructor(
@@ -28,77 +36,57 @@ export class AddAdComponent implements OnInit {
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     private viewref: ViewContainerRef,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
+    private Ads_service:Ads_service,
+    private CookieService: CookieService,
+    private router:Router,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
   ) { 
     
-    this.REAL_step = 0;
     this.CURRENT_step = 0;
-    this.modal_displayed = false;
   }
 
   
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('profile_picture') profile_picture:SafeUrl;
-  
+  @Input('pseudo') pseudo:string;
+  @Input('id') id:number;
+
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
 
   dropdowns = this._constants.filters.categories[0].dropdowns;
-  REAL_step: number;
   CURRENT_step: number;
-  modal_displayed: boolean;
-  tags: string[];
+  targets: string[];
   tagsValidator:boolean = false;
 
-
+  status_pictures:boolean=false;
+  pictures_uploaded:boolean=false;
+  attachments_uploaded:boolean=false;
+  id_ad=0;
 
   ngOnInit() {
 
     this.createFormControlsDrawings();
-    this.createFormDrawings();
+    this.createFormAd();
 
     this.initialize_selectors();
-    this.initialize_taginputs_fd();
+    this.initialize_tagtargets_fd();
 
     this.cd.detectChanges();
 
   }
 
   ngAfterContentInit() {
-      this.initialize_taginputs_fd();
+      this.initialize_tagtargets_fd();
   }
 
   
 
   back_home() {
     this.cancelled.emit();
-  }
-
-  step_back() {
-
-    this.CURRENT_step = this.REAL_step - 1;
-    this.cd.detectChanges();
-    this.modal_displayed=false;
-    this.cd.detectChanges();
-  }
-
-
-
-  setMonetisation(e){
-    if(e.checked){
-      this.monetised = true;
-   }else{
-    this.monetised = false;
-   }
-  }
-  read_conditions() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:'Le plagiat ainsi que les fanarts sont rigoureusement interdits.'},
-    });
   }
 
 
@@ -119,50 +107,24 @@ export class AddAdComponent implements OnInit {
     
     $(".fdselect0").change(function(){
 
-      THIS.cd.detectChanges();
-      if( (THIS.REAL_step != THIS.CURRENT_step) && (THIS.fd.controls['fdFormat'].value != $(this).val()) && (!THIS.modal_displayed) ) {
-
-        const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
-        });
-      
-        dialogRef.afterClosed().subscribe(result => {
-          if( result ) {
-            THIS.fd.controls['fdFormat'].setValue( $(".fdselect0").val() );
-            THIS.REAL_step--;
-            THIS.modal_displayed = true;
-            THIS.cd.detectChanges();
-          }
-          else {
-            $('.fdselect0')[0].sumo.selectItem( THIS.fd.controls['fdFormat'].value );
-            THIS.cd.detectChanges();
-          }
-        });
-
-      }
-
-      else {
-        THIS.fd.controls['fdFormat'].setValue( $(this).val() );
-      }
-
-      THIS.cd.detectChanges();
+      THIS.fd.controls['fdMydescription'].setValue( $(this).val() );
 
     });
     
 
 
     $(".fdselect1").change(function(){
-      THIS.fd.controls['fdCategory'].setValue( $(this).val() );
+      THIS.fd.controls['fdProject_type'].setValue( $(this).val() );
     });
 
 
   }
 
 
-  initialize_taginputs_fd() {
+  initialize_tagtargets_fd() {
 
     $('.multipleSelectfd').fastselect({
-      maxItems: 3
+      maxItems: 2
     });
     
     this.cd.detectChanges();
@@ -175,36 +137,67 @@ export class AddAdComponent implements OnInit {
   fd: FormGroup;
   fdTitle: FormControl;
   fdDescription: FormControl;
-  fdCategory: FormControl;
-  fdTags: FormControl;
-  fdFormat: FormControl;
+  fdMydescription: FormControl;
+  fdTargets: FormControl;
+  fdProject_type: FormControl;
+  fdPreferential_location: FormControl;
   monetised:boolean = false;
   
   createFormControlsDrawings() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdCategory = new FormControl('', Validators.required);
-    this.fdTags = new FormControl('');
-    this.fdFormat = new FormControl('', Validators.required);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.maxLength(1000), Validators.pattern("^[^\\s]+.*") ]);
+    this.fdMydescription= new FormControl('', Validators.required);
+    this.fdTargets = new FormControl('');
+    this.fdProject_type = new FormControl('', Validators.required);
+    this.fdPreferential_location=new FormControl('', [Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
   }
 
-  createFormDrawings() {
+  createFormAd() {
     this.fd = new FormGroup({
       fdTitle: this.fdTitle,
       fdDescription: this.fdDescription,
-      fdCategory: this.fdCategory,
-      fdTags: this.fdTags,
-      fdFormat: this.fdFormat
+      fdMydescription: this.fdMydescription,
+      fdTargets: this.fdTargets,
+      fdProject_type: this.fdProject_type,
+      fdPreferential_location:this.fdPreferential_location
     });
   }
 
 
+  all_pictures_uploaded( event: boolean) {
+    this.pictures_uploaded = event;
 
-  validate_form_drawings() {
+    if(this.attachments_uploaded && this.pictures_uploaded){
+      console.log("tous les téléchargments sont finis/ pictures");
+      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
+    }
+
+    if(!event) {
+      alert("problème lors du télechargement");
+    }
+
+  }
+
+  all_pictures_uploaded1( event: boolean) {
+    this.attachments_uploaded = event;
+
+    if(this.attachments_uploaded && this.pictures_uploaded){
+      console.log("tous les téléchargments sont finis/ attachments");
+      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
+    }
+
+    if(!event) {
+      alert("problème lors du télechargement");
+    }
+
+  }
 
 
-    this.tags = $(".multipleSelectfd").val();
-    if( this.tags.length == 0 ) {
+  validate_form_ads() {
+
+
+    this.targets = $(".multipleSelectfd").val();
+    if( this.targets.length == 0 ) {
       this.fdDisplayErrors = true;
       this.tagsValidator = false;
     }
@@ -212,51 +205,28 @@ export class AddAdComponent implements OnInit {
       this.tagsValidator = true;
     }
 
-    if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") && this.tagsValidator ) {
-       this.tags = $(".multipleSelectfd").val();
+    if ( this.fd.valid  && this.tagsValidator && this.Ads_service.get_thumbnail_confirmation() ) {
+       this.targets = $(".multipleSelectfd").val();
         console.log('ok1')
+        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription, this.fd.value.fdMydescription,this.targets)
+          .subscribe((val)=> {
+            this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
+              this.status_pictures=true;
+              this.id_ad=l[0].id
+              console.log(l);
+            })           
+          });
 
-              if( this.CURRENT_step < (this.REAL_step) ) {
-                this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-                .subscribe(inf=>{
-                  this.CURRENT_step++;
-                  
-                });
-              }
-              else {
-                this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-                .subscribe((val)=> {
-                  this.CURRENT_step++;
-                  this.REAL_step++;
-                  });
-              }
-
-            this.fdDisplayErrors = false;
+        this.fdDisplayErrors = false;
     }
 
-    else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") && this.tagsValidator ) {
-      this.tags = $(".multipleSelectfd").val();
-       console.log('ok1')
 
-             if( this.CURRENT_step < (this.REAL_step) ) {
-               this.Drawings_Artbook_Service.ModifyArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-               .subscribe(inf=>{
-                 this.CURRENT_step++;
-                 
-               });
-             }
-             else {
-               this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags,this.fd.value.fdDescription, this.monetised)
-               .subscribe((val)=> {
-                 this.CURRENT_step++;
-                 this.REAL_step++;
-                 });
-             }
+    else if(this.fd.valid  && this.tagsValidator && !this.Ads_service.get_thumbnail_confirmation()){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'La photo de présentation doit être uplaodée'},
+      });
 
-           this.fdDisplayErrors = false;
-       
     }
-
     else {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
@@ -264,6 +234,12 @@ export class AddAdComponent implements OnInit {
       this.fdDisplayErrors = true;
     }
 
+  }
+
+  cancel_all(){ 
+
+      this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
+    
   }
 
 

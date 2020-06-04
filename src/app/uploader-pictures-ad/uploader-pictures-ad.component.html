@@ -1,0 +1,34 @@
+<div class="uplaoder-container">
+    <div class="button-container" >
+        <label>
+            <div class="select-button">
+                <span>Sélectionner une ou plusieurs images complémentaires</span>
+            </div>
+            <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+        </label>
+        
+    </div>
+
+
+    <tr class="name-container" >
+        <td *ngFor="let item of uploader.queue; let i=index">
+            <!--<span><b>Fichier sélectionné :</b> {{ uploader.queue[i]?.file?.name }}</span>-->
+            <img [src]="list_of_pictures[i]" style="width:140px;height:140px;">
+
+            <div>
+
+                <!--<button mat-raised-button class="button style1"
+                    (click)="uploader.queue[i].upload();" [disabled]="uploader.queue[i].isReady || uploader.queue[i].isUploading || uploader.queue[i].isSuccess">
+                    <span>Valider</span> 
+                </button>-->
+
+                <button mat-raised-button class="button style0"
+                    (click)="remove_beforeupload(uploader.queue[i],i);">
+                    <span class="">Supprimer</span> 
+                </button>
+            </div>
+        </td>
+        
+
+    </tr>
+</div>

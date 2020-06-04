@@ -124,6 +124,95 @@ form {
     color:rgb(97, 0, 0);
 }
 
+//thumbnail
+
+.thumbnail-container {
+    width:30%;
+    margin:30px auto 50px auto;
+    background:rgba(248,248,248);
+    border-radius: 0px 0px 10px 10px;
+}
+
+.thumbnail-container .thumbnail-container-name {
+    width:100%;
+    height:60px;
+    display:flex;
+    background-color: rgb(192, 209, 241);
+    border-radius:10px 10px 0px 0px;
+}
+
+.thumbnail-container .thumbnail-container-name span {
+    margin: auto auto auto auto;
+    font-size: 1.3rem;
+}
+
+.thumbnail-container .thumbnail-container-data {
+    width:95%;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin:20px auto 20px auto;
+}
+
+.thumbnail-container .thumbnail-container-flex {
+    display:block;
+    width:95%;
+
+    //padding-top: 25px;
+    padding-bottom: 25px;
+    margin:20px auto 20px auto;
+}
+
+//pictures
+
+.pictures-container {
+    width:100%;
+    margin:30px auto 50px auto;
+    background:rgba(248,248,248);
+    border-radius: 0px 0px 10px 10px;
+}
+
+.pictures-container .pictures-container-name {
+    width:100%;
+    height:60px;
+    display:flex;
+    background-color: rgb(192, 209, 241);
+    border-radius:10px 10px 0px 0px;
+}
+
+.pictures-container .pictures-container-name span {
+    margin: auto auto auto auto;
+    font-size: 1.3rem;
+}
+
+.pictures-container .pictures-container-data {
+    width:95%;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin:20px auto 20px auto;
+}
+
+.pictures-container .pictures-container-flex {
+    display:block;
+    width:95%;
+
+    //padding-top: 25px;
+    padding-bottom: 25px;
+    margin:20px auto 20px auto;
+}
+
+
+//adam
+
+.container1 {
+    display:flex;
+    margin:auto 20px auto 20px;
+}
+
+.container2 {
+    width: 50%;
+    display:block;
+    margin:auto;
+}
 
 
 //ng-deeps

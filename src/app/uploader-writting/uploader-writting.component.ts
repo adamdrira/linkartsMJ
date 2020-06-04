@@ -62,7 +62,7 @@ export class UploaderWrittingComponent implements OnInit {
         
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf ou .docx'},
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf'},
         });
 
         
