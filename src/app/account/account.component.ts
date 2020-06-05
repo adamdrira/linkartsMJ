@@ -63,6 +63,7 @@ export class AccountComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resize_comics();
+    this.resize_writings();
   }
 
   
@@ -76,6 +77,9 @@ export class AccountComponent implements OnInit {
     this.resize_comics();
   }
 
+  @ViewChild('writingThumbnail') set writingThumbnails(content:ElementRef) {
+    this.resize_writings();
+  }
 
   //NEW VARIABLES
   emphasized_artwork_added: boolean = false;
@@ -482,7 +486,9 @@ export class AccountComponent implements OnInit {
 
 
 
-    //this.resize_comics();
+    this.resize_comics();
+    this.resize_writings();
+
 
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
       this.showEditCoverPic = false;
@@ -514,7 +520,6 @@ export class AccountComponent implements OnInit {
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
     else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
     else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
-
   }
 
 
@@ -627,6 +632,36 @@ export class AccountComponent implements OnInit {
       return 1;
     }
   }
+ 
+  resize_writings() {
+    $('.writing-thumbnail').css({'width': ( this.get_writings_size() - 2 ) +'px'});
+  }
+
+  get_writings_size() {
+    return $('.writing-thumbnails-container').width()/this.get_writings_per_line();
+  }
+
+  get_writings_per_line() {
+    var width = window.innerWidth;
+
+    if( width > 1600 ) {
+      return 5;
+    }
+    else if( width > 1200) {
+      return 4;
+    }
+    else if( width > 1000) {
+      return 3;
+    }
+    else if( width > 700) {
+      return 2;
+    }
+    else {
+      return 1;
+    }
+  }
+
+
 
  change_drawing_album_status(i,value){
     if(value){

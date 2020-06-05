@@ -181,7 +181,7 @@
             </div>
 
 
-            <div *ngIf="new_comic_contents_added">
+            <div *ngIf="new_comic_contents_added" class="bd-container">
                 
                 <div class="artwork-type-title">
                     Bandes dessinées
@@ -196,13 +196,13 @@
                 </div>
             </div>
 
-            <div *ngIf="new_drawing_contents_added">
+            <div *ngIf="new_drawing_contents_added" class="bd-container">
                 
                 <div class="artwork-type-title">
                     Dessins
                 </div>
 
-                <div class="container-drawings">
+                <div class="container-drawings newDrawings">
                     <div *ngFor="let item of new_drawing_contents" style="height:300px; margin:40px 0px 30px 0px;" class="new-artwork">
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             [item]=item
@@ -220,7 +220,7 @@
             </div>
 
             
-            <div *ngIf="new_writing_contents_added">
+            <div *ngIf="new_writing_contents_added" class="bd-container">
                 
                 <div class="artwork-type-title">
                     Écrits
@@ -493,7 +493,7 @@
 
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                                 </div>
                                             <div class="bd-thumbnails-container">
@@ -506,7 +506,7 @@
                                             </div>
                                         </div>
                                         <div *ngIf="mode_visiteur && list_bd_albums_status[list_titles_albums_bd_added.length-i+1]=='public'">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                             </div>
                                             <div class="bd-thumbnails-container">
@@ -525,7 +525,7 @@
                                 <div *ngIf="list_bd_series_added && list_bd_series.length!=0 ">   
                                     <div *ngIf="mode_visiteur && list_bd_albums_status[1]=='standard'">
                                         <div *ngIf="list_bd_series.length!=0">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 Séries
                                             </div>
                                         </div>
@@ -536,7 +536,7 @@
                                     </div>
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_bd_series.length!=0">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 Séries
                                             </div>
                                              <div class="bd-thumbnails-container">
@@ -551,7 +551,7 @@
                                 <div *ngIf="list_bd_oneshot_added && list_bd_oneshot.length!=0 ">   
                                     <div *ngIf="mode_visiteur && list_bd_albums_status[0]=='standard'">
                                         <div *ngIf="list_bd_oneshot.length!=0">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 One-shots
                                             </div>
                                         </div>
@@ -562,7 +562,7 @@
                                     </div>
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_bd_oneshot.length!=0">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 One-shots
                                             </div>
                                             <div class="bd-thumbnails-container">
@@ -626,7 +626,7 @@
                         <!------------------------------------------------------------------------->
                         <!----------------------- VISUALISATION DES DESSINS ----------------------->
                         <!------------------------------------------------------------------------->
-                        <ng-container *ngIf="opened_category==1">
+                        <div *ngIf="opened_category==1" class="drawings-container">
                             <ng-container *ngIf="opened_album==0">
                                 
                                 <!--On parcourt tous les albums ajoutés-->
@@ -636,8 +636,8 @@
                                         <!--On affiche les albums-->
                                     
                                         <div *ngIf="!mode_visiteur">
-                                            <div *ngFor="let j of list_of_cover_index">
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j">
+                                            <div *ngFor="let j of list_of_cover_index" style="display:flex;">
+                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:auto auto">
                                                     <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
                                                         [pictures_number]=j
                                                         [album_name]=list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]
@@ -648,8 +648,8 @@
                                             </div>
                                         </div>
                                         <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
-                                            <div *ngFor="let j of list_of_cover_index">
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j">
+                                            <div *ngFor="let j of list_of_cover_index" style="display:flex;">
+                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:auto auto">
                                                     <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
                                                         [pictures_number]=j
                                                         [pictures_list]=array_of_selected_safeurls[list_titles_albums_drawings_added.length-i-1]
@@ -664,7 +664,12 @@
 
                                 <div *ngIf="list_drawings_artbook_added && list_drawings_artbook.length!=0 ">   
                                     <div *ngIf="mode_visiteur && list_drawing_albums_status[1]=='standard'">
-                                        <div *ngIf="list_drawings_artbook.length!=0">Artbooks
+                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container">
+                                            
+                                            <div class="artwork-type-title">
+                                                Artbooks
+                                            </div>
+
                                             <div *ngFor="let item of list_drawings_artbook; let i = index">
                                                 <app-thumbnail-drawing
                                                     [item]=item
@@ -675,7 +680,12 @@
                                         </div>
                                     </div>
                                     <div *ngIf="!mode_visiteur">
-                                        <div *ngIf="list_drawings_artbook.length!=0">Artbooks 
+                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container">
+                                            
+                                            <div class="artwork-type-title">
+                                                Artbooks
+                                            </div>
+
                                             <div *ngFor="let item of list_drawings_artbook; let i = index">
                                                 <app-thumbnail-drawing
                                                     [item]=item
@@ -689,7 +699,12 @@
 
                                 <div *ngIf="list_drawings_onepage_added && list_drawings_onepage.length!=0 ">                              
                                     <div *ngIf=" mode_visiteur && list_drawing_albums_status[0]=='standard'" >
-                                        <div *ngIf="list_drawings_onepage.length!=0">One-shots
+                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container">
+                                            
+                                            <div class="artwork-type-title">
+                                                One-shots
+                                            </div>
+
                                             <div *ngFor="let item of list_drawings_onepage; let i = index">
                                                 <app-thumbnail-drawing 
                                                     [item]=item
@@ -700,7 +715,12 @@
                                         </div>
                                     </div>
                                     <div *ngIf=" !mode_visiteur " >
-                                        <div *ngIf="list_drawings_onepage.length!=0">One-shots 
+                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container">
+
+                                            <div class="artwork-type-title">
+                                                One-shots
+                                            </div>
+
                                              <div *ngFor="let item of list_drawings_onepage; let i = index">
                                                 <app-thumbnail-drawing 
                                                     [item]=item
@@ -752,14 +772,17 @@
                             </ng-container>
 
 
-                        </ng-container>
+                        </div>
 
 
                         
                         <!------------------------------------------------------------------------->
                         <!----------------------- VISUALISATION DES ECRITS ------------------------>
                         <!------------------------------------------------------------------------->
-                        <ng-container *ngIf="opened_category==2">
+                        
+
+
+                        <div *ngIf="opened_category==2" class="writing-container">
                         
                             <ng-container *ngIf="opened_album==0">
                                 <ng-container *ngIf="list_albums_writings_added">
@@ -767,53 +790,63 @@
 
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
-                                               </div>
-                                            <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index">
-                                                <app-thumbnail-writing class="writing-component-container" 
-                                                    [item]=item
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-writing>
                                             </div>
+
+                                            <div class="writing-thumbnails-container">
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail class="writing-thumbnail">
+                                                    <app-thumbnail-writing class="writing-component-container" 
+                                                        [item]=item
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-writing>
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <div *ngIf="mode_visiteur && list_writings_albums_status[list_titles_albums_writings_added.length-i-1]=='public'">
-                                            <div class="name-container">
+                                            <div class="artwork-type-title">
                                                 {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
                                             </div>
-                                            <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index">
-                                                <app-thumbnail-writing class="writing-component-container" 
-                                                    [item]=item
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-writing>
+
+                                            <div class="writing-thumbnails-container">
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail class="writing-thumbnail">
+                                                    <app-thumbnail-writing class="writing-component-container" 
+                                                        [item]=item
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-writing>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </ng-container>
 
-                                <ng-container *ngIf="list_writings_added && list_writings.length!=0 ">   
-                                        <div *ngFor="let item of list_writings; let i = index">
-                                            <app-thumbnail-writing
-                                                [item]=item
-                                                now_in_seconds={{now_in_seconds}}
-                                            ></app-thumbnail-writing>
-                                        </div>
-                                </ng-container>
+                                <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container">   
+                                    <div *ngFor="let item of list_writings; let i = index" #writingThumbnail class="writing-thumbnail">
+                                        <app-thumbnail-writing
+                                            [item]=item
+                                            now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-writing>
+                                    </div>
+                                </div>
                             </ng-container>
 
 
                             <!--Autres albums-->
                             <ng-container *ngIf="opened_album>=1">
-                                <div *ngFor="let item of list_albums_writings[opened_album - 1] ; let j = index">
-                                    <app-thumbnail-writing
-                                    [item]=item
-                                    now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-writing>
+                                <div class="writing-thumbnails-container">
+                                    <div #writingThumbnail class="writing-thumbnail">
+                                        <app-thumbnail-writing *ngFor="let item of list_albums_writings[opened_album - 1] ; let j = index"
+                                        [item]=item
+                                        now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-writing>
+                                    </div>
                                 </div>
                             </ng-container>
 
 
-                        </ng-container>
+                        </div>
 
                     </ng-container>
                     
@@ -871,7 +904,7 @@
 
 
 
-        <ng-container *ngIf="opened_section==8 && archives_received">
+        <ng-container *ngIf="opened_section==6 && archives_received">
             <app-archives
             [archives_comics]=archives_comics
             [archives_drawings]=archives_drawings

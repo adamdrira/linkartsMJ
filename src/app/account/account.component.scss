@@ -620,24 +620,52 @@
   }
 
 
-  .artworks-container .bd-container {
+  .bd-container {
     width:90%;
     margin-left:auto;
     margin-right:auto;
   }
 
-  .artworks-container .bd-container .name-container {
+  .drawing-container {
+    width:90%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .bd-container .name-container {
     font-weight: bold;
     margin:30px auto 0px 0px;
   }
 
   
-  .artworks-container .bd-container .bd-thumbnails-container {
+  .bd-container .bd-thumbnails-container {
     width:100%;
     display: flex;
     flex-wrap: wrap;
   }
 
+  .writing-container .writing-thumbnails-container {
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .writing-container {
+    width:90%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .writing-container .name-container {
+    font-weight: bold;
+    margin:30px auto 0px 0px;
+  }
+  
+  .writing-container .writing-thumbnails-container {
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
 
 
   .title {
@@ -759,7 +787,7 @@
   flex-wrap:nowrap;
 }
 
-::ng-deep .drawing-container {
+::ng-deep .newDrawings .drawing-container {
   height:300px !important;
 }
 
