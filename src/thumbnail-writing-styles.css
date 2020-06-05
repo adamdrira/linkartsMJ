@@ -1,0 +1,320 @@
+
+  /*****************THUMBNAIL WRITING STYLES**********************/
+  
+
+  .writing-container {
+    width:290px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .element-writing {
+
+    /*nouveau style*/
+
+    display: flex;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:auto;
+    flex-direction: column;
+    background-color:rgb(218,227,243);
+    width: 280px;
+    height: 400px;
+    position: relative;
+    transition: 0.2s ease-in-out;
+    color:white;
+    z-index:10;
+  }
+  
+  .border-recto {
+
+    /*nouveau style*/
+    border:1px solid rgb(206, 206, 206);
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    border-radius:4px;
+    overflow: hidden;
+  }
+  
+  .border-verso {
+    border-radius:5px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    background: rgb(109, 124, 152);
+    padding: 15px 15px 15px 15px;
+    overflow: hidden;
+  }
+  
+  
+  
+  
+  .element-writing .miniature {
+    position:relative;
+    height:100% !important;
+    width:100% !important;
+  }
+  
+  
+  .element-writing .miniature img {
+    box-shadow: 0 5px 10px rgb(32,56,100);
+    width:100% !important;
+    height:100% !important;
+    margin-left:auto;
+    margin-right:auto;
+    object-fit: cover;
+    height: 100%;
+    width: auto;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+  }
+
+  .element-writing .absolute-thumbnail-data {
+    background:linear-gradient(0deg, rgba(32, 56, 100, 0.6),rgba(32, 56, 100, 0.7), rgba(32, 56, 100, 0.6));
+    color:rgb(255, 255, 255);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+    margin-left: auto;
+    padding: 6px 20px 10px 18px;
+    margin-right: auto;
+  }
+  
+  
+  .title-container {
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    text-align:left;
+    }
+    
+    .title-container span.title {
+    font-weight: bold;
+    margin: auto auto;
+    font-size: 18px;
+    line-height: 20px;
+    display: -webkit-box;
+    width: 100%;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    word-break: break-all;
+    }
+    
+    
+    .author-container {
+    display: flex;
+    width: 100%;
+    }
+    
+    .author-container .left-container {
+    width: 32px;
+    height: 32px;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    margin: 3px 5px auto 0px;
+    }
+    
+    .author-container .left-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    }
+    
+    .author-container .right-container {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: calc( 100% - 40px );
+    margin: 0px 10px auto 5px;
+    }
+    .author-container .right-container span.author-name {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight:bold;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    }
+    
+    .author-container .right-container span.author-description {
+    font-size:15px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    }
+    
+    .stats-container {    
+    width: 100%;
+    height: 22px;
+    font-size: 1.1rem;
+    color: #3b3b3b;
+    display: flex;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    font-size: 1rem;
+    justify-content: space-between;
+    }
+    
+    .figure-container-views,
+    .figure-container-likes,
+    .figure-container-loves
+    {
+    display: flex;
+    border-radius: 6px;
+    align-items: center;
+    width: 60px;
+    height: 25px;
+    }
+    
+    
+    .figure-container-views {
+      background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
+      color:white;
+      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    }
+    
+    .figure-container-likes {
+      background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
+      color:white;
+      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    }
+    
+    .figure-container-loves {    
+      background-image: linear-gradient(to left, #8a0101, #e60000);
+      color:white;
+      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    }
+    
+    .figure-container-views span,
+    .figure-container-likes span,
+    .figure-container-loves span
+    {
+    margin:auto 5px auto auto;
+    }
+    
+    
+    
+    .view-logo {
+    width:20px;
+    height:20px;
+    margin:auto auto auto 0px;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask:  url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
+    mask: url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
+    }
+    
+    .like-logo {
+     width:18px;
+     height:18px;
+     margin:2px auto auto 0px;
+     background-color: rgb(255, 255, 255);
+     -webkit-mask:  url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
+     mask: url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
+    }
+    
+    .love-logo {
+    width:14px;
+    height:14px;
+    margin:auto auto auto 0px;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask:  url("/assets/img/svg/love.svg") no-repeat 50% 50%;
+    mask: url("/assets/img/svg/love.svg") no-repeat 50% 50%;
+    }
+    
+    
+  
+  
+  
+  /*********Face verso*************/
+  
+  
+  .border-verso .verso-resume {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size:1.4rem;
+    text-align:left;
+    display:flex;
+  }
+  
+  
+  .element-writing .horizontal-line {
+    width: 60px;
+    height: 2px;
+    margin: 0px auto 0px 0px;
+    background: white;
+  }
+  
+  .border-verso .verso-description {    
+    width: 100%;
+    text-align: left;
+    line-height: 1.5rem;
+    margin-top: 10px;
+    overflow-y: hidden;
+    word-break: break-word;
+  }
+  
+  .border-verso .verso-description span {
+    margin: auto auto;
+    font-size: 15px;
+    line-height: 20px;
+    display: -webkit-box;
+    width: 100%;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 11;
+  }
+  
+    
+  .categories-container {
+      width:100%;
+      white-space: nowrap;
+      text-align:left;
+      line-height: 20px;
+      margin-top: auto;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      }
+      
+  .categories-container span {
+      font-size:1rem;
+  }
+  
+  .date-container {
+      width:100%;
+      margin-top: 10px;
+      line-height: 1.3rem;
+      text-align:left;
+  }
+  
+  .date-container span {
+      font-size:13px;
+  }
+  
+  
+  .border-verso .verso-type {
+    width: 100%;
+    text-align: left;
+    margin-top: 0px;
+    line-height: 1.15rem;
+  }
+  
+  .border-verso .verso-type span {
+    font-size:1rem;
+  }
+  
+  
+
+
+
+
+
+
