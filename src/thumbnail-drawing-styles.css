@@ -1,6 +1,6 @@
 
 a {
-  width: 300px;
+  width: 280px;
   margin-left: auto;
   margin-right: auto;
   height: 100%;
@@ -9,7 +9,7 @@ a {
 
 .final-thumbnail {
     position:relative;
-    width: 300px !important;
+    width: 280px !important;
     border-radius:12px;
     margin-left:auto;
     margin-right:auto;
