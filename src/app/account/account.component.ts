@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 
 
+declare var Muuri:any;
 declare var $: any;
 
 
@@ -64,6 +65,8 @@ export class AccountComponent implements OnInit {
   onResize(event) {
     this.resize_comics();
     this.resize_writings();
+
+    this.update_new_contents();
   }
 
   
@@ -121,6 +124,12 @@ export class AccountComponent implements OnInit {
   archives_comics:any;
   archives_drawings:any;
   archives_writings:any;
+
+
+
+  gridAlbum:any;
+  
+
 
 
   /***************************************** */
@@ -182,6 +191,38 @@ export class AccountComponent implements OnInit {
   new_drawing_contents_added=false;
   new_writing_contents:any[]=[];
   new_writing_contents_added=false;
+
+
+  update_new_contents() {
+
+    let width = $(".container-comics").width();
+    
+    if( width <= 600 ) {
+      $(".new-artwork:nth-of-type(1)").css("display","block");
+      $(".new-artwork:nth-of-type(2), .new-artwork:nth-of-type(3), .new-artwork:nth-of-type(4), .new-artwork:nth-of-type(5)").css("display","none");
+    }
+    else if( width <= 1000 ) {
+      $(".new-artwork:nth-of-type(1), .new-artwork:nth-of-type(2)").css("display","block");
+      $(".new-artwork:nth-of-type(3), .new-artwork:nth-of-type(4), .new-artwork:nth-of-type(5)").css("display","none");
+    }
+    else if( width <= 1300 ) {
+      $(".new-artwork:nth-of-type(1), .new-artwork:nth-of-type(2), .new-artwork:nth-of-type(3)").css("display","block");
+      $(".new-artwork:nth-of-type(4), .new-artwork:nth-of-type(5)").css("display","none");
+    }
+    else if( width <= 1700 ) {
+      $(".new-artwork:nth-of-type(1), .new-artwork:nth-of-type(2), .new-artwork:nth-of-type(3), .new-artwork:nth-of-type(4)").css("display","block");
+      $(".new-artwork:nth-of-type(5)").css("display","none");
+    }
+    else if( width <= 2000 ) {
+      $(".new-artwork:nth-of-type(1), .new-artwork:nth-of-type(2), .new-artwork:nth-of-type(3), .new-artwork:nth-of-type(4), .new-artwork:nth-of-type(5)").css("display","block");
+    }
+
+
+
+
+  }
+
+
 
   see_subscribings() {
     this.dialog.open(PopupSubscribingsComponent, {
@@ -550,15 +591,96 @@ export class AccountComponent implements OnInit {
   start_add_album(i : number) {
     if( this.add_album != -1 ) {
       this.add_album = -1;
+      this.open_album( this.opened_album );
       return;
     }
     this.add_album = i;
   }
 
+
+  
   open_album(i : number) {
+
     this.opened_album=i;
-    
+
+    if( this.opened_category == 1 && i == 0 ) {
+
+      this.cd.detectChanges();
+
+      this.gridAlbum = new Muuri('.gridAlbumArtbook', {dragEnabled: false,layout: {fillGaps: true},});
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+
+      this.gridAlbum.on('layoutEnd', function (items) {
+        //window.dispatchEvent(new Event('resize'));
+      });
+
+      this.gridAlbum = new Muuri('.gridAlbumOneshot', {dragEnabled: false,layout: {fillGaps: true},});
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+      
+      this.gridAlbum.on('layoutEnd', function (items) {
+        //window.dispatchEvent(new Event('resize'));
+      });
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+
+    }
+    else if( this.opened_category == 1 && i == 1 ) {
+
+      this.cd.detectChanges();
+
+      this.gridAlbum = new Muuri('.gridAlbumOneshot2', {dragEnabled: false,layout: {fillGaps: true},});
+      this.gridAlbum.on('layoutEnd', function (items) {
+        //window.dispatchEvent(new Event('resize'));
+      });
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+      
+    }
+    else if( this.opened_category == 1 && i == 2 ) {
+
+      this.cd.detectChanges();
+
+      this.gridAlbum = new Muuri('.gridAlbumArtbook2', {dragEnabled: false,layout: {fillGaps: true},});
+      this.gridAlbum.on('layoutEnd', function (items) {
+        //window.dispatchEvent(new Event('resize'));
+      });
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+      
+    }
+    else if( this.opened_category == 1 && i >= 3 ) {
+
+      this.cd.detectChanges();
+
+      this.gridAlbum = new Muuri('.gridAlbumCreated', {dragEnabled: false,layout: {fillGaps: true},});
+      this.gridAlbum.on('layoutEnd', function (items) {
+        //window.dispatchEvent(new Event('resize'));
+      });
+
+      this.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'));
+      
+    }
+
+
   }
+
+
+  
+  @ViewChildren('resize') set resize(content: ElementRef) {
+
+    this.cd.detectChanges();
+    //window.dispatchEvent(new Event('resize'));
+  }
+
+  
 
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {

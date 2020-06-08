@@ -1,8 +1,8 @@
 
 
-<div class="thumbnail-cover-album-container">
+<div class="thumbnail-cover-album-container" [ngClass]="{'preview-mode': add_album_preview }">
 
-    <div class="thumbnails">
+    <div class="thumbnails" [ngClass]="{'preview-mode-thumbnail': add_album_preview }">
 
         <!----------------------------------------------------------->
         <!----------------------1 PICTURE---------------------------->

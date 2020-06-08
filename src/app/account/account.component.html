@@ -1,3 +1,4 @@
+
 <div class="container-fluid">
     <main role="main">
         
@@ -186,7 +187,7 @@
                 <div class="artwork-type-title">
                     Bandes dessinées
                 </div>
-                <div class="container-comics">
+                <div class="container-comics newDrawings">
                     <div *ngFor="let item of new_comic_contents" class="new-artwork">
                         <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
                         [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
@@ -201,9 +202,8 @@
                 <div class="artwork-type-title">
                     Dessins
                 </div>
-
                 <div class="container-drawings newDrawings">
-                    <div *ngFor="let item of new_drawing_contents" style="height:300px; margin:40px 0px 30px 0px;" class="new-artwork">
+                    <div *ngFor="let item of new_drawing_contents" style="height:280px; margin:40px 0px 30px 0px;" class="new-artwork">
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             [item]=item
                             format='one-shot'
@@ -225,8 +225,7 @@
                 <div class="artwork-type-title">
                     Écrits
                 </div>
-
-                <div class="container-writings">
+                <div class="container-writings newDrawings">
                     <div *ngFor="let item of new_writing_contents" style="height:300px;" class="new-artwork">
                         <app-thumbnail-writing
                         [item]=item
@@ -670,15 +669,21 @@
                                                 Artbooks
                                             </div>
 
-                                            <div *ngFor="let item of list_drawings_artbook; let i = index">
-                                                <app-thumbnail-drawing
-                                                    [item]=item
-                                                    format='artbook'
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-drawing>
+                                            <div class="d-flex flex-wrap gridAlbumArtbook">
+                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                                    <app-thumbnail-drawing #resize
+                                                        [item]=item
+                                                        format='artbook'
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-drawing>
+                                                </div>
+                                                <ng-container #resize></ng-container>
                                             </div>
+
+
                                         </div>
                                     </div>
+
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_drawings_artbook.length!=0" class="bd-container">
                                             
@@ -686,13 +691,16 @@
                                                 Artbooks
                                             </div>
 
-                                            <div *ngFor="let item of list_drawings_artbook; let i = index">
-                                                <app-thumbnail-drawing
-                                                    [item]=item
-                                                    format='artbook'
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-drawing>
+                                            <div class="d-flex flex-wrap gridAlbumArtbook">
+                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                                    <app-thumbnail-drawing #resize
+                                                        [item]=item
+                                                        format='artbook'
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-drawing>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -705,12 +713,14 @@
                                                 One-shots
                                             </div>
 
-                                            <div *ngFor="let item of list_drawings_onepage; let i = index">
-                                                <app-thumbnail-drawing 
-                                                    [item]=item
-                                                    format='one-shot'
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-drawing>
+                                            <div class="d-flex flex-wrap gridAlbumOneshot">
+                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                                    <app-thumbnail-drawing #resize
+                                                        [item]=item
+                                                        format='one-shot'
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-drawing>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -721,12 +731,14 @@
                                                 One-shots
                                             </div>
 
-                                             <div *ngFor="let item of list_drawings_onepage; let i = index">
-                                                <app-thumbnail-drawing 
-                                                    [item]=item
-                                                    format='one-shot'
-                                                    now_in_seconds={{now_in_seconds}}
-                                                ></app-thumbnail-drawing>
+                                            <div class="d-flex flex-wrap gridAlbumOneshot">
+                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                                    <app-thumbnail-drawing #resize
+                                                        [item]=item
+                                                        format='one-shot'
+                                                        now_in_seconds={{now_in_seconds}}
+                                                    ></app-thumbnail-drawing>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -734,30 +746,37 @@
                             </ng-container>
 
                             <!--One-shots album-->
-                            <ng-container *ngIf="opened_album==1">
-                                <div *ngFor="let item of list_drawings_onepage; let i = index">
-                                    <app-thumbnail-drawing 
-                                        [item]=item
-                                        format='one-shot'
-                                        now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-drawing>
+                            <div class="bd-container">
+                                <div *ngIf="opened_album==1" class="d-flex flex-wrap gridAlbumOneshot2">
+                                    <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                        <app-thumbnail-drawing 
+                                            [item]=item
+                                            format='one-shot'
+                                            now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-drawing>
+                                        <ng-container></ng-container>
+                                    </div>
                                 </div>
-                            </ng-container>
+                            </div>
+
 
                             <!--Artbooks album-->
-                            <ng-container *ngIf="opened_album==2">
-                                <div *ngFor="let item of list_drawings_artbook; let i = index">
-                                    <app-thumbnail-drawing 
-                                        [item]=item
-                                        format='artbook'
-                                        now_in_seconds={{now_in_seconds}}
-                                    ></app-thumbnail-drawing>
+                            <div class="bd-container">
+                                <div *ngIf="opened_album==2" class="d-flex flex-wrap gridAlbumArtbook2">
+                                    <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                        <app-thumbnail-drawing 
+                                            [item]=item
+                                            format='artbook'
+                                            now_in_seconds={{now_in_seconds}}
+                                        ></app-thumbnail-drawing>
+                                    </div>
                                 </div>
-                            </ng-container>
+                            </div>
 
                             <!--Autres albums-->
-                            <ng-container *ngIf="opened_album>=3">
-                                    <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" >
+                            <div class="bd-container">
+                                <div *ngIf="opened_album>=3" class="d-flex flex-wrap gridAlbumCreated">
+                                    <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="item">
                                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                             [item]=item
                                             format='one-shot'
@@ -769,7 +788,8 @@
                                             now_in_seconds={{now_in_seconds}}
                                         ></app-thumbnail-drawing>
                                     </div>
-                            </ng-container>
+                                </div>
+                            </div>
 
 
                         </div>

@@ -13,6 +13,8 @@ export class ThumbnailCoverAlbumDrawingComponent implements OnInit {
   @Input('pictures_number') pictures_number:number;
   @Input('pictures_list') pictures_list:any;
   @Input('album_name') album_name:String;
+
+  @Input('add_album_preview') add_album_preview:boolean;
   
   
   ngOnInit(): void {
