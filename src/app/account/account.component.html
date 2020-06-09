@@ -188,7 +188,7 @@
                     Bandes dessinées
                 </div>
                 <div class="container-comics newDrawings">
-                    <div *ngFor="let item of new_comic_contents" class="new-artwork">
+                    <div #getwidth *ngFor="let item of new_comic_contents" class="new-artwork">
                         <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
                         [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
                         <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
@@ -924,9 +924,17 @@
 
 
 
+        <ng-container *ngIf="opened_section==2 && list_of_ads_added">
+            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
+            [item]=item
+            now_in_seconds={{now_in_seconds}}
+            ></app-thumbnail-ad>
+        </ng-container>
+
         <ng-container *ngIf="opened_section==6 && archives_received">
             <app-archives
             [archives_comics]=archives_comics
+            [archives_ads]=archives_ads
             [archives_drawings]=archives_drawings
             [archives_writings]=archives_writings
             now_in_seconds={{now_in_seconds}}
