@@ -495,8 +495,8 @@
                                             <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                                 </div>
-                                            <div class="bd-thumbnails-container">
-                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail class="bd-thumbnail">
+                                            <div class="bd-thumbnails-container container-comics">
+                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail>
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
                                                     [item]=item2 format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber>=0"
@@ -508,8 +508,8 @@
                                             <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                             </div>
-                                            <div class="bd-thumbnails-container">
-                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail class="bd-thumbnail">
+                                            <div class="bd-thumbnails-container container-comics">
+                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail>
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
                                                     [item]=item2 format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber>=0"
@@ -528,8 +528,8 @@
                                                 Séries
                                             </div>
                                         </div>
-                                        <div class="bd-thumbnails-container">
-                                            <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                        <div class="bd-thumbnails-container container-comics">
+                                            <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
                                             [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
                                         </div>
                                     </div>
@@ -538,8 +538,8 @@
                                             <div class="artwork-type-title">
                                                 Séries
                                             </div>
-                                             <div class="bd-thumbnails-container">
-                                                <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                             <div class="bd-thumbnails-container container-comics">
+                                                <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
                                                 [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
                                             </div>
                                         </div>
@@ -554,8 +554,8 @@
                                                 One-shots
                                             </div>
                                         </div>
-                                        <div class="bd-thumbnails-container">
-                                            <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                        <div class="bd-thumbnails-container container-comics">
+                                            <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
                                             [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
                                         </div>
                                     </div>
@@ -564,8 +564,8 @@
                                             <div class="artwork-type-title">
                                                 One-shots
                                             </div>
-                                            <div class="bd-thumbnails-container">
-                                                <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                            <div class="bd-thumbnails-container container-comics">
+                                                <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
                                                 [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
                                             </div>
                                         </div>
@@ -578,8 +578,8 @@
 
                             <!--ONE SHOTS-->
                             <ng-container *ngIf="opened_album==1">
-                                <div class="bd-thumbnails-container">
-                                    <app-thumbnail-comics  *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                <div class="bd-thumbnails-container container-comics">
+                                    <app-thumbnail-comics  *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
                                         [item]=item
                                         format='one-shot'
                                         now_in_seconds={{now_in_seconds}}
@@ -589,8 +589,8 @@
 
                             <!--SERIES-->
                             <ng-container *ngIf="opened_album==2">
-                                <div class="bd-thumbnails-container">
-                                    <app-thumbnail-comics  *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail class="bd-thumbnail"
+                                <div class="bd-thumbnails-container container-comics">
+                                    <app-thumbnail-comics  *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
                                         [item]=item
                                         format='serie'
                                         now_in_seconds={{now_in_seconds}}
@@ -600,8 +600,8 @@
 
                             <!--AUTRES ALBUMS-->
                             <ng-container *ngIf="opened_album>=3">
-                                <div class="bd-thumbnails-container">
-                                    <div *ngFor="let item of list_albums_bd[opened_album - 3] ; let j = index" #bdThumbnail class="bd-thumbnail">
+                                <div class="bd-thumbnails-container container-comics">
+                                    <div *ngFor="let item of list_albums_bd[opened_album - 3] ; let j = index" #bdThumbnail>
                                         <app-thumbnail-comics *ngIf="item.chaptersnumber == null"
                                             [item]=item
                                             format='one-shot'
@@ -670,7 +670,7 @@
                                             </div>
 
                                             <div class="d-flex flex-wrap gridAlbumArtbook">
-                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item resizableItem">
                                                     <app-thumbnail-drawing #resize
                                                         [item]=item
                                                         format='artbook'
@@ -692,7 +692,7 @@
                                             </div>
 
                                             <div class="d-flex flex-wrap gridAlbumArtbook">
-                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="item resizableItem">
                                                     <app-thumbnail-drawing #resize
                                                         [item]=item
                                                         format='artbook'
@@ -714,7 +714,7 @@
                                             </div>
 
                                             <div class="d-flex flex-wrap gridAlbumOneshot">
-                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item resizableItem">
                                                     <app-thumbnail-drawing #resize
                                                         [item]=item
                                                         format='one-shot'
@@ -732,7 +732,7 @@
                                             </div>
 
                                             <div class="d-flex flex-wrap gridAlbumOneshot">
-                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="item resizableItem">
                                                     <app-thumbnail-drawing #resize
                                                         [item]=item
                                                         format='one-shot'
@@ -748,7 +748,7 @@
                             <!--One-shots album-->
                             <div class="bd-container">
                                 <div *ngIf="opened_album==1" class="d-flex flex-wrap gridAlbumOneshot2">
-                                    <div *ngFor="let item of list_drawings_onepage; let i = index" class="item">
+                                    <div *ngFor="let item of list_drawings_onepage; let i = index" class="item resizableItem">
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='one-shot'
@@ -763,7 +763,7 @@
                             <!--Artbooks album-->
                             <div class="bd-container">
                                 <div *ngIf="opened_album==2" class="d-flex flex-wrap gridAlbumArtbook2">
-                                    <div *ngFor="let item of list_drawings_artbook; let i = index" class="item">
+                                    <div *ngFor="let item of list_drawings_artbook; let i = index" class="item resizableItem">
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='artbook'
@@ -776,7 +776,7 @@
                             <!--Autres albums-->
                             <div class="bd-container">
                                 <div *ngIf="opened_album>=3" class="d-flex flex-wrap gridAlbumCreated">
-                                    <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="item">
+                                    <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="item resizableItem">
                                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                             [item]=item
                                             format='one-shot'
@@ -802,7 +802,7 @@
                         
 
 
-                        <div *ngIf="opened_category==2" class="writing-container">
+                        <div *ngIf="opened_category==2" class="bd-container">
                         
                             <ng-container *ngIf="opened_album==0">
                                 <ng-container *ngIf="list_albums_writings_added">
@@ -814,8 +814,8 @@
                                                 {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
                                             </div>
 
-                                            <div class="writing-thumbnails-container">
-                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail class="writing-thumbnail">
+                                            <div class="writing-thumbnails-container container-writings">
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail>
                                                     <app-thumbnail-writing class="writing-component-container" 
                                                         [item]=item
                                                         now_in_seconds={{now_in_seconds}}
@@ -829,8 +829,8 @@
                                                 {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
                                             </div>
 
-                                            <div class="writing-thumbnails-container">
-                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail class="writing-thumbnail">
+                                            <div class="writing-thumbnails-container container-writings">
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail>
                                                     <app-thumbnail-writing class="writing-component-container" 
                                                         [item]=item
                                                         now_in_seconds={{now_in_seconds}}
@@ -842,8 +842,8 @@
                                     </div>
                                 </ng-container>
 
-                                <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container">   
-                                    <div *ngFor="let item of list_writings; let i = index" #writingThumbnail class="writing-thumbnail">
+                                <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container container-writings">   
+                                    <div *ngFor="let item of list_writings; let i = index" #writingThumbnail>
                                         <app-thumbnail-writing
                                             [item]=item
                                             now_in_seconds={{now_in_seconds}}
@@ -855,9 +855,9 @@
 
                             <!--Autres albums-->
                             <ng-container *ngIf="opened_album>=1">
-                                <div class="writing-thumbnails-container">
-                                    <div #writingThumbnail class="writing-thumbnail">
-                                        <app-thumbnail-writing *ngFor="let item of list_albums_writings[opened_album - 1] ; let j = index"
+                                <div class="writing-thumbnails-container container-writings">
+                                    <div *ngFor="let item of list_albums_writings[opened_album - 1] ; let j = index" #writingThumbnail>
+                                        <app-thumbnail-writing
                                         [item]=item
                                         now_in_seconds={{now_in_seconds}}
                                         ></app-thumbnail-writing>

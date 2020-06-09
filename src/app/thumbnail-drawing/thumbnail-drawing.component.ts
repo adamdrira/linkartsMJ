@@ -278,18 +278,18 @@ export class ThumbnailDrawingComponent implements OnInit {
   }
 
   drawings_per_line() {
-    var width = window.innerWidth;
+    var width = $('.container-drawings').width();
 
-    if( width > 1800 ) {
+    if( width > 1700 ) {
       return 5;
     }
-    else if( width > 1400 ) {
+    else if( width > 1300 ) {
       return 4;
     }
-    else if( width > 1100) {
+    else if( width > 1000) {
       return 3;
     }
-    else if( width > 700) {
+    else if( width > 600) {
       return 2;
     }
     else {

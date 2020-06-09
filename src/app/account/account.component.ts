@@ -63,27 +63,35 @@ export class AccountComponent implements OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.resize_comics();
-    this.resize_writings();
 
     this.update_new_contents();
+    this.calculate_muuri_item_margins();
+
   }
 
-  
+  calculate_muuri_item_margins() {
+    let bdContainerWidth = $(".bd-container").width();
+    let itemsNumber:number = bdContainerWidth/290;
+
+    let remaningSpace = bdContainerWidth - Math.trunc(itemsNumber) * 290;
+
+    let marginValue = Math.trunc((remaningSpace / (2*itemsNumber)) - 2);
+    
+    //this.rd.setStyle( this.resizableItem.nativeElement, "margin-left", marginValue+"px" );
+    //this.rd.setStyle( this.resizableItem.nativeElement, "margin-right", marginValue+"px" );
+    $('.resizableItem').css("margin-left",marginValue+"px");
+    $('.resizableItem').css("margin-right",marginValue+"px");
+
+  }
+
+
   @ViewChild('profileHovered', {static: false}) profileHovered:ElementRef;
   @ViewChild('profilePicHovered', {static: false}) profilePicHovered:ElementRef;
   showEditCoverPic:boolean = true;
   showEditBio:boolean = true;
 
 
-  @ViewChild('bdThumbnail') set bdThumbnails(content:ElementRef) {
-    this.resize_comics();
-  }
-
-  @ViewChild('writingThumbnail') set writingThumbnails(content:ElementRef) {
-    this.resize_writings();
-  }
-
+  
   //NEW VARIABLES
   emphasized_artwork_added: boolean = false;
   emphasized_artwork:any;
@@ -525,11 +533,7 @@ export class AccountComponent implements OnInit {
 
 
 
-
-
-    this.resize_comics();
-    this.resize_writings();
-
+    
 
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
       this.showEditCoverPic = false;
@@ -598,6 +602,7 @@ export class AccountComponent implements OnInit {
   }
 
 
+
   
   open_album(i : number) {
 
@@ -608,21 +613,19 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
 
       this.gridAlbum = new Muuri('.gridAlbumArtbook', {dragEnabled: false,layout: {fillGaps: true},});
-
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
-
-      this.gridAlbum.on('layoutEnd', function (items) {
-        //window.dispatchEvent(new Event('resize'));
-      });
-
       this.gridAlbum = new Muuri('.gridAlbumOneshot', {dragEnabled: false,layout: {fillGaps: true},});
-
-      this.cd.detectChanges();
-      window.dispatchEvent(new Event('resize'));
       
+
+      let k=0;
       this.gridAlbum.on('layoutEnd', function (items) {
-        //window.dispatchEvent(new Event('resize'));
+        if(k==0){
+          console.log("layoutend")
+          window.dispatchEvent(new Event('resize'));
+          k++;
+        }
+        else{
+          return
+        }
       });
 
       this.cd.detectChanges();
@@ -634,8 +637,17 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
 
       this.gridAlbum = new Muuri('.gridAlbumOneshot2', {dragEnabled: false,layout: {fillGaps: true},});
+            
+      let k=0;
       this.gridAlbum.on('layoutEnd', function (items) {
-        //window.dispatchEvent(new Event('resize'));
+        if(k==0){
+          console.log("layoutend")
+          window.dispatchEvent(new Event('resize'));
+          k++;
+        }
+        else{
+          return
+        }
       });
 
       this.cd.detectChanges();
@@ -647,8 +659,17 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
 
       this.gridAlbum = new Muuri('.gridAlbumArtbook2', {dragEnabled: false,layout: {fillGaps: true},});
+            
+      let k=0;
       this.gridAlbum.on('layoutEnd', function (items) {
-        //window.dispatchEvent(new Event('resize'));
+        if(k==0){
+          console.log("layoutend")
+          window.dispatchEvent(new Event('resize'));
+          k++;
+        }
+        else{
+          return
+        }
       });
 
       this.cd.detectChanges();
@@ -660,8 +681,17 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
 
       this.gridAlbum = new Muuri('.gridAlbumCreated', {dragEnabled: false,layout: {fillGaps: true},});
+            
+      let k=0;
       this.gridAlbum.on('layoutEnd', function (items) {
-        //window.dispatchEvent(new Event('resize'));
+        if(k==0){
+          console.log("layoutend")
+          window.dispatchEvent(new Event('resize'));
+          k++;
+        }
+        else{
+          return
+        }
       });
 
       this.cd.detectChanges();
@@ -726,7 +756,7 @@ export class AccountComponent implements OnInit {
   /**************RESIZE FUNCTIONS****************** */
   /************************************************ */
   /************************************************ */
-  
+  /*
   resize_comics() {
     $('.bd-thumbnail').css({'width': ( this.get_comics_size() - 2 ) +'px'});
   }
@@ -781,7 +811,7 @@ export class AccountComponent implements OnInit {
     else {
       return 1;
     }
-  }
+  }*/
 
 
 

@@ -230,7 +230,10 @@ export class ThumbnailWritingComponent implements OnInit {
 
   resize_writing() {
 
-    $('.writing-container').css({'width': this.get_writing_size() +'px'});
+    if( $('.container-writings') ) {
+      $('.writing-container').css({'width': this.get_writing_size() +'px'});
+    }
+
   }
 
   get_writing_size() {
@@ -250,7 +253,7 @@ export class ThumbnailWritingComponent implements OnInit {
     else if( width > 1000) {
       return 3;
     }
-    else if( width > 700) {
+    else if( width > 600) {
       return 2;
     }
     else {
