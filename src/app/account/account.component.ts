@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
@@ -16,7 +16,6 @@ import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { Ads_service } from '../services/ads.service';
 import { PopupSubscribingsComponent } from '../popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
@@ -45,7 +44,6 @@ export class AccountComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
-    private Ads_service:Ads_service,
     private BdOneShotService: BdOneShotService,
     private BdSerieService:BdSerieService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -65,12 +63,11 @@ export class AccountComponent implements OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    console.log("resize")
+
     this.update_new_contents();
     this.calculate_muuri_item_margins();
-  }
 
-  
+  }
 
   calculate_muuri_item_margins() {
     let bdContainerWidth = $(".bd-container").width();
@@ -135,9 +132,8 @@ export class AccountComponent implements OnInit {
   archives_comics:any;
   archives_drawings:any;
   archives_writings:any;
-  archives_ads:any[]=[];
-  list_of_ads:any[]=[];
-  list_of_ads_added:boolean=false;
+
+
 
   gridAlbum:any;
   
@@ -205,12 +201,9 @@ export class AccountComponent implements OnInit {
   new_writing_contents_added=false;
 
 
-
-
   update_new_contents() {
 
     let width = $(".container-comics").width();
-    console.log(width);
     
     if( width <= 600 ) {
       $(".new-artwork:nth-of-type(1)").css("display","block");
@@ -292,8 +285,6 @@ export class AccountComponent implements OnInit {
               this.new_comic_contents.push(s[0]);
               if(i==r[0].length-1){
                 this.new_comic_contents_added=true;
-                
-                
               }
             })
           }
@@ -355,7 +346,6 @@ export class AccountComponent implements OnInit {
       }      
     });
 
-    
  
     this.Subscribing_service.get_archives_comics().subscribe(r=>{
       this.archives_comics=r[0];
@@ -363,25 +353,21 @@ export class AccountComponent implements OnInit {
         this.archives_drawings=l[0];
         this.Subscribing_service.get_archives_writings().subscribe(p=>{
           this.archives_writings=p[0];
-          this.Subscribing_service.get_archives_ads().subscribe(q=>{
-              this.archives_ads=q[0];
-              this.archives_received=true;  
-          })  
+          let number_of_private_bd=0;
+          this.BdSerieService.retrieve_private_serie_bd().subscribe(info1=>{
+            number_of_private_bd= Object.keys(info1[0]).length;
+            this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info2=>{
+              number_of_private_bd= number_of_private_bd+ Object.keys(info2[0]).length;
+              this.number_of_archives=Object.keys(this.archives_comics).length 
+              + Object.keys(this.archives_drawings).length 
+              + Object.keys(this.archives_writings).length 
+              + number_of_private_bd;
+              this.archives_received=true;
+            })
+          })          
         })
       })
     });
-
-    this.Ads_service.get_ads_by_user_id(this.user_id).subscribe(r=>{
-      if (r[0]!=null){
-        for (let i=0;i<r[0].length;i++){
-            this.list_of_ads[i]=(r[0][i]);
-            if(i==r[0].length-1){
-              this.list_of_ads_added=true;
-            }
-        }
-      }
-    })
-
     this.Subscribing_service.get_all_subscribed_users(this.user_id).subscribe(information=>{
       if(Object.keys(information).length>0){
         this.subscribed_users_list=information[0];
@@ -542,18 +528,11 @@ export class AccountComponent implements OnInit {
       
   }
 
-  @ViewChildren('getwidth') getwidth: QueryList<any>;
-  ngForRendred() {
-    this.update_new_contents();
-    this.calculate_muuri_item_margins();
-  }
 
   ngAfterViewInit() {
 
 
-     this.getwidth.changes.subscribe(t => {
-      this.ngForRendred();
-    })
+
     
 
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
@@ -772,7 +751,68 @@ export class AccountComponent implements OnInit {
     }
   }
 
+  /************************************************ */
+  /************************************************ */
+  /**************RESIZE FUNCTIONS****************** */
+  /************************************************ */
+  /************************************************ */
+  /*
+  resize_comics() {
+    $('.bd-thumbnail').css({'width': ( this.get_comics_size() - 2 ) +'px'});
+  }
+
+  get_comics_size() {
+    return $('.bd-thumbnails-container').width()/this.get_comics_per_line();
+  }
+
+  get_comics_per_line() {
+    var width = window.innerWidth;
+
+    if( width > 1600 ) {
+      return 5;
+    }
+    else if( width > 1200) {
+      return 4;
+    }
+    else if( width > 1000) {
+      return 3;
+    }
+    else if( width > 700) {
+      return 2;
+    }
+    else {
+      return 1;
+    }
+  }
  
+  resize_writings() {
+    $('.writing-thumbnail').css({'width': ( this.get_writings_size() - 2 ) +'px'});
+  }
+
+  get_writings_size() {
+    return $('.writing-thumbnails-container').width()/this.get_writings_per_line();
+  }
+
+  get_writings_per_line() {
+    var width = window.innerWidth;
+
+    if( width > 1600 ) {
+      return 5;
+    }
+    else if( width > 1200) {
+      return 4;
+    }
+    else if( width > 1000) {
+      return 3;
+    }
+    else if( width > 700) {
+      return 2;
+    }
+    else {
+      return 1;
+    }
+  }*/
+
 
 
  change_drawing_album_status(i,value){
