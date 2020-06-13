@@ -222,6 +222,15 @@ form {
     color:unset;
 }
 
+::ng-deep .form-control2 {
+    height:45px;
+    width: 150px;
+    font-size:unset;
+    color:unset;
+}
+
+
+
 ::ng-deep .form-container .SumoSelect {
     display:block;
     width:unset;

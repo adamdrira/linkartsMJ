@@ -69,9 +69,10 @@ export class AddAdComponent implements OnInit {
 
   ngOnInit() {
 
-    this.createFormControlsDrawings();
+    this.createFormControlsAds();
     this.createFormAd();
-
+    this.createFormAd2();
+    this.createFormAd3();
     this.initialize_selectors();
     this.initialize_tagtargets_fd();
 
@@ -134,19 +135,25 @@ export class AddAdComponent implements OnInit {
 
 
   fdDisplayErrors: boolean = false;
+  fd2DisplayErrors: boolean = false;
   fd: FormGroup;
+  fd2: FormGroup;
+  fd3: FormGroup;
   fdTitle: FormControl;
   fdDescription: FormControl;
+  fdPrice:FormControl;
+  price_value:string;
   fdMydescription: FormControl;
   fdTargets: FormControl;
   fdProject_type: FormControl;
   fdPreferential_location: FormControl;
-  monetised:boolean = false;
+  remuneration:boolean = false;
   
-  createFormControlsDrawings() {
+  createFormControlsAds() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.maxLength(1000), Validators.pattern("^[^\\s]+.*") ]);
     this.fdMydescription= new FormControl('', Validators.required);
+    this.fdDescription=new FormControl('', [Validators.required, Validators.maxLength(2000), Validators.pattern("^[^\\s]+.*") ]);
+    this.fdPrice = new FormControl('',Validators.pattern("^[\\d,\\s]+$"));
     this.fdTargets = new FormControl('');
     this.fdProject_type = new FormControl('', Validators.required);
     this.fdPreferential_location=new FormControl('', [Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
@@ -155,7 +162,6 @@ export class AddAdComponent implements OnInit {
   createFormAd() {
     this.fd = new FormGroup({
       fdTitle: this.fdTitle,
-      fdDescription: this.fdDescription,
       fdMydescription: this.fdMydescription,
       fdTargets: this.fdTargets,
       fdProject_type: this.fdProject_type,
@@ -163,8 +169,20 @@ export class AddAdComponent implements OnInit {
     });
   }
 
+  createFormAd2() {
+    this.fd2 = new FormGroup({
+      fdPrice: this.fdPrice
+    });
+  }
 
-  all_pictures_uploaded( event: boolean) {
+  createFormAd3() {
+    this.fd3 = new FormGroup({
+      fdDescription:  this.fdDescription
+    });
+  }
+
+
+  /*all_pictures_uploaded( event: boolean) {
     this.pictures_uploaded = event;
 
     if(this.attachments_uploaded && this.pictures_uploaded){
@@ -176,20 +194,23 @@ export class AddAdComponent implements OnInit {
       alert("problème lors du télechargement");
     }
 
+  }*/
+
+  all_attachments_uploaded( event: boolean) {
+    this.attachments_uploaded = event;
+    console.log("done")
+    this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
   }
 
-  all_pictures_uploaded1( event: boolean) {
-    this.attachments_uploaded = event;
+  setRemuneration(e){
+    if(e.checked){
+      this.remuneration = true;
+      console.log(this.fd2.valid)
 
-    if(this.attachments_uploaded && this.pictures_uploaded){
-      console.log("tous les téléchargments sont finis/ attachments");
-      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
-    }
-
-    if(!event) {
-      alert("problème lors du télechargement");
-    }
-
+   }else{
+    this.remuneration = false;
+    console.log(this.fd2.valid)
+   }
   }
 
 
@@ -205,14 +226,38 @@ export class AddAdComponent implements OnInit {
       this.tagsValidator = true;
     }
 
-    if ( this.fd.valid  && this.tagsValidator && this.Ads_service.get_thumbnail_confirmation() ) {
+    if(this.remuneration && !this.fd2.valid){
+      if(this.fd2.value.fdPrice.length==0){
+        this.fd2DisplayErrors = false;
+        this.price_value ="0";
+        console.log(this.price_value);
+      }
+      else{
+        this.fd2DisplayErrors = true;
+        console.log(this.fd2.value.fdPrice);
+      }
+      
+    }
+    else if(this.remuneration && this.fd2.valid){
+      this.fd2DisplayErrors = false;
+      this.price_value =this.fd2.value.fdPrice;
+    }
+    else if(!this.remuneration){
+      this.fd2DisplayErrors = false;
+      this.price_value ="0";
+    }
+    
+
+    if ( this.fd.valid && this.fd3.valid && this.tagsValidator && !this.fd2DisplayErrors && this.Ads_service.get_thumbnail_confirmation() ) {
        this.targets = $(".multipleSelectfd").val();
-        console.log('ok1')
-        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription, this.fd.value.fdMydescription,this.targets)
+        console.log(this.price_value);
+        console.log("ok");
+        console.log(this.fd3.value.fdDescription);
+        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd3.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.targets,this.remuneration,this.price_value)
           .subscribe((val)=> {
             this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
+              this.id_ad=l[0].id;
               this.status_pictures=true;
-              this.id_ad=l[0].id
               console.log(l);
             })           
           });
@@ -221,7 +266,7 @@ export class AddAdComponent implements OnInit {
     }
 
 
-    else if(this.fd.valid  && this.tagsValidator && !this.Ads_service.get_thumbnail_confirmation()){
+    else if(this.fd.valid && this.fd3.valid && !this.fd2DisplayErrors  && this.tagsValidator && !this.Ads_service.get_thumbnail_confirmation()){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'La photo de présentation doit être uplaodée'},
       });

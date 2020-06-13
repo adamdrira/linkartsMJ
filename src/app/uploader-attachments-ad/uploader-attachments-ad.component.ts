@@ -47,7 +47,6 @@ export class UploaderAttachmentsAdComponent implements OnInit {
   @Input('status') status: boolean;
   @Input('id_ad') id_ad: number;
 
-
   ngOnChanges(changes: SimpleChanges) {
 
     if( this.status ) {
@@ -66,8 +65,8 @@ export class UploaderAttachmentsAdComponent implements OnInit {
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;
-
-
+  list_of_contents_type:boolean[]=[];
+  list_of_pictures:any[]=[];
   confirmation: boolean = false; //permettre à add-artwork de passer à l'étape 2 ou non si cover non uploadée.
   covername:any;
 
@@ -90,7 +89,7 @@ export class UploaderAttachmentsAdComponent implements OnInit {
 
   }
 
-
+  
   ngOnInit() {
 
     this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 
@@ -98,28 +97,54 @@ export class UploaderAttachmentsAdComponent implements OnInit {
     this.uploader.onAfterAddingFile = async (file) => {
 
       var re = /(?:\.([^.]+))?$/;
+      let index = this.uploader.queue.indexOf(file);
+      let size = file._file.size/1024/1024;
 
-      if(re.exec(file._file.name)[1]!="pdf"){
+      if(re.exec(file._file.name)[1]!="pdf" && re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf'},
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf, .jpg, .jpeg, .png'},
         });
       }
       else{
-        file.withCredentials = true; 
+        if(this.uploader.queue.length==6){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},
+          });
+        }
+        else if(Math.trunc(size)>5){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Votre fichier est trop volumineux, choisissez un fichier de moins de 5Mb'},
+          });
+        }
+        else{
+          if(re.exec(file._file.name)[1]=="pdf"){
+            this.list_of_contents_type[index]=false;
+            console.log(this.list_of_contents_type);
+          }
+          else{
+            this.list_of_contents_type[index]=true;
+            this.displayContent(file,index);
+            console.log(this.list_of_contents_type);
+            console.log(this.list_of_pictures);
+          }
+          file.withCredentials = true; 
+        }
+        
       }
     };
 
     this.uploader.onCompleteItem = (file) => {
       this.k++;
+      console.log(this.k);
+      console.log(this.uploader.queue.length)
       if(this.k==this.uploader.queue.length){
-        console.log("do emit");
         this.uploaded1.emit( true );
       }
       else{
-        console.log("après upload")
-        console.log(this.k)
-        console.log(file._file);
         this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${this.k}`},
         {name:'id_ad',value:`${this.id_ad}`},
         {name:'file_name',value:this.uploader.queue[this.k]._file.name},
@@ -140,7 +165,17 @@ export class UploaderAttachmentsAdComponent implements OnInit {
 //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
 remove_beforeupload(item:FileItem,index){
   item.remove();
+  console.log(this.uploader.queue.length);
+  this.list_of_contents_type.splice(index, 1);
+  this.list_of_pictures.splice(index, 1);
  }
+
+ displayContent(item: FileItem,index) {
+  let url = (window.URL) ? window.URL.createObjectURL(item._file) : (window as any).webkitURL.createObjectURL(item._file);
+  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+  this.list_of_pictures[index]=SafeURL;
+  return SafeURL;
+}
 
 
  validate_all(){

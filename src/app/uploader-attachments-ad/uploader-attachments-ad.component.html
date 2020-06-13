@@ -2,7 +2,7 @@
     <div class="button-container" >
         <label>
             <div class="select-button">
-                <span>Sélectionner un ou plusieurs fichiers complémentaires</span>
+                <span>Sélectionner jusqu'à 5 fichiers complémentaires</span>
             </div>
             <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
         </label>
@@ -12,7 +12,10 @@
 
     <tr class="name-container" >
         <td *ngFor="let item of uploader.queue; let i=index">
-            <span><b>Fichier sélectionné :</b> {{ uploader.queue[i]?.file?.name }}</span>
+            <span *ngIf="!list_of_contents_type[i]">{{ uploader.queue[i]?.file?.name }} et {{ item?.file?.size/1024/1024 | number:'.2' }} MB</span>
+            
+            <span *ngIf="list_of_contents_type[i]"><img [src]="list_of_pictures[i]" style="max-width:140px;max-height:140px;"></span>
+    
 
             <div>
 

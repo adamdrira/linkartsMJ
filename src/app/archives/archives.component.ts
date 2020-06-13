@@ -17,7 +17,8 @@ import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-
+import { Story_service } from '../services/story.service';
+import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 
@@ -37,6 +38,7 @@ export class ArchivesComponent implements OnInit {
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     public navbar: NavbarService, 
+    private Story_service:Story_service,
     private location: Location,
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
@@ -48,6 +50,7 @@ export class ArchivesComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Subscribing_service:Subscribing_service,
     private Albums_service:Albums_service,
+    private Ads_service:Ads_service,
     public dialog: MatDialog,
 
     ) {
@@ -86,14 +89,20 @@ export class ArchivesComponent implements OnInit {
   @Input() archives_comics:any;
   @Input() archives_drawings:any;
   @Input() archives_writings:any;
+  @Input() archives_ads:any;
   @Input() now_in_seconds:any;
 
   list_of_comics:any[]=[];
   list_of_comics_added=false;
+
   list_of_drawings:any[]=[];
   list_of_drawings_added=false;
+
   list_of_writings:any[]=[];
   list_of_writings_added=false;
+
+  list_of_ads:any[]=[];
+  list_of_ads_added=false;
 
   private_list_of_comics_series:any[]=[];
   private_list_of_comics_series_received=false;
@@ -110,6 +119,11 @@ export class ArchivesComponent implements OnInit {
   private_list_of_writings:any[]=[];
   private_list_of_writings_received=false;
 
+  list_of_stories:any[]=[];
+  list_of_stories_received=false;
+
+  
+
   ngOnInit(): void {
       let r = this.archives_comics
       if(r.length>0){
@@ -117,18 +131,16 @@ export class ArchivesComponent implements OnInit {
           if(r[j].publication_category=="comics"){
             if(r[j].format=="one-shot"){
               this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
-                this.list_of_comics.push(info[0]);
+                this.list_of_comics[j]=(info[0]);
                 if(this.list_of_comics.length == r.length){
-                  console.log(this.list_of_comics);
                   this.list_of_comics_added=true;
                 }
               })
             }
             if(r[j].format=="serie"){
               this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
-                this.list_of_comics.push(info[0]);
+                this.list_of_comics[j]=(info[0]);
                 if( this.list_of_comics.length == r.length){
-                  console.log(this.list_of_comics);
                   this.list_of_comics_added=true;
                 }
               })
@@ -147,18 +159,16 @@ export class ArchivesComponent implements OnInit {
           if(l[j].publication_category=="drawings"){
             if(l[j].format=="one-shot"){
               this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(l[j].publication_id).subscribe(info=>{
-                this.list_of_drawings.push(info[0]);
+                this.list_of_drawings[j]=(info[0]);
                 if(this.list_of_drawings.length == l.length){
-                  console.log(this.list_of_drawings);
                   this.list_of_drawings_added=true;
                 }
               })
             }
             if(l[j].format=="serie"){
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).subscribe(info=>{
-                this.list_of_drawings.push(info[0]);
+                this.list_of_drawings[j]=(info[0]);
                 if( this.list_of_drawings.length == l.length){
-                  console.log(this.list_of_drawings);
                   this.list_of_drawings_added=true;
                 }
               })
@@ -176,9 +186,8 @@ export class ArchivesComponent implements OnInit {
         for (let j=0; j< k.length;j++){
           if(k[j].publication_category=="writings"){
             this.Writing_Upload_Service.retrieve_writing_information_by_id(k[j].publication_id).subscribe(info=>{
-              this.list_of_writings.push(info[0]);
+              this.list_of_writings[j]=(info[0]);
               if( this.list_of_writings.length == k.length){
-                console.log(this.list_of_writings);
                 this.list_of_writings_added=true;
               }
             })
@@ -187,7 +196,10 @@ export class ArchivesComponent implements OnInit {
       }
       else{
         this.list_of_writings_added=true;
-      }
+      };
+
+      
+      
 
       this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info=>{
         for (let i=0;i<Object.keys(info[0]).length;i++){
@@ -196,7 +208,7 @@ export class ArchivesComponent implements OnInit {
             this.private_list_of_comics_oneshots_received=true;
           }
         }
-      })
+      });
 
       this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
         for (let i=0;i<Object.keys(info[0]).length;i++){
@@ -220,7 +232,6 @@ export class ArchivesComponent implements OnInit {
         for (let i=0;i<Object.keys(info[0]).length;i++){
           this.private_list_of_writings.push(info[0][i]);
           if(i==Object.keys(info[0]).length-1){
-            console.log(this.private_list_of_writings)
             this.private_list_of_writings_received=true;
           }
         }
@@ -257,8 +268,13 @@ export class ArchivesComponent implements OnInit {
 
   open_category(i : number) {
 
+    if(i==3){
+      this.get_stories();
+    }
+    if(i==4){
+      this.get_ads();
+    }
     this.cd.detectChanges();
-    
     this.opened_category=i;
 
     this.categories.toArray().forEach( (item, index) => {
@@ -270,6 +286,44 @@ export class ArchivesComponent implements OnInit {
   open_album(i : number) {
     this.opened_album=i;
     
+  }
+
+  get_stories(){
+    this.Story_service.get_all_my_stories().subscribe(r=>{
+      if (r[0]!=null){
+        let compt=0
+        for (let i=0;i<r[0].length;i++){
+          this.Story_service.retrieve_story(r[0][i].file_name).subscribe(info=>{
+            let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.list_of_stories[i]=SafeURL;
+            compt++;
+            if(compt==r[0].length){
+              this.list_of_stories_received=true;
+            }
+          });
+        }
+      }
+
+      
+    })
+  }
+
+  get_ads(){
+    let m = this.archives_ads
+      if(m.length>0){
+        for (let j=0; j< m.length;j++){
+              this.Ads_service.retrieve_ad_by_id(m[j].publication_id).subscribe(info=>{
+                this.list_of_ads[j]=(info[0]);
+                if(this.list_of_ads.length == m.length){
+                  this.list_of_ads_added=true;
+                }
+              })
+        }
+      }
+      else{
+        this.list_of_ads_added=true;
+      };
   }
 
 }

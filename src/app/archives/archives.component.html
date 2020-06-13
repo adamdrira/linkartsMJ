@@ -11,7 +11,12 @@
         <div #category class="content-action text-center" (click)="open_category(2);">
             Écrits
         </div>
+        <div class="divider-vertical"></div>
         <div #category class="content-action text-center" (click)="open_category(3);">
+            Stories
+        </div>
+        <div class="divider-vertical"></div>
+        <div #category class="content-action text-center" (click)="open_category(4);">
             Annonces
         </div>
     </div>
@@ -19,13 +24,21 @@
 
 <div class="albums-container">
     <div class="albums-filter">
-        <!-- archives de contenus d'autres utilsiateurs-->
-        <ng-container *ngIf="opened_category==0 || opened_category==1 || opened_category==2 || opened_category==3 ">
+        <!-- archives comics, écrits, dessins-->
+        <ng-container *ngIf="opened_category==0 || opened_category==1 || opened_category==2 ">
             <div  *ngFor="let element of titles_archives; let i=index" class="content-action text-center" 
             (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
                         {{element}}  
              </div>                           
         </ng-container>
+        <!-- stories-->
+        <div *ngIf="opened_category==3 ">
+            Toutes mes stories         
+        </div>
+        <!-- stories-->
+        <div *ngIf="opened_category==4 ">
+            Toutes les annonces archivées        
+        </div>
     </div>
 </div>
 
@@ -97,6 +110,23 @@
                     ></app-thumbnail-writing>
                 </div>
             </div>
+        </div>
+    </div>
+    <!--stories-->
+    <div *ngIf="opened_category==3">
+        <div *ngIf="list_of_stories_received">
+            <div *ngFor="let item of list_of_stories; let i = index">
+                <img [src]="list_of_stories[i]">
+            </div>
+        </div>
+    </div>
+    <!--annonces-->
+    <div *ngIf="opened_category==4">
+        <div *ngIf="list_of_ads_added">
+            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
+            [item]=item
+            now_in_seconds={{now_in_seconds}}
+            ></app-thumbnail-ad>
         </div>
     </div>
 </div>
