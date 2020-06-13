@@ -8,6 +8,7 @@ const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
 });
 
 const list_of_ads = tables.list_of_ads(sequelize, Sequelize).ads;
+const list_of_ads_responses = tables.list_of_ads(sequelize, Sequelize).ads_responses;
 
 
 
@@ -20,6 +21,7 @@ sequelize.sync()
 
 module.exports = {
   list_of_ads,
+  list_of_ads_responses,
   sequelize
 }
 

@@ -43,8 +43,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             },
             order: [
                 ['createdAt', 'DESC']
-            ],
-            limit: 20,
+            ]
         })
         .then(archives =>  {
             res.status(200).send([archives])
@@ -62,8 +61,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             },
             order: [
                 ['createdAt', 'DESC']
-            ],
-            limit: 20,
+            ]
         })
         .then(archives =>  {
             res.status(200).send([archives])
@@ -81,8 +79,25 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             },
             order: [
                 ['createdAt', 'DESC']
-            ],
-            limit: 20,
+            ]
+        })
+        .then(archives =>  {
+            res.status(200).send([archives])
+        }); 
+    })();
+    });
+
+    router.get('/list_of_archives_ads', function (req, res) {
+        (async () => {
+        let current_user = get_current_user(req.cookies.currentUser);
+        list_of_archives.findAll({
+            where: {
+                id_archiver:current_user,
+                publication_category:"ad",
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
         })
         .then(archives =>  {
             res.status(200).send([archives])

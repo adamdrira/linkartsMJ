@@ -96,6 +96,21 @@ module.exports = (router, list_of_stories,list_of_views) => {
         })();
         });
 
+        router.get('/get_all_my_stories', function (req, res) {
+            let current_user = get_current_user(req.cookies.currentUser);
+            list_of_stories.findAll({
+                    where: {
+                      id_user: current_user,
+                    },
+                    order: [
+                        ['createdAt', 'DESC']
+                      ],
+                  })
+                  .then(stories =>  {
+                    res.status(200).send([stories]);
+                  }); 
+            });
+
     router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
         const current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
