@@ -1,0 +1,241 @@
+
+
+<div class="container-fluid">
+    <main role="main">
+        
+
+        <div class="offer-main-container">
+            <div class="top-container">
+                <div class="title-container ">
+                    <div class="title">
+                        {{item.type_of_project}} : {{item.title}}
+                    </div>
+                </div>
+                <span *ngIf="item.remuneration">
+                    <span *ngIf="item.price_value!='0'">	{{item.price_value}}</span>
+                    <span>	&#8364;</span>
+                </span>
+                <div *ngIf="visitor_mode" class="more-information">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item>
+                        <mat-icon>no_encryption</mat-icon>
+                        <span>Signaler</span>
+                        </button>
+                        <button mat-menu-item (click)="archive()">
+                        <mat-icon>cloud_download</mat-icon>
+                        <span>Archiver</span>
+                        </button>
+                    </mat-menu>
+                </div>
+                <div *ngIf="!visitor_mode" class="more-information">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="update()">
+                        <mat-icon>no_encryption</mat-icon>
+                        <span>Remettre à jour</span>
+                        </button>
+                        <button mat-menu-item (click)="delete()">
+                        <mat-icon>cloud_download</mat-icon>
+                        <span>Supprimer</span>
+                        </button>
+                    </mat-menu>
+                </div>
+            </div>
+            <div class="offer-container">
+    
+                
+                <div class="offer-left-container">
+                    <img [src]="thumbnail_picture">
+                </div>
+    
+    
+                <div class="offer-right-container">
+                    <div class="top2-container">
+    
+                        <div class="author-container">
+                            <div class="left-container">
+                                <img [src]="profile_picture">
+                            </div>
+                            <div class="right-container">
+                                <div class="right-left-container">
+                                    <div class="author-name">
+                                        {{author_name}}
+                                    </div>
+                                    <div class="my_description">
+                                        {{item.my_description}}
+                                    </div>
+                                    <div class="location">
+                                        {{item.location}}
+                                    </div>
+                                </div>
+                                
+                            </div>
+    
+                            <div class="right-right-container">
+                                <div class="target" >
+                                    {{item.target_one}}
+                                </div>
+                                <div class="target" *ngIf="item.target_two != null ">
+                                    {{item.target_two}}
+                                </div>
+                            </div>
+                            
+                           
+                        </div>
+    
+                        <div class="options-container">
+                            
+                            <div class="apply-button" *ngIf="visitor_mode" (click)="respond()">
+                                Répondre
+                            </div>
+                            <div class="apply-button" *ngIf="!visitor_mode && see_responses==0" (click)="responses()">
+                                Voir les réponses
+                            </div>
+                            <div class="apply-button" *ngIf="!visitor_mode && (see_responses==1 || see_responses==2) " (click)="return_to_ad(0)">
+                                Voir l'annonce
+                            </div>
+                        </div>
+                    </div>
+    
+    
+                    <div *ngIf="see_responses==0" class="middle-container">
+    
+                        <div *ngIf="attachments_retrieved" class="left-container">
+        
+                            <div class="category">
+                                <div #category class="category-description" [ngClass]="status1" (mouseover)="status1='hovered'" (mouseout)="status1=''" (click)="open_category(0);">Description</div>
+                                <div #category class="category-attachments" [ngClass]="status2" (mouseover)="status2='hovered'" (mouseout)="status2=''" (click)="open_category(1);">Images ({{list_of_pictures.length}})</div>
+                                <div #category class="category-attachments" [ngClass]="status3" (mouseover)="status3='hovered'" (mouseout)="status3=''" (click)="open_category(2);">Fichiers ({{list_of_attachments.length}})</div>
+                            </div>
+                            
+                            <div class="category-content-1">
+                                <div *ngIf="category_index==0" class="description-container">
+                                    {{item.description}}
+                                    
+                                </div>
+                                <div *ngIf="category_index==1" class="attachments-container">
+                                        <div *ngFor="let picture of list_of_pictures, let i=index">
+                                            <div (click)="read_pictures(i)">
+                                                <img [src]="list_of_pictures[i]" style="width:140px;height:140px;">
+                                            </div>
+                                        </div>
+                                </div>
+                                <div *ngIf="category_index==2" class="attachments-container">
+                                        <div *ngFor="let attachment of list_of_attachments, let i=index">
+                                            <div *ngIf="list_of_attachments[i]" (click)="read_attachment(i)">
+                                                <img src='../../assets/img/pdf_image.png'>
+                                                <div> {{list_of_attachments_name[i]}}</div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+        
+                            <div class="footer-content">
+                                <div class="footer-description">
+                                    {{item.number_of_responses}} retours
+                                </div>
+                                <div class="footer-description">
+                                    {{date_to_show}}
+                                </div>
+                            </div>
+                        </div>
+        
+                    </div>
+
+                <div *ngIf="see_responses==1" class="middle-container">
+    
+                    <div class="left-container">
+    
+                        <div class="category">
+                            <div  class="category-description2">Liste des réponses</div>
+                        </div>
+                        
+                        <div  class="category-content-1">
+                            <div *ngIf="answers_retrieved">
+                                <div *ngFor="let item of list_of_profile_pictures; let i=index" class="author-container">
+                                    <div class="left-container">
+                                        <img  [src]="list_of_profile_pictures[i]">
+                                    </div>
+                                    <a href="/account/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}">
+                                        <div class="right-container">
+                                            <div class="author-name">{{list_of_authors_name[i]}} </div>
+                                            <div class="author-description">@{{list_of_pseudos[i]}}</div>
+                                            <div class="author-description">{{list_of_dates[i]}}</div>
+                                        </div>
+                                    </a>
+                                    <button (click)="see_response(i)">Voir la réponse</button>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="footer-content">
+                            <div class="footer-description">
+                                {{item.number_of_responses}} retours
+                            </div>
+                            <div class="footer-description">
+                                {{date_to_show}}
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+
+                <div *ngIf="see_responses==2" class="middle-container">
+    
+                    <div *ngIf="response_attachments_retrieved" class="left-container">
+    
+                        <div class="category">
+                            <button (click)="return_to_ad(1)">retour</button>
+                            <div #category class="category-description" [ngClass]="status1" (mouseover)="status1='hovered'" (mouseout)="status1=''" (click)="open_category(0);">Description</div>
+                            <div #category class="category-attachments" [ngClass]="status2" (mouseover)="status2='hovered'" (mouseout)="status2=''" (click)="open_category(1);">Images ({{response_list_of_pictures.length}})</div>
+                            <div #category class="category-attachments" [ngClass]="status3" (mouseover)="status3='hovered'" (mouseout)="status3=''" (click)="open_category(2);">Fichiers ({{response_list_of_attachments.length}})</div>
+                        </div>
+                        
+                        <div class="category-content-1">
+                            <div *ngIf="category_index==0" class="description-container">
+                                {{response_to_read.description}}
+                                
+                            </div>
+                            <div *ngIf="category_index==1" class="attachments-container">
+                                    <div *ngFor="let picture of response_list_of_pictures, let i=index">
+                                        <div (click)="read_pictures_response(i)">
+                                            <img [src]="response_list_of_pictures[i]" style="width:140px;height:140px;">
+                                        </div>
+                                    </div>
+                            </div>
+                            <div *ngIf="category_index==2" class="attachments-container">
+                                    <div *ngFor="let attachment of response_list_of_attachments, let i=index">
+                                        <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)">
+                                            <img src='../../assets/img/pdf_image.png'>
+                                            <div> {{response_list_of_attachments_name[i]}}</div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+    
+                        <div class="footer-content">
+                            <div class="footer-description">
+                                {{item.number_of_responses}} retours
+                            </div>
+                            <div class="footer-description">
+                                {{date_to_show}}
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+    
+                </div>
+            </div>
+        </div>
+        
+
+
+    </main>
+</div>
