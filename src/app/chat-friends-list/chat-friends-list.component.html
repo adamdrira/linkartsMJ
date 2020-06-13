@@ -1,0 +1,53 @@
+
+<div *ngIf="list_of_friends_retrieved" class="main-chat-container">
+
+    <div *ngIf="list_of_friends_2_retrieved" class="chat-friends-container">
+        <div class="subscribers-container" >
+            <div *ngFor="let item of list_of_friends_ids; let i=index" class="subscriber-card">
+        
+        
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="author-container" (click)="open_chat(i)">
+                    <div class="left-container">
+                        <img [src]="list_of_friends_profile_pictures[i]">
+                    </div>
+                    <a>
+                        <div class="right-container">
+                            <span class="author-name">{{list_of_friends_names[i]}} </span>
+                            <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                    {{list_of_friends_last_message[i].message}} 
+                                </div>
+                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                    <b>{{list_of_friends_last_message[i].message}}</b>
+                                </div>
+                            </div>
+                            <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                {{list_of_friends_last_message[i].message}}
+                            </div>
+                        </div>
+                    </a>
+        
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <div #chatContainer class="chat-container">
+        <app-chat
+        [current_user_id]="current_user" 
+        [current_user_pseudo]="current_user_pseudo"
+        [current_user_name]="current_user_name" 
+        [current_user_profile_picture]="profile_picture" 
+        [friend_id]="friend_id" 
+        [friend_pseudo]="friend_pseudo"
+        [friend_name]="friend_name"
+        [friend_picture]="friend_picture"
+        [list_of_friends_ids]="list_of_friends_ids"
+        (new_sort_friends_list)="new_sort_friends_list( $event );"></app-chat>
+    </div>
+</div>

@@ -5,7 +5,7 @@
     <main role="main">
       
       
-        <div class="logos-container">
+        <!--<div class="logos-container">
 
             <div class="logo">
                 <div class="image1"></div>
@@ -28,66 +28,126 @@
             </div>
 
 
+        </div>-->
+
+        <div class="categories-container">
+            <div class="category-filter">
+                <div class="content-action text-center opened" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
+                    <span>Collaborations bénévoles</span>
+                    <div class="bottom-border">
+                    </div>
+                </div>
+                <div class="content-action text-center" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
+                    <span>Collaborations rémunérées</span>
+                    <div class="bottom-border">
+                    </div>
+                </div>
+            </div>
         </div>
 
 
         <div class="panel-controller">
-            <div class="left-container">
+            <!--<div class="left-container">
                 <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
                     Collaborations bénévoles
                 </div>
                 <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
                     Collaborations rémunérées
                 </div>
-            </div>
+            </div>-->
 
 
             <div class="right-container">
 
                 <div class="dropdowns-container" *ngIf="subcategory==0">
-                    <select name="somename" class="SelectBox1" placeholder="Type" style="height: 100%;">
-                        <option disabled selected value="Offre ou demande"></option>
-                        <option>Offres</option>
-                        <option>Demandes</option>
+                    
+                    <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Bandes dessinées">Bandes dessinées</option>
+                        <option label="BD européennes">BD européennes</option>
+                        <option label="Comics">Comics</option>
+                        <option label="Manga">Manga</option>
+                        <option label="Dessin ">Dessin en tout genre</option>
+                        <option label="Dessin numérique">Dessin numérique</option>
+                        <option label="Dessin traditionnel">Dessin traditionnel</option>
+                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
+                        <option label="Articles">Articles</option>
+                        <option label="Roman">Roman</option>
+                        <option label="Roman illustré">Roman illustré</option>
+                        <option label="Scénario">Scénario</option>
                     </select>
-                    <select name="somename" class="SelectBox2" placeholder="Projet" style="height: 100%;">
-                        <option disabled selected value="Projet"></option>
-                        <option>Projet manga</option>
-                        <option>Projet tacos</option>
+                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>
                     </select>
-                    <select name="somename" class="SelectBox3" placeholder="Auteur" style="height: 100%;">
-                        <option disabled selected value="Auteur"></option>
-                        <option>Scénariste</option>
-                        <option>Dessinateur</option>
+                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>
                     </select>
-                    <select name="somename" class="SelectBox4" placeholder="Cible" style="height: 100%;">
-                        <option disabled selected value="Cible"></option>
-                        <option>Scénariste</option>
-                        <option>Dessinateur</option>
+                    <select name="somename" class="SelectBox4" placeholder="Trie par pertinence" style="height: 100%;">
+                        <option disabled selected value="Pertinence"></option>
+                        <option label="pertinence">Trie par pertinence</option>
+                        <option label="récent">Trie par le plus récent</option>
+                        <option label="ancient">Trie par le plus ancient</option>
                     </select>
                     
                 </div>
 
                 <div class="dropdowns-container" *ngIf="subcategory==1">
-                    <select name="somename" class="SelectBox1" placeholder="Type" style="height: 100%;">
-                        <option disabled selected value="Offre ou demande"></option>
-                        <option>Offres</option>
-                        <option>Demandes</option>
+                    <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Bandes dessinées">Bandes dessinées</option>
+                        <option label="BD européennes">BD européennes</option>
+                        <option label="Comics">Comics</option>
+                        <option label="Manga">Manga</option>
+                        <option label="Dessin ">Dessin en tout genre</option>
+                        <option label="Dessin numérique">Dessin numérique</option>
+                        <option label="Dessin traditionnel">Dessin traditionnel</option>
+                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
+                        <option label="Articles">Articles</option>
+                        <option label="Roman">Roman</option>
+                        <option label="Roman illustré">Roman illustré</option>
+                        <option label="Scénario">Scénario</option>
                     </select>
-                    <select name="somename" class="SelectBox2" placeholder="Projet" style="height: 100%;">
-                        <option disabled selected value="Projet"></option>
-                        <option>Projet manga</option>
-                        <option>Projet tacos</option>
+                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>
                     </select>
-                    <select name="somename" class="SelectBox3" placeholder="Auteur" style="height: 100%;">
-                        <option disabled selected value="Auteur"></option>
-                        <option>Scénariste</option>
-                        <option>Dessinateur</option>
+                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>
                     </select>
-                    <select name="somename" class="SelectBox4" placeholder="Cible" style="height: 100%;">
-                        <option disabled selected value="Cible"></option>
-                        <option>Scénariste</option>
-                        <option>Dessinateur</option>
+                    <select name="somename" class="SelectBox4" placeholder="Trie par pertinence" style="height: 100%;">
+                        <option disabled selected value="Pertinence"></option>
+                        <option label="pertinence">Trie par pertinence</option>
+                        <option label="récent">Trie par le plus récent</option>
+                        <option label="ancient">Trie par le plus ancient</option>
                     </select>
                     
                 </div>
@@ -99,7 +159,12 @@
             </div>
         </div>
 
-        
+        <div *ngIf="list_of_ads_received">
+            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
+            [item]=item
+            now_in_seconds={{now_in_seconds}}
+            ></app-thumbnail-ad>
+        </div>
         <!--<app-media-top-offers></app-media-top-offers>-->
 
         

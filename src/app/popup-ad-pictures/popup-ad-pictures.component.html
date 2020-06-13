@@ -1,0 +1,68 @@
+<div id="left-container">
+
+          
+    <div #leftContainer class="first-div">
+
+
+        <div class="top-container">
+            <div class="dropdowns-container">
+                <div class="options-container">
+                    
+                   <mat-icon class="icon" *ngIf="!fullscreen_mode" (click)="fullscreen_button();">fullscreen</mat-icon>
+                    <mat-icon class="icon" *ngIf="fullscreen_mode" (click)="fullscreen_button();">fullscreen_exit</mat-icon>
+                    <mat-icon class="icon" *ngIf="zoom_mode" (click)="zoom_button();">zoom_out</mat-icon>
+                    <mat-icon class="icon" *ngIf="!zoom_mode" (click)="zoom_button();">zoom_in</mat-icon>
+                    
+                    <div class="pages-controller-container" >
+                        Page :
+                        <input type="text" aria-label="" role="navigation" size="5">
+                        <div class="total-pages">
+                            <span></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="content-container">
+
+            <div #swiperContainer  class="swiper-container">
+                <div #swiperWrapper class="swiper-wrapper">
+                    <ng-container >
+                        <div *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide">
+
+                            <div class="slide-container" 
+                            [ngClass]="{'slide-container-ZM': zoom_mode}">
+
+                                <img class="slide-container-img" 
+                                [src]="list_of_pictures[i]"
+                                [ngClass]="{'slide-container-img-ZM': zoom_mode}">
+                            </div>
+
+                        </div>
+                </ng-container>
+                </div>
+                
+                <!-- Add Scrollbar -->
+                <div class="swiper-scrollbar"></div>
+                <!-- Add Arrows -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+    
+
+
+
+
+
+</div>

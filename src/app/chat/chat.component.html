@@ -1,0 +1,113 @@
+<div class="chat-container">
+
+    <div class="top-container">
+        <div class="author-container">
+            <div class="left-container">
+                <img [src]="friend_picture">
+            </div>
+            <a>
+                <div class="right-container">
+                    <span class="author-name">{{friend_name}} </span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="middle-container">
+        <div class="left-container">
+
+            
+        <div class="messages-container">
+            <div *ngIf='display_messages'>
+                <div *ngFor="let item of list_of_messages; let i = index" class="message">
+                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id">
+                        <div class="my-message-content">
+                            <div class="options">
+                                <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                                </button>
+                                <mat-menu  #artworkOptions="matMenu">
+                                    <button class="mat-menu-item" mat-menu-item > 	
+                                        <mat-icon class="item-icon">edit</mat-icon>
+                                        <span>Supprimer</span>
+                                    </button>
+                                    <button class="mat-menu-item" mat-menu-item> 	
+                                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                                        <span>Répondre</span>
+                                    </button>
+                                    <button class="mat-menu-item" mat-menu-item> 	
+                                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                                        <span>Réagir</span>
+                                    </button>
+                                </mat-menu>
+                            </div>
+                            <div class="content">
+                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                            </div>
+                            
+                            <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received'">
+                                rec
+                            </div>
+                            <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
+                                <div *ngIf="display_retry[list_of_messages.length -1 - i]">
+                                    <button (click)="retry(list_of_messages[list_of_messages.length -1 - i])">retry</button>
+                                </div>
+                                <div *ngIf="!display_retry[list_of_messages.length -1 - i]">
+                                    sen
+                                </div>
+                            </div>
+                            
+                            <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'">
+                                <div class="author-container">
+                                    <div class="left-container">
+                                        <img [src]="friend_picture">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id">
+                        
+                        <div class="friend-message-content">
+                            <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]">
+                                <div class="author-container">
+                                    <div class="left-container">
+                                        <img [src]="friend_picture">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="content">
+                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+            <div class="send_message">
+                <div [formGroup]="message_group" novalidate>
+                    <div class="form-group">
+                        <div class="form-group"  >
+                            <input type="text" formControlName="message"  class="form-control2"   maxlength="20" placeholder="message" autocomplete="off" required/>
+                        </div>
+                    </div>
+                </div>
+                <button (click)="send_message()">send</button>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    
+
+</div>
+
+
+

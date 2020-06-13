@@ -87,7 +87,7 @@
 .panel-controller {
   display:flex;
   margin-top:30px;
-  width:100%;
+  width:70%;
   height:50px;
   border-radius:7px;
   background-color:rgb(32,56,100);  
@@ -102,7 +102,7 @@
 
 .panel-controller .right-container {
   display:flex;
-  margin:auto 50px auto auto;
+  margin:auto auto auto 5px;
   height:100%;
 }
 
@@ -175,6 +175,7 @@
 }
 
 ::ng-deep .panel-controller .SumoSelect > p.CaptionCont > span {
+  width:250px;
   color:white;
   margin: auto 0 auto auto;
   height: 100%;
@@ -185,9 +186,61 @@
 }
 
 ::ng-deep .panel-controller .SumoSelect .optWrapper {
-  width:240px !important;
+  width:265px !important;
   left:unset;
   right:0 !important;
 }
+
+
+//categories
+
+.categories-container {
+  position:relative;
+  text-align:center;
+  font-size:1.2rem;
+}
+
+.category-filter {
+  width:70%;
+  position:relative;
+  display:flex;
+  justify-content: normal;
+  border-radius:10px 10px 0px 0px;
+  -webkit-transition: opacity 500ms;
+  transition: opacity 500ms;
+  border-bottom: 2px solid rgb(240,240,240);
+}
+
+.content-action {
+   cursor:pointer;
+   margin-left:10px;
+   margin-right:10px;
+   padding-bottom:5px;
+}
+
+.categories-container .opened {
+  color: rgb(32,56,100);
+  text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
+}
+
+.category-filter .opened .bottom-border {
+  border-bottom:2px solid rgb(32,56,100);
+  width:90%;
+  transition:width 200ms;
+}
+
+.categories-container .content-action:hover {
+  color: rgb(32,56,100);
+  transition:text-shadow 200ms;
+  text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
+}
+
+.categories-container .content-action:hover .bottom-border {
+  transition: border 200ms;
+  border-bottom:2px solid rgb(32,56,100);
+  width:90%;
+  transition:width 200ms;
+}
+  
 
 
