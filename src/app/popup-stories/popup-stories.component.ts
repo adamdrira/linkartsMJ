@@ -75,43 +75,6 @@ export class PopupStoriesComponent implements OnInit {
     });
     
 
-
-    /*this.Story_service.get_last_seen_story(this.data.list_of_users[this.data.index_id_of_user]).subscribe(l=>{
-      console.log(l[0]);
-      if(l[0]!=null){
-        for (let i=0;i<this.data.list_of_data.length;i++){
-          if(this.data.list_of_data[i].id==l[0].id_story){
-            this.index_debut=i+1;
-            console.log(this.data.list_of_data);
-            if(this.index_debut>=this.data.list_of_data.length){
-              this.index_debut=0;
-            }
-          }
-          if(i==this.data.list_of_data.length-1){
-            if(!(this.index_debut>=0)){
-              this.index_debut=0;
-            }
-            console.log(this.index_debut);
-            for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-              this.createStory( this.data.list_of_users[j], this.index_debut);
-              this.refresh_stories_status();
-              this.swiper.slideTo( this.data.index_id_of_user, false, false );
-              this.refresh_stories_status();
-            }
-           
-          }
-        }
-      }
-      else{
-        for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-          this.createStory( this.data.list_of_users[j], 0 );
-          this.refresh_stories_status();
-          this.swiper.slideTo( this.data.index_id_of_user, false, false );
-          this.refresh_stories_status();
-        }
-      }
-    });*/
-
   let k=0;
   for(let s =0; s<this.data.list_of_users.length;s++){
     this.Story_service.get_last_seen_story(this.data.list_of_users[s]).subscribe(l=>{
