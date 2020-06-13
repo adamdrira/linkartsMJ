@@ -21,18 +21,18 @@ export class Ads_service {
  
 
   constructor(private httpClient: HttpClient, private CookieService: CookieService) {
-    httpClient.options
   }
   
 
 
-
-
-  add_primary_information_ad(title,type_of_project,description,my_description,targets){
-       return this.httpClient.post('http://localhost:4600/routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,my_description:my_description,targets:targets}, {withCredentials:true}).pipe(map((information)=>{
+  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value){
+    console.log(description);  
+    return this.httpClient.post('http://localhost:4600/routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,my_description:my_description,targets:targets,location:location,remuneration,price_value}, {withCredentials:true}).pipe(map((information)=>{
          return information;
        }));
    }
+
+   //thumbnail
 
    get_thumbnail_name(){
     console.log("get_thumbnail_name")
@@ -43,27 +43,20 @@ export class Ads_service {
     }));
   };
 
-
   send_confirmation_for_add_ad(confirmation:boolean){
       this.thumbnail_confirmation = confirmation
-  };//prévient component add-artwork si il peut passer à la prochaine étape ou non
+  };
 
   get_thumbnail_confirmation(){
       return this.thumbnail_confirmation
-  }
+  };
 
-
-  //lorsqu'il valide tout
   add_thumbnail_ad_to_database(id){
-        
       return this.httpClient.post('http://localhost:4600/routes/add_thumbnail_ad_to_database', {name: this.name_thumbnail_ad, id: id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
-    
-  }
+  };
 
-  
-   //remove the page file from the folder associated
    remove_thumbnail_ad_from_folder() {
     this.CookieService.delete('name_thumbnail_ad','/');
     if(this.name_thumbnail_ad!=''){
@@ -72,10 +65,70 @@ export class Ads_service {
           }));
     }
     return new Observable<true>();
-    
    };
 
+   //récupération des ads
+   get_ads_by_user_id(user_id: number) {
+      return this.httpClient.get(`http://localhost:4600/routes/get_ads_by_user_id/${user_id}`).pipe(map(information=>{
+        return information;   
+      }));
+    }
 
+    get_all_my_ads() {
+      return this.httpClient.get('http://localhost:4600/routes/get_ads_by_user_id',{withCredentials:true}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+    get_sorted_ads(remuneration,type_of_project,author,target,sorting):Observable<Object> {
+      return this.httpClient.get(`http://localhost:4600/routes/get_sorted_ads/${remuneration}/${type_of_project}/${author}/${target}/${sorting}`,{withCredentials:true}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+    retrieve_ad_by_id(id: number): Observable<Object> {
+      return this.httpClient.get(`http://localhost:4600/routes/retrieve_ad_by_id/${id}`).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+    retrieve_ad_thumbnail_picture(file_name:string) {
+      return this.httpClient.get(`http://localhost:4600/routes/retrieve_ad_thumbnail_bd_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+    retrieve_picture(file_name,index) {
+      return this.httpClient.get(`http://localhost:4600/routes/retrieve_ad_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+        return [information,index];   
+      }));
+    }
+
+    retrieve_attachment(file_name,index) {
+      return this.httpClient.get(`http://localhost:4600/routes/retrieve_ad_attachment/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+        return [information,index];   
+      }));
+    }
+
+    // interactions avec les annonces
+
+    delete_attachment(id) {
+      return this.httpClient.delete(`http://localhost:4600/routes/delete_attachment/${id}`, {withCredentials:true}).pipe(map(information=>{
+        return information;   
+      }));
+    }
+
+    add_ad_response(id_ad,description){
+      return this.httpClient.post('http://localhost:4600/routes/add_ad_response', {id_ad: id_ad, description: description}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    get_all_responses(id_ad): Observable<Object>{
+      return this.httpClient.get(`http://localhost:4600/routes/get_all_responses/${id_ad}`).pipe(map(information=>{
+        return information;   
+      }));
+    }
 
   
 }

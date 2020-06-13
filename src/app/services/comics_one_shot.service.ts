@@ -111,11 +111,9 @@ export class BdOneShotService {
     }
 
     retrieve_bd_by_userid(user_id: number) {
-
       return this.httpClient.get(`http://localhost:4600/routes/retrieve_bd_by_user_id/${user_id}`).pipe(map(information=>{
         return information;   
       }));
-      
     }
 
     retrieve_bd_by_id(bd_id: number) {

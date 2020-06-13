@@ -29,6 +29,12 @@ export class Story_service {
       }));
   };
 
+  get_all_my_stories(): Observable<Object>{
+    return this.httpClient.get('http://localhost:4600/routes/get_all_my_stories', {withCredentials:true}).pipe(map(information=>{
+          return information
+      }));
+  };
+
  retrieve_story(file_name){
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_story/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
         return information

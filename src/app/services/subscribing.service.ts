@@ -122,6 +122,12 @@ export class Subscribing_service {
       }));
   }
 
+  get_archives_ads(): Observable<Object>{
+    return this.httpClient.get('http://localhost:4600/routes/list_of_archives_ads', {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  }
+
   
 
   get_new_drawing_contents(id_user){
