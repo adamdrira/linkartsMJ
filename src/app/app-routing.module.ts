@@ -22,7 +22,6 @@ import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.compo
 import { SubscribingsComponent } from './subscribings/subscribings.component';
 import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
 import { AddAdComponent } from './add-ad/add-ad.component';
-import { StoriesViewComponent } from './stories-view/stories-view.component';
 
 const routes: Routes = [
   {path:'', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 0}},
@@ -34,6 +33,11 @@ const routes: Routes = [
   //Step : étape 1, 2 ou 3.
   {path:'account/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 0}},
   {path:'account/:pseudo/:id/artworks', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1}},
+
+  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:0}},
+  {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:1}},
+  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:2}},
+
   {path:'account/:pseudo/:id/ads', component:AccountComponent, canActivate: [AuthGuard], data: {section: 2}},
   {path:'account/:pseudo/:id/about', component:AccountComponent, canActivate: [AuthGuard], data: {section: 5}},
   {path:'account/:pseudo/:id/archives', component:AccountComponent, canActivate: [AuthGuard], data: {section: 6}},
@@ -52,7 +56,6 @@ const routes: Routes = [
   
   //Components tests
   {path:'test', component:TestComponent, canActivate: [AuthGuard]},
-  {path:'test_stories/:id_user', component:StoriesViewComponent, canActivate: [AuthGuard]},
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard]},
   {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard]},
 
