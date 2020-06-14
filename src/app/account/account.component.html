@@ -675,6 +675,7 @@
                                                         [item]=item
                                                         format='artbook'
                                                         now_in_seconds={{now_in_seconds}}
+                                                        (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
                                             </div>
@@ -696,6 +697,7 @@
                                                         [item]=item
                                                         format='artbook'
                                                         now_in_seconds={{now_in_seconds}}
+                                                        (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
                                             </div>
@@ -713,11 +715,12 @@
                                             </div>
 
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item" #getmasonry>
+                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item">
                                                     <app-thumbnail-drawing
                                                         [item]=item
                                                         format='one-shot'
                                                         now_in_seconds={{now_in_seconds}}
+                                                        (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
                                             </div>
@@ -745,6 +748,7 @@
                                                         [item]=item
                                                         format='one-shot'
                                                         now_in_seconds={{now_in_seconds}}
+                                                        (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
                                             </div>

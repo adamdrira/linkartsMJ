@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, QueryList, ElementRef, Renderer2, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, HostListener, QueryList, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
@@ -23,7 +23,9 @@ export class ThumbnailDrawingComponent implements OnInit {
     ) {
   }
 
+  @Output() sendLoaded = new EventEmitter<boolean>();
 
+  
   @HostListener('window:resize', ['$event'])
   onResize(event) {
 
@@ -296,6 +298,10 @@ export class ThumbnailDrawingComponent implements OnInit {
       return 1;
     }
 
+  }
+
+  dosomething(){
+    this.sendLoaded.emit(true);
   }
 
 

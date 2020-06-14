@@ -68,14 +68,7 @@ export class AccountComponent implements OnInit {
   onResize(event) {
 
     
-    console.log("toto");
-    if(this.k<10){
-      this.ini_masonry();
-    }
-    
     this.cd.detectChanges();
-
-    
     this.update_new_contents();
     this.calculate_muuri_item_margins();
    
@@ -267,11 +260,7 @@ export class AccountComponent implements OnInit {
   ngOnInit()  {
 
     
-    setInterval(() => {
-      if(this.k<20){
-        this.ini_masonry();
-      }
-    }, 50);
+
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -581,10 +570,10 @@ export class AccountComponent implements OnInit {
       this.ngForRendred();
     })
 
-    this.getmasonry.changes.subscribe(t => {
+    /*this.getmasonry.changes.subscribe(t => {
       this.ini_masonry();
       //window.dispatchEvent(new Event('resize'));
-    })
+    })*/
 
     
 
@@ -672,38 +661,27 @@ export class AccountComponent implements OnInit {
 
     
     $grid.one( 'layoutComplete', function(event,items) {
-      console.log(THIS.k);
       console.log('layout is complete0');
-      THIS.k++;
       $grid.masonry('reloadItems');
-      if(THIS.k<=10){
-        
-        //window.dispatchEvent(new Event('resize'));
-      }
-     
-      
     });
 
     $grid.masonry();
 
 
+  }
 
-
-    /*
-    setTimeout( () => {
-      if ( $('.grid') ){
-        this.cd.detectChanges();
-        window.dispatchEvent(new Event('resize'));
-        this.cd.detectChanges();
-      }
-      else {
-        this.cd.detectChanges();
+  j=0;
+  sendLoaded(event){
+    let final = this.list_drawings_onepage.length;
+    final = final + this.list_drawings_artbook.length;
+    if(event && this.opened_category==1 ){
+      this.j++;
+      if(this.j==final){
+        console.log("final");
+        this.j=0;
         this.ini_masonry();
-        this.cd.detectChanges();
-        window.dispatchEvent(new Event('resize'));
-        this.cd.detectChanges();
       }
-    });*/
+    }
   }
 
 
