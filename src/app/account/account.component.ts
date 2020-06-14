@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
@@ -22,9 +22,11 @@ import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.compo
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 
+import { Ads_service } from '../../app/services/ads.service'
 
 declare var Muuri:any;
 declare var $: any;
+declare var masonry:any;
 
 
 @Component({
@@ -53,6 +55,7 @@ export class AccountComponent implements OnInit {
     private Albums_service:Albums_service,
     public dialog: MatDialog,
     private Emphasize_service:Emphasize_service,
+    private Ads_service:Ads_service,
     ) {
     //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
@@ -64,8 +67,18 @@ export class AccountComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
 
+    
+    console.log("toto");
+    if(this.k<10){
+      this.ini_masonry();
+    }
+    
+    this.cd.detectChanges();
+
+    
     this.update_new_contents();
     this.calculate_muuri_item_margins();
+   
 
   }
 
@@ -137,7 +150,10 @@ export class AccountComponent implements OnInit {
 
   gridAlbum:any;
   
-
+  archives_ads:any[]=[];
+  list_of_ads:any[]=[];
+  list_of_ads_added:boolean=false;
+  
 
 
   /***************************************** */
@@ -250,12 +266,23 @@ export class AccountComponent implements OnInit {
 
   ngOnInit()  {
 
+    
+    setInterval(() => {
+      if(this.k<20){
+        this.ini_masonry();
+      }
+    }, 50);
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     
     
     this.Profile_Edition_Service.get_pseudo_by_user_id( this.user_id ).subscribe( r => {
+
+      if( !r[0] ) {
+        this.router.navigateByUrl('/');
+      }
+
       if( this.pseudo != r[0].nickname ) {
         this.router.navigateByUrl('/');
       }
@@ -346,28 +373,30 @@ export class AccountComponent implements OnInit {
       }      
     });
 
- 
     this.Subscribing_service.get_archives_comics().subscribe(r=>{
       this.archives_comics=r[0];
       this.Subscribing_service.get_archives_drawings().subscribe(l=>{
         this.archives_drawings=l[0];
         this.Subscribing_service.get_archives_writings().subscribe(p=>{
           this.archives_writings=p[0];
-          let number_of_private_bd=0;
-          this.BdSerieService.retrieve_private_serie_bd().subscribe(info1=>{
-            number_of_private_bd= Object.keys(info1[0]).length;
-            this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info2=>{
-              number_of_private_bd= number_of_private_bd+ Object.keys(info2[0]).length;
-              this.number_of_archives=Object.keys(this.archives_comics).length 
-              + Object.keys(this.archives_drawings).length 
-              + Object.keys(this.archives_writings).length 
-              + number_of_private_bd;
-              this.archives_received=true;
-            })
-          })          
+          this.Subscribing_service.get_archives_ads().subscribe(q=>{
+              this.archives_ads=q[0];
+              this.archives_received=true;  
+          })  
         })
       })
     });
+    this.Ads_service.get_ads_by_user_id(this.user_id).subscribe(r=>{
+      if (r[0]!=null){
+        for (let i=0;i<r[0].length;i++){
+            this.list_of_ads[i]=(r[0][i]);
+            if(i==r[0].length-1){
+              this.list_of_ads_added=true;
+            }
+        }
+      }
+    })
+
     this.Subscribing_service.get_all_subscribed_users(this.user_id).subscribe(information=>{
       if(Object.keys(information).length>0){
         this.subscribed_users_list=information[0];
@@ -453,12 +482,16 @@ export class AccountComponent implements OnInit {
       })
     
 
+
       this.opened_section = this.route.snapshot.data['section'];
+      
       this.open_section( this.opened_section );
 
       if( this.opened_section == 1 && this.route.snapshot.data['category'] != -1 ) {
         this.open_category( this.route.snapshot.data['category'] );
       }
+
+
 
 
       this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
@@ -529,11 +562,34 @@ export class AccountComponent implements OnInit {
   }
 
 
+  @ViewChildren('getwidth') getwidth: QueryList<any>;
+  ngForRendred() {
+    this.update_new_contents();
+    this.calculate_muuri_item_margins();
+  }
+
+  @ViewChildren('getmasonry') getmasonry: QueryList<any>;
+  masonryrendered() {
+    window.dispatchEvent(new Event('resize'));
+  }
+
+
   ngAfterViewInit() {
 
+    
+     this.getwidth.changes.subscribe(t => {
+      this.ngForRendred();
+    })
 
+    this.getmasonry.changes.subscribe(t => {
+      this.ini_masonry();
+      //window.dispatchEvent(new Event('resize'));
+    })
 
     
+
+    
+
 
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
       this.showEditCoverPic = false;
@@ -601,14 +657,72 @@ export class AccountComponent implements OnInit {
     this.add_album = i;
   }
 
+  k=0;
+
+  ini_masonry() {
+    let THIS=this;
+      
+    
+      var $grid = $('.grid').masonry({
+      itemSelector: '.grid-item',
+      columnWidth: 200,
+      gutter:10,
+      isInitLayout:false,
+    });
+
+    
+    $grid.one( 'layoutComplete', function(event,items) {
+      console.log(THIS.k);
+      console.log('layout is complete0');
+      THIS.k++;
+      $grid.masonry('reloadItems');
+      if(THIS.k<=10){
+        
+        //window.dispatchEvent(new Event('resize'));
+      }
+     
+      
+    });
+
+    $grid.masonry();
 
 
-  
+
+
+    /*
+    setTimeout( () => {
+      if ( $('.grid') ){
+        this.cd.detectChanges();
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges();
+      }
+      else {
+        this.cd.detectChanges();
+        this.ini_masonry();
+        this.cd.detectChanges();
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges();
+      }
+    });*/
+  }
+
+
   open_album(i : number) {
 
     this.opened_album=i;
 
-    if( this.opened_category == 1 && i == 0 ) {
+    this.cd.detectChanges();
+    
+    this.ini_masonry();
+    this.cd.detectChanges();
+
+    /*$('.grid').masonry({
+      itemSelector: '.grid-item',
+      columnWidth: 200
+    });*/
+
+
+    /*if( this.opened_category == 1 && i == 0 ) {
 
       this.cd.detectChanges();
 
@@ -697,20 +811,23 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
       window.dispatchEvent(new Event('resize'));
       
-    }
+    }*/
 
 
   }
 
 
   
-  @ViewChildren('resize') set resize(content: ElementRef) {
+  /*@ViewChildren('resize') set resize(content: QueryList<any>) {
 
     this.cd.detectChanges();
+    //this.ini_masonry();
+    console.log("resize");
     //window.dispatchEvent(new Event('resize'));
-  }
+    //window.dispatchEvent(new Event('resize'));
+  }*/
+ 
 
-  
 
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
