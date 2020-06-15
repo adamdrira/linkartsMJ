@@ -626,6 +626,7 @@
     margin-right:auto;
   }
 
+  
   .drawing-container {
     width:90%;
     margin-left:auto;
@@ -760,6 +761,11 @@
   margin-left:40px;
   margin-top:20px;
   margin-bottom:-15px;
+}
+
+.drawings-container {
+  opacity:0;
+  transition:opacity 200ms;
 }
 
 .drawings-container .artwork-type-title {

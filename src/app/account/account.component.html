@@ -625,7 +625,7 @@
                         <!------------------------------------------------------------------------->
                         <!----------------------- VISUALISATION DES DESSINS ----------------------->
                         <!------------------------------------------------------------------------->
-                        <div *ngIf="opened_category==1" class="drawings-container">
+                        <div *ngIf="opened_category==1" class="drawings-container" #albumToShow>
                             <ng-container *ngIf="opened_album==0">
                                 
                                 <!--On parcourt tous les albums ajoutés-->

@@ -637,6 +637,8 @@ export class AccountComponent implements OnInit {
   }
 
       
+
+
   start_add_album(i : number) {
     if( this.add_album != -1 ) {
       this.add_album = -1;
@@ -650,8 +652,6 @@ export class AccountComponent implements OnInit {
 
   ini_masonry() {
     let THIS=this;
-      
-    
       var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
       columnWidth: 200,
@@ -659,7 +659,6 @@ export class AccountComponent implements OnInit {
       isInitLayout:false,
     });
 
-    
     $grid.one( 'layoutComplete', function(event,items) {
       console.log('layout is complete0');
       $grid.masonry('reloadItems');
@@ -667,8 +666,10 @@ export class AccountComponent implements OnInit {
 
     $grid.masonry();
 
-
   }
+
+
+  @ViewChild('albumToShow', {static:false}) albumToShow:ElementRef;
 
   j=0;
   sendLoaded(event){
@@ -680,6 +681,8 @@ export class AccountComponent implements OnInit {
         console.log("final");
         this.j=0;
         this.ini_masonry();
+
+        this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
       }
     }
   }
