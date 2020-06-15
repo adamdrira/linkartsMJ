@@ -1,51 +1,67 @@
-
 <div class="container-fluid">
-  <main role="main">
-    
+    <main role="main">
+      
 
-    <div class="storiesbar">
-        <app-stories></app-stories>
-    </div>
+        <div id="left-container">
 
+            <div class="categories-container">
+                <div class="category-filter">
+                    <div #category class="content-action text-center opened" (click)="open_category(0);">
+                        <span>Recommandations</span>
+                        <div class="bottom-border">
+                        </div>
+                    </div>
+                    <div #category class="content-action text-center" (click)="open_category(1)">
+                        <span>Tendances</span>
+                        <div class="bottom-border">
+                        </div>
+                    </div>
+                    <div #category class="content-action text-center" (click)="open_category(2)">
+                        <span>Abonnements</span>
+                        <div class="bottom-border">
+                        </div>
+                    </div>
+                    <!--<div #category class="content-action text-center" (click)="open_category(3)">
+                        <span>Mode découverte</span> 
+                        <div class="bottom-border">
+                        </div>
+                    </div>-->
+                </div>
+            </div>
     
-    <div class="categories-container">
-        <div class="category-filter">
-            <div #category class="content-action text-center opened" (click)="open_category(0);">
-                <span>Recommandations</span>
-                <div class="bottom-border">
-                </div>
+    
+            <div class="left-container-scrollable">
+                <ng-container *ngIf="this.category_index==0">
+                    <app-recommendations></app-recommendations>
+                </ng-container>
+                <ng-container *ngIf="this.category_index==1">
+                    <app-trendings></app-trendings>
+                </ng-container>
+                <ng-container *ngIf="this.category_index==2">
+                    <app-subscribings></app-subscribings>
+                </ng-container>
             </div>
-            <div #category class="content-action text-center" (click)="open_category(1)">
-                <span>Tendances</span>
-                <div class="bottom-border">
-                </div>
-            </div>
-            <div #category class="content-action text-center" (click)="open_category(2)">
-                <span>Abonnements</span>
-                <div class="bottom-border">
-                </div>
-            </div>
-            <!--<div #category class="content-action text-center" (click)="open_category(3)">
-                <span>Mode découverte</span> 
-                <div class="bottom-border">
-                </div>
-            </div>-->
+    
         </div>
-    </div>
-
-    <ng-container *ngIf="this.category_index==0">
-        <app-recommendations></app-recommendations>
-    </ng-container>
-    <ng-container *ngIf="this.category_index==1">
-        <app-trendings></app-trendings>
-    </ng-container>
-    <ng-container *ngIf="this.category_index==2">
-        <app-subscribings></app-subscribings>
-    </ng-container>
 
 
 
+        <div id="right-container">
+
+            <div class="categories-container">
+                <div class="category-filter">
+                    <div class="content-action text-center">
+                        <span>Stories</span>
+                    </div>
+                </div>
+            </div>
+            <div class="storiesbar">
+                <app-stories></app-stories>
+            </div>
+
+        </div>
+  
 
 
-  </main>
+    </main>
 </div>

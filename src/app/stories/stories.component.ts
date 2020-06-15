@@ -11,7 +11,6 @@ import { PopupStoriesComponent } from '../popup-stories/popup-stories.component'
 import { MatDialog } from '@angular/material/dialog';
 
 
-declare var Swiper: any
 declare var $: any
 
 @Component({
@@ -61,7 +60,6 @@ export class StoriesComponent implements OnInit {
   list_of_state_true_length:number;
   do_I_have_stories=true; // true si l'utilisateur a de nouvelles stories
   
-  swiper:any;
 
   ngOnInit() {
 
@@ -160,7 +158,6 @@ export class StoriesComponent implements OnInit {
                 if(i==this.list_of_users.length){
                   this.users_retrieved=true;
                   this.cd.detectChanges();
-                  this.initialize_swiper();
                   //this.sort_list_of_users(this.final_list_of_users);
                   this.separate_users_in_two(this.final_list_of_users);
                 }
@@ -208,23 +205,6 @@ export class StoriesComponent implements OnInit {
 
   }
 
-
-  initialize_swiper(){
-
-    this.swiper = new Swiper('.swiper-container', {
-      speed: 500,
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      slidesPerView:'auto',
-      observer: true,
-    });
-    
-  }
 
 
 
@@ -458,7 +438,6 @@ export class StoriesComponent implements OnInit {
           console.log(THIS.list_of_state);
           THIS.users_retrieved=true;
           THIS.cd.detectChanges();
-          THIS.initialize_swiper();
         }
       }
     }
@@ -468,7 +447,6 @@ export class StoriesComponent implements OnInit {
         console.log(THIS.list_of_state);
         THIS.users_retrieved=true;
         THIS.cd.detectChanges();
-        THIS.initialize_swiper();
     }
   }
 

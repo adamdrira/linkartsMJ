@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
@@ -17,7 +17,14 @@ declare var $: any
 })
 export class HomeLinkartsComponent implements OnInit {
   
-  constructor(private rd: Renderer2, private authenticationService: AuthenticationService, private route: ActivatedRoute, public navbar: NavbarService, private location: Location) {
+  constructor(private rd: Renderer2, 
+    private authenticationService: AuthenticationService, 
+    private route: ActivatedRoute, 
+    public navbar: NavbarService, 
+    private location: Location,
+    private cd:ChangeDetectorRef,
+    
+    ) {
 
     this.navbar.setActiveSection(0);
     this.navbar.show();
@@ -35,7 +42,19 @@ export class HomeLinkartsComponent implements OnInit {
 
   }
 
-  
+  ngAfterViewChecked() {
+    this.initialize_heights();
+  }
+
+  initialize_heights() {
+    //if( !this.fullscreen_mode ) {
+      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      this.cd.detectChanges();
+    //}
+  }
+
+
   open_category(i : number) {
     this.category_index=i;
     this.categories.toArray().forEach( (item, index) => {

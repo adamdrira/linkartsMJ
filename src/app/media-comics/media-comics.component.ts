@@ -27,7 +27,7 @@ export class MediaComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.resize_artbooks();
+    //this.resize_artbooks();
 
   }
 
@@ -56,7 +56,7 @@ export class MediaComicsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.resize_artbooks();
+    //this.resize_artbooks();
   }
 
   //Other
@@ -72,7 +72,7 @@ export class MediaComicsComponent implements OnInit {
   
 
   //Artwooks functions
-
+/*
   resize_artbooks() {
 
     this.artbooks_per_line = this.get_artbooks_per_line();
@@ -106,7 +106,7 @@ export class MediaComicsComponent implements OnInit {
     else {
       return 1;
     }
-  }
+  }*/
 
 
 
