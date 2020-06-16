@@ -266,24 +266,43 @@ module.exports = (router, list_of_stories,list_of_views) => {
 
         router.post('/get_last_seen_story', function (req, res) {
             let current_user = get_current_user(req.cookies.currentUser);
+            const Op = Sequelize.Op;
+            var yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
             (async () => {
                     const  authorid = req.body.authorid;
-                    await list_of_views.max('updatedAt',{
+
+                    list_of_stories.max('createdAt',{
                         where:{
-                            id_user_who_looks: current_user,
-                            authorid:authorid,
+                            id_user: authorid,
+                            createdAt:{[Op.gt]:yesterday}
                         }
                         })
-                        .then(date=>{
-                            list_of_views.findOne({
-                                where: {
-                                    updatedAt:date,
-                                }
-                            }).then(story=>{
-                                res.status(200).send([story])})  
-                            })
-                                  
-    
+                        .then(date0=>{
+                            console.log(date0)
+                            if(date0!=0){
+                                console.log(date0)
+                                list_of_views.max('updatedAt',{
+                                    where:{
+                                        id_user_who_looks: current_user,
+                                        authorid:authorid,
+                                        updatedAt:{[Op.gt]:yesterday}
+                                    }
+                                    })
+                                    .then(date=>{
+                                        list_of_views.findOne({
+                                            where: {
+                                                updatedAt:date,
+                                            }
+                                        }).then(story=>{
+                                            res.status(200).send([story])})  
+                                        })
+                            }
+                            else{
+                                res.status(200).send([null])
+                            }
+                            
+                        })   
             })();
         });
 
