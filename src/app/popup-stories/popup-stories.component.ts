@@ -44,6 +44,13 @@ export class PopupStoriesComponent implements OnInit {
     console.log( this.data.list_of_users );
     console.log( this.data.list_of_users[this.data.index_id_of_user] );
     console.log( this.data.list_of_data[this.data.index_id_of_user] );
+    if(!this.data.list_of_data[0]){
+      console.log('ya r')
+      this.data.list_of_users.splice(0,1);
+      this.data.list_of_data.splice(0,1);
+      this.data.index_id_of_user=this.data.index_id_of_user-1;
+      console.log(this.data.list_of_users)
+    }
 
     let THIS = this;
 
@@ -78,7 +85,11 @@ export class PopupStoriesComponent implements OnInit {
   let k=0;
   for(let s =0; s<this.data.list_of_users.length;s++){
     this.Story_service.get_last_seen_story(this.data.list_of_users[s]).subscribe(l=>{
+      console.log(l[0]);
+      console.log(s);
+       console.log(this.data.list_of_data[s]) ;
       if(l[0]!=null){
+        console.log(this.data.list_of_data[s].length)
         for (let i=0;i<this.data.list_of_data[s].length;i++){
           if(this.data.list_of_data[s][i].id==l[0].id_story){
             this.list_index_debut[s]=i+1;
@@ -106,6 +117,7 @@ export class PopupStoriesComponent implements OnInit {
         }
       }
       else{
+        this.list_index_debut[s]=0;
         k++;
         if(k==this.data.list_of_users.length){
           for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
