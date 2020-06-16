@@ -13,7 +13,7 @@
 
             <div #profileHovered class="profile">
 
-                <div #profilePicHovered class="profile-picture">
+                <div #profilePicHovered class="profile-picture" [ngClass]="{'visiteur': mode_visiteur }">
 
                     <img [src]="profile_picture">
 
@@ -169,18 +169,33 @@
                 <div class="title">
                     <span>Œuvre mise en avant</span>
                 </div>
-                <div class="highlighted_artwork">
+                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
                     <span >Aucune œuvre mise en avant <br> Vous pouvez mettre une œuvre en avant depuis la lecture d'une œuvre</span>
+                </div>
+                <div class="highlighted_artwork" *ngIf="mode_visiteur">
+                    <span>L'utilisateur n'a pas mis d'œuvre en avant</span>
                 </div>
             </ng-container>
 
             
+
+            <ng-container *ngIf="!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added">
+                <div class="title">
+                    <span>Nouveautés</span>
+                </div>
+                <div class="highlighted_artwork" *ngIf="mode_visiteur">
+                    <span>L'utilisateur n'a pas de nouveautés</span>
+                </div>
+                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
+                    <span>Vous n'avez pas de nouveautés</span>
+                </div>
+            </ng-container>
+
+
             
-            
-            <div class="title">
+            <div class="title" *ngIf="new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added">
                 <span>Nouveautés</span>
             </div>
-
 
             <div *ngIf="new_comic_contents_added" class="bd-container">
                 
@@ -239,9 +254,23 @@
 
         </ng-container>
 
+
+        <ng-container *ngIf="opened_section==1 && number_of_artpieces==0">
+            <div class="highlighted_artwork" *ngIf="mode_visiteur">
+                <span>L'utilisateur n'a publié aucune œuvre</span>
+            </div>
+            <div class="highlighted_artwork" *ngIf="!mode_visiteur">
+                <br>
+                <span>Vous n'avez pas encore publié d'œuvre
+                    <br>
+                    <br>
+                    <a href="/add-artwork">Cliquez ici pour publier une œuvre</a>
+                </span>
+            </div>
+        </ng-container>
             
         <ng-container *ngIf="opened_section==1 && archives_received && list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added ">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && number_of_artpieces!=0">
             
             <div class="logos-container">
                 <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);">

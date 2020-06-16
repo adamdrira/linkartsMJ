@@ -27,6 +27,12 @@
     font-size: 1.20rem;
   }
   
+  a {
+    font-size:17px;
+    color:rgb(50, 49, 124);
+    font-weight: bold;
+  }
+
   .account-container {
     position:relative;
     display:flex;
@@ -46,7 +52,7 @@
   .account-container .profile {
     position: absolute;
     display: flex;
-    padding: 15px 25px;
+    padding: 15px 20px;
     background: rgba(32, 56, 100, 0.8);
     border-radius: 5px 55px 5px 55px;
     bottom: 30px;
@@ -118,6 +124,12 @@
     opacity:1;
     cursor:pointer;
   }
+
+  .account-container .profile .visiteur.profile-picture:hover {
+    opacity:1;
+    cursor:default !important;
+  }
+
 
   .account-container .profile:hover .change-profile-info {
     opacity:1;
@@ -295,7 +307,7 @@
 
 .account-container .profile .visitor-button {
   padding: 0px 10px;
-  margin:3px auto 3px auto;
+  margin:3px 5px 3px 5px;
   display:flex;
   border-radius:4px;
   transition:opacity 200ms;
