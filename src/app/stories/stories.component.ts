@@ -35,6 +35,7 @@ export class StoriesComponent implements OnInit {
   final_list_of_users:any[]=[];
   list_of_users:any[]=[];
   list_of_profile_pictures:any[]=[];
+  list_of_cover_pictures:any[]=[];
   list_of_author_names:any[]=[];
   users_retrieved=false
   now_in_seconds:number;
@@ -49,6 +50,9 @@ export class StoriesComponent implements OnInit {
 
   list_of_pp_part1=[];
   list_of_pp_part2=[];
+
+  list_of_cp_part1=[];
+  list_of_cp_part2=[];
 
   list_of_names_part1=[];
   list_of_names_part2=[];
@@ -118,6 +122,7 @@ export class StoriesComponent implements OnInit {
     console.log(this.list_of_users);
     for (let k =0;k<this.list_of_users.length;k++){
       this.Story_service.get_stories_by_user_id(this.list_of_users[k]).subscribe(r=>{
+        console.log(r)
         if(r[0][0]!=undefined && r[0][0]!=null){
           console.log(x);
           this.list_of_list_of_data[x]=(r[0]);
@@ -128,15 +133,20 @@ export class StoriesComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_profile_pictures[num]=SafeURL;
-            this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
-              this.list_of_author_names[num]=(u[0].firstname + ' ' + u[0].lastname);
-              i++;
-              console.log(this.final_list_of_users);
-              console.log(this.list_of_author_names);
-              if(i==this.list_of_users.length){ 
-                this.separate_users_in_two(this.final_list_of_users);
-                  //this.sort_list_of_users(this.final_list_of_users);
-              }
+            this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
+              let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_cover_pictures[num]=SafeURL;
+              this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
+                this.list_of_author_names[num]=(u[0].firstname + ' ' + u[0].lastname);
+                i++;
+                console.log(this.final_list_of_users);
+                console.log(this.list_of_author_names);
+                if(i==this.list_of_users.length){ 
+                  this.separate_users_in_two(this.final_list_of_users);
+                    //this.sort_list_of_users(this.final_list_of_users);
+                }
+              });
             });
           });
         
@@ -152,15 +162,20 @@ export class StoriesComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_profile_pictures[0]=SafeURL;
-              this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
-                this.list_of_author_names[k]=(u[0].firstname + ' ' + u[0].lastname);
-                i++;
-                if(i==this.list_of_users.length){
-                  this.users_retrieved=true;
-                  this.cd.detectChanges();
-                  //this.sort_list_of_users(this.final_list_of_users);
-                  this.separate_users_in_two(this.final_list_of_users);
-                }
+              this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
+                let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_cover_pictures[0]=SafeURL;
+                this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
+                  this.list_of_author_names[k]=(u[0].firstname + ' ' + u[0].lastname);
+                  i++;
+                  if(i==this.list_of_users.length){
+                    this.users_retrieved=true;
+                    this.cd.detectChanges();
+                    //this.sort_list_of_users(this.final_list_of_users);
+                    this.separate_users_in_two(this.final_list_of_users);
+                  }
+                });
               });
             });
           }
@@ -208,52 +223,12 @@ export class StoriesComponent implements OnInit {
 
 
 
-
-  /*sort_list_of_users(list){
-    (async ()=> {
-        if(list.length>1){
-          for (let i=2; i<list.length; i++){
-            let total=0;
-            await this.Story_service.get_total_number_of_views(list[i]).toPromise().then(r=>{
-              total = r[0].total;
-            });
-            for (let j=1; j<i;j++){
-              let total2 =0;
-              await this.Story_service.get_total_number_of_views(list[j]).toPromise().then(r=>{
-                total2 = r[0].total;
-              });
-              if(total > total2){
-                list.splice(j, 0, list.splice(i, 1)[0]);
-                this.list_of_profile_pictures.splice(j, 0, this.list_of_profile_pictures.splice(i, 1)[0]);
-                this.list_of_author_names.splice(j, 0, this.list_of_author_names.splice(i, 1)[0]);
-                this.list_of_list_of_data.splice(j, 0, this.list_of_list_of_data.splice(i, 1)[0]);
-                
-              }
-              if(j==list.length -2 ){
-                console.log(this.final_list_of_users);
-                this.users_retrieved=true;
-                this.cd.detectChanges();
-                this.initialize_swiper();
-              }
-            }
-          }
-        }
-        else{
-          this.users_retrieved=true;
-          this.cd.detectChanges();
-          this.initialize_swiper();
-        }
-
-  })();
-
-  };*/
-
-
   separate_users_in_two(list){
     let k=0;
     let l=1;
     this.final_list_of_users_part1[0]=list[0];
     this.list_of_pp_part1[0]=this.list_of_profile_pictures[0];
+    this.list_of_cp_part1[0]=this.list_of_cover_pictures[0];
     this.list_of_names_part1[0]=this.list_of_author_names[0];
     this.list_of_data_part1[0]=this.list_of_list_of_data[0];
     console.log(list);
@@ -271,6 +246,7 @@ export class StoriesComponent implements OnInit {
         else if(r[0].value){
           this.final_list_of_users_part2[k]=list[i];
           this.list_of_pp_part2[k]=this.list_of_profile_pictures[i];
+          this.list_of_cp_part2[k]=this.list_of_cover_pictures[i];
           this.list_of_names_part2[k]=this.list_of_author_names[i];
           this.list_of_data_part2[k]=this.list_of_list_of_data[i];
           k++;
@@ -279,6 +255,7 @@ export class StoriesComponent implements OnInit {
         else{
           this.final_list_of_users_part1[l]=list[i];
           this.list_of_pp_part1[l]=this.list_of_profile_pictures[i];
+          this.list_of_cp_part1[l]=this.list_of_cover_pictures[i];
           this.list_of_names_part1[l]=this.list_of_author_names[i];
           this.list_of_data_part1[l]=this.list_of_list_of_data[i];
           l++;
@@ -295,12 +272,14 @@ export class StoriesComponent implements OnInit {
           this.sort_list_of_users_separatly_part1(this,
             this.final_list_of_users_part1,
             this.list_of_pp_part1,
+            this.list_of_cp_part1,
             this.list_of_names_part1,
             this.list_of_data_part1
             );
           this.sort_list_of_users_separatly_part2(this,
             this.final_list_of_users_part2,
             this.list_of_pp_part2,
+            this.list_of_cp_part2,
             this.list_of_names_part2,
             this.list_of_data_part2);
         }
@@ -312,6 +291,7 @@ export class StoriesComponent implements OnInit {
   sort_list_of_users_separatly_part1(THIS,
     final_list_of_users,
     list_of_pp,
+    list_of_cp,
     list_of_names,
     list_of_data,
     ){
@@ -335,6 +315,7 @@ export class StoriesComponent implements OnInit {
               if(total > total2){
                 final_list_of_users.splice(j, 0, final_list_of_users.splice(i, 1)[0]);
                 list_of_pp.splice(j, 0, list_of_pp.splice(i, 1)[0]);
+                list_of_cp.splice(j, 0, list_of_cp.splice(i, 1)[0]);
                 list_of_names.splice(j, 0, list_of_names.splice(i, 1)[0]);
                 list_of_data.splice(j, 0, list_of_data.splice(i, 1)[0]);
                 
@@ -345,6 +326,7 @@ export class StoriesComponent implements OnInit {
                 console.log(THIS.second_part_sorted);
                 if(THIS.first_part_sorted && THIS.second_part_sorted){
                   THIS.list_of_profile_pictures=THIS.list_of_pp_part1.concat(THIS.list_of_pp_part2);
+                  THIS.list_of_cover_pictures=THIS.list_of_cp_part1.concat(THIS.list_of_cp_part2);
                   THIS.list_of_list_of_data=THIS.list_of_data_part1.concat(THIS.list_of_data_part2);
                   THIS.final_list_of_users=THIS.final_list_of_users_part1.concat(THIS.final_list_of_users_part2);
                   THIS.list_of_author_names=THIS.list_of_names_part1.concat(THIS.list_of_names_part2);
@@ -361,6 +343,7 @@ export class StoriesComponent implements OnInit {
           console.log(THIS.second_part_sorted);
           if(THIS.first_part_sorted && THIS.second_part_sorted){
             THIS.list_of_profile_pictures=THIS.list_of_pp_part1.concat(THIS.list_of_pp_part2);
+            THIS.list_of_cover_pictures=THIS.list_of_cp_part1.concat(THIS.list_of_cp_part2);
             THIS.list_of_list_of_data=THIS.list_of_data_part1.concat(THIS.list_of_data_part2);
             THIS.final_list_of_users=THIS.final_list_of_users_part1.concat(THIS.final_list_of_users_part2);
             THIS.list_of_author_names=THIS.list_of_names_part1.concat(THIS.list_of_names_part2);
@@ -373,6 +356,7 @@ export class StoriesComponent implements OnInit {
   sort_list_of_users_separatly_part2(THIS,
     final_list_of_users,
     list_of_pp,
+    list_of_cp,
     list_of_names,
     list_of_data,
     ){
@@ -396,6 +380,7 @@ export class StoriesComponent implements OnInit {
               if(total > total2){
                 final_list_of_users.splice(j, 0, final_list_of_users.splice(i, 1)[0]);
                 list_of_pp.splice(j, 0, list_of_pp.splice(i, 1)[0]);
+                list_of_cp.splice(j, 0, list_of_cp.splice(i, 1)[0]);
                 list_of_names.splice(j, 0, list_of_names.splice(i, 1)[0]);
                 list_of_data.splice(j, 0, list_of_data.splice(i, 1)[0]);
                 
@@ -406,6 +391,7 @@ export class StoriesComponent implements OnInit {
                 console.log(THIS.second_part_sorted);
                 if(THIS.first_part_sorted && THIS.second_part_sorted){
                   THIS.list_of_profile_pictures=THIS.list_of_pp_part1.concat(THIS.list_of_pp_part2);
+                  THIS.list_of_cover_pictures=THIS.list_of_cp_part1.concat(THIS.list_of_cp_part2);
                   THIS.list_of_list_of_data=THIS.list_of_data_part1.concat(THIS.list_of_data_part2);
                   THIS.final_list_of_users=THIS.final_list_of_users_part1.concat(THIS.final_list_of_users_part2);
                   THIS.list_of_author_names=THIS.list_of_names_part1.concat(THIS.list_of_names_part2);
@@ -419,6 +405,7 @@ export class StoriesComponent implements OnInit {
           THIS.second_part_sorted=true;
           if(THIS.first_part_sorted && THIS.second_part_sorted){
             THIS.list_of_profile_pictures=THIS.list_of_pp_part1.concat(THIS.list_of_pp_part2);
+            THIS.list_of_cover_pictures=THIS.list_of_cp_part1.concat(THIS.list_of_cp_part2);
             THIS.list_of_list_of_data=THIS.list_of_data_part1.concat(THIS.list_of_data_part2);
             THIS.final_list_of_users=THIS.final_list_of_users_part1.concat(THIS.final_list_of_users_part2);
             THIS.list_of_author_names=THIS.list_of_names_part1.concat(THIS.list_of_names_part2);

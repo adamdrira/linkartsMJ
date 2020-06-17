@@ -255,7 +255,7 @@
         </ng-container>
 
 
-        <ng-container *ngIf="opened_section==1 && number_of_artpieces==0">
+        <ng-container *ngIf="opened_section==1 && number_of_artpieces==0 && new_comic_contents_added && new_writing_contents_added && new_drawing_contents_added">
             <div class="highlighted_artwork" *ngIf="mode_visiteur">
                 <span>L'utilisateur n'a publié aucune œuvre</span>
             </div>
@@ -789,12 +789,13 @@
 
                             <!--One-shots album-->
                             <div class="bd-container">
-                                <div *ngIf="opened_album==1" class="d-flex flex-wrap gridAlbumOneshot2">
+                                <div *ngIf="opened_album==1" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_drawings_onepage; let i = index" class="item resizableItem">
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='one-shot'
                                             now_in_seconds={{now_in_seconds}}
+                                            (sendLoaded)="sendLoaded( $event );"
                                         ></app-thumbnail-drawing>
                                         <ng-container></ng-container>
                                     </div>
@@ -804,12 +805,13 @@
 
                             <!--Artbooks album-->
                             <div class="bd-container">
-                                <div *ngIf="opened_album==2" class="d-flex flex-wrap gridAlbumArtbook2">
+                                <div *ngIf="opened_album==2" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_drawings_artbook; let i = index" class="item resizableItem">
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='artbook'
                                             now_in_seconds={{now_in_seconds}}
+                                            (sendLoaded)="sendLoaded( $event );"
                                         ></app-thumbnail-drawing>
                                     </div>
                                 </div>
@@ -817,17 +819,19 @@
 
                             <!--Autres albums-->
                             <div class="bd-container">
-                                <div *ngIf="opened_album>=3" class="d-flex flex-wrap gridAlbumCreated">
+                                <div *ngIf="opened_album>=3" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="item resizableItem">
                                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                             [item]=item
                                             format='one-shot'
                                             now_in_seconds={{now_in_seconds}}
+                                            (sendLoaded)="sendLoaded( $event );"
                                         ></app-thumbnail-drawing>
                                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                                             [item]=item 
                                             format='artbook'
                                             now_in_seconds={{now_in_seconds}}
+                                            (sendLoaded)="sendLoaded( $event );"
                                         ></app-thumbnail-drawing>
                                     </div>
                                 </div>

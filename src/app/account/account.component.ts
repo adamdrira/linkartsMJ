@@ -290,7 +290,7 @@ export class AccountComponent implements OnInit {
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
             this.BdOneShotService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
-              this.new_comic_contents.push(s[0]);
+              this.new_comic_contents[i]=s[0];
               if(i==r[0].length-1){
                 this.new_comic_contents_added=true;
               }
@@ -298,7 +298,7 @@ export class AccountComponent implements OnInit {
           }
           else{
             this.BdSerieService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
-              this.new_comic_contents.push(s[0]);
+              this.new_comic_contents[i]=s[0];
               if(i==r[0].length-1){
                 this.new_comic_contents_added=true;
               }
@@ -313,7 +313,7 @@ export class AccountComponent implements OnInit {
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
             this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][i].publication_id).subscribe(s=>{
-              this.new_drawing_contents.push(s[0]);
+              this.new_drawing_contents[i]=s[0];
               if(i==r[0].length-1){
                 this.new_drawing_contents_added=true;
               }
@@ -321,7 +321,7 @@ export class AccountComponent implements OnInit {
           }
           else{
             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][i].publication_id).subscribe(s=>{
-              this.new_drawing_contents.push(s[0]);
+              this.new_drawing_contents[i]=(s[0]);
               if(i==r[0].length-1){
                 this.new_drawing_contents_added=true;
               }
@@ -335,7 +335,7 @@ export class AccountComponent implements OnInit {
       if (r[0]!=null){
         for (let i=0;i<r[0].length;i++){
             this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][i].publication_id).subscribe(s=>{
-              this.new_writing_contents.push(s[0]);
+              this.new_writing_contents[i]=(s[0]);
               if(i==r[0].length-1){
                 this.new_writing_contents_added=true;
               }
@@ -438,7 +438,7 @@ export class AccountComponent implements OnInit {
                 this.Drawings_Onepage_Service.retrieve_thumbnail_picture( information[step].album_content[j].name_coverpage ).subscribe(r=> {
                   let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.array_of_selected_safeurls[step].push(SafeURL);
+                  this.array_of_selected_safeurls[step][j]=SafeURL;
                   compteur=compteur+1;
                   if(step==(Object.keys(information).length -1) && compteur==Object.keys(information[step].album_content).length){
                     this.list_albums_drawings_added = true;
@@ -651,6 +651,7 @@ export class AccountComponent implements OnInit {
   k=0;
 
   ini_masonry() {
+    console.log("mansour")
     let THIS=this;
       var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -659,7 +660,7 @@ export class AccountComponent implements OnInit {
       isInitLayout:false,
     });
 
-    $grid.one( 'layoutComplete', function(event,items) {
+    $grid.on( 'layoutComplete', function() {
       console.log('layout is complete0');
       $grid.masonry('reloadItems');
     });
@@ -673,25 +674,124 @@ export class AccountComponent implements OnInit {
 
   j=0;
   sendLoaded(event){
-    let final = this.list_drawings_onepage.length;
-    final = final + this.list_drawings_artbook.length;
-    if(event && this.opened_category==1 ){
-      this.j++;
-      if(this.j==final){
-        console.log("final");
-        this.j=0;
-        this.ini_masonry();
-
-        this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+    if(this.mode_visiteur){
+      if(event && this.opened_category==1 && this.opened_album==0){
+        this.j++;
+        let total=0;
+        if(this.list_drawing_albums_status[0]!='hidden'){
+          total+=this.list_drawings_onepage.length;
+        }
+        if(this.list_drawing_albums_status[1]!='hidden'){
+          total+=this.list_drawings_artbook.length;
+        }
+        if(this.j===total){
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
+      }
+      console.log(this.list_drawing_albums_status);
+  
+      if(event && this.opened_category==1 && this.opened_album>0){
+        this.j++;
+        let total=0;
+        console.log(this.opened_album);
+        if(this.opened_album==1){
+          console.log("this.opened_album==1");
+          if(this.list_drawing_albums_status[0]!='hidden' || this.list_drawing_albums_status[1]!='hidden'){
+            if(this.list_drawing_albums_status[0]=='hidden'){
+              total=this.list_drawings_artbook.length;
+              console.log("total=this.list_drawings_artbook.length");
+            }
+            else{
+              total=this.list_drawings_onepage.length;
+              console.log("this.list_drawings_onepage.length");
+            }
+          }
+          else{
+            total=this.list_albums_drawings[0].length;
+            console.log("this.list_albums_drawings[0].length");
+          }
+        }
+        else{
+          if(this.list_drawing_albums_status[0]!='hidden' && this.list_drawing_albums_status[1]!='hidden'){
+            total=this.list_albums_drawings[this.opened_album-3].length;
+          }
+          if(this.list_drawing_albums_status[0]=='hidden' && this.list_drawing_albums_status[1]!='hidden'){
+            total=this.list_albums_drawings[this.opened_album-2].length;
+          }
+          if(this.list_drawing_albums_status[0]!='hidden' && this.list_drawing_albums_status[1]=='hidden'){
+            total=this.list_albums_drawings[this.opened_album-2].length;
+          }
+          if(this.list_drawing_albums_status[0]=='hidden' && this.list_drawing_albums_status[1]=='hidden'){
+            total=this.list_albums_drawings[this.opened_album-1].length;
+          }
+        }
+        
+        
+        if(this.j===total){
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
+      }
+    }
+    else{
+      console.log("pas visiteur")
+      if(event && this.opened_category==1 && this.opened_album==0){
+        console.log("tout")
+        this.j++;
+        let total=this.list_drawings_onepage.length + this.list_drawings_artbook.length;
+        if(this.j===total){
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
+      }
+      if(event && this.opened_category==1 && this.opened_album==1){
+        console.log("onepage");
+        this.j++;
+        let total=this.list_drawings_onepage.length;
+        console.log(this.j);
+        console.log(total);
+        if(this.j===total){
+          console.log("on y est");
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
+      }
+      if(event && this.opened_category==1 && this.opened_album==2){
+        console.log("artbook");
+        this.j++;
+        let total=this.list_drawings_artbook.length;
+        if(this.j===total){
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
+      }
+      if(event && this.opened_category==1 && this.opened_album>2){
+        this.j++;
+        let total=this.list_albums_drawings[this.opened_album-3].length;
+        if(this.j===total){
+          this.j=0;
+          this.ini_masonry();
+          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+        }
       }
     }
   }
 
 
   open_album(i : number) {
-
+    this.j=0;
+    if(i!=this.opened_album){
+      console.log("on met opac")
+      this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+    }
+    
     this.opened_album=i;
-
     this.cd.detectChanges();
     
     this.ini_masonry();

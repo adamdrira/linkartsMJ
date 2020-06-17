@@ -4,7 +4,7 @@
         <ng-container *ngFor="let item of list_of_profile_pictures;let i=index">
             <div class="story" (click)="watch_story(i)">
                 
-                <img class="background-image" src="../../assets/img/pub-manga.jpg">
+                <img class="background-image" [src]="list_of_cover_pictures[i]">
 
                 <div class="img-container">
                         <img class="img" [src]="item" [ngClass]="{'new': list_of_state[i] }">
