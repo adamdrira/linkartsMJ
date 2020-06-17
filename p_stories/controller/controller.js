@@ -70,13 +70,14 @@ module.exports = (router, list_of_stories,list_of_views) => {
         //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        var ss = String(yesterday.getSeconds()).padStart(2, '0');
+        console.log(tz);
+        /*var ss = String(yesterday.getSeconds()).padStart(2, '0');
         var mi = String(yesterday.getMinutes()).padStart(2, '0');
         var hh = String(yesterday.getHours()).padStart(2, '0');
         var dd = String(yesterday.getDate()).padStart(2, '0');
         var mm = String(yesterday.getMonth()+1).padStart(2, '0'); 
         var yyyy = String(yesterday.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';
+        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
 
         (async () => {
     
@@ -84,7 +85,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
              stories = await list_of_stories.findAll({
                 where: {
                   id_user: user_id,
-                  createdAt: {[Op.gte]: yesterday_timestamp,}
+                  createdAt: {[Op.gte]: yesterday}
                 },
                 order: [
                     ['createdAt', 'ASC']
@@ -117,13 +118,13 @@ module.exports = (router, list_of_stories,list_of_views) => {
         //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        var ss = String(yesterday.getSeconds()).padStart(2, '0');
+        /*var ss = String(yesterday.getSeconds()).padStart(2, '0');
         var mi = String(yesterday.getMinutes()).padStart(2, '0');
         var hh = String(yesterday.getHours()).padStart(2, '0');
         var dd = String(yesterday.getDate()).padStart(2, '0');
         var mm = String(yesterday.getMonth()+1).padStart(2, '0'); 
         var yyyy = String(yesterday.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';
+        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
 
         (async () => {
             
@@ -132,7 +133,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
            const number_of_stories = await list_of_stories.count({
                 where: {
                   id_user: user_id,
-                  createdAt: {[Op.gte]: yesterday_timestamp,}
+                  createdAt: {[Op.gte]: yesterday}
                 },
               });
               
@@ -157,25 +158,25 @@ module.exports = (router, list_of_stories,list_of_views) => {
             const current_user = get_current_user(req.cookies.currentUser);
             const Op = Sequelize.Op;
             //let last_timestamp =  '2020-04-28T06:40:24.000Z';
-            var before_yesterday = new Date();
-            before_yesterday.setDate(before_yesterday.getDate() - 2);
-            var ss = String(before_yesterday.getSeconds()).padStart(2, '0');
+            var last_week = new Date();
+            last_week.setDate(before_yesterday.getDate() - 2);
+            /*var ss = String(before_yesterday.getSeconds()).padStart(2, '0');
             var mi = String(before_yesterday.getMinutes()).padStart(2, '0');
             var hh = String(before_yesterday.getHours()).padStart(2, '0');
             var dd = String(before_yesterday.getDate()).padStart(2, '0');
             var mm = String(before_yesterday.getMonth()+1).padStart(2, '0'); 
             var yyyy = String(before_yesterday.getFullYear());
-            let before_yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';
+            let before_yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
 
             var today = new Date();
             today.setDate(today.getDate());
-            var ss1 = String(today.getSeconds()).padStart(2, '0');
+            /*var ss1 = String(today.getSeconds()).padStart(2, '0');
             var mi1 = String(today.getMinutes()).padStart(2, '0');
             var hh1 = String(today.getHours()).padStart(2, '0');
             var dd1 = String(today.getDate()).padStart(2, '0');
             var mm1 = String(today.getMonth()+1).padStart(2, '0'); 
             var yyyy1 = String(today.getFullYear());
-            let today_timestamp =  yyyy1 + '-' + mm1 + '-' + dd1 + 'T' + hh1 + ':' + mi1 + ':' + ss1+ '.000Z';
+            let today_timestamp =  yyyy1 + '-' + mm1 + '-' + dd1 + 'T' + hh1 + ':' + mi1 + ':' + ss1+ '.000Z';*/
     
             (async () => {
         
@@ -185,7 +186,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     where: {
                       authorid: authorid,
                       id_user_who_looks: current_user,
-                      [Op.and]: [{ createdAt:{[Op.gte]: before_yesterday_timestamp} }, { createdAt:{[Op.lte]: today_timestamp} }],
+                      [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
                           
                     },
                   }).then(number=>{console.log(number);
