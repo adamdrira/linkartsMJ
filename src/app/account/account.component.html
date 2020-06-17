@@ -270,25 +270,25 @@
         </ng-container>
             
         <ng-container *ngIf="opened_section==1 && archives_received && list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && number_of_artpieces!=0">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
             
             <div class="logos-container">
-                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);">
+                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
                     <div class="image1"></div>
                     <span>
-                        Bandes dessinées
+                        Bandes dessinées ({{list_bd_oneshot.length + list_bd_series.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);">
+                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
                     <div class="image2"></div>
                     <span>
-                        Dessins
+                        Dessins ({{list_drawings_onepage.length + list_drawings_artbook.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);">
+                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target>
                     <div class="image3"></div>
                     <span>
-                        Écrits
+                        Écrits ({{list_writings.length}})
                     </span>
                 </div>
             </div>
@@ -300,7 +300,7 @@
                 <div class="albums-container">
                     <div class="albums-filter">
                         <!-- Titres des albums bd-->
-                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added">
+                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added && (list_bd_oneshot.length != 0 || list_bd_series.length != 0)">
                             <div *ngFor="let element of list_titles_albums_bd; let i=index">
                                 <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_bd_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
                                 (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
@@ -366,8 +366,16 @@
                             </div>
 
                         </ng-container>
+                        
+                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added && mode_visiteur && (list_bd_oneshot.length == 0 && list_bd_series.length == 0)">
+                            L'utilisateur n'a pas encore publié de bandes dessinées
+                        </ng-container>
+                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added && !mode_visiteur && (list_bd_oneshot.length == 0 && list_bd_series.length == 0)">
+                            Vous n'avez pas encore publié de bandes dessinées
+                        </ng-container>
+
                         <!-- Titres des albums drawing-->
-                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added">
+                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && (list_drawings_onepage.length != 0 || list_drawings_artbook.length != 0)">
                             <div *ngFor="let element of list_titles_albums_drawings; let i=index">
                                 <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_drawing_albums_status[i-1]!=='hidden')" class="content-action text-center" 
                                 (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
@@ -434,9 +442,15 @@
 
                         </ng-container>
 
+                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && mode_visiteur && (list_drawings_onepage.length == 0 && list_drawings_artbook.length == 0)">
+                            L'utilisateur n'a pas encore publié de dessins
+                        </ng-container>
+                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && !mode_visiteur && (list_drawings_onepage.length == 0 && list_drawings_artbook.length == 0)">
+                            Vous n'avez pas encore publié de dessins
+                        </ng-container>
 
                         <!-- Titres des albums writing-->
-                        <ng-container *ngIf="opened_category==2">
+                        <ng-container *ngIf="opened_category==2 && (list_writings.length != 0)">
                             <div *ngFor="let element of list_titles_albums_writings; let i=index">
                                 <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_writings_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
                                 (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
@@ -467,6 +481,13 @@
                                 </button>
                             </div>
 
+                        </ng-container>
+
+                        <ng-container *ngIf="opened_category==2 && list_albums_drawings_added && mode_visiteur && (list_writings.length == 0)">
+                            L'utilisateur n'a pas encore publié d'écrits
+                        </ng-container>
+                        <ng-container *ngIf="opened_category==2 && list_albums_drawings_added && !mode_visiteur && (list_writings.length == 0)">
+                            Vous n'avez pas encore publié d'écrits
                         </ng-container>
 
                     </div>

@@ -613,9 +613,17 @@ export class AccountComponent implements OnInit {
   }
 
 
+  scroll(el: HTMLElement) {
+
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
 
   //For section 0 : Artworks
   open_category(i : number) {
+
+    //scroll to artworks
+
 
 
     if( this.opened_category == i ) {
@@ -786,9 +794,9 @@ export class AccountComponent implements OnInit {
 
   open_album(i : number) {
     this.j=0;
-    if(i!=this.opened_album){
-      console.log("on met opac")
-      this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+    
+    if(i!=this.opened_album && this.albumToShow){
+      //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
     }
     
     this.opened_album=i;
