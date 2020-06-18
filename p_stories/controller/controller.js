@@ -70,7 +70,6 @@ module.exports = (router, list_of_stories,list_of_views) => {
         //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        console.log(tz);
         /*var ss = String(yesterday.getSeconds()).padStart(2, '0');
         var mi = String(yesterday.getMinutes()).padStart(2, '0');
         var hh = String(yesterday.getHours()).padStart(2, '0');
