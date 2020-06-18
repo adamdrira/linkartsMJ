@@ -140,7 +140,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
                 where: {
                   authorid: user_id,
                   id_user_who_looks: current_user,
-                  createdAt: {[Op.gte]: yesterday_timestamp,}
+                  createdAt: {[Op.gte]: yesterday}
                 },
               });
             if (number_of_stories==number_of_stories_seen){
