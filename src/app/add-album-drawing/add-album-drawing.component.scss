@@ -152,6 +152,8 @@
 
 .swiper-slide > .selected {
     box-shadow:0px 0px 25px 10px rgb(32,56,100);
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 ::ng-deep .swiper-button-prev, ::ng-deep .swiper-button-next  {
