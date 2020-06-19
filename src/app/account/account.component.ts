@@ -658,18 +658,33 @@ export class AccountComponent implements OnInit {
 
   k=0;
 
-  ini_masonry() {
+  ini_masonry( i:number ) {
     console.log("mansour")
     let THIS=this;
-      var $grid = $('.grid').masonry({
+    
+    
+    //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "0");
+
+    var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
       columnWidth: 200,
       gutter:10,
-      isInitLayout:false,
+      //isInitLayout:true,
+      initLayout:false,
     });
 
     $grid.on( 'layoutComplete', function() {
       console.log('layout is complete0');
+
+      if( THIS.albumToShow ) {
+        THIS.cd.detectChanges();
+        console.log("changing opacity");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "transition", "all 2s");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "1");
+        
+        //THIS.rd.setStyle( THIS.customAlbumSelector.nativeElement, "opacity", "1");
+      }
+
       $grid.masonry('reloadItems');
     });
 
@@ -682,6 +697,7 @@ export class AccountComponent implements OnInit {
 
   j=0;
   sendLoaded(event){
+
     if(this.mode_visiteur){
       if(event && this.opened_category==1 && this.opened_album==0){
         this.j++;
@@ -694,8 +710,8 @@ export class AccountComponent implements OnInit {
         }
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       console.log(this.list_drawing_albums_status);
@@ -739,8 +755,8 @@ export class AccountComponent implements OnInit {
         
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
     }
@@ -752,8 +768,8 @@ export class AccountComponent implements OnInit {
         let total=this.list_drawings_onepage.length + this.list_drawings_artbook.length;
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album==1){
@@ -765,8 +781,8 @@ export class AccountComponent implements OnInit {
         if(this.j===total){
           console.log("on y est");
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album==2){
@@ -775,8 +791,8 @@ export class AccountComponent implements OnInit {
         let total=this.list_drawings_artbook.length;
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album>2){
@@ -784,25 +800,36 @@ export class AccountComponent implements OnInit {
         let total=this.list_albums_drawings[this.opened_album-3].length;
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album);
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
     }
   }
 
-
+  @ViewChild('customAlbumSelector', {static:false}) customAlbumSelector:ElementRef;
+  
   open_album(i : number) {
     this.j=0;
     
-    if(i!=this.opened_album && this.albumToShow){
+    if(this.albumToShow){
       //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+      if( i >= 3 ) {
+        //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+        this.opened_album=-100;
+
+        if( this.customAlbumSelector ) {
+          this.rd.setStyle( this.customAlbumSelector.nativeElement, "opacity", "0");
+        }
+        console.log("ici");
+        this.cd.detectChanges();
+      }
     }
     
     this.opened_album=i;
     this.cd.detectChanges();
     
-    this.ini_masonry();
+    //this.ini_masonry();
     this.cd.detectChanges();
 
     /*$('.grid').masonry({

@@ -811,7 +811,7 @@
                             </ng-container>
 
                             <!--One-shots album-->
-                            <div class="bd-container">
+                            <div class="drawing-container" [ngClass]="{'albumVisible': opened_album==1 }">
                                 <div *ngIf="opened_album==1" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item" #getwidth>
                                         <app-thumbnail-drawing 
@@ -827,7 +827,7 @@
 
 
                             <!--Artbooks album-->
-                            <div class="bd-container">
+                            <div class="drawing-container" [ngClass]="{'albumVisible': opened_album==2 }">
                                 <div *ngIf="opened_album==2" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_drawings_artbook; let i = index" class="grid-item" #getwidth>
                                         <app-thumbnail-drawing 
@@ -840,8 +840,9 @@
                                 </div>
                             </div>
 
+                            
                             <!--Autres albums-->
-                            <div class="bd-container">
+                            <div class="drawing-container" #customAlbumSelector>
                                 <div *ngIf="opened_album>=3" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                     <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="grid-item" #getwidth>
                                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
