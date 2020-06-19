@@ -680,7 +680,7 @@ export class AccountComponent implements OnInit {
         THIS.cd.detectChanges();
         console.log("changing opacity");
         //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "transition", "all 2s");
-        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "1");
+        THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "1");
         
         //THIS.rd.setStyle( THIS.customAlbumSelector.nativeElement, "opacity", "1");
       }
