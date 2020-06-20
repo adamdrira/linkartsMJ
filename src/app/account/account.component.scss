@@ -427,6 +427,7 @@
   transition: all 200ms;
 }
 
+
 .logos-container .logo:hover span {
   font-weight: bold;
   color:rgb(32,56,100) !important;
@@ -489,6 +490,9 @@
   justify-content: center;
 }
 
+.artworks-container {
+  height:1000px;
+}
 
 
   .background-bd {
@@ -639,12 +643,6 @@
   }
 
   
-  .drawing-container {
-    width:90%;
-    margin-left:auto;
-    margin-right:auto;
-  }
-
   .bd-container .name-container {
     font-weight: bold;
     margin:30px auto 0px 0px;
@@ -777,8 +775,21 @@
 
 .drawings-container {
   opacity:0;
-  transition:opacity 200ms;
+  //transition:all 2s !important;
 }
+
+.drawing-container {
+  opacity:1;
+  transition:opacity 1s;
+  width:80%;
+  margin-left:auto;
+  margin-right:auto;
+}
+.albumVisible {
+  transition: all 1s;
+  opacity:1 !important;
+}
+
 
 .drawings-container .artwork-type-title {
   margin-bottom:20px !important;

@@ -178,6 +178,8 @@ export class AccountComponent implements OnInit {
   //List des noms d'albums
   list_titles_albums_drawings:any = ["Tout","One-shots","Artbooks"];
   list_titles_albums_drawings_added:any[]=[];
+   //visibility
+   list_visibility_albums_drawings:boolean = false;
   //List des albums
   list_albums_drawings:any[]=[];
   list_albums_drawings_added:boolean=false;
@@ -570,11 +572,7 @@ export class AccountComponent implements OnInit {
       this.ngForRendred();
     })
 
-    /*this.getmasonry.changes.subscribe(t => {
-      this.ini_masonry();
-      //window.dispatchEvent(new Event('resize'));
-    })*/
-
+    
     
 
     
@@ -613,9 +611,17 @@ export class AccountComponent implements OnInit {
   }
 
 
+  scroll(el: HTMLElement) {
+
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
 
   //For section 0 : Artworks
   open_category(i : number) {
+
+    //scroll to artworks
+
 
 
     if( this.opened_category == i ) {
@@ -650,18 +656,33 @@ export class AccountComponent implements OnInit {
 
   k=0;
 
-  ini_masonry() {
+  ini_masonry( i:number ) {
     console.log("mansour")
     let THIS=this;
-      var $grid = $('.grid').masonry({
+    
+    
+    //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "0");
+
+    var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
       columnWidth: 200,
       gutter:10,
-      isInitLayout:false,
+      //isInitLayout:true,
+      initLayout:false,
     });
 
     $grid.on( 'layoutComplete', function() {
       console.log('layout is complete0');
+
+      if( THIS.albumToShow ) {
+        THIS.cd.detectChanges();
+        console.log("changing opacity");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "transition", "all 2s");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "1");
+        THIS.list_visibility_albums_drawings=true;
+        //THIS.rd.setStyle( THIS.customAlbumSelector.nativeElement, "opacity", "1");
+      }
+
       $grid.masonry('reloadItems');
     });
 
@@ -674,6 +695,7 @@ export class AccountComponent implements OnInit {
 
   j=0;
   sendLoaded(event){
+    
     if(this.mode_visiteur){
       if(event && this.opened_category==1 && this.opened_album==0){
         this.j++;
@@ -686,8 +708,8 @@ export class AccountComponent implements OnInit {
         }
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       console.log(this.list_drawing_albums_status);
@@ -731,8 +753,8 @@ export class AccountComponent implements OnInit {
         
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
     }
@@ -743,9 +765,10 @@ export class AccountComponent implements OnInit {
         this.j++;
         let total=this.list_drawings_onepage.length + this.list_drawings_artbook.length;
         if(this.j===total){
+          console.log("fin opened 0")
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album==1){
@@ -757,8 +780,8 @@ export class AccountComponent implements OnInit {
         if(this.j===total){
           console.log("on y est");
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album==2){
@@ -767,8 +790,8 @@ export class AccountComponent implements OnInit {
         let total=this.list_drawings_artbook.length;
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album );
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
       if(event && this.opened_category==1 && this.opened_album>2){
@@ -776,25 +799,38 @@ export class AccountComponent implements OnInit {
         let total=this.list_albums_drawings[this.opened_album-3].length;
         if(this.j===total){
           this.j=0;
-          this.ini_masonry();
-          this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+          this.ini_masonry( this.opened_album);
+          //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
         }
       }
     }
   }
 
-
+  @ViewChild('customAlbumSelector', {static:false}) customAlbumSelector:ElementRef;
+  
   open_album(i : number) {
-    this.j=0;
-    if(i!=this.opened_album){
-      console.log("on met opac")
-      this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
-    }
+    this.j=0;    
+    
+    this.list_visibility_albums_drawings=false;
+    console.log(this.list_visibility_albums_drawings);
+    this.cd.detectChanges();
+    /*if(this.albumToShow){
+      //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+      if( i >= 3 ) {
+        //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "0");
+        this.opened_album=-100;
+
+        if( this.customAlbumSelector ) {
+          this.rd.setStyle( this.customAlbumSelector.nativeElement, "opacity", "0");
+        }
+        console.log("open album");
+        this.cd.detectChanges();
+      }
+    }*/
     
     this.opened_album=i;
-    this.cd.detectChanges();
     
-    this.ini_masonry();
+    //this.ini_masonry();
     this.cd.detectChanges();
 
     /*$('.grid').masonry({
@@ -1070,24 +1106,24 @@ export class AccountComponent implements OnInit {
         this.Albums_service.change_comic_album_status(this.list_titles_albums_bd[i],"public","private").subscribe(
           r=>{ this.list_bd_albums_status[i-1]="private"; });
       }
-  }
-  else{
-    if(i==0){
-      this.Albums_service.change_comic_album_status("one-shot","hidden","standard").subscribe(
-        r=>{ this.list_bd_albums_status[0]="standard";
-      console.log(this.list_bd_albums_status) }
-      );
     }
-    if(i==1){
-      this.Albums_service.change_comic_album_status("serie","hidden","standard").subscribe(
-        r=>{ this.list_bd_albums_status[1]="stantard";
-        console.log(this.list_bd_albums_status) } );
+    else{
+      if(i==0){
+        this.Albums_service.change_comic_album_status("one-shot","hidden","standard").subscribe(
+          r=>{ this.list_bd_albums_status[0]="standard";
+        console.log(this.list_bd_albums_status) }
+        );
+      }
+      if(i==1){
+        this.Albums_service.change_comic_album_status("serie","hidden","standard").subscribe(
+          r=>{ this.list_bd_albums_status[1]="stantard";
+          console.log(this.list_bd_albums_status) } );
+      }
+      else if (i>1){
+        this.Albums_service.change_comic_album_status(this.list_titles_albums_bd[i],"private","public").subscribe(
+          r=>{this.list_bd_albums_status[i-1]="public";});
+      }
     }
-    else if (i>1){
-      this.Albums_service.change_comic_album_status(this.list_titles_albums_bd[i],"private","public").subscribe(
-        r=>{this.list_bd_albums_status[i-1]="public";});
-    }
-  }
 
   this.cd.detectChanges();
   }
