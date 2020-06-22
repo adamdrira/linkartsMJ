@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -30,6 +30,8 @@ export class ThumbnailAdComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
+
+    private cd:ChangeDetectorRef,
     ) { 
     
     this.navbar.setActiveSection(1);
@@ -45,6 +47,7 @@ export class ThumbnailAdComponent implements OnInit {
   category_index: number = 0;//0 pour description, 1 pour pieces-jointes.
 
   author_name: string;
+  pseudo: string;
   primary_description: string;
   profile_picture: SafeUrl;
   @Input() item: any;
@@ -98,6 +101,7 @@ export class ThumbnailAdComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.primary_description=r[0].primary_description;
+      this.pseudo = r[0].nickname;
     });
 
 
@@ -105,6 +109,7 @@ export class ThumbnailAdComponent implements OnInit {
     this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      console.log(SafeURL);
       this.thumbnail_picture = SafeURL;
     });
 
@@ -236,11 +241,7 @@ export class ThumbnailAdComponent implements OnInit {
   
   open_category(i : number) {
     this.category_index=i;
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("active");
-    })
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("active");
-   
+    this.cd.detectChanges();
   }
 
 
