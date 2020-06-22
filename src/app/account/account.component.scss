@@ -785,6 +785,7 @@
   margin-left:auto;
   margin-right:auto;
 }
+
 .albumVisible {
   transition: all 1s;
   opacity:1 !important;
@@ -866,31 +867,6 @@
   }
 }*/
 
-
-
-
-.gridAlbumArtbook,
-.gridAlbumArtbook2 {
-  position: relative;
-}
-
-.gridAlbumOneshot,
-.gridAlbumOneshot2 {
-  position: relative;
-}
-
-.gridAlbumCreated {
-  position:relative;
-}
-
-::ng-deep .gridAlbumArtbook > *,
-::ng-deep .gridAlbumOneshot2 > *,
-::ng-deep .gridAlbumOneshot > *,
-::ng-deep .gridAlbumArtbook2 > *,
-::ng-deep .gridAlbumCreated > * {
-  display: block;
-  position: absolute !important;
-  margin-right: 30px;
-  margin-bottom:20px;
-  padding:5px;
+.grid {
+  margin:0 auto !important;
 }

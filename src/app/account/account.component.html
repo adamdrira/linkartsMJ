@@ -149,8 +149,8 @@
         </div>
 
 
-        <ng-container *ngIf="opened_section==0 && archives_received && list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added ">
+        <div *ngIf="opened_section==0 && archives_received && list_writings_added && list_drawings_artbook_added
+            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
         
             <ng-container *ngIf="emphasized_artwork_added" >
                 <div class="title">
@@ -252,7 +252,9 @@
             </div>
 
 
-        </ng-container>
+        </div>
+
+
 
 
         <ng-container *ngIf="opened_section==1 && number_of_artpieces==0 && new_comic_contents_added && new_writing_contents_added && new_drawing_contents_added">
@@ -683,7 +685,7 @@
 
                         
 
-
+                        
                         <!------------------------------------------------------------------------->
                         <!----------------------- VISUALISATION DES DESSINS ----------------------->
                         <!------------------------------------------------------------------------->
@@ -691,14 +693,14 @@
                             <ng-container *ngIf="opened_album==0" >
                                 
                                 <!--On parcourt tous les albums ajoutés-->
-                                <ng-container *ngIf="list_albums_drawings_added" >
+                                <ng-container *ngIf="list_albums_drawings_added">
                                     <div *ngFor="let item of list_titles_albums_drawings_added ; let i = index">
 
                                         <!--On affiche les albums-->
                                     
                                         <div *ngIf="!mode_visiteur">
-                                            <div *ngFor="let j of list_of_cover_index" style="display:flex;">
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px auto">
+                                            <div *ngFor="let j of list_of_cover_index">
+                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px 10px">
                                                     <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
                                                         [pictures_number]=j
                                                         [album_name]=list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]
@@ -708,9 +710,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
-                                            <div *ngFor="let j of list_of_cover_index" style="display:flex;" >
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px auto">
+                                        <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'" style="display:flex;">
+                                            <div *ngFor="let j of list_of_cover_index">
+                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px 10px">
                                                     <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
                                                         [pictures_number]=j
                                                         [pictures_list]=array_of_selected_safeurls[list_titles_albums_drawings_added.length-i-1]

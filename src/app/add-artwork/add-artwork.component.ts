@@ -14,7 +14,7 @@ import { NavbarService } from '../services/navbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
+import { HostListener } from '@angular/core';
 declare var Swiper: any;
 declare var $: any;
 
@@ -56,6 +56,13 @@ export class AddArtworkComponent implements OnInit {
 
   }
 
+
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    
+
+    this.step_back_browser();
+  }
 
   //Artwork category : 0 for book, 1 for drawing, 2 for writing
   opened_category$: Observable<number>;
@@ -156,12 +163,10 @@ export class AddArtworkComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         THIS._upload.setCategory( -1 );
-        $('#step_back_confirmation').modal('toggle');
         THIS.location.go("/add-artwork");
         THIS.cd.detectChanges();
       }
       else {
-        $('#step_back_confirmation').modal('toggle');
         THIS.cd.detectChanges();
       }
     });
@@ -169,17 +174,40 @@ export class AddArtworkComponent implements OnInit {
   }
 
 
-  //********************************************************************************************************* */
-  //********************************************************************************************************* */
-  //Form : drawing  ***************************************************************************************** */
-  //********************************************************************************************************* */
-  //********************************************************************************************************* */
+  step_back_browser() {
 
-  
+    let THIS = this;
 
-  
+    THIS._upload.step.subscribe( v => { 
+      
+
+      if( v == 0 ) {
+        
+        THIS.location.go("/add-artwork");
+        window.location.reload();
+        /*let THIS = this;
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if( result ) {
+            THIS._upload.setCategory( -1 );
+            THIS.location.go("/add-artwork");
+            THIS.cd.detectChanges();
+          }
+          else {
+            THIS.location.back();
+            THIS.cd.detectChanges();
+          }
+        });*/
+      }
+
+    });
+    
 
 
+  }
 
 
 

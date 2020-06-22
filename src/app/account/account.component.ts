@@ -669,6 +669,7 @@ export class AccountComponent implements OnInit {
       gutter:10,
       //isInitLayout:true,
       initLayout:false,
+      fitWidth: true,
     });
 
     $grid.on( 'layoutComplete', function() {
@@ -805,10 +806,14 @@ export class AccountComponent implements OnInit {
       }
     }
   }
-
-  @ViewChild('customAlbumSelector', {static:false}) customAlbumSelector:ElementRef;
+  
   
   open_album(i : number) {
+
+    if( this.opened_album == i ) {
+      return;
+    }
+    
     this.j=0;    
     
     this.list_visibility_albums_drawings=false;
