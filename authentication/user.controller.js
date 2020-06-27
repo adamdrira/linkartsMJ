@@ -31,7 +31,9 @@ exports.create = (req, res) => {
 			"likesnumber": 0,
 			"lovesnumber": 0,
 			"subscribers_number": 0,
-			"subscribtions_number": 0,
+			"subscribings_number": 0,
+			"subscribers":[],
+			"subscribings":[],
 		}).catch(err => {
 			console.log(err);	
 			res.status(500).json({msg: "error registering the user", details: err});		

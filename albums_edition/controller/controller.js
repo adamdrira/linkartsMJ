@@ -28,8 +28,7 @@ module.exports = (router, list_of_albums) => {
                         "album_content":album,
                         "status":"public"
                     })
-                    .then(album=>{res.status(200).send([album])})        
-
+                    .then(album=>{res.status(200).send([album])})  
         })();
     });
 

@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 
 
 
-module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives) => {
+module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives, list_of_users) => {
 
     function get_current_user(token){
         var user = 0
@@ -113,7 +113,35 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                         "id_user": current_user,
                         "id_user_subscribed_to":id_user_to_subscribe,
                     })
-                    .then(subscribings=>{res.status(200).send([subscribings])})        
+                    .then(subscribings=>{
+                        list_of_users.findOne({
+                            where:{
+                                id:id_user_to_subscribe,
+                            }
+                        }).then(user=>{
+                            let number=user.subscribers_number +1;
+                            user.update({
+                                'subscribers': Sequelize.fn('array_append', Sequelize.col('subscribers'), current_user),
+                                'subscribers_number':number,
+                            },
+                               ).then(user=>{
+                                list_of_users.findOne({
+                                    where:{
+                                        id:current_user,
+                                    }
+                                }).then(user1=>{
+                                    let number1=user1.subscribings_number +1;
+                                    user1.update( {
+                                        'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
+                                        'subscribings_number':number1,
+                                    },
+                                    ).then(m=>{
+                                        res.status(200).send([subscribings])
+                                    })
+                                })
+                            })
+                        })
+                    })        
 
         })();
     });
@@ -132,8 +160,35 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 .then(subscribings=>{
                     subscribings.destroy({
                         truncate: false
-                      })
-                        .then(subscribings=>{res.status(200).send([subscribings])})        
+                      }).then(subscribings=>{
+                        list_of_users.findOne({
+                            where:{
+                                id:id_user_subscribed_to,
+                            }
+                        }).then(user=>{
+                            let number=user.subscribers_number -1;
+                            user.update({
+                                'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), current_user),
+                                'subscribers_number':number,
+                            },
+                               ).then(user=>{
+                                list_of_users.findOne({
+                                    where:{
+                                        id:current_user,
+                                    }
+                                }).then(user1=>{
+                                    let number1=user1.subscribings_number -1;
+                                    user1.update( {
+                                        'subscribings': Sequelize.fn('array_remove', Sequelize.col('subscribings'), id_user_subscribed_to),
+                                        'subscribings_number':number1,
+                                    },
+                                       ).then(m=>{
+                                        res.status(200).send([subscribings])
+                                    })
+                                })
+                            })
+                        })
+                    })          
                     })
         })();
     });
@@ -153,7 +208,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';
         (async () => {
 
-            users_subscribed_to = await list_of_subscribings.findAll({
+            list_of_subscribings.findAll({
                 where: {
                     id_user:id_user,
                     createdAt: {[Op.gte]: yesterday_timestamp,}
@@ -250,7 +305,6 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         const publication_id = parseInt(req.body.publication_id);
         const chapter_number = req.body.chapter_number;
 
-            console.log('ajout de content ok');
             list_of_contents.create({
                 "id_user": current_user,
                 "publication_category":category,
@@ -467,6 +521,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 where: {
                     id_user:id_user,
                     publication_category:"comics",
+                    status:"ok",
                 },
                 order: [
                     ['createdAt', 'DESC']
@@ -483,6 +538,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 where: {
                     id_user:id_user,
                     publication_category:"writing",
+                    status:"ok",
                 },
                 order: [
                     ['createdAt', 'DESC']
@@ -499,6 +555,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 where: {
                     id_user:id_user,
                     publication_category:"drawing",
+                    status:"ok",
                 },
                 order: [
                     ['createdAt', 'DESC']

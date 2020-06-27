@@ -11,6 +11,7 @@ const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
 const list_of_messages= tables.list_of_messages(sequelize, Sequelize).list_of_messages;
 const list_of_chat_friends= tables.list_of_messages(sequelize, Sequelize).list_of_chat_friends;
 const list_of_chat_spams= tables.list_of_messages(sequelize, Sequelize).list_of_chat_spams;
+const list_of_chat_search= tables.list_of_messages(sequelize, Sequelize).list_of_chat_search;
 
 //Pass { force: true } as option if you want to force delete and recreate.
 sequelize.sync() 
@@ -23,6 +24,7 @@ module.exports = {
   list_of_chat_friends,
   list_of_chat_spams,
   list_of_messages,
+  list_of_chat_search,
   sequelize
 }
 

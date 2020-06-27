@@ -27,7 +27,9 @@ module.exports = (sequelize, Sequelize) => {
 		likesnumber: {type: Sequelize.INTEGER}, // à supprimer
 		lovesnumber: {type: Sequelize.INTEGER},// à supprimer
 		subscribers_number: {type: Sequelize.INTEGER},
-		subscribtions_number: {type: Sequelize.INTEGER},
+		subscribings_number: {type: Sequelize.INTEGER},
+		subscribers:Sequelize.ARRAY(Sequelize.INTEGER),
+		subscribings:Sequelize.ARRAY(Sequelize.INTEGER),
 		
 	},
 	{

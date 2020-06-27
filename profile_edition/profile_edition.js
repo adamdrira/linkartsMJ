@@ -48,14 +48,11 @@ router.post('/add_profile_pic', function (req, res) {
     upload(req, res, function(err) {
         (async () => {
         if (err) {
-            console.log(err);
             return res.end('Error');
         } else {
-            console.log(req.files);
             req.files.forEach(function(item) {
                 console.log("item uploaded");
             });
-            console.log(filename);
             User = await Liste_users.findOne({
                 where: {
                   id: current_user,
@@ -102,14 +99,11 @@ router.post('/add_cover_pic', function (req, res) {
     upload(req, res, function(err) {
         (async () => {
         if (err) {
-            console.log(err);
             return res.end('Error');
         } else {
-            console.log(req.files);
             req.files.forEach(function(item) {
                 console.log("item uploaded");
             });
-            console.log(filename);
             User = await Liste_users.findOne({
                 where: {
                   id: current_user,
@@ -142,7 +136,6 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
-        console.log("profile picture retrieved");
         res.status(200).send(data);
       } );
     }); 
@@ -166,7 +159,6 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
       let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
-        console.log("cover picture retrieved");
         res.status(200).send(data);
       } );
     }); 
@@ -181,13 +173,13 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
   (async () => {
 
     const user_id = req.params.user_id;
-
-    User = await Liste_users.findOne({
+    Liste_users.findOne({
       where: {
         id: user_id,
       }
     })
     .then(User =>  {
+      
         res.status(200).send([User]);
       } );
   })();
@@ -198,7 +190,6 @@ router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
   (async () => {
 
     const pseudo = req.params.pseudo;
-    console.log(pseudo);
     User = await Liste_users.findOne({
       where: {
         nickname: pseudo,
@@ -215,7 +206,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   (async () => {
 
     const user_id = parseInt(req.params.user_id);
-    console.log(user_id);
     User = await Liste_users.findOne({
       where: {
         id: user_id,
@@ -236,7 +226,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
 
     (async () => {
-      console.log("bio 2")
     const bio= req.body.bio;
     const training = req.body.training;
     const job = req.body.job;
@@ -248,7 +237,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     })
     .then(User =>  {
-      console.log("bio edited")
       User.update({
         "primary_description":bio,
         "training":training,

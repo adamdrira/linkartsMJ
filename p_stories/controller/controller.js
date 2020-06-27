@@ -22,6 +22,8 @@ module.exports = (router, list_of_stories,list_of_views) => {
     router.post('/upload_story', function (req, res) {
         (async () => {
             let current_user = get_current_user(req.cookies.currentUser);
+            console.log("current user stry");
+            console.log(current_user)
             var file_name='';
             const PATH2= './data_and_routes/stories';
             let storage = multer.diskStorage({
@@ -51,7 +53,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
         
             upload_cover(req, res, function(err){
                 (async ()=> {
-                    const stories = await list_of_stories.create({
+                    list_of_stories.create({
                         "id_user": current_user,
                         "file_name": file_name,
                         "views_number": 0,

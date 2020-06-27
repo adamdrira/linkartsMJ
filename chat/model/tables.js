@@ -2,7 +2,6 @@ const user = require('../../authentication/user.model');
 
 exports.list_of_messages = (sequelize, DataTypes) => {
     const User = user(sequelize, DataTypes);
-
     var list_of_messages = sequelize.define('list_of_chat_messages', {
       id: {
         type: DataTypes.INTEGER,
@@ -13,10 +12,13 @@ exports.list_of_messages = (sequelize, DataTypes) => {
       id_receiver: DataTypes.INTEGER,
       message:DataTypes.STRING,
       is_a_response:DataTypes.BOOLEAN,
+      is_an_attachment:DataTypes.BOOLEAN,
+      is_from_server:DataTypes.BOOLEAN,
+      server_message:DataTypes.STRING,
       id_message_responding:DataTypes.INTEGER,
       like:DataTypes.BOOLEAN,
-      attachment_content:DataTypes.BLOB,
       attachment_name:DataTypes.STRING,
+      attachment_type:DataTypes.STRING,
       status:DataTypes.STRING,
     },
     {
@@ -54,6 +56,22 @@ var list_of_chat_spams= sequelize.define('list_of_chat_spams', {
 }
 )
 
+
+var list_of_chat_search= sequelize.define('list_of_chat_search', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  id_receiver: DataTypes.INTEGER,
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
+)
+
+
  
 
   
@@ -71,6 +89,6 @@ list_of_messages.belongsTo(User, {
 });
 
 
- return {list_of_messages,list_of_chat_friends,list_of_chat_spams};
+ return {list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search};
 }
 

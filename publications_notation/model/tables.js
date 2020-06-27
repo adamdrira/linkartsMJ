@@ -18,6 +18,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
         thirdtag: DataTypes.STRING,
         publication_id: DataTypes.INTEGER,
         chapter_number: DataTypes.INTEGER,
+        thirdtag: DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name

@@ -197,6 +197,8 @@ module.exports = (router, Liste_Writings) => {
 
         //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/upload_writing', function (req, res) {
+      console.log(req.headers.type);
+      console.log("pistache");
       let current_user = get_current_user(req.cookies.currentUser);
       var file_name='';
       const PATH1= './data_and_routes/writings';
