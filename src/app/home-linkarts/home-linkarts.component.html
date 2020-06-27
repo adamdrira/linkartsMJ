@@ -1,11 +1,21 @@
 <div class="container-fluid">
-    <main role="main">
+    <main role="main" class="main">
       
+
 
         <div id="left-container">
 
             <div class="categories-container">
-                <div class="category-filter">
+                <div class="category-filter2" [ngClass]="{'invisible':!little_screen }">
+                    <select class="f00select1" style="height: 100%; margin-bottom: 4px;font-size: 1.1rem; color: #203864;  text-shadow: -0.06ex 0 #203864, 0.06ex 0 #203864;">
+                        <option selected value="defaultValue" >Recommandations</option>
+                        <option label="1">Tendances</option>
+                        <option label="2">Abonnements</option>
+                    </select>
+                </div>
+                
+
+                <div class="category-filter" [ngClass]="{'invisible':little_screen }">
                     <div #category class="content-action text-center opened" (click)="open_category(0);">
                         <span>Recommandations</span>
                         <div class="bottom-border">

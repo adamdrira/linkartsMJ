@@ -42,6 +42,7 @@ export class Subscribing_service {
 
   get_all_users_subscribed_to_today(id_user){
     return this.httpClient.get(`http://localhost:4600/routes/get_all_users_subscribed_to_today/${id_user}`, {withCredentials:true}).pipe(map(information=>{
+        console.log(information)
         return information;
       }));
   };

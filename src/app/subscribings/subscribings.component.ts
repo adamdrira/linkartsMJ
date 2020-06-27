@@ -56,6 +56,7 @@ export class SubscribingsComponent implements OnInit {
   ngOnInit() {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      console.log(r[0])
       this.user_id = r[0].id;
       this.get_all_users_subscribed_to_today(this.get_all_users_subscribed_to_before_today);
     });
@@ -108,71 +109,77 @@ export class SubscribingsComponent implements OnInit {
 
   get_all_users_subscribed_to_before_today(THIS){
     THIS.Subscribing_service.get_all_users_subscribed_to_before_today(THIS.user_id).subscribe(info=>{
-      for (let i=0; i< info[0].length;i++){         
-        THIS.list_of_users.push(info[0][i].id_user_subscribed_to);         
-        if(i==info[0].length-1 && THIS.list_of_users.length>0){
-          THIS.Subscribing_service.get_all_subscribings_contents(THIS.list_of_users).subscribe(r=>{          
-            for (let j=0; j< r[0].length;j++){
-              if(r[0][j].publication_category=="comics"){
-                if(r[0][j].format=="one-shot"){
-                  THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+      console.log(info)
+      if(info[0].length>0){
+        for (let i=0; i< info[0].length;i++){         
+          THIS.list_of_users.push(info[0][i].id_user_subscribed_to);         
+          if(i==info[0].length-1){
+            THIS.Subscribing_service.get_all_subscribings_contents(THIS.list_of_users).subscribe(r=>{          
+              for (let j=0; j< r[0].length;j++){
+                if(r[0][j].publication_category=="comics"){
+                  if(r[0][j].format=="one-shot"){
+                    THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        if(THIS.list_of_contents.length == r[0].length){
+                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
+                        }
+                      }
+                    })
+                  }
+                  if(r[0][j].format=="serie"){
+                    THIS.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        if(THIS.list_of_contents.length == r[0].length){
+                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
+                        }
+                      }
+                    })
+                  }
+                }
+
+                if(r[0][j].publication_category=="drawing"){
+                  if(r[0][j].format=="one-shot"){
+                    THIS.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        if(THIS.list_of_contents.length == r[0].length){
+                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
+                        }
+                      }
+                    })
+                  }
+                  if(r[0][j].format=="artbook"){
+                    THIS.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        if(THIS.list_of_contents.length == r[0].length){
+                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
+                        }
+                      }
+                    })
+                  }
+                }
+
+                if(r[0][j].publication_category=="writing"){
+                  THIS.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
                     if(info[0].status="public"){
                       THIS.list_of_contents.push(info[0]);
                       if(THIS.list_of_contents.length == r[0].length){
                         THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                       }
-                    }
-                  })
-                }
-                if(r[0][j].format=="serie"){
-                  THIS.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                    if(info[0].status="public"){
-                      THIS.list_of_contents.push(info[0]);
-                      if(THIS.list_of_contents.length == r[0].length){
-                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                      }
-                    }
-                  })
-                }
+                  }
+                    })
+                }           
               }
 
-              if(r[0][j].publication_category=="drawing"){
-                if(r[0][j].format=="one-shot"){
-                  THIS.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                    if(info[0].status="public"){
-                      THIS.list_of_contents.push(info[0]);
-                      if(THIS.list_of_contents.length == r[0].length){
-                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                      }
-                    }
-                  })
-                }
-                if(r[0][j].format=="artbook"){
-                  THIS.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
-                    if(info[0].status="public"){
-                      THIS.list_of_contents.push(info[0]);
-                      if(THIS.list_of_contents.length == r[0].length){
-                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                      }
-                    }
-                  })
-                }
-              }
-
-              if(r[0][j].publication_category=="writing"){
-                THIS.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                  if(info[0].status="public"){
-                    THIS.list_of_contents.push(info[0]);
-                    if(THIS.list_of_contents.length == r[0].length){
-                      THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                    }
-                }
-                  })
-              }           
-            }
-
-          });
+            });
+          }
         }
+      }
+      else{
+        console.log("put a message to say they need to subscribe to someone")
       }
       
     })
@@ -180,6 +187,7 @@ export class SubscribingsComponent implements OnInit {
 
   get_all_users_subscribed_to_today(callback){
     this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
+      console.log(info)
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
           this.list_of_new_users.push(info[0][i].id_user_subscribed_to);        
@@ -187,6 +195,7 @@ export class SubscribingsComponent implements OnInit {
             for (let k=0;k<this.list_of_new_users.length;k++){
               this.Subscribing_service.get_last_contents_of_a_subscribing(this.list_of_new_users[k])
                 .subscribe(r=>{
+                  console.log(r);
                   let new_contents=[];
                   if(r[0].length>0){
                     for (let j=0; j< r[0].length;j++){                  

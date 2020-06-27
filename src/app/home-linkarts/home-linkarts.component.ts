@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
@@ -29,14 +29,18 @@ export class HomeLinkartsComponent implements OnInit {
     this.navbar.setActiveSection(0);
     this.navbar.show();
   }
+
+  @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.cd.detectChanges();
+      this.display_selector();
+    }
   
   @ViewChildren('category') categories:QueryList<ElementRef>;
   
-  category_index:number = 0;
+  category_index:number = -1;
 
   ngAfterViewInit() {
-    
-    console.log(this.rd);
     this.open_category( this.route.snapshot.data['category'] );
     this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
 
@@ -79,7 +83,46 @@ export class HomeLinkartsComponent implements OnInit {
 
 
   ngOnInit() {
+    this.display_selector();
+    this.initializeselector();
+    console.log(this.little_screen);
   }
 
+  little_screen=false;
+  initializeselector(){
+    let THIS=this;
+    $(document).ready(function () {
+      $('.f00select1').SumoSelect({});
+    });
+  
+  
+    $(".f00select0").change(function(){
+      if($(this).val()=="1"){
+        THIS.open_category(1);
+      }
+      if($(this).val()=="2"){
+        THIS.open_category(2);
+      }
+      else{
+        THIS.open_category(0);
+      }
+      THIS.cd.detectChanges();
+    })
+  }
+  
+  
+  display_selector(){
+    let width = $(".container-fluid").width();
+    console.log(width);
+    
+
+    if( width <= 825) {
+      this.little_screen=true;
+    }
+    else{
+      this.little_screen=false;
+    }
+    
+  }
   
 }

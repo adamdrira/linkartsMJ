@@ -62,9 +62,9 @@ export class ThumbnailArtworkComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
-    if(this.item.subscribing_category==null || this.item.subscribing_category==undefined){
-
+    if(!(typeof(this.subscribing_category)=='string')){
+      console.log("dans le if");
+      console.log(this.subscribing_category);
       this.category=this.item.publication_category;
       this.format=this.item.format;
 
@@ -223,10 +223,11 @@ export class ThumbnailArtworkComponent implements OnInit {
             });
 
           });
+      }
     }
-    else if (this.item.subscribing_category!=undefined){
-      
-
+    else{
+      console.log("dans le else");
+      console.log(this.subscribing_category);
       this.category=this.subscribing_category;
       this.format=this.subscribing_format;
 
@@ -386,7 +387,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     
     
 
-    }
+    
     
   }
 

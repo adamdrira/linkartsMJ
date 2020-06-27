@@ -56,7 +56,7 @@ export class Community_recommendation {
 
   sorted_category_list(){
    return this.httpClient.get('http://localhost:4600/python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
-       return information;
+        return information;
      }));
  };
 
@@ -66,14 +66,21 @@ export class Community_recommendation {
     }));
 };
 
+delete_recommendations_artpieces(){
+  return this.httpClient.delete('http://localhost:4600/python/delete_recommendations_artpieces',{withCredentials:true}).pipe(map(information=>{
+     return information;
+    }));
+}
+
 get_first_recommendation_bd_os_for_user(index_bd,index_drawing,index_writing){
   return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{  
     return information;
     }));
 };
 get_first_recommendation_bd_serie_for_user(index_bd,index_drawing,index_writing){
+  console.log("getting bd serie recom")
   return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_bd_serie_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
-
+    console.log(information);
     return information;
     }));
 };

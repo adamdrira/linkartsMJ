@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Story_service } from '../services/story.service';
@@ -31,6 +31,11 @@ export class StoriesComponent implements OnInit {
     private Story_service:Story_service,
 
     ) { }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.update_new_contents();
+    }
 
   final_list_of_users:any[]=[];
   list_of_users:any[]=[];
@@ -67,6 +72,7 @@ export class StoriesComponent implements OnInit {
 
   ngOnInit() {
 
+    this.update_new_contents();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
@@ -435,6 +441,23 @@ export class StoriesComponent implements OnInit {
         THIS.users_retrieved=true;
         THIS.cd.detectChanges();
     }
+  }
+
+  
+
+  update_new_contents() {
+
+    /*let width = $(".container-fluid").width();
+    console.log(width);
+    
+    if( width <= 780 ) {
+      $(".main").css("display","inline-block");
+      
+    }
+    else{
+      $(".main").css("display","flex");
+    }*/
+
   }
 
 

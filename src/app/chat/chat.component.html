@@ -21,7 +21,7 @@
         <div class="messages-container">
             <div *ngIf='display_messages'>
                 <div *ngFor="let item of list_of_messages; let i = index" class="message">
-                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id">
+                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                         <div class="my-message-content">
                             <div class="options">
                                 <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
@@ -42,8 +42,13 @@
                                     </button>
                                 </mat-menu>
                             </div>
-                            <div class="content">
+                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
                                 {{list_of_messages[list_of_messages.length -1 - i].message}}
+                            </div>
+                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
+                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture'">
+                                    <img style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                </div> 
                             </div>
                             
                             <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received'">
@@ -69,7 +74,7 @@
                         </div>
                         
                     </div>
-                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id">
+                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                         
                         <div class="friend-message-content">
                             <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]">
@@ -79,27 +84,78 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="content">
+                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
                                 {{list_of_messages[list_of_messages.length -1 - i].message}}
+                            </div>
+                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
+                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture'">
+                                    <img style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                </div> 
                             </div>
                         </div>
                         
+                    </div>
+
+                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                        
+                        <div class="new-contact-message-content">
+                                {{friend_name}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                        </div>
                     </div>
                     
                 </div>
             </div>
         </div>
 
-            <div class="send_message">
-                <div [formGroup]="message_group" novalidate>
-                    <div class="form-group">
-                        <div class="form-group"  >
-                            <input type="text" formControlName="message"  class="form-control2"   maxlength="20" placeholder="message" autocomplete="off" required/>
-                        </div>
+        <div *ngIf="spam!='false' && response_exist && response_exist_retrieved" class="add-to_contact">
+            {{friend_name}} ne fait pas parti de vos contacts. Voulez-vous l'ajouter à vos contacts ?<br />
+            <button (click)="add_to_contacts()">Oui</button>
+        </div>
+
+        <div *ngIf="spam!='false' && !response_exist && response_exist_retrieved" class="add-to_contact">
+            {{friend_name}} ne fait pas parti de vos contacts. Vous devrez attendre qu'il vous ajoute à ses contacts si vous lui envoyez un message<br />
+        </div>
+
+        <!--<div  class="send_message">
+            <div  [formGroup]="message_group" novalidate>
+                <div class="form-group">
+                    <div class="form-group"  >
+                        <input type="text" formControlName="message"  class="form-control2"   maxlength="20" placeholder="message" autocomplete="off" required/>
                     </div>
                 </div>
-                <button (click)="send_message()">send</button>
             </div>
+            <button (click)="send_message()">send</button>
+        </div>-->
+
+        <div  [formGroup]="message_group" novalidate >
+
+            <div class="navbar-l1-searchbar-container">
+                
+                <div class="files">
+                   <div *ngIf="display_attachments">
+                        <div *ngFor="let item of attachments;let i=index" style="max-height:200px;" >
+                            <img *ngIf="attachments_type[i]='picture'" style="max-width:140px;max-height:140px;" [src]="attachments[i]">
+                            <button (click)=remove_attachment(i)>remove</button>
+                        </div>
+                    </div> 
+                </div>
+                <div class="send_message">
+                    <textarea  #input
+                    formControlName="message"
+                    (keydown)="on_keydown($event)"
+                    (click)="activateFocus()"
+                    onfocus="this.placeholder = ''"
+                    (input)="input_message($event);"
+                    (paste)="onPaste($event);"
+                    onblur="this.placeholder = 'Ecrivez un message...'"
+                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Ecrivez un message...'"></textarea>
+                    <input [placeholder]="'send'"  type="button">
+                </div>
+
+            </div>
+        </div>
+
+           
             
         </div>
         

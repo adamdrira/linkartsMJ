@@ -1,44 +1,251 @@
 
-<div *ngIf="list_of_friends_retrieved" class="main-chat-container">
+<div  class="main-chat-container">
 
-    <div *ngIf="list_of_friends_2_retrieved" class="chat-friends-container">
-        <div class="subscribers-container" >
-            <div *ngFor="let item of list_of_friends_ids; let i=index" class="subscriber-card">
-        
-        
-                <!--********************-->
-                <!--Author container-->
-                <!--********************-->
-                <div class="author-container" (click)="open_chat(i)">
-                    <div class="left-container">
-                        <img [src]="list_of_friends_profile_pictures[i]">
-                    </div>
-                    <a>
-                        <div class="right-container">
-                            <span class="author-name">{{list_of_friends_names[i]}} </span>
-                            <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                    {{list_of_friends_last_message[i].message}} 
-                                </div>
-                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                    <b>{{list_of_friends_last_message[i].message}}</b>
-                                </div>
-                            </div>
-                            <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                {{list_of_friends_last_message[i].message}}
-                            </div>
-                        </div>
-                    </a>
-        
+    <div class="chat-friends-container">
+
+        <div class="selector">
+            <div class="author-container">
+                <div *ngIf="profile_picture_retrieved" class="left-container">
+                    <img [src]="profile_picture">
                 </div>
             </div>
+
+            <!--<div >
+                <select *ngIf="okvalue" #fdselector id="fdselector" class="fdselect" style="height: 40px;" >
+                    <option selected value="defaultValue" >Mes contacts</option>
+                    <option label="Autres">Autres</option>
+                </select>
+            </div>-->
+
+            <form [formGroup]="formData">
+                <mat-radio-group formControlName="IsActive"
+                 (change)="radioChange($event)">
+                    <mat-radio-button value="Mes contacts"  >Mes contacts</mat-radio-button>
+                    <mat-radio-button value="Autres"  >Autres</mat-radio-button> 
+                </mat-radio-group>
+            </form>
+           
+        
         </div>
+
+        <div  [formGroup]="fd" novalidate >
+
+            <div class="navbar-l1-searchbar-container">
+                
+                <div class="files">
+                    <img *ngIf="display" style="max-width:140px;max-height:140px;" [src]="imagesource">
+                </div>
+                <div class="searchbar">
+                    <input #input
+                    formControlName="fdSearchbar"
+                    (click)="activateFocus()"
+                    onfocus="this.placeholder = ''"
+                    (input)="showchanges($event);"
+                    (paste)="onPaste($event);"
+                    onblur="this.placeholder = 'Rechercher'"
+                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+                    <input [placeholder]="'Close'" (click)="delete_placeholder()" type="button">
+                </div>
+
+            </div>
+        </div>
+
+        <div *ngIf="list_of_friends_retrieved && get_friends" >
+
+            <div *ngIf="!display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
+                <div *ngFor="let item of list_of_friends_ids; let i=index" class="subscriber-card">
+                    <div class="author-container" (click)="open_chat(i)">
+                        <div class="left-container">
+                            <img [src]="list_of_friends_profile_pictures[i]">
+                        </div>
+                        <a>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_friends_names[i]}} </span>
+                                <div class="last-message">
+                                    <div  *ngIf="list_of_friends_last_message[i].is_an_attachment">
+                                        Pièce jointe
+                                    </div>
+                                    <div  *ngIf="!list_of_friends_last_message[i].is_an_attachment">
+                                        <div *ngIf="list_of_friends_last_message[i].message=='New' && list_of_friends_last_message[i].is_from_server">
+                                            <div>
+                                                {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                            </div>
+                                        </div>
+                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server">
+                                            <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                {{list_of_friends_last_message[i].message}} 
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                                <b>{{list_of_friends_last_message[i].message}}</b>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server">
+                                            {{list_of_friends_last_message[i].message}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+            
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
+                <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
+                    <div class="author-container" (click)="open_new_contact_chat(1,i)">
+                        <div class="left-container">
+                            <img [src]="list_of_contacts_pictures[i]">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">{{list_of_contacts_names[i]}} </span>
+                            <div>@{{list_of_contacts_pseudos[i]}}</div>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+
+            <ng-container *ngIf="waiting_display_other_contacts">
+                <div *ngIf="display_other_contacts" class="subscribers-container" >
+                    <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_history_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_history_names[i]}} </span>
+                                <div>@{{list_of_history_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                    <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(3,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_related_contacts_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
+                                <div>@{{list_of_related_contacts_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                    <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(4,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_other_contacts_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
+                                <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            
+        </div>
+
+        <div *ngIf="list_of_spams_retrieved && !get_friends" >
+
+            <div *ngIf="!display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
+                <div *ngFor="let item of list_of_spams_ids; let i=index" class="subscriber-card">
+                    <div class="author-container" (click)="open_chat_spam(i)">
+                        <div class="left-container">
+                            <img [src]="list_of_spams_profile_pictures[i]">
+                        </div>
+                        <a>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_spams_names[i]}} </span>
+                                
+                                <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
+                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                        {{list_of_spams_last_message[i].message}} 
+                                    </div>
+                                    <div *ngIf="list_of_spams_last_message[i].status=='received'">
+                                        <b>{{list_of_spams_last_message[i].message}}</b>
+                                    </div>
+                                </div>
+                                <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
+                                    {{list_of_spams_last_message[i].message}}
+                                </div>
+                            </div>
+                        </a>
+            
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
+                <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
+                    <div class="author-container" (click)="open_new_contact_chat(1,i)">
+                        <div class="left-container">
+                            <img [src]="list_of_contacts_pictures[i]">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">{{list_of_contacts_names[i]}} </span>
+                            <div>@{{list_of_contacts_pseudos[i]}}</div>
+                        </div>
+            
+                    </div>
+                </div>
+            </div>
+
+            <ng-container *ngIf="waiting_display_other_contacts">
+                <div *ngIf="display_other_contacts" class="subscribers-container" >
+                    <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_history_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_history_names[i]}} </span>
+                                <div>@{{list_of_history_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                    <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(3,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_related_contacts_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
+                                <div>@{{list_of_related_contacts_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                    <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(4,i)">
+                            <div class="left-container">
+                                <img [src]="list_of_other_contacts_pictures[i]">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
+                                <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                            </div>
+                
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            
+        </div>
+
     </div>
     
     
     
-    <div #chatContainer class="chat-container">
+    <div  *ngIf="list_of_friends_retrieved" class="chat-container">
         <app-chat
+        [spam]="spam"
         [current_user_id]="current_user" 
         [current_user_pseudo]="current_user_pseudo"
         [current_user_name]="current_user_name" 
@@ -48,6 +255,8 @@
         [friend_name]="friend_name"
         [friend_picture]="friend_picture"
         [list_of_friends_ids]="list_of_friends_ids"
-        (new_sort_friends_list)="new_sort_friends_list( $event );"></app-chat>
+        (new_sort_friends_list)="new_sort_friends_list( $event );"
+        (add_spam_to_contacts)="add_spam_to_contacts( $event );"></app-chat>
     </div>
+
 </div>

@@ -1,0 +1,177 @@
+
+
+    <div class="panel-controller" [ngClass]="{'invisible':little_screen }">
+        <div class="left-container">
+            <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
+                Bandes dessinées
+            </div>
+            <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
+                Dessins
+            </div>
+            <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
+                Écrits
+            </div>
+        </div>
+
+
+        <!--<div class="right-container">
+
+            
+            
+            <div class="dropdowns-container" *ngIf="subcategory==0">
+                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Catégories" style="height: 100%;">
+                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[0].array">
+                        <optgroup label={{item2.name}}>
+                            <ng-container *ngFor="let item3 of item2.values">
+                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container>
+                </select>
+                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Format" style="height: 100%;">
+                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[1].array">
+                        <optgroup label={{item2.name}}>
+                            <ng-container *ngFor="let item3 of item2.values">
+                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container>
+                </select>
+                
+            </div>
+
+            
+            <div class="dropdowns-container" *ngIf="subcategory==1">
+                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Catégories" style="height: 100%;">
+                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[0].array">
+                        <optgroup label={{item2.name}}>
+                            <ng-container *ngFor="let item3 of item2.values">
+                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container>
+                </select>
+                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Format" style="height: 100%;">
+                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[1].array">
+                        <optgroup label={{item2.name}}>
+                            <ng-container *ngFor="let item3 of item2.values">
+                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container>
+                </select>
+            </div>
+
+
+                <select name="somename" class="SelectBox" multiple="multiple" style="height: 100%;">
+
+                    <ng-container *ngFor="let item2 of item.array">
+                        <optgroup label={{item2.name}}>
+                            <ng-container *ngFor="let item3 of item2.values">
+                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
+                            </ng-container>
+                        </optgroup>
+                    </ng-container>
+
+                </select>
+
+
+        </div>-->
+
+
+
+    </div>
+    <div class="panel-controller" [ngClass]="{'invisible':!little_screen }">
+        <div class="left-container" >
+            <select class="f00select1" style="height: 100%; font-size: 1.1rem;color: white !important;
+            text-shadow: -0.04ex 0 white, 0.04ex 0 white;">
+                <option selected value="defaultValue" >Bandes dessinées</option>
+                <option label="1">Dessins</option>
+                <option label="2">Ecrits</option>
+            </select>
+        </div>
+    </div>
+    
+
+    <ng-container *ngIf="bd_is_loaded && subcategory==0">
+        <app-media-comics 
+        [sorted_style_list]=sorted_style_list_bd
+        [sorted_artpieces_manga_format]=sorted_artpieces_manga_format
+        [sorted_artpieces_manga]=sorted_artpieces_manga
+        [sorted_artpieces_comics_format]=sorted_artpieces_comics_format
+        [sorted_artpieces_comics]=sorted_artpieces_comics
+        [sorted_artpieces_webtoon_format]=sorted_artpieces_webtoon_format
+        [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
+        [sorted_artpieces_bd_format]=sorted_artpieces_bd_format
+        [sorted_artpieces_bd]=sorted_artpieces_bd
+        [now_in_seconds]=now_in_seconds
+        ></app-media-comics>
+    </ng-container>
+    <ng-container *ngIf="drawing_is_loaded  && subcategory==1">
+        <app-media-drawings 
+        [sorted_style_list]=sorted_style_list_drawing
+        [sorted_artpieces_traditional]=sorted_artpieces_traditional
+        [sorted_artpieces_traditional_format]=sorted_artpieces_traditional_format
+        [sorted_artpieces_digital]=sorted_artpieces_digital
+        [sorted_artpieces_digital_format]=sorted_artpieces_digital_format
+        [now_in_seconds]=now_in_seconds
+        ></app-media-drawings>
+    </ng-container>
+    <ng-container *ngIf="writing_is_loaded  && subcategory==2">
+        <app-media-writings
+         [sorted_style_list]=sorted_style_list_writing
+         [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
+         [sorted_artpieces_roman]=sorted_artpieces_roman
+         [sorted_artpieces_scenario]=sorted_artpieces_scenario
+         [sorted_artpieces_article]=sorted_artpieces_article
+         [now_in_seconds]=now_in_seconds
+         ></app-media-writings>
+    </ng-container>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+
+
+
+<!--<ng-container *ngIf="category==1">
+
+    <div class="panel-controller">
+        <div class="left-container">
+            <div class="controller-category open">
+                Toutes les catégories
+            </div>
+            <div class="controller-category">
+                Bandes dessinées
+            </div>
+            <div class="controller-category">
+                Dessins
+            </div>
+            <div class="controller-category">
+                Écrits
+            </div>
+        </div>
+    </div>
+
+    <app-trends></app-trends>
+
+
+
+</ng-container>
+
+
+
+
+
+
+
+
+
+<ng-container *ngIf="category==2">2</ng-container>
+
+<ng-container *ngIf="category==3">3</ng-container>
+-->

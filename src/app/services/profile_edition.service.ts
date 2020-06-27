@@ -58,6 +58,7 @@ export class Profile_Edition_Service {
   }
 
   retrieve_profile_picture(user_id: number){
+    console.log("on essaye d")
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
       return information;
     }));

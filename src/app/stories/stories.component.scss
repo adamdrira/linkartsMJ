@@ -3,7 +3,7 @@
     position:relative;
     display: inline-block;
     width:100%;
-    background-color:rgb(253,253,253);
+    background-color:white;
     padding-left: 15px;
     padding-right: 15px;
     margin-top: 15px;
@@ -61,4 +61,14 @@
     height:100%;
     object-fit: cover;
     opacity: 0.5;
+}
+
+.right-container-scrollable {
+    overflow-y: scroll;
+    height: 100%;
+  }
+
+::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
 }

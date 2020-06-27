@@ -3,6 +3,7 @@ import { NgModule, CompilerFactory, Compiler } from '@angular/core';
 
 import {MatSliderModule} from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
@@ -94,6 +95,7 @@ import { AddAlbumDrawingComponent } from './add-album-drawing/add-album-drawing.
 import { AddAlbumWritingComponent } from './add-album-writing/add-album-writing.component';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { ArtworkComicComponent } from './artwork-comic/artwork-comic.component';
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
 import { ThumbnailAlbumComicComponent } from './thumbnail-album-comic/thumbnail-album-comic.component';
@@ -123,10 +125,24 @@ import { UploaderCoverWritingComponent } from './uploader-cover-writing/uploader
 import { ThumbnailArtworkComponent } from './thumbnail-artwork/thumbnail-artwork.component';
 import { PopupAddStoryComponent } from './popup-add-story/popup-add-story.component';
 import { UploaderStoryComponent } from './uploader-story/uploader-story.component';
-import { StoriesViewComponent } from './stories-view/stories-view.component';
 import { PopupStoriesComponent } from './popup-stories/popup-stories.component';
 import { StoryViewComponent } from './story-view/story-view.component';
+import { AddAdComponent } from './add-ad/add-ad.component';
+import { UploaderThumbnailAdComponent } from './uploader-thumbnail-ad/uploader-thumbnail-ad.component';
+import { UploaderAttachmentsAdComponent } from './uploader-attachments-ad/uploader-attachments-ad.component';
+import { UploaderPicturesAdComponent } from './uploader-pictures-ad/uploader-pictures-ad.component';
+import { ThumbnailAdComponent } from './thumbnail-ad/thumbnail-ad.component';
+import { PopupAdPicturesComponent } from './popup-ad-pictures/popup-ad-pictures.component';
+import { PopupAdAttachmentsComponent } from './popup-ad-attachments/popup-ad-attachments.component';
 
+import {WebSocketService} from './services/websocket.service';
+import {ChatService} from './services/chat.service';
+import { PopupAdWriteResponsesComponent } from './popup-ad-write-responses/popup-ad-write-responses.component';
+import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
+import { UploaderAdResponsePicturesComponent } from './uploader-ad-response-pictures/uploader-ad-response-pictures.component';
+import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
+import { ChatComponent } from './chat/chat.component';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 @NgModule({
   declarations: [
@@ -212,9 +228,20 @@ import { StoryViewComponent } from './story-view/story-view.component';
     ThumbnailArtworkComponent,
     PopupAddStoryComponent,
     UploaderStoryComponent,
-    StoriesViewComponent,
     PopupStoriesComponent,
     StoryViewComponent,
+    AddAdComponent,
+    UploaderThumbnailAdComponent,
+    UploaderAttachmentsAdComponent,
+    UploaderPicturesAdComponent,
+    ThumbnailAdComponent,
+    PopupAdPicturesComponent,
+    PopupAdAttachmentsComponent,
+    PopupAdWriteResponsesComponent,
+    UploaderAdResponseAttachmentsComponent,
+    UploaderAdResponsePicturesComponent,
+    ChatFriendsListComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
@@ -235,7 +262,11 @@ import { StoryViewComponent } from './story-view/story-view.component';
     MatInputModule,
     MatSlideToggleModule,
     PdfViewerModule,
+    NgxDocViewerModule,
     DragDropModule,
+    MatRadioModule,
+    NgxMasonryModule
+    
   ],
   providers: [
     ConstantsService,
@@ -243,7 +274,9 @@ import { StoryViewComponent } from './story-view/story-view.component';
     SearchbarService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    CookieService
+    CookieService,
+    WebSocketService,
+    ChatService
   ],
   bootstrap: [AppComponent]
 })

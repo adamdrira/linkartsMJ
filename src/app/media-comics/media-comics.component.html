@@ -1,135 +1,88 @@
+<div [ngClass]="{'mediaVisible': list_of_contents_sorted, 'main-media-menu':!list_of_contents_sorted }">
 
+    <div *ngFor="let item of sorted_style_list; index as i1">
 
-
-<!--***********************-->
-<!--***********************-->
-<!--Home Page data-->
-<!--***********************-->
-<!--***********************-->
-
-<div *ngFor="let item of sorted_style_list; index as i1">
-
-    <div class="category">
-        <span>{{item}}</span>
+        <div class="category">
+            <span>{{item}}</span>
+            
+        </div>
+    
+        <div class="container-homepage container-comics d-flex flex-wrap">
+    
+            <ng-container *ngIf="item==='BD'">
+                <ng-container *ngFor="let item of sorted_artpieces_bd; let i = index">
+                    <app-thumbnail-comics class="thumbnail-component-container" 
+                        [item]=item
+                        [format]=sorted_artpieces_bd_format[i]
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-comics>
+                </ng-container>
+            </ng-container>
+    
+            <ng-container *ngIf="item==='Manga'">
+                <ng-container *ngFor="let item of sorted_artpieces_manga; let i = index">
+                    <app-thumbnail-comics class="thumbnail-component-container" 
+                        [item]=item
+                        [format]=sorted_artpieces_manga_format[i]
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-comics>
+                </ng-container>
+             </ng-container>
         
-    </div>
-
-    <div class="container-homepage container-comics d-flex flex-wrap">
-
-        <ng-container *ngIf="item==='BD'">
-            <ng-container *ngFor="let item of sorted_artpieces_bd; let i = index">
-                <app-thumbnail-comics class="thumbnail-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    [format]=sorted_artpieces_bd_format[i]
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics>
+             <ng-container *ngIf="item==='Comics'">
+                <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
+                    <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
+                        [item]=item
+                        [format]=sorted_artpieces_comics_format[i]
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-comics>
+                </ng-container>
             </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="item==='Manga'">
-            <ng-container *ngFor="let item of sorted_artpieces_manga; let i = index">
-                <app-thumbnail-comics class="thumbnail-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    [format]=sorted_artpieces_manga_format[i]
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics>
-            </ng-container>
-         </ng-container>
     
-         <ng-container *ngIf="item==='Comics'">
-            <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-                <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    [format]=sorted_artpieces_comics_format[i]
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics>
+            <ng-container *ngIf="item==='Webtoon'">
+                <ng-container *ngFor="let item of sorted_artpieces_webtoon; let i = index">
+                    <app-thumbnail-comics class="thumbnail-component-container" *ngIf="item.status=='public'"
+                        [item]=item
+                        [format]=sorted_artpieces_webtoon_format[i]
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-comics>
+                </ng-container>
             </ng-container>
-        </ng-container>
-        <ng-container *ngIf="item==='Comics'">
-           <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-               <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-                   [item]=item
-                   [format]=sorted_artpieces_comics_format[i]
-                   now_in_seconds={{now_in_seconds}}
-               ></app-thumbnail-comics>
-           </ng-container>
-       </ng-container>
-       <ng-container *ngIf="item==='Comics'">
-          <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-              <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-                  [item]=item
-                  [format]=sorted_artpieces_comics_format[i]
-                  now_in_seconds={{now_in_seconds}}
-              ></app-thumbnail-comics>
-          </ng-container>
-      </ng-container>
-      <ng-container *ngIf="item==='Comics'">
-         <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-             <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-                 [item]=item
-                 [format]=sorted_artpieces_comics_format[i]
-                 now_in_seconds={{now_in_seconds}}
-             ></app-thumbnail-comics>
-         </ng-container>
-     </ng-container>
-     <ng-container *ngIf="item==='Comics'">
-        <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-            <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-                [item]=item
-                [format]=sorted_artpieces_comics_format[i]
-                now_in_seconds={{now_in_seconds}}
-            ></app-thumbnail-comics>
-        </ng-container>
-    </ng-container>
-    <ng-container *ngIf="item==='Comics'">
-       <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-           <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-               [item]=item
-               [format]=sorted_artpieces_comics_format[i]
-               now_in_seconds={{now_in_seconds}}
-           ></app-thumbnail-comics>
-       </ng-container>
-   </ng-container>
-   <ng-container *ngIf="item==='Comics'">
-      <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-          <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
-              [item]=item
-              [format]=sorted_artpieces_comics_format[i]
-              now_in_seconds={{now_in_seconds}}
-          ></app-thumbnail-comics>
-      </ng-container>
-  </ng-container>
-
-        <ng-container *ngIf="item==='Webtoon'">
-            <ng-container *ngFor="let item of sorted_artpieces_webtoon; let i = index">
-                <app-thumbnail-comics class="thumbnail-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    [format]=sorted_artpieces_webtoon_format[i]
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics>
-            </ng-container>
-        </ng-container>
+        
     
-
-        <ng-container *ngIf=" list_of_contents_sorted">
-            <div *ngIf="!show_more[sorted_style_list.indexOf(item)]" class="see-more" (click)="see_more(item)">
-                <div class="icon">
+            <ng-container >
+                <div *ngIf="!show_more[sorted_style_list.indexOf(item)]" class="see-more" (click)="see_more(item)">
+                    <div class="icon">
+                    </div>
                 </div>
-            </div>
-            <ng-container *ngIf="show_more[sorted_style_list.indexOf(item)]">
-                <app-media-see-more-comics
-                    [style]=item
-                    [sorted_artpieces_bd]=sorted_artpieces_bd
-                    [sorted_artpieces_manga]=sorted_artpieces_manga
-                    [sorted_artpieces_comics]=sorted_artpieces_comics
-                    [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
-                    now_in_seconds={{now_in_seconds}}
-                ></app-media-see-more-comics>
-            </ng-container>        
-        </ng-container>                
-
+                <div *ngIf="show_more[sorted_style_list.indexOf(item)]" >
+                    <div [ngClass]="{'invisible': !list_of_more_contents_sorted}">
+                        <app-media-see-more-comics
+                        [style]=item
+                        [sorted_artpieces_bd]=sorted_artpieces_bd
+                        [sorted_artpieces_manga]=sorted_artpieces_manga
+                        [sorted_artpieces_comics]=sorted_artpieces_comics
+                        [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
+                        [number_of_comics_to_show]=number_of_comics_to_show
+                        now_in_seconds={{now_in_seconds}}
+                        (send_put_more_visible)="send_put_more_visible( $event );"
+                        ></app-media-see-more-comics>
+                    </div>
+                </div>        
+            </ng-container>                
+    
+        </div>
+    
+    
     </div>
-
-
-
+    
 </div>
+

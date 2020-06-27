@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -37,25 +37,58 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   new_sorted_artpieces: any[]=[];
   new_sorted_artpieces_added=false;
 
-  
-
+  list_of_formats:any[]=[];
 
   @Input() now_in_seconds: number;
+
+  //responsivity
+  @Output() send_put_more_visible = new EventEmitter<boolean>();
+  @Input() number_of_comics_to_show: number;
+  number_of_thumbnails=0;
+  number_retrieved=false;
+  number_of_loaded=0;
+
+
   
+  index_changes=0;
+  ngOnChanges(changes: SimpleChanges) { 
+    if(this.index_changes>0){
+      this.update_lists(this.number_of_comics_to_show);
+    }
+    this.index_changes++;
+  }
   
   ngOnInit() {
+    
     if(this.style=="Manga"){
       this.Community_recommendation.see_more_recommendations_bd("Manga").subscribe(r=>{
+        console.log(r[0].list_to_send)
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
+              let format ="";
+              if(r[0].list_to_send[i][0].chaptersnumber>=0){
+                format="serie"; 
+              }
+              else{
+                format="one-shot";
+              }
               let check = JSON.stringify(this.sorted_artpieces_manga).includes(JSON.stringify(r[0].list_to_send[i][0]));
-              if (!check){
+              if (!check && r[0].list_to_send[i][0].status=='public' ){
                 this.new_sorted_artpieces.push(r[0].list_to_send[i][0]);
+                this.list_of_formats.push(format);
                 if(i==Object.keys(r[0].list_to_send).length-1){
+                  console.log(this.new_sorted_artpieces)
+                  console.log(this.list_of_formats);
+                  this.number_of_thumbnails=this.new_sorted_artpieces.length;
                   this.new_sorted_artpieces_added=true;
+                  
                 }
               }
-              if(check && i==Object.keys(r[0].list_to_send).length-1){
+              else if(i==Object.keys(r[0].list_to_send).length-1){
+                console.log(this.new_sorted_artpieces)
+                console.log(this.list_of_formats);
+                this.number_of_thumbnails=this.new_sorted_artpieces.length;
                 this.new_sorted_artpieces_added=true;
+                
               }
               
             }
@@ -65,15 +98,24 @@ export class MediaSeeMoreComicsComponent implements OnInit {
     if(this.style=="BD"){
       this.Community_recommendation.see_more_recommendations_bd("BD").subscribe(r=>{
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
+              let format ="";
+              if(r[0].list_to_send[i][0].chaptersnumber>=0){
+                format="serie"; 
+              }
+              else{
+                format="one-shot";
+              }
               let check = JSON.stringify(this.sorted_artpieces_bd).includes(JSON.stringify(r[0].list_to_send[i][0]));
-              if (!check){
+              if (!check && r[0].list_to_send[i][0].status=='public' ){
                 this.new_sorted_artpieces.push(r[0].list_to_send[i][0]);
                 if(i==Object.keys(r[0].list_to_send).length-1){
                   this.new_sorted_artpieces_added=true;
+                  this.number_of_thumbnails=this.new_sorted_artpieces.length;
                 }
               }
-              if(check && i==Object.keys(r[0].list_to_send).length-1){
+              else if(i==Object.keys(r[0].list_to_send).length-1){
                 this.new_sorted_artpieces_added=true;
+                this.number_of_thumbnails=this.new_sorted_artpieces.length;
               }
               
             }
@@ -83,15 +125,24 @@ export class MediaSeeMoreComicsComponent implements OnInit {
     if(this.style=="Webtoon"){
       this.Community_recommendation.see_more_recommendations_bd("Webtoon").subscribe(r=>{
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
+              let format ="";
+              if(r[0].list_to_send[i][0].chaptersnumber>=0){
+                format="serie"; 
+              }
+              else{
+                format="one-shot";
+              }
               let check = JSON.stringify(this.sorted_artpieces_webtoon).includes(JSON.stringify(r[0].list_to_send[i][0]));
-              if (!check){
+              if (!check && r[0].list_to_send[i][0].status=='public' ){
                 this.new_sorted_artpieces.push(r[0].list_to_send[i][0]);
                 if(i==Object.keys(r[0].list_to_send).length-1){
                   this.new_sorted_artpieces_added=true;
+                  this.number_of_thumbnails=this.new_sorted_artpieces.length;
                 }
               }
-              if(check && i==Object.keys(r[0].list_to_send).length-1){
+              else if(i==Object.keys(r[0].list_to_send).length-1){
                 this.new_sorted_artpieces_added=true;
+                this.number_of_thumbnails=this.new_sorted_artpieces.length;
               }
               
             }
@@ -101,15 +152,24 @@ export class MediaSeeMoreComicsComponent implements OnInit {
     if(this.style=="Comics"){
       this.Community_recommendation.see_more_recommendations_bd("Comics").subscribe(r=>{
         for (let i=0;i<Object.keys(r[0].list_to_send).length;i++){
+              let format ="";
+              if(r[0].list_to_send[i][0].chaptersnumber>=0){
+                format="serie"; 
+              }
+              else{
+                format="one-shot";
+              }
               let check = JSON.stringify(this.sorted_artpieces_comics).includes(JSON.stringify(r[0].list_to_send[i][0]));
-              if (!check){
+              if (!check && r[0].list_to_send[i][0].status=='public' ){
                 this.new_sorted_artpieces.push(r[0].list_to_send[i][0]);
                 if(i==Object.keys(r[0].list_to_send).length-1){
                   this.new_sorted_artpieces_added=true;
+                  this.number_of_thumbnails=this.new_sorted_artpieces.length;
                 }
               }
-              if(check && i==Object.keys(r[0].list_to_send).length-1){
+              else if(check && i==Object.keys(r[0].list_to_send).length-1){
                 this.new_sorted_artpieces_added=true;
+                this.number_of_thumbnails=this.new_sorted_artpieces.length;
               }
               
             }
@@ -118,4 +178,48 @@ export class MediaSeeMoreComicsComponent implements OnInit {
    
     
   }
+
+  
+  send_number_of_thumbnails(event){
+    
+  }  
+ 
+  send_loaded(object){
+    console.log("loaded")
+    this.number_of_loaded++;
+    console.log(this.number_of_thumbnails);
+    if(this.number_of_loaded==this.number_of_thumbnails){
+      console.log("updating_list")
+      this.update_lists(this.number_of_comics_to_show);
+    }
+   
+  }
+
+  update_lists(number){
+    console.log(number);
+    if( number== 1 ) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
+      
+    }
+    else if( number== 2) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");
+      $(".thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").hide();
+    }
+    else if( number== 3) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3)").css("display","block");
+      $(".thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").hide();
+    }
+    else if( number== 4 ) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4)").css("display","block");
+      $(".thumbnail-component-container:nth-of-type(5)").css("display","none");
+    }
+    else if( number== 5) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
+    }
+    this.send_put_more_visible.emit(true)
+  }
+
+  
+
+
 }

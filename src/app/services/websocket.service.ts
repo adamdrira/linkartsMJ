@@ -4,6 +4,7 @@ import { catchError, tap, map, delay } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import {Subject,Observable, Observer} from 'rxjs';
 
+
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
@@ -17,7 +18,7 @@ const httpOptions = {
 export class WebSocketService {
 
 
-  constructor(private httpClient: HttpClient, private CookieService: CookieService) {
+  constructor(private httpClient: HttpClient, private CookieService: CookieService, ) {
   }
 
   subject:Subject<MessageEvent>;
@@ -33,6 +34,8 @@ export class WebSocketService {
 public check_state(){
   //console.log(this.ws.readyState);
 }
+
+  
 
   connect(url):Subject<MessageEvent>{
       if(!this.subject){
@@ -60,7 +63,7 @@ public check_state(){
       let observer= {
           next:(data:Object)=>{
               if(this.ws.readyState===WebSocket.OPEN){
-                this.ws.send(JSON.stringify(data));
+               this.ws.send(JSON.stringify(data));
               }
           },
           
