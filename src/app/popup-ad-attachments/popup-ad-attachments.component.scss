@@ -44,9 +44,6 @@
     padding-left: 7px;
 }
 
-::ng-deep .mat-dialog-container {
-    background:rgb(59, 59, 59);
-}
 
   //********************************************
   //********************************************
@@ -59,6 +56,7 @@
   #left-container {
     overflow-y:auto;
     color:white;
+    height:80vh;
 
     //background: linear-gradient(180deg, rgb(0, 0, 0), rgb(32, 56, 100));
     background:linear-gradient(180deg, #182338, #182338);
@@ -70,6 +68,7 @@
 #left-container .first-div {
     padding: 20px 20px 0px 20px;
     overflow:auto;
+    height:100%;
     background: rgb(24, 35, 56);
 }
 
@@ -167,6 +166,7 @@
 #left-container .pdf-document-container {
     display:flex;
     width:100%;
+    height:calc(100% - 50px);
 }
 
 

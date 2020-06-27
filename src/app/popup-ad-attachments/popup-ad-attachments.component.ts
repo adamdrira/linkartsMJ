@@ -116,6 +116,9 @@ export class PopupAdAttachmentsComponent implements OnInit {
         },
       },
     });
+
+    
+    this.swiper.update();
     
   }
 

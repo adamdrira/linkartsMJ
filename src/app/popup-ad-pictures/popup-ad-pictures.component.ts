@@ -94,6 +94,7 @@ export class PopupAdPicturesComponent implements OnInit {
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.list_of_pictures[i] = SafeURL;
     }*/
+
     console.log(this.list_of_pictures);
 
 
@@ -137,6 +138,7 @@ export class PopupAdPicturesComponent implements OnInit {
         on: {
           slideChange: function () {
             THIS.refresh_swiper_pagination();
+            window.dispatchEvent(new Event("resize"));
           },
           observerUpdate: function () {
             THIS.refresh_swiper_pagination();
@@ -144,13 +146,16 @@ export class PopupAdPicturesComponent implements OnInit {
           }
         },
       });
-      this.swiper.slideTo(this.data.index_of_picture,false,false)
       this.refresh_swiper_pagination();
       $(".top-container .pages-controller-container input").keydown(function (e){
         if(e.keyCode == 13){
           THIS.setSlide( $(".top-container .pages-controller-container input").val() );
         }
       });
+
+      
+      this.swiper.slideTo(this.data.index_of_picture,false,false);
+      this.swiper.update();
 
     
   }
@@ -160,7 +165,6 @@ export class PopupAdPicturesComponent implements OnInit {
     
       $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
       $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
-
   }
 
 
