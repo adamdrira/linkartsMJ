@@ -30,6 +30,7 @@ const ads_seq= require('../../ads/model/sequelize');
 const chat_seq = require('../../chat/model/sequelize');
 const albums_seq = require('../../albums_edition/model/sequelize');
 const authentification = require('../../authentication/db.config');
+const trendings_seq = require('../../p_trendings/model/sequelize');
 
 
 
@@ -80,7 +81,9 @@ router.post('/get_recommendations_by_tag',recommendations_artwork.get_recommenda
 
 
 //BdOneShot
-controller_bd_oneshot(router, bd_oneshot_seq.list_comics_one_shot, bd_oneshot_seq.list_pages_comics_one_shot);
+controller_bd_oneshot(router, 
+  bd_oneshot_seq.list_comics_one_shot, 
+  bd_oneshot_seq.list_pages_comics_one_shot,);
 controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie);
 controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page);
 controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook);
@@ -102,11 +105,16 @@ profile_notation(
    profile_notation_seq.List_of_comments_likes,
    profile_notation_seq.List_of_comments_answers_likes
    );
-controller_subscribings(router, subscribings_seq.list_of_subscribings, subscribings_seq.list_of_contents, subscribings_seq.list_of_archives );
+controller_subscribings(router,
+   subscribings_seq.list_of_subscribings, 
+   subscribings_seq.list_of_contents, 
+   subscribings_seq.list_of_archives,
+   authentification.users,
+    );
 controller_albums(router, albums_seq.list_of_albums);
 controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
 controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses);
-controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,subscribings_seq.list_of_subscribings)
+controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,chat_seq.list_of_chat_search,subscribings_seq.list_of_subscribings,authentification.users)
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
   console.log('l\'artiste');

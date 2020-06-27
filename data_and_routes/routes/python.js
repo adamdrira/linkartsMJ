@@ -7,6 +7,8 @@ var fileUpload = require('express-fileupload');
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
+const trendings_seq= require('../../p_trendings/model/sequelize');
+const Sequelize = require('sequelize');
 
 
 //middleware
@@ -40,9 +42,8 @@ python_router.get('/', (request, response) => {
 python_router.post('/python_recommendations', function(req, res) {
 
   const user_id = (JSON.stringify(req.headers.user_id)).substring(1,JSON.stringify(req.headers.user_id).length - 1);
-  console.log(user_id);
 
-  const PATH = `./data_and_routes/routes/python_files/recommendations-${user_id}.json`;
+  //const PATH = `./data_and_routes/routes/python_files/recommendations-${user_id}.json`;
   //const json =require("./python_files/recommendations.json");
   if (!req.files){
     return res.status(400).send({some:'No files were uploaded.'});
@@ -51,9 +52,10 @@ python_router.post('/python_recommendations', function(req, res) {
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
   let sampleFile = req.files.upload_file;
   let json = JSON.stringify(sampleFile);
+  res.send(json);
 
   //Use the mv() method to place the file somewhere on your server 
-  sampleFile.mv(PATH, function(err) {
+  /*sampleFile.mv(PATH, function(err) {
     if (err){
       console.log(err);
       return res.status(500).send(err);
@@ -61,13 +63,12 @@ python_router.post('/python_recommendations', function(req, res) {
     }
     console.log("json received");
     res.send(json);
-  });
+  });*/
 });
 
 python_router.post('/python_artpieces', function(req, res) {
 
   const user_id = (JSON.stringify(req.headers.user_id)).substring(1,JSON.stringify(req.headers.user_id).length - 1);
-  const PATH = `./data_and_routes/routes/python_files/recommendations_artpieces-${user_id}.json`;
 
   if (!req.files){
     return res.status(400).send({some:'No files were uploaded.'});
@@ -76,17 +77,8 @@ python_router.post('/python_artpieces', function(req, res) {
 
   let sampleFile = req.files.upload_file;
   let json = JSON.stringify(sampleFile);
+  res.send(json);
 
-
-  sampleFile.mv(PATH, function(err) {
-    if (err){
-      console.log(err);
-      return res.status(500).send(err);
-      
-    }
-    console.log("json received");
-    res.send(json);
-  });
 });
 
 
@@ -94,6 +86,7 @@ python_router.post('/python_artpieces', function(req, res) {
 
 
 python_router.get('/sorted_category_list', function(req, res) {
+  console.log("getting sorted type list")
     var user;
     jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
@@ -102,8 +95,9 @@ python_router.get('/sorted_category_list', function(req, res) {
     var index_bd=-1;
     var index_writing=-1;
     var index_drawing=-1;
-    const json =require(`./python_files/recommendations-${user}.json`);
-    const test = JSON.parse(JSON.stringify(json));
+    let json = fs.readFileSync( __dirname + `/python_files/recommendations-${user}.json`);
+    let test = JSON.parse(json);
+
     for (let step=0; step <Object.keys(test).length;step++){
       if(test.bd!= undefined){
         if (test.bd[step]!=null){
@@ -130,7 +124,56 @@ python_router.get('/sorted_category_list', function(req, res) {
       "drawing": index_drawing,
     }
 
-    res.send([sorted_list_category]);
+    let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`);
+    console.log("reading json 2 before sending cookies")
+    fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+      if(err){
+        console.log('suppression already done');
+        res.cookie("rec_art_home",JSON.parse(json2)).send([sorted_list_category]);
+      }  
+      else{
+        fs.unlink(__dirname + `/python_files/recommendations_artpieces-${user}.json`,function (err) {
+          if (err) {
+            throw err;
+          } 
+          else{
+            console.log("suppression de fichier artpieces done")
+            res.cookie("rec_art_home",JSON.parse(json2)).send([sorted_list_category]);
+          }
+        }); 
+      }
+      
+      
+    }) 
+    
+});
+
+python_router.delete('/delete_recommendations_artpieces', function(req, res) {
+  console.log("delting recom artpieces file");
+  var user;
+    jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+      user=decoded.id;
+    });
+
+  let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`);
+  console.log("reading json 2 before sending cookies")
+  fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+    if(err){
+      console.log('suppression already done');
+      res.cookie("rec_art_home",JSON.parse(json2)).send([{}]);
+    }  
+    else{
+      fs.unlink(__dirname + `/python_files/recommendations_artpieces-${user}.json`,function (err) {
+        if (err) {
+          throw err;
+        } 
+        else{
+          console.log("suppression de fichier artpieces done")
+          res.cookie("rec_art_home",JSON.parse(json2)).send([{}]);
+        }
+      }); 
+    }
+  }) 
 });
 
 
@@ -140,13 +183,32 @@ python_router.get('/sorted_favourite_type_list', function(req, res) {
     user=decoded.id;
   });
 
-  const json =require(`./python_files/recommendations-${user}.json`);
-  const test = JSON.parse(JSON.stringify(json));
+  let json = fs.readFileSync( __dirname + `/python_files/recommendations-${user}.json`);
+  let test = JSON.parse(json);
+ 
+  fs.access(__dirname + `/python_files/recommendations-${user}.json`, fs.F_OK, (err) => {
+    if(err){
+      console.log('suppression already done');
+      res.send([test]);
+    }  
+    else{
+      fs.unlink(__dirname + `/python_files/recommendations-${user}.json`,function (err) {
+        if (err) {
+          throw err;
+        } 
+        else{
+          res.send([test]);
+        }
+      });  
+      
+    }
+    
+  }) 
 
-  res.send([test]);
+  
 });
 
-python_router.post('/receive_bd_trendings', function(req, res) {
+python_router.post('/receive_comics_trendings', function(req, res) {
 
   let date =(JSON.stringify(req.headers.date)).substring(1,JSON.stringify(req.headers.date).length - 1);
   console.log(date);
@@ -158,30 +220,42 @@ python_router.post('/receive_bd_trendings', function(req, res) {
   
 
   let sampleFile = req.files.upload_file;
-  let json = JSON.stringify(sampleFile);
-
-
-  sampleFile.mv(PATH, function(err) {
-    if (err){
-      console.log(err);
-      return res.status(500).send(err);
-      
+  let json = JSON.parse(sampleFile.data);
+  trendings_seq.trendings_comics.findOne({
+    where:{
+      date: date
     }
-    console.log("bd trendings received");
-    res.status(200).send(json);
-  });
+  }).then(resu=>{
+    if(resu){
+      res.status(200).send(resu.trendings);
+    }
+    else{
+      console.log("creating comics trendings");
+      trendings_seq.trendings_comics.create({
+        "trendings":json,
+        "date":date
+      }).then(result=>{
+          res.status(200).send(json);
+      })
+    }
+  })
+ 
+
+  
+
 });
 
 
 
-python_router.get('/get_bd_trendings/:date', function(req, res) {
-
+python_router.get('/get_comics_trendings/:date', function(req, res) {
+  
   let date = req.params.date;
-  const json =require(`./python_files/bd_rankings_for_trendings-${date}.json`);
-  let bd_trendings = JSON.parse(JSON.stringify(json));
+  let json = fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`);
+  let comics_trendings = JSON.parse(json);
+  res.status(200).send([{"comics_trendings":comics_trendings}]);
+    
 
-    console.log("bd trendings sent");
-    res.status(200).send([{"bd_trendings":bd_trendings}]);
+    
 });
 
 
@@ -197,22 +271,32 @@ python_router.post('/receive_drawings_trendings', function(req, res) {
   
 
   let sampleFile = req.files.upload_file;
-  let json = JSON.stringify(sampleFile);
-
-
-  sampleFile.mv(PATH, function(err) {
-    if (err){
-      console.log(err);
-      return res.status(500).send(err);
-      
+  let json = JSON.parse(sampleFile.data);
+  console.log("drawings trendings");
+  console.log(json)
+  trendings_seq.trendings_drawings.findOne({
+    where:{
+      date: date
     }
-    console.log("drawings trendings received");
-    res.status(200).send(json);
-  });
+  }).then(resu=>{
+    if(resu){
+      res.status(200).send(resu.trendings);
+    }
+    else{
+      console.log("creating drawings trendings");
+      trendings_seq.trendings_drawings.create({
+        "trendings":json,
+        "date":date
+      }).then(result=>{
+          res.status(200).send(json);
+      })
+    }
+  })
+
+  
 });
 
 python_router.post('/receive_writings_trendings', function(req, res) {
-  console.log('writiiiiiiiiiiiiiiiiiiiiiiiiiiings');
   let date =(JSON.stringify(req.headers.date)).substring(1,JSON.stringify(req.headers.date).length - 1);
   console.log(date);
   const PATH = `./data_and_routes/routes/python_files/writings_rankings_for_trendings-${date}.json`;
@@ -223,18 +307,26 @@ python_router.post('/receive_writings_trendings', function(req, res) {
   
 
   let sampleFile = req.files.upload_file;
-  let json = JSON.stringify(sampleFile);
-
-
-  sampleFile.mv(PATH, function(err) {
-    if (err){
-      console.log(err);
-      return res.status(500).send(err);
-      
+  let json = JSON.parse(sampleFile.data);
+  trendings_seq.trendings_writings.findOne({
+    where:{
+      date: date
     }
-    console.log("writings trendings received");
-    res.status(200).send(json);
-  });
+  }).then(resu=>{
+    if(resu){
+      res.status(200).send(resu.trendings);
+    }
+    else{
+      console.log("creating writings trendings");
+      trendings_seq.trendings_writings.create({
+        "trendings":json,
+        "date":date
+      }).then(result=>{
+          res.status(200).send(json);
+      })
+    }
+  })
+
 });
 
 module.exports = python_router;

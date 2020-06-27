@@ -51,7 +51,6 @@ const get_view_table_by_user = (request, response) => {
       throw error
     }
     let jsonData = JSON.parse(JSON.stringify(results.rows));
-
   
     let fast = fastcsv.write(jsonData, { headers: true });
     fast.pipe(ws)
@@ -66,7 +65,7 @@ const get_view_table_by_user = (request, response) => {
             if (err) {
               console.log('Error!');
             } 
-            else {           
+            else {  
                   fs.access(__dirname + '/csvfiles_for_python/classement_python.csv', fs.F_OK, (err) => {
                     if(err){
                       console.log('suppression already done');
@@ -84,7 +83,7 @@ const get_view_table_by_user = (request, response) => {
         }
         else{
           let PATH = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
-          let PATH2 = `./data_and_routes/routes/python_files/recommendations-${user}.json`;
+          let PATH2 = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
           let array_to_convert_in_json={"bd":
                                           {"0":null,"1":null,"2":null},
                                         "drawing":
@@ -94,16 +93,12 @@ const get_view_table_by_user = (request, response) => {
                                         }
 
           fs.writeFile(PATH, JSON.stringify(array_to_convert_in_json), (err) => {
-            if (err) throw err
-            console.log('The file has been saved!')
-          })
-
-          fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
-            if (err) throw err
-            console.log('The file has been saved!')
-          })
-
-          response.status(200).send([{"length":(jsonData.length).toString()}]);   
+            if (err) throw err;
+            fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
+              if (err) throw err;
+              response.status(200).send([{"length":(jsonData.length).toString()}]); 
+            })
+          }) 
         }
       })
     })
@@ -120,81 +115,86 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  const json =require(`./python_files/recommendations_artpieces-${user}.json`);
-  test = JSON.parse(JSON.stringify(json));
-  if(index_bd<0){
-    list_bd_os=null;
-  }
-  else{
-    list_bd_os= test.bd[index_bd];
-  }
-  var compt = 0;
+  var test=request.cookies.rec_art_home;
+  get_it();
  
-  if (list_bd_os!=null){
-    for(let i = 0; i < list_bd_os.length; ++i){
-      if(list_bd_os[i][1]=="one-shot"){
-        compt=compt + 1;
+
+  function get_it(){
+    if(index_bd<0){
+      list_bd_os=null;
+    }
+    else{
+      list_bd_os= test.bd[index_bd];
+    }
+    var compt = 0;
+   
+    if (list_bd_os!=null){
+      for(let i = 0; i < list_bd_os.length; ++i){
+        if(list_bd_os[i][1]=="one-shot"){
+          compt=compt + 1;
+        }
       }
     }
-  }
-
-  var list_bd_os_to_send=[];
-  list_bd_os_to_compare=[];
-
-  if (compt!=0){
-    let k=0;
-    for (let item=0; item< list_bd_os.length;item++){  
-      if (list_bd_os[item][1]=="one-shot"){
-      // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-        pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=(SELECT authorid FROM liste_bd_one_shot WHERE bd_id = $4) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"bd","one-shot",list_bd_os[item][0]], (error, results) => {
-          if (error) {
-            throw error
-          }
-          else{
-            result = JSON.parse(JSON.stringify(results.rows));
-            check = list_bd_os_to_compare.includes(JSON.stringify(result));
-            if (!check && item<5){
-              list_bd_os_to_compare.push(JSON.stringify(result));
-              list_bd_os_to_send.push(result);
+  
+    var list_bd_os_to_send=[];
+    list_bd_os_to_compare=[];
+  
+    if (compt!=0){
+      let k=0;
+      for (let item=0; item< list_bd_os.length;item++){  
+        if (list_bd_os[item][1]=="one-shot"){
+        // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
+          pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=(SELECT authorid FROM liste_bd_one_shot WHERE bd_id = $4) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"bd","one-shot",list_bd_os[item][0]], (error, results) => {
+            if (error) {
+              throw error
             }
-            k++;
-            if(k === compt){
-              complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
-                list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
+            else{
+              result = JSON.parse(JSON.stringify(results.rows));
+              check = list_bd_os_to_compare.includes(JSON.stringify(result));
+              if (!check && item<5){
+                list_bd_os_to_compare.push(JSON.stringify(result));
+                list_bd_os_to_send.push(result);
+              }
+              k++;
+              if(k === compt){
+                complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
                   list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                  complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
-                    list_bd_os_to_send = list_bd_os_to_send.concat(req);           
-                    complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
-                      list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                      response.status(200).json([{
-                        "list_bd_os_to_send":list_bd_os_to_send}])
-                    })    
-                  });           
-                })          
-               });
-            }          
-          }
-      });
+                  complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
+                    list_bd_os_to_send = list_bd_os_to_send.concat(req);
+                    complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
+                      list_bd_os_to_send = list_bd_os_to_send.concat(req);           
+                      complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
+                        list_bd_os_to_send = list_bd_os_to_send.concat(req);
+                        response.status(200).json([{
+                          "list_bd_os_to_send":list_bd_os_to_send}])
+                      })    
+                    });           
+                  })          
+                 });
+              }          
+            }
+        });
+        }
       }
     }
+    else{
+      complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
+        list_bd_os_to_send = req;
+        complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
+          list_bd_os_to_send = list_bd_os_to_send.concat(req);
+          complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
+            list_bd_os_to_send = list_bd_os_to_send.concat(req);           
+            complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
+              list_bd_os_to_send = list_bd_os_to_send.concat(req);
+              response.status(200).json([{
+                "list_bd_os_to_send":list_bd_os_to_send}])
+            })    
+          });           
+        })          
+       });
+    }
   }
-  else{
-    complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
-      list_bd_os_to_send = req;
-      complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
-        list_bd_os_to_send = list_bd_os_to_send.concat(req);
-        complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
-          list_bd_os_to_send = list_bd_os_to_send.concat(req);           
-          complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
-            list_bd_os_to_send = list_bd_os_to_send.concat(req);
-            response.status(200).json([{
-              "list_bd_os_to_send":list_bd_os_to_send}])
-          })    
-        });           
-      })          
-     });
-  }
+  
 }
 
 const get_first_recommendation_bd_serie_for_user = (request, response) => {
@@ -205,81 +205,85 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  const json =require(`./python_files/recommendations_artpieces-${user}.json`);
-  test = JSON.parse(JSON.stringify(json));
-  if(index_bd<0){
-    list_bd=null;
-  }
-  else{
-    list_bd= test.bd[index_bd];
-  }
-  var compt = 0;
+  var test=request.cookies.rec_art_home;
+  get_it();
 
-  if (list_bd!=null){
-    for(var i = 0; i < list_bd.length; ++i){
-      if(list_bd[i][1]=="one-shot")
-          //list_bd.splice(i, 1);
-          compt= compt+1;
+  function get_it(){
+    if(index_bd<0){
+      list_bd=null;
     }
-  }
-
-  var list_bd_serie_to_send=[];
-  list_bd_serie_to_compare=[];
-
-  if (compt!=0){
-    let k=0;
-    for (let item=0; item< list_bd.length;item++){  
-       if (list_bd[item][1]=="one-shot"){
-        pool.query('SELECT * FROM liste_bd_serie WHERE authorid=(SELECT authorid FROM liste_bd_serie WHERE bd_id = $4) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"bd","serie",list_bd[item][0]], (error, results) => {
-          if (error) {
-            throw error
-          }
-          else{
-            result = JSON.parse(JSON.stringify(results.rows));
-            check = list_bd_serie_to_compare.includes(JSON.stringify(result));
-            if (!check && item<5){
-              list_bd_serie_to_compare.push(JSON.stringify(result));
-              list_bd_serie_to_send.push(result);
-            }
-
-            k++;
-            if(k == compt){
-              complete_recommendation_bd(user,'Manga',"serie", (req)=>{
-                list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                complete_recommendation_bd(user,'Comics',"serie", (req)=>{
-                list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
-                  list_bd_serie_to_send = list_bd_serie_to_send.concat(req);           
-                  complete_recommendation_bd(user,'BD',"serie", (req)=>{
-                    list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                     response.status(200).json([{
-                       "list_bd_serie_to_send":list_bd_serie_to_send}])
-                   })    
-                 });           
-               })          
-              });
-           }
-          }
-      });
+    else{
+      list_bd= test.bd[index_bd];
+    }
+    var compt = 0;
+  
+    if (list_bd!=null){
+      for(var i = 0; i < list_bd.length; ++i){
+        if(list_bd[i][1]=="serie")
+            //list_bd.splice(i, 1);
+            compt= compt+1;
       }
     }
+  
+    var list_bd_serie_to_send=[];
+    list_bd_serie_to_compare=[];
+  
+    if (compt!=0){
+      let k=0;
+      for (let item=0; item< list_bd.length;item++){  
+         if (list_bd[item][1]=="serie"){
+          pool.query('SELECT * FROM liste_bd_serie WHERE authorid=(SELECT authorid FROM liste_bd_serie WHERE bd_id = $4) AND bd_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"bd","serie",list_bd[item][0]], (error, results) => {
+            if (error) {
+              throw error
+            }
+            else{
+              result = JSON.parse(JSON.stringify(results.rows));
+              check = list_bd_serie_to_compare.includes(JSON.stringify(result));
+              if (!check && item<5){
+                list_bd_serie_to_compare.push(JSON.stringify(result));
+                list_bd_serie_to_send.push(result);
+              }
+  
+              k++;
+              if(k == compt){
+                complete_recommendation_bd(user,'Manga',"serie", (req)=>{
+                  list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                  complete_recommendation_bd(user,'Comics',"serie", (req)=>{
+                  list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                  complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
+                    list_bd_serie_to_send = list_bd_serie_to_send.concat(req);           
+                    complete_recommendation_bd(user,'BD',"serie", (req)=>{
+                      list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                       response.status(200).json([{
+                         "list_bd_serie_to_send":list_bd_serie_to_send}])
+                     })    
+                   });           
+                 })          
+                });
+             }
+            }
+        });
+        }
+      }
+    }
+    else{
+      complete_recommendation_bd(user,'Manga',"serie", (req)=>{
+        list_bd_serie_to_send = req;
+        complete_recommendation_bd(user,'Comics',"serie", (req)=>{
+        list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+        complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
+          list_bd_serie_to_send = list_bd_serie_to_send.concat(req);           
+          complete_recommendation_bd(user,'BD',"serie", (req)=>{
+            list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+             response.status(200).json([{
+               "list_bd_serie_to_send":list_bd_serie_to_send}])
+           })    
+         });           
+       })          
+      });
+    }
   }
-  else{
-    complete_recommendation_bd(user,'Manga',"serie", (req)=>{
-      list_bd_serie_to_send = req;
-      complete_recommendation_bd(user,'Comics',"serie", (req)=>{
-      list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-      complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
-        list_bd_serie_to_send = list_bd_serie_to_send.concat(req);           
-        complete_recommendation_bd(user,'BD',"serie", (req)=>{
-          list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-           response.status(200).json([{
-             "list_bd_serie_to_send":list_bd_serie_to_send}])
-         })    
-       });           
-     })          
-    });
-  }
+  
 }
 
 const get_first_recommendation_drawing_artbook_for_user = (request, response) => {
@@ -290,71 +294,74 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  const json =require(`./python_files/recommendations_artpieces-${user}.json`);
-  test = JSON.parse(JSON.stringify(json));
-  if(index_drawing<0){
-    list_drawing_artbook=null;
-  }
-  else{
-    list_drawing_artbook= test.drawing[index_drawing];
-  }
- 
-  var compt =0;
-
-  if (list_drawing_artbook!=null){
-    for(var i = 0; i < list_drawing_artbook.length; ++i){
-      if(list_drawing_artbook[i][1]=="artbook"){
-        compt=compt+1;
-        //list_drawing_artbook.splice(i, 1);
+  var test=request.cookies.rec_art_home;
+  get_it();
+  function get_it(){
+    if(index_drawing<0){
+      list_drawing_artbook=null;
+    }
+    else{
+      list_drawing_artbook= test.drawing[index_drawing];
+    }
+   
+    var compt =0;
+  
+    if (list_drawing_artbook!=null){
+      for(var i = 0; i < list_drawing_artbook.length; ++i){
+        if(list_drawing_artbook[i][1]=="artbook"){
+          compt=compt+1;
+          //list_drawing_artbook.splice(i, 1);
+        }
       }
     }
-  }
-
-  var list_artbook_to_send=[];
-  list_artbook_to_compare=[];
-
-  if (compt!=0){
-    let k=0;
-    for (let item=0; item< list_drawing_artbook.length;item++){  
-      if (list_drawing_artbook[item][1]=="artbook"){
-        pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=(SELECT authorid FROM liste_drawings_artbook WHERE drawing_id = $4) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","artbook",list_drawing_artbook[item][0]], (error, results) => {
-          if (error) {
-            throw error
-          }
-          else{
-            result = JSON.parse(JSON.stringify(results.rows));
-            check = list_artbook_to_compare.includes(JSON.stringify(result));
-            if (!check  && item<5){
-              list_artbook_to_compare.push(JSON.stringify(result));
-              list_artbook_to_send.push(result);
+  
+    var list_artbook_to_send=[];
+    list_artbook_to_compare=[];
+  
+    if (compt!=0){
+      let k=0;
+      for (let item=0; item< list_drawing_artbook.length;item++){  
+        if (list_drawing_artbook[item][1]=="artbook"){
+          pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=(SELECT authorid FROM liste_drawings_artbook WHERE drawing_id = $4) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","artbook",list_drawing_artbook[item][0]], (error, results) => {
+            if (error) {
+              throw error
             }
-            k++;
-            if(k == compt){
-              complete_recommendation_drawing(user,'Traditionnel',"artbook", (req)=>{
-                list_artbook_to_send = list_artbook_to_send.concat(req); 
-                    complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
-                      list_artbook_to_send = list_artbook_to_send.concat(req); 
-                      response.status(200).json([{
-                        "list_artbook_to_send":list_artbook_to_send}])
-                    })    
-                  });           
+            else{
+              result = JSON.parse(JSON.stringify(results.rows));
+              check = list_artbook_to_compare.includes(JSON.stringify(result));
+              if (!check  && item<5){
+                list_artbook_to_compare.push(JSON.stringify(result));
+                list_artbook_to_send.push(result);
               }
-            
-          }
-      });
+              k++;
+              if(k == compt){
+                complete_recommendation_drawing(user,'Traditionnel',"artbook", (req)=>{
+                  list_artbook_to_send = list_artbook_to_send.concat(req); 
+                      complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
+                        list_artbook_to_send = list_artbook_to_send.concat(req); 
+                        response.status(200).json([{
+                          "list_artbook_to_send":list_artbook_to_send}])
+                      })    
+                    });           
+                }
+              
+            }
+        });
+        }
       }
     }
+    else{
+      complete_recommendation_drawing(user,'Traditionnel',"artbook", (req)=>{
+        list_artbook_to_send = req;        
+            complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
+              list_artbook_to_send = list_artbook_to_send.concat(req);
+              response.status(200).json([{
+                "list_artbook_to_send":list_artbook_to_send}])
+            })    
+       });  
+    }
   }
-  else{
-    complete_recommendation_drawing(user,'Traditionnel',"artbook", (req)=>{
-      list_artbook_to_send = req;        
-          complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
-            list_artbook_to_send = list_artbook_to_send.concat(req);
-            response.status(200).json([{
-              "list_artbook_to_send":list_artbook_to_send}])
-          })    
-     });  
-  }
+  
 }
 
 const get_first_recommendation_drawing_os_for_user = (request, response) => {
@@ -365,70 +372,73 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  const json =require(`./python_files/recommendations_artpieces-${user}.json`);
-  test = JSON.parse(JSON.stringify(json));
-  if(index_drawing<0){
-    list_drawing_os=null;
-  }
-  else{
-    list_drawing_os= test.drawing[index_drawing];
-  }
-  
-  var compt = 0;
-
-  if (list_drawing_os!=null){
-    for(var i = 0; i < list_drawing_os.length; ++i){
-      if(list_drawing_os[i][1]=="one-shot")
-      compt=compt+1;
+  var test=request.cookies.rec_art_home;
+  get_it();
+  function get_it(){
+    if(index_drawing<0){
+      list_drawing_os=null;
     }
-  }
-
-  var list_drawing_os_to_send=[];
-  list_drawing_os_to_compare=[];
-
-  if(compt!=0){
-    let k=0 //compteur pour savoir si on en a fini avec le format
-    for (let item=0; item< list_drawing_os.length;item++){  
-      if (list_drawing_os[item][1]=="one-shot"){
-      // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-        pool.query('SELECT * FROM liste_drawings_one_page WHERE authorid=(SELECT authorid FROM liste_drawings_one_page WHERE drawing_id = $4) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","one-shot",list_drawing_os[item][0]], (error, results) => {
-          if (error) {
-            throw error
-          }
-          else{
-            result = JSON.parse(JSON.stringify(results.rows));
-            check = list_drawing_os_to_compare.includes(JSON.stringify(result));
-            if (!check && item<5){
-              list_drawing_os_to_compare.push(JSON.stringify(result));
-              list_drawing_os_to_send.push(result);
-            }
-            k++;
-            if(k == compt){
-              complete_recommendation_drawing(user,'Traditionnel',"one-shot", (req)=>{
-                list_drawing_os_to_send = list_drawing_os_to_send.concat(req);        
-                    complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
-                      list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
-                      response.status(200).json([{
-                        "list_drawing_os_to_send":list_drawing_os_to_send}])
-                    })    
-                  }); 
-            }
-            
-          }
-      });
+    else{
+      list_drawing_os= test.drawing[index_drawing];
+    }
+    
+    var compt = 0;
+  
+    if (list_drawing_os!=null){
+      for(var i = 0; i < list_drawing_os.length; ++i){
+        if(list_drawing_os[i][1]=="one-shot")
+        compt=compt+1;
       }
     }
+  
+    var list_drawing_os_to_send=[];
+    list_drawing_os_to_compare=[];
+  
+    if(compt!=0){
+      let k=0 //compteur pour savoir si on en a fini avec le format
+      for (let item=0; item< list_drawing_os.length;item++){  
+        if (list_drawing_os[item][1]=="one-shot"){
+        // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
+          pool.query('SELECT * FROM liste_drawings_one_page WHERE authorid=(SELECT authorid FROM liste_drawings_one_page WHERE drawing_id = $4) AND drawing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 AND format=$3) ORDER BY viewnumber DESC limit 1', [user,"drawing","one-shot",list_drawing_os[item][0]], (error, results) => {
+            if (error) {
+              throw error
+            }
+            else{
+              result = JSON.parse(JSON.stringify(results.rows));
+              check = list_drawing_os_to_compare.includes(JSON.stringify(result));
+              if (!check && item<5){
+                list_drawing_os_to_compare.push(JSON.stringify(result));
+                list_drawing_os_to_send.push(result);
+              }
+              k++;
+              if(k == compt){
+                complete_recommendation_drawing(user,'Traditionnel',"one-shot", (req)=>{
+                  list_drawing_os_to_send = list_drawing_os_to_send.concat(req);        
+                      complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
+                        list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
+                        response.status(200).json([{
+                          "list_drawing_os_to_send":list_drawing_os_to_send}])
+                      })    
+                    }); 
+              }
+              
+            }
+        });
+        }
+      }
+    }
+    else{
+      complete_recommendation_drawing(user,'Traditionnel',"one-shot", (req)=>{
+        list_drawing_os_to_send = req;         
+            complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
+              list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
+              response.status(200).json([{
+                "list_drawing_os_to_send":list_drawing_os_to_send}])
+            })    
+      }); 
+    }
   }
-  else{
-    complete_recommendation_drawing(user,'Traditionnel',"one-shot", (req)=>{
-      list_drawing_os_to_send = req;         
-          complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
-            list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
-            response.status(200).json([{
-              "list_drawing_os_to_send":list_drawing_os_to_send}])
-          })    
-    }); 
-  }
+ 
 
 }
 
@@ -442,72 +452,76 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  const json =require(`./python_files/recommendations_artpieces-${user}.json`);
-  test = JSON.parse(JSON.stringify(json));
-  if(index_writing<0){
-    list_writing=null;
-  }
-  else{
-    list_writing= test.writing[index_writing];
-  }
+  var test=request.cookies.rec_art_home;
+  get_it();
 
-
-  var list_writings_to_send=[];
-  list_writings_to_compare=[];
-  if(list_writing!=null){
-    let k=0;
-    for (let item=0; item< list_writing.length;item++){  
-      // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-        pool.query('SELECT * FROM liste_writings WHERE authorid=(SELECT authorid FROM liste_writings WHERE writing_id = $3) AND writing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 ) ORDER BY viewnumber DESC limit 1', [user,"writing",list_writing[item][0]], (error, results) => {
-          if (error) {
-            throw error
-          }
-          else{
-            result = JSON.parse(JSON.stringify(results.rows));
-            check = list_writings_to_compare.includes(JSON.stringify(result));
-            if (!check && item<5){
-              list_writings_to_compare.push(JSON.stringify(result));
-              list_writings_to_send.push(result);
+  function get_it(){
+    if(index_writing<0){
+      list_writing=null;
+    }
+    else{
+      list_writing= test.writing[index_writing];
+    }
+  
+  
+    var list_writings_to_send=[];
+    list_writings_to_compare=[];
+    if(list_writing!=null){
+      let k=0;
+      for (let item=0; item< list_writing.length;item++){  
+        // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
+          pool.query('SELECT * FROM liste_writings WHERE authorid=(SELECT authorid FROM liste_writings WHERE writing_id = $3) AND writing_id NOT IN (SELECT DISTINCT publication_id FROM list_of_views WHERE author_id_who_looks = $1 AND publication_category =$2 ) ORDER BY viewnumber DESC limit 1', [user,"writing",list_writing[item][0]], (error, results) => {
+            if (error) {
+              throw error
             }
-            k++;
-            if(k == list_writing.length){
-
-              complete_recommendation_writing(user,'Roman', (req)=>{
-                list_writings_to_send = list_writings_to_send.concat(req);        
-                    complete_recommendation_writing(user,'illustrated novel', (req)=>{
-                      list_writings_to_send = list_writings_to_send.concat(req);
-                      complete_recommendation_writing(user,'Article', (req)=>{
+            else{
+              result = JSON.parse(JSON.stringify(results.rows));
+              check = list_writings_to_compare.includes(JSON.stringify(result));
+              if (!check && item<5){
+                list_writings_to_compare.push(JSON.stringify(result));
+                list_writings_to_send.push(result);
+              }
+              k++;
+              if(k == list_writing.length){
+  
+                complete_recommendation_writing(user,'Roman', (req)=>{
+                  list_writings_to_send = list_writings_to_send.concat(req);        
+                      complete_recommendation_writing(user,'illustrated novel', (req)=>{
                         list_writings_to_send = list_writings_to_send.concat(req);
-                        complete_recommendation_writing(user,'Scenario', (req)=>{
+                        complete_recommendation_writing(user,'Article', (req)=>{
                           list_writings_to_send = list_writings_to_send.concat(req);
-                            response.status(200).json([{
-                              "list_writings_to_send":list_writings_to_send}])
+                          complete_recommendation_writing(user,'Scenario', (req)=>{
+                            list_writings_to_send = list_writings_to_send.concat(req);
+                              response.status(200).json([{
+                                "list_writings_to_send":list_writings_to_send}])
+                          })
                         })
-                      })
-                    })    
-                  });
-            }          
-          }
+                      })    
+                    });
+              }          
+            }
+        });
+        
+      }
+    }
+    else{
+      complete_recommendation_writing(user,'Roman', (req)=>{
+        list_writings_to_send = req;         
+        complete_recommendation_writing(user,'illustrated novel', (req)=>{
+          list_writings_to_send = list_writings_to_send.concat(req);
+          complete_recommendation_writing(user,'Article', (req)=>{
+            list_writings_to_send = list_writings_to_send.concat(req);
+            complete_recommendation_writing(user,'Scenario', (req)=>{
+              list_writings_to_send = list_writings_to_send.concat(req);
+                response.status(200).json([{
+                  "list_writings_to_send":list_writings_to_send}])
+            })
+          })
+        })    
       });
-      
     }
   }
-  else{
-    complete_recommendation_writing(user,'Roman', (req)=>{
-      list_writings_to_send = req;         
-      complete_recommendation_writing(user,'illustrated novel', (req)=>{
-        list_writings_to_send = list_writings_to_send.concat(req);
-        complete_recommendation_writing(user,'Article', (req)=>{
-          list_writings_to_send = list_writings_to_send.concat(req);
-          complete_recommendation_writing(user,'Scenario', (req)=>{
-            list_writings_to_send = list_writings_to_send.concat(req);
-              response.status(200).json([{
-                "list_writings_to_send":list_writings_to_send}])
-          })
-        })
-      })    
-    });
-  }
+  
 
 
 } 
@@ -679,7 +693,6 @@ function complete_recommendation_bd(user,style,format,callback){
   last_week.setDate(last_week.getDate() - 15);
   
     let list_to_send=[];
-    console.log(format);
    
     pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 5', [user,style,_today,last_week,format], (error, results1) => {
         if (error) {
@@ -701,8 +714,6 @@ function complete_recommendation_bd(user,style,format,callback){
                     list_to_send.push(result2);
    
                     if(i==result1.length){
-                      console.log("voici la liste");
-                      console.log(list_to_send);
                       callback(list_to_send);
                     }
                   }
