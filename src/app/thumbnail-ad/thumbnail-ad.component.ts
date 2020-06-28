@@ -187,50 +187,50 @@ export class ThumbnailAdComponent implements OnInit {
    
     if( s < 3600 ) {
       if( Math.trunc(s/60)==1 ) {
-        return "Envoyé il y a 1 minute";
+        return "Envoyée il y a 1 minute";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/60) + " minutes";
+        return "Envoyée il y a " + Math.trunc(s/60) + " minutes";
       }
     }
     else if( s < 86400 ) {
       if( Math.trunc(s/3600)==1 ) {
-        return "Envoyé il y a 1 heure";
+        return "Envoyée il y a 1 heure";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/3600) + " heures";
+        return "Envoyée il y a " + Math.trunc(s/3600) + " heures";
       }
     }
     else if( s < 604800 ) {
       if( Math.trunc(s/86400)==1 ) {
-        return "Envoyé il y a 1 jour";
+        return "Envoyée il y a 1 jour";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/86400) + " jours";
+        return "Envoyée il y a " + Math.trunc(s/86400) + " jours";
       }
     }
     else if ( s < 2419200 ) {
       if( Math.trunc(s/604800)==1 ) {
-        return "Envoyé il y a 1 semaine";
+        return "Envoyée il y a 1 semaine";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/604800) + " semaines";
+        return "Envoyée il y a " + Math.trunc(s/604800) + " semaines";
       }
     }
     else if ( s < 9676800 ) {
       if( Math.trunc(s/2419200)==1 ) {
-        return "Envoyé il y a 1 mois";
+        return "Envoyée il y a 1 mois";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/2419200) + " mois";
+        return "Envoyée il y a " + Math.trunc(s/2419200) + " mois";
       }
     }
     else {
       if( Math.trunc(s/9676800)==1 ) {
-        return "Envoyé il y a 1 an";
+        return "Envoyée il y a 1 an";
       }
       else {
-        return "Envoyé il y a " + Math.trunc(s/9676800) + " ans";
+        return "Envoyée il y a " + Math.trunc(s/9676800) + " ans";
       }
     }
 

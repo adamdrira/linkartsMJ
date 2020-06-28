@@ -219,65 +219,123 @@
 
                     </ng-container>
 
-                    <!--<ng-container *ngIf="see_responses==1">
-                        <div class="left-container">
-                            <div class="category">
-                                <div  class="category-description2">Liste des réponses</div>
-                            </div>
-                            <div  class="category-content-1">
-                                <div *ngIf="answers_retrieved">
-                                    <div *ngFor="let item of list_of_profile_pictures; let i=index" class="author-container">
-                                        <div class="left-container">
-                                            <img  [src]="list_of_profile_pictures[i]">
-                                        </div>
-                                        <a href="/account/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}">
-                                            <div class="right-container">
-                                                <div class="author-name">{{list_of_authors_name[i]}} </div>
-                                                <div class="author-description">@{{list_of_pseudos[i]}}</div>
-                                                <div class="author-description">{{list_of_dates[i]}}</div>
-                                            </div>
-                                        </a>
-                                        <button (click)="see_response(i)">Voir la réponse</button>
-                                    </div>
-                                </div>
-                            </div>
+
+
+                    <ng-container *ngIf="see_responses==1">
+
+                        <div class="category-title">
+                            <span>Liste des réponses</span>
                         </div>
+
+
+                        <div *ngIf="answers_retrieved" class="responses-container">
+
+                            <div *ngFor="let item of list_of_profile_pictures; let i=index" class="response">
+
+                                <div class="author-container">
+                                    <div class="left-container">
+                                        <img  [src]="list_of_profile_pictures[i]">
+                                    </div>
+                                    <a href="/account/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}">
+                                        <div class="right-container">
+                                            <div class="author-name">{{list_of_authors_name[i]}} </div>
+                                            <div class="author-description">@{{list_of_pseudos[i]}}</div>
+                                            <div class="author-description">{{list_of_dates[i]}}</div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                            
+                                <button mat-raised-button class="style1" (click)="see_response(i);">
+                                    <span>Voir la réponse</span>
+                                </button>
+
+
+                                <!--<button (click)="see_response(i)">Voir la réponse</button>-->
+
+                            </div>
+
+                        </div>
+                                
+
                     </ng-container>
                     
 
                     <ng-container *ngIf="see_responses==2">
-                        <div *ngIf="response_attachments_retrieved" class="left-container">
-                            <div class="category">
+                        <div *ngIf="response_attachments_retrieved" class="response-2">
+
+                            <div style="height:40px;margin-top:20px;">
+                                <button mat-raised-button class="style1" (click)="return_to_ad(1)">
+                                    <span>Retour</span>
+                                </button>
+                            </div>
+
+
+                            <div class="categories">
+                                <div class="category" [ngClass]="{'opened': category_index == 0 }" (click)="open_category(0);">
+                                    <span>Description</span>
+                                    <div class="bottom-border"></div>
+                                </div>
+                                <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);">
+                                    <span>Images ({{response_list_of_pictures.length}})</span>
+                                    <div class="bottom-border"></div>
+                                </div>
+                                <div class="category" [ngClass]="{'opened': category_index == 2 }" (click)="open_category(2);">
+                                    <span>Fichiers ({{response_list_of_attachments.length}})</span>
+                                    <div class="bottom-border"></div>
+                                </div>
+                            </div>
+
+
+
+                            <!--<div class="category">
                                 <button (click)="return_to_ad(1)">retour</button>
                                 <div #category class="category-description" [ngClass]="status1" (mouseover)="status1='hovered'" (mouseout)="status1=''" (click)="open_category(0);">Description</div>
                                 <div #category class="category-attachments" [ngClass]="status2" (mouseover)="status2='hovered'" (mouseout)="status2=''" (click)="open_category(1);">Images ({{response_list_of_pictures.length}})</div>
                                 <div #category class="category-attachments" [ngClass]="status3" (mouseover)="status3='hovered'" (mouseout)="status3=''" (click)="open_category(2);">Fichiers ({{response_list_of_attachments.length}})</div>
-                            </div>
+                            </div>-->
                             
                             <div class="category-content-1">
-                                <div *ngIf="category_index==0" class="description-container">
+                                <div *ngIf="category_index==0" class="section-container-2">
                                     {{response_to_read.description}}
-                                    
                                 </div>
-                                <div *ngIf="category_index==1" class="attachments-container">
-                                    <div *ngFor="let picture of response_list_of_pictures, let i=index">
-                                        <div (click)="read_pictures_response(i)">
-                                            <img [src]="response_list_of_pictures[i]" style="width:140px;height:140px;">
-                                        </div>
+
+
+                                <div *ngIf="category_index==1" class="section-container-2" style="display:flex;flex-wrap: wrap;">
+
+                                    <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)" 
+                                    style="width:140px;height:140px;margin-right: 10px;margin-bottom: 10px;">
+                                        <img [src]="response_list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                                     </div>
+
                                 </div>
-                                <div *ngIf="category_index==2" class="attachments-container">
+
+
+                                <!--<div *ngIf="category_index==2" class="attachments-container">
                                     <div *ngFor="let attachment of response_list_of_attachments, let i=index">
                                         <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)">
                                             <img src='../../assets/img/pdf_image.png'>
                                             <div> {{response_list_of_attachments_name[i]}}</div>
                                         </div>
                                     </div>
+                                </div>-->
+
+                                <div *ngIf="category_index==2" class="section-container-2">
+                                    <ng-container *ngFor="let attachment of response_list_of_attachments, let i=index">
+                                        <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)" class="attachment-item">
+                                            <img src='../../assets/img/pdf_image.png' style="height:25px;width:25px;object-fit: contain;">
+                                            <div> {{response_list_of_attachments_name[i]}}</div>
+                                        </div>
+                                    </ng-container>
                                 </div>
+
+
                             </div>
+
                         </div>
-                        
-                    </ng-container>-->
+                    </ng-container>
+
+
                 </div>
 
                 
