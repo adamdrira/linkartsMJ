@@ -8,11 +8,24 @@
     [id_ad_response]="id_ad_response"
     (uploaded)="all_pictures_uploaded( $event );"></app-uploader-ad-response-pictures>-->
 </div>
+
+
 <div [formGroup]="response_group" novalidate>
     <div class="form-group">
-        <div class="form-group"  >
-            <input type="text" formControlName="response" style="height: 300px;resize:none; width: 500px"  maxlength="2000" placeholder="message" autocomplete="off" required/>
-        </div>
+        <label>Message</label>
+        <textarea type="text" formControlName="response" maxlength="2000" style="height: 100px;resize:none;" class="form-control" placeholder="Saisir un message" autocomplete="off" required>
+        </textarea>
+        <p *ngIf="10 > response.value.length  && show_error">Veuillez saisir au moins 10 caractères</p>
+
+        
     </div>
 </div>
-<button (click)="send_response()">envoyer</button>
+
+
+<div class="response-button-container">
+    <button mat-raised-button class="button style1" (click)="send_response();">
+        <span>Soumettre ma réponse</span> 
+    </button>
+</div>
+
+

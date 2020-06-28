@@ -13,7 +13,7 @@
 
 .button-container {
     width:100%;
-    height:20%;
+    margin-bottom: 20px;
     display:flex;
 }
 
@@ -22,24 +22,85 @@
     height:50px;
 }
 
-.select-button {
-    cursor:pointer;
+
+.upload-picture {
     display:flex;
-    font-size: 18px;
-    background:white;
-    padding:4px 10px 4px 10px;
-    width:20%;
-    height:100%;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.26);
-    border-radius: 10px;
-    border: 1px solid rgb(219, 219, 219);
-}
-
-.select-button:hover {
-    background: rgb(245, 249, 255);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-}
-
-.select-button span {
+    cursor:pointer;
     margin:auto auto;
+    padding:10px 15px 10px 15px;
+    background:rgb(240, 240, 240);
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.26);
+    border-radius:10px;
+    border:1px solid rgb(219, 219, 219);
+}
+
+.upload-picture:hover {
+    background:rgb(236, 236, 236);
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+}
+
+
+.upload-picture .add-logo {
+    cursor:pointer;
+    height: 20px;
+    margin: auto 10px auto auto;
+    width: 20px;
+    background-color: rgb(44, 44, 44);
+    -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+}
+
+.upload-picture span {
+    cursor:pointer;
+    margin: auto auto auto 10px;
+}
+
+.attachments {
+    width:100%;
+    max-height:230px;
+    overflow-y:auto;
+}
+
+.attachment-container {
+    display:flex;
+    justify-content: space-between;
+    width:100%;
+    height:60px;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.attachment-container .left-container {
+    width:200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+.attachment-container span {
+    align-self: center;
+}
+
+.attachment-container > div {
+    place-self: center;
+}
+
+
+.attachment-container .attachment-picture {
+    height: 100%;
+    width: 100%;
+    max-width: 100px;
+}
+
+.attachment-container .attachment-picture img {
+    vertical-align: middle;
+    border-style: none;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 5px;
+    border: 2px solid rgb(209, 224, 251);
 }

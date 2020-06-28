@@ -30,6 +30,8 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   attachments_uploaded=false;
   id_ad_response:number=0;
   begin_download_attachments=false;
+
+  show_error:boolean = false;
   
   createFormControlsAds() {
     this.response = new FormControl('')}
@@ -61,6 +63,12 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   }
 
   send_response(){
+
+    if( !this.response_group.valid ) {
+      this.show_error = true;
+      return;
+    }
+    
     this.Ads_service.add_ad_response(this.data.item.id,this.response_group.value.response).subscribe(r=>{
       this.id_ad_response=r[0].id
       this.begin_download_attachments=true;

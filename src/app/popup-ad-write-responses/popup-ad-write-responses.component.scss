@@ -1,1 +1,38 @@
-.a{}
+
+@import '../../material-styles.css';
+
+
+.form-group { 
+    min-width: 500px;
+}
+
+
+.form-group p {
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 0px !important;
+    color:rgb(97, 0, 0);
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom:5px;
+}
+
+
+::ng-deep .form-control {
+    height:100px;
+    font-size:unset;
+    color:unset;
+}   
+
+
+.response-button-container {
+    width: 100%;
+    display:flex;
+}
+
+.response-button-container button {
+    margin-left:auto;
+    margin-right:auto;
+}

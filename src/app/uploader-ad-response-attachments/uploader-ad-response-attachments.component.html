@@ -1,20 +1,40 @@
-<div class="button-container" >
+<div class="button-container">
+
+
+    
     <label>
-        <div class="select-button">
-            <span>log Pj</span>
+        <div class="upload-picture">
+            <div class="add-logo"></div>
+            <span>Ajouter une pièce jointe</span>
+            <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
         </div>
-        <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
     </label>
-    
+
+
 </div>
-<td *ngFor="let item of uploader.queue; let i=index">
-    <span *ngIf="!list_of_contents_type[i]">{{ uploader.queue[i]?.file?.name }}</span>
-    <span *ngIf="list_of_contents_type[i]"><img [src]="list_of_pictures[i]" style="max-width:140px;max-height:140px;"></span>
-    
-    <div>
-        <button mat-raised-button class="button style0"
-            (click)="remove_beforeupload(uploader.queue[i],i);">
-            <span class="">Sup</span> 
-        </button>
+
+
+
+<div class="attachments">
+    <div *ngFor="let item of uploader.queue; let i=index" class="attachment-container">
+        
+
+        <div class="left-container">
+            <span>{{ uploader.queue[i]?.file?.name }}</span>
+        </div>
+
+        
+        <div *ngIf="list_of_contents_type[i]" class="attachment-picture">
+            <img [src]="list_of_pictures[i]">
+        </div>
+
+        <div>
+            <button mat-raised-button class="button style0"
+                (click)="remove_beforeupload(uploader.queue[i],i);">
+                <span class="">Supprimer</span> 
+            </button>
+        </div>
+
+
     </div>
-</td>
+</div>
