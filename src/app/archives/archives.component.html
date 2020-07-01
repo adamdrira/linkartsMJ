@@ -51,15 +51,15 @@
             
 <div class="logos-container">
     <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);" #target id="logo">
-        <mat-icon class="image1">account_circle</mat-icon>
-        <span>
-            Archives personnelles
-        </span>
-    </div>
-    <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);" #target>
         <mat-icon class="image2">supervisor_account</mat-icon>
         <span>
             Autres utilisateurs
+        </span>
+    </div>
+    <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);" #target>
+        <mat-icon class="image1">account_circle</mat-icon>
+        <span>
+            Archives personnelles
         </span>
     </div>
 </div>

@@ -100,30 +100,31 @@ export class ArchivesComponent implements OnInit {
   
 
   ngOnInit(): void {
-      let r = this.archives_comics
+      let r = this.archives_comics;
+      console.log(r);
       if(r.length>0){
+        let comics_compt=0;
         for (let j=0; j< r.length;j++){
-          if(r[j].publication_category=="comics"){
-            if(r[j].format=="one-shot"){
-              this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
-                this.list_of_comics[j]=(info[0]);
-                if(this.list_of_comics.length == r.length){
-                  console.log( this.list_of_comics);
-                  this.list_of_comics_added=true;
-                }
-              })
-            }
-            if(r[j].format=="serie"){
-              this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
-                this.list_of_comics[j]=(info[0]);
-                if( this.list_of_comics.length == r.length){
-                  console.log( this.list_of_comics);
-                  this.list_of_comics_added=true;
-                }
-              })
-            }
+          if(r[j].format=="one-shot"){
+            this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
+              this.list_of_comics[j]=(info[0]);
+              comics_compt+=1;
+              if(comics_compt == r.length){
+                console.log( this.list_of_comics);
+                this.list_of_comics_added=true;
+              }
+            })
           }
-          
+          if(r[j].format=="serie"){
+            this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
+              this.list_of_comics[j]=(info[0]);
+              comics_compt+=1;
+              if(comics_compt== r.length){
+                console.log( this.list_of_comics);
+                this.list_of_comics_added=true;
+              }
+            })
+          }
         }
       }
       else{
@@ -133,26 +134,26 @@ export class ArchivesComponent implements OnInit {
 
       let l = this.archives_drawings;
       if(l.length>0){
+        let drawings_compt=0;
         for (let j=0; j< l.length;j++){
-          if(l[j].publication_category=="drawings"){
-            if(l[j].format=="one-shot"){
-              this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(l[j].publication_id).subscribe(info=>{
-                this.list_of_drawings[j]=(info[0]);
-                if(this.list_of_drawings.length == l.length){
-                  this.list_of_drawings_added=true;
-                }
-              })
-            }
-            if(l[j].format=="serie"){
-              this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).subscribe(info=>{
-                this.list_of_drawings[j]=(info[0]);
-                if( this.list_of_drawings.length == l.length){
-                  this.list_of_drawings_added=true;
-                }
-              })
-            }
+          if(l[j].format=="one-shot"){
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(l[j].publication_id).subscribe(info=>{
+              this.list_of_drawings[j]=(info[0]);
+              drawings_compt+=1;
+              if(drawings_compt == l.length){
+                this.list_of_drawings_added=true;
+              }
+            })
           }
-          
+          if(l[j].format=="serie"){
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).subscribe(info=>{
+              this.list_of_drawings[j]=(info[0]);
+              drawings_compt+=1;
+              if( drawings_compt== l.length){
+                this.list_of_drawings_added=true;
+              }
+            })
+          }
         }
       }
       else{
@@ -161,15 +162,15 @@ export class ArchivesComponent implements OnInit {
 
       let k = this.archives_writings;
       if(k.length>0){
+        let writings_compt=0;
         for (let j=0; j< k.length;j++){
-          if(k[j].publication_category=="writings"){
-            this.Writing_Upload_Service.retrieve_writing_information_by_id(k[j].publication_id).subscribe(info=>{
-              this.list_of_writings[j]=(info[0]);
-              if( this.list_of_writings.length == k.length){
-                this.list_of_writings_added=true;
-              }
-            })
-          }
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(k[j].publication_id).subscribe(info=>{
+            this.list_of_writings[j]=(info[0]);
+            writings_compt+=1;
+            if( writings_compt== k.length){
+              this.list_of_writings_added=true;
+            }
+          })
         }
       }
       else{
@@ -261,10 +262,12 @@ export class ArchivesComponent implements OnInit {
   get_ads(){
     let m = this.archives_ads
       if(m.length>0){
+        let ad_compt=0;
         for (let j=0; j< m.length;j++){
               this.Ads_service.retrieve_ad_by_id(m[j].publication_id).subscribe(info=>{
                 this.list_of_ads[j]=(info[0]);
-                if(this.list_of_ads.length == m.length){
+                ad_compt+=1;
+                if(ad_compt == m.length){
                   this.list_of_ads_added=true;
                 }
               })
