@@ -1,4 +1,7 @@
-<div class="categories-container">
+
+
+
+<!--<div class="categories-container">
     <div class="category-filter">
         <div #category class="content-action text-center opened" (click)="open_category(0);">
             Bandes dessinées
@@ -22,30 +25,74 @@
     </div>
 </div>
 
+
+
 <div class="albums-container">
     <div class="albums-filter">
-        <!-- archives comics, écrits, dessins-->
+        <!- - archives comics, écrits, dessins- ->
         <ng-container *ngIf="opened_category==0 || opened_category==1 || opened_category==2 ">
             <div  *ngFor="let element of titles_archives; let i=index" class="content-action text-center" 
             (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                        {{element}}  
+                    {{element}}  
              </div>                           
         </ng-container>
-        <!-- stories-->
-        <div *ngIf="opened_category==3 ">
+        <!- - stories- ->
+        <div *ngIf="opened_category==3">
             Toutes mes stories         
         </div>
-        <!-- stories-->
+        <!- - stories- ->
         <div *ngIf="opened_category==4 ">
             Toutes les annonces archivées        
         </div>
     </div>
+</div>-->
+
+
+            
+<div class="logos-container">
+    <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);" #target id="logo">
+        <mat-icon class="image1">account_circle</mat-icon>
+        <span>
+            Archives personnelles
+        </span>
+    </div>
+    <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);" #target>
+        <mat-icon class="image2">supervisor_account</mat-icon>
+        <span>
+            Autres utilisateurs
+        </span>
+    </div>
 </div>
+
+
+<div style="display:flex;justify-content: center;">
+    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 0 }" (click)="open_album(0);">
+        <div>Bandes dessinées</div>
+    </button>
+    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 1 }" (click)="open_album(1);">
+        <div>Dessins</div>
+    </button>
+    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 2 }" (click)="open_album(2);">
+        <div>Écrits</div>
+    </button>
+    <ng-container *ngIf="opened_category == 0">
+        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 3 }" (click)="open_album(3);">
+            <div>Stories</div>
+        </button>
+    </ng-container>
+    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 4 }" (click)="open_album(4);">
+        <div>Annonces</div>
+    </button>
+</div>
+
+
+
+
 
 <div class="artworks-container">
     <!--bandes dessinées-->
-    <div *ngIf="opened_category==0">
-        <div *ngIf="opened_album==0" class="bd-container" >
+    <div *ngIf="opened_album==0">
+        <div *ngIf="opened_category==0" class="bd-container" >
             <div *ngIf="list_of_comics_added">
                 <div *ngFor="let item of list_of_comics">
                     <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
@@ -55,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="opened_album==1" class="bd-container" >
+        <div *ngIf="opened_category==1" class="bd-container" >
             <div *ngIf="private_list_of_comics_series_received">
                 Séries
                 <div *ngFor="let item of private_list_of_comics_series">
@@ -75,8 +122,8 @@
         </div>
     </div>
     <!--dessins-->
-    <div *ngIf="opened_category==1">
-        <div *ngIf="opened_album==1">
+    <div *ngIf="opened_album==1">
+        <div *ngIf="opened_category==1">
             <div *ngIf="private_list_of_drawings_artbooks_received">
                 Artbooks
                 <div *ngFor="let item of private_list_of_drawings_artbooks; let i = index">
@@ -100,8 +147,8 @@
         </div>
     </div>
     <!--writings-->
-    <div *ngIf="opened_category==2">
-        <div *ngIf="opened_album==1">
+    <div *ngIf="opened_album==2">
+        <div *ngIf="opened_category==1">
             <div *ngIf="private_list_of_writings_received">
                 <div *ngFor="let item of private_list_of_writings; let i = index">
                     <app-thumbnail-writing
@@ -113,7 +160,7 @@
         </div>
     </div>
     <!--stories-->
-    <div *ngIf="opened_category==3">
+    <div *ngIf="opened_album==3">
         <div *ngIf="list_of_stories_received">
             <div *ngFor="let item of list_of_stories; let i = index">
                 <img [src]="list_of_stories[i]">
@@ -121,7 +168,7 @@
         </div>
     </div>
     <!--annonces-->
-    <div *ngIf="opened_category==4">
+    <div *ngIf="opened_album==4">
         <div *ngIf="list_of_ads_added">
             <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
             [item]=item

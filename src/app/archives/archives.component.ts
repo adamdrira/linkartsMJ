@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angu
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
-import { NavbarService } from '../services/navbar.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -37,7 +36,6 @@ export class ArchivesComponent implements OnInit {
     private router: Router,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
-    public navbar: NavbarService, 
     private Story_service:Story_service,
     private location: Location,
     private cd: ChangeDetectorRef,
@@ -54,37 +52,14 @@ export class ArchivesComponent implements OnInit {
     public dialog: MatDialog,
 
     ) {
-    //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
-    this.navbar.setActiveSection(0);
-    this.navbar.show();
   }
 
-  
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.resize_comics();
-  }
-
-  
-  @ViewChild('profileHovered', {static: false}) profileHovered:ElementRef;
-  @ViewChild('profilePicHovered', {static: false}) profilePicHovered:ElementRef;
-  showEditCoverPic:boolean = true;
-  showEditBio:boolean = true;
-
-
-  @ViewChildren('section') sections:QueryList<ElementRef>;
-  @ViewChildren('category') categories:QueryList<ElementRef>;
-
-  @ViewChild('bdThumbnail') set bdThumbnails(content:ElementRef) {
-    this.resize_comics();
-  }
 
   
   //bd, dessins, écrits de l'auteur, etc.
   opened_category:number = 0;
   opened_album:number = 0;
-  titles_archives=["Autres utilisateurs","Archives personnelles"]
   
   @Input() archives_comics:any;
   @Input() archives_drawings:any;
@@ -133,6 +108,7 @@ export class ArchivesComponent implements OnInit {
               this.BdOneShotService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
                 this.list_of_comics[j]=(info[0]);
                 if(this.list_of_comics.length == r.length){
+                  console.log( this.list_of_comics);
                   this.list_of_comics_added=true;
                 }
               })
@@ -141,6 +117,7 @@ export class ArchivesComponent implements OnInit {
               this.BdSerieService.retrieve_bd_by_id(r[j].publication_id).subscribe(info=>{
                 this.list_of_comics[j]=(info[0]);
                 if( this.list_of_comics.length == r.length){
+                  console.log( this.list_of_comics);
                   this.list_of_comics_added=true;
                 }
               })
@@ -150,6 +127,7 @@ export class ArchivesComponent implements OnInit {
         }
       }
       else{
+        console.log( this.list_of_comics);
         this.list_of_comics_added=true;
       };
 
@@ -238,54 +216,25 @@ export class ArchivesComponent implements OnInit {
       })
   }
 
-
-  get_comics_size() {
-    return $('.bd-thumbnails-container').width()/this.get_comics_per_line();
-  }
-
-  get_comics_per_line() {
-    var width = window.innerWidth;
-
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200) {
-      return 4;
-    }
-    else if( width > 1000) {
-      return 3;
-    }
-    else if( width > 700) {
-      return 2;
-    }
-    else {
-      return 1;
-    }
-  }
-  resize_comics() {
-    $('.bd-thumbnail').css({'width': ( this.get_comics_size() - 2 ) +'px'});
-  }
-
+  
   open_category(i : number) {
 
+    /*
     if(i==3){
       this.get_stories();
     }
     if(i==4){
       this.get_ads();
     }
+    */
+
     this.cd.detectChanges();
     this.opened_category=i;
-
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("opened");
-    })
-    this.categories.toArray()[this.opened_category].nativeElement.classList.add("opened");
   }
+
 
   open_album(i : number) {
     this.opened_album=i;
-    
   }
 
   get_stories(){
