@@ -90,6 +90,8 @@ export class ArchivesComponent implements OnInit {
 
   list_of_stories:any[]=[];
   list_of_stories_received=false;
+  list_of_stories_data:any[]=[];
+  list_of_stories_data_received=false;
 
   
 
@@ -300,26 +302,31 @@ export class ArchivesComponent implements OnInit {
   
   open_category(i : number) {
 
-    /*
+    this.opened_category=i;
+  }
+
+
+  open_album(i : number) {
+    
+    
     if(i==3){
       this.get_stories();
     }
     if(i==4){
       this.get_ads();
     }
-    */
 
     this.cd.detectChanges();
-    this.opened_category=i;
-  }
 
-
-  open_album(i : number) {
     this.opened_album=i;
   }
 
   get_stories(){
     this.Story_service.get_all_my_stories().subscribe(r=>{
+
+      this.list_of_stories_data = r[0];
+      this.list_of_stories_data_received = true;
+
       if (r[0]!=null){
         let compt=0
         for (let i=0;i<r[0].length;i++){
@@ -430,7 +437,7 @@ export class ArchivesComponent implements OnInit {
 
     }
   }
-  
+
 
 
 

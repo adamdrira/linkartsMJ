@@ -181,9 +181,32 @@
     <!--stories-->
     <!--!!!!!!!!!!!!!!!!-->
     <div *ngIf="opened_album==3">
-        <div *ngIf="list_of_stories_received">
-            <div *ngFor="let item of list_of_stories; let i = index">
+        <div *ngIf="list_of_stories_data_received" class="container-stories">
+
+            <div *ngFor="let item of list_of_stories_data; let i = index" class="thumbnail-story">
                 <img [src]="list_of_stories[i]">
+                <div class="story-bottom-container">
+                    <span>{{item.createdAt | date}}</span>
+                </div>
+
+
+                <button mat-icon-button class="optionsMenu"  [matMenuTriggerFor]="storyOptions">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #storyOptions="matMenu">
+                    
+                    <button class="mat-menu-item" mat-menu-item> 	
+                        <mat-icon class="item-icon">visibility_off</mat-icon>
+                        <span>test1</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item> 	
+                        <mat-icon class="item-icon">visibility</mat-icon>
+                        <span>test2</span>
+                    </button>
+
+                </mat-menu>
+
+
             </div>
         </div>
     </div>
@@ -193,10 +216,12 @@
     <!--!!!!!!!!!!!!!!!!-->
     <div *ngIf="opened_album==4">
         <div *ngIf="list_of_ads_added">
-            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
-            [item]=item
-            now_in_seconds={{now_in_seconds}}
-            ></app-thumbnail-ad>
+            <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:40px">
+                <app-thumbnail-ad 
+                [item]=item
+                now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-ad>
+            </div>
         </div>
     </div>
 
