@@ -252,6 +252,8 @@ export class ArchivesComponent implements OnInit {
   }
 
 
+
+
   
   sort_list(list,index_category){
     if(list.length>1){
@@ -355,5 +357,82 @@ export class ArchivesComponent implements OnInit {
         this.list_of_ads_added=true;
       };
   }
+
+
+
+
+  
+  @ViewChild('albumToShow', {static:false}) albumToShow:ElementRef;
+  list_visibility_albums_drawings:boolean = false;
+  ini_masonry( i:number ) {
+    let THIS=this;
+    
+    //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "0");
+
+    var $grid = $('.grid').masonry({
+      itemSelector: '.grid-item',
+      columnWidth: 200,
+      gutter:10,
+      //isInitLayout:true,
+      initLayout:false,
+      fitWidth: true,
+    });
+
+    $grid.on( 'layoutComplete', function() {
+      console.log('layout is complete0');
+
+      if( THIS.albumToShow ) {
+        THIS.cd.detectChanges();
+        console.log("changing opacity");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "transition", "all 2s");
+        //THIS.rd.setStyle( THIS.albumToShow.nativeElement, "opacity", "1");
+        THIS.list_visibility_albums_drawings=true;
+        //THIS.rd.setStyle( THIS.customAlbumSelector.nativeElement, "opacity", "1");
+      }
+
+      $grid.masonry('reloadItems');
+    });
+
+    $grid.masonry();
+  }
+
+
+
+  j=0;
+  sendLoaded(event) {
+    if(event && this.opened_album==1 && this.opened_category==0){
+      this.j++;
+      let total=0;
+
+      total+=this.private_list_of_drawings.length;
+
+      if(this.j===total){
+        this.j=0;
+        this.list_visibility_albums_drawings = true;
+        this.ini_masonry( this.opened_album );
+        //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+      }
+
+    }
+
+    if(event && this.opened_album==1 && this.opened_category==1){
+      this.j++;
+      let total=0;
+
+      total+=this.list_of_drawings.length;
+
+      if(this.j===total){
+        this.j=0;
+        this.list_visibility_albums_drawings = true;
+        this.ini_masonry( this.opened_album );
+        //this.rd.setStyle( this.albumToShow.nativeElement, "opacity", "1");
+      }
+
+    }
+  }
+  
+
+
+
 
 }

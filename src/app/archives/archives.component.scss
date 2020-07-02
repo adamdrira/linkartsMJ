@@ -2,6 +2,24 @@
 @import '../../material-styles.css';
 
 
+.artworks-container {
+  height:1000px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bd-thumbnails-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container-writings {
+  display: flex;
+  flex-wrap: wrap;
+}
+
   //Category filter
   .logos-container {
     display:flex;
@@ -101,3 +119,18 @@
   color:rgb(50,50,50);
   background: rgb(209, 224, 251);
   }
+
+  
+.grid {
+  margin:0 auto !important;
+}
+
+
+.drawings-container {
+  opacity:0;
+}
+
+.albumVisible {
+  transition: all 1s;
+  opacity:1 !important;
+}
