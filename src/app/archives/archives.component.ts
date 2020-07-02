@@ -79,20 +79,14 @@ export class ArchivesComponent implements OnInit {
   list_of_ads:any[]=[];
   list_of_ads_added=false;
 
-  private_list_of_comics_series:any[]=[];
-  private_list_of_comics_series_received=false;
+  private_list_of_comics:any[]=[];
+  private_list_of_comics_sorted=false;
 
-  private_list_of_comics_oneshots:any[]=[];
-  private_list_of_comics_oneshots_received=false;
-
-  private_list_of_drawings_oneshots:any[]=[];
-  private_list_of_drawings_oneshots_received=false;
-
-  private_list_of_drawings_artbooks:any[]=[];
-  private_list_of_drawings_artbooks_received=false;
+  private_list_of_drawings:any[]=[];
+  private_list_of_drawings_sorted=false;
 
   private_list_of_writings:any[]=[];
-  private_list_of_writings_received=false;
+  private_list_of_writings_sorted=false;
 
   list_of_stories:any[]=[];
   list_of_stories_received=false;
@@ -100,8 +94,9 @@ export class ArchivesComponent implements OnInit {
   
 
   ngOnInit(): void {
+
+    // get other comics archived
       let r = this.archives_comics;
-      console.log(r);
       if(r.length>0){
         let comics_compt=0;
         for (let j=0; j< r.length;j++){
@@ -120,7 +115,6 @@ export class ArchivesComponent implements OnInit {
               this.list_of_comics[j]=(info[0]);
               comics_compt+=1;
               if(comics_compt== r.length){
-                console.log( this.list_of_comics);
                 this.list_of_comics_added=true;
               }
             })
@@ -128,11 +122,11 @@ export class ArchivesComponent implements OnInit {
         }
       }
       else{
-        console.log( this.list_of_comics);
         this.list_of_comics_added=true;
       };
-
+// get other drawings archived
       let l = this.archives_drawings;
+      console.log(l);
       if(l.length>0){
         let drawings_compt=0;
         for (let j=0; j< l.length;j++){
@@ -141,15 +135,17 @@ export class ArchivesComponent implements OnInit {
               this.list_of_drawings[j]=(info[0]);
               drawings_compt+=1;
               if(drawings_compt == l.length){
+                console.log(this.list_of_drawings)
                 this.list_of_drawings_added=true;
               }
             })
           }
-          if(l[j].format=="serie"){
+          if(l[j].format=="artbook"){
             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(l[j].publication_id).subscribe(info=>{
               this.list_of_drawings[j]=(info[0]);
               drawings_compt+=1;
               if( drawings_compt== l.length){
+                console.log(this.list_of_drawings)
                 this.list_of_drawings_added=true;
               }
             })
@@ -157,9 +153,10 @@ export class ArchivesComponent implements OnInit {
         }
       }
       else{
+        console.log(this.list_of_drawings)
         this.list_of_drawings_added=true;
       }
-
+// get other writings archived
       let k = this.archives_writings;
       if(k.length>0){
         let writings_compt=0;
@@ -177,46 +174,127 @@ export class ArchivesComponent implements OnInit {
         this.list_of_writings_added=true;
       };
 
-      
-      
-
+  // get private comics archived
+  
       this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info=>{
-        for (let i=0;i<Object.keys(info[0]).length;i++){
-          this.private_list_of_comics_oneshots.push(info[0][i]);
-          if(i==Object.keys(info[0]).length-1){
-            this.private_list_of_comics_oneshots_received=true;
+        if(Object.keys(info[0]).length>0){
+          for (let i=0;i<Object.keys(info[0]).length;i++){
+            this.private_list_of_comics.push(info[0][i]);
+            if(i==Object.keys(info[0]).length-1){
+              this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
+                for (let j=0;j<Object.keys(inf[0]).length;j++){
+                  this.private_list_of_comics.push(inf[0][j]);
+                  if(j==Object.keys(inf[0]).length-1){
+                    this.sort_list( this.private_list_of_comics,0);
+                  }
+                }
+              });
+            }
           }
+        }
+        else{
+          this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
+            if(Object.keys(inf[0]).length>0){
+              for (let j=0;j<Object.keys(inf[0]).length;j++){
+                this.private_list_of_comics.push(inf[0][j]);
+                if(j==Object.keys(inf[0]).length-1){
+                  this.sort_list( this.private_list_of_comics,0);
+                }
+              }
+            }
+            else{
+              this.private_list_of_comics_sorted=true;
+            }
+            
+          });
+        }
+      });
+ // get private drawings archived
+      this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
+        if(Object.keys(info[0]).length>0){
+          for (let i=0;i<Object.keys(info[0]).length;i++){
+            this.private_list_of_drawings.push(info[0][i]);
+            if(i==Object.keys(info[0]).length-1){
+              this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
+                for (let j=0;j<Object.keys(inf[0]).length;j++){
+                  this.private_list_of_drawings.push(inf[0][j]);
+                  if(j==Object.keys(inf[0]).length-1){
+                    this.sort_list( this.private_list_of_drawings,1);
+                  }
+                }
+              });
+            }
+          }
+        }
+        else{
+          this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
+            if(Object.keys(inf[0]).length>0){
+              for (let j=0;j<Object.keys(inf[0]).length;j++){
+                this.private_list_of_drawings.push(inf[0][j]);
+                if(j==Object.keys(inf[0]).length-1){
+                  this.sort_list( this.private_list_of_drawings,1);
+                }
+              }
+            }
+            else{
+              this.private_list_of_drawings_sorted=true;
+            }
+            
+          });
         }
       });
 
-      this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
-        for (let i=0;i<Object.keys(info[0]).length;i++){
-          this.private_list_of_drawings_oneshots.push(info[0][i]);
-          if(i==Object.keys(info[0]).length-1){
-            this.private_list_of_drawings_oneshots_received=true;
-          }
-        }
-      })
-
-      this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(info=>{
-        for (let i=0;i<Object.keys(info[0]).length;i++){
-          this.private_list_of_drawings_artbooks.push(info[0][i]);
-          if(i==Object.keys(info[0]).length-1){
-            this.private_list_of_drawings_artbooks_received=true;
-          }
-        }
-      })
-
+ // get private writings archived
       this.Writing_Upload_Service.retrieve_private_writings().subscribe(info=>{
-        for (let i=0;i<Object.keys(info[0]).length;i++){
-          this.private_list_of_writings.push(info[0][i]);
-          if(i==Object.keys(info[0]).length-1){
-            this.private_list_of_writings_received=true;
-          }
-        }
-      })
+        this.private_list_of_writings=info[0];
+        this.private_list_of_writings_sorted=true;
+      });
   }
 
+
+  
+  sort_list(list,index_category){
+    if(list.length>1){
+      for (let i=1; i<list.length; i++){
+        let time = this.convert_timestamp_to_number(list[i].createdAt);
+        for (let j=0; j<i;j++){
+          if(time > this.convert_timestamp_to_number(list[j].createdAt)){
+            list.splice(j, 0, list.splice(i, 1)[0]);
+            
+          }
+          if(j==list.length -2){
+            if(index_category==0){
+              this.private_list_of_comics_sorted=true;
+            }
+            else{
+              this.private_list_of_drawings_sorted=true;
+            }
+          }
+        }
+      }
+    }
+    else{
+      if(index_category==0){
+        this.private_list_of_comics_sorted=true;
+      }
+      else{
+        this.private_list_of_drawings_sorted=true;
+      }
+
+    }
+
+  }
+
+  
+
+
+  convert_timestamp_to_number(timestamp){
+    var uploaded_date = timestamp.substring(0,timestamp.length- 5);
+    uploaded_date=uploaded_date.replace("T",' ');
+    uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
+    let number = new Date(uploaded_date + ' GMT').getTime()/1000;
+    return number;
+  }
   
   open_category(i : number) {
 
