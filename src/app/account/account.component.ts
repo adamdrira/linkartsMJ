@@ -613,8 +613,16 @@ export class AccountComponent implements OnInit {
 
   scroll(el: HTMLElement) {
 
+    this.cd.detectChanges();
     var topOfElement = el.offsetTop - 150;
     window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
+  scrollDown() {
+    window.scrollBy({
+      top: 300,
+      behavior : "smooth"
+    })
   }
 
   //For section 0 : Artworks
@@ -665,11 +673,13 @@ export class AccountComponent implements OnInit {
 
     var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
-      columnWidth: 200,
+      //columnWidth: 200,
       gutter:10,
       //isInitLayout:true,
       initLayout:false,
       fitWidth: true,
+      //horizontalOrder: true,
+      
     });
 
     $grid.on( 'layoutComplete', function() {
@@ -835,7 +845,6 @@ export class AccountComponent implements OnInit {
     
     this.opened_album=i;
     
-    //this.ini_masonry();
     this.cd.detectChanges();
 
     /*$('.grid').masonry({
@@ -943,7 +952,6 @@ export class AccountComponent implements OnInit {
   /*@ViewChildren('resize') set resize(content: QueryList<any>) {
 
     this.cd.detectChanges();
-    //this.ini_masonry();
     console.log("resize");
     //window.dispatchEvent(new Event('resize'));
     //window.dispatchEvent(new Event('resize'));

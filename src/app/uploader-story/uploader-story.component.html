@@ -1,57 +1,80 @@
 
 
 
-                <div class="miniature">
+<div id="uploader-profile-picture" class="thumbnail-container">
+
+    <div *ngIf="!afficherpreview" class="image-container">
+        <div class="dropzone-container">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+                <div class="icon-container">
+                    <div class="upload-icon"></div>
+                    <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
+
                     
-                    <div *ngIf="!afficherpreview" class="uploader-container">
-                        <div class="dropzone">
-                            <div class="icon-container">
-                                <div class="upload-icon"></div>
-                                <label>
-                                    <div class="select-button">
-                                        Sélectionner un fichier
-                                    </div>
-                                    <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-                                </label>
-                            </div>
+                    <label>
+                        <div class="upload-picture">
+                            <div class="add-logo"></div>
+                            <span>Télécharger une photo</span>
+                            <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
                         </div>
-                    </div>
-                    <ng-container  *ngIf="afficherpreview">
-                        <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}">
-                        <div class="buttons-container">
-
-                            <ng-container *ngIf="!uploader.queue[0].isSuccess">
-                                <button mat-raised-button class="button style1"
-                                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-                                    <span>Valider</span> 
-                                </button>
-                                <button mat-raised-button class="button style0"
-                                        (click)="remove_beforeupload(uploader.queue[0]);">
-                                    <span class="">Recommencer</span> 
-                                </button>
-                            </ng-container>
-
-                        </div>
-                    </ng-container>
+                    </label>
 
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div *ngIf="afficherpreview" class="crop-container">
+        <div class="img-container">
+            <div class="full-crop">
+                <img #image [src]="displayContent(uploader.queue[0])" crossorigin>
+            </div>
+
+            <div class="options">
+                
+                <button mat-raised-button class="cancel style0" (click)="step_back();">Annuler</button>
+
+                <button mat-raised-button class="validate style1" (click)="uploader.queue[0].upload();">Valider</button>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 
 
+<!--<div class="miniature">
+    
+    <div *ngIf="!afficherpreview" class="uploader-container">
+        <div class="dropzone">
+            <div class="icon-container">
+                <div class="upload-icon"></div>
+                <label>
+                    <div class="select-button">
+                        Sélectionner un fichier
+                    </div>
+                    <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                </label>
+            </div>
+        </div>
+    </div>
+    <ng-container  *ngIf="afficherpreview">
+        <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}">
+        <div class="buttons-container">
 
+            <ng-container *ngIf="!uploader.queue[0].isSuccess">
+                <button mat-raised-button class="button style1"
+                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                    <span>Valider</span> 
+                </button>
+                <button mat-raised-button class="button style0"
+                        (click)="remove_beforeupload(uploader.queue[0]);">
+                    <span class="">Recommencer</span> 
+                </button>
+            </ng-container>
 
+        </div>
+    </ng-container>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>-->

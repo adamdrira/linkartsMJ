@@ -78,21 +78,33 @@ export class StoryViewComponent implements OnInit {
       (async () => {
       this.list_of_data=r[0];
       let k=0;
+
+
       for (let i=0;i<this.list_of_data.length;i++){
+
         this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
           let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_contents[i]=SafeURL;
           k++;
-          if(k==this.list_of_data.length){
-            console.log(this.user_id)
-            console.log(this.list_of_contents)
-            console.log(this.index_debut);
+          if(k== this.list_of_data.length ){
+
+            
+            this.cd.detectChanges();
             this.initialize_swiper();
+            this.swiper.update();
+            this.cd.detectChanges();
+
+            
+
+            //console.log("$$$$$$$$$$$$$$$$$>> INDEX DEBUT : " + this.index_debut);
+            //console.log("$$$$$$$$$$$$$$$$$>> SWIPER SIZE : " + this.swiper.slides.length);
+
+
             this.swiper.slideTo( this.index_debut, false, r=>{
               this.timeLeft = 10;
               this.cd.detectChanges();
-            } ); // n'affiche pas le dernier si l'indexe est le dernier...
+            }); // n'affiche pas le dernier si l'indexe est le dernier...
             
           }
         });
@@ -114,8 +126,6 @@ export class StoryViewComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
     });
-
-
 
   }
 
@@ -141,12 +151,11 @@ export class StoryViewComponent implements OnInit {
         pagination: {
           el: '.swiper-pagination',
         },
-        observer: true,
-      });
-      
-      
+        observer:true,
 
-    
+        
+        
+      });
 
   }
 

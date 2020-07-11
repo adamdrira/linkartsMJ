@@ -28,6 +28,7 @@
   }
   
   a {
+    display:block;
     font-size:17px;
     color:rgb(50, 49, 124);
     font-weight: bold;
@@ -65,7 +66,7 @@
 
   .account-container .change-cover-picture {
     position:absolute;
-    color:white;
+    color:black;
     cursor:pointer;
     bottom:20px;
     right:20px;
@@ -141,7 +142,7 @@
     height: 20px;
     margin:auto auto 5px auto;
     width: 20px;
-    background-color: rgb(255, 255, 255);
+    background-color: black;
     -webkit-mask:  url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
   }
@@ -341,14 +342,16 @@
 
   .panel-controller {
     width:100%;
-    height:50px;
     border-bottom: 1px solid #dadada;
     background-color: #fcfcfc;
   }
 
   .panel-controller .middle-container {
-    display:flex;
-    justify-content: center;
+    overflow-x: auto;
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
     height:100%;
     width: 85%;
     margin: auto auto;
@@ -357,6 +360,8 @@
   .panel-controller .middle-container .controller-category {
     display: flex;
     height: 100%;
+    padding-top:5px;
+    padding-bottom:5px;
     font-size:16px;
     justify-content: center;
     align-content: center;
@@ -410,7 +415,8 @@
   display:flex;
   justify-content: center;
   height:140px;
-  margin-top:30px;
+  margin-top:60px;
+  margin-bottom:60px;
   width:100%;
 }
 
@@ -562,25 +568,28 @@
     font-size:1.2rem;
   }
   
-  .albums-filter {
-    width:100%;
+  .albums-filter {    
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom:10px;
+    overflow-x:auto;
     height:100%;
     position:relative;
-    display:flex;
-    justify-content:center;
+    display:-webkit-box;
+    -webkit-box-pack: center;
     border-radius:10px 10px 0px 0px;
     -webkit-transition: opacity 500ms;
     transition: opacity 500ms;
+    border-radius: 0px !important;
   }
 
 
   .albums-container .add-album {
 
-    position:absolute;
     outline:none !important;
+    width: 270px !important;
     box-shadow: none !important;
-    right:10px;
-    top: 50%;
     padding: 10px 45px;
     border-radius: 50px;
     cursor: pointer;
@@ -589,8 +598,7 @@
     text-align: center;
     background: rgb(209, 224, 251);
     color: rgb(32, 56, 100);
-    transform: translateY(-50%);
-    margin-right: 25px;
+    margin:auto 10px auto 10px;
     border-radius: 50px;
     transition:text-shadow 200ms;
     
@@ -721,9 +729,10 @@
 
 .optionsMenu {
   z-index:20;
+  color:grey;
   position:absolute;
   top: 11px;
-  right: 8px;
+  right: 16px;
   font-size: 30px;
   margin-left: auto;
   outline:none !important;
@@ -867,6 +876,12 @@
   }
 }*/
 
-.grid {
+::ng-deep .grid {
   margin:0 auto !important;
+  //width:100% !important;
+}
+
+.grid-item {
+  margin-bottom:15px;
+  min-width: 100px;
 }

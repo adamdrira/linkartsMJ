@@ -14,7 +14,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
-declare var Swiper:any;
 declare var Muuri:any;
 declare var $:any;
 
@@ -37,7 +36,6 @@ export class AddAlbumDrawingComponent implements OnInit {
   
 
 
-  swiper:any;
   cover_album_number;
   gridAlbum:any;
   now_in_seconds:number;
@@ -102,31 +100,6 @@ export class AddAlbumDrawingComponent implements OnInit {
 
 
   ngAfterViewInit() {
-    
-    this.swiper = new Swiper('.swiper-container.thumbnails-swiper', {
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      spaceBetween: 20,
-      breakpoints: {
-        640: {
-          slidesPerView: 1,
-        },
-        960: {
-            slidesPerView: 2,
-        },
-        1300: {
-            slidesPerView: 3,
-        },
-        1800: {
-            slidesPerView: 4,
-        },
-        2100: {
-            slidesPerView: 5,
-        }
-      }
-    });
 
 
   }

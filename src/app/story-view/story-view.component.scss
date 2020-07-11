@@ -42,10 +42,12 @@
     position:absolute;
     top: 50%;
     transform: translateY(-50%);
-    right:8px;
+    right: 9px;
+    top: 23px;
     font-size: 30px;
     margin-left: auto;
     outline:none !important;
+    background:rgb(70, 70, 70,0.7);
 }
   
 ::ng-deep .optionsMenu.mat-icon-button {

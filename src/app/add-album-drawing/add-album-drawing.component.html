@@ -79,77 +79,7 @@
     </div>
 
 
-
-        
-    <div class="swiper-container thumbnails-swiper">
-        <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(1);" [ngClass]="{ 'selected' : cover_album_number == 1 }"
-                [pictures_number]=1
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(2);" [ngClass]="{ 'selected' : cover_album_number == 2 }"
-                [pictures_number]=2
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(3);" [ngClass]="{ 'selected' : cover_album_number == 3 }"
-                [pictures_number]=3
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(4);" [ngClass]="{ 'selected' : cover_album_number == 4 }"
-                [pictures_number]=4
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(5);" [ngClass]="{ 'selected' : cover_album_number == 5 }"
-                [pictures_number]=5
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-            <div class="swiper-slide">
-                <app-thumbnail-cover-album-drawing (click)="set_cover_album(6);" [ngClass]="{ 'selected' : cover_album_number == 6 }"
-                [pictures_number]=6
-                [pictures_list]=array_of_selected_safeurls
-                [album_name]=albumForm.value.formName
-                [add_album_preview]=true
-                >
-                
-                </app-thumbnail-cover-album-drawing>
-            </div>
-
-        </div>
-        <!-- Swiper -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-    </div>
+    
 
 
     <button mat-raised-button class="submit-button style1" (click)="get_solution();">

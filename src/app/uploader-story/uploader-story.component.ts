@@ -3,10 +3,16 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
 import { Story_service } from '../services/story.service';
 import { first } from 'rxjs/operators';
+
+import { MatSliderChange } from '@angular/material/slider';
 import { MatDialog } from '@angular/material/dialog';
+
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
+
+declare var Cropper:any;
 declare var $:any;
+
 
 const url = 'http://localhost:4600/routes/upload_story';
 
@@ -40,8 +46,14 @@ export class UploaderStoryComponent implements OnInit {
   }
 
 
+  @ViewChild("image") set imageElement(content: ElementRef) {
+    if( this.afficherpreview ) {
+      this.initialize_cropper(content);
+    }
+  }
 
-  
+  imageSource: SafeUrl = "";
+  cropper: any;
 
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
@@ -90,7 +102,27 @@ export class UploaderStoryComponent implements OnInit {
 
   };
 
+
+
+initialize_cropper(content: ElementRef) {
   
+  this.cropper = new Cropper(content.nativeElement, {
+    
+    viewMode: 1,
+    //dragMode: 'move',
+    //aspectRatio: 12/16,
+    //autoCropArea: 0.68,
+    center: false,
+    zoomOnWheel: false,
+    zoomOnTouch: false,
+    cropBoxMovable: false,
+    //cropBoxResizable: false,
+    guides: false
+  });
+
+
+}
+
 
 
 //on affiche le preview du fichier ajouté
@@ -99,6 +131,12 @@ export class UploaderStoryComponent implements OnInit {
      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
      return SafeURL;
  }
+
+
+step_back() {
+  this.uploader.clearQueue();
+  this.remove_beforeupload(this.uploader.queue[0]);
+}
 
 //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
 remove_beforeupload(item:FileItem){
