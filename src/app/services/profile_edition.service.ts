@@ -25,7 +25,6 @@ export class Profile_Edition_Service {
   send_profile_pic_todata(profile_pic:Blob){
     const formData = new FormData();
     formData.append('profile_pic', profile_pic, "profile_pic");
-    console.log(formData.getAll('profile_pic'));
     return this.httpClient.post('http://localhost:4600/routes/add_profile_pic', formData, {withCredentials: true} ).pipe(map((information)=>{
       return information;
     }));
@@ -35,13 +34,7 @@ export class Profile_Edition_Service {
   
 
   edit_bio(bio,job,training,location){
-    console.log(bio);
-    console.log(job);
-    console.log(training);
-    console.log(location);
-    console.log("en cours");
     return this.httpClient.post('http://localhost:4600/routes/modify_bio', {bio:bio, job:job, training:training, location:location},{withCredentials: true}  ).pipe(map((information)=>{
-      console.log("ok");
       return information;
     }));
 
@@ -50,7 +43,6 @@ export class Profile_Edition_Service {
   send_cover_pic_todata(cover_pic:Blob){
     const formData = new FormData();
     formData.append('cover_pic', cover_pic, "cover_pic");
-    console.log(formData.getAll('profile_pic'));
     return this.httpClient.post('http://localhost:4600/routes/add_cover_pic', formData, {withCredentials: true} ).pipe(map((information)=>{
       return information;
     }));
@@ -58,7 +50,6 @@ export class Profile_Edition_Service {
   }
 
   retrieve_profile_picture(user_id: number){
-    console.log("on essaye d")
     return this.httpClient.get(`http://localhost:4600/routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
       return information;
     }));

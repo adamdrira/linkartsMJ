@@ -62,7 +62,7 @@
     height: 34px;
     min-width: 34px !important;
     min-height: 34px !important;
-    margin: auto 5px auto 10px;
+    margin: auto 10px auto 5px;
 }
 
 .author-container .left-container img {
@@ -140,23 +140,26 @@
 
 .main-chat-container{
     display:flex;
-    margin-top:5px;
-    height:100%;
-    width:100%;
+    //padding-top:5px;
+    overflow: hidden;
+    width:99%;
 }
 
 
 
 .chat-friends-container{
     width:25%;
-    margin-right:5px;
+    border-right: 1px solid #dcdada;
+    padding-right:5px;
     display:block;
     
 }
 
 .chat-friends-container .selector {
     display: flex;
-    margin: 15px auto 15px 50px;
+    height: 75px;
+    align-items: center;
+    margin: auto auto auto 50px;
   }
 
 .chat-friends-container .selector .author-container {
@@ -169,7 +172,7 @@
     height: 40px;
     /* min-width: 34px !important; */
     /* min-height: 34px !important; */
-    margin: auto 5px auto 5px;
+    margin: auto 10px auto 0px;
 }
 
 
@@ -179,34 +182,53 @@
     width: 350px;
     background: white;
     box-shadow: 0px 0px 5px #aaaaaa;
-    display: block;
-    margin: 15px auto 15px 50px;
-  }
-
-  .chat-friends-container .navbar-l1-searchbar-container .files{
     display: flex;
+    align-items: center;
+    margin: 10px 5px 15px 50px;
   }
 
   
   .chat-friends-container .navbar-l1-searchbar-container .searchbar {
-    height:100%;
-    width:100%;
-    z-index:10;
-    display:flex;
+    height: 100%;
+    width: 100%;
+    //z-index: 10; 
+    padding: 3px 3px 3px 6px;
+    display: flex;
+    align-items: center;
   }
 
 
-
+  .searchbar-inside{
+    display: block;
+    width: 90%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border: unset;
+    border-radius: 10px;
+  }
 
   
 
 .chat-container{
-    width:75%;
-    margin-left:5px
+    width:76%;
 }
 
 .mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
   }
 
- 
+.formdata-container{
+    height: 40px;
+    display: flex;
+    width: 250px;
+    align-items: center;
+    border: 2px solid #203864;
+    padding: 16px;
+    border-radius: 10px;
+}

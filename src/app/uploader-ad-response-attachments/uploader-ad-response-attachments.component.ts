@@ -115,10 +115,10 @@ export class UploaderAdResponseAttachmentsComponent implements OnInit {
             data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},
           });
         }
-        else if(Math.trunc(size)>5){
+        else if(Math.trunc(size)>10){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Votre fichier est trop volumineux, choisissez un fichier de moins de 5Mb'},
+            data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}`},
           });
         }
         else{

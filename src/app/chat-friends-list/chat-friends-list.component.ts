@@ -6,7 +6,6 @@ import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscribing_service } from '../services/subscribing.service';
-import { ChatComponent } from '../chat/chat.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -22,14 +21,11 @@ export class ChatFriendsListComponent implements OnInit {
 
   constructor (
     private chatService:ChatService,
-    private Subscribing_service:Subscribing_service,
     private FormBuilder:FormBuilder,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     public navbar: NavbarService, 
     private Profile_Edition_Service:Profile_Edition_Service,
-    private rd: Renderer2, 
-    private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     ){
       this.navbar.show();
@@ -76,6 +72,7 @@ export class ChatFriendsListComponent implements OnInit {
   waiting_friend_pseudo: number;
   waiting_friend_name: string;
   waiting_friend_picture: SafeUrl;
+  waiting_id_chat_section:number;
 
   //chat_spams
   list_of_spams_profile_pictures:any[]=[];
@@ -91,12 +88,32 @@ export class ChatFriendsListComponent implements OnInit {
   spam_name: string;
   spam_picture: SafeUrl;
 
-  
+  //check presence
+  user_present=true;
+
+  //chat_section
+  id_chat_section=1;
   
   ngOnInit() {
 
     this.createFormControlsAds();
     this.createFormAd();
+    let THIS=this;
+    $(window).on('blur', function(){
+      THIS.user_present=false;
+    });
+
+    $(window).on('focus', function(){
+      THIS.user_present=true;
+      let index=THIS.list_of_friends_ids.indexOf(THIS.friend_id);
+      if(THIS.list_of_friends_ids[index]){
+        if(THIS.list_of_friends_last_message[index].id_chat_section==this.id_chat_section){
+          THIS.list_of_friends_last_message[index].status="seen";
+        }
+      }
+      
+      
+    });
    // this.initialize_selectors();
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
@@ -143,9 +160,11 @@ export class ChatFriendsListComponent implements OnInit {
                     console.log(this.list_of_friends_ids)
                     this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
                       this.list_of_friends_last_message=u[0].list_of_friends_messages;
+                      console.log(this.list_of_friends_last_message);
                       this.chatService.get_my_real_friend(this.list_of_friends_ids).subscribe(v=>{
                         this.friend_id=v[0][0].id_receiver;
                         let ind = this.list_of_friends_ids.indexOf(this.friend_id);
+                        this.id_chat_section=this.list_of_friends_last_message[ind].id_chat_section;
                         this.friend_name=this.list_of_friends_names[ind];
                         this.friend_pseudo=this.list_of_friends_pseudos[ind];
                         this.friend_picture=this.list_of_friends_profile_pictures[ind];
@@ -285,6 +304,7 @@ export class ChatFriendsListComponent implements OnInit {
     this.waiting_friend_name=this.friend_name;
     this.waiting_friend_picture=this.friend_picture;
     this.waiting_friend_pseudo=this.friend_pseudo;
+    
 
     this.get_friends=true;
     this.spam='false';
@@ -297,19 +317,36 @@ export class ChatFriendsListComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  change_section(event){
+    this.id_chat_section=event.id_chat_section;
+  }
+
   new_sort_friends_list(event){
+    console.log("getting message from chat")
+    console.log(event);
     let index=this.list_of_friends_ids.indexOf(event.friend_id);
     console.log(index)
     if(index>=0){
-      //trier au lieu de faire un novueau appel !
+      //fait partie de la liste des contacts
       console.log(event.message);
       this.list_of_friends_last_message[index]=event.message;
-      this.list_of_friends_last_message[index].status="received";
+      this.cd.detectChanges();
+      if(this.friend_id==event.friend_id && this.user_present && event.id_chat_section==event.message.id_chat_section){
+        this.list_of_friends_last_message[index].status="seen";
+        console.log("seen")
+        this.cd.detectChanges();
+      }
+      else{
+        this.list_of_friends_last_message[index].status="received";
+        console.log("received");
+        this.cd.detectChanges();
+      }
       this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
       this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
       this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
       this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
       this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+      console.log(this.list_of_friends_last_message)
       this.cd.detectChanges();
 
     }
@@ -417,7 +454,7 @@ export class ChatFriendsListComponent implements OnInit {
     });
     this.formData = this.FormBuilder.group({
       IsActive: this.selectedRadio
- })
+    })
   }
 
   list_of_contacts_ids:any[]=[];
@@ -486,8 +523,8 @@ export class ChatFriendsListComponent implements OnInit {
 
   
 
-  showchanges(event){
-    console.log("showchanges");
+  research_friends(event){
+    console.log("research_friends");
     console.log(this.fd.value.fdSearchbar);
     if(this.fd.value.fdSearchbar==''){
       this.waiting_display_other_contacts=false;
@@ -610,8 +647,10 @@ export class ChatFriendsListComponent implements OnInit {
   }
 
   open_chat(i){
+    this.delete_placeholder();
     this.spam='false';
     this.list_of_friends_last_message[i].status='seen';
+    this.id_chat_section=this.list_of_friends_last_message[i].id_chat_section;
     this.friend_id=this.list_of_friends_ids[i];
     this.friend_pseudo=this.list_of_friends_pseudos[i];
     this.friend_name=this.list_of_friends_names[i];
@@ -619,6 +658,14 @@ export class ChatFriendsListComponent implements OnInit {
   }
 
   open_chat_spam(i){
+    this.delete_placeholder();
+
+    this.waiting_friend_id=this.friend_id;
+    this.waiting_friend_name=this.friend_name;
+    this.waiting_friend_picture=this.friend_picture;
+    this.waiting_friend_pseudo=this.friend_pseudo;
+    this.waiting_id_chat_section=this.id_chat_section;
+    console.log("we open chat spam")
     this.spam='true';
     this.list_of_friends_last_message[i].status='seen';
     this.friend_id=this.list_of_spams_ids[i];
@@ -630,7 +677,11 @@ export class ChatFriendsListComponent implements OnInit {
   open_new_contact_chat(indice,i){
     console.log(i);
     console.log(indice); // 1 first propositions, 2 historic researches, 3 related, 4 others
-    console.log()
+    this.waiting_friend_id=this.friend_id;
+    this.waiting_friend_name=this.friend_name;
+    this.waiting_friend_picture=this.friend_picture;
+    this.waiting_friend_pseudo=this.friend_pseudo;
+    this.waiting_id_chat_section=this.id_chat_section;
     if(indice==1){
       this.chatService.check_if_is_related(this.list_of_contacts_ids[i]).subscribe(r=>{
         if(r[0].value){
@@ -645,6 +696,8 @@ export class ChatFriendsListComponent implements OnInit {
           this.get_friends=false;
           this.section="Autres";
         }
+
+        this.id_chat_section=1;
         this.friend_id=this.list_of_contacts_ids[i];
         this.friend_pseudo=this.list_of_contacts_pseudos[i];
         this.friend_name=this.list_of_contacts_names[i];
@@ -666,6 +719,7 @@ export class ChatFriendsListComponent implements OnInit {
           this.get_friends=false;
           this.section="Autres";
         }
+        this.id_chat_section=1;
         this.friend_id=this.list_of_history_ids[i];
         this.friend_pseudo=this.list_of_history_pseudos[i];
         this.friend_name=this.list_of_history_names[i];
@@ -688,6 +742,7 @@ export class ChatFriendsListComponent implements OnInit {
           this.get_friends=false;
           this.section="Autres";
         }
+        this.id_chat_section=1;
         this.friend_id=this.list_of_related_contacts_ids[i];
         this.friend_pseudo=this.list_of_related_contacts_pseudos[i];
         this.friend_name=this.list_of_related_contacts_names[i];
@@ -736,11 +791,13 @@ export class ChatFriendsListComponent implements OnInit {
           this.waiting_friend_name=this.friend_name;
           this.waiting_friend_picture=this.friend_picture;
           this.waiting_friend_pseudo=this.friend_pseudo;
+          this.waiting_id_chat_section=this.id_chat_section;
 
           this.friend_id=this.spam_id;
           this.friend_name=this.spam_name;
           this.friend_picture=this.spam_picture;
           this.friend_pseudo=this.spam_pseudo;
+          this.id_chat_section=1;
           
           this.get_friends=false;
           this.spam='true';
@@ -760,6 +817,9 @@ export class ChatFriendsListComponent implements OnInit {
           console.log(event.value);
           this.section=event.value;
           console.log("contacts");
+
+          this.id_chat_section =this.waiting_id_chat_section;
+          console.log(this.id_chat_section);
           this.friend_id=this.waiting_friend_id;
           this.friend_name=this.waiting_friend_name;
           this.friend_picture=this.waiting_friend_picture;
@@ -792,6 +852,18 @@ export class ChatFriendsListComponent implements OnInit {
   }
 
 
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+/*************************************Partie envoie de group_chat***********************************/
+
+create_group_chat(){
+
+}
   
 
     

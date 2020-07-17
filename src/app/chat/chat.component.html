@@ -1,164 +1,522 @@
 <div class="chat-container">
+    <div class="main-left-container" [ngClass]="{'width-extended':spam=='true' }">
 
-    <div class="top-container">
-        <div class="author-container">
-            <div class="left-container">
-                <img [src]="friend_picture">
-            </div>
-            <a>
-                <div class="right-container">
-                    <span class="author-name">{{friend_name}} </span>
+        <div class="top-container" >
+            <div class="author-container" >
+                <div class="left-container" [ngClass]="{'unvisible':!top_pp_loaded }">
+                    <img [src]="friend_picture" (load)="top_pp_is_loaded()">
                 </div>
-            </a>
-
-        </div>
-    </div>
-
-    <div class="middle-container">
-        <div class="left-container">
-
-            
-        <div class="messages-container">
-            <div *ngIf='display_messages'>
-                <div *ngFor="let item of list_of_messages; let i = index" class="message">
-                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
-                        <div class="my-message-content">
-                            <div class="options">
-                                <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                <a>
+                    <div class="right-container">
+                        <span class="author-name">{{friend_name}} </span>
+                    </div>
+                </a>
+            </div>
+            <div class="discussions-container">
+                
+                <div class="options-container">
+                    <button mat-button class="mat-icon-button" (click)="add_chat_section()"> 	
+                        <mat-icon class="item-icon">library_add</mat-icon>
+                    </button>
+                    <button mat-button class="mat-icon-button" (click)="add_chat_section_research()" > 	
+                        <mat-icon class="item-icon">search</mat-icon>
+                    </button>
+                    <button mat-button class="mat-icon-button" (click)="delete_chat_section()"> 	
+                        <mat-icon class="item-icon">delete</mat-icon>
+                    </button>
+                    <div class="dropdown-container"  [formGroup]="chat_section_group" >
+                        <div  class="chat-section-container" [ngClass]="{'really-unvisible':activate_add_chat_section ||activate_research_chat_section}">
+                            <select formControlName="chat_section_name"  class="chat-section" style="height: 80%; width:320px" [ngClass]="{'really-unvisible':!top_sumo_loaded}"> 
+                                <option  value="" selected disabled>{{chat_section_to_open}}</option>
+                                <option *ngFor="let section of list_of_chat_sections;let i=index;" > {{section}}</option> 
+                            </select>
+                        </div>
+                        <div  class="chat-section-container" *ngIf="activate_add_chat_section">
+                            <div style="display:flex; align-items: center;">
+                                <input 
+                                style="width: 236px;
+                                height: 32px;
+                                border-radius: 15px;
+                                background-clip: unset !important;"
+                                formControlName="chat_section_name_added"
+                                onfocus="this.placeholder = ''"
+                                onblur="this.placeholder = 'Titre de la conversation'"
+                                class="form-control form-control-dark large-form" type="text" [placeholder]="'Titre de la conversation'">
+                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'green'}" (click)="add_chat_section_name()" >
+                                    <mat-icon class="item-icon">done</mat-icon>
                                 </button>
-                                <mat-menu  #artworkOptions="matMenu">
-                                    <button class="mat-menu-item" mat-menu-item > 	
-                                        <mat-icon class="item-icon">edit</mat-icon>
-                                        <span>Supprimer</span>
-                                    </button>
-                                    <button class="mat-menu-item" mat-menu-item> 	
-                                        <mat-icon class="item-icon">view_carousel</mat-icon>
-                                        <span>Répondre</span>
-                                    </button>
-                                    <button class="mat-menu-item" mat-menu-item> 	
-                                        <mat-icon class="item-icon">view_carousel</mat-icon>
-                                        <span>Réagir</span>
-                                    </button>
-                                </mat-menu>
+                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="cancel_add_section()" >
+                                    <mat-icon class="item-icon">close</mat-icon>
+                                </button>
                             </div>
-                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
-                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                        </div>
+                        
+                        <div  class="chat-section-container" *ngIf="activate_research_chat_section">
+                            <div style="display:flex; align-items: center;">
+                                <input 
+                                style="width: 280px;
+                                height: 32px;
+                                border-radius: 15px;
+                                background-clip: unset !important;"
+                                (input)="on_keydown_research_chat_section($event)"
+                                formControlName="research_chat_section_message"
+                                onfocus="this.placeholder = ''"
+                                onblur="this.placeholder = 'Rechercher'"
+                                class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+                               
+                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="close_chat_section_research()" >
+                                    <mat-icon class="item-icon">close</mat-icon>
+                                </button>
                             </div>
-                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
-                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture'">
-                                    <img style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                </div> 
-                            </div>
-                            
-                            <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received'">
-                                rec
-                            </div>
-                            <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
-                                <div *ngIf="display_retry[list_of_messages.length -1 - i]">
-                                    <button (click)="retry(list_of_messages[list_of_messages.length -1 - i])">retry</button>
-                                </div>
-                                <div *ngIf="!display_retry[list_of_messages.length -1 - i]">
-                                    sen
-                                </div>
-                            </div>
-                            
-                            <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'">
-                                <div class="author-container">
-                                    <div class="left-container">
-                                        <img [src]="friend_picture">
+
+                            <div #show_container_research *ngIf="show_container_research_chat" class="show-container-research-chat">
+                                <div *ngIf="show_container_research_chat_results">
+                                    <mat-list *ngIf="!no_result_container_research_chat">
+                                        <mat-list-item *ngFor="let section of list_of_chat_sections_found; let i=index"  class="mat-line-hover" (click)="open_section_found(i)">
+                                            <div mat-line >
+                                                <span> {{section}}</span>
+                                            </div>
+                                        </mat-list-item>
+                                    </mat-list>
+                                    <div *ngIf="no_result_container_research_chat" style="color: black;
+                                    display: flex;
+                                    justify-content: center;">
+                                        <span>Aucun résultat</span>
                                     </div>
                                 </div>
                                 
                             </div>
                         </div>
-                        
                     </div>
-                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                    <div class="show-notification-message" *ngIf="show_notification_message">
+                        <div class="notification-container">
+                            <img style="height:18px" src="../../assets/img/bell_blue_black2.png">
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+           
+            <div style="margin: auto 5px auto auto;" [ngClass]="{'unvisible':!top_pp_loaded }" >
+
+                <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" >
+                    <button mat-button class="mat-icon-button"  (click)="initiateSearch()" >
+                        <mat-icon class="item-icon" style="font-size: 30px; width: 30px;">search</mat-icon>
+                    </button>
+                </div>
+
+                <div *ngIf="show_searchbar_top" class="search-bar-messages" >
+                    <mat-icon class="item-icon" style="font-size: 30px; width: 30px; margin-right:5px">search</mat-icon>
+                    <form >
+                        <mat-form-field [formGroup]="research_messages">
+                            <mat-label>Rechercher un message</mat-label>
+                            <input #research matInput autocomplete="off" formControlName="research_message" (keydown)="on_keydown_research($event)">
+                        </mat-form-field>
+                    </form>
+            
+                    <button mat-button class="mat-icon-button" (click)="endSearch()">
+                        <mat-icon  class="item-icon" style="font-size: 30px; width: 30px;">close</mat-icon>
+                    </button>
+                </div>
+            </div>
+           
+        </div>
+
+        
+    
+        <div class="middle-container" >
+
+                <div *ngIf="show_research_results" class="top-container-for-reasearch" >
+                    <ng-container *ngIf="number_of_messages_found>0">
+                        <button mat-button class="mat-icon-button" (click)="show_next_message_researched()">
+                            <mat-icon>keyboard_arrow_up</mat-icon>
+                        </button>
+                        <button mat-button class="mat-icon-button" (click)="show_precedent_message_researched()">
+                            <mat-icon>keyboard_arrow_down</mat-icon>
+                        </button>
+                        <div style="margin-left: 5px;">
+                            {{number_click_top}} sur {{number_of_messages_found}} pour {{message_researched}}
+                        </div>
+                        <button (click)="cancel_show_research_results()" style="margin: auto 0px auto auto;">
+                            Terminer
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="number_of_messages_found==0">
+                        <span>aucun résultat</span>
+                        <button (click)="cancel_show_research_results()">
+                            Terminer
+                        </button>
+                    </ng-container>
+                </div>
+
+                <mat-spinner diameter="20" *ngIf="show_spinner"></mat-spinner>
+                <div class="loading-page">
+                    <mat-spinner diameter="50" *ngIf="!put_messages_visible "></mat-spinner>
+                </div>
+                <div #myScrollContainer class="messages-container"  [ngClass]="{'unvisible':!put_messages_visible }">
+
+                    
+                    <div *ngIf='display_messages' style="width:100%;">
+
+                        <div *ngIf="trigger_no_more" class="show-more">
+                            <div style="text-align: center;">
+                                <span>
+                                    Début de la discussion : {{list_of_messages_date[list_of_messages.length -1]}}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="show_research_results && !trigger_no_more" class="show-more">
+                            <mat-spinner diameter="20" *ngIf="show_spinner_for_more" ></mat-spinner>
+                            <button mat-raised-button class="show-more-button style0" *ngIf="!show_spinner_for_more" (click)="see_more_messages()">
+                                <span>Voir plus</span>
+                            </button>
+                        </div>
                         
-                        <div class="friend-message-content">
-                            <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]">
-                                <div class="author-container">
-                                    <div class="left-container">
-                                        <img [src]="friend_picture">
+                        <div #message_children *ngFor="let item of list_of_messages; let i = index" class="message"
+                         [ngClass]="{'bottom-with-reactions':(list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver!=null ||list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user!=null)}">
+                            <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
+                                <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
+                                    <ngx-emoji
+                                    (emojiClick)="reaction_click($event,list_of_messages.length -1 - i)"
+                                    useButton="true"
+                                    set="apple"
+                                    emoji="{{emoji}}"
+                                    size="30"
+                                    ></ngx-emoji>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                <div class="my-message-content" >
+
+                                    <div class="date-option">
+                                        <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                    </div>
+                                    
+                                    <div class="options">
+                                        <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                                            <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                        </button>
+                                        <mat-menu  #artworkOptions="matMenu">
+                                            <button class="mat-menu-item" mat-menu-item (click)="delete_message(list_of_messages.length -1 - i)" > 	
+                                                <mat-icon class="item-icon">edit</mat-icon>
+                                                <span>Supprimer</span>
+                                            </button>
+                                            <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)"> 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Répondre</span>
+                                            </button>
+                                            <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Réagir</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                   
+                                    
+                                    
+                                    <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+                                            Message supprimé
+                                    </div>
+                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'" class="content">
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
+                                            <div class="response-message">
+                                                {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
+                                            </div>
+                                        </div>
+                                        <div class="emoji-reaction-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user != list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver">
+                                            <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user">
+                                                <ngx-emoji 
+                                                useButton="true"
+                                                set="apple"
+                                                emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user}}"
+                                                size="22"
+                                                ></ngx-emoji>
+                                            </div>
+                                            <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver" 
+                                            [ngClass]="{'second-emoji':list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user }">
+                                                <ngx-emoji 
+                                                useButton="true"
+                                                set="apple"
+                                                emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver}}"
+                                                size="22"
+                                                ></ngx-emoji>
+                                            </div>
+                                        </div>
+                                        <div class="emoji-reaction-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user && 
+                                        (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user == list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)">
+                                            <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user">
+                                                <ngx-emoji 
+                                                useButton="true"
+                                                set="apple"
+                                                emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user}}"
+                                                size="22"
+                                                ></ngx-emoji>
+                                            </div>
+                                            <span style="color: darkgrey;
+                                                padding: 0px 5px 0px 5px;">
+                                                    2
+                                                </span>
+                                        </div>
+                                        <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                            {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                        </div>
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                            </div> 
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'">
+                                                <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                            </div> 
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                                <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                            </div> 
+                                        </div>
+                                    </div >
+                                    <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received'">
+                                        rec
+                                    </div>
+                                    <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
+                                        <div *ngIf="display_retry[list_of_messages.length -1 - i]">
+                                            <button (click)="retry(list_of_messages.length -1 - i)">retry</button>
+                                        </div>
+                                        <div *ngIf="!display_retry[list_of_messages.length -1 - i]">
+                                            sen
+                                        </div>
+                                    </div>
+                                    
+                                    <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'">
+                                        <div class="author-container">
+                                            <div class="left-container">
+                                                <img (load)="loaded_image($event)" [src]="friend_picture">
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </ng-container>
+                            <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                
+                                <div class="friend-message-content">
+
+                                    <div class="date-option">
+                                        <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                    </div>
+
+                                    <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]">
+                                        <div class="author-container">
+                                            <div class="left-container">
+                                                <img (load)="loaded_image($event)" [src]="friend_picture">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+                                        Message supprimé
+                                    </div>
+                                    <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
+                                                <div class="response-message">
+                                                    {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
+                                                </div>
+                                            </div>
+                                            <div class="emoji-reaction-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user != list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver">
+                                                <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user">
+                                                    <ngx-emoji 
+                                                    useButton="true"
+                                                    set="apple"
+                                                    emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user}}"
+                                                    size="22"
+                                                    ></ngx-emoji>
+                                                </div>
+                                                <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver"
+                                                [ngClass]="{'second-emoji':list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user}" >
+                                                    <ngx-emoji 
+                                                    useButton="true"
+                                                    set="apple"
+                                                    emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver}}"
+                                                    size="22"
+                                                    ></ngx-emoji>
+                                                </div>
+                                            </div>
+                                            <div class="emoji-reaction-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user && 
+                                            (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user == list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)">
+                                                <div class="emoji-reaction-content-center" *ngIf="list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user">
+                                                    <ngx-emoji 
+                                                    useButton="true"
+                                                    set="apple"
+                                                    emoji="{{list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user}}"
+                                                    size="22"
+                                                    ></ngx-emoji>
+                                                </div>
+                                                <span style="color: darkgrey;
+                                                padding: 0px 5px 0px 5px;">
+                                                    2
+                                                </span>
+                                            </div>
+                                            
+                                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                            </div>
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                    <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                </div> 
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'">
+                                                    <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                </div> 
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                                    <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                </div> 
+                                            </div>
+                                    </div>
+                                   
+                                    
+
+                                    <div class="options">
+                                        <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                                            <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                        </button>
+                                        <mat-menu  #artworkOptions="matMenu">
+                                            <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)" > 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Répondre</span>
+                                            </button>
+                                            <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Réagir</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </div>
+                                
+                            </ng-container>
+    
+                            <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                
+                                <div class="new-contact-message-content">
+                                        {{friend_name}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                </div>
+                            </ng-container>
+                            
+                        </div>
+
+
+                        <div *ngIf="show_research_results && show_less_results " class="show-less">
+                            <mat-spinner diameter="20" *ngIf="show_spinner_for_less" ></mat-spinner>
+                            <button mat-raised-button class="show-less-button style0" *ngIf="!show_spinner_for_less" (click)="see_less_messages()">
+                                <span>Voir moins</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div *ngIf="spam!='false' && response_exist && response_exist_retrieved" class="add-to_contact">
+                    {{friend_name}} ne fait pas parti de vos contacts. Voulez-vous l'ajouter à vos contacts ?<br />
+                    <button (click)="add_to_contacts()">Oui</button>
+                </div>
+    
+                <div *ngIf="spam!='false' && !response_exist && response_exist_retrieved" class="add-to_contact">
+                    {{friend_name}} ne fait pas parti de vos contacts. Vous devrez attendre qu'il vous ajoute à ses contacts si vous lui envoyez un message<br />
+                </div>
+    
+                <div  [formGroup]="message_group" novalidate class="bottom-container">
+
+                    <div *ngIf="display_writing" class="writing">
+                        En train d'écrire dans {{section_where_is_writing}}&nbsp; <span>.</span><span>.</span><span>.</span>
+                    </div>
+                    <div #emojis class="emojis-main-container" >
+                        <div class="container">
+                            <div class="emojis-container">
+                              <emoji-mart
+                              [set]="set"
+                              [isNative]="native"
+                              [hideRecent]="false"
+                              (emojiSelect)="handleClick($event)"
+                              >
+                              </emoji-mart>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="send-message-container">
+
+                        <div *ngIf="respond_to_a_message" class="response">
+                            <div class="response-header">
+                                Réponse à {{friend_name}}
+                            </div>
+                            <div class="response-body">
+                                {{message_responding_to}}
+                            </div>
+                            <button class="cancel-response" (click)="cancel_response()">can</button>
+                        </div>
+
+                        <div class="files">
+                            <div *ngIf="display_attachments">
+                                <div *ngFor="let item of attachments;let i=index" style="max-height:200px;" >
+                                    <img *ngIf="attachments_type[i]=='picture_message' || attachments_type[i]=='picture_attachment'" style="max-width:140px;max-height:140px;" [src]="attachments[i]">
+                                    <div *ngIf="attachments_type[i]=='file_attachment'">{{attachments_name[i]}}</div>
+                                    <button (click)=remove_attachment(i)>remove</button>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="send_message">
+                            <div #emoji_button class="button-container" (click)="open_emojis()">
+                                <div class="select-button">
+                                    <div style="margin-bottom: -4px;">
+                                        <ngx-emoji
+                                        set="apple"
+                                        emoji="smiley"
+                                        size="30"
+                                        ></ngx-emoji>
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
-                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                            <div *ngIf="spam=='false'" class="button-container" >
+                                <div class="select-button">
+                                    <label>
+                                        <div class="select-button">
+                                            <mat-icon>insert_photo</mat-icon>
+                                        </div>
+                                        <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                    </label>
+                                </div>
                             </div>
-                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="content">
-                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture'">
-                                    <img style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                </div> 
-                            </div>
+                            <textarea  #input
+                            formControlName="message"
+                            (keydown)="on_keydown($event)"
+                            (click)="activateFocus()"
+                            (blur)="desactivateFocus()"
+                            onfocus="this.placeholder = ''"
+                            (paste)="onPaste($event);"
+                            onblur="this.placeholder = 'Ecrivez un message...'"
+                            class="form-control form-control-dark large-form" type="text" [placeholder]="'Ecrivez un message...'"></textarea>
+                            <button  mat-icon-button (click)="send_message()" class="send-button">
+                                <mat-icon >send</mat-icon>
+                            </button>
                         </div>
-                        
-                    </div>
-
-                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
-                        
-                        <div class="new-contact-message-content">
-                                {{friend_name}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="spam!='false' && response_exist && response_exist_retrieved" class="add-to_contact">
-            {{friend_name}} ne fait pas parti de vos contacts. Voulez-vous l'ajouter à vos contacts ?<br />
-            <button (click)="add_to_contacts()">Oui</button>
-        </div>
-
-        <div *ngIf="spam!='false' && !response_exist && response_exist_retrieved" class="add-to_contact">
-            {{friend_name}} ne fait pas parti de vos contacts. Vous devrez attendre qu'il vous ajoute à ses contacts si vous lui envoyez un message<br />
-        </div>
-
-        <!--<div  class="send_message">
-            <div  [formGroup]="message_group" novalidate>
-                <div class="form-group">
-                    <div class="form-group"  >
-                        <input type="text" formControlName="message"  class="form-control2"   maxlength="20" placeholder="message" autocomplete="off" required/>
+    
                     </div>
                 </div>
-            </div>
-            <button (click)="send_message()">send</button>
-        </div>-->
-
-        <div  [formGroup]="message_group" novalidate >
-
-            <div class="navbar-l1-searchbar-container">
-                
-                <div class="files">
-                   <div *ngIf="display_attachments">
-                        <div *ngFor="let item of attachments;let i=index" style="max-height:200px;" >
-                            <img *ngIf="attachments_type[i]='picture'" style="max-width:140px;max-height:140px;" [src]="attachments[i]">
-                            <button (click)=remove_attachment(i)>remove</button>
-                        </div>
-                    </div> 
-                </div>
-                <div class="send_message">
-                    <textarea  #input
-                    formControlName="message"
-                    (keydown)="on_keydown($event)"
-                    (click)="activateFocus()"
-                    onfocus="this.placeholder = ''"
-                    (input)="input_message($event);"
-                    (paste)="onPaste($event);"
-                    onblur="this.placeholder = 'Ecrivez un message...'"
-                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Ecrivez un message...'"></textarea>
-                    <input [placeholder]="'send'"  type="button">
-                </div>
-
-            </div>
         </div>
+    </div>
 
-           
-            
-        </div>
-        
+    
+
+    <div class="right-container" *ngIf="spam=='false'">
+        <app-chat-right-container
+        [id_chat_section]="id_chat_section"
+        [spam]="spam"
+        [current_user_id]="current_user_id" 
+        [current_user_pseudo]="current_user_pseudo"
+        [current_user_name]="current_user_name" 
+        [current_user_profile_picture]="current_user_profile_picture" 
+        [friend_id]="friend_id" 
+        [friend_pseudo]="friend_pseudo"
+        [friend_name]="friend_name"
+        [friend_picture]="friend_picture"></app-chat-right-container>
     </div>
 
     

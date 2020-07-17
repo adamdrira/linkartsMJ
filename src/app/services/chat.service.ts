@@ -15,9 +15,6 @@ export interface Message{
     message:string,
     is_from_server:boolean,
     status:string,
-    attachment_name:string,
-    is_an_attachment:boolean,
-    attachment_type:string,
 }
 
 
@@ -62,8 +59,8 @@ get_list_of_spams():Observable<any>{
 
 
 
-get_first_messages(id_1,id_2):Observable<any>{
-    return this.httpClient.get(`http://localhost:4600/routes/get_first_messages/${id_1}/${id_2}`).pipe(map(information=>{
+get_first_messages(id_1,id_2,id_chat_section):Observable<any>{
+    return this.httpClient.get(`http://localhost:4600/routes/get_first_messages/${id_1}/${id_2}/${id_chat_section}`).pipe(map(information=>{
         return information;   
       }));
 }
@@ -85,8 +82,8 @@ check_if_is_related(id):Observable<any>{
       }));
 }
 
-check_if_response_exist(id):Observable<any>{
-    return this.httpClient.post('http://localhost:4600/routes/check_if_response_exist',{id:id},{withCredentials:true}).pipe(map(information=>{
+check_if_response_exist(id,id_chat_section):Observable<any>{
+    return this.httpClient.post('http://localhost:4600/routes/check_if_response_exist',{id:id,id_chat_section:id_chat_section},{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -97,8 +94,8 @@ add_seen_to_last_row(id_user,id_receiver):Observable<any>{
       }));
 }
 
-let_all_friend_messages_to_seen(id_user):Observable<any>{
-    return this.httpClient.post('http://localhost:4600/routes/let_all_friend_messages_to_seen',{id_user:id_user},{withCredentials:true}).pipe(map(information=>{
+let_all_friend_messages_to_seen(id_user,id_chat_section):Observable<any>{
+    return this.httpClient.post('http://localhost:4600/routes/let_all_friend_messages_to_seen',{id_user:id_user,id_chat_section:id_chat_section},{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
 }
@@ -108,6 +105,12 @@ get_searching_propositions(text:string):Observable<any>{
     return this.httpClient.get(`http://localhost:4600/routes/get_searching_propositions/${text}`,{withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
+}
+
+research_chat_sections(text:string,id_friend):Observable<any>{
+  return this.httpClient.get(`http://localhost:4600/routes/research_chat_sections/${text}/${id_friend}`,{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
 }
 
 get_first_searching_propositions():Observable<any>{
@@ -128,13 +131,118 @@ add_spam_to_contacts(id):Observable<any>{
 chat_sending_images(blob,terminaison,file_name:string):Observable<any>{
     const formData = new FormData();
     formData.append('picture', blob, "image");
-    console.log(formData.getAll('picture'));
     return this.httpClient.post('http://localhost:4600/routes/chat_sending_images', formData, {withCredentials: true,headers:{'terminaison':terminaison,'file_name':file_name}} ).pipe(map((information)=>{
       return information;
     }));
 }
 
+get_picture_sent_by_msg(file_name){
+  return this.httpClient.get(`http://localhost:4600/routes/get_picture_sent_by_msg/${file_name}`, {responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
 
-  
-  
+check_if_file_exists(file_name,value){
+  return this.httpClient.get(`http://localhost:4600/routes/check_if_file_exists/${file_name}/${value}`).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_attachment(file_name){
+  return this.httpClient.get(`http://localhost:4600/routes/get_attachment/${file_name}`, {responseType:'blob'} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_all_files(date:string,friend_id,id_chat_section){
+  return this.httpClient.get(`http://localhost:4600/routes/get_all_files/${date}/${friend_id}/${id_chat_section}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_all_pictures(date:string,friend_id,id_chat_section){
+  return this.httpClient.get(`http://localhost:4600/routes/get_all_pictures/${date}/${friend_id}/${id_chat_section}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+//messages activity
+delete_message(id){
+  return this.httpClient.post(`http://localhost:4600/routes/delete_message/${id}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_other_messages(id_friend,id_last_message,id_chat_section){
+  return this.httpClient.get(`http://localhost:4600/routes/get_other_messages/${id_friend}/${id_last_message}/${id_chat_section}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_other_messages_more(id_friend,id_last_message,id_chat_section){
+  return this.httpClient.get(`http://localhost:4600/routes/get_other_messages_more/${id_friend}/${id_last_message}/${id_chat_section}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_less_messages(id_friend,id_first_message,id_last_message,id_chat_section){
+  return this.httpClient.get(`http://localhost:4600/routes/get_less_messages/${id_friend}/${id_first_message}/${id_last_message}/${id_chat_section}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+//emojis
+
+delete_emoji_reaction(id,type_of_user:string){
+  return this.httpClient.post(`http://localhost:4600/routes/delete_emoji_reaction`,{id:id,type_of_user:type_of_user}, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+add_emoji_reaction(id,emoji,type_of_user:string){
+  return this.httpClient.post(`http://localhost:4600/routes/add_emoji_reaction`,{id:id,emoji:emoji,type_of_user:type_of_user}, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+//research
+get_messages_from_research(message,id_chat_section,id_friend){
+  return this.httpClient.get(`http://localhost:4600/routes/get_messages_from_research/${message}/${id_chat_section}/${id_friend}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_messages_around(id_message,id_chat_section,id_friend){
+  return this.httpClient.get(`http://localhost:4600/routes/get_messages_around/${id_message}/${id_chat_section}/${id_friend}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+//chat section
+
+get_chat_sections(id_friend){
+  return this.httpClient.get(`http://localhost:4600/routes/get_chat_sections/${id_friend}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+add_chat_section(chat_section,id_friend){
+  return this.httpClient.post('http://localhost:4600/routes/add_chat_section',{chat_section:chat_section,id_friend:id_friend}, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+delete_chat_section(id_chat_section,id_friend){
+  return this.httpClient.delete(`http://localhost:4600/routes/delete_chat_section/${id_chat_section}/${id_friend}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+get_notifications_section(id_chat_section,id_friend){
+  return this.httpClient.get(`http://localhost:4600/routes/get_notifications_section/${id_chat_section}/${id_friend}`, {withCredentials:true} ).pipe(map((information)=>{
+    return information;
+  }));
+}
+
+
 }

@@ -4,10 +4,12 @@ import { NgModule, CompilerFactory, Compiler } from '@angular/core';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
-
+import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-
-
+import {MatListModule} from '@angular/material/list';
+import {MatBadgeModule} from '@angular/material/badge';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -19,6 +21,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
 import { ContentComponent } from './content/content.component';
@@ -29,7 +32,7 @@ import { HomeLinkcollabComponent } from './home-linkcollab/home-linkcollab.compo
 import { ContentOfferComponent } from './content-offer/content-offer.component';
 import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
 import { LoginComponent } from './login/login.component';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NavbarService } from './services/navbar.service';
 import { SearchbarService } from './services/searchbar.service';
 import { SignupComponent } from './signup/signup.component';
@@ -143,6 +146,7 @@ import { UploaderAdResponsePicturesComponent } from './uploader-ad-response-pict
 import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
 import { ChatComponent } from './chat/chat.component';
 import { NgxMasonryModule } from 'ngx-masonry';
+import { ChatRightContainerComponent } from './chat-right-container/chat-right-container.component';
 
 @NgModule({
   declarations: [
@@ -242,6 +246,7 @@ import { NgxMasonryModule } from 'ngx-masonry';
     UploaderAdResponsePicturesComponent,
     ChatFriendsListComponent,
     ChatComponent,
+    ChatRightContainerComponent,
   ],
   imports: [
     BrowserModule,
@@ -265,7 +270,14 @@ import { NgxMasonryModule } from 'ngx-masonry';
     NgxDocViewerModule,
     DragDropModule,
     MatRadioModule,
-    NgxMasonryModule
+    NgxMasonryModule,
+    MatExpansionModule,
+    MatListModule,
+    PickerModule,
+    EmojiModule,
+    MatBadgeModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
     
   ],
   providers: [

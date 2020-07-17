@@ -78,7 +78,14 @@ delete_story(id:number){
 }
   
 
+upload_story(story:Blob){
+  const formData = new FormData();
+  formData.append('story', story, "story");
+  return this.httpClient.post('http://localhost:4600/routes/upload_story', formData, {withCredentials: true} ).pipe(map((information)=>{
+    return information;
+  }));
 
+}
 
 
 

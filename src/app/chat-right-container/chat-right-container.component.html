@@ -1,0 +1,77 @@
+<div class="main-right-container">
+
+  <div class="right-container" style=" height: 100%;
+  width: 100%;">
+      <div class="author-container">
+        <div class="left-container">
+            <img [src]="friend_picture">
+        </div>
+        <a>
+            <div class="right-container">
+                <span class="author-name">{{friend_name}} </span>
+            </div>
+        </a>
+      </div>
+  
+    <div #myScrollContainer  class="main-options-container">
+        <div class="options-container" *ngIf="list_of_files_retrieved && list_of_pictures_retrieved">
+          <mat-accordion >
+            <mat-expansion-panel (opened)="panelOpenState_0 = true"
+                                (closed)="panelOpenState_0 = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Fichiers partagés
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{total_size_of_files[0] | number:'.2' }} MB 
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list >
+                <mat-list-item *ngFor="let file of list_of_files,let i=index">
+                  <mat-icon mat-list-icon>folder</mat-icon>
+                  <div mat-line>
+                    <a [href]="list_of_files_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+                  </div>
+                  <div mat-line> {{file.createdAt | date}}</div>
+                  <div mat-line>{{file.size | number:'.2' }} MB</div>
+                  <mat-divider></mat-divider>
+                </mat-list-item>
+              </mat-list>
+              <div class="show-more" *ngIf="show_scroll_files">
+                <mat-spinner diameter="20" ></mat-spinner>
+              </div>
+              
+            </mat-expansion-panel>
+            <mat-expansion-panel (opened)="panelOpenState_1 = true"
+                                (closed)="panelOpenState_1 = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Images partagées
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{total_size_of_pictures[0] | number:'.2' }} MB 
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list >
+                <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
+                  <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;">
+                  <div mat-line>
+                    <a [href]="list_of_pictures_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+                  </div>
+                  <div mat-line> {{file.createdAt | date}}</div>
+                  <div mat-line>{{file.size | number:'.2' }} MB</div>
+                  <mat-divider></mat-divider>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+      </div>
+    </div>
+     
+  </div>
+  
+</div>
+
+
+
+

@@ -144,7 +144,17 @@ remove_beforeupload(item:FileItem){
    this.afficherpreview = false;
  }
 
-
+ set_crop() {
+    
+  const canvas = this.cropper.getCroppedCanvas();
+  canvas.toBlob(blob => {
+    console.log(blob)
+    this.Story_service.upload_story(blob).subscribe(res=>{
+      location.reload();
+    })
+  }, "image/png");
+  
+}
 
 
 }
