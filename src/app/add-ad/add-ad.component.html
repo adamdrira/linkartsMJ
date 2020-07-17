@@ -1,18 +1,5 @@
 
 
-
-        <!--Forms : adding drawing-->
-        <div class="steps">
-            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
-                <span>Publication d'une annonce</span>
-            </div>
-            <div class="horizontal-line">
-            </div>
-        </div>
-
-
-        
-
         <!--*****************************************************************************-->
         <!--*****************************************************************************-->
         <!--******************************** primary information ************************-->
@@ -31,7 +18,7 @@
             <form>
                 <div class="form-container">
                     <div class="form-container-name">
-                        <span>Informations primaires</span>
+                        <span>Présentation de l'annonce</span>
                     </div>
 
                     <div class="form-container-flex">
@@ -129,7 +116,7 @@
                             <div class="flex-right-container">
                                 <div class="form-group">
                                     <label for="artworkDescription">Description</label>
-                                    <textarea type="text" formControlName="fdDescription" maxlength="2000" style="height: 500px;resize:none;" class="form-control" placeholder="Description de l'œuvre (2000 caractères max)" autocomplete="off" required>
+                                    <textarea type="text" formControlName="fdDescription" maxlength="2000" style="height: 500px;resize:none;" class="form-control" placeholder="Description de l'annonce (2000 caractères max)" autocomplete="off" required>
                                     </textarea>
                                     <p *ngIf="!fdDescription.valid && fdDisplayErrors">Veuillez saisir une description valide</p>
                                 </div>
@@ -142,45 +129,38 @@
                 </div>
             </form>
 
-            <div class="container1">
-                <div class="thumbnail-container">
-                    <div class="thumbnail-container-name">
-                        <span>Edition de la photo de présentation</span>
-                    </div>
-                    <div class="thumbnail-container-flex">
+            
+
+            <div class="form-container">
+                <div class="form-container-name">
+                    <span>Edition de la miniature</span>
+                </div>
+                <div class="form-container-data">
+
+                    <!--******************************************************-->
+                    <!--Miniature-->
+                    <!--******************************************************-->
+                    <div class="form-group" style="text-align:center;">
                         <app-uploader-thumbnail-ad></app-uploader-thumbnail-ad>
                     </div>
+
+
                 </div>
+            </div>
 
-                <div class="container2">
 
-                    <!--<div class="pictures-container">
-                        <div class="pictures-container-name">
-                            <span>Images complémentaires</span>
-                        </div>
-                        <div class="pictures-container-flex">
-                            <app-uploader-pictures-ad
-                            [status]="status_pictures" 
-                            [id_ad]="id_ad"
-                            (uploaded)="all_pictures_uploaded( $event );"></app-uploader-pictures-ad>
-                        </div>
-                    </div>-->
-        
-                    <div class="pictures-container">
-                        <div class="pictures-container-name">
-                            <span>Fichiers complémentaires</span>
-                        </div>
-                        <div class="pictures-container-flex">
-                            <app-uploader-attachments-ad
-                            [status]="status_pictures" 
-                            [id_ad]="id_ad"
-                            (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-attachments-ad>
-                        </div>
+            <div class="container2">
+                <div class="pictures-container">
+                    <div class="pictures-container-name">
+                        <span>Fichiers complémentaires</span>
                     </div>
-
+                    <div class="pictures-container-flex">
+                        <app-uploader-attachments-ad
+                        [status]="status_pictures" 
+                        [id_ad]="id_ad"
+                        (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-attachments-ad>
+                    </div>
                 </div>
-    
-                
             </div>
             
 

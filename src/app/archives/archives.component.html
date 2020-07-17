@@ -49,14 +49,14 @@
 
 
             
-<div class="logos-container">
-    <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);">
+<div class="logos-container" #target>
+    <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);">
         <mat-icon class="image1">account_circle</mat-icon>
         <span>
             Archives personnelles
         </span>
     </div>
-    <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);">
+    <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);">
         <mat-icon class="image2">supervisor_account</mat-icon>
         <span>
             Autres utilisateurs
@@ -65,26 +65,32 @@
 </div>
 
 
-<div style="display:flex;justify-content: center;">
-    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 0 }" (click)="open_album(0);">
-        <div>Bandes dessinées</div>
-    </button>
-    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 1 }" (click)="open_album(1);">
-        <div>Dessins</div>
-    </button>
-    <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 2 }" (click)="open_album(2);">
-        <div>Écrits</div>
-    </button>
-    <ng-container *ngIf="opened_category == 0">
+<div class="albums-filter" style="display:flex;justify-content: center;">
+    <div>
+        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 0 }" (click)="open_album(0);">
+            <div>Bandes dessinées</div>
+        </button>
+    </div>
+    <div>
+        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 1 }" (click)="open_album(1);">
+            <div>Dessins</div>
+        </button>
+    </div>
+    <div>
+        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 2 }" (click)="open_album(2);">
+            <div>Écrits</div>
+        </button>
+    </div>
+    <div *ngIf="opened_category == 0">
         <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 3 }" (click)="open_album(3);">
             <div>Stories</div>
         </button>
-    </ng-container>
-    <ng-container *ngIf="opened_category == 1">
+    </div>
+    <div *ngIf="opened_category == 1">
         <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 4 }" (click)="open_album(4);">
             <div>Annonces</div>
         </button>
-    </ng-container>
+    </div>
 </div>
 
 

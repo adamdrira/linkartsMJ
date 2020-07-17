@@ -11,7 +11,7 @@
                 <span>Changer de photo de couverture</span>
             </button>
 
-            <div #profileHovered class="profile">
+            <div #profileHovered class="profile" #target>
 
                 <div #profilePicHovered class="profile-picture" [ngClass]="{'visiteur': mode_visiteur }">
 
@@ -102,7 +102,7 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">home</mat-icon>
                     Accueil
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
+                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scroll(target);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">art_track</mat-icon>
                     Œuvres ({{number_of_artpieces}})
                 </button>
@@ -134,7 +134,7 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
+                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);scroll(target);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
                     Archives ({{number_of_archives}})
                 </button>
@@ -275,19 +275,19 @@
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
             
             <div class="logos-container">
-                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
+                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(artwork);" #artwork id="logo">
                     <div class="image1"></div>
                     <span>
                         Bandes dessinées ({{list_bd_oneshot.length + list_bd_series.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(artwork);" #artwork>
                     <div class="image2"></div>
                     <span>
                         Dessins ({{list_drawings_onepage.length + list_drawings_artbook.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target>
+                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(artwork);" #artwork>
                     <div class="image3"></div>
                     <span>
                         Écrits ({{list_writings.length}})

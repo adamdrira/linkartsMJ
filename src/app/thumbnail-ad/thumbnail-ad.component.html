@@ -31,7 +31,7 @@
             
                         <div *ngIf="visitor_mode" class="more-information">
                             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                                <mat-icon>more_horiz</mat-icon>
+                                <mat-icon>more_vert</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu">
                                 <button mat-menu-item>
@@ -46,7 +46,7 @@
                         </div>
                         <div *ngIf="!visitor_mode" class="more-information">
                             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                                <mat-icon>more_horiz</mat-icon>
+                                <mat-icon>more_vert</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu">
                                 <button mat-menu-item (click)="update()">
@@ -95,19 +95,16 @@
                         </div>
                     </div>
 
-                    <div class="arrow-container">
-                        <mat-icon style="font-size: 60px;">arrow_right_alt</mat-icon>
-                        
-                    </div>
-
 
                     <div class="cible-container" *ngIf="item.target_two == null">
+                        <span>Cible</span>
                         <div class="cible-description">
                             <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">person</mat-icon>
                             <span>{{item.target_one}}</span>
                         </div>
                     </div>
                     <div class="cible-container" *ngIf="item.target_two != null">
+                        <span>Cibles</span>
                         <div class="cible-description">
                             <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">person</mat-icon>
                             <span>{{item.target_one}}</span>
@@ -348,7 +345,9 @@
                     </div>
 
                     <div class="right-container">
-                        <span>{{date_to_show}} - {{item.number_of_responses}} retours</span>
+                        <span *ngIf="item.number_of_responses==0">{{date_to_show}} - Pas de retours</span>
+                        <span *ngIf="item.number_of_responses==1">{{date_to_show}} - {{item.number_of_responses}} retour</span>
+                        <span *ngIf="item.number_of_responses>1">{{date_to_show}} - {{item.number_of_responses}} retours</span>
                     </div>
                 </div>
 

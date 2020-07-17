@@ -602,7 +602,13 @@ export class AccountComponent implements OnInit {
 
     this.opened_category = -1;
     this.opened_section=i;
+
     
+    /*this.cd.detectChanges();
+    if( i==1 || i==6 ) {
+      this.scrollDown();
+    }*/
+
     if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
     else if( i == 1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); }
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
@@ -981,7 +987,7 @@ export class AccountComponent implements OnInit {
 
   change_profile_bio() {
     const dialogRef = this.dialog.open(PopupFormComponent, {
-      data: {type:"edit_bio"},
+      data: {type:"edit_bio", primary_description:this.primary_description, occupation:this.occupation, education:this.education, user_location:this.user_location},
     });
   }
 

@@ -303,6 +303,8 @@ export class ArchivesComponent implements OnInit {
   open_category(i : number) {
 
     this.opened_category=i;
+    
+    this.open_album(0);
   }
 
 
@@ -439,6 +441,20 @@ export class ArchivesComponent implements OnInit {
   }
 
 
+  
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
+  scrollDown() {
+    window.scrollBy({
+      top: 200,
+      behavior : "smooth"
+    })
+  }
 
 
 

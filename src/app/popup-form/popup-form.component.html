@@ -1,0 +1,45 @@
+
+
+<ng-container *ngIf="data.type=='edit_bio'">
+
+    <form [formGroup]="profile_bio" class="form-container profile-bio" novalidate>
+        <!--******************************************************-->
+        <!--Titre-->
+        <!--******************************************************-->
+        <div class="form-group">
+            <label>Description principale</label>
+            <input type="text" formControlName="principal_description" class="form-control" placeholder="Description principale" autocomplete="off" required/>
+            <p *ngIf="(principal_description.value.length >30 || principal_description.value.length =='') && display_errors">Veuillez saisir une description (30 caractères max)</p>
+        </div>
+        <div class="form-group">
+            <label>Métier (optionnel)</label>
+            <input type="text" formControlName="occupation" class="form-control" placeholder="Métier" autocomplete="off"/>
+            <p *ngIf="occupation.value.length >30 && display_errors">Maximum : 30 caractères</p>
+        </div>
+        <div class="form-group">
+            <label>Formation (optionnel)</label>
+            <input type="text" formControlName="education" class="form-control" placeholder="Formation" autocomplete="off"/>
+            <p *ngIf="education.value.length >30 && display_errors">Maximum : 30 caractères</p>
+        </div>
+        <div class="form-group">
+            <label>Localisation (optionnel)</label>
+            <input type="text" formControlName="location" class="form-control" placeholder="Localisation" autocomplete="off"/>
+            <p *ngIf="location.value.length >30 && display_errors">Maximum : 30 caractères</p>
+        </div>
+
+        
+        <button mat-raised-button class="submit-button style1" (click)="validate_form();">Valider</button>
+    </form>
+
+</ng-container>
+
+
+<ng-container *ngIf="data.type=='edit_cover_picture'">
+    <app-uploader-cover-picture></app-uploader-cover-picture>
+</ng-container>
+
+<ng-container *ngIf="data.type=='edit_profile_picture'">
+    <app-uploader-profile-picture></app-uploader-profile-picture>
+</ng-container>
+
+
