@@ -10,16 +10,23 @@ exports.list_of_messages = (sequelize, DataTypes) => {
       },
       id_user: DataTypes.INTEGER,
       id_receiver: DataTypes.INTEGER,
-      message:DataTypes.STRING,
+      message:DataTypes.STRING(3000),
       is_a_response:DataTypes.BOOLEAN,
       is_an_attachment:DataTypes.BOOLEAN,
       is_from_server:DataTypes.BOOLEAN,
       server_message:DataTypes.STRING,
       id_message_responding:DataTypes.INTEGER,
+      message_responding_to:DataTypes.STRING(3000),
       like:DataTypes.BOOLEAN,
       attachment_name:DataTypes.STRING,
       attachment_type:DataTypes.STRING,
+      size:DataTypes.STRING,
       status:DataTypes.STRING,
+      id_chat_section:DataTypes.INTEGER,
+      emoji_reaction_user:DataTypes.STRING,
+      emoji_reaction_receiver:DataTypes.STRING,
+      id_group_chat:DataTypes.INTEGER,
+      
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name
@@ -72,7 +79,21 @@ var list_of_chat_search= sequelize.define('list_of_chat_search', {
 )
 
 
- 
+var list_of_chat_sections = sequelize.define('list_of_chat_sections', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_chat_section:DataTypes.INTEGER,
+  id_user: DataTypes.INTEGER,
+  id_receiver: DataTypes.INTEGER,
+  chat_section_name:DataTypes.STRING,
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
+)
 
   
 
@@ -89,6 +110,6 @@ list_of_messages.belongsTo(User, {
 });
 
 
- return {list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search};
+ return {list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections};
 }
 

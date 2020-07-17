@@ -20,51 +20,48 @@ module.exports = (router, list_of_stories,list_of_views) => {
 
 
     router.post('/upload_story', function (req, res) {
-        (async () => {
-            let current_user = get_current_user(req.cookies.currentUser);
-            console.log("current user stry");
-            console.log(current_user)
-            var file_name='';
-            const PATH2= './data_and_routes/stories';
-            let storage = multer.diskStorage({
-                destination: (req, file, cb) => {
-                cb(null, PATH2);
-                },
-            
-                filename: (req, file, cb) => {
-                var today = new Date();
-                var ms = String(today.getMilliseconds()).padStart(2, '0');
-                var ss = String(today.getSeconds()).padStart(2, '0');
-                var mi = String(today.getMinutes()).padStart(2, '0');
-                var hh = String(today.getHours()).padStart(2, '0');
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-                var yyyy = today.getFullYear();
-                let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-                file_name = current_user + '-' + Today + path.extname(file.originalname);
-                cb(null, current_user + '-' + Today + path.extname(file.originalname));
-                //enlever nickname
-                }
-            });
-            
-            let upload_cover = multer({
-                storage: storage
-            }).any();
+        let current_user = get_current_user(req.cookies.currentUser);
+        console.log("current user stry");
+        console.log(current_user)
+        var file_name='';
+        const PATH2= './data_and_routes/stories';
+        let storage = multer.diskStorage({
+            destination: (req, file, cb) => {
+            cb(null, PATH2);
+            },
         
-            upload_cover(req, res, function(err){
-                (async ()=> {
-                    list_of_stories.create({
-                        "id_user": current_user,
-                        "file_name": file_name,
-                        "views_number": 0,
-                    }).then(stories=>{
-                        res.status(200).send([stories]);
-                    });
-                })();
-                
-            });
+            filename: (req, file, cb) => {
+            var today = new Date();
+            var ms = String(today.getMilliseconds()).padStart(2, '0');
+            var ss = String(today.getSeconds()).padStart(2, '0');
+            var mi = String(today.getMinutes()).padStart(2, '0');
+            var hh = String(today.getHours()).padStart(2, '0');
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+            var yyyy = today.getFullYear();
+            let Today = yyyy + mm + dd + hh+ mi + ss + ms;
+            file_name = current_user + '-' + Today + '.png';
+            cb(null, current_user + '-' + Today + '.png');
+            }
+        });
+        
+        let upload_cover = multer({
+            storage: storage
+        }).any();
 
-        })();
+        upload_cover(req, res, function(err){
+            (async ()=> {
+                list_of_stories.create({
+                    "id_user": current_user,
+                    "file_name": file_name,
+                    "views_number": 0,
+                }).then(stories=>{
+                    res.status(200).send([stories]);
+                });
+            })();
+            
+        });
+
     });
 
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
