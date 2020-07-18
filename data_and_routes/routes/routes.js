@@ -114,7 +114,7 @@ controller_subscribings(router,
 controller_albums(router, albums_seq.list_of_albums);
 controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
 controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses);
-controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,chat_seq.list_of_chat_search,subscribings_seq.list_of_subscribings,authentification.users)
+controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,chat_seq.list_of_chat_search,chat_seq.list_of_chat_sections,subscribings_seq.list_of_subscribings,authentification.users)
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
   console.log('l\'artiste');
