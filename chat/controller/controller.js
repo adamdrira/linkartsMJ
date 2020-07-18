@@ -654,7 +654,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           fs.access('./data_and_routes/chat_images/' + message.attachment_name, fs.F_OK, (err) => {
             if(err){
               console.log('suppression already done');
-              return res.status(200)
+              return res.status(200).send([{"ok":"ok"}]);
             }
             fs.unlink('./data_and_routes/chat_images/' + message.attachment_name,  function (err) {
               if (err) {
@@ -662,7 +662,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               }  
               else {
                 console.log( 'fichier supprimé');
-                return res.status(200).send();
+                return res.status(200).send([{"ok":"ok"}]);
               }
             });
           });
@@ -679,14 +679,14 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               }  
               else {
                 console.log( 'fichier supprimé');
-                return res.status(200).send();
+                return res.status(200).send([{"ok":"ok"}]);
               }
             });
           });
         }
       }
       else{
-        res.status(200)
+        return res.status(200).send([{"ok":"ok"}]);
       }
     })
     
