@@ -20,7 +20,7 @@
                                     <div class="select-button">
                                         Sélectionner un fichier
                                     </div>
-                                    <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                    <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
                                 </label>
                             </div>
                         </div>

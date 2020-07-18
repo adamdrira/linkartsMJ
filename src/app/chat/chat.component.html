@@ -480,7 +480,7 @@
                                         <div class="select-button">
                                             <mat-icon>insert_photo</mat-icon>
                                         </div>
-                                        <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                                        <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
                                     </label>
                                 </div>
                             </div>

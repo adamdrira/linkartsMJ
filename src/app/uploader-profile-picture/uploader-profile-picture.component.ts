@@ -132,5 +132,8 @@ export class UploaderProfilePictureComponent implements OnInit {
     return SafeURL;
   }
 
+  onFileClick(event) {
+    event.target.value = '';
+  }
 
 }

@@ -156,6 +156,8 @@ upload_image(){
 }
 
 
-
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

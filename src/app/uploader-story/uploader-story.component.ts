@@ -156,5 +156,8 @@ remove_beforeupload(item:FileItem){
   
 }
 
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

@@ -157,7 +157,9 @@ remove_afterupload(item){
     this.afficherpreview = false;
 }
 
-
+onFileClick(event) {
+  event.target.value = '';
+}
 
 upload_image(){
   this.uploader.queue[0].upload();

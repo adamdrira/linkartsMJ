@@ -140,19 +140,26 @@ export class ChatComponent implements OnInit  {
           console.log(msg[0].message);
           console.log(this.list_of_messages);
           if(msg[0].message.id_user!=msg[0].message.id_receiver){
-            this.list_of_messages[0].status="received";
+            console.log(this.temporary_id);
+            console.log(this.attachments);
             if(msg[0].message.attachment_type=="picture_message" ||msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
               // on ne peut pas envoyer plus de 5 images en même temps dans un message
               for(let i=0;i<((this.list_of_messages.length>=6)?6:this.list_of_messages.length);i++){
                 if(this.list_of_messages[i].attachment_name==msg[0].message.attachment_name){
+                  console.log(this.list_of_messages[i]);
                   this.list_of_messages[i].status="received";
+                  this.list_of_messages[i].id=msg[0].id_message;
+                  this.cd.detectChanges();
                 }
               }
             }
             else{
               for(let i=0;i<((this.list_of_messages.length>=6)?6:this.list_of_messages.length);i++){
-                if(this.list_of_messages[i].message==msg[0].message.message){
+                if(this.list_of_messages[i].temporary_id==msg[0].message.temporary_id){
                   this.list_of_messages[i].status="received";
+                  this.list_of_messages[i].id=msg[0].id_message;
+                  console.log(this.list_of_messages[i]);
+                  this.cd.detectChanges();
                 }
               }
             }
@@ -246,6 +253,10 @@ export class ChatComponent implements OnInit  {
 
 
  }
+
+
+ // temporary_id_message
+ temporary_id=0;
 
   //uplaoder attachments
   uploader:FileUploader;
@@ -344,6 +355,7 @@ export class ChatComponent implements OnInit  {
     if(this.change_number>0){
       if(this.current_friend_id!=this.friend_id){
         console.log("getting messages");
+        this.function_done=false;
         this.trigger_no_more=false;
         this.can_get_other_messages=false;
         this.list_of_chat_sections_found=[];
@@ -391,7 +403,7 @@ export class ChatComponent implements OnInit  {
           is_a_response:this.respond_to_a_message,
           id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
           message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-          status:"not-writing"
+          status:"not-writing",
         } 
         this.chatService.messages.next(msg);
       }
@@ -432,6 +444,7 @@ export class ChatComponent implements OnInit  {
                   let offset=this.message_children.toArray()[r[0].length].nativeElement.offsetTop;
                   let height =this.message_children.toArray()[r[0].length].nativeElement.getBoundingClientRect().height
                   this.myScrollContainer.nativeElement.scrollTop=offset-height;
+                  console.log("scroll dans interval")
                   this.can_get_other_messages=true;
                 }
               }
@@ -506,9 +519,6 @@ export class ChatComponent implements OnInit  {
     };
 
     this.uploader.onCompleteItem = (file) => {
-      console.log(this.list_of_messages_files);
-      console.log(this.list_of_messages);
-      console.log(this.list_of_messages_pictures)
       this.k++;
       if(this.k<this.uploader.queue.length){
         this.chatService.check_if_file_exists(this.uploader.queue[this.k]._file.name,0).subscribe(r=>{
@@ -517,8 +527,6 @@ export class ChatComponent implements OnInit  {
         })
       }
       
-      console.log("item complete ready to send");
-      console.log(file);
       var type='';
       var re = /(?:\.([^.]+))?$/;
       if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1]=="png" || re.exec(file._file.name)[1]=="jpg"){
@@ -544,12 +552,12 @@ export class ChatComponent implements OnInit  {
           is_a_response:this.respond_to_a_message,
           id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
           message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-          status:"sent"
+          status:"sent",
+          temporary_id:this.temporary_id,
         };
+        this.temporary_id+=1;
         this.chatService.messages.next(message);
       })
-    
-     
       if(this.k==this.uploader.queue.length){
         if(this.an_image_is_pasted && this.end_of_past_images){
           this.an_image_is_pasted=false;
@@ -558,12 +566,16 @@ export class ChatComponent implements OnInit  {
           this.attachments_name=[];
           this.attachments_for_sql=[];
           this.attachments=[];
+          this.compt_at=0;
+          this.display_attachments=false;
         }
-        if(!this.an_image_is_pasted){
+        else{
           this.attachments_type=[];
           this.attachments_name=[];
           this.attachments_for_sql=[];
           this.attachments=[];
+          this.compt_at=0;
+          this.display_attachments=false;
         }
         this.uploader.queue=[];  
         this.k=0;  
@@ -660,6 +672,7 @@ export class ChatComponent implements OnInit  {
               if(this.compteur_pp==0 && this.compteur_image==0){
                 this.cd.detectChanges();
                 this.put_messages_visible=true;
+                console.log("scroll dans get messages")
                 this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
                 if(this.list_of_messages.length>0){
                   this.can_get_other_messages=true;
@@ -685,38 +698,41 @@ export class ChatComponent implements OnInit  {
 
   compteur_loaded_research=0;
   first_turn_loaded=false;
+  function_done=false;
   loaded_image(event){
-    let function_done=false;
     setInterval(() => {
-      if(!function_done){
+      if(!this.function_done){
         console.log("ssecurity compt");
+        console.log("scroll dans security compt messages")
         this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
         //this.put_messages_visible=true;
         this.first_turn_loaded=true;
         if(this.list_of_messages.length>0){
           this.can_get_other_messages=true;
         }
-        function_done=true;
+        this.function_done=true;
       }
     }, 5000);
     if(!this.show_research_results && !this.first_turn_loaded){
       this.compteur_loaded+=1;
       if(this.compteur_image!=0){
         if (this.compteur_loaded==this.compteur_image + this.compteur_pp){
+          console.log("scroll dans compt messages classique")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
-          function_done=true;
+          this.function_done=true;
           this.can_get_other_messages=true;
           console.log("function_done");
         }
       }
       else {
         if (this.compteur_loaded==this.compteur_pp){
+          console.log("scroll dans compt messages classique 2")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
-          function_done=true;
+          this.function_done=true;
           this.can_get_other_messages=true;
           console.log("function_done");
         }
@@ -729,7 +745,7 @@ export class ChatComponent implements OnInit  {
           console.log("c'est bon on affiche")
           this.put_messages_visible=true;
           this.can_get_other_messages=true;
-          function_done=true;
+          this.function_done=true;
         }
       }
       else{
@@ -737,7 +753,7 @@ export class ChatComponent implements OnInit  {
           console.log("c'est bon on affiche")
           this.put_messages_visible=true;
           this.can_get_other_messages=true;
-          function_done=true;
+          this.function_done=true;
         }
       }
     }
@@ -787,7 +803,7 @@ export class ChatComponent implements OnInit  {
       is_a_response:this.respond_to_a_message,
       id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
       message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-      status:"writing"
+      status:"writing",
     } 
     this.chatService.messages.next(msg);
   }
@@ -803,7 +819,7 @@ export class ChatComponent implements OnInit  {
       is_a_response:this.respond_to_a_message,
       id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
       message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-      status:"not-writing"
+      status:"not-writing",
     } 
     this.chatService.messages.next(msg);
   }
@@ -898,7 +914,6 @@ export class ChatComponent implements OnInit  {
         let file_name = this.current_user_id + '-' + Today + re.exec(blob.name)[0];
         this.attachments_name.push(file_name);
         this.attachments_size.push(size);
-        console.log("we are pushing picture message");
         this.attachments_type.push('picture_message');
         this.display_attachments=true;
       }
@@ -934,8 +949,10 @@ export class ChatComponent implements OnInit  {
       is_a_response:this.respond_to_a_message,
       id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
       message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
-      status:"sent"
+      status:"sent",
+      temporary_id:this.temporary_id,
     }
+    this.temporary_id+=1;
     this.respond_to_a_message=false;
     this.list_of_messages.splice(0,0,(this.message_one));
     this.list_of_messages_files.splice(0,0,false);
@@ -950,6 +967,7 @@ export class ChatComponent implements OnInit  {
     this.message.reset();
     this.message_group.value.message='';
     this.cd.detectChanges();
+    console.log("scroll dans send message")
     this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     console.log("scroll")
   }
@@ -967,8 +985,6 @@ export class ChatComponent implements OnInit  {
     }
     let file_name=this.attachments_name[i];
     let file=this.attachments_for_sql[num];
-    console.log(file);
-    console.log(file_name);
     let message ={
       id_user:this.current_user_id,   
       id_receiver:this.friend_id,  
@@ -982,8 +998,10 @@ export class ChatComponent implements OnInit  {
       id_message_responding:(this.respond_to_a_message)?this.id_message_responding_to:null,
       message_responding_to:(this.respond_to_a_message)?this.message_responding_to:null,
       size:this.attachments_size[i],
-      status:"sent"
+      status:"sent",
+      temporary_id:this.temporary_id,
     };
+    this.temporary_id+=1;
     this.chatService.chat_sending_images(file,re.exec(file.name)[1],file_name).subscribe(l=>{
       console.log(l);
       this.chatService.messages.next(message);
@@ -994,7 +1012,6 @@ export class ChatComponent implements OnInit  {
     this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
     this.list_of_messages.splice(0,0,(message));
     this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
-    
     if(i==this.attachments.length-1){
       this.end_of_past_images=true;
       this.an_image_is_pasted=false;
@@ -1005,10 +1022,12 @@ export class ChatComponent implements OnInit  {
         this.attachments_name=[];
         this.attachments_for_sql=[];
         this.attachments=[];
+        this.compt_at=0;
         this.display_attachments=false;
       }
     }
     this.cd.detectChanges();
+    console.log("scroll dans send picture")
     this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
   }
 
@@ -1016,7 +1035,6 @@ export class ChatComponent implements OnInit  {
   send_attachment_or_picture(i){
     this.respond_to_a_message=false;
     console.log("sending attachment or picture");
-    console.log(this.attachments_type);
     if(this.attachments_type[i]=="picture_message"){
       console.log("picture_message")
       this.send_picture(i);
@@ -1044,9 +1062,6 @@ export class ChatComponent implements OnInit  {
           this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
           this.list_of_messages.splice(0,0,(message));
           this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
-          console.log(this.list_of_messages_pictures);
-          console.log(this.attachments[i])
-          console.log(this.attachments);
         })
       }
       else{
@@ -1070,14 +1085,17 @@ export class ChatComponent implements OnInit  {
         })
       }
       this.cd.detectChanges();
+      console.log("scroll dans send attachment pic")
       this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     else if(this.attachments_type[i]=="file_attachment"){
       this.compt_at+=1;
       if(this.compt_at==1){
+        console.log("first file attachment")
         this.chatService.check_if_file_exists(this.attachments_name[i],0).subscribe(r=>{
           console.log("file upload")
            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
+           console.log( this.uploader.queue[0])
            this.uploader.queue[0].upload();
            let message ={
              id_user:this.current_user_id,   
@@ -1101,7 +1119,8 @@ export class ChatComponent implements OnInit  {
       }
       else{
         this.chatService.check_if_file_exists(this.attachments_name[i],0).subscribe(r=>{
-          console.log("no file uplaod");
+          console.log("not a file to uplaod");
+          console.log(i);
            let message ={
              id_user:this.current_user_id,   
              id_receiver:this.friend_id,  
@@ -1121,16 +1140,23 @@ export class ChatComponent implements OnInit  {
          })
       }
       this.cd.detectChanges();
+      console.log("scroll dans send attachment file")
       this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
+    this.compt_at=0;
     this.display_attachments=false;
+    this.cd.detectChanges();
     
   }
 
   retry(i){
     let message=this.list_of_messages[i];
     console.log(message);
-    this.chatService.messages.next(message);
+    //this.chatService.messages.next(message);
+  }
+
+  onFileClick(event) {
+    event.target.value = '';
   }
 
 /*************************************Partie gestion des spams***********************************/
@@ -1168,9 +1194,19 @@ export class ChatComponent implements OnInit  {
   delete_message(i){
     console.log(this.list_of_messages[i])
     console.log(this.list_of_messages[i].createdAt);
-    this.chatService.delete_message(this.list_of_messages[i].id).subscribe(r=>{
-      this.list_of_messages[i].status="deleted";
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer le message ?'},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.chatService.delete_message(this.list_of_messages[i].id).subscribe(r=>{
+          this.list_of_messages[i].status="deleted";
+          this.cd.detectChanges();
+        })
+      }
     })
+    
     
   }
 
@@ -1426,6 +1462,7 @@ initialize_selectors(){
   //THIS.chat_section_group.controls['chat_section_name'].setValue( "scénario" );
   
   $(".chat-section").change(function(){
+    THIS.function_done=false;
     THIS.nothing_selected=false;
     THIS.trigger_no_more=false;
     THIS.chat_section_to_open=$(this).val();
@@ -1727,6 +1764,8 @@ open_section_found(i){
         this.show_notification_message=false;
       }
       this.close_chat_section_research();
+      this.cd.detectChanges();
+      $('.chat-section')[0].sumo.reload();
     }
   }
 }

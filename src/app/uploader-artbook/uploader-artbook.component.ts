@@ -181,7 +181,9 @@ export class UploaderArtbookComponent implements OnInit {
     this.afficherpreview = false;
   }
 
-
+  onFileClick(event) {
+    event.target.value = '';
+  }
 
   upload_image(){
     this.uploader.queue[0].upload();

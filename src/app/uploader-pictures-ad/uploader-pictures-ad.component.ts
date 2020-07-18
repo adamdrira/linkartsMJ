@@ -3,6 +3,8 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
 import { Ads_service } from '../services/ads.service';
 import { first } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 declare var $:any;
 
@@ -20,6 +22,7 @@ export class UploaderPicturesAdComponent implements OnInit {
   constructor (
     private Ads_service: Ads_service, 
     private rd:Renderer2,
+    public dialog: MatDialog,
     private cd:ChangeDetectorRef,
     private sanitizer:DomSanitizer
     
@@ -98,9 +101,19 @@ export class UploaderPicturesAdComponent implements OnInit {
 
     this.uploader.onAfterAddingFile = async (file) => {
         
-      file.withCredentials = true; 
-      let index = this.uploader.queue.indexOf(file);
-      this.displayContent(file,index)
+      
+      if(this.uploader.queue.length==6){
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 images'},
+        });
+      }
+      else{
+        file.withCredentials = true; 
+        let index = this.uploader.queue.indexOf(file);
+        this.displayContent(file,index);
+      }
+     
       
     };
 
@@ -150,6 +163,8 @@ validate_all(){
     ]});
     this.uploader.queue[0].upload();
 }
-
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

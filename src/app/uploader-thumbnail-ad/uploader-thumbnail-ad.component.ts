@@ -139,5 +139,8 @@ remove_afterupload(item){
     this.afficherpreview = false;
 }
 
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

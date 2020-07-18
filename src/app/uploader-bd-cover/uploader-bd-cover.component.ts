@@ -156,6 +156,8 @@ remove_afterupload(item){
     this.afficheruploader = true;
     this.afficherpreview = false;
 }
-
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

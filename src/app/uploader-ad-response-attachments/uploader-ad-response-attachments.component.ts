@@ -188,6 +188,8 @@ remove_beforeupload(item:FileItem,index){
   this.uploader.queue[0].upload();
 }
 
-
+onFileClick(event) {
+  event.target.value = '';
+}
 
 }

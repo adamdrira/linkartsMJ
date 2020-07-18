@@ -4,7 +4,7 @@
             <div class="select-button">
                 <span>Sélectionner jusqu'à 5 fichiers complémentaires</span>
             </div>
-            <input type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+            <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
         </label>
         
     </div>

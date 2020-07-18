@@ -127,7 +127,9 @@ export class UploaderCoverPictureComponent implements OnInit {
   }, "image/png");
   }
 
-  
+  onFileClick(event) {
+    event.target.value = '';
+  }
 
     
   displayContent(item: FileItem): SafeUrl {

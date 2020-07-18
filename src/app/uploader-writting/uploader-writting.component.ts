@@ -58,14 +58,10 @@ export class UploaderWrittingComponent implements OnInit {
       var re = /(?:\.([^.]+))?$/;
 
       if(re.exec(file._file.name)[1]!="pdf"){
-
-        
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf'},
         });
-
-        
       }
       else{
         file.withCredentials = true; 
@@ -105,6 +101,8 @@ export class UploaderWrittingComponent implements OnInit {
      this.afficherpreview = false;
  };
 
-
+ onFileClick(event) {
+  event.target.value = '';
+}
 
 }
