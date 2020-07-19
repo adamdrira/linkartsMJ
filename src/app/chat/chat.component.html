@@ -15,13 +15,13 @@
             <div class="discussions-container">
                 
                 <div class="options-container">
-                    <button mat-button class="mat-icon-button" (click)="add_chat_section()"> 	
+                    <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_chat_section()"> 	
                         <mat-icon class="item-icon">library_add</mat-icon>
                     </button>
-                    <button mat-button class="mat-icon-button" (click)="add_chat_section_research()" > 	
+                    <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_chat_section_research()" > 	
                         <mat-icon class="item-icon">search</mat-icon>
                     </button>
-                    <button mat-button class="mat-icon-button" (click)="delete_chat_section()"> 	
+                    <button mat-button class="mat-icon-button" tabIndex="-1" (click)="delete_chat_section()"> 	
                         <mat-icon class="item-icon">delete</mat-icon>
                     </button>
                     <div class="dropdown-container"  [formGroup]="chat_section_group" >
@@ -42,10 +42,10 @@
                                 onfocus="this.placeholder = ''"
                                 onblur="this.placeholder = 'Titre de la conversation'"
                                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Titre de la conversation'">
-                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'green'}" (click)="add_chat_section_name()" >
+                                <button mat-button tabIndex="-1" style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'green'}" (click)="add_chat_section_name()" >
                                     <mat-icon class="item-icon">done</mat-icon>
                                 </button>
-                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="cancel_add_section()" >
+                                <button mat-button tabIndex="-1" style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="cancel_add_section()" >
                                     <mat-icon class="item-icon">close</mat-icon>
                                 </button>
                             </div>
@@ -64,7 +64,7 @@
                                 onblur="this.placeholder = 'Rechercher'"
                                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
                                
-                                <button mat-button style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="close_chat_section_research()" >
+                                <button mat-button tabIndex="-1" style="margin:auto 1px auto 1px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="close_chat_section_research()" >
                                     <mat-icon class="item-icon">close</mat-icon>
                                 </button>
                             </div>
@@ -101,7 +101,7 @@
             <div style="margin: auto 5px auto auto;" [ngClass]="{'unvisible':!top_pp_loaded }" >
 
                 <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" >
-                    <button mat-button class="mat-icon-button"  (click)="initiateSearch()" >
+                    <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="initiateSearch()" >
                         <mat-icon class="item-icon" style="font-size: 30px; width: 30px;">search</mat-icon>
                     </button>
                 </div>
@@ -115,7 +115,7 @@
                         </mat-form-field>
                     </form>
             
-                    <button mat-button class="mat-icon-button" (click)="endSearch()">
+                    <button mat-button tabIndex="-1" class="mat-icon-button" (click)="endSearch()">
                         <mat-icon  class="item-icon" style="font-size: 30px; width: 30px;">close</mat-icon>
                     </button>
                 </div>
@@ -129,10 +129,10 @@
 
                 <div *ngIf="show_research_results" class="top-container-for-reasearch" >
                     <ng-container *ngIf="number_of_messages_found>0">
-                        <button mat-button class="mat-icon-button" (click)="show_next_message_researched()">
+                        <button mat-button tabIndex="-1" class="mat-icon-button" (click)="show_next_message_researched()">
                             <mat-icon>keyboard_arrow_up</mat-icon>
                         </button>
-                        <button mat-button class="mat-icon-button" (click)="show_precedent_message_researched()">
+                        <button mat-button tabIndex="-1" class="mat-icon-button" (click)="show_precedent_message_researched()">
                             <mat-icon>keyboard_arrow_down</mat-icon>
                         </button>
                         <div style="margin-left: 5px;">
@@ -175,7 +175,8 @@
                         </div>
                         
                         <div #message_children *ngFor="let item of list_of_messages; let i = index" class="message"
-                         [ngClass]="{'bottom-with-reactions':(list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver!=null ||list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user!=null)}">
+                         [ngClass]="{'bottom-with-reactions':(list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver!=null ||list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user!=null),
+                                        'more-margin-for-date':(list_of_messages[list_of_messages.length- i] && get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt))}">
                             <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
                                 <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
                                     <ngx-emoji
@@ -187,6 +188,13 @@
                                     ></ngx-emoji>
                                 </div>
                             </div>
+                            <div *ngIf="list_of_messages[list_of_messages.length- i]" class="display-date">
+                                <div *ngIf="get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt)">
+                                    {{show_date_of_timestamp(list_of_messages[list_of_messages.length -1 - i].createdAt)}}
+                                </div>
+                            </div>
+                            
+
                             <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                                 <div class="my-message-content" >
 
@@ -493,9 +501,9 @@
                             (paste)="onPaste($event);"
                             onblur="this.placeholder = 'Ecrivez un message...'"
                             class="form-control form-control-dark large-form" type="text" [placeholder]="'Ecrivez un message...'"></textarea>
-                            <button  mat-icon-button (click)="send_message()" class="send-button">
+                            <!--<button  mat-icon-button (click)="send_message()" class="send-button">
                                 <mat-icon >send</mat-icon>
-                            </button>
+                            </button>-->
                         </div>
     
                     </div>

@@ -10,7 +10,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class PopupConfirmationComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<PopupConfirmationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      dialogRef.disableClose = true;
+     }
 
 
   ngOnInit(): void {

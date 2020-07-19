@@ -678,6 +678,7 @@ export class ChatComponent implements OnInit  {
                   this.can_get_other_messages=true;
                 }
               };
+              this.calculate_dates_to_show();
               console.log("messages retrieved");
             })
           }
@@ -722,6 +723,7 @@ export class ChatComponent implements OnInit  {
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
           this.function_done=true;
+         
           this.can_get_other_messages=true;
           console.log("function_done");
         }
@@ -1208,6 +1210,75 @@ export class ChatComponent implements OnInit  {
     })
     
     
+  }
+
+  calculate_dates_to_show(){
+    for(let i=1;i<this.list_of_messages.length;i++){
+      
+      let d1=this.get_time_of_date(this.list_of_messages[this.list_of_messages.length- i].createdAt);
+      let d2=this.get_time_of_date(this.list_of_messages[this.list_of_messages.length-1- i].createdAt);
+      if(d2!=d1){
+        console.log(d1 + ' et ' + d2)
+        let d=this.show_date_of_timestamp(this.list_of_messages[this.list_of_messages.length-1- i].createdAt);
+        console.log(d);
+      }
+    }
+  }
+  get_time_of_date(timestamp){
+    /*let date=new Date(timestamp).getTime()/1000;
+    return date;*/
+    let date=new Date(timestamp)
+    let day=String(date.getDate()).padStart(2, '0')
+    let month=String(date.getMonth() + 1).padStart(2, '0');
+    let year = date.getFullYear();
+    return day+'/'+month+'/'+year;
+  }
+
+  show_date_of_timestamp(timestamp){
+    let date=new Date(timestamp)
+    let day=String(date.getDate()).padStart(2, '0')
+    let dat_today=new Date();
+    let today=String(dat_today.getDate()).padStart(2, '0')
+    let time=new Date(timestamp).getTime()/1000;
+    let time_now= new Date().getTime()/1000;
+    if(time_now-time>604800){
+      return this.date_of_message(timestamp,0)
+    }
+    else if(time_now-time>86400){
+      let date=new Date(timestamp);
+      let day=String(date).substring(0,3);
+      if(day=="Mon"){
+        return("Lundi");
+      }
+      if(day=='Tue'){
+        return"Mardi";
+      }
+      if(day=='Wed'){
+        return"Mercredi";
+      }
+      if(day=='Thu'){
+        return"Jeudi";
+      }
+      if(day=="Fri"){
+        return"Vendredi";
+      }
+      if(day=='Thu'){
+        return"Samedi";
+      }
+      if(day=='Thu'){
+        return"Dimanche";
+      }
+      else{
+        return day
+      } 
+    }
+    else if(day!=today){
+      return ("Hier")
+    }
+    else if(day==today){
+      return ("Ajourd'hui")
+    }
+   
   }
 
   date_of_message(timestamp,index){

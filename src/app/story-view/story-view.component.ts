@@ -23,6 +23,7 @@ export class StoryViewComponent implements OnInit {
 
   ) { }
 
+  
 
   @ViewChild('swiperStory', {static: false}) swiperStory:ElementRef;
   @ViewChild('storyBarFill', {static: false}) storyBarFill:ElementRef;
@@ -34,6 +35,8 @@ export class StoryViewComponent implements OnInit {
   
   @Output() show_next = new EventEmitter<any>();
   @Output() show_prev = new EventEmitter<any>();
+  @Output() end_of_stories = new EventEmitter<Object>();
+  
 
   swiper:any;
   pictures_links: any[];
@@ -48,10 +51,12 @@ export class StoryViewComponent implements OnInit {
 
   index_of_story_to_show:number;
   test=false;
+  page_closed=false;
 
   
   @Input('currently_readed') set currently_readed(currently_readed: boolean) {
 
+    console.log("currently readed triggered")
     if( currently_readed ) {
 
       clearInterval(this.interval);
@@ -67,9 +72,34 @@ export class StoryViewComponent implements OnInit {
     }
  }
 
+ @Input('pause') set pause(pause: boolean) {
+ console.log(" exit and clicking pause " + this.user_id)
+  if( pause ) {
+    this.page_closed=true;
+    this.paused=true;
+    clearInterval(this.interval);
+  }
+}
+
 
 
   ngOnInit(): void {
+
+
+    let THIS=this;
+    $(window).on('blur', function(){
+      if(!THIS.paused){
+        THIS.clickPause();
+      }
+      
+    });
+
+    $(window).on('focus', function(){
+      if(THIS.paused && !THIS.page_closed){
+        THIS.clickPause();
+      }
+    });
+
     if(this.current_user== this.user_id){
       this.visitor_mode=false;
     }
@@ -160,17 +190,21 @@ export class StoryViewComponent implements OnInit {
   }
 
   next_slide() {
+    console.log("next slide adding vew " + this.user_id)
+    this.cd.detectChanges();
     let id_story =this.list_of_data[this.swiper.activeIndex].id;
     this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
-      if (r[0]==null){
-        this.Story_service.add_view(this.user_id,id_story,true).subscribe();
-      }
-      else{
+      if(r[0]){
         this.Story_service.add_view(this.user_id,id_story,false).subscribe();
       }
+      else{
+        this.Story_service.add_view(this.user_id,id_story,true).subscribe();
+      }
+        
     })
     
     if( this.swiper.slides.length == ( this.swiper.activeIndex + 1 ) ) {
+      this.end_of_stories.emit({user_id:this.user_id});
       this.show_next.emit();
       clearInterval(this.interval);
       this.timeLeft = 10;
@@ -189,19 +223,8 @@ export class StoryViewComponent implements OnInit {
   }
 
   previous_slide() {
-
-    let id_story =this.list_of_data[this.swiper.activeIndex-1].id;
-    this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
-      if (r[0]==null){
-        this.Story_service.add_view(this.user_id,id_story,true).subscribe();
-      }
-      else{
-        this.Story_service.add_view(this.user_id,id_story,false).subscribe(s=>{
-          console.log(r);
-        });
-      }
-    })
-
+    this.cd.detectChanges();
+    
     if( this.swiper.activeIndex == 0 ) {
       this.show_prev.emit();
       //clearInterval(this.interval);
@@ -257,7 +280,20 @@ export class StoryViewComponent implements OnInit {
 
   }
   
+compteur_loaded_image=0;
+display_images=false;
+display_pp=false;
+loaded_image(){
+  this.compteur_loaded_image+=1;
+  if(this.compteur_loaded_image==this.list_of_contents.length){
+    this.display_images=true;
+  }
+  
+}
 
+loaded_pp(){
+  this.display_pp=true;
+}
 
 
 

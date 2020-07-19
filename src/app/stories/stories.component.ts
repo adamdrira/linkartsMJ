@@ -70,6 +70,8 @@ export class StoriesComponent implements OnInit {
   do_I_have_stories=true; // true si l'utilisateur a de nouvelles stories
   
 
+  list_index_debut_updated:any[];
+
   ngOnInit() {
 
     this.update_new_contents();
@@ -123,6 +125,7 @@ export class StoriesComponent implements OnInit {
   }
 
   retrieve_data_and_valdiate(){
+    this.list_index_debut_updated=new Array(this.list_of_users.length)
     let i=0;
     let x=0;
     console.log(this.list_of_users);
@@ -206,12 +209,16 @@ export class StoriesComponent implements OnInit {
   }*/
 
   watch_story(i: number) {
+    console.log(this.list_index_debut_updated);
+    console.log(this.list_of_state)
 
-    
     if(i==0 && !this.do_I_have_stories){
       const dialogRef = this.dialog.open(PopupAddStoryComponent, {
         data: {user_id:this.user_id},
+        autoFocus: false,
       });
+
+     
     }
     else if((i>0 && !this.do_I_have_stories) || this.do_I_have_stories){
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
@@ -221,6 +228,21 @@ export class StoriesComponent implements OnInit {
         maxWidth: 'unset',
         maxHeight: 'unset',
       });
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log("closed");
+        console.log(result.list_of_users_to_end);
+        let list_to_end = result.list_of_users_to_end;
+        if(list_to_end.length>0){
+          for(let i=0;i<list_to_end.length;i++){
+            let ind =this.final_list_of_users.indexOf(list_to_end[i]);
+            this.list_of_state[ind]=false;
+          }
+        }
+        if(result.event=="end-swiper"){
+          this.list_of_state[this.list_of_state.length-1]=false;
+        }
+        })
     }
     
 

@@ -426,7 +426,16 @@ a {
 }
 
 
+.more-margin-for-date{
+    margin-top:50px;
+}
 
+.display-date{
+    position: absolute;
+    top: -30px;
+    display: flex;
+    left: 45%;
+}
 .message .new-contact-message-content{
     display:flex;
     margin-left: 320px;

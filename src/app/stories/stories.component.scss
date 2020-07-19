@@ -4,8 +4,8 @@
     display: inline-block;
     width:100%;
     background-color:white;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
     margin-top: 15px;
 }
 
@@ -21,11 +21,23 @@
 }
 
 .img-container {
-    margin:auto 10px auto 10px;
+    /*margin:auto 10px auto 10px;
     width: 70px;
     min-width: 70px;
     height: 70px;
+    position: relative;*/
+
+    margin: auto 10px auto 10px;
+    width: 80px;
+    height: 80px;
     position: relative;
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 50%;
+
+ 
 }
 
 .author {
@@ -41,18 +53,22 @@
 
 .img {
     position: absolute;
-    height:70px;
-    width:70px; //adam
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    border-radius:50%; //adam
-    box-shadow:0px 3px 6px #919293;
-    border: 3px solid rgb(209, 224, 251);
+    align-items: center;
+    display: flex;
+    height: 72px;
+    width: 72px;
+    top: 4px;
+    left: 4px;
+    border-radius: 50%;
 }
 
 .new {
-    border: 3px solid rgb(209, 224, 251) !important;
+    background: linear-gradient(to right, #0014ff, #00feff);
+}
+
+.old {
+    background: linear-gradient(to right, #95a2b9, #dff7f7);
+    //border: 3px solid rgb(209, 224, 251) !important;
 }
 
 .background-image {

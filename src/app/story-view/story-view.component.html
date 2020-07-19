@@ -5,7 +5,7 @@
             <!--********************-->
             <!--Author container-->
             <!--********************-->
-            <img [src]="profile_picture">
+            <img (load)='loaded_pp()' [src]="profile_picture" [ngClass]="{'invisible':!display_pp }">
             <span class="author-name">{{author_name}}</span>
     
             
@@ -40,7 +40,7 @@
                     </button>
                 </mat-menu>
     
-                <img [src]=item>
+                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images}">
                 
                 <div class="left-absolute-container" (click)="previous_slide();"></div>
                 <div class="right-absolute-container" (click)="next_slide();"></div>

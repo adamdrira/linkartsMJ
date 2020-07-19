@@ -28,7 +28,7 @@
             </div>
 
             <div style="margin-left: 10px;">
-                <button mat-button class="mat-icon-button" (click)="create_group_chat()"> 	
+                <button mat-button tabIndex="-1" class="mat-icon-button" (click)="create_group_chat()"> 	
                     <mat-icon class="item-icon" style="font-size: 35px; width: 35px;">group_add</mat-icon>
                 </button>
             </div>
@@ -61,7 +61,7 @@
                     (paste)="onPaste($event);"
                     onblur="this.placeholder = 'Rechercher'"
                     class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-                    <button mat-button class="mat-icon-button"  (click)="delete_placeholder()" >
+                    <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="delete_placeholder()" >
                         <mat-icon class="item-icon" >close</mat-icon>
                     </button>
                 </div>
@@ -83,57 +83,63 @@
                         <a>
                             <div class="right-container">
                                 <span class="author-name">{{list_of_friends_names[i]}} </span>
-                                <div class="last-message">
-                                    <div  *ngIf="list_of_friends_last_message[i].is_an_attachment">
-                                        <div *ngIf=" spam=='true'">
-                                            <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
-                                                vous avez envoyé une image 
-                                            </div>
-                                            <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
-                                                vous a envoyé une image 
-                                            </div>
-                                        </div>
-                                        <div *ngIf="list_of_friends_last_message[i].status=='seen' && spam=='false'">
-                                            <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' || list_of_friends_last_message[i].attachment_type=='picture_attachment'">
-                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                    vous avez envoyé une image 1
+                                <div class="last-message-container">
+                                    <div class="last-message">
+                                        <div  *ngIf="list_of_friends_last_message[i].is_an_attachment">
+                                            <div *ngIf=" spam=='true'">
+                                                <div *ngIf="list_of_spams_last_message[i].id_user==current_user">
+                                                    vous avez envoyé une image 
                                                 </div>
-                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                    vous a envoyé une image
+                                                <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
+                                                    vous a envoyé une image 
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                            <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' || list_of_friends_last_message[i].attachment_type=='picture_attachment'">
-                                                
-                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                    vous avez envoyé une image
+                                            <div *ngIf="list_of_friends_last_message[i].status=='seen' && spam=='false'">
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' || list_of_friends_last_message[i].attachment_type=='picture_attachment'">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        vous avez envoyé une image 1
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        vous a envoyé une image
+                                                    </div>
                                                 </div>
-                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                    <b> vous a envoyé une image</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div  *ngIf="!list_of_friends_last_message[i].is_an_attachment">
-                                        <div *ngIf="list_of_friends_last_message[i].message=='New' && list_of_friends_last_message[i].is_from_server">
-                                            <div>
-                                                {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
-                                            </div>
-                                        </div>
-                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server">
-                                            <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                {{list_of_friends_last_message[i].message}} 
                                             </div>
                                             <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                <b>{{list_of_friends_last_message[i].message}}</b>
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' || list_of_friends_last_message[i].attachment_type=='picture_attachment'">
+                                                    
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        vous avez envoyé une image
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        <b> vous a envoyé une image</b>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server">
-                                            {{list_of_friends_last_message[i].message}}
+                                        <div  *ngIf="!list_of_friends_last_message[i].is_an_attachment">
+                                            <div *ngIf="list_of_friends_last_message[i].message=='New' && list_of_friends_last_message[i].is_from_server">
+                                                <div>
+                                                    {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                                </div>
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server">
+                                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                    {{list_of_friends_last_message[i].message}} 
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                                    <b>{{list_of_friends_last_message[i].message}}</b>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server">
+                                                {{list_of_friends_last_message[i].message}}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div >
+                                        - {{show_date_of_timestamp(list_of_friends_last_message[i].createdAt)}}
+                                    </div>
                                 </div>
+                                
                             </div>
                         </a>
             

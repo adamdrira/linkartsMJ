@@ -95,11 +95,19 @@
 .author-container .right-container div.last-message {
     font-size:15px;
     line-height: 20px;
+    max-width: 80%;
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
     width: 250px;
 }
+
+.last-message-container{
+    display:flex;
+    font-size:15px;
+    align-items:center;
+}
+
 
 
 .subscriber-card button {

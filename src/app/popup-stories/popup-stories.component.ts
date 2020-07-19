@@ -25,7 +25,10 @@ export class PopupStoriesComponent implements OnInit {
     private location:Location,
     private Story_service:Story_service,
     
-  @Inject(MAT_DIALOG_DATA) public data: any) { }
+  @Inject(MAT_DIALOG_DATA) public data: any) { 
+    dialogRef.disableClose = true;
+    
+  }
 
 
   swiper:any;
@@ -35,7 +38,7 @@ export class PopupStoriesComponent implements OnInit {
 
   index_debut:number;
   list_index_debut=[];
-
+  list_of_users_to_end=[];
  
 
   ngOnInit() {
@@ -88,7 +91,7 @@ export class PopupStoriesComponent implements OnInit {
       console.log(l[0]);
       console.log(s);
        console.log(this.data.list_of_data[s]) ;
-      if(l[0]!=null){
+      if(l[0]){
         console.log(this.data.list_of_data[s].length)
         for (let i=0;i<this.data.list_of_data[s].length;i++){
           if(this.data.list_of_data[s][i].id==l[0].id_story){
@@ -102,6 +105,7 @@ export class PopupStoriesComponent implements OnInit {
               this.list_index_debut[s]=0;
             }
             k++;
+            //on a récupéré tous les indices des dernières stories vues par l'utilisateur
             if(k==this.data.list_of_users.length){
               console.log(this.list_index_debut);
               for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
@@ -111,8 +115,6 @@ export class PopupStoriesComponent implements OnInit {
                 this.refresh_stories_status();
               }
             }
-            
-           
           }
         }
       }
@@ -156,12 +158,18 @@ export class PopupStoriesComponent implements OnInit {
 
 
     this.componentRef[ this.componentRef.length - 1 ].instance.show_next.subscribe( v => {
+      console.log("end of a story")
       THIS.next_story();
     });
     this.componentRef[ this.componentRef.length - 1 ].instance.show_prev.subscribe( v => {
       THIS.prev_story();
     });
 
+    this.componentRef[ this.componentRef.length - 1 ].instance.end_of_stories.subscribe( v => {
+      console.log(v);
+      THIS.list_of_users_to_end.push(v.user_id);
+      
+    });
 
     if( this.swiper ) {
       this.swiper.update();
@@ -171,7 +179,12 @@ export class PopupStoriesComponent implements OnInit {
 
   next_story() {
     if( this.swiper.slides.length == ( this.swiper.activeIndex + 1 ) ) {
-      this.dialogRef.close();
+      for(let i=0;i<this.componentRef.length;i++){
+        this.componentRef[i].instance.pause = true;
+      }
+      this.cd.detectChanges();
+      console.log("we close here")
+      this.dialogRef.close({event:"end-swiper",data:this.list_index_debut,list_of_users_to_end:this.list_of_users_to_end});
       return;
     }
     this.swiper.slideTo( this.swiper.activeIndex + 1 );
@@ -197,6 +210,15 @@ export class PopupStoriesComponent implements OnInit {
     }
   }
 
+
+  close_dialog(){
+    for(let i=0;i<this.componentRef.length;i++){
+      this.componentRef[i].instance.pause = true;
+    }
+    this.cd.detectChanges();
+    console.log("we close here")
+    this.dialogRef.close({event:"closing-swiper",data:this.list_index_debut,list_of_users_to_end:this.list_of_users_to_end});
+  }
   
 
 }

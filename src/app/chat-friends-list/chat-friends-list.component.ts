@@ -207,6 +207,9 @@ export class ChatFriendsListComponent implements OnInit {
           }
         }
       }
+      else{
+        this.list_of_friends_retrieved=true;
+      }
     })
   };
 
@@ -492,23 +495,29 @@ export class ChatFriendsListComponent implements OnInit {
         let compt=0;
         console.log("first propositions");
         console.log(r[0]);
-        for(let i=0;i<r[0].list.length;i++){
-          this.list_of_contacts_names[i]=r[0].list[i].firstname + ' ' + r[0].list[i].lastname;
-          this.list_of_contacts_pseudos[i]=r[0].list[i].nickname;
-          this.list_of_contacts_ids[i]=r[0].list[i].id;
-          this.Profile_Edition_Service.retrieve_profile_picture(  r[0].list[i].id ).subscribe(t=> {
-            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_contacts_pictures[i] = SafeURL;
-            compt ++;
-            if(compt==r[0].list.length){
-              this.display_contacts=true;
-              console.log(this.list_of_contacts_names)
-              console.log(this.list_of_contacts_pictures)
-            }
-  
-          })
+        if(r[0].length>0){
+          for(let i=0;i<r[0].list.length;i++){
+            this.list_of_contacts_names[i]=r[0].list[i].firstname + ' ' + r[0].list[i].lastname;
+            this.list_of_contacts_pseudos[i]=r[0].list[i].nickname;
+            this.list_of_contacts_ids[i]=r[0].list[i].id;
+            this.Profile_Edition_Service.retrieve_profile_picture(  r[0].list[i].id ).subscribe(t=> {
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_contacts_pictures[i] = SafeURL;
+              compt ++;
+              if(compt==r[0].list.length){
+                this.display_contacts=true;
+                console.log(this.list_of_contacts_names)
+                console.log(this.list_of_contacts_pictures)
+              }
+    
+            })
+          }
         }
+        else{
+          this.display_contacts=true;
+        }
+        
       })
     }
    
@@ -851,6 +860,56 @@ export class ChatFriendsListComponent implements OnInit {
     
   }
 
+  show_date_of_timestamp(timestamp){
+    let date=new Date(timestamp)
+    let day=String(date.getDate()).padStart(2, '0')
+    let dat_today=new Date();
+    let today=String(dat_today.getDate()).padStart(2, '0')
+    let time=new Date(timestamp).getTime()/1000;
+    let time_now= new Date().getTime()/1000;
+    if(time_now-time>604800){
+      let month=String(date.getMonth() + 1).padStart(2, '0');
+      let year = date.getFullYear();
+      return day+'/'+month+'/'+year;
+    }
+    else if(time_now-time>86400){
+      let date=new Date(timestamp);
+      let day=String(date).substring(0,3);
+      if(day=="Mon"){
+        return("Lun");
+      }
+      if(day=='Tue'){
+        return"Mar";
+      }
+      if(day=='Wed'){
+        return"Mer";
+      }
+      if(day=='Thu'){
+        return"Jeu";
+      }
+      if(day=="Fri"){
+        return"Ven";
+      }
+      if(day=='Thu'){
+        return"Sam";
+      }
+      if(day=='Thu'){
+        return"Dim";
+      }
+      else{
+        return day
+      } 
+    }
+    else if(day!=today){
+      return ("Hier")
+    }
+    else if(day==today){
+      let hour =String(date.getHours()).padStart(2, '0');
+      let min =String(date.getMinutes()).padStart(2, '0');
+      return (hour+':'+min)
+    }
+   
+  }
 
 /*************************************Partie envoie de group_chat***********************************/
 /*************************************Partie envoie de group_chat***********************************/

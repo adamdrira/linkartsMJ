@@ -134,8 +134,12 @@ initialize_cropper(content: ElementRef) {
 
 
 step_back() {
-  this.uploader.clearQueue();
+ 
+  //this.uploader.clearQueue();
   this.remove_beforeupload(this.uploader.queue[0]);
+  console.log(this.uploader.queue)
+  console.log(this.cropper);
+  this.afficherpreview=false;
 }
 
 //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder

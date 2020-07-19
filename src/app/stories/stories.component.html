@@ -6,16 +6,16 @@
                 
                 <img class="background-image" [src]="list_of_cover_pictures[i]">
 
-                <div class="img-container">
-                        <img class="img" [src]="item" [ngClass]="{'new': list_of_state[i] }">
+                <div class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i] }">
+                        <img class="img" [src]="item" >
                 </div>
                 <div class="author" *ngIf="i==0">Ma story
                 </div>
 
                 <div class="author" *ngIf="i>0">
                     {{list_of_author_names[i]}}
-                    <span *ngIf="list_of_state[i]">&nbsp; New</span>
-                    <span *ngIf="!list_of_state[i]">&nbsp; Old</span>
+                    <!--<span *ngIf="list_of_state[i]">&nbsp; New</span>
+                    <span *ngIf="!list_of_state[i]">&nbsp; Old</span>-->
                 </div>
 
             </div>
