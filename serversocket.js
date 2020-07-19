@@ -33,8 +33,6 @@ wss.on('connection', (ws, req)=>{
   ws.on('message', function incoming(message) {
 
 
-   
-
     console.log('received from ' + userID + ': ' + message)
     var messageArray = JSON.parse(message);
     var toUserWebSocket = webSockets[parseInt(messageArray.id_receiver)];
@@ -88,17 +86,32 @@ wss.on('connection', (ws, req)=>{
                   if (toUserWebSocket) {
                     console.log("sending message to websocket open");
                     console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray))
-                    toUserWebSocket.send(JSON.stringify([messageArray]));
+                    toUserWebSocket.send(JSON.stringify([{
+                      "id":r.id,
+                      "id_receiver": messageArray.id_receiver,
+                      "id_user":messageArray.id_user,
+                      "message":messageArray.message,
+                      "is_from_server":messageArray.is_from_server,
+                      "attachment_name":messageArray.attachment_name,
+                      "size":messageArray.size,
+                      "is_a_response":messageArray.is_a_response,
+                      "id_message_responding":messageArray.id_message_responding,
+                      "message_responding_to":messageArray.message_responding_to,
+                      "id_chat_section":messageArray.id_chat_section,
+                      "is_an_attachment":messageArray.is_an_attachment,
+                      "attachment_type":messageArray.attachment_type,
+                    }]));
                   }
                   if(!messageArray.is_from_server || messageArray.is_from_server==null){
                     console.log("send back message with received")
                     console.log(messageArray);
-                    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                   }
                   if(messageArray.is_from_server){
                     console.log("on renvoie un autre message");
                     console.log(messageArray)
                     ws.send(JSON.stringify([{
+                      "id":r.id,
                       "id_receiver": messageArray.id_receiver,
                       "id_user":messageArray.id_user,
                       "message":messageArray.message,
@@ -114,7 +127,7 @@ wss.on('connection', (ws, req)=>{
                   }
                 }
                 else{
-                  ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                  ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                 }
                
               })
@@ -129,17 +142,32 @@ wss.on('connection', (ws, req)=>{
                 if(messageArray.id_user!=messageArray.id_receiver){
                   if (toUserWebSocket) {
                     console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray))
-                    toUserWebSocket.send(JSON.stringify([messageArray]));
+                    toUserWebSocket.send(JSON.stringify([{
+                      "id":r.id,
+                      "id_receiver": messageArray.id_receiver,
+                      "id_user":messageArray.id_user,
+                      "message":messageArray.message,
+                      "is_from_server":messageArray.is_from_server,
+                      "attachment_name":messageArray.attachment_name,
+                      "size":messageArray.size,
+                      "is_a_response":messageArray.is_a_response,
+                      "id_message_responding":messageArray.id_message_responding,
+                      "message_responding_to":messageArray.message_responding_to,
+                      "id_chat_section":messageArray.id_chat_section,
+                      "is_an_attachment":messageArray.is_an_attachment,
+                      "attachment_type":messageArray.attachment_type,
+                    }]));
                   }
                   if(!messageArray.is_from_server || messageArray.is_from_server==null){
                     console.log("send back message with received")
                     console.log(messageArray);
-                    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                   }
                   if(messageArray.is_from_server){
                     console.log("on renvoie un autre message");
                     console.log(messageArray)
                     ws.send(JSON.stringify([{
+                      "id":r.id,
                       "id_receiver": messageArray.id_receiver,
                       "id_user":messageArray.id_user,
                       "message":messageArray.message,
@@ -155,7 +183,7 @@ wss.on('connection', (ws, req)=>{
                   }
                 }
                 else{
-                  ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                  ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
                 }
                 
               })
@@ -193,9 +221,23 @@ wss.on('connection', (ws, req)=>{
               }).then(s=>{
                 if (toUserWebSocket) {
                   console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray))
-                  toUserWebSocket.send(JSON.stringify([messageArray]));
+                  toUserWebSocket.send(JSON.stringify([{
+                    "id":r.id,
+                    "id_receiver": messageArray.id_receiver,
+                    "id_user":messageArray.id_user,
+                    "message":messageArray.message,
+                    "is_from_server":messageArray.is_from_server,
+                    "attachment_name":messageArray.attachment_name,
+                    "size":messageArray.size,
+                    "is_a_response":messageArray.is_a_response,
+                    "id_message_responding":messageArray.id_message_responding,
+                    "message_responding_to":messageArray.message_responding_to,
+                    "id_chat_section":messageArray.id_chat_section,
+                    "is_an_attachment":messageArray.is_an_attachment,
+                    "attachment_type":messageArray.attachment_type,
+                  }]));;
                 }
-                ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id}]));
               })
             }
             else{
@@ -206,9 +248,23 @@ wss.on('connection', (ws, req)=>{
               }).then(t=>{
                 if (toUserWebSocket) {
                   console.log('sent to ' + messageArray.id_receiver + ': ' + JSON.stringify(messageArray))
-                  toUserWebSocket.send(JSON.stringify([messageArray]));
+                  toUserWebSocket.send(JSON.stringify([{
+                    "id":r.id,
+                    "id_receiver": messageArray.id_receiver,
+                    "id_user":messageArray.id_user,
+                    "message":messageArray.message,
+                    "is_from_server":messageArray.is_from_server,
+                    "attachment_name":messageArray.attachment_name,
+                    "size":messageArray.size,
+                    "is_a_response":messageArray.is_a_response,
+                    "id_message_responding":messageArray.id_message_responding,
+                    "message_responding_to":messageArray.message_responding_to,
+                    "id_chat_section":messageArray.id_chat_section,
+                    "is_an_attachment":messageArray.is_an_attachment,
+                    "attachment_type":messageArray.attachment_type,
+                  }]));(JSON.stringify([messageArray]));
                 }
-                ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray}]));
+                ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, is_from_server:true, server_message:'received', message:messageArray, id_message}]));
               })
             }
           })
