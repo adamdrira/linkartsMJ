@@ -264,34 +264,38 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                     limit:num,
                   })
                   .then(friends =>  {
-                    for(let j=0;j<friends.length;j++){
-                      if(friends[j].id_user==id_user){
-                        list_of_users.findOne({
-                          where:{
-                            id:friends[j].id_receiver
-                          }
-                        }).then(l=>{
-                          list_of_users_to_send[results.length+j]=l;
-                          if(j==friends.length-1){
-                            res.status(200).send([{list:list_of_users_to_send}]);
-                          }
-                        })
+                    if(friends.length>0){
+                      for(let j=0;j<friends.length;j++){
+                        if(friends[j].id_user==id_user){
+                          list_of_users.findOne({
+                            where:{
+                              id:friends[j].id_receiver
+                            }
+                          }).then(l=>{
+                            list_of_users_to_send[results.length+j]=l;
+                            if(j==friends.length-1){
+                              res.status(200).send([{list:list_of_users_to_send}]);
+                            }
+                          })
+                        }
+                        else{
+                          list_of_users.findOne({
+                            where:{
+                              id:friends[j].id_user
+                            }
+                          }).then(l=>{
+                            list_of_users_to_send[results.length+j]=l;
+                            if(j==friends.length-1){
+                              res.status(200).send([{list:list_of_users_to_send}]);
+                            }
+                          })
+                        }
                       }
-                      else{
-                        list_of_users.findOne({
-                          where:{
-                            id:friends[j].id_user
-                          }
-                        }).then(l=>{
-                          list_of_users_to_send[results.length+j]=l;
-                          if(j==friends.length-1){
-                            res.status(200).send([{list:list_of_users_to_send}]);
-                          }
-                        })
-                      }
-                      
                     }
-                      
+                    else{
+                      res.status(200).send([{list:[]}]);
+                    }
+                    
                   }); 
       }
 

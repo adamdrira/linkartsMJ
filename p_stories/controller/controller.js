@@ -113,16 +113,8 @@ module.exports = (router, list_of_stories,list_of_views) => {
     router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
         const current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
-        //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        /*var ss = String(yesterday.getSeconds()).padStart(2, '0');
-        var mi = String(yesterday.getMinutes()).padStart(2, '0');
-        var hh = String(yesterday.getHours()).padStart(2, '0');
-        var dd = String(yesterday.getDate()).padStart(2, '0');
-        var mm = String(yesterday.getMonth()+1).padStart(2, '0'); 
-        var yyyy = String(yesterday.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
 
         (async () => {
             
@@ -134,6 +126,9 @@ module.exports = (router, list_of_stories,list_of_views) => {
                   createdAt: {[Op.gte]: yesterday}
                 },
               });
+            console.log("number of stories");
+              console.log(number_of_stories);
+              
               
             const number_of_stories_seen = await list_of_views.count({
                 where: {
@@ -142,6 +137,9 @@ module.exports = (router, list_of_stories,list_of_views) => {
                   createdAt: {[Op.gte]: yesterday}
                 },
               });
+
+            console.log("number_of_stories_seen");
+            console.log(number_of_stories_seen);
             if (number_of_stories==number_of_stories_seen){
                 res.status(200).send([{"value":true}])
             }
