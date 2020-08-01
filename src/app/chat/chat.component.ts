@@ -828,6 +828,7 @@ export class ChatComponent implements OnInit  {
 
   
   on_keydown(event){
+
     console.log("message change");
     console.log(event.key);
     console.log(this.attachments_type);
@@ -860,6 +861,9 @@ export class ChatComponent implements OnInit  {
       this.number_of_shift=0;
     }
 
+
+    
+    this.resize_input_height();
     
   }
 
@@ -942,6 +946,14 @@ export class ChatComponent implements OnInit  {
         this.send_attachment_or_picture(i);
       }
     }
+
+    if( this.message_group.value.message.length > 1500 ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Ce message est trop long (> 1500 caractères), il n\'a pas été envoyé'},
+      });
+      return;
+    }
+
     this.message_one ={
       id_user:this.current_user_id,   
       id_receiver:this.friend_id,  
@@ -969,9 +981,10 @@ export class ChatComponent implements OnInit  {
     this.message.reset();
     this.message_group.value.message='';
     this.cd.detectChanges();
-    console.log("scroll dans send message")
+    console.log("scroll dans send message");
     this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-    console.log("scroll")
+    console.log("scroll");
+
   }
 
   
@@ -1450,9 +1463,14 @@ handleClick($event) {
 
 show_emojis=false;
 open_emojis(){
-  console.log("show emojis")
-  this.show_emojis=true;
-  this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+  if( !this.show_emojis ) {
+    this.show_emojis=true;
+    this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+  }
+  else {
+    this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+    this.show_emojis=false;
+  }
 }
 
 
@@ -1527,6 +1545,9 @@ initialize_selectors(){
     
     $('.chat-section').SumoSelect({
     });
+
+
+
     THIS.top_sumo_loaded=true;
   });
   THIS.cd.detectChanges();
@@ -1584,6 +1605,15 @@ initialize_selectors(){
       }
       THIS.cd.detectChanges();
     }
+
+    
+    THIS.cancel_response();
+    THIS.attachments_type=[];
+    THIS.attachments_name=[];
+    THIS.attachments_for_sql=[];
+    THIS.attachments=[];
+    THIS.cd.detectChanges();
+
   })
 
   
@@ -2259,4 +2289,34 @@ endSearch(){
 
 
 
+/**************************************** */
+/**************************************** */
+/**FONCTIONS MOKHTAR */
+/**************************************** */
+/**************************************** */
+resize_input_height() {
+  
+  this.input.nativeElement.style.height = "0px";
+  this.input.nativeElement.style.height = this.input.nativeElement.scrollHeight + 'px';
+
 }
+
+
+initialize_heights() {
+  //if( !this.fullscreen_mode ) {
+    $('#messages-container').css("height", ( $('.middle-container').height() - $('#messages-bottom-container').height() ) + "px");
+  //}
+}
+
+/******************************************************* */
+/******************** AFTER VIEW CHECKED *************** */
+/******************************************************* */
+ngAfterViewChecked() {
+  this.initialize_heights();
+}
+
+
+
+
+}
+

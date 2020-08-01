@@ -18,7 +18,7 @@
             </div>-->
 
             <div class="formdata-container">
-                <form [formGroup]="formData">
+                <form [formGroup]="formData" style="align-self:center;padding:0 10px;">
                     <mat-radio-group formControlName="IsActive"
                      (change)="radioChange($event)">
                         <mat-radio-button value="Mes contacts"  >Mes contacts</mat-radio-button>
@@ -27,60 +27,68 @@
                 </form>
             </div>
 
-            <div style="margin-left: 10px;">
+            <div class="button-container">
                 <button mat-button tabIndex="-1" class="mat-icon-button" (click)="create_group_chat()"> 	
-                    <mat-icon class="item-icon" style="font-size: 35px; width: 35px;">group_add</mat-icon>
+                    <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">group_add</mat-icon>
                 </button>
             </div>
             
         </div>
 
-        <div  [formGroup]="fd" novalidate style="display: flex;
-        align-items: center;">
-
-            <div class="navbar-l1-searchbar-container">
+        <div class="searchbar-container" [formGroup]="fd" novalidate>
+            
+            <div [ngClass]="{'hovered': display_contacts }">
                 
-                <div class="searchbar">
-                    <input #input
-                    style="display: block;
-                    width: 90%;
-                    height: calc(1.5em + .75rem + 2px);
-                    padding: .375rem .75rem;
-                    font-size: 1rem;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #495057;
-                    background-color: #fff;
-                    border: 1px solid #ced4da;
-                    border: unset;
-                    border-radius: 10px;"
-                    formControlName="fdSearchbar"
-                    (click)="activateFocus()"
-                    onfocus="this.placeholder = ''"
-                    (input)="research_friends($event);"
-                    (paste)="onPaste($event);"
-                    onblur="this.placeholder = 'Rechercher'"
-                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-                    <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="delete_placeholder()" >
-                        <mat-icon class="item-icon" >close</mat-icon>
-                    </button>
-                </div>
+                
+                <mat-icon class="item-icon" *ngIf="!display_contacts" 
+                style="align-self: center;padding-left: 10px;color: #6c75a7;cursor:default;"
+                (click)="activateFocus()">search</mat-icon>
 
+                <input #input
+                style="display: block;
+                width: 90%;
+                height: calc(1.5em + .75rem + 2px);
+                padding: .375rem .75rem;
+                font-size: 1rem;
+                cursor:text;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #495057;
+                background-color: unset;
+                background: unset;
+                border: 1px solid #ced4da;
+                border: unset;
+                border-radius: 10px;"
+                formControlName="fdSearchbar"
+                (click)="activateFocus()"
+                onfocus="this.placeholder = ''"
+                (input)="research_friends($event);"
+                (paste)="onPaste($event);"
+                onblur="this.placeholder = 'Rechercher'"
+                class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+                
+                <button mat-button tabIndex="-1" class="mat-icon-button" *ngIf="display_contacts" (click)="delete_placeholder()">
+                    <mat-icon class="item-icon" *ngIf="display_contacts">close</mat-icon>
+                </button>
+
+
+                
             </div>
-
-           
             
         </div>
 
-        <div *ngIf="list_of_friends_retrieved && get_friends" >
 
-            <div *ngIf="!display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
-                <div *ngFor="let item of list_of_friends_ids; let i=index" class="subscriber-card">
-                    <div class="author-container" (click)="open_chat(i)">
-                        <div class="left-container">
-                            <img [src]="list_of_friends_profile_pictures[i]">
-                        </div>
-                        <a>
+        <div class="subscribers-container" id="subscribers-container">
+                
+            <ng-container *ngIf="list_of_friends_retrieved && get_friends">
+
+                <div *ngIf="!display_contacts && !waiting_display_other_contacts" >
+
+                    <div *ngFor="let item of list_of_friends_ids; let i=index" class="subscriber-card" [ngClass]="{'opened': id_chat_section== i }">
+                        <div class="author-container" (click)="open_chat(i)">
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[i]">
+                            </div>
                             <div class="right-container">
                                 <span class="author-name">{{list_of_friends_names[i]}} </span>
                                 <div class="last-message-container">
@@ -141,176 +149,182 @@
                                 </div>
                                 
                             </div>
-                        </a>
-            
+                
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div *ngIf="display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
-                <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
-                    <div class="author-container" (click)="open_new_contact_chat(1,i)">
-                        <div class="left-container">
-                            <img [src]="list_of_contacts_pictures[i]">
-                        </div>
-                        <div class="right-container">
-                            <span class="author-name">{{list_of_contacts_names[i]}} </span>
-                            <div>@{{list_of_contacts_pseudos[i]}}</div>
-                        </div>
-            
-                    </div>
-                </div>
-            </div>
+                <div *ngIf="display_contacts && !waiting_display_other_contacts">
 
-            <ng-container *ngIf="waiting_display_other_contacts">
-                <div *ngIf="display_other_contacts" class="subscribers-container" >
-                    <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                    <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(1,i)">
                             <div class="left-container">
-                                <img [src]="list_of_history_pictures[i]">
+                                <img [src]="list_of_contacts_pictures[i]">
                             </div>
                             <div class="right-container">
-                                <span class="author-name">{{list_of_history_names[i]}} </span>
-                                <div>@{{list_of_history_pseudos[i]}}</div>
-                            </div>
-                
-                        </div>
-                    </div>
-                    <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(3,i)">
-                            <div class="left-container">
-                                <img [src]="list_of_related_contacts_pictures[i]">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
-                                <div>@{{list_of_related_contacts_pseudos[i]}}</div>
-                            </div>
-                
-                        </div>
-                    </div>
-                    <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(4,i)">
-                            <div class="left-container">
-                                <img [src]="list_of_other_contacts_pictures[i]">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
-                                <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                                <span class="author-name">{{list_of_contacts_names[i]}} </span>
+                                <div>@{{list_of_contacts_pseudos[i]}}</div>
                             </div>
                 
                         </div>
                     </div>
                 </div>
+
+                <ng-container *ngIf="waiting_display_other_contacts">
+                    <div *ngIf="display_other_contacts"> 
+
+                        <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_history_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_history_names[i]}} </span>
+                                    <div>@{{list_of_history_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                        <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(3,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_related_contacts_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
+                                    <div>@{{list_of_related_contacts_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                        <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(4,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_other_contacts_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
+                                    <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                
             </ng-container>
 
-            
-        </div>
+            <ng-container *ngIf="list_of_spams_retrieved && !get_friends">
 
-        <div *ngIf="list_of_spams_retrieved && !get_friends" >
+                <div *ngIf="!display_contacts && !waiting_display_other_contacts">
 
-            <div *ngIf="!display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
-                <div *ngFor="let item of list_of_spams_ids; let i=index" class="subscriber-card">
-                    <div class="author-container" (click)="open_chat_spam(i)">
-                        <div class="left-container">
-                            <img [src]="list_of_spams_profile_pictures[i]">
-                        </div>
-                        <a>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_spams_names[i]}} </span>
-                                <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
-                                    <div *ngIf="list_of_spams_last_message[i].status=='seen' || list_of_spams_last_message[i].id_user==current_user">
-                                        <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                            a envoyé une image
-                                        </div>
-                                        <div  *ngIf="list_of_spams_last_message[i].attachment_type!='picture_message' && list_of_spams_last_message[i].attachment_type!='picture_file'">
-                                            a envoyé une pièce jointe
-                                        </div>
-                                    </div>
-                                    <div *ngIf="list_of_spams_last_message[i].status=='received'">
-                                        <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                            <b>a envoyé une image</b>
-                                        </div>
-                                        <div  *ngIf="list_of_spams_last_message[i].attachment_type!='picture_message' && list_of_spams_last_message[i].attachment_type!='picture_file'">
-                                            <b>a envoyé une pièce jointe</b>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div  *ngIf="!list_of_spams_last_message[i].is_an_attachment">
-                                    <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
-                                        <div *ngIf="list_of_spams_last_message[i].status=='seen'">
-                                            {{list_of_spams_last_message[i].message}} 
+                    <div *ngFor="let item of list_of_spams_ids; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_chat_spam(i)">
+                            <div class="left-container">
+                                <img [src]="list_of_spams_profile_pictures[i]">
+                            </div>
+                            <a>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_spams_names[i]}} </span>
+                                    <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
+                                        <div *ngIf="list_of_spams_last_message[i].status=='seen' || list_of_spams_last_message[i].id_user==current_user">
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
+                                                a envoyé une image
+                                            </div>
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type!='picture_message' && list_of_spams_last_message[i].attachment_type!='picture_file'">
+                                                a envoyé une pièce jointe
+                                            </div>
                                         </div>
                                         <div *ngIf="list_of_spams_last_message[i].status=='received'">
-                                            <b>{{list_of_spams_last_message[i].message}}</b>
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
+                                                <b>a envoyé une image</b>
+                                            </div>
+                                            <div  *ngIf="list_of_spams_last_message[i].attachment_type!='picture_message' && list_of_spams_last_message[i].attachment_type!='picture_file'">
+                                                <b>a envoyé une pièce jointe</b>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div  *ngIf="!list_of_spams_last_message[i].is_an_attachment">
+                                        <div *ngIf="list_of_spams_last_message[i].id_user!=current_user">
+                                            <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                {{list_of_spams_last_message[i].message}} 
+                                            </div>
+                                            <div *ngIf="list_of_spams_last_message[i].status=='received'">
+                                                <b>{{list_of_spams_last_message[i].message}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
                                 </div>
-                                
-                                
-                            </div>
-                        </a>
-            
+                            </a>
+                
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div *ngIf="display_contacts && !waiting_display_other_contacts" class="subscribers-container" >
-                <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
-                    <div class="author-container" (click)="open_new_contact_chat(1,i)">
-                        <div class="left-container">
-                            <img [src]="list_of_contacts_pictures[i]">
-                        </div>
-                        <div class="right-container">
-                            <span class="author-name">{{list_of_contacts_names[i]}} </span>
-                            <div>@{{list_of_contacts_pseudos[i]}}</div>
-                        </div>
-            
-                    </div>
-                </div>
-            </div>
+                <div *ngIf="display_contacts && !waiting_display_other_contacts">
 
-            <ng-container *ngIf="waiting_display_other_contacts">
-                <div *ngIf="display_other_contacts" class="subscribers-container" >
-                    <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                    <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card">
+                        <div class="author-container" (click)="open_new_contact_chat(1,i)">
                             <div class="left-container">
-                                <img [src]="list_of_history_pictures[i]">
+                                <img [src]="list_of_contacts_pictures[i]">
                             </div>
                             <div class="right-container">
-                                <span class="author-name">{{list_of_history_names[i]}} </span>
-                                <div>@{{list_of_history_pseudos[i]}}</div>
-                            </div>
-                
-                        </div>
-                    </div>
-                    <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(3,i)">
-                            <div class="left-container">
-                                <img [src]="list_of_related_contacts_pictures[i]">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
-                                <div>@{{list_of_related_contacts_pseudos[i]}}</div>
-                            </div>
-                
-                        </div>
-                    </div>
-                    <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_new_contact_chat(4,i)">
-                            <div class="left-container">
-                                <img [src]="list_of_other_contacts_pictures[i]">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
-                                <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                                <span class="author-name">{{list_of_contacts_names[i]}} </span>
+                                <div>@{{list_of_contacts_pseudos[i]}}</div>
                             </div>
                 
                         </div>
                     </div>
                 </div>
+
+                <ng-container *ngIf="waiting_display_other_contacts">
+                    <div *ngIf="display_other_contacts">
+
+                        <div *ngFor="let item of list_of_history_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(2,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_history_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_history_names[i]}} </span>
+                                    <div>@{{list_of_history_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                        <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(3,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_related_contacts_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
+                                    <div>@{{list_of_related_contacts_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                        <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
+                            <div class="author-container" (click)="open_new_contact_chat(4,i)">
+                                <div class="left-container">
+                                    <img [src]="list_of_other_contacts_pictures[i]">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
+                                    <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                
             </ng-container>
-
-            
+        
         </div>
 
     </div>

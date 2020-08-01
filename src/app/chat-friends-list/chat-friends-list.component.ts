@@ -27,6 +27,7 @@ export class ChatFriendsListComponent implements OnInit {
     public navbar: NavbarService, 
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd: ChangeDetectorRef,
+    private rd:Renderer2
     ){
       this.navbar.show();
   }
@@ -137,7 +138,20 @@ export class ChatFriendsListComponent implements OnInit {
     
   };
 
+  
+  /******************************************************* */
+  /******************** AFTER VIEW CHECKED *************** */
+  /******************************************************* */
+  ngAfterViewChecked() {
+    this.initialize_heights();
+  }
+
  
+  initialize_heights() {
+    $('.main-chat-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+  }
+
+
   
   sort_friends_list() {
     console.log("emetteur sort friends list")
@@ -169,6 +183,7 @@ export class ChatFriendsListComponent implements OnInit {
                         this.friend_pseudo=this.list_of_friends_pseudos[ind];
                         this.friend_picture=this.list_of_friends_profile_pictures[ind];
                         this.list_of_friends_last_message[ind].status="seen";
+                        console.log(this.list_of_friends_retrieved)
                         this.list_of_friends_retrieved=true;
                       });
                     });
@@ -187,16 +202,25 @@ export class ChatFriendsListComponent implements OnInit {
                   this.list_of_friends_profile_pictures[i] = SafeURL;
                   compt ++;
                   if(compt==r[0].length){
+                    console.log(this.list_of_friends_ids)
                     this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
                       this.list_of_friends_last_message=u[0].list_of_friends_messages;
+                      console.log(this.list_of_friends_last_message)
                       this.chatService.get_my_real_friend(this.list_of_friends_ids).subscribe(v=>{
-                        console.log(v);
-                        this.friend_id=v[0][0].id_receiver;
+                        console.log(v)
+                        if(v[0].message){
+                          console.log(v);
+                          this.friend_id=v[0][0].id_receiver;
+                        }
+                        else{
+                          this.friend_id=this.list_of_friends_ids[0];
+                        }
                         let ind = this.list_of_friends_ids.indexOf(this.friend_id);
                         this.friend_name=this.list_of_friends_names[ind];
                         this.friend_pseudo=this.list_of_friends_pseudos[ind];
                         this.friend_picture=this.list_of_friends_profile_pictures[ind];
                         this.list_of_friends_last_message[ind].status="seen";
+                        console.log(this.list_of_friends_retrieved)
                         this.list_of_friends_retrieved=true;
                       })
 
@@ -208,8 +232,10 @@ export class ChatFriendsListComponent implements OnInit {
         }
       }
       else{
+        console.log(this.list_of_friends_retrieved)
         this.list_of_friends_retrieved=true;
       }
+      
     })
   };
 
@@ -664,6 +690,7 @@ export class ChatFriendsListComponent implements OnInit {
     this.friend_pseudo=this.list_of_friends_pseudos[i];
     this.friend_name=this.list_of_friends_names[i];
     this.friend_picture=this.list_of_friends_profile_pictures[i];
+
   }
 
   open_chat_spam(i){
@@ -923,6 +950,26 @@ export class ChatFriendsListComponent implements OnInit {
 create_group_chat(){
 
 }
+
+
+
+
+
+/************************************************************************************************** */
+/************************************************************************************************** */
+/************************************************************************************************** */
+/************************************************************************************************** */
+/**FONCTIONS MOKHTAR */
+/************************************************************************************************** */
+/************************************************************************************************** */
+/************************************************************************************************** */
+/************************************************************************************************** */
+
+
+
+
+
+
   
 
     
