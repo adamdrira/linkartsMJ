@@ -9,7 +9,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => {
+module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list_of_users) => {
 
   function get_current_user(token){
     var user = 0
@@ -100,13 +100,24 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
             authorid: current_user,
             bd_id: bd_id,
           }
-        }).then(bd=>{
-            Liste_bd_serie.destroy({
-              where: {authorid:current_user, bd_id: bd_id },
-              truncate: false
-           });
-            res.status(200).send([bd]);
-        })
+        });
+        user = await list_of_users.findOne({
+          where:{
+            id:current_user,
+          }
+        }).then(user=>{
+          let number_of_comics=user.number_of_comics-1;
+          user.update({
+            "number_of_comics":number_of_comics,
+          })
+        });
+        if(bd){
+          bd.destroy({
+            truncate: false
+          });
+          res.status(200).send([bd]);
+        }
+        
           
         
 
@@ -257,6 +268,18 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
           });
           
         } else { 
+          Liste_bd_serie.findOne({
+            where: {
+              bd_id: bd_id,
+              authorid: current_user,
+            }
+          })
+          .then(bd =>  {
+            let chaptersnumber=bd.chaptersnumber+=1;
+            bd.update({
+              "chaptersnumber":chaptersnumber
+            })
+          })
           console.log('on ajoute le chapitre');
           chapters_bd_serie.create({
             "author_id": current_user,
@@ -311,10 +334,21 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/delete_chapter_bd_serie/:chapter_number/:bd_id', function (req, res) {
-
+        let current_user = get_current_user(req.cookies.currentUser);
         const chapter_number = parseInt(req.params.chapter_number);
         const bd_id = parseInt(req.params.bd_id);
-
+        Liste_bd_serie.findOne({
+          where: {
+            bd_id: bd_id,
+            authorid: current_user,
+          }
+        })
+        .then(bd =>  {
+          let chaptersnumber=bd.chaptersnumber-=1;
+          bd.update({
+            "chaptersnumber":chaptersnumber
+          })
+        })
         console.log( 'suppression en cours');
         chapters_bd_serie.destroy({
           where: {
@@ -323,7 +357,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
             },
           truncate: false
         })
-
+        res.send([{"ok":"ok"}]);
       });
 
 
@@ -550,6 +584,16 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie) => 
               authorid: current_user,
             }
           }).then(bd=>{
+            list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).then(user=>{
+              let number_of_comics=user.number_of_comics+1;
+              user.update({
+                "number_of_comics":number_of_comics,
+              })
+            });
             bd.update({
               "status":"public",
               "chaptersnumber":number_of_chapters,

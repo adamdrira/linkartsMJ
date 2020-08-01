@@ -10,7 +10,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_bd_os, pages_bd_os) => {
+module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
 
   function get_current_user(token){
     var user = 0
@@ -108,6 +108,16 @@ module.exports = (router, Liste_bd_os, pages_bd_os) => {
           }
         })
         if(bd !== null){
+          user = await list_of_users.findOne({
+            where:{
+              id:current_user,
+            }
+          }).then(user=>{
+            let number_of_comics=user.number_of_comics-1;
+            user.update({
+              "number_of_comics":number_of_comics,
+            })
+          })
           console.log( 'suppression bd one shot en cours');
           Liste_bd_os.destroy({
           where: {authorid:current_user, bd_id: bd_id },
@@ -502,11 +512,23 @@ module.exports = (router, Liste_bd_os, pages_bd_os) => {
             }
           })
           .then(bd =>  {
-            bd.update({
-              "status":"public",
-              "pagesnumber":page_number,
+            list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).then(user=>{
+              let number_of_comics=user.number_of_comics+1;
+              user.update({
+                "number_of_comics":number_of_comics,
+              }).then(()=>{
+                bd.update({
+                  "status":"public",
+                  "pagesnumber":page_number,
+                })
+                .then(res.status(200).send([bd]))
+              })
             })
-            .then(res.status(200).send([bd]))
+            
           }); 
     })();
     });

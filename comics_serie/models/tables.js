@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.Bd_serie_Tables = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes);
+    const User = user(sequelize, DataTypes).User;
 
     var bd = sequelize.define('liste_bd_serie', {
         bd_id: {

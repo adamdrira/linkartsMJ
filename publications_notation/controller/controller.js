@@ -32,7 +32,7 @@ module.exports = (router,
 
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
-  router.post('/add_like/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag', function (req, res) {
+  router.post('/add_like/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_liked', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     (async () => {
             const category = req.params.category;
@@ -43,6 +43,7 @@ module.exports = (router,
             const firsttag=req.params.firsttag;
             const secondtag=req.params.secondtag;
             const thirdtag=req.params.thirdtag;
+            const author_id_liked=parseInt(req.params.author_id_liked);
             console.log(firsttag);
             if (category === "bd" ) {
                 if(format === "one-shot"){
@@ -156,7 +157,7 @@ module.exports = (router,
                         "thirdtag":thirdtag,
                         "publication_id": publication_id,
                         "chapter_number": chapter_number,
-                    
+                        "author_id_liked":author_id_liked
                     })        
             }
     })();
@@ -292,7 +293,7 @@ module.exports = (router,
     });
         
 
-    router.post('/add_love/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag', function (req, res) {
+    router.post('/add_love/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_loved', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => { 
             const category = req.params.category;
@@ -303,7 +304,7 @@ module.exports = (router,
             const firsttag=req.params.firsttag;
             const secondtag=req.params.secondtag;
             const thirdtag=req.params.thirdtag;
-
+            const author_id_loved=parseInt(req.params.author_id_loved);
             if (category === "bd" ) {
                 if(format === "one-shot"){
                     bd = await Liste_Bd_Oneshot.findOne({
@@ -414,7 +415,7 @@ module.exports = (router,
                         "thirdtag":thirdtag,
                         "publication_id": publication_id,
                         "chapter_number": chapter_number,
-                        
+                        "author_id_loved":author_id_loved
                     })
                 
             })();
@@ -550,7 +551,7 @@ module.exports = (router,
 
 
 
-    router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag', function (req, res) {
+    router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
     (async () => {    
         const category = req.params.category;
@@ -561,6 +562,12 @@ module.exports = (router,
         const firsttag=req.params.firsttag;
         const secondtag=req.params.secondtag;
         const thirdtag=req.params.thirdtag;
+        const author_id_viewed=parseInt(req.params.author_id_viewed);
+        console.log("format");
+        console.log(format);
+        console.log(category);
+        console.log(style);
+        console.log(publication_id)
         if (category === "bd" ) {
             if(format === "one-shot"){
                 bd = await Liste_Bd_Oneshot.findOne({
@@ -628,7 +635,7 @@ module.exports = (router,
                 }); 
             }
 
-            else if(category === "artbook"){
+            else if(format === "artbook"){
                 drawing = await Liste_Drawings_Artbook.findOne({
                     where: {
                     drawing_id: publication_id,
@@ -669,7 +676,7 @@ module.exports = (router,
                 "thirdtag":thirdtag,
                 "publication_id": publication_id,
                 "chapter_number": chapter_number,
-            
+                "author_id_viewed":author_id_viewed
             })
             .then(list_of_view => {res.status(200).send([list_of_view])})
             
@@ -751,8 +758,14 @@ module.exports = (router,
         const style = req.params.style;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-
-        loves = await Liste_of_loves.findAll({
+        console.log("get loves")
+        console.log(publication_id)
+        console.log(style)
+        console.log(format)
+        console.log(style);
+        console.log(category)
+        console.log(chapter_number);
+        Liste_of_loves.findAll({
             where: {
                 publication_category:category,
                 format: format,
@@ -765,6 +778,8 @@ module.exports = (router,
               ],
         })
         .then(loves =>  {
+            console.log("result loves")
+            console.log(loves);
             res.status(200).send([loves])
         }); 
      })();     

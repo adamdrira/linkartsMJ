@@ -6,7 +6,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_Writings) => {
+module.exports = (router, Liste_Writings,list_of_users) => {
 
   function get_current_user(token){
     var user = 0
@@ -31,10 +31,10 @@ module.exports = (router, Liste_Writings) => {
     const highlight = req.body.highlight;
     const title = req.body.Title;
     //const category = req.body.Category;
-    const category = (req.body.Category === "Scénario") ? "Scenario" : (req.body.Category === "Roman illustré") ? "Illustrated novel" : req.body.Category;
+    const category = (req.body.Category === "Poésie") ? "Poetry": (req.body.Category === "Scénario") ? "Scenario" : (req.body.Category === "Roman illustré") ? "Illustrated novel" : req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    const format = req.body.format;
+    //const format = req.body.format;
     const writing_name = req.body.writing_name;
     for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
@@ -92,10 +92,19 @@ module.exports = (router, Liste_Writings) => {
           writing_id: writing_id,
         }
       })
-      if(writing !== null){
+      if(writing){
+        user = await list_of_users.findOne({
+          where:{
+            id:current_user,
+          }
+        }).then(user=>{
+          let number_of_writings=user.number_of_writings-1;
+          user.update({
+            "number_of_writings":number_of_writings,
+          })
+        });
         console.log( 'suppression writing en cours');
-        Liste_Writings.destroy({
-        where: {authorid:current_user, writing_id: writing_id },
+        writing.destroy({
         truncate: false
         })
         res.json([writing]);
@@ -346,6 +355,16 @@ module.exports = (router, Liste_Writings) => {
             }
           })
           .then(writing =>  {
+            list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).then(user=>{
+              let number_of_writings=user.number_of_writings+1;
+              user.update({
+                "number_of_writings":number_of_writings,
+              })
+            });
             writing.update({
               "status":"public",
             })

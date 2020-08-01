@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.list_of_albums = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes);
+    const User = user(sequelize, DataTypes).User;
 
     var albums = sequelize.define('list_of_albums', {
         id: {

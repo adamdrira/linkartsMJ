@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.Writings_Tables = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes);
+    const User = user(sequelize, DataTypes).User;
 
     var writing = sequelize.define('liste_writings', {
         writing_id: {

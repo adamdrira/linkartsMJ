@@ -6,7 +6,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_users) => {
+module.exports = (router, Liste_users,Liste_users_links) => {
 
 
 
@@ -19,6 +19,7 @@ function get_current_user(token){
 };
 
 router.post('/add_profile_pic', function (req, res) {
+  console.log("adding pp")
     let current_user = get_current_user(req.cookies.currentUser);
     var filename = ''
     let PATH = './data_and_routes/profile_pics/';
@@ -186,6 +187,25 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
 
 });
 
+router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
+  (async () => {
+
+    const id_user = req.params.id_user;
+    Liste_users_links.findAll({
+      where: {
+        id_user: id_user,
+      },
+      order: [
+        ['link_title', 'ASC']
+      ],
+    })
+    .then(links =>  {
+        res.status(200).send([links]);
+      } );
+  })();
+
+});
+
 router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
   (async () => {
 
@@ -217,6 +237,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   })();
 
 });
+
+
 
 
 

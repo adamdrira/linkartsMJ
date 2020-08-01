@@ -8,7 +8,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, list_of_ads,list_of_ads_responses) => {
+module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
     function get_current_user(token){
         var user = 0
@@ -63,7 +63,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses) => {
         
               })
               .then(r =>  {
-              res.status(200).send([r]);
+              list_of_users.findOne({
+                where:{
+                  id:current_user,
+                }
+              }).then(user=>{
+                let number_of_ads=user.number_of_ads+1;
+                user.update({
+                  "number_of_ads":number_of_ads,
+                })
+              }).then( ()=>{res.status(200).send([r])})
+              
               }); 
         
     });
@@ -155,10 +165,6 @@ module.exports = (router, list_of_ads,list_of_ads_responses) => {
     router.post('/upload_pictures_ad', function (req, res) {
       
         var id_ad = parseInt(req.headers.id_ad);
-        console.log(id_ad);
-        console.log(req.headers.number_of_pictures);
-        console.log(req.headers.file_name);
-        console.log(parseInt(req.headers.picture_number)+1);
         var number_of_pictures_retrieved=0;
         var number_of_pictures=parseInt(req.headers.number_of_pictures);
         var picture_number=parseInt(req.headers.picture_number)+1;
@@ -606,6 +612,16 @@ module.exports = (router, list_of_ads,list_of_ads_responses) => {
               },
           })
           .then(ad=>{
+            list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).then(user=>{
+              let number_of_ads=user.number_of_ads-11;
+              user.update({
+                "number_of_ads":number_of_ads,
+              })
+            })
             ad.destroy({
                   truncate: false
               });

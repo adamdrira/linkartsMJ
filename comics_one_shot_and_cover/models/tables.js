@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.comics_one_shot_table = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes);
+    const User = user(sequelize, DataTypes).User;
 
     var comics= sequelize.define('liste_bd_one_shot', {
         bd_id: {

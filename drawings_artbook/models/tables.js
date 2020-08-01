@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.Drawings_Artbook_Tables = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes);
+    const User = user(sequelize, DataTypes).User;
 
     var drawings = sequelize.define('liste_drawings_artbook', {
         drawing_id: {

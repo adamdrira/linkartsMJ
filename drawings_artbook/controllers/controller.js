@@ -6,7 +6,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_artbook, pages_artbook) => {
+module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
 
   
   function get_current_user(token){
@@ -157,10 +157,19 @@ module.exports = (router, Liste_artbook, pages_artbook) => {
                 drawing_id: drawing_id,
               }
             });
-            if(artbook !== null){
+            if(artbook){
+                user = await list_of_users.findOne({
+                  where:{
+                    id:current_user,
+                  }
+                }).then(user=>{
+                  let number_of_drawings=user.number_of_drawings-1;
+                  user.update({
+                    "number_of_drawings":number_of_drawings,
+                  })
+                });
                 console.log( 'suppression en cours');
-                Liste_artbook.destroy({
-                  where: {authorid:current_user, drawing_id: drawing_id },
+                artbook.destroy({
                   truncate: false
                 })
               res.json([artbook]);
@@ -368,6 +377,16 @@ module.exports = (router, Liste_artbook, pages_artbook) => {
             }
           })
           .then(drawing =>  {
+           list_of_users.findOne({
+              where:{
+                id:current_user,
+              }
+            }).then(user=>{
+              let number_of_drawings=user.number_of_drawings+1;
+              user.update({
+                "number_of_drawings":number_of_drawings,
+              })
+            });
             drawing.update({
               "status":"public",
               "pagesnumber":page_number,

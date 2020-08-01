@@ -31,6 +31,33 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         })();
     });
 
+    router.post('/unarchive', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);
+        let publication_id=req.body.publication_id;
+        let  format = req.body.format;
+        let  publication_category = req.body.publication_category;
+        (async () => {
+            
+                list_of_archives.findOne({
+                    where:{
+                        id_archiver: current_user,
+                        publication_id:publication_id,
+                        format:format,
+                        publication_category:publication_category,
+                        }
+                    })
+                    .then(archives=>{
+
+                        archives.destroy({
+                            truncate: false
+                          })
+                        res.status(200).json([{"delete":"ok"}])
+                    })        
+        })();
+    });
+
+    
+
 
 
     router.get('/list_of_archives_comics', function (req, res) {
