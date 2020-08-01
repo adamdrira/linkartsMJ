@@ -79,10 +79,18 @@
   //LINE 1****************************
   //**********************************/
   .d1-profile-container {
-    margin-top:15px;
-    width:100%;
-    display:flex;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 30px 35px 10px 20px;
+    border-bottom: 1px solid rgb(32,56,100);
   }
+
+  .position{
+    width: 150px;
+    background-color: #4bacdd;
+    border-radius: 30px;
+   }
 
   .d1-profile-container .icon-container {
     width:50px;
@@ -206,7 +214,7 @@
     .d2-likes-container {
         width:100%;
         overflow:hidden;
-        margin-top:25px;
+        margin-top:30px;
         padding-bottom:10px;
         border-bottom:1px solid rgb(32,56,100);
     }
@@ -345,8 +353,8 @@
         cursor:default;
         margin-top:10px;
         margin-left:30px;
-        font-style:italic;
-        font-size:15px;
+        /*font-style:italic;*/
+        font-size: 12px;
     }
 
 
@@ -459,32 +467,34 @@
         padding-top:15px;
         justify-content: space-around;
         border-bottom:1px solid rgb(32,56,100);
+        color:#c0d1f1;
     }
 
     .d5-category .opened {
-        color:rgb(218, 227, 243);
-        text-shadow: -0.05ex 0 rgb(218, 227, 243), 0.05ex 0 rgb(218, 227, 243);
+        /*color:rgb(218, 227, 243);*/
+        color:white;
+        text-shadow: -0.05ex 0 white, 0.05ex 0 white;
         transition: color 100ms;
         transition: text-shadow 100ms;
     }
 
     .d5-category div:hover {
-        color:rgb(218, 227, 243);
-        text-shadow: -0.05ex 0 rgb(218, 227, 243), 0.05ex 0 rgb(218, 227, 243);
+        color:white;
+        text-shadow: -0.05ex 0 white, 0.05ex 0 white;
         transition: color 100ms;
         transition: text-shadow 100ms;
     }
 
     .d5-category .opened .bottom-border {
         transition: border 200ms;
-        border-bottom:2px solid rgb(218, 227, 243);
+        border-bottom:2px solid white;
         width:100%;
         transition:width 200ms;
     }
 
     .d5-category div:hover .bottom-border {
         transition: border 200ms;
-        border-bottom:2px solid rgb(218, 227, 243);
+        border-bottom:2px solid white;
         width:100%;
         transition:width 200ms;
     }
@@ -623,3 +633,28 @@
         border-radius: 25px;
     }
     
+    .categories-container {
+        width:90%;
+        display:flex;
+        align-items:center;
+        margin-bottom: 5px;
+        margin-left:20px;
+        white-space: nowrap;
+        text-align:left;
+        line-height: 20px;
+        margin-top: auto;
+        flex-wrap: wrap;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        }
+
+    .tag-container{
+        border: solid 2px rgb(255 255 255 / 0.95);
+        border-radius: 20px;
+        padding: 0px 10px 2px 10px;
+        background-color: black;
+        margin: auto 5px auto 5px;
+        }
+    .invisible{
+        visibility:hidden
+    }
