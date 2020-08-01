@@ -18,6 +18,7 @@ const controller_stories= require('../../p_stories/controller/controller');
 const controller_albums= require('../../albums_edition/controller/controller');
 const controller_ads= require('../../ads/controller/controller');
 const controller_chat= require('../../chat/controller/controller');
+const controller_navbar= require('../../navbar/controller/controller');
 const bd_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const bd_serie_seq= require('../../comics_serie/models/sequelize');
 const drawings_one_page_seq= require('../../drawings_one_shot_and_cover/models/sequelize');
@@ -28,6 +29,7 @@ const subscribings_seq= require('../../p_subscribings_archives_contents/model/se
 const stories_seq= require('../../p_stories/model/sequelize');
 const ads_seq= require('../../ads/model/sequelize');
 const chat_seq = require('../../chat/model/sequelize');
+const navbar_seq = require('../../navbar/model/sequelize');
 const albums_seq = require('../../albums_edition/model/sequelize');
 const authentification = require('../../authentication/db.config');
 const trendings_seq = require('../../p_trendings/model/sequelize');
@@ -81,14 +83,12 @@ router.post('/get_recommendations_by_tag',recommendations_artwork.get_recommenda
 
 
 //BdOneShot
-controller_bd_oneshot(router, 
-  bd_oneshot_seq.list_comics_one_shot, 
-  bd_oneshot_seq.list_pages_comics_one_shot,);
-controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie);
-controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page);
-controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook);
-controller_writings(router,writings_seq.Liste_Writings);
-profile_edition(router, authentification.users);
+controller_bd_oneshot(router,bd_oneshot_seq.list_comics_one_shot,  bd_oneshot_seq.list_pages_comics_one_shot,authentification.users);
+controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie,authentification.users);
+controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,authentification.users);
+controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook,authentification.users);
+controller_writings(router,writings_seq.Liste_Writings,authentification.users);
+profile_edition(router, authentification.users,authentification.user_links);
 profile_notation(
    router, 
    profile_notation_seq.List_of_likes,
@@ -113,8 +113,9 @@ controller_subscribings(router,
     );
 controller_albums(router, albums_seq.list_of_albums);
 controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
-controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses);
+controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses,authentification.users);
 controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,chat_seq.list_of_chat_search,chat_seq.list_of_chat_sections,subscribings_seq.list_of_subscribings,authentification.users)
+controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users)
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
   console.log('l\'artiste');

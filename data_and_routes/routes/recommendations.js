@@ -35,11 +35,13 @@ pool.connect((err, client, release) => {
 const get_view_table_by_user = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 7);
+  last_week.setDate(last_week.getDate() - 40);
 
 
 
   var user=0;
+  console.log("request.cookies.currentUser");
+  console.log(request.cookies.currentUser);
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
@@ -486,14 +488,17 @@ const get_first_recommendation_writings_for_user = (request, response) => {
   
                 complete_recommendation_writing(user,'Roman', (req)=>{
                   list_writings_to_send = list_writings_to_send.concat(req);        
-                      complete_recommendation_writing(user,'illustrated novel', (req)=>{
+                      complete_recommendation_writing(user,'Illustrated novel', (req)=>{
                         list_writings_to_send = list_writings_to_send.concat(req);
                         complete_recommendation_writing(user,'Article', (req)=>{
                           list_writings_to_send = list_writings_to_send.concat(req);
-                          complete_recommendation_writing(user,'Scenario', (req)=>{
+                          complete_recommendation_writing(user,'Poetry', (req)=>{
                             list_writings_to_send = list_writings_to_send.concat(req);
-                              response.status(200).json([{
-                                "list_writings_to_send":list_writings_to_send}])
+                            complete_recommendation_writing(user,'Scenario', (req)=>{
+                              list_writings_to_send = list_writings_to_send.concat(req);
+                                response.status(200).json([{
+                                  "list_writings_to_send":list_writings_to_send}])
+                            })
                           })
                         })
                       })    
@@ -507,14 +512,17 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     else{
       complete_recommendation_writing(user,'Roman', (req)=>{
         list_writings_to_send = req;         
-        complete_recommendation_writing(user,'illustrated novel', (req)=>{
+        complete_recommendation_writing(user,'Illustrated novel', (req)=>{
           list_writings_to_send = list_writings_to_send.concat(req);
           complete_recommendation_writing(user,'Article', (req)=>{
             list_writings_to_send = list_writings_to_send.concat(req);
-            complete_recommendation_writing(user,'Scenario', (req)=>{
+            complete_recommendation_writing(user,'Poetry', (req)=>{
               list_writings_to_send = list_writings_to_send.concat(req);
-                response.status(200).json([{
-                  "list_writings_to_send":list_writings_to_send}])
+              complete_recommendation_writing(user,'Scenario', (req)=>{
+                list_writings_to_send = list_writings_to_send.concat(req);
+                  response.status(200).json([{
+                    "list_writings_to_send":list_writings_to_send}])
+              })
             })
           })
         })    
@@ -532,7 +540,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 15);
+  last_week.setDate(last_week.getDate() - 40);
 
 
   let list_to_send=[];
@@ -615,7 +623,7 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 15);
+    last_week.setDate(last_week.getDate() - 40);
   
   
     let list_to_send=[];
@@ -690,7 +698,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
     var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 15);
+  last_week.setDate(last_week.getDate() - 40);
   
     let list_to_send=[];
    
@@ -770,7 +778,7 @@ function complete_recommendation_bd(user,style,format,callback){
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 15);
+  last_week.setDate(last_week.getDate() - 40);
 
 
   let list_to_send=[];
@@ -844,7 +852,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 15);
+  last_week.setDate(last_week.getDate() - 40);
 
   let list_to_send=[];
  
@@ -899,7 +907,7 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 15);
+    last_week.setDate(last_week.getDate() - 40);
   
   
     let list_to_send=[];
