@@ -1,7 +1,7 @@
 const user = require('../../authentication/user.model');
 
 exports.list_of_messages = (sequelize, DataTypes) => {
-    const User = user(sequelize, DataTypes).User;
+    const User = user(sequelize, DataTypes);
     var list_of_messages = sequelize.define('list_of_chat_messages', {
       id: {
         type: DataTypes.INTEGER,

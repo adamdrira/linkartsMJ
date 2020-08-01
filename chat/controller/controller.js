@@ -171,6 +171,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                     res.status(200).send([message])
                 }
                 else{
+                  res.status(200).send([{message:null}])
                     // ajouter message du site pour expliquer fonctionnement messagerie
                 }
             });
