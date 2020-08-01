@@ -17,59 +17,72 @@ import{ TestComponent } from "./test/test.component";
 import { AuthGuard } from './helpers/auth.guard';
 import { Uploader_bd_oneshot } from './uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
+import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
 import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
 import { SubscribingsComponent } from './subscribings/subscribings.component';
 import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
 import { AddAdComponent } from './add-ad/add-ad.component';
+import { MainSearchbarResultsComponent } from './main-searchbar-results/main-searchbar-results.component';
+import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
 
 const routes: Routes = [
-  {path:'', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 0}},
+
+  {path:'', component:HomeLinkartsComponent,  data: {category: 0}},
   
 
   //Page mon compte
   //Category : Oeuvres, posters, annonces, etc.
   //Type : BD, dessin, ou écrit.
   //Step : étape 1, 2 ou 3.
-  {path:'account/:pseudo/:id', component:AccountComponent, canActivate: [AuthGuard], data: {section: 0}},
-  {path:'account/:pseudo/:id/artworks', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1}},
+  {path:'account/:pseudo/:id', component:AccountComponent, data: {section: 0}},
+  {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1}},
 
-  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:0}},
-  {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:1}},
-  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent, canActivate: [AuthGuard], data: {section: 1, category:2}},
+  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
+  {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}},
+  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}},
 
-  {path:'account/:pseudo/:id/ads', component:AccountComponent, canActivate: [AuthGuard], data: {section: 2}},
-  {path:'account/:pseudo/:id/about', component:AccountComponent, canActivate: [AuthGuard], data: {section: 5}},
-  {path:'account/:pseudo/:id/archives', component:AccountComponent, canActivate: [AuthGuard], data: {section: 6}},
+  {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2}},
+  {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5}},
+  {path:'account/:pseudo/:id/archives', component:AccountComponent,canActivate: [AuthGuard],  data: {section: 6}},
 
   
-  {path:'add-artwork', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: -1}},
+  {path:'add-artwork', component:AddArtworkComponent,  canActivate: [AuthGuard], data: {section: -1}},
   {path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 0}},
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 2}},
-  {path:'add-artwork/ad', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 3}},
+  {path:'add-artwork/ad', component:AddArtworkComponent,canActivate: [AuthGuard],  data: {section: 3}},
+  {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard],  data: {section: 3}},
+  
 
   //Catégories Linkarts
-  {path:'classement', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 1}},
-  {path:'subscribings', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 2}},
-  {path:'decouverte', component:HomeLinkartsComponent, canActivate: [AuthGuard], data: {category: 3}},
+  {path:'classement', component:HomeLinkartsComponent,  data: {category: 1}},
+  {path:'subscribings', component:HomeLinkartsComponent,canActivate: [AuthGuard],  data: {category: 2}},
+  {path:'decouverte', component:HomeLinkartsComponent,  data: {category: 3}},
+
+  //messagerie
+  {path:'chat', component:ChatFriendsListComponent, canActivate: [AuthGuard]},
   
   //Components tests
   {path:'test', component:TestComponent, canActivate: [AuthGuard]},
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard]},
   {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard]},
 
+  //main-searchbar-results
+  {path:'main-research/:text', component:MainSearchbarResultsComponent},
+  
+
   //Contenu
-  {path:'artwork', component:ArtworkComponent, canActivate: [AuthGuard]},
-  {path:'artwork-writing/:titre/:writing_id', component:ArtworkWritingComponent, canActivate: [AuthGuard]},
-  {path:'artwork-comic/:format/:titre/:bd_id', component:ArtworkComicComponent, canActivate: [AuthGuard]},
-  {path:'artwork-drawing/:format/:titre/:drawing_id', component:ArtworkDrawingComponent, canActivate: [AuthGuard]},
+  {path:'artwork', component:ArtworkComponent},
+  {path:'artwork-writing/:titre/:writing_id', component:ArtworkWritingComponent},
+  {path:'artwork-comic/:format/:titre/:bd_id', component:ArtworkComicComponent},
+  {path:'artwork-drawing/:format/:titre/:drawing_id', component:ArtworkDrawingComponent},
   
   //Linkcollab
-  {path:'linkcollab', component:HomeLinkcollabComponent, canActivate: [AuthGuard]},
-  {path:'linkcollab/collaborations_benevoles', component:LinkcollabBenevoleComponent, canActivate: [AuthGuard]},
-  {path:'linkcollab/collaborations_remunerees', component:LinkcollabRemunereeComponent, canActivate: [AuthGuard]},
-  {path:'linkcollab/offer', component:LinkcollabOfferComponent, canActivate: [AuthGuard]},
+  {path:'linkcollab', component:HomeLinkcollabComponent},
+  {path:'linkcollab/collaborations_benevoles', component:LinkcollabBenevoleComponent},
+  {path:'linkcollab/collaborations_remunerees', component:LinkcollabRemunereeComponent},
+  {path:'linkcollab/offer', component:LinkcollabOfferComponent},
 
   //Authentification
   {path:'login', component:LoginComponent},

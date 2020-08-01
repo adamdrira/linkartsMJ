@@ -50,7 +50,15 @@ export class BdSerieService {
     this.Subscribing_service.add_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
     return this.httpClient.post('http://localhost:4600/routes/add_chapter_bd_serie', {Title: Title, chapter_number:chapter_number, bd_id:bd_id}, {withCredentials:true}).pipe(map((information)=>{
       return information
-  }));
+    }));
+
+  }
+  add_chapter_bd_serie2(bd_id,chapter_number: number, Title:string){
+    this.CookieService.set('current_bd_serie_id', bd_id, undefined, '/');
+    this.Subscribing_service.add_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
+    return this.httpClient.post('http://localhost:4600/routes/add_chapter_bd_serie', {Title: Title, chapter_number:chapter_number, bd_id:bd_id}, {withCredentials:true}).pipe(map((information)=>{
+      return information
+    }));
 
   }
 
@@ -85,7 +93,15 @@ export class BdSerieService {
     this.Subscribing_service.remove_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
     return this.httpClient.delete(`http://localhost:4600/routes/delete_chapter_bd_serie/${chapter_number}/${bd_id}`, {withCredentials:true}).pipe(map((information)=>{
       return information
-  }));
+    }));
+  }
+
+  delete_chapter_bd_serie2(bd_id,chapter_number: number){
+    console.log(bd_id);
+    this.Subscribing_service.remove_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
+    return this.httpClient.delete(`http://localhost:4600/routes/delete_chapter_bd_serie/${chapter_number}/${bd_id}`, {withCredentials:true}).pipe(map((information)=>{
+      return information
+    }));
   }
 
   get_bdid_cookies(){

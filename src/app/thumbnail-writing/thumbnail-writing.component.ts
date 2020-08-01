@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
@@ -35,6 +35,8 @@ export class ThumbnailWritingComponent implements OnInit {
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
 
+  
+  @Output() sendLoaded = new EventEmitter<boolean>();
   
   author_name:string;
   primary_description:string;
@@ -200,6 +202,12 @@ export class ThumbnailWritingComponent implements OnInit {
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
     }
 
+    else if( this.category == "Poetry" ) {
+
+      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
+      this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg, #fd3c59, #e6a483)" );
+    }
+
 
 
     this.swiper = new Swiper( this.thumbnail.nativeElement.children[0] , {
@@ -282,6 +290,19 @@ export class ThumbnailWritingComponent implements OnInit {
     this.cancelled++;
     this.swiper.slideTo(0);
   }
+
+
+  imageloaded=false;
+  loaded(){
+    this.imageloaded=true;
+    this.sendLoaded.emit(true);
+  }
+  
+  pp_is_loaded=false;
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
+
 
 
 }

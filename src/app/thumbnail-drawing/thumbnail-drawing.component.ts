@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, QueryList, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, HostListener, QueryList,SimpleChanges, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
@@ -19,7 +19,8 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    private cd:ChangeDetectorRef,
     ) {
   }
 
@@ -70,6 +71,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   showDrawingDetails:boolean = false;
   
 
+  
 
   ngOnInit(): void {
 
@@ -304,7 +306,10 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.sendLoaded.emit(true);
   }
 
-
+  pp_is_loaded=false;
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
 
 
 }

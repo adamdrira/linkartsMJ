@@ -57,9 +57,10 @@ export class UploaderCoverWritingComponent implements OnInit {
  
 
   ngOnChanges(changes: SimpleChanges) {
+    
 
     if( changes.category && this.category ) {
-
+      console.log(this.category )
       this.cd.detectChanges();
 
       if( this.category == "Roman illustré" || this.category == "Illustrated novel" ) {
@@ -73,6 +74,9 @@ export class UploaderCoverWritingComponent implements OnInit {
       }
       else if( this.category == "Article" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
+      }
+      else if( this.category == "Poetry" || this.category == "Poésie" ) {
+        this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg, #fd3c59, #e6a483)" );
       }
 
       this.cd.detectChanges();

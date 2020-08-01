@@ -105,6 +105,13 @@ export class Subscribing_service {
       }));
   }
 
+  unarchive(publication_category,format,publication_id){
+    return this.httpClient.post('http://localhost:4600/routes/unarchive', {publication_category: publication_category, format:format,publication_id:publication_id}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  }
+
+
   get_archives_comics(){
     return this.httpClient.get('http://localhost:4600/routes/list_of_archives_comics', {withCredentials:true}).pipe(map(information=>{
         return information;

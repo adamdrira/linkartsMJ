@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -30,44 +30,53 @@ export class ThumbnailComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-
+    this.resize_width();
     this.resize_comic();
   }
 
 
+  @Output() send_number_of_thumbnails = new EventEmitter<object>();
+  @Output() send_loaded = new EventEmitter<boolean>();
+
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
-
-
-  swiper:any;
   @ViewChild("thumbnail", {static:false}) thumbnail: ElementRef;
+  @ViewChild("thumbnail1", {static:false}) thumbnail1: ElementRef;
+
+  //animation
+  swiper:any;
   cancelled = 0;
   
-  thumbnail_picture:SafeUrl;
-  author_name:string;
-  primary_description:string;
   /*Inputs*/
   @Input() item:any;
+  @Input() format: string;
+  @Input() now_in_seconds: number;
+
+  //author
+  pseudo:string;
+  author_name:string;
+  profile_picture: SafeUrl;
+  primary_description:string;
   user_id: number;
+
+  //comic
+  bd_id: string;
   file_name: string;
   title: string;
   category: string;
   highlight: string;
-
   firsttag: string;
   secondtag: string;
   thirdtag: string;
-  pagesnumber: string;
+  pagesnumber: number;
   viewnumber: string;
   likesnumber: string;
   lovesnumber: string;
-  @Input() format: string;
-  @Input() now_in_seconds: number;
-  profile_picture: SafeUrl;
+  thumbnail_picture:SafeUrl;
   chaptersnumber: number;
   date_upload: string;
   date_upload_to_show: string;
-  bd_id: string;
+  
 
 
 
@@ -118,6 +127,7 @@ export class ThumbnailComicsComponent implements OnInit {
     
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.pseudo=r[0].nickname;
       this.primary_description=r[0].primary_description;
     });
     this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
@@ -247,24 +257,64 @@ export class ThumbnailComicsComponent implements OnInit {
 
   comics_per_line() {
     var width = $('.container-comics').width();
-
-    if( width > 1700 ) {
+    if( width >= 1510 ) {
+      this.send_number_of_thumbnails.emit({number:5});
       return 5;
     }
-    else if( width > 1300 ) {
+    else if( width >= 1290 ) {
+      this.send_number_of_thumbnails.emit({number:4});
       return 4;
     }
-    else if( width > 1000) {
+    else if( width >= 960) {
+      this.send_number_of_thumbnails.emit({number:3});
       return 3;
     }
-    else if( width > 600) {
+    else if( width >= 640) {
+      this.send_number_of_thumbnails.emit({number:2});
       return 2;
     }
     else {
+      this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }
   }
 
+  resize_width(){
+    let width = $(".container-fluid").width();
+    console.log(width);
+    
+    if( width <= 700) {
+      $(".border-recto").css("box-shadow","none");
+      $(".border-verso").css("box-shadow","none");
+     }
+    else{
+      $(".border-recto").css("box-shadow","0 5px 15px rgba(0, 0, 0, 0.25);");
+      $(".border-verso").css("box-shadow","0 5px 15px rgba(0, 0, 0, 0.25);");
+    }
+    
+    if( width <= 750) {
+      $(".element-book").css("width","240px");
+      $(".element-book").css("height","360px");
+     }
+    else{
+      $(".element-book").css("width","280px");
+      $(".element-book").css("height","400px");
+    }
+    
+  }
+
+  
+  imageloaded=false;
+  loaded(){
+    this.imageloaded=true;
+    this.send_loaded.emit(true);
+  }
+
+  pp_is_loaded=false;
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
+  
 
   mouseEnterBook() {
     let v0 = this.cancelled;
@@ -286,6 +336,9 @@ export class ThumbnailComicsComponent implements OnInit {
     this.cancelled++;
     this.swiper.slideTo(0);
   }
+
+  
+  
 
 
 }

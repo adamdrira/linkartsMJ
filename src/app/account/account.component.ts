@@ -21,6 +21,8 @@ import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscriber
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
 
 import { Ads_service } from '../../app/services/ads.service'
 
@@ -58,6 +60,8 @@ export class AccountComponent implements OnInit {
     private Ads_service:Ads_service,
     ) {
     //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
+
+    
 
     this.navbar.setActiveSection(0);
     this.navbar.show();
@@ -101,7 +105,8 @@ export class AccountComponent implements OnInit {
   //NEW VARIABLES
   emphasized_artwork_added: boolean = false;
   emphasized_artwork:any;
-
+  pp_is_loaded=false;
+  cover_is_loaded=false;
   
   /************* sections ************/
   //0 : artworks, 1 : posters, etc.
@@ -211,6 +216,10 @@ export class AccountComponent implements OnInit {
   new_writing_contents:any[]=[];
   new_writing_contents_added=false;
 
+  //type of profile
+  type_of_profile:string;
+  type_of_profile_retrieved=false;
+
 
   update_new_contents() {
 
@@ -259,18 +268,27 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  
+
   ngOnInit()  {
 
-    
+    this.authenticationService.currentUserType.subscribe(r=>{
+      if(r!=''){
+        this.type_of_profile=r;
+        this.type_of_profile_retrieved=true;
+        console.log(this.type_of_profile)
+      }
+    })
 
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     
     
-    this.Profile_Edition_Service.get_pseudo_by_user_id( this.user_id ).subscribe( r => {
+    this.Profile_Edition_Service.retrieve_profile_data( this.user_id ).subscribe( r => {
 
-      if( !r[0] ) {
+      console.log(r);
+      if( !r[0] || r[0].status=="visitor") {
         this.router.navigateByUrl('/');
       }
 
@@ -289,6 +307,7 @@ export class AccountComponent implements OnInit {
 
     this.Subscribing_service.get_new_comic_contents(this.user_id).subscribe(r=>{
       if (r[0]!=null){
+        console.log(r[0])
         for (let i=0;i<r[0].length;i++){
           if(r[0][i].format=="one-shot"){
             this.BdOneShotService.retrieve_bd_by_id(r[0][i].publication_id).subscribe(s=>{
@@ -347,6 +366,7 @@ export class AccountComponent implements OnInit {
     });
     
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+      console.log(l);
       if (this.pseudo == l[0].nickname){
         this.mode_visiteur = false;
         this.mode_visiteur_added = true;
@@ -602,13 +622,7 @@ export class AccountComponent implements OnInit {
 
     this.opened_category = -1;
     this.opened_section=i;
-
     
-    /*this.cd.detectChanges();
-    if( i==1 || i==6 ) {
-      this.scrollDown();
-    }*/
-
     if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
     else if( i == 1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); }
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
@@ -987,21 +1001,29 @@ export class AccountComponent implements OnInit {
 
   change_profile_bio() {
     const dialogRef = this.dialog.open(PopupFormComponent, {
-      data: {type:"edit_bio", primary_description:this.primary_description, occupation:this.occupation, education:this.education, user_location:this.user_location},
+      data: {type:"edit_bio"},
     });
   }
 
   subscribtion(){
-    if(!this.already_subscribed){
-      this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
-        this.already_subscribed=true;
-      });
+    if(this.type_of_profile=='account'){
+      if(!this.already_subscribed){
+        this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
+          this.already_subscribed=true;
+        });
+      }
+      else{
+        this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
+          this.already_subscribed=false;
+        });
+      }
     }
     else{
-      this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
-        this.already_subscribed=false;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
       });
     }
+  
   }
 
   /************************************************ */
@@ -1170,6 +1192,14 @@ export class AccountComponent implements OnInit {
     })
   }
 
+
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
+
+  cover_loaded(){
+    this.cover_is_loaded=true;
+  }
 
 }
 

@@ -4,18 +4,18 @@
         
         <div class="account-container">
 
-            <img [src]="cover_picture">
+            <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }">
 
             <button mat-raised-button *ngIf="!mode_visiteur && showEditCoverPic" class="change-cover-picture style0" (click)="change_cover_picture();">
                 <div class="cover-picture-icon"></div>
                 <span>Changer de photo de couverture</span>
             </button>
 
-            <div #profileHovered class="profile" #target>
+            <div #profileHovered class="profile">
 
                 <div #profilePicHovered class="profile-picture" [ngClass]="{'visiteur': mode_visiteur }">
 
-                    <img [src]="profile_picture">
+                    <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
 
                     <!--<div *ngIf="!mode_visiteur" class="change-profile-picture" (click)="change_profile_picture();">
                         <div class="picture-icon"></div>
@@ -65,7 +65,7 @@
                         <span> &nbsp; {{user_location}}</span>
                     </div>
 
-                    <div *ngIf="mode_visiteur" class="visitor-buttons-container">
+                    <div *ngIf="mode_visiteur && type_of_profile_retrieved" class="visitor-buttons-container">
                         <button mat-raised-button  class="visitor-button style0">
                             <div class="message-icon"></div>
                             <span>Écrire</span>
@@ -102,7 +102,7 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">home</mat-icon>
                     Accueil
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scroll(target);">
+                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">art_track</mat-icon>
                     Œuvres ({{number_of_artpieces}})
                 </button>
@@ -134,12 +134,12 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);scroll(target);">
+                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
                     Archives ({{number_of_archives}})
                 </button>
                 <a href="/add-artwork">
-                    <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category opened" style="background: rgb(209, 224, 251);color: rgb(32, 56, 100);">
+                    <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category opened" style="background: rgb(158 206 236);color: rgb(32, 56, 100);">
                         <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
                         Publier 
                     </button>
@@ -165,15 +165,12 @@
             </ng-container>
             
 
-            <ng-container *ngIf="!emphasized_artwork_added" >
+            <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur" >
                 <div class="title">
                     <span>Œuvre mise en avant</span>
                 </div>
-                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
+                <div class="highlighted_artwork">
                     <span >Aucune œuvre mise en avant <br> Vous pouvez mettre une œuvre en avant depuis la lecture d'une œuvre</span>
-                </div>
-                <div class="highlighted_artwork" *ngIf="mode_visiteur">
-                    <span>L'utilisateur n'a pas mis d'œuvre en avant</span>
                 </div>
             </ng-container>
 
@@ -275,19 +272,19 @@
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
             
             <div class="logos-container">
-                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(artwork);" #artwork id="logo">
+                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
                     <div class="image1"></div>
                     <span>
                         Bandes dessinées ({{list_bd_oneshot.length + list_bd_series.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(artwork);" #artwork>
+                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
                     <div class="image2"></div>
                     <span>
                         Dessins ({{list_drawings_onepage.length + list_drawings_artbook.length}})
                     </span>
                 </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(artwork);" #artwork>
+                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target>
                     <div class="image3"></div>
                     <span>
                         Écrits ({{list_writings.length}})
@@ -528,7 +525,7 @@
                                 <ng-container *ngIf="add_album == -1">
                                     <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
                                     <span>
-                                        Créer un album
+                                        Créer une série
                                     </span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
@@ -554,11 +551,11 @@
                                 </ng-container>
                             </button>
                             <!--AJOUT ALBUM ECRITS-->
-                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==2 && list_writings.length!=0" class="add-album" (click)="start_add_album( opened_category )">
+                            <button mat-raised-button style="width: 360px !important;" *ngIf="!mode_visiteur && opened_category==2 && list_writings.length!=0" class="add-album" (click)="start_add_album( opened_category )">
                                 <ng-container *ngIf="add_album == -1">
                                     <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
                                     <span>
-                                        Créer un album
+                                        Créer une série/un recueil
                                     </span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
@@ -1140,7 +1137,11 @@
             ></app-archives>
         </ng-container>
 
-        
+        <ng-container *ngIf="opened_section==5">
+            <app-account-about></app-account-about>
+        </ng-container>
+
+       
 
     </main>
 </div>

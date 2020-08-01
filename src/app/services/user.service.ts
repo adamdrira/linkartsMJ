@@ -28,6 +28,9 @@ export class UserService {
     return this.http.post<User>(this.usersUrl+'/users/signup', user, httpOptions);
   }
 
+  add_link(id_user,title,link): Observable<User> {
+    return this.http.post<User>(this.usersUrl+'/users/add_link', {id_user:id_user,link_title:title,link:link}, httpOptions);
+  }
   /*
   deleteUser (customer: Customer | number): Observable<Customer> {
     const id = typeof customer === 'number' ? customer : customer.id;

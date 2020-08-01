@@ -18,8 +18,8 @@
                 <!--Author container-->
                 <!--********************-->
                 <div class="author-container">
-                    <div class="left-container">
-                        <img [src]="profile_picture">
+                    <div class="left-container"  [ngClass]="{ 'invisible':!pp_is_loaded}">
+                        <img [src]="profile_picture" (load)="pp_loaded()">
                     </div>
                     <div class="right-container">
                         <span class="author-name">{{author_name}}</span>

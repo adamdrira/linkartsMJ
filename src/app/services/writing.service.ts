@@ -28,8 +28,8 @@ export class Writing_Upload_Service {
     httpClient.options
   }
 
-  CreateWriting(Title, Category, Tags:String[], highlight, format,monetization ){
-    return this.httpClient.post('http://localhost:4600/routes/add_writing', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, writing_name: this.name_writing,format:format, monetization:monetization},{withCredentials:true}).pipe(map((information)=>{
+  CreateWriting(Title, Category, Tags:String[], highlight,monetization ){
+    return this.httpClient.post('http://localhost:4600/routes/add_writing', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, writing_name: this.name_writing, monetization:monetization},{withCredentials:true}).pipe(map((information)=>{
         console.log(information[0].writing_id) ;
         this.writing_id = information[0].writing_id;
         this.CookieService.delete('name_writing','/');

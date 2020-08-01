@@ -10,13 +10,13 @@
             <div class="swiper-wrapper">
 
                 <!--Slide recto-->
-                <div class="swiper-slide">
+                <div class="swiper-slide" >
                     
                     <a href='/artwork-writing/{{title}}/{{writing_id}}'>
                         <div class="element-writing border-recto">
 
-                            <div class="miniature">
-                                <img [src]="thumbnail_picture">
+                            <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}" >
+                                <img [src]="thumbnail_picture" (load)="loaded()" >
                             </div>
 
 
@@ -31,8 +31,8 @@
                                 <!--Author container-->
                                 <!--********************-->
                                 <div class="author-container">
-                                    <div class="left-container">
-                                        <img [src]="profile_picture">
+                                    <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
+                                        <img [src]="profile_picture" (load)="pp_loaded()">
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{author_name}}</span>
@@ -91,7 +91,10 @@
                             <!--Categories container-->
                             <!--********************-->
                             <div class="categories-container">  
-                                <span class="categories">{{category}} :</span>
+                                <span class="categories" *ngIf="category=='Scenario'">Scénario :</span>
+                                <span class="categories" *ngIf="category=='Poetry'">Poésie :</span>
+                                <span class="categories" *ngIf="category=='Illustrated novel'">Roman illustré :</span>
+                                <span class="categories" *ngIf="category!='Scenario' &&  category!='Poetry' && category!='Illustrated novel'">{{category}} :</span>
                                 <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
                                 <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
                                 <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>

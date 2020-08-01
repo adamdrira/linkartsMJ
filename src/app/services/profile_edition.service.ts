@@ -67,6 +67,12 @@ export class Profile_Edition_Service {
     }));
   }
 
+  retrieve_profile_data_links(id_user: number){
+    return this.httpClient.get(`http://localhost:4600/routes/retrieve_profile_data_links/${id_user}` ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
  get_current_user(){
     return this.httpClient.get('http://localhost:4600/api/userid',{withCredentials:true} ).pipe(map((information)=>{   
       return information;

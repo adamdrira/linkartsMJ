@@ -1,0 +1,84 @@
+
+/**** top container ********/
+
+@import '../../material-styles.css';
+
+
+.top-container {
+    z-index:1000;
+    width:100%;
+    height:80px;
+    background:rgb(209, 224, 251);
+    border-bottom: 2px solid #bdd3fb;
+}
+
+
+
+.container-fluid {
+  width: 100%;
+  min-height: 100%;
+  padding-top: 10px;
+    padding-bottom: 10px;
+  background-color: #eef2fa;
+  background-color:rgb(238,242,250);
+}
+
+/******form *****/
+
+  .main-title{
+    margin:auto;
+    font-size: 20px;
+  }
+
+  .title{
+    margin:auto;
+    font-size: 18px;
+  }
+
+  .title-container{
+    display: flex;
+  }
+
+  .form-container{
+    display:block;
+    width:80%;
+    background:white;
+    padding: 10px;
+    margin: 10px auto 50px auto;
+    border:1px solid rgb(204,204,204);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    border-radius:10px;
+  }
+
+  .container > input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #203864;
+    color: white;
+    //padding: 14px 20px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    //width: 100%;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .container2 {
+    display:flex;
+    margin:8px;
+  }
+
+  .container2 > label {
+    margin:8px;
+  }
+  

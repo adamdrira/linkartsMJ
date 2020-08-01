@@ -16,9 +16,8 @@
                         <a href='/artwork-comic/{{format}}/{{title}}/{{bd_id}}'>
                             <div class="element-book border-recto">
 
-                                <div class="miniature">
-                                    
-                                        <img [src]="thumbnail_picture">
+                                <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}">
+                                        <img [src]="thumbnail_picture" (load)="loaded()">
                                 </div>
 
 
@@ -33,12 +32,13 @@
                                     <!--Author container-->
                                     <!--********************-->
                                     <div class="author-container">
-                                        <div class="left-container">
-                                            <img [src]="profile_picture">
+                                        <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
+                                            <img [src]="profile_picture" (load)="pp_loaded()">
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{author_name}}</span>
-                                            <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                                            <!--<span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>-->
+                                            <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
                                         </div>
                                     </div>
                                     <!--********************-->
@@ -80,7 +80,7 @@
                                 <!--Title container-->
                                 <!--********************-->
                                 <div class="verso-resume">
-                                    <span class="resume">Résumé</span>
+                                    <span class="resume">{{category}}</span>
                                 </div>
                                 <div class="horizontal-line">
                                 </div>
@@ -94,16 +94,34 @@
                                 <!--Categories container-->
                                 <!--********************-->
                                 <div class="categories-container">  
-                                    <span class="categories">{{category}} :</span>
-                                    <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
-                                    <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
-                                    <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
+                                    &bull;
+                                    <div class="tag-container"><span  class="categories" >{{firsttag}}</span></div>
+                                    <div  *ngIf="secondtag!=null" class="tag-container"><span  class="categories" >{{secondtag}}</span></div>
+                                    <div  *ngIf="thirdtag!=null" class="tag-container"><span  class="categories" >{{thirdtag}}</span></div>
                                 </div>
                                 <!--********************-->
                                 <!--Type container-->
                                 <!--********************-->
                                 <div class="verso-type">
-                                    <span>{{format}}</span>
+                                    &bull;
+                                    <ng-container *ngIf="format=='one-shot'">
+                                        <div class="tag-container" *ngIf="1>=pagesnumber" ><span  >  One shot</span></div>
+                                        <ng-container  *ngIf="1>=pagesnumber"><span>: {{pagesnumber}} page</span></ng-container> 
+                                        <div class="tag-container"  *ngIf="pagesnumber>1"><span > One shot</span></div>
+                                        <ng-container  *ngIf="pagesnumber>1"><span>: {{pagesnumber}} pages</span></ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="format!='one-shot'">
+                                        <div class="tag-container" *ngIf="1>=chaptersnumber"><span>Série</span></div>
+                                        <ng-container  *ngIf="1>=chaptersnumber"><span>: {{chaptersnumber}} chapitre</span></ng-container> 
+                                        <ng-container  *ngIf=" 1>=chaptersnumber && 1>=pagesnumber"><span>&nbsp; ({{pagesnumber}} page)</span></ng-container> 
+                                        <ng-container  *ngIf="  1>=chaptersnumber && pagesnumber>1"><span>&nbsp; ({{pagesnumber}} pages)</span></ng-container> 
+                                        <div class="tag-container" *ngIf="chaptersnumber>1"><span>  Série</span></div>
+                                        <ng-container  *ngIf="chaptersnumber>1"><span>: {{chaptersnumber}} chapitres</span></ng-container>
+                                        <ng-container  *ngIf=" chaptersnumber>1 && 1>=pagesnumber"><span> &nbsp; ({{pagesnumber}} page)</span></ng-container> 
+                                        <ng-container  *ngIf=" chaptersnumber>1 && pagesnumber>1"><span> &nbsp; ({{pagesnumber}} pages)</span></ng-container> 
+                                        
+                                    </ng-container>
+                                    
                                 </div>
                                 <!--********************-->
                                 <!--Date container-->

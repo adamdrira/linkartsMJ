@@ -1,0 +1,218 @@
+
+
+<!--<form>
+
+    <div class="container">
+        <input type="firstName" placeholder="Prénom" required>
+        <input type="lastName" placeholder="Nom" required>
+
+        <div class="container2">
+            <label>Genre :</label>
+            <select type="gender" required>
+                <option value="">Sélection</option>
+                <option value="woman">Femme</option>
+                <option value="man">Homme</option>
+            </select>
+        </div>
+        
+        <input type="nickname" placeholder="Identifiant (@)" required>
+        <input type="location" placeholder="Ville ou région" required>
+        <input type="email" placeholder="Adresse mail" required>
+        <input type="password" placeholder="Mot de passe" required>
+
+        <button type="submit">S'inscrire</button>
+        
+
+    </div>
+
+</form>-->
+
+<div class="top-container">
+    <div class="title-container">
+        <span class="main-title">Inscription</span>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div [formGroup]="registerForm" class="form-container">
+        <div class="title-container">
+            <span class="title">
+                Informations principales
+            </span>
+        </div>
+        <div >
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="email">Adresse mail*</label>
+                    <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Webmail address is required</div>
+                    </div>
+                </div>
+
+            </div>
+            <div style="display:flex;align-items: center;" >
+                <div class="form-group">
+                    <label for="nickname">Pseudo*</label>
+                    <input type="text" formControlName="nickname" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nickname.errors }" />
+                    <div *ngIf="submitted && f.nickname.errors" class="invalid-feedback">
+                        <div *ngIf="f.nickname.errors.required">Nickname is required</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="password">Mot de passe*</label>
+                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+                        <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="firstName">Prénom*</label>
+                    <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                    <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                        <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="lastName">Nom*</label>
+                    <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                    <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                        <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="birthday">Date de naissance</label>
+                    <input type="text" formControlName="birthday" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.gender.errors }" />
+                    <div *ngIf="submitted && f.birthday.errors" class="invalid-feedback">
+                        <div *ngIf="f.birthday.errors.required">birthdayis required</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="gender">Genre</label>
+                    <input type="text" formControlName="gender" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.gender.errors }" />
+                    <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
+                        <div >Gender blablaba</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div [formGroup]="registerForm" class="form-container">
+        <div class="title-container">
+            <span class="title">
+                Informations complémentaires visibles en première page de votre compte
+            </span>
+        </div>
+        <div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="primary_description">Description principale courte*</label>
+                    <input type="text" formControlName="primary_description" class="form-control" 
+                    [ngClass]="{ 'is-invalid': submitted && f.primary_description.errors }" 
+                    placeholder="Courte présentation de votre profil"/>
+                    <div *ngIf="submitted && f.primary_description.errors" class="invalid-feedback">
+                        <div *ngIf="f.primary_description.errors.required">primary_description is required</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="primary_description_extended">Description principale longue</label>
+                    <input type="text" formControlName="primary_description_extended" class="form-control" 
+                    [ngClass]="{ 'is-invalid': submitted && f.primary_description_extended.errors }" 
+                    placeholder="Présentation étendue de votre profil pour vos abonnés"/>
+                    <div *ngIf="submitted && f.primary_description_extended.errors" class="invalid-feedback">
+                        <div >primary_description_extended blablabla</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="location">Localisation préférentielle</label>
+                    <input type="text" formControlName="location" class="form-control" 
+                    [ngClass]="{ 'is-invalid': submitted && f.location.errors }" 
+                    placeholder="Ville,Pays"/>
+                    <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
+                        <div>Location blablabla</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items: center;">
+                <div class="form-group">
+                    <label for="training">Formations ou études</label>
+                    <input type="text" formControlName="training" class="form-control" 
+                    [ngClass]="{ 'is-invalid': submitted && f.training.errors }" />
+                    <div *ngIf="submitted && f.training.errors" class="invalid-feedback">
+                        <div >training blablaba</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [formGroup]="LinksGroup" class="form-container">
+        <div class="title-container">
+            <span class="title">
+                Liens vers des sites ou réseaux sociaux
+            </span>
+        </div>
+        <div style="display:flex;align-items: center;">
+            <div style="display:flex;" >
+                <div class="form-group">
+                    <label for="link_title">Titre du lien</label>
+                    <input type="text" formControlName="link_title" class="form-control" 
+                    [ngClass]="{ 'is-invalid': links_submitted && g.link_title.errors }" />
+                    <div *ngIf="links_submitted && g.link_title.errors" class="invalid-feedback">
+                        <div>blabla 1</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;">
+                <div class="form-group">
+                    <label for="link">lien</label>
+                    <input type="text" formControlName="link" class="form-control" 
+                    [ngClass]="{ 'is-invalid': links_submitted && g.link.errors }"
+                    placeholder="exemple: http/linkarts.fr/account/pierre/2..." />
+                    <div *ngIf="links_submitted && g.link.errors" class="invalid-feedback">
+                        <div >blabla</div>
+                    </div>
+                </div>
+            </div>
+            <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_link()"> 	
+                <mat-icon class="item-icon">library_add</mat-icon>
+            </button>
+        </div>
+        <div style="display:block">
+            <div style="display:flex" *ngFor="let item of links_titles;let i=index">
+                <span>
+                    {{item}} : {{links[i]}}
+                </span>
+                <span>
+                    <button mat-button class="mat-icon-button" tabIndex="-1" (click)="remove_link(i)"> 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary" (click)="register()">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Register
+        </button>
+        <a routerLink="/" class="btn btn-link">Cancel</a>
+    </div>
+</div>

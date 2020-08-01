@@ -120,21 +120,21 @@ export class NotationService {
     }
     
   
-    add_like(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag){
-      return this.httpClient.post(`http://localhost:4600/routes/add_like/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}`,{}, {withCredentials:true}).pipe(map((information)=>{
+    add_like(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag,author_id_liked){
+      return this.httpClient.post(`http://localhost:4600/routes/add_like/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}/${author_id_liked}`,{}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
 
-    add_love(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag){
-      return this.httpClient.post(`http://localhost:4600/routes/add_love/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}`,{}, {withCredentials:true}).pipe(map((information)=>{
+    add_love(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag,author_id_loved){
+      return this.httpClient.post(`http://localhost:4600/routes/add_love/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}/${author_id_loved}`,{}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
 
     
-    add_view(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag){
-      return this.httpClient.post(`http://localhost:4600/routes/add_view/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}`,{}, {withCredentials:true}).pipe(map((information)=>{
+    add_view(category, format, style, publication_id,chapter_number,firsttag,secondtag,thirdtag,author_id_viewed){
+      return this.httpClient.post(`http://localhost:4600/routes/add_view/${category}/${format}/${style}/${publication_id}/${chapter_number}/${firsttag}/${secondtag}/${thirdtag}/${author_id_viewed}`,{}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
