@@ -192,9 +192,9 @@ export class AddWritingComponent implements OnInit {
       
        this.Writing_Upload_Service.CreateWriting(
           this.fw.value.fwTitle,
-          this.fw.value.fwCategory, this.tags, 
+          this.fw.value.fwCategory, 
+          this.tags, 
           this.fw.value.fwDescription,  
-          this.fw.value.fwFormat,
           this.monetised )
         .subscribe( v => {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{

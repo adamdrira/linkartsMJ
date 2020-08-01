@@ -8,8 +8,6 @@
                 </div>
                 <span>Présentation du projet</span>
             </div>
-            <div class="horizontal-line">
-            </div>
             <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
                 <div class="step">
                     <span>2</span>
@@ -139,7 +137,7 @@
                                     </mat-slide-toggle>
                                     &nbsp; 
                                     &nbsp; 
-                                    <div (click)="read_conditions();" class="read_conditions">(lire les conditions)</div>
+                                    <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
                                 </div>
                             </div>
 
@@ -220,7 +218,9 @@
                 <span>Retour</span>
             </button>
             
-            <app-form-serie [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
+            <app-form-serie 
+            form_number=0
+            [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
 
 
         </div>

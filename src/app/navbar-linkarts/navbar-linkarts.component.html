@@ -1,96 +1,206 @@
     
     
-    <div class="fixed-top" *ngIf="navbar.visible" [ngClass]="{'navbarBoxShadow': navbarBoxShadow }">
+<div class="fixed-top" *ngIf="navbar.visible" [ngClass]="{'navbarBoxShadow': navbarBoxShadow }">
 
 
 
-      <!--Navbar : ligne 1 : logo / searchbar / icones-->
-      <div class="navbar-container">
-        <nav class="navbar first-navbar">
-          
-
-          <!--Logo-->
-          <div #navbarLogo class="navbar-l1-linkarts-logo-container">
-            <div class="navbar-l1-linkarts-logo">
-              LinkArts
-            </div>
-          </div>
-          
-
-          <!--Barre de recherche-->
-          <div #navbarSearchbar class="navbar-l1-searchbar-container">
-              <div class="left-container">
-                  <input #input
-                  (click)="activateFocus()"
-                  onfocus="this.placeholder = ''"
-                  onblur="this.placeholder = 'Rechercher'"
-                  class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-              </div>
-              <div class="right-container">
-                  <select name="somename" class="NavbarSelectBox" style="height: 100%;">
-                    <option value="0">Artistes</option>
-                    <option value="1">Annonces</option>
-                    <option value="2">Livres</option>
-                    <option value="3">Maisons d'édition</option>
-                    <option value="4">Posters</option>
-                    <option value="5">Publications</option>
-                  </select>
-              </div>
-          </div>
-
-          
-          <!--Icônes (notification, messagerie, etc.)-->
-          <div class="navbar-l1-icons-container">
-                <div class="icon-container">
-                  <div class="icon icon-profile">
-                  </div>
-                  <div class="title">Mon compte</div>
-                </div>
-
-                <div class="icon-container">
-                  <div class="icon icon-bell">
-                  </div>
-                  <div class="title">Notifications</div>
-                </div>
-
-                <div class="icon-container">
-                  <div class="icon icon-messenger">
-                  </div>
-                  <div class="title">Messagerie</div>
-                </div>
-
-                <div class="icon-container">
-                  <div class="icon icon-basket">
-                  </div>
-                  <div class="title">Panier</div>
-                </div>
-          </div>
-          
-
-
-        </nav>
-      </div>
-
-
+  <!--Navbar : ligne 1 : logo / searchbar / icones-->
+  <div class="navbar-container">
+    <nav class="navbar first-navbar">
       
-      <!--Navbar : ligne 2 : choix de la section-->
-      <div class="blue-background">
-        <div class="navbar-container">
-          <nav class="navbar2 flex-md-nowrap p-0">
-            <div class="category" [ngClass]="{'opened': navbar.active_section==0 }">COMMUNAUTÉ</div>
-            <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">COLLABORATIONS</div>
-            <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">MAISONS D'ÉDITION</div>
-            <!--<div class="category" [ngClass]="{'opened': navbar.active_section==3 }">POSTERS</div>-->
-            <div class="category" [ngClass]="{'opened': navbar.active_section==4 }">ESPACE COMMERCIAL</div>
-            
-          </nav>
+
+      <!--Logo-->
+      <div #navbarLogo class="navbar-l1-linkarts-logo-container">
+        <div class="navbar-l1-linkarts-logo">
+          <img class="logo" src='../../assets/img/svg/logo_la.svg'>
+          <!--<div class="icon-container3">
+            <div class="icon3 icon-logo">
+            </div>
+          </div>-->
+          <span style="margin-left: 10px; font-weight: bold; color:#010119">LinkArts</span>
         </div>
       </div>
+      
+      <ng-container *ngIf="type_of_profile_retrieved">
+        <!--Barre de recherche-->
+        <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor' }">
+          <div class="left-container" [ngClass]="{'invisible': !show_selector }">
+              <select name="somename" class="NavbarSelectBox" style="height: 100%;">
+                <option value="0">Tout</option>
+                <option value="1">Artiste</option>
+                <option value="2">Annonce</option>
+                <option value="4">Bande dessinée</option>
+                <option value="5">Dessin</option>
+                <option value="6">Ecrit</option>
+              </select>
+          </div>
+          
+          <div class="right-container">
+              <div class="researches-propositions" *ngIf="show_researches_propositions">
+                <div class="first-block" *ngIf="most_researched_propositions.length>2">
+                  <div class="title-proposition">
+                    Les plus recherchés
+                  </div>
+                  <div class="first-block-container">
+                    <div class="string-proposition-container" *ngFor="let item of most_researched_propositions;let i=index" (click)="research_item(i)">
+                      <span class="string-proposition"  > 
+                        <a href="/main-research/{{item.research_string}}" style="color:white">
+                          {{item.research_string}} 
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                  
+                </div>
+
+              </div>
+
+              <input #input
+              (click)="activateFocus()"
+              (input)="researches_propositions($event);"
+              (keydown)="keydown_researches_propositions($event);"
+              onblur="this.placeholder = 'Rechercher'"
+              class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+              <mat-icon class="item-icon" (click)="do_the_research()" style="color:#5b6b87;margin-left: 10px;cursor:pointer;">search</mat-icon> 
+          </div>
+
+          
+          
+        </div>
+
+        <!--icon part-->
+        <div class="navbar-l1-icons-container" style="  width: 240px;
+        margin: auto 30px auto 0px;" *ngIf="type_of_profile=='account'" >
+
+          <a href="/chat">
+            <div class="icon-container">
+              <div class="icon icon-messenger">
+              </div>
+              <div class="title">Messagerie</div>
+            </div>
+          </a>
+                        
+
+          <div class="icon-container">
+            <div class="icon icon-bell">
+            </div>
+            <div class="title">Notifications</div>
+          </div>
+
+          <a href="/account/{{pseudo}}/{{user_id}}" *ngIf="data_retrieved">
+            <div class="profile-container"  >
+              <div class="profile-picture" >
+                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }" >
+              </div>
+              <div class="title">Moi</div>
+            </div>
+          </a>
+          
+
+        </div>
+
+        <!--connexion part-->
+        <div class="navbar-l1-icons-container">
+
+            <a href="/signup" *ngIf="type_of_profile=='visitor'">
+              <div class="signup">
+                <!--<mat-icon class="item-icon" >create</mat-icon> -->
+                <div class="icon-container2">
+                  <div class="icon2 icon-edit">
+                  </div>
+                </div>
+                <span style="margin-left: 5px;">S'inscrire</span>
+              </div>
+            </a>
+            
+            
+            <div [ngClass]="{'account_opened': type_of_profile=='account' }" >
+                <button *ngIf="type_of_profile=='account'" mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1"
+                    (click)="logout()">
+                  <mat-icon class="item-icon" style=" color:#010119;transform: rotate(180deg);">login</mat-icon> 
+                  <span style="margin-left: 5px; color:#010119" >Se déconnecter</span>
+                </button>
+                <button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
+                  <mat-icon class="item-icon" style=" color:#010119">login</mat-icon> 
+                  <span style="margin-left: 5px; color:#010119" >Se connecter</span>
+                </button>
+                
+            </div>
+            <div class="options">
+              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
+                <mat-icon class="optionsButton" style=" color:#010119">more_vert</mat-icon>
+              </button>
+              <mat-menu  #options="matMenu">
+                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                    <mat-icon class="item-icon">edit</mat-icon>
+                    <span>Qui nous sommes</span>
+                </button>
+                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                    <span>Paramètres et confidentialités</span>
+                </button>
+                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                    <span>Crédits</span>
+                </button>
+              </mat-menu>
+            </div>
+            
+        </div>
+      </ng-container>
+      
+      
 
 
+    </nav>
+  </div>
 
 
-
+  
+  <!--Navbar : ligne 2 : choix de la section-->
+  <div class="blue-background">
+    <div class="navbar-container">
+      <nav class="navbar2 flex-md-nowrap p-0">
+        <div class="category" [ngClass]="{'opened': navbar.active_section==0 }">
+          <div style="margin-right: 10px;">
+              <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
+              height: 20px;
+              width: 20px;">
+              </div>
+          </div>
+          <div>COMMUNAUTÉ</div>
+        </div>
+        <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">
+          <div style="margin-right: 10px;">
+            <div class=" icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
+            height: 20px;
+            width: 20px;">
+            </div>
+          </div>
+          <div>COLLABORATIONS</div>
+        </div>
+        <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
+          <div style="margin-right: 10px;">
+            <div class=" icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
+            height: 20px;
+            width: 20px;">
+            </div>
+          </div>
+          <div>LIBRAIRIE</div>
+        </div>
+        <!--<div class="category" [ngClass]="{'opened': navbar.active_section==4 }">POSTERS</div>-->
+        
+        
+      </nav>
     </div>
+  </div>
+
+
+
+
+
+</div>
 
 <div class="navbar-margin"></div>
+
+<!--Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->

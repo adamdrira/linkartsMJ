@@ -1,0 +1,39 @@
+
+<div class="component-container">
+    <div class="title">
+        <span>
+            {{title}}
+        </span>
+    </div>
+    <div class="subscribers-container" *ngIf="subscribtion_info_added">
+        <div *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card">
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="author-container" >
+                <div class="left-container" >
+                    <img [src]="list_of_profile_pictures[i]" (load)="pp_loaded(i)" [ngClass]="{'invisible': !pp_is_laoded[i] }">
+                </div>
+                <a href="/account/{{item.nickname}}/{{item.id}}">
+                    <div class="right-container">
+                        <span class="author-name">{{item.firstname}} {{item.lastname}} </span>
+                        <span class="author-description">@{{item.nickname}}</span>
+                    </div>
+                </a>
+
+            </div>
+            <button mat-raised-button *ngIf="!list_of_check_subscribtion[i]"  class="button style1 subscriptions" (click)="subscribtion(i)">
+                <mat-icon class="icon" >person_add</mat-icon>
+                <span>S'abonner</span>
+            </button>
+            <button mat-raised-button *ngIf="list_of_check_subscribtion[i]"  class="button style0 subscriptions" (click)="subscribtion(i)">
+                <mat-icon class="icon">person_add_disabled</mat-icon>
+                <span>Se désabonner</span>
+            </button>
+        </div>
+    </div>
+    <div class="subscribers-container" *ngIf="!list_of_users_ids[0]" style="display:flex;">
+        <span style="margin:auto;" *ngIf="data.title=='likes'">Aucune mention j'aime</span>
+        <span style="margin:auto;" *ngIf="data.title=='loves'">Aucune mention j'adore</span>
+    </div>
+</div>

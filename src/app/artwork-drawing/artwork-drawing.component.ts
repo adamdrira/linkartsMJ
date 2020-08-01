@@ -18,6 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
 import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 
@@ -57,7 +59,17 @@ export class ArtworkDrawingComponent implements OnInit {
     private Emphasize_service:Emphasize_service,
 
     ) { 
-    
+    this.AuthenticationService.currentUserType.subscribe(r=>{
+      console.log(r);
+      if(r!=''){
+        this.type_of_account=r;
+        this.type_of_account_retrieved=true;
+        if(this.pp_loaded){
+          this.display_right_container=true;
+        }
+      }
+      
+    })
     this.thumbnails = false;
     this.zoom_mode = false;
     this.fullscreen_mode = false;
@@ -73,6 +85,22 @@ export class ArtworkDrawingComponent implements OnInit {
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
+
+  //display component
+  display_right_container=false;
+  pp_loaded=false;
+  display_pages=false;
+  display_writings_recommendations=false;
+  display_comics_recommendations=false;
+  display_drawings_recommendations=false;
+  display_drawings:any[]=[];
+  display_drawings_recommendations_others=false;
+  //if user doesn't have an account
+  type_of_account:string;
+  type_of_account_retrieved=false;
+   //archives
+   content_archived=false;
+   archive_retrieved=false;
   //Swiper
   swiper: any;
   //Thumbnails
@@ -142,6 +170,10 @@ export class ArtworkDrawingComponent implements OnInit {
   now_in_seconds= Math.trunc( new Date().getTime()/1000);
 
   content_emphasized=false;
+
+  //for list of loves and likes
+  list_of_users_ids_loves:any[]=[];
+  list_of_users_ids_likes:any[]=[];
   
   /******************************************************************** */
   /****VARIABLES ET FONCTIONS D'EDITION******************************** */
@@ -266,27 +298,34 @@ export class ArtworkDrawingComponent implements OnInit {
     
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
-    let type = this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
       this.router.navigate(["/"]);
     }
 
-    
+    console.log(this.type);
     let drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
     this.drawing_id = drawing_id;
 
-    if (type=="one-shot"){
+    this.Subscribing_service.get_archives_drawings().subscribe(r=>{
+        if(r[0].format==this.type && r[0].publication_id==this.drawing_id){
+          console.log("call true")
+          this.content_archived=true;
+        }
+        this.archive_retrieved=true;
+    })
+
+    if (this.type =="one-shot"){
       this.drawing_one_shot_calls();
     }
 
-    else if (type=="artbook"){
+    else if (this.type =="artbook"){
       this.drawing_artbook_calls();
     }
     
   }
 
   drawing_one_shot_calls(){
-   
+   console.log("one shot call")
     this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.drawing_id).subscribe(r => {
       let drawing_name=r[0].drawing_name;
       this.authorid= r[0].authorid;
@@ -337,7 +376,10 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"drawing",this.drawing_id,"one-shot",r[0].category,r[0].firsttag).subscribe(e=>{
         if(e[0].list_to_send.length >0){
-          this.list_of_recommendations_by_tag=e[0].list_to_send;
+          this.list_of_recommendations_by_tag=e[0].list_to_send[0];
+          this.list_of_recommendations_by_tag_retrieved=true;
+        }
+        else{
           this.list_of_recommendations_by_tag_retrieved=true;
         }
       });
@@ -355,7 +397,8 @@ export class ArtworkDrawingComponent implements OnInit {
           this.mode_visiteur_added = true;
         }
         else{
-          this.NotationService.add_view('drawing', 'one-shot', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag).subscribe(r=>{
+          console.log("adding view")
+          this.NotationService.add_view('drawing', 'one-shot', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
             this.createdAt_view = r[0].createdAt;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
@@ -376,6 +419,7 @@ export class ArtworkDrawingComponent implements OnInit {
         if (list_of_loves.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_loves.length;i++){
+            this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
             if (list_of_loves[i].author_id_who_loves == l[0].id){
               this.loved = true;
             }
@@ -388,6 +432,7 @@ export class ArtworkDrawingComponent implements OnInit {
         if (list_of_likes.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_likes.length;i++){
+            this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
             if (list_of_likes[i].author_id_who_likes == l[0].id){
               this.liked = true;
             }
@@ -420,7 +465,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
   drawing_artbook_calls(){
-   
+   console.log("drawing artbook call")
     this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.drawing_id).subscribe(r => {
       this.viewnumber = r[0].viewnumber;
       this.authorid= r[0].authorid;
@@ -468,8 +513,9 @@ export class ArtworkDrawingComponent implements OnInit {
       });
 
       this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"drawing",this.drawing_id,"artbook",r[0].category,r[0].firsttag).subscribe(e=>{
+        console.log(e);
         if(e[0].list_to_send.length >0){
-          this.list_of_recommendations_by_tag=e[0].list_to_send;
+          this.list_of_recommendations_by_tag=e[0].list_to_send[0];
           this.list_of_recommendations_by_tag_retrieved=true;
         }
       });
@@ -481,12 +527,14 @@ export class ArtworkDrawingComponent implements OnInit {
       });
       
       this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+        console.log("getting current user")
         if (this.authorid == l[0].id){
           this.mode_visiteur = false;
           this.mode_visiteur_added = true;
         }
         else{
-          this.NotationService.add_view('drawing', 'artbook', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag).subscribe(r=>{
+          console.log("else and add view")
+          this.NotationService.add_view('drawing', 'artbook', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
             this.createdAt_view = r[0].createdAt;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
@@ -504,9 +552,11 @@ export class ArtworkDrawingComponent implements OnInit {
       
       this.NotationService.get_loves('drawing', 'artbook', r[0].category, this.drawing_id,0).subscribe(r=>{
         let list_of_loves= r[0];
+        console.log(r[0]);
         if (list_of_loves.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_loves.length;i++){
+            this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
             if (list_of_loves[i].author_id_who_loves == l[0].id){
               this.loved = true;
             }
@@ -516,9 +566,12 @@ export class ArtworkDrawingComponent implements OnInit {
       });
       this.NotationService.get_likes('drawing', 'artbook', r[0].category, this.drawing_id,0).subscribe(r=>{
         let list_of_likes= r[0];
+        console.log(r[0]);
         if (list_of_likes.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_likes.length;i++){
+            console.log(list_of_likes[i].author_id_who_likes)
+            this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
             if (list_of_likes[i].author_id_who_likes == l[0].id){
               this.liked = true;
             }
@@ -723,15 +776,13 @@ export class ArtworkDrawingComponent implements OnInit {
     
       $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
       $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
-
   }
 
 
+  
   initialize_pages(){
-    
       for( var i=0; i< this.swiperWrapperRef.nativeElement.children.length; i++ ) {
         $(".swiper-wrapper").html( "/ " );
-        
       }
     
   }
@@ -753,6 +804,14 @@ export class ArtworkDrawingComponent implements OnInit {
 
   left_container_category_index: number = 0;
   open_left_container_category(i : number) {
+    if(i==1){
+      this.display_drawings_recommendations=false;
+      this.display_comics_recommendations=false;
+      this.display_comics_recommendations=false;
+    }
+    else{
+      this.display_drawings_recommendations_others=false;
+    }
     this.left_container_category_index=i;
   }
 
@@ -869,149 +928,163 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
   
   click_like() {
-    
-    this.like_in_progress=true;
-    if(this.liked) {     
-      if(this.type=='one-shot'){
-        this.NotationService.remove_like('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
+    if(this.type_of_account=="account"){
+      this.like_in_progress=true;
+      if(this.liked) {     
+        if(this.type=='one-shot'){
+          this.NotationService.remove_like('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
+            
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.likesnumber=r[0].likesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.liked=false;
+                  this.like_in_progress=false;
+              })();
+          });
+        }
+        else if(this.type=='artbook'){      
+          this.NotationService.remove_like('drawing', 'artbook', this.style, this.drawing_id,0).subscribe(r=>{      
+              
+            (async () => { 
+                  const getCurrentCity = () => {
+                  this.likesnumber=r[0].likesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.liked=false;
+                  this.like_in_progress=false;
+              })();
           
+          });
+        }
+      }
+      else {
+        if(this.type=='one-shot'){  
+          this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               (async () => { 
                 const getCurrentCity = () => {
                 this.likesnumber=r[0].likesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.liked=false;
+                this.liked=true;
                 this.like_in_progress=false;
             })();
-        });
-      }
-      else if(this.type=='artbook'){      
-        this.NotationService.remove_like('drawing', 'artbook', this.style, this.drawing_id,0).subscribe(r=>{      
             
-          (async () => { 
+          });
+        }
+        else if(this.type=='artbook'){
+        
+          this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+              
+            (async () => { 
                 const getCurrentCity = () => {
                 this.likesnumber=r[0].likesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.liked=false;
-                this.like_in_progress=false;
-            })();
-         
-        });
+                this.liked=true;
+                this.like_in_progress=false;            
+            })();  
+          });
+        }
       }
-    }
-    else {
-      if(this.type=='one-shot'){  
-        this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{        
-            (async () => { 
-              const getCurrentCity = () => {
-              this.likesnumber=r[0].likesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.liked=true;
-              this.like_in_progress=false;
-          })();
-          
-        });
-      }
-      else if(this.type=='artbook'){
-       
-        this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{
-            
-          (async () => { 
-              const getCurrentCity = () => {
-              this.likesnumber=r[0].likesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.liked=true;
-              this.like_in_progress=false;            
-           })();  
-        });
-      }
-    }
 
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+      });
+    }
+    
   }
 
   click_love() {
-    
-    this.love_in_progress=true;
-    if(this.loved) {     
-      if(this.type=='one-shot'){
-        this.NotationService.remove_love('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
+    if(this.type_of_account=="account"){
+      this.love_in_progress=true;
+      if(this.loved) {     
+        if(this.type=='one-shot'){
+          this.NotationService.remove_love('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.lovesnumber=r[0].lovesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.loved=false;
+                  this.love_in_progress=false;
+              })();
+          });
+        }
+        else if(this.type=='artbook'){      
+          this.NotationService.remove_love('drawing', 'artbook', this.style, this.drawing_id,0).subscribe(r=>{      
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.lovesnumber=r[0].lovesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.loved=false;
+                  this.love_in_progress=false;
+              })();
+          
+          });
+        }
+      }
+      else {
+        if(this.type=='one-shot'){  
+          this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               (async () => { 
                 const getCurrentCity = () => {
                 this.lovesnumber=r[0].lovesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.loved=false;
+                this.loved=true;
                 this.love_in_progress=false;
             })();
-        });
-      }
-      else if(this.type=='artbook'){      
-        this.NotationService.remove_love('drawing', 'artbook', this.style, this.drawing_id,1).subscribe(r=>{      
-               (async () => { 
+            
+          });
+        }
+        else if(this.type=='artbook'){
+        
+          this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+              (async () => { 
                 const getCurrentCity = () => {
                 this.lovesnumber=r[0].lovesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.loved=false;
-                this.love_in_progress=false;
-            })();
-         
-        });
+                this.loved=true;
+                this.love_in_progress=false;            
+            })();  
+          });
+        }
       }
     }
-    else {
-      if(this.type=='one-shot'){  
-        this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{        
-            (async () => { 
-              const getCurrentCity = () => {
-              this.lovesnumber=r[0].lovesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.loved=true;
-              this.love_in_progress=false;
-          })();
-          
-        });
-      }
-      else if(this.type=='artbook'){
-       
-        this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,1,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{
-            (async () => { 
-              const getCurrentCity = () => {
-              this.lovesnumber=r[0].lovesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.loved=true;
-              this.love_in_progress=false;            
-           })();  
-        });
-      }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+      });
     }
 
   }
 
   show_likes(){
-      /*afficher popo up avec la liste suivante:
-      this.drawingOneShotService.get_loves('drawing', 'one-shot', r[0].category, this.drawing_id,0).subscribe(r=>{
-          pour chaque utilisateur on appelle d'autres fonctions pour afficher la photo de profile
-      })*/
+    const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
+      data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes},
+    });
 
   }
 
   show_loves(){
-      /*afficher popo up avec la liste suivante:
-      this.drawingOneShotService.get_loves('drawing', 'one-shot', r[0].category, this.drawing_id,0).subscribe(r=>{})*/
+    const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
+      data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves},
+    });
+
   }
 
   scroll_to_comments() {
@@ -1043,21 +1116,35 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   subscribtion(){
-    if(!this.already_subscribed){
-      this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-        this.already_subscribed=true;
+    if(this.type_of_account=="account"){
+      if(!this.already_subscribed){
+        this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
+          this.already_subscribed=true;
+        });
+      }
+      if(this.already_subscribed){
+        this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
+          this.already_subscribed=false;
+        });
+      }
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
       });
     }
-    if(this.already_subscribed){
-      this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-        this.already_subscribed=false;
-      });
-    }
+    
   }
 
   archive(){
     this.Subscribing_service.archive("drawings",this.type,this.drawing_id).subscribe(r=>{
-      console.log(r[0])
+      this.content_archived=true;
+    });
+  }
+
+  unarchive(){
+    this.Subscribing_service.unarchive("drawings",this.type,this.drawing_id).subscribe(r=>{
+      this.content_archived=false;
     });
   }
 
@@ -1073,8 +1160,73 @@ export class ArtworkDrawingComponent implements OnInit {
       });
   }
 
+  /******************************************DISPLAY IMAGES ****************************************/
 
+  profile_picture_loaded(){
+    this.pp_loaded=true;
+    if(this.type_of_account_retrieved){
+      this.display_right_container=true;
+    }
+  }
 
+  compteur_recom_writings=0;
+  sendLoadedWriting(event){
+    this.compteur_recom_writings+=1;
+    if( this.compteur_recom_writings==this.list_of_author_recommendations_writings.length){
+      this.display_writings_recommendations=true;
+      this.compteur_recom_writings=0;
+      console.log("display recom writi")
+    }
+  }
+
+  compteur_recom_comics=0;
+  sendLoadedComic(event){
+    this.compteur_recom_comics+=1;
+    if( this.compteur_recom_comics==this.list_of_author_recommendations_comics.length){
+      this.display_comics_recommendations=true;
+      this.compteur_recom_comics=0;
+      console.log("display recom comics")
+    }
+  }
+
+  compteur_recom_drawings=0;
+  sendLoadedDrawing(event){
+    this.compteur_recom_drawings+=1;
+    if( this.compteur_recom_drawings==this.list_of_author_recommendations_drawings.length){
+      this.display_drawings_recommendations=true;
+      this.compteur_recom_drawings=0;
+      console.log("display recom draw")
+    }
+   
+  }
+  compteur_recom_others_drawings=0
+  sendLoadedDrawingOthers(event){
+    this.compteur_recom_others_drawings+=1;
+    if( this.compteur_recom_others_drawings==this.list_of_recommendations_by_tag.length){
+      this.display_drawings_recommendations_others=true;
+      this.compteur_recom_others_drawings=0;
+      console.log("display recom draw others")
+    }
+  }
+
+  a_drawing_is_loaded(i){
+    this.display_drawings[i]=true;
+    let compt=0;
+    if(this.type=='artbook'){
+      for(let j=0;j<this.list_drawing_pages.length;j++){
+        if(this.display_drawings[i]){
+          compt+=1;
+        }
+        if(compt==this.list_drawing_pages.length){
+          this.display_pages=true;
+        }
+      }
+    }
+    else{
+      this.display_pages=true;
+    }
+   
+  }
 
 }
 

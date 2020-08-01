@@ -36,6 +36,7 @@ export class CommentsComponent implements OnInit {
   ) { 
 
   }
+  @Input() type_of_account:string;
   @Input() authorid:string;
   @Input() category:string;
   @Input() format:string;
@@ -66,7 +67,7 @@ export class CommentsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
+    console.log(this.type_of_account);
 
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{

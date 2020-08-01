@@ -33,15 +33,16 @@
                     <!--*********************************************************-->
                     <!--Format-->
                     <!--*********************************************************-->
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="artworkFormat">Format</label>
                         <select formControlName="fwFormat" class="fwselect0" style="height: 100%;">
                             <option value="" disabled="true">Sélectionner un format</option>
-                            <option label="Oeuvre unique">One shot</option>
-                            <option label="Artbook">Série</option>
+                            <option label="One shot">One shot</option>
+                            <option label="Série">Série</option>
                         </select>
+                        <span></span>
                         <p *ngIf="fwFormat.value == '' && fwDisplayErrors">Veuillez sélectionner un format</p>
-                    </div>
+                    </div>-->
 
                     <!--*********************************************************-->
                     <!--Catégorie-->
@@ -50,15 +51,15 @@
                         <label for="artworkCategory">Catégorie</label>
                         <select formControlName="fwCategory" class="fwselect1" style="height: 100%;">
                             <option value="" disabled="true">Sélectionner une catégorie</option>
-                            <option label="Traditionnel">Roman illustré</option>
-                            <option label="Digital">Roman</option>
-                            <option label="Traditionnel">Scénario</option>
-                            <option label="Traditionnel">Article</option>
+                            <option label="Roman illustré">Roman illustré</option>
+                            <option label="Roman">Roman</option>
+                            <option label="Scénario">Scénario</option>
+                            <option label="Article">Article</option>
+                            <option label="Poésie">Poésie</option>
                         </select>
                         <p *ngIf="fwCategory.value == '' && fwDisplayErrors">Veuillez sélectionner une catégorie</p>
-                        <p> Bien que vos œuvres ne peuvent être téléchargées, nous vous invitons à prendre les
-                            dispositions nécessaires pour vous protéger contre le plagiat en dehors du site
-                            et à ne pas publier entièrement vos scénarios.
+                        <p> Vos oeuvres ne sont pas protégés contre le plagiat en dehors du site,nous vous invitons donc à prendre les
+                            dispositions nécessaires pour vous protéger contre cela.
                         </p>
                     </div>
 
@@ -80,6 +81,17 @@
                         <p *ngIf="!tagsValidator && fwDisplayErrors">Veuillez sélectionner au moins un genre</p>
                     </div>
                     
+                    <div class="form-group">
+                        <label>Monétisation</label>
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
+                                Je souhaite monétiser mon œuvre
+                            </mat-slide-toggle>
+                            &nbsp; 
+                            &nbsp; 
+                            <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -95,23 +107,11 @@
                     <!--*********************************************************-->
                     <div class="form-group">
                         <label for="artworkDescription">Description</label>
-                        <textarea type="text" formControlName="fwDescription" maxlength="500" style="height: 200px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
+                        <textarea type="text" formControlName="fwDescription" maxlength="500" style="height: 250px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
                         </textarea>
                         <p *ngIf="!fwDescription.valid && fwDisplayErrors">Veuillez saisir une description valide</p>
                     </div>
 
-
-                    <div class="form-group">
-                        <label>Monétisation</label>
-                        <div class="monetisation-container">
-                            <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
-                                Je souhaite monétiser mon œuvre
-                            </mat-slide-toggle>
-                            &nbsp; 
-                            &nbsp; 
-                            <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
-                        </div>
-                    </div>
                     
                     <!--*********************************************************-->
                     <!--Uploader-->

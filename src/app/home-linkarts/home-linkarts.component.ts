@@ -26,8 +26,10 @@ export class HomeLinkartsComponent implements OnInit {
     
     ) {
 
+    
     this.navbar.setActiveSection(0);
     this.navbar.show();
+    
   }
 
   @HostListener('window:resize', ['$event'])
@@ -39,18 +41,15 @@ export class HomeLinkartsComponent implements OnInit {
   @ViewChildren('category') categories:QueryList<ElementRef>;
   
   category_index:number = -1;
+  type_of_profile_retrieved=false;
+  type_of_profile:string="visitor";
 
-  ngAfterViewInit() {
-    this.open_category( this.route.snapshot.data['category'] );
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
 
-  }
 
-  ngAfterViewChecked() {
-    this.initialize_heights();
-  }
+
 
   initialize_heights() {
+    console.log("initializing height")
     //if( !this.fullscreen_mode ) {
       $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
       $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
@@ -83,8 +82,20 @@ export class HomeLinkartsComponent implements OnInit {
 
 
   ngOnInit() {
+
+    this.authenticationService.currentUserType.subscribe(r=>{
+      if(r!=''){
+        this.type_of_profile=r;
+        this.type_of_profile_retrieved=true;
+        this.initializeselector();
+        this.display_selector();
+        this.initialize_heights();
+        this.open_category( this.route.snapshot.data['category'] );
+        this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
+      }
+    })
     this.display_selector();
-    this.initializeselector();
+    
     console.log(this.little_screen);
   }
 

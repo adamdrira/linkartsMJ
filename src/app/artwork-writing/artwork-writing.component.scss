@@ -337,6 +337,7 @@
     ::ng-deep .swiper-slide .slide-container {
         width: 100%;
         height: 100%;
+        min-height:65vh;
         display:flex;
         //Without zoom
         overflow-y:unset;
@@ -375,79 +376,11 @@
     }
     
     
-
-
-
-    /*
-    //thumbnail comics corrections
-    .container-comics-2 {
-        box-shadow: 0px 0px 30px 0px #20355d;
-        border: 1px solid #131e31;
-        padding: 15px 25px 15px 25px;
-        margin-bottom: 30px;
-        border-radius: 10px;
-        flex-wrap: wrap;
+    .loading-page{
+        position:absolute;
+        top:50%;
+        left:50%;
     }
-
-    .container-comics-2 .comic {
-        
-    }
-    
-    ::ng-deep .container-comics-2 .col-book {
-        margin:20px auto 30px auto !important;
-    }
-
-
-    //thumbnail comics corrections
-    ::ng-deep .swiper-container.comics {
-        box-shadow: 0px 0px 30px 0px #20355d;
-        border: 1px solid #131e31;
-        margin-bottom: 30px;
-        border-radius: 10px;
-    }
-    ::ng-deep .swiper-container.comics .col-book {
-        margin:20px auto 30px auto;
-    }
-
-
-    //thumbnail drawings corrections
-    ::ng-deep .swiper-container.drawings {
-        box-shadow: 0px 0px 30px 0px #20355d;
-        border: 1px solid #131e31;
-        margin-bottom: 30px;
-        border-radius: 10px;
-    }
-    ::ng-deep .swiper-container.drawings .swiper-slide {
-        height: 300px !important;
-        margin-top: 15px;
-    }
-    ::ng-deep .swiper-container.drawings .final-thumbnail {
-        margin: auto auto !important;
-        display: flex !important;
-        width: fit-content !important;
-        height: fit-content !important;
-        max-height: 100% !important;
-        max-width: 100% !important;
-    }
-    ::ng-deep .swiper-container.drawings .final-thumbnail > img {
-        width:unset !important;
-        height:unset !important;
-        max-width: 100% !important;
-        max-height: 100% !important;
-        border-radius: 12px !important;
-    }
-
-    //thumbnail writings corrections
-    ::ng-deep .swiper-container.writings {
-        box-shadow: 0px 0px 30px 0px #20355d;
-        border: 1px solid #131e31;
-        margin-bottom: 30px;
-        border-radius: 10px;
-    }
-    ::ng-deep .swiper-container.writings .col-writing {
-        margin:20px auto 30px auto;
-    }*/
-
 
     
     @import '../../artwork-left-container-thumbnails-styles.css';

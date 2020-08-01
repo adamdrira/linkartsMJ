@@ -395,7 +395,11 @@
     .artwork-comic #left-container .thumbnails-container .thumbnails-contents {
         max-height: calc( 100% - 40px );
     }
-
+    .loading-page{
+        position:absolute;
+        top:50%;
+        left:50%;
+    }
 
     @import '../../artwork-left-container-thumbnails-styles.css';
     @import '../../artwork-right-container-styles.css';

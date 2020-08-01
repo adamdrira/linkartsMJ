@@ -33,6 +33,8 @@ export class MediaWritingsComponent implements OnInit {
   @Input() sorted_artpieces_roman: any[];
   @Input() sorted_artpieces_scenario: any[];
   @Input() sorted_artpieces_article: any[];
+  @Input() sorted_artpieces_poetry: any[];
+  
 
   @Input() now_in_seconds: number;
 

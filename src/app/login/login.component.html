@@ -1,25 +1,58 @@
-<h2>Login</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.username.errors.required">Username is required</div>
+<div *ngIf="!reset_password_menu">
+    <h2>Connexion</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="username">Pseudo ou email</label>
+            <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                <div *ngIf="f.username.errors.required">L'email ou le pseudo sont requis</div>
+                
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-            <div *ngIf="f.password.errors.required">Password is required</div>
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">Mot de passe requis</div>
+            </div>
         </div>
+        <div class="form-group">
+            
+            <button [disabled]="loading" class="btn btn-primary" >
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Se connecter
+            </button>
+            <div *ngIf="display_wrong_data" style="color:red">Les informations inscrites sont eronnées</div>
+            <div style="display:block;">
+                <div (click)="open_reset_password()" style="padding-left:0px" class="btn btn-link">Mot de passe oublié</div><br>
+                <a routerLink="/signup" style="padding-left:0px" class="btn btn-link">S'inscrire</a>
+            </div>
+            
+        </div>
+    </form>
+</div>
+<div *ngIf="reset_password_menu">
+    <div style="display:flex; align-items: center;">
+        <div (click)="open_connexion_menu()"> Retour </div>
+        <h2>Récupération du mot de passe</h2>
     </div>
-    <div class="form-group">
-        <button [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Login
-        </button>
-        <a routerLink="/password_reset" class="btn btn-link">Forgotten password</a><br>
-        <a routerLink="/signup" class="btn btn-link">Register</a>
-    </div>
-</form>
+    <form [formGroup]="ResetPasswordForm" (ngSubmit)="onSubmitReset()">
+        <div class="form-group">
+            <label for="mail_recuperation">Adresse mail</label>
+            <input type="text" formControlName="mail_recuperation" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+            <div *ngIf="submitted_reset && g.mail_recuperation.errors" class="invalid-feedback">
+                <div *ngIf="g.mail_recuperation.errors.required">Veuillez inscire un mail valide</div>
+                
+            </div>
+        </div>
+        <div class="form-group">
+            
+            <button [disabled]="loading" class="btn btn-primary" >
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Envoyer un mail de récupération
+            </button>
+            <div *ngIf="wrong_email_reset_password" style="color:red">Adresse mail erronée</div>
+            
+        </div>
+    </form>
+</div>

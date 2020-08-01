@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <div class="add-comment">
+    <div class="add-comment" *ngIf="type_of_account=='account'">
 
         <div class="left-container">
 
@@ -73,6 +73,11 @@
                                     
         </div>
 
+    </div>
+
+    <div class="add-comment" *ngIf="type_of_account=='visitor'">
+        Crééer un compte pour pouvoir commenter
+        <span style="margin-left:5px"><a href="/signup">S'inscrire</a></span>
     </div>
 
 </div>

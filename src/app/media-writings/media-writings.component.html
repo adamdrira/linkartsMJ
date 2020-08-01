@@ -12,6 +12,15 @@
             </ng-container>
         </ng-container>
 
+        <ng-container *ngIf="style==='Poésie'">
+            <ng-container *ngFor="let item of sorted_artpieces_poetry; let i = index">
+                <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-writing>
+            </ng-container>
+        </ng-container>
+
         <ng-container *ngIf="style==='Roman'">
             <ng-container *ngFor="let item of sorted_artpieces_roman; let i = index">
                 <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public'"

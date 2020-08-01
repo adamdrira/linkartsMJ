@@ -23,7 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComicComponent } from '../popup-form-comic/popup-form-comic.component';
 import { PopupEditCoverComicComponent } from '../popup-edit-cover-comic/popup-edit-cover-comic.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 
 
 declare var Swiper: any;
@@ -58,6 +58,18 @@ export class ArtworkComicComponent implements OnInit {
     private Emphasize_service:Emphasize_service,
     
     ) { 
+
+      this.AuthenticationService.currentUserType.subscribe(r=>{
+        console.log(r);
+        if(r!=''){
+          this.type_of_account=r;
+          this.type_of_account_retrieved=true;
+          if(this.pp_loaded){
+            this.display_right_container=true;
+          }
+        }
+        
+      })
     
     this.thumbnails = false;
     this.zoom_mode = false;
@@ -79,6 +91,23 @@ export class ArtworkComicComponent implements OnInit {
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
+
+   //display component
+   sumo_ready=false
+   display_right_container=false;
+   pp_loaded=false;
+   display_pages=false;
+   display_writings_recommendations=false;
+   display_comics_recommendations=false;
+   display_drawings_recommendations=false;
+   display_comics_pages:any[]=[];
+   display_comics_recommendations_others=false;
+   //if user doesn't have an account
+  type_of_account:string;
+  type_of_account_retrieved=false;
+  //archives
+  content_archived=false;
+  archive_retrieved=false;
   //Swiper
   swiper: any;
   //Thumbnails
@@ -102,7 +131,9 @@ export class ArtworkComicComponent implements OnInit {
 
   now_in_seconds= Math.trunc( new Date().getTime()/1000);
   
-
+  //for list of loves and likes
+  list_of_users_ids_loves:any[]=[];
+  list_of_users_ids_likes:any[]=[];
 
 
   /******************************************************************** */
@@ -146,7 +177,11 @@ export class ArtworkComicComponent implements OnInit {
     });
   }
 
-
+  edit_chapters(){
+    alert("edit_chapters")
+    this.router.navigate( [ `handle-comics-chapter/${this.bd_id}`]);
+  }
+  
   set_private() {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -219,7 +254,9 @@ export class ArtworkComicComponent implements OnInit {
 
   chapterList:any[]=[];
   list_of_pages_by_chapter:any[]=[[]];
+  show_pages:any[]=[];
   current_chapter=0;
+  current_chapter_title='';
   pseudo:string='';
   authorid:number=0;
   bd_id:number;
@@ -265,6 +302,8 @@ export class ArtworkComicComponent implements OnInit {
   list_of_recommendations_by_tag_retrieved=false;
 
   content_emphasized=false;
+  type_of_comic_retrieved=false;
+  
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
@@ -272,6 +311,7 @@ export class ArtworkComicComponent implements OnInit {
     
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
+    this.type_of_comic_retrieved=true;
     if( this.type != "one-shot" && this.type != "serie" ) {
       this.router.navigate(["/"]);
     }
@@ -279,7 +319,13 @@ export class ArtworkComicComponent implements OnInit {
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('bd_id'));
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-      this.visitor_id = l[0].id   
+      this.visitor_id = l[0].id;
+      this.Subscribing_service.get_archives_comics().subscribe(r=>{
+        if(r[0].format==this.type && r[0].publication_id==this.bd_id){
+          this.content_archived=true;
+        }
+        this.archive_retrieved=true;
+      })
     })
 
     if (this.type=="one-shot"){
@@ -330,6 +376,9 @@ export class ArtworkComicComponent implements OnInit {
         this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"comics",this.bd_id,"serie",r[0].category,r[0].firsttag).subscribe(e=>{
           if(e[0].list_to_send.length >0){
             this.list_of_recommendations_by_tag=e[0].list_to_send;
+            this.list_of_recommendations_by_tag_retrieved=true;
+          }
+          else{
             this.list_of_recommendations_by_tag_retrieved=true;
           }
         });
@@ -407,7 +456,7 @@ export class ArtworkComicComponent implements OnInit {
           this.mode_visiteur_added = true;
         }
         else{
-          this.NotationService.add_view('bd', 'one-shot',  r[0].category, this.bd_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag).subscribe(r=>{
+          this.NotationService.add_view('bd', 'one-shot',  r[0].category, this.bd_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
             this.createdAt_view = r[0].createdAt;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
@@ -429,6 +478,7 @@ export class ArtworkComicComponent implements OnInit {
         if (list_of_loves.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_loves.length;i++){
+            this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
             if (list_of_loves[i].author_id_who_loves == l[0].id){
               this.loved = true;
             }
@@ -442,6 +492,7 @@ export class ArtworkComicComponent implements OnInit {
         if (list_of_likes.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_likes.length;i++){
+            this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
             if (list_of_likes[i].author_id_who_likes == l[0].id){
               this.liked = true;
             }
@@ -476,7 +527,7 @@ export class ArtworkComicComponent implements OnInit {
       this.viewnumber=r[0][0].viewnumber;
       this.commentariesnumber = r[0][0].commentarynumbers;
       this.likesnumber =r[0][0].likesnumber ;
- 
+      this.current_chapter_title=r[0][0].title;
       this.lovesnumber =r[0][0].lovesnumber ;
       this.chapterList=r[0];
       this.initialize_chapter_selector();
@@ -488,7 +539,7 @@ export class ArtworkComicComponent implements OnInit {
           this.mode_visiteur_added = true;
         }
         else{
-          this.NotationService.add_view('bd', 'serie',  this.style, this.bd_id,1,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{
+          this.NotationService.add_view('bd', 'serie',  this.style, this.bd_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
             this.createdAt_view = r[0].createdAt;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
@@ -510,6 +561,7 @@ export class ArtworkComicComponent implements OnInit {
       for( var i=1; i< this.chapterList.length; i++ ) {
         this.list_of_pages_by_chapter.push(['']);
       };
+      console.log("getting pages by chapter")
       this.get_bd_serie_chapter_pages(this.bd_id,1,r[0][0].pagesnumber);
 
       this.Profile_Edition_Service.retrieve_profile_picture( r[0][0].author_id).subscribe(r=> {
@@ -544,9 +596,18 @@ export class ArtworkComicComponent implements OnInit {
 
     $(document).ready(function () {
       $('.chapterSelector').SumoSelect({});
+      THIS.sumo_ready=true;
     });
 
     $('.chapterSelector').change(function(){
+
+      if(parseInt($(".chapterSelector").val())==THIS.current_chapter){
+        return
+      }
+      THIS.display_comics_pages=[];
+      THIS.display_pages=false;
+     
+
       let chapter_number = $(".chapterSelector").val();
       let last_chapter = THIS.current_chapter;
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
@@ -555,13 +616,15 @@ export class ArtworkComicComponent implements OnInit {
       
       THIS.current_chapter= parseInt(chapter_number);// le chapitre 1 vaut 0 
       THIS.viewnumber=THIS.chapterList[chapter_number].viewnumber;
+      THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
+      
       THIS.commentariesnumber = THIS.chapterList[chapter_number].commentarynumbers;
       THIS.likesnumber =THIS.chapterList[chapter_number].likesnumber ;
       THIS.lovesnumber =THIS.chapterList[chapter_number].lovesnumber ;
 
       if (THIS.mode_visiteur){
         THIS.NotationService.add_view_time('bd', 'serie', THIS.style, THIS.bd_id,last_chapter + 1,ending_time_of_view, THIS.createdAt_view).subscribe();
-        THIS.NotationService.add_view('bd', 'serie',THIS.style, THIS.bd_id,(parseInt(chapter_number) + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag).subscribe(r=>{
+        THIS.NotationService.add_view('bd', 'serie',THIS.style, THIS.bd_id,(parseInt(chapter_number) + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
           THIS.createdAt_view = r[0].createdAt;
           THIS.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
         });
@@ -574,6 +637,7 @@ export class ArtworkComicComponent implements OnInit {
         THIS.get_bd_serie_chapter_pages(THIS.bd_id,(parseInt(chapter_number) + 1),THIS.chapterList[parseInt(chapter_number)].pagesnumber);
       }
       else{
+        THIS.initialize_thumbnails();
         THIS.swiper.slideTo(0,false,false);
       }
      
@@ -699,6 +763,7 @@ export class ArtworkComicComponent implements OnInit {
         if (list_of_loves.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_loves.length;i++){
+            this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
             if (list_of_loves[i].author_id_who_loves == l[0].id){
               this.loved = true;
             }
@@ -711,6 +776,7 @@ export class ArtworkComicComponent implements OnInit {
         if (list_of_likes.length != 0){
           this.Profile_Edition_Service.get_current_user().subscribe(l=>{
             for (let i=0;i<list_of_likes.length;i++){
+              this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
               if (list_of_likes[i].author_id_who_likes == l[0].id){
                 this.liked = true;
               }
@@ -720,15 +786,18 @@ export class ArtworkComicComponent implements OnInit {
       });
 
       
-        for( var k=0; k< total_pages; k++ ) {
+        for( let k=0; k< total_pages; k++ ) {
           this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k).subscribe(r=>{
             console.log(r[1])
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_pages_by_chapter[chapter_number-1][r[1]]=(SafeURL);
-            console.log(this.list_of_pages_by_chapter)
-            if (k==total_pages.length){
+            if(k==total_pages-1){
+              console.log("show pages")
+              console.log(chapter_number);
+              this.initialize_thumbnails();
               this.swiper.slideTo(0,false,false);
+              this.show_pages[chapter_number-1]=true;
             }
           });
         };
@@ -825,6 +894,14 @@ export class ArtworkComicComponent implements OnInit {
 
   left_container_category_index: number = 0;
   open_left_container_category(i : number) {
+    if(i==1){
+      this.display_drawings_recommendations=false;
+      this.display_comics_recommendations=false;
+      this.display_comics_recommendations=false;
+    }
+    else{
+      this.display_comics_recommendations_others=false;
+    }
     this.left_container_category_index=i;
   }
 
@@ -832,15 +909,20 @@ export class ArtworkComicComponent implements OnInit {
 
 
   initialize_thumbnails() {
-
+    console.log("initialize_thumbnails")
+    this.thumbnails_links=[];
     if( this.type =='one-shot' ) {
       for( var i=0; i< this.list_bd_pages.length; i++ ) {
-        this.thumbnails_links.push( this.list_bd_pages[i] );
+        this.thumbnails_links[i]=( this.list_bd_pages[i] );
       }
     }
     else if( this.type=='serie' ) {
+      console.log(this.list_of_pages_by_chapter[this.current_chapter])
       for( var i=0; i< this.list_of_pages_by_chapter[this.current_chapter].length; i++ ) {
-        this.thumbnails_links.push( this.list_of_pages_by_chapter[this.current_chapter][i] );
+        this.thumbnails_links[i]=( this.list_of_pages_by_chapter[this.current_chapter][i] );
+        if(i==this.list_of_pages_by_chapter[this.current_chapter].length-1){
+          this.cd.detectChanges();
+        }
       }
     }
 
@@ -875,7 +957,7 @@ export class ArtworkComicComponent implements OnInit {
         const getCurrentCity = () => {
         this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 310px )");
         return Promise.resolve('Lyon');
-      };
+        };
         await getCurrentCity();
         this.swiper.update();
       })();
@@ -946,149 +1028,161 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************* */
   
   click_like() {
-    
-    this.like_in_progress=true;
-    if(this.liked) {     
-      if(this.type=='one-shot'){
-        this.NotationService.remove_like('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+    if(this.type_of_account=="account"){
+      this.like_in_progress=true;
+      if(this.liked) {     
+        if(this.type=='one-shot'){
+          this.NotationService.remove_like('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+            
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.likesnumber=r[0].likesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.liked=false;
+                  this.like_in_progress=false;
+              })();
+          });
+        }
+        else if(this.type=='serie'){      
+          this.NotationService.remove_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
+              
+            (async () => { 
+                  const getCurrentCity = () => {
+                  this.likesnumber=r[0].likesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.liked=false;
+                  this.like_in_progress=false;
+              })();
           
+          });
+        }
+      }
+      else {
+        if(this.type=='one-shot'){  
+          this.NotationService.add_like('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               (async () => { 
                 const getCurrentCity = () => {
                 this.likesnumber=r[0].likesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.liked=false;
+                this.liked=true;
                 this.like_in_progress=false;
             })();
-        });
-      }
-      else if(this.type=='serie'){      
-        this.NotationService.remove_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
             
-          (async () => { 
+          });
+        }
+        else if(this.type=='serie'){
+        
+          this.NotationService.add_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+              
+            (async () => { 
                 const getCurrentCity = () => {
                 this.likesnumber=r[0].likesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.liked=false;
-                this.like_in_progress=false;
-            })();
-         
-        });
+                this.liked=true;
+                this.like_in_progress=false;            
+            })();  
+          });
+        }
       }
     }
-    else {
-      if(this.type=='one-shot'){  
-        this.NotationService.add_like('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{        
-            (async () => { 
-              const getCurrentCity = () => {
-              this.likesnumber=r[0].likesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.liked=true;
-              this.like_in_progress=false;
-          })();
-          
-        });
-      }
-      else if(this.type=='serie'){
-       
-        this.NotationService.add_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{
-            
-          (async () => { 
-              const getCurrentCity = () => {
-              this.likesnumber=r[0].likesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.liked=true;
-              this.like_in_progress=false;            
-           })();  
-        });
-      }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+      });
     }
-
   }
 
   click_love() {
-    
-    this.love_in_progress=true;
-    if(this.loved) {     
-      if(this.type=='one-shot'){
-        this.NotationService.remove_love('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+    if(this.type_of_account=="account"){
+      this.love_in_progress=true;
+      if(this.loved) {     
+        if(this.type=='one-shot'){
+          this.NotationService.remove_love('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.lovesnumber=r[0].lovesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.loved=false;
+                  this.love_in_progress=false;
+              })();
+          });
+        }
+        else if(this.type=='serie'){      
+          this.NotationService.remove_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
+                (async () => { 
+                  const getCurrentCity = () => {
+                  this.lovesnumber=r[0].lovesnumber;
+                  return Promise.resolve('Lyon');
+                };
+                  await getCurrentCity();
+                  this.loved=false;
+                  this.love_in_progress=false;
+              })();
+          
+          });
+        }
+      }
+      else {
+        if(this.type=='one-shot'){  
+          this.NotationService.add_love('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               (async () => { 
                 const getCurrentCity = () => {
                 this.lovesnumber=r[0].lovesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.loved=false;
+                this.loved=true;
                 this.love_in_progress=false;
             })();
-        });
-      }
-      else if(this.type=='serie'){      
-        this.NotationService.remove_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
-               (async () => { 
+            
+          });
+        }
+        else if(this.type=='serie'){
+        
+          this.NotationService.add_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+              (async () => { 
                 const getCurrentCity = () => {
                 this.lovesnumber=r[0].lovesnumber;
                 return Promise.resolve('Lyon');
               };
                 await getCurrentCity();
-                this.loved=false;
-                this.love_in_progress=false;
-            })();
-         
-        });
+                this.loved=true;
+                this.love_in_progress=false;            
+            })();  
+          });
+        }
       }
     }
-    else {
-      if(this.type=='one-shot'){  
-        this.NotationService.add_love('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{        
-            (async () => { 
-              const getCurrentCity = () => {
-              this.lovesnumber=r[0].lovesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.loved=true;
-              this.love_in_progress=false;
-          })();
-          
-        });
-      }
-      else if(this.type=='serie'){
-       
-        this.NotationService.add_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag).subscribe(r=>{
-            (async () => { 
-              const getCurrentCity = () => {
-              this.lovesnumber=r[0].lovesnumber;
-              return Promise.resolve('Lyon');
-            };
-              await getCurrentCity();
-              this.loved=true;
-              this.love_in_progress=false;            
-           })();  
-        });
-      }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+      });
     }
-
+    
   }
 
   show_likes(){
-      /*afficher popo up avec la liste suivante:
-      this.BdOneShotService.get_likes('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
-          pour chaque utilisateur on appelle d'autres fonctions pour afficher la photo de profile
-      })*/
+    const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
+      data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes},
+    });
 
   }
 
   show_loves(){
-      /*afficher popo up avec la liste suivante:
-      this.BdOneShotService.get_loves('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{})*/
+    const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
+      data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves},
+    });
+
   }
 
   scroll_to_comments() {
@@ -1119,20 +1213,36 @@ export class ArtworkComicComponent implements OnInit {
 
 
   subscribtion(){
-    if(!this.already_subscribed){
-      this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-        this.already_subscribed=true;
-      });
+    if(this.type_of_account=="account"){
+      if(!this.already_subscribed){
+        this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
+          this.already_subscribed=true;
+        });
+      }
+      if(this.already_subscribed){
+        this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
+          this.already_subscribed=false;
+        });
+      }
     }
-    if(this.already_subscribed){
-      this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-        this.already_subscribed=false;
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
       });
+
     }
+    
   }
 
   archive(){
     this.Subscribing_service.archive("comics",this.type,this.bd_id).subscribe(r=>{
+      this.content_archived=true;
+    });
+  }
+
+  unarchive(){
+    this.Subscribing_service.unarchive("comics",this.type,this.bd_id).subscribe(r=>{
+      this.content_archived=false;
     });
   }
 
@@ -1163,7 +1273,82 @@ export class ArtworkComicComponent implements OnInit {
     }
   }
 
-  
+  /******************************************DISPLAY IMAGES ****************************************/
+
+  profile_picture_loaded(){
+    this.pp_loaded=true;
+    if(this.type_of_account_retrieved){
+      this.display_right_container=true;
+    }
+  }
+
+  compteur_recom_writings=0;
+  sendLoadedWriting(event){
+    this.compteur_recom_writings+=1;
+    if( this.compteur_recom_writings==this.list_of_author_recommendations_writings.length){
+      this.display_writings_recommendations=true;
+      this.compteur_recom_writings=0;
+      console.log("display recom writi")
+    }
+  }
+
+  compteur_recom_comics=0;
+  sendLoadedComic(event){
+    this.compteur_recom_comics+=1;
+    if( this.compteur_recom_comics==this.list_of_author_recommendations_comics.length){
+      this.display_comics_recommendations=true;
+      this.compteur_recom_comics=0;
+      console.log("display recom comics")
+    }
+  }
+
+  compteur_recom_drawings=0;
+  sendLoadedDrawing(event){
+    this.compteur_recom_drawings+=1;
+    if( this.compteur_recom_drawings==this.list_of_author_recommendations_drawings.length){
+      this.display_drawings_recommendations=true;
+      this.compteur_recom_drawings=0;
+      console.log("display recom draw")
+    }
+   
+  }
+  compteur_recom_others_comics=0
+  sendLoadedComicsOthers(event){
+    this.compteur_recom_others_comics+=1;
+    if( this.compteur_recom_others_comics==this.list_of_recommendations_by_tag.length){
+      this.display_comics_recommendations_others=true;
+      this.compteur_recom_others_comics=0;
+      console.log("display recom comics others")
+    }
+  }
+
+
+  a_drawing_is_loaded(i){
+    this.display_comics_pages[i]=true;
+    let compt=0;
+    if(this.type=='serie'){
+      
+      for(let j=0;j<this.list_of_pages_by_chapter[this.current_chapter].length;j++){
+        if(this.display_comics_pages[i]){
+          compt+=1;
+        }
+        if(compt==this.list_of_pages_by_chapter[this.current_chapter].length){
+          this.display_pages=true;
+        }
+      }
+    }
+    else{
+      for(let j=0;j<this.list_bd_pages.length;j++){
+        if(this.display_comics_pages[i]){
+          compt+=1;
+        }
+        if(compt==this.list_bd_pages.length){
+          this.display_pages=true;
+        }
+      }
+    }
+    
+  }
 
 
 }

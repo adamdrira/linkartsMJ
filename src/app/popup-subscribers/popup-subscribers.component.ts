@@ -74,7 +74,7 @@ export class PopupSubscribersComponent implements OnInit {
   subscribtion(i){
     if(!this.list_of_check_subscribtion[i]){
       this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribers_information[i].id).subscribe(information=>{
-        this.list_of_check_subscribtion[i]==true;
+        this.list_of_check_subscribtion[i]=true;
       });
     }
     if(this.list_of_check_subscribtion[i]){

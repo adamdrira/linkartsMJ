@@ -1,0 +1,302 @@
+
+
+ .chapters-controller {
+    width:500px;
+    height:fit-content;
+    margin: 30px auto 50px auto;
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+
+ .chapters-title {
+    display:flex;
+    height:50px;
+    background-color: rgb(192, 209, 241);
+    border-radius: 10px 10px 0px 0px;
+}
+
+ .chapters-title > span {
+    font-size:1.2rem;
+    margin:auto auto auto 20px;
+}
+
+ .chapters-controller .add-chapter-button {
+    display:flex;
+    margin:auto 20px auto auto;
+    padding-left:10px;
+    padding-right:10px;
+    height:30px;
+    background-image:linear-gradient(90deg, #2491ee 0, #1cc7f2 100%);
+    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    border-radius:8px;
+    cursor:pointer;
+}
+
+ .chapters-controller .add-chapter-button .plus-icon {
+    width:15px;
+    height:15px;
+    margin:auto 5px auto 5px;
+    background-color: white;
+    -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+}
+
+ .chapters-controller .add-chapter-button span {
+    color:white;
+    margin:auto 5px auto 5px;
+    cursor:pointer;
+}
+
+
+
+ .chapters-list {
+    background-color:rgb(250,250,250);
+    height:fit-content;
+    max-height: calc( 80vh - 50px );
+}
+
+ .chapters-list .chapter {
+    display:flex;
+    height:65px !important;
+    padding-top:5px;
+    padding-bottom:0px;
+    border-top:1px solid rgb(230,230,230);
+}
+
+ .chapters-list .chapter * {
+    font-size:1rem !important;
+}
+
+ .chapters-list .selected {
+    background: rgb(240, 242, 251);
+    box-shadow: 0px 0px 4px rgb(208, 208, 255);
+}
+
+ .chapters-list .chapter:hover {
+    background: rgb(240, 242, 251);
+    box-shadow: 0px 0px 4px rgb(208, 208, 255);
+}
+
+ .chapters-list .chapter .chapter-validated {
+    width: 40px;
+    display:flex;
+}
+
+ .chapters-list .chapter .chapter-validated .validated-icon {
+    width: 20px;
+    height: 20px;
+    margin: auto auto;
+    background-color: rgb(43, 185, 0);
+    -webkit-mask: url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+}
+
+ .chapters-list .chapter .chapter-number {
+    cursor:pointer;
+    padding-left:5px;
+    width: 110px;
+    display:flex;
+    //background:red;
+}
+
+ .chapters-list .chapter .chapter-number span{
+    margin:auto auto auto 0px;
+}
+
+
+ .chapters-list .chapter .chapter-name {
+    display:flex;
+    padding-left:5px;
+    height:fit-content;
+    margin: auto auto;
+    width:calc(100% - 40px - 110px - 80px);
+}
+
+
+ .chapters-list .chapter .chapter-name span {
+    margin: auto auto auto 0px;
+}
+
+
+ .chapters-list .chapter .chapter-name .mat-input {
+    width: calc( 100% - 30px );
+    height: 55px !important;
+    max-height: 55px !important;
+    margin:auto auto auto 0px;
+}
+
+
+ .chapters-list .chapter .chapter-icons {
+    width:15%;
+    height: 30px;
+    display:flex;
+    margin: auto auto auto auto;
+    //background:grey;
+}
+
+
+ .chapters-list .chapter .button {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto;
+    border:1px solid rgb(201, 201, 201);
+    border-radius:4px;
+    background:white;
+    cursor:pointer;
+}
+
+ .chapters-list .chapter .button-name {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto auto 5px;
+    border:1px solid rgb(201, 201, 201);
+    border-radius:4px;
+    background:white;
+    cursor:pointer;
+}
+
+ .chapters-list .chapter .button-name .validate-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(40, 40, 40);
+    -webkit-mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
+}
+
+
+ .chapters-list .chapter .button-empty {
+    display:flex;
+    width:30px;
+    height:30px;
+    margin:auto auto;
+}
+
+ .chapters-list .chapter .button .empty-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(40, 40, 40);
+}
+
+
+ .chapters-list .chapter .button .modify-icon {
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(32, 56, 100);
+    -webkit-mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
+    mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
+}
+
+
+ .chapters-list .chapter .button .delete-icon {
+    
+    width:15px;
+    height:15px;
+    margin:auto auto;
+    background-color: rgb(148, 23, 23);
+    -webkit-mask:  url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
+}
+
+
+
+ .pages-controller {
+    width: 100%;
+
+}
+
+
+
+//ScrollBar
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;  
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999;  
+}
+
+//ng deep
+::ng-deep .mat-form-field-underline {
+    position:unset !important;
+
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-top:0px !important;
+    padding-bottom:0px !important;
+}
+
+::ng-deep .mat-form-field {
+    font-family:unset;
+}
+
+::ng-deep .disabled .mat-form-field-underline {
+    background-image:unset !important;
+    background-color: rgba(0,0,0,.42) !important;
+}
+
+
+
+//modal
+.modal .buttons-container {
+    display:flex;
+}
+
+.modal .buttons-container .button-confirmation {
+    position: relative;
+    display:flex;
+    margin:20px auto 20px auto;
+    width: 150px;
+    height: 40px;
+    
+    cursor:pointer;
+    border-radius:5px;
+    color:#FFFFFF;
+    background-color:#ff3333;
+    box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+    text-align:center;
+}
+
+.modal .buttons-container .button-reset {
+    position: relative;
+    display:flex;
+    margin:20px auto 20px auto;
+    width: 150px;
+    height: 40px;
+    
+    cursor:pointer;
+    border-radius:5px;
+    color:#FFFFFF;
+    background-color:#21961d;
+    box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+    text-align:center;
+}
+
+.modal .buttons-container .button-confirmation a,
+.modal .buttons-container .button-reset a {
+    display:flex;
+    width:100% !important;
+    height:100% !important;
+    margin:auto auto;
+}
+
+.modal .buttons-container .button-confirmation a span,
+.modal .buttons-container .button-reset a span {
+    margin:auto auto;
+}

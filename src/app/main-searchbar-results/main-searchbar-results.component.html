@@ -1,0 +1,18 @@
+<div style="display:block">
+    <div class="main-title">
+        Meilleures résultats pour : {{research}}
+    </div>
+
+    <div class="categories-container">
+        <div class="categories-titles-container" *ngFor="let item of list_of_categories;let i=index" [ngClass]="{'title-selected-container': indice_title_selected==i }" >
+            <span class="category-title" >{{item}}</span>
+        </div>
+    </div>
+    <div class="second-categories-container">
+        <div class="second-categories-titles-container" *ngFor="let item of more_filters[indice_title_selected];let i=index" >
+            <span class="second-category-title" >{{item}}</span>
+        </div>
+    </div>
+    
+
+</div>

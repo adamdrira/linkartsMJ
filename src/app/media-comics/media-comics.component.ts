@@ -61,6 +61,9 @@ export class MediaComicsComponent implements OnInit {
       this.sorted_artpieces_webtoon.length +
       this.sorted_artpieces_manga.length +
       this.sorted_artpieces_bd.length;
+    console.log( this.number_of_thumbnails);
+
+    
   }
 
   j=0;
@@ -128,7 +131,22 @@ export class MediaComicsComponent implements OnInit {
 
 
   
-
+  get_number_of_thumbnails(category){
+    if(category=='Manga'){
+      return this.sorted_artpieces_manga.length;
+    }
+    else if(category=='BD'){
+      return this.sorted_artpieces_bd.length;
+    }
+    else if(category=='Webtoon'){
+      return this.sorted_artpieces_webtoon.length;
+    }
+    else if(category=='Comics'){
+      return this.sorted_artpieces_comics.length;
+    }
+    
+    
+  }
 
 
 

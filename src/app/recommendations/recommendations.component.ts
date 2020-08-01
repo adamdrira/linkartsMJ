@@ -65,11 +65,12 @@ export class RecommendationsComponent implements OnInit {
   drawing_is_loaded:boolean=false;
 
   index_writing=0;
-  sorted_style_list_writing:any[]=["Illustrated novel","Roman","Scenario","Article"];
+  sorted_style_list_writing:any[]=["Illustrated novel","Roman","Scenario","Article","Poetry"];
   sorted_artpieces_illustrated_novel:any[]=[];
   sorted_artpieces_roman:any[]=[];
   sorted_artpieces_scenario:any[]=[];
   sorted_artpieces_article:any[]=[];
+  sorted_artpieces_poetry:any[]=[];
   compteur_writing_is_loaded=0;
   compare_to_compteur_writing=0;
   writing_is_loaded:boolean=false;
@@ -129,6 +130,9 @@ export class RecommendationsComponent implements OnInit {
                 }
                 else if (this.sorted_style_list_writing[i]  == "Illustrated novel") {
                   this.sorted_style_list_writing[i] ="Roman illustré";
+                }
+                else if (this.sorted_style_list_writing[i]  == "Poetry") {
+                  this.sorted_style_list_writing[i] ="Poésie";
                 }
               }
             }
@@ -515,7 +519,7 @@ export class RecommendationsComponent implements OnInit {
             if(list_writings_to_send.length>0){
               for (let i=0;i<list_writings_to_send.length;i++){
                 if (list_writings_to_send[0].length>0){
-                  if(list_writings_to_send[0][0].category =="illustrated novel"){
+                  if(list_writings_to_send[0][0].category =="Illustrated novel"){
                     if( this.sorted_artpieces_illustrated_novel.length<5 && list_writings_to_send[i][0].status=='public'){
                       this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[0][0]);
                     }
@@ -542,6 +546,14 @@ export class RecommendationsComponent implements OnInit {
                   if(list_writings_to_send[0][0].category =="Article"){
                     if( this.sorted_artpieces_article.length<5 && list_writings_to_send[i][0].status=='public'){
                        this.sorted_artpieces_article.push(list_writings_to_send[0][0]);
+                    }
+                    if(i==list_writings_to_send.length-1){
+                      this.writing_is_loaded=true;
+                    }
+                  }
+                  if(list_writings_to_send[0][0].category =="Poetry"){
+                    if( this.sorted_artpieces_poetry.length<5 && list_writings_to_send[i][0].status=='public'){
+                       this.sorted_artpieces_poetry.push(list_writings_to_send[0][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;

@@ -1,9 +1,9 @@
-<div class="container-fluid">
-    <main role="main" class="main">
+<div class="container-fluid" >
+    <main role="main" class="main" >
       
 
 
-        <div id="left-container">
+        <div id="left-container" *ngIf="type_of_profile_retrieved" [ngClass]="{'left-container-extended':type_of_profile=='visitor' }">
 
             <div class="categories-container">
                 <div class="category-filter2" [ngClass]="{'invisible':!little_screen }">
@@ -15,20 +15,32 @@
                 </div>
                 
 
-                <div class="category-filter" [ngClass]="{'invisible':little_screen }">
+                <div class="category-filter" [ngClass]="{'invisible':little_screen,'put-on-the-left':type_of_profile=='account'}">
                     <div #category class="content-action text-center opened" (click)="open_category(0);">
-                        <span>Recommandations</span>
-                        <div class="bottom-border">
+                        <div class="title" [ngClass]="{'title-opened': category_index==0 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': category_index==0 }">
+                                </div>
+                            </div>
+                          Recommandations
                         </div>
                     </div>
                     <div #category class="content-action text-center" (click)="open_category(1)">
-                        <span>Tendances</span>
-                        <div class="bottom-border">
+                        <div class="title" [ngClass]="{'title-opened': category_index==1 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': category_index==1 }">
+                                </div>
+                            </div>
+                          Tendances
                         </div>
                     </div>
-                    <div #category class="content-action text-center" (click)="open_category(2)">
-                        <span>Abonnements</span>
-                        <div class="bottom-border">
+                    <div #category class="content-action text-center" (click)="open_category(2)" *ngIf="type_of_profile=='account'">
+                        <div class="title" [ngClass]="{'title-opened': category_index==2 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed" [ngClass]="{'icon-clicked': category_index==2 }">
+                                </div>
+                            </div>
+                          Abonnements
                         </div>
                     </div>
                     <!--<div #category class="content-action text-center" (click)="open_category(3)">
@@ -56,12 +68,18 @@
 
 
 
-        <div id="right-container">
+        <div *ngIf="type_of_profile_retrieved && type_of_profile=='account'" id="right-container" >
 
             <div class="categories-container">
                 <div class="category-filter">
                     <div class="content-action text-center">
-                        <span>Stories</span>
+                        <div class="title" > 
+                            <div class="icon-container">
+                                <div class="icon icon-stories" >
+                                </div>
+                            </div>
+                          Stories
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,16 @@
+<div class="top-container">
+    <span class="logo">Gestion des chapitres</span>
+
+</div>
+
+<div class="container-fluid">
+    <div class="form" *ngIf="list_of_chapters_retrieved">
+        <div *ngIf="comics_data_retrieved"> {{comics_data.title}}</div>
+        <app-form-serie 
+        form_number=1
+        [list_of_chapters]=list_of_chapters
+        [chapter]="chapter_test"
+        ></app-form-serie>
+    </div>
+    
+</div>
