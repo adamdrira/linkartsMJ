@@ -264,38 +264,30 @@ module.exports = (router, drawings_one_page,list_of_users) => {
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_drawing_from_data/:drawing_id', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        
-        (async () => {
-          let drawing_id = req.params.drawing_id
-          const drawing = await drawings_one_page.findOne({
-            where: {
-                drawing_id: drawing_id,
-                authorid: current_user,
+        let drawing_id = req.params.drawing_id
+        drawings_one_page.findOne({
+          where: {
+              drawing_id: drawing_id,
+              authorid: current_user,
+          }
+        }).then(drawing=>{
+          list_of_users.findOne({
+            where:{
+              id:current_user,
             }
-          });
-          if(drawing){
-            user = await list_of_users.findOne({
-              where:{
-                id:current_user,
-              }
-            }).then(user=>{
+          }).then(user=>{
+            if(drawing.status=="public"){
               let number_of_drawings=user.number_of_drawings-1;
               user.update({
                 "number_of_drawings":number_of_drawings,
               })
-            });
-            console.log( 'suppression drawing en cours');
+            }
             drawing.destroy({
-                truncate: false
-           })
-           res.json([drawing]);
-          }
-          else {
-            console.log("page not found")
-          }
-
-          
-        })();
+              truncate: false
+          })
+          res.json([drawing]);
+          });
+        })
       });
 
       //on supprime le fichier du dossier date/pages_bd_onshot

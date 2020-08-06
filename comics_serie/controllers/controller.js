@@ -100,23 +100,28 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             authorid: current_user,
             bd_id: bd_id,
           }
-        });
-        user = await list_of_users.findOne({
-          where:{
-            id:current_user,
-          }
-        }).then(user=>{
-          let number_of_comics=user.number_of_comics-1;
-          user.update({
-            "number_of_comics":number_of_comics,
+        }).then(bd=>{
+          list_of_users.findOne({
+            where:{
+              id:current_user,
+            }
+          }).then(user=>{
+            if(bd.status=="public"){
+              let number_of_comics=user.number_of_comics-1;
+              user.update({
+                "number_of_comics":number_of_comics,
+              })
+            }
+            if(bd){
+              bd.destroy({
+                truncate: false
+              });
+              res.status(200).send([bd]);
+            }
           })
-        });
-        if(bd){
-          bd.destroy({
-            truncate: false
-          });
-          res.status(200).send([bd]);
-        }
+        })
+      
+        
         
           
         

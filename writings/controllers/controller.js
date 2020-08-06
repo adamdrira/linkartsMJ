@@ -34,7 +34,6 @@ module.exports = (router, Liste_Writings,list_of_users) => {
     const category = (req.body.Category === "Poésie") ? "Poetry": (req.body.Category === "Scénario") ? "Scenario" : (req.body.Category === "Roman illustré") ? "Illustrated novel" : req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    //const format = req.body.format;
     const writing_name = req.body.writing_name;
     for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
@@ -58,7 +57,6 @@ module.exports = (router, Liste_Writings,list_of_users) => {
         Liste_Writings.create({
                 "authorid": current_user,
                 "title":title,
-                "format":format,
                 "category": category,
                 "highlight":highlight,
                 "firsttag": Tags[0],
@@ -84,33 +82,31 @@ module.exports = (router, Liste_Writings,list_of_users) => {
     //on supprime le fichier de la base de donnée postgresql
     router.delete('/remove_writing/:writing_id', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {
-      const writing_id=parseInt(req.params.writing_id);
-      const writing = await Liste_Writings.findOne({
-        where: {
-          authorid: current_user,
-          writing_id: writing_id,
+    const writing_id=parseInt(req.params.writing_id);
+    Liste_Writings.findOne({
+      where: {
+        authorid: current_user,
+        writing_id: writing_id,
+      }
+    }).then(writing=>{
+      list_of_users.findOne({
+        where:{
+          id:current_user,
         }
-      })
-      if(writing){
-        user = await list_of_users.findOne({
-          where:{
-            id:current_user,
-          }
-        }).then(user=>{
+      }).then(user=>{
+        if(writing.status=="public"){
           let number_of_writings=user.number_of_writings-1;
           user.update({
             "number_of_writings":number_of_writings,
           })
-        });
-        console.log( 'suppression writing en cours');
+        }
         writing.destroy({
-        truncate: false
-        })
-        res.json([writing]);
-      }
-
-    })();
+          truncate: false
+          })
+          res.json([writing]);
+      });
+    })
+      
   });
 
       
@@ -123,7 +119,6 @@ module.exports = (router, Liste_Writings,list_of_users) => {
     (async () => {
       const highlight = req.body.highlight;
       const title = req.body.Title;
-      const format = req.body.format;
       const category = req.body.Category;
       const Tags = req.body.Tags;
       const writing_id = req.body.writing_id;
@@ -157,7 +152,6 @@ module.exports = (router, Liste_Writings,list_of_users) => {
               "title":title,
                 "category": category,
                 "highlight":highlight,
-                "format":format,
                 "firsttag": Tags[0],
                 "secondtag": Tags[1],
                 "thirdtag": Tags[2],

@@ -99,34 +99,34 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
      //on supprime le fichier de la base de donnée postgresql
      router.delete('/remove_bd_oneshot/:bd_id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      (async () => {
+
         const bd_id=req.params.bd_id
-        const bd = await Liste_bd_os.findOne({
+        Liste_bd_os.findOne({
           where: {
             authorid: current_user,
             bd_id: bd_id,
           }
-        })
-        if(bd !== null){
-          user = await list_of_users.findOne({
+        }).then(bd=>{
+          list_of_users.findOne({
             where:{
               id:current_user,
             }
           }).then(user=>{
-            let number_of_comics=user.number_of_comics-1;
-            user.update({
-              "number_of_comics":number_of_comics,
-            })
+            if(bd.status=="public"){
+              let number_of_comics=user.number_of_comics-1;
+              user.update({
+                "number_of_comics":number_of_comics,
+              })
+            }
+            bd.destroy({
+              truncate: false
+            });
+            res.json([bd]);
           })
-          console.log( 'suppression bd one shot en cours');
-          Liste_bd_os.destroy({
-          where: {authorid:current_user, bd_id: bd_id },
-          truncate: false
-         })
-          res.json([bd]);
-        }
-
-      })();
+        })
+       
+          
+        
     });
 
 

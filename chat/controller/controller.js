@@ -374,7 +374,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       list_of_users.findAll({
         where:{
           [Op.and]:[
-            {[Op.or]:[{firstname:{[Op.like]:'%'+ text + '%' }},{lastname:{[Op.like]:'%'+ text + '%' }}]},
+            {[Op.or]:[{firstname:{[Op.like]:'%'+ text + '%' }},{lastname:{[Op.like]:'%'+ text + '%' }},{nickname:{[Op.like]:'%'+ text + '%' }}]},
             {[Op.or]:[{subscribings:{[Op.contains]:[id_user]}}, {subscribers:{[Op.contains]:[id_user]}}]}
             
           ]

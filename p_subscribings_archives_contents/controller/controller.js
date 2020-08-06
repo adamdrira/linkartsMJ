@@ -58,7 +58,36 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     
 
+    
 
+    router.get('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
+        (async () => {
+        let current_user = get_current_user(req.cookies.currentUser);
+        const publication_category=req.params.publication_category;
+        const format=req.params.format;
+        const publication_id=parseInt(req.params.publication_id);
+        archives = await list_of_archives.findAll({
+            where: {
+                id_archiver:current_user,
+                publication_category:publication_category,
+                format:format,
+                publication_id:publication_id
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        })
+        .then(archives =>  {
+            if(archives.length>0){
+                res.status(200).send([{"value":true}])
+            }
+            else{
+                res.status(200).send([{"value":false}])
+            }
+            
+        }); 
+    })();
+    });
 
     router.get('/list_of_archives_comics', function (req, res) {
         (async () => {

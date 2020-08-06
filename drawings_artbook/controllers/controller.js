@@ -149,37 +149,32 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
 
     router.delete('/remove_drawings_artbook/:drawing_id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
-            let drawing_id=req.params.drawing_id;
-            const artbook = await Liste_artbook.findOne({
-              where: {
-                authorid: current_user,
-                drawing_id: drawing_id,
-              }
-            });
-            if(artbook){
-                user = await list_of_users.findOne({
-                  where:{
-                    id:current_user,
-                  }
-                }).then(user=>{
-                  let number_of_drawings=user.number_of_drawings-1;
-                  user.update({
-                    "number_of_drawings":number_of_drawings,
-                  })
-                });
-                console.log( 'suppression en cours');
-                artbook.destroy({
-                  truncate: false
-                })
-              res.json([artbook]);
-            }
-            else {
-              console.log("artbook not found")
-            }
+      let drawing_id=req.params.drawing_id;
+      Liste_artbook.findOne({
+        where: {
+          authorid: current_user,
+          drawing_id: drawing_id,
+        }
+      }).then(artbook=>{
+        list_of_users.findOne({
+          where:{
+            id:current_user,
+          }
+        }).then(user=>{
+          if(artbook.status=="public"){
+            res.json([artbook]);
+            let number_of_drawings=user.number_of_drawings-1;
+            user.update({
+              "number_of_drawings":number_of_drawings,
+            })
+          }
+          artbook.destroy({
+            truncate: false
+          })
           
-          })();
-      
+        });
+      })
+            
         });
 
         router.post('/change_artbook_drawing_status', function (req, res) {

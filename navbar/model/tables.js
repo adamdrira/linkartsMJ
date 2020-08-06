@@ -15,6 +15,14 @@ var list_of_navbar_researches= sequelize.define('list_of_navbar_researches', {
   format: DataTypes.STRING,
   target_id: DataTypes.INTEGER,
   research_string:DataTypes.STRING,
+  status:DataTypes.STRING,
+  number_of_comics:DataTypes.INTEGER,
+  numbar_of_drawings:DataTypes.INTEGER,
+  number_of_writings:DataTypes.INTEGER,
+  style:DataTypes.STRING,
+  firsttag:DataTypes.STRING,
+  secondtag:DataTypes.STRING,
+  thirdtag:DataTypes.STRING,
 },
 {
   freezeTableName: true // Model tableName will be the same as the model name
