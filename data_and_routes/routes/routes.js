@@ -78,7 +78,7 @@ router.post('/get_comics_recommendations_by_author',recommendations_artwork.get_
 router.post('/get_drawings_recommendations_by_author',recommendations_artwork.get_drawings_recommendations_by_author)
 router.post('/get_writings_recommendations_by_author',recommendations_artwork.get_writings_recommendations_by_author)
 router.post('/get_recommendations_by_tag',recommendations_artwork.get_recommendations_by_tag)
-
+router.post('/get_artwork_recommendations_by_tag',recommendations_artwork.get_artwork_recommendations_by_tag)
 
 
 
