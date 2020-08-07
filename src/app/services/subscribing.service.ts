@@ -34,6 +34,12 @@ export class Subscribing_service {
      }));
  };
 
+ check_if_publication_archived(publication_category,format,publication_id){
+  return this.httpClient.get(`http://localhost:4600/routes/check_if_publication_archived/${publication_category}/${format}/${publication_id}`, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }));
+};
+
  get_all_users_subscribed_to_before_today(id_user){
     return this.httpClient.get(`http://localhost:4600/routes/get_all_users_subscribed_to/${id_user}`, {withCredentials:true}).pipe(map(information=>{
         return information;

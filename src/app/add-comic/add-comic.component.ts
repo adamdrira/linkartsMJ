@@ -63,7 +63,8 @@ export class AddComicComponent implements OnInit {
   modal_displayed: boolean;
   tags: string[];
   tagsValidator:boolean = false;
-
+  comics_tags=["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
+  "Policier","Religion","Romantique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
 
   
   ngOnInit() {

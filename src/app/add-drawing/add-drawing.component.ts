@@ -53,7 +53,8 @@ export class AddDrawingComponent implements OnInit {
   modal_displayed: boolean;
   tags: string[];
   tagsValidator:boolean = false;
-
+  drawings_tags=["Abstrait","Action","Aventure","Animaux","Enfants","Epique","Esotérisme","Fanart","Fantaisie","Femme","Fresque","Guerre","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Journalisme","Monstre","Paysage","Portrait","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Western"];
 
 
   ngOnInit() {

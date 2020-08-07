@@ -109,26 +109,33 @@ complete_recommendation_by_category(number,style:string,category){
     }));
 };
 
-get_comics_recommendations_by_author(id_user,publication_id,format){
-  return this.httpClient.post('http://localhost:4600/routes/get_comics_recommendations_by_author', {id_user:id_user,publication_id:publication_id,format:format},{withCredentials:true}).pipe(map(information=>{
+get_comics_recommendations_by_author(id_user,publication_id){
+  return this.httpClient.post('http://localhost:4600/routes/get_comics_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
-get_drawings_recommendations_by_author(id_user,publication_id,format){
-  return this.httpClient.post('http://localhost:4600/routes/get_drawings_recommendations_by_author', {id_user:id_user,publication_id:publication_id,format:format},{withCredentials:true}).pipe(map(information=>{
+get_drawings_recommendations_by_author(id_user,publication_id){
+  return this.httpClient.post('http://localhost:4600/routes/get_drawings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
-get_writings_recommendations_by_author(id_user,publication_id,format){
-  return this.httpClient.post('http://localhost:4600/routes/get_writings_recommendations_by_author', {id_user:id_user,publication_id:publication_id,format:format},{withCredentials:true}).pipe(map(information=>{
+get_writings_recommendations_by_author(id_user,publication_id){
+  return this.httpClient.post('http://localhost:4600/routes/get_writings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_recommendations_by_tag(id_user,publication_category,publication_id,format,style,firsttag){
   return this.httpClient.post('http://localhost:4600/routes/get_recommendations_by_tag', {id_user:id_user,publication_id:publication_id,format:format,publication_category:publication_category,style:style,firsttag:firsttag},{withCredentials:true}).pipe(map(information=>{
+     return information;
+    }));
+}
+
+get_artwork_recommendations_by_tag(category,format,target_id,first_filter,second_filter,limit){
+  console.log(first_filter)
+  return this.httpClient.post('http://localhost:4600/routes/get_artwork_recommendations_by_tag', {category:category,format:format,target_id:target_id,first_filter:first_filter,second_filter:second_filter,limit:limit},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }

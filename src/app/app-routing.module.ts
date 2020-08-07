@@ -46,7 +46,13 @@ const routes: Routes = [
   {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5}},
   {path:'account/:pseudo/:id/archives', component:AccountComponent,canActivate: [AuthGuard],  data: {section: 6}},
 
+  //main-searchbar-results
+  {path:'main-research/:page/:text/:category', component:MainSearchbarResultsComponent, data: {section: 0}},
+  {path:'main-research/:page/:text/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 1}},
+  {path:'main-research-style-and-tag/:page/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 2}},
+
   
+  //add-artwork
   {path:'add-artwork', component:AddArtworkComponent,  canActivate: [AuthGuard], data: {section: -1}},
   {path:'add-artwork/comic', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 0}},
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 1}},
@@ -68,15 +74,14 @@ const routes: Routes = [
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard]},
   {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard]},
 
-  //main-searchbar-results
-  {path:'main-research/:text', component:MainSearchbarResultsComponent},
+  
   
 
   //Contenu
   {path:'artwork', component:ArtworkComponent},
-  {path:'artwork-writing/:titre/:writing_id', component:ArtworkWritingComponent},
-  {path:'artwork-comic/:format/:titre/:bd_id', component:ArtworkComicComponent},
-  {path:'artwork-drawing/:format/:titre/:drawing_id', component:ArtworkDrawingComponent},
+  {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent},
+  {path:'artwork-comic/:format/:title/:bd_id', component:ArtworkComicComponent},
+  {path:'artwork-drawing/:format/:title/:drawing_id', component:ArtworkDrawingComponent},
   
   //Linkcollab
   {path:'linkcollab', component:HomeLinkcollabComponent},

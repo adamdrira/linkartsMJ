@@ -93,8 +93,8 @@
                             <div class="form-group">
                                 <label for="artworkTitle">Genres</label>
                                 <select formControlName="f00Tags" class="multipleSelect" placeholder="Sélectionner au moins un genre (max : 3)" multiple name="language">
-                                    <option value="Action">Action</option>
-                                    <option value="Aventure">Aventure</option>
+                                    <option value="{{comics_tags[i]}}" *ngFor="let item of comics_tags;let i=index">{{item}}</option>
+                                    <!--<option value="Aventure">Aventure</option>
                                     <option value="Esotérisme">Esotérisme</option>
                                     <option value="Fantaisie">Fantaisie</option>
                                     <option value="Fantastique">Fantastique</option>
@@ -111,7 +111,7 @@
                                     <option value="Shojo">Shojo</option>
                                     <option value="Shonen">Shonen</option>
                                     <option value="Thriller">Thriller</option>
-                                    <option value="Western">Western</option>
+                                    <option value="Western">Western</option>-->
                                 </select>
                                 <p *ngIf="!tagsValidator && f00DisplayErrors">Veuillez sélectionner au moins un genre</p>
                             </div>

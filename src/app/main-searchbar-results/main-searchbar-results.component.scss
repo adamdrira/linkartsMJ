@@ -15,14 +15,19 @@
 }
 
 .categories-titles-container{
+    cursor:pointer;
     margin: 5px 10px 5px 10px;
     width: 180px;
     height: 60px;
     border-radius: 30px;
     display: flex;
-    background: #B4C7E7;
+    background: #4bacdd;
     justify-content: center;
     align-items: center;
+}
+
+.categories-titles-container:hover{
+    background: #2f5294;
 }
 
 .category-title{
@@ -36,19 +41,64 @@
 
 .second-categories-container{
     display:flex; 
+    width: 80%;
+    margin: auto;
     justify-content: center;
 }
 
+.second-categories-left{
+    display: flex;
+    float: left;
+    width: 100%;
+    flex-flow: wrap;
+}
+
+
+
 .second-categories-titles-container{
+    cursor:pointer;
     margin: 5px 10px 5px 10px;
-    width: 180px;
-    height: 60px;
+    padding: 0px 10px 0px 10px;
+    height: 42px;
     border-radius: 30px;
     display: flex;
-    background: #B4C7E7;
+    background: #9eceec;
     justify-content: center;
     align-items: center;
 }
+
+.second-categories-titles-container{
+    cursor:pointer;
+    margin: 5px 10px 5px 10px;
+    padding: 0px 10px 0px 10px;
+    height: 42px;
+    border-radius: 30px;
+    display: flex;
+    background: #9eceec;
+    justify-content: center;
+    align-items: center;
+}
+
+.second-categories-titles-container-tags{
+    cursor:pointer;
+    margin: 5px 10px 5px 10px;
+    padding: 0px 10px 0px 10px;
+    height: 42px;
+    border-radius: 30px;
+    display: flex;
+    background: #8cccab;
+    justify-content: center;
+    align-items: center;
+}
+
+.second-categories-titles-container:hover{
+    background: #2f5294;
+}
+
+.second-categories-titles-container-tags:hover{
+    background: #438066;
+}
+
 
 .second-category-title{
     margin: 0px 5px 0px 5px;
@@ -56,9 +106,21 @@
     color: white;
     font-weight: 600;
     text-align: center;
-    font-size: 19px;
+    font-size: 17px;
 }
 
 .title-selected-container{
     background: #203864;
+}
+
+.title-selected-container-tags{
+    background: #27503f;
+}
+
+//results
+
+.loading-page{
+    position:absolute;
+    top:50%;
+    left:50%;
 }

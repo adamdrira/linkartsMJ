@@ -26,32 +26,181 @@
         <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor' }">
           <div class="left-container" [ngClass]="{'invisible': !show_selector }">
               <select name="somename" class="NavbarSelectBox" style="height: 100%;">
-                <option value="0">Tout</option>
-                <option value="1">Artiste</option>
-                <option value="2">Annonce</option>
-                <option value="4">Bande dessinée</option>
-                <option value="5">Dessin</option>
-                <option value="6">Ecrit</option>
+                <option value="All">Tout</option>
+                <option value="Artist">Artiste</option>
+                <option value="Ad">Annonce</option>
+                <option value="Comic">Bande dessinée</option>
+                <option value="Drawing">Dessin</option>
+                <option value="Writing">Ecrit</option>
               </select>
           </div>
           
           <div class="right-container">
-              <div class="researches-propositions" *ngIf="show_researches_propositions">
-                <div class="first-block" *ngIf="most_researched_propositions.length>2">
+              <div #propositions class="researches-propositions"  *ngIf="show_researches_propositions" [ngClass]="{'researches-propositions-extended': type_of_profile=='visitor' }">
+                <div class="first-block"  *ngIf="display_style_and_tag_research">
                   <div class="title-proposition">
-                    Les plus recherchés
+                    Rechercher par style et par genre
                   </div>
-                  <div class="first-block-container">
-                    <div class="string-proposition-container" *ngFor="let item of most_researched_propositions;let i=index" (click)="research_item(i)">
+                  <div class="first-block-container-2" >
+                    <div class="string-proposition-container" *ngFor="let item of first_filters[indice_title_selected];let i=index">
                       <span class="string-proposition"  > 
-                        <a href="/main-research/{{item.research_string}}" style="color:white">
+                        <a href="/main-research-style-and-tag/1/{{list_of_real_categories[indice_title_selected]}}/{{item}}/all" style="color:white">
+                          {{item}} 
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="first-block"  *ngIf="show_most_researched_propositions">
+                  <div class="title-proposition">
+                    Tendances
+                  </div>
+                  <div class="first-block-container" >
+                    <div class="string-proposition-container" *ngFor="let item of most_researched_propositions;let i=index" (click)="click_on_trending_message(i)">
+                      <span class="string-proposition"  > 
+                        <a href="/main-research/1/{{item.research_string}}/All" style="color:white">
                           {{item.research_string}} 
                         </a>
                       </span>
                     </div>
                   </div>
+                </div>
+                <div class="second-block" >
+                  <div *ngIf="loading_other" class="loading-page">
+                    <mat-spinner diameter="30" ></mat-spinner>
+                  </div>
+                  <ng-container *ngIf="show_other_propositions">
+                    <div class="title-proposition" *ngIf="list_of_first_propositions.length>0">
+                      Meilleures propositions
+                    </div>
+                    <div class="title-proposition" *ngIf="0>=list_of_first_propositions.length">
+                      Aucun résultat
+                    </div>
+                    <div style="display:block" *ngIf="!loading_other">
+                      <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions;let i=index" (click)="add_clicked_after_research(i)">
+  
+                        <div class="item-row" *ngIf="item.publication_category=='Artist'">
+                          <div class="author-container">
+                            <div class="author-left-container">
+                                <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                            </div>
+                            <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}">
+                                <div class="author-right-container">
+                                    <span class="author-name">{{list_of_last_propositions[i].nickname}} </span>
+                                </div>
+                            </a>
+                            <span class="item-title">Artiste</span>
+                          </div>
+                        </div>
+  
+                        <div class="item-row" *ngIf="item.publication_category=='Comic' || item.publication_category=='Drawing' || item.publication_category=='Writing'">
+                          <div class="author-container">
+                            <div class="author-left-container">
+                                <img [src]="list_of_thumbnails[i]" (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                            </div>
+                            <a *ngIf="item.publication_category=='Comic'" href='/artwork-comic/{{item.format}}/{{list_of_last_propositions[i].title}}/{{item.target_id}}'>
+                                <div class="author-right-container">
+                                    <span class="author-name">{{list_of_last_propositions[i].title}} </span>
+                                </div>
+                            </a>
+                            <a *ngIf="item.publication_category=='Drawing'" href='/artwork-drawing/{{item.format}}/{{list_of_last_propositions[i].title}}/{{item.target_id}}'>
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions[i].title}} </span>
+                              </div>
+                            </a>
+                            <a *ngIf="item.publication_category=='Writing'" href='/artwork-writing/{{list_of_last_propositions[i].title}}/{{item.target_id}}'>
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions[i].title}} </span>
+                                  
+                              </div>
+                            </a>
+                            
+                            <span class="item-title" *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
+                            <span class="item-title" *ngIf="item.publication_category=='Drawing'">Dessin</span>
+                            <span class="item-title" *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                            <span class="item-title" *ngIf="list_of_last_propositions[i].firsttag">{{list_of_last_propositions[i].firsttag}} </span>
+                            <span class="item-title" *ngIf="list_of_last_propositions[i].secondtag">{{list_of_last_propositions[i].secondtag}} </span>
+                            <span class="item-title" *ngIf="list_of_last_propositions[i].thirdtag">{{list_of_last_propositions[i].thirdtag}} </span>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </ng-container>
                   
                 </div>
+                <div class="second-block" >
+                  <div *ngIf="loading_recent" class="loading-page">
+                    <mat-spinner diameter="30" ></mat-spinner>
+                  </div>
+                  <ng-container *ngIf="show_first_propositions">
+                    <div class="title-proposition" *ngIf="first_option" >
+                      Récents
+                    </div>
+                    <div class="title-proposition" *ngIf="!first_option">
+                      Meilleures propositions
+                    </div>
+                    <div *ngIf="!loading_recent"  style="display:block">
+                      
+                      <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions_history;let i=index" >
+
+                        <div class="item-row" *ngIf="item.publication_category=='Artist'">
+                          <div class="author-container" (click)="add_clicked_after_research_recent(i)">
+                            <div class="author-left-container">
+                                <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                            </div>
+                            <a href="/account/{{list_of_last_propositions_history[i].nickname}}/{{list_of_last_propositions_history[i].id}}">
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions_history[i].nickname}} </span>
+                              </div>
+                            </a>
+                            <span class="item-title">Artiste</span>
+                          </div>
+                          <button mat-button tabIndex="-1" class="mat-icon-button" (click)="delete_from_history(i)">
+                              <mat-icon class="item-icon">close</mat-icon>
+                          </button>
+                        </div>
+
+                        <div  class="item-row" *ngIf="item.publication_category=='Comic' || item.publication_category=='Drawing' || item.publication_category=='Writing'">
+                          <div class="author-container">
+                            <div class="author-left-container">
+                                <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                            </div>
+                            <a *ngIf="item.publication_category=='Comic'" href='/artwork-comic/{{item.format}}/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
+                              </div>
+                            </a>
+                            <a *ngIf="item.publication_category=='Drawing'" href='/artwork-drawing/{{item.format}}/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
+                              </div>
+                            </a>
+                            <a *ngIf="item.publication_category=='Writing'" href='/artwork-writing/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
+                              <div class="author-right-container">
+                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
+                                  
+                              </div>
+                            </a>
+                            <span  class="item-title" *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
+                            <span  class="item-title" *ngIf="item.publication_category=='Drawing'">Dessin</span>
+                            <span  class="item-title" *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].firsttag">{{list_of_last_propositions_history[i].firsttag}} </span>
+                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].secondtag">{{list_of_last_propositions_history[i].secondtag}} </span>
+                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].thirdtag">{{list_of_last_propositions_history[i].thirdtag}} </span>
+                          </div>
+                          <button mat-button tabIndex="-1" class="mat-icon-button" (click)="delete_from_history(i)">
+                            <mat-icon class="item-icon">close</mat-icon>
+                          </button>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </ng-container>
+
+                </div>
+                  
 
               </div>
 
@@ -61,7 +210,7 @@
               (keydown)="keydown_researches_propositions($event);"
               onblur="this.placeholder = 'Rechercher'"
               class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-              <mat-icon class="item-icon" (click)="do_the_research()" style="color:#5b6b87;margin-left: 10px;cursor:pointer;">search</mat-icon> 
+              <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;margin-left: 10px;cursor:pointer;">search</mat-icon> 
           </div>
 
           
@@ -168,7 +317,7 @@
               width: 20px;">
               </div>
           </div>
-          <div>COMMUNAUTÉ</div>
+          <a href="/" style="color:unset">COMMUNAUTÉ</a>
         </div>
         <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">
           <div style="margin-right: 10px;">
@@ -177,7 +326,7 @@
             width: 20px;">
             </div>
           </div>
-          <div>COLLABORATIONS</div>
+          <a href="/linkcollab" style="color:unset">COLLABORATIONS</a>
         </div>
         <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
           <div style="margin-right: 10px;">

@@ -48,7 +48,9 @@ export class AddWritingComponent implements OnInit {
   tagsValidator:boolean = false;
   user_id:number;
   pseudo:string;
-  
+  writings_tags=["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+
 
   @Output() cancelled = new EventEmitter<any>();
 
@@ -156,7 +158,7 @@ export class AddWritingComponent implements OnInit {
     this.fwDescription = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
     this.fwCategory = new FormControl('', Validators.required);
     this.fwTags = new FormControl('');
-    this.fwFormat = new FormControl('', Validators.required);
+    //this.fwFormat = new FormControl('', Validators.required);
   }
 
   createFormWritings() {
@@ -165,7 +167,7 @@ export class AddWritingComponent implements OnInit {
       fwDescription: this.fwDescription,
       fwCategory: this.fwCategory,
       fwTags: this.fwTags,
-      fwFormat: this.fwFormat,
+      //fwFormat: this.fwFormat,
     });
   }
 
@@ -183,7 +185,7 @@ export class AddWritingComponent implements OnInit {
       this.tagsValidator = true;
     }
 
-
+    
     if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() && this.tagsValidator ) {
 
       this.fwDisplayErrors = false;

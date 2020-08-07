@@ -108,7 +108,7 @@
                 </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">announcement</mat-icon>
-                    Annonces (12)
+                    Annonces ({{list_of_ads.length}})
                 </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 3 }" (click)="see_subscribers();">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">group</mat-icon>
@@ -136,7 +136,7 @@
                 </button>
                 <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
-                    Archives ({{number_of_archives}})
+                    Archives 
                 </button>
                 <a href="/add-artwork">
                     <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category opened" style="background: rgb(158 206 236);color: rgb(32, 56, 100);">
@@ -1125,6 +1125,9 @@
             [item]=item
             now_in_seconds={{now_in_seconds}}
             ></app-thumbnail-ad>
+            <div *ngIf="list_of_ads.length==0">
+                L'utilsiateur n'a publié aucune annonce
+            </div>
         </ng-container>
 
         <ng-container *ngIf="opened_section==6 && archives_received">
