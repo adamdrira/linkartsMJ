@@ -178,8 +178,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   edit_chapters(){
-    alert("edit_chapters")
-    this.router.navigate( [ `handle-comics-chapter/${this.bd_id}`]);
+    this.router.navigateByUrl( `handle-comics-chapter/${this.bd_id}`);
+    return
   }
   
   set_private() {
@@ -191,12 +191,12 @@ export class ArtworkComicComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"private").subscribe(r=>{
-            location.reload();
+            this.status="private";
           });
         }
         else{
           this.BdSerieService.change_serie_comic_status(this.bd_id,"private").subscribe(r=>{
-            location.reload();
+            this.status="private";
           });
         }
 
@@ -211,12 +211,12 @@ export class ArtworkComicComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.BdOneShotService.change_oneshot_comic_status(this.bd_id,"public").subscribe(r=>{
-            location.reload();
+            this.status="public";
           });
         }
         else{
           this.BdSerieService.change_serie_comic_status(this.bd_id,"public").subscribe(r=>{
-            location.reload();
+            this.status="public";
           });
         }
           
@@ -231,12 +231,19 @@ export class ArtworkComicComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.BdOneShotService.RemoveBdOneshot(this.bd_id).subscribe(r=>{
-            this.router.navigate( [ `/account/${this.pseudo}/${this.authorid}`]);
+            this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
+            
           });
         }
         else{
           this.BdSerieService.RemoveBdSerie(this.bd_id).subscribe(r=>{
-            this.router.navigate( [ `/account/${this.pseudo}/${this.authorid}`]);
+            this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
           });
         }
 
@@ -313,20 +320,15 @@ export class ArtworkComicComponent implements OnInit {
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     this.type_of_comic_retrieved=true;
     if( this.type != "one-shot" && this.type != "serie" ) {
-      this.router.navigate(["/"]);
+      this.router.navigateByUrl("/");
+      return;
     }
 
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('bd_id'));
 
-    this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+   this.Profile_Edition_Service.get_current_user().subscribe(l=>{
       this.visitor_id = l[0].id;
-      this.Subscribing_service.get_archives_comics().subscribe(r=>{
-        if(r[0].format==this.type && r[0].publication_id==this.bd_id){
-          this.content_archived=true;
-        }
-        this.archive_retrieved=true;
-      })
-    })
+    }) 
 
     if (this.type=="one-shot"){
       this.bd_one_shot_calls();
@@ -334,188 +336,314 @@ export class ArtworkComicComponent implements OnInit {
 
     else if (this.type=="serie"){
       this.BdSerieService.retrieve_bd_by_id(this.bd_id).subscribe(r => { 
-        this.highlight=r[0].highlight;
-        this.title=r[0].title;
-        this.authorid=r[0].authorid;
-        this.Profile_Edition_Service.get_pseudo_by_user_id(r[0].authorid).subscribe(r=>{
-          this.pseudo = r[0].nickname;
-        });
-        this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
-          if (l[0]!=null && l[0]!=undefined){
-            if (l[0].publication_id==this.bd_id && l[0].publication_category=="comics" && l[0].format==this.type){
-              this.content_emphasized=true;
-            }
-          }
-        });
-        this.style=r[0].category;
-        this.firsttag=r[0].firsttag;
-        this.secondtag=r[0].secondtag;
-        this.thirdtag=r[0].thirdtag;
-        this.thumbnail_color=r[0].thumbnail_color;
-        this.status=r[0].status
-        this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,this.bd_id,"serie").subscribe(e=>{
-          if(e[0].list_to_send.length>0){
-            this.list_of_author_recommendations_comics=e[0].list_to_send;
-            this.list_of_author_recommendations_comics_retrieved=true;
-          }
-          this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
-            if(e[0].list_to_send.length >0){
-              this.list_of_author_recommendations_drawings=e[0].list_to_send;
-              this.list_of_author_recommendations_drawings_retrieved=true;
-            }
-            this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
-              if(e[0].list_to_send.length >0){
-                this.list_of_author_recommendations_writings=e[0].list_to_send;
-                this.list_of_author_recommendations_writings_retrieved=true;
-              }
-              this.list_of_author_recommendations_retrieved=true;
-            });
-          });
-        });
-
-        this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"comics",this.bd_id,"serie",r[0].category,r[0].firsttag).subscribe(e=>{
-          if(e[0].list_to_send.length >0){
-            this.list_of_recommendations_by_tag=e[0].list_to_send;
-            this.list_of_recommendations_by_tag_retrieved=true;
+        if(!r[0]){
+          this.router.navigateByUrl("/");
+          return
+        }
+        else{
+          let title =this.activatedRoute.snapshot.paramMap.get('title');
+          if(r[0].title !=title ){
+            this.router.navigateByUrl("/");
+            return
           }
           else{
-            this.list_of_recommendations_by_tag_retrieved=true;
-          }
-        });
+            this.check_archive();
+            this.highlight=r[0].highlight;
+            this.title=r[0].title;
+            this.authorid=r[0].authorid;
+            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
+              this.pseudo = r[0].nickname;
+            });
+            this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+              if (l[0]!=null && l[0]!=undefined){
+                if (l[0].publication_id==this.bd_id && l[0].publication_category=="comics" && l[0].format==this.type){
+                  this.content_emphasized=true;
+                }
+              }
+            });
+            this.style=r[0].category;
+            this.firsttag=r[0].firsttag;
+            this.secondtag=r[0].secondtag;
+            this.thirdtag=r[0].thirdtag;
+            this.thumbnail_color=r[0].thumbnail_color;
+            this.status=r[0].status
+            this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,this.bd_id).subscribe(e=>{
+              if(e[0].list_to_send.length>0){
+                this.list_of_author_recommendations_comics=e[0].list_to_send;
+                this.list_of_author_recommendations_comics_retrieved=true;
+              }
+              this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+                if(e[0].list_to_send.length >0){
+                  this.list_of_author_recommendations_drawings=e[0].list_to_send;
+                  this.list_of_author_recommendations_drawings_retrieved=true;
+                }
+                this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+                  if(e[0].list_to_send.length >0){
+                    this.list_of_author_recommendations_writings=e[0].list_to_send;
+                    this.list_of_author_recommendations_writings_retrieved=true;
+                  }
+                  this.list_of_author_recommendations_retrieved=true;
+                });
+              });
 
+              
+            });
+            
+            this.get_recommendations_by_tag();
+            
+            
+
+            this.bd_serie_calls();
+          }
+        }
         
       });
-      
-      this.bd_serie_calls();
     }
     
+  }
+
+
+  get_recommendations_by_tag(){
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.firsttag,6).subscribe(u=>{
+      if(u[0].length>0){
+        console.log(u[0])
+        let list_of_first_propositions=u[0];
+        console.log(list_of_first_propositions)
+        if(list_of_first_propositions.length<6 && this.secondtag){
+          this.Community_recommendation.get_artwork_recommendations_by_tag('Comic',this.type,this.bd_id,this.style,this.secondtag,6-list_of_first_propositions.length).subscribe(r=>{
+            if(r[0].length>0){
+              console.log(r[0])
+              let len=list_of_first_propositions.length;
+              for(let j=0;j<r[0].length;j++){
+                let ok=true;
+                for(let k=0;k<len;k++){
+                  if(  list_of_first_propositions[k].format==r[0][j].format && list_of_first_propositions[k].target_id==r[0][j].target_id){
+                    ok=false;
+                  }
+                  if(k==len-1){
+                    if(ok){
+                      list_of_first_propositions.push(r[0][j])
+                    }
+                  }
+                }
+              }
+              console.log(list_of_first_propositions)
+              this.get_recommendations_by_tags_contents(list_of_first_propositions)
+            }
+            else{
+              this.get_recommendations_by_tags_contents(list_of_first_propositions)
+            }
+          })
+        }
+        else{
+          this.get_recommendations_by_tags_contents(list_of_first_propositions)
+        }
+      }
+      else{
+        this.list_of_recommendations_by_tag_retrieved=true;
+      }
+      
+    })
+  }
+
+  get_recommendations_by_tags_contents(list_of_first_propositions){
+    let len=list_of_first_propositions.length;
+    let indice=0;
+    for(let k=0;k<len;k++){
+      if( list_of_first_propositions[k].format==this.type && list_of_first_propositions[k].target_id==this.bd_id){
+        indice=k;
+      }
+      if(k==len-1){
+        list_of_first_propositions.splice(indice,1);
+        console.log(list_of_first_propositions)
+        let compteur_propositions=0;
+        if(list_of_first_propositions.length>0){
+          for(let i=0;i<list_of_first_propositions.length;i++){
+            if(list_of_first_propositions[i].format=="serie"){
+              this.BdSerieService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
+                this.list_of_recommendations_by_tag[i]=comic[0];
+                compteur_propositions++;
+                if(compteur_propositions==list_of_first_propositions.length){
+                  console.log(this.list_of_recommendations_by_tag);
+                  this.list_of_recommendations_by_tag_retrieved=true;
+                }
+              })
+            }
+            else{
+              this.BdOneShotService.retrieve_bd_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
+                this.list_of_recommendations_by_tag[i]=comic[0];
+                compteur_propositions++;
+                if(compteur_propositions==list_of_first_propositions.length){
+                  console.log(this.list_of_recommendations_by_tag);
+                  this.list_of_recommendations_by_tag_retrieved=true;
+                }
+              })
+            }
+            
+          }
+        }
+        else{
+          this.list_of_recommendations_by_tag_retrieved=true;
+        }
+        
+      }
+    }
+  }
+
+  check_archive(){
+    this.Subscribing_service.check_if_publication_archived("comics",this.type ,this.bd_id).subscribe(r=>{
+      console.log(r[0]);
+      if(r[0].value){
+        this.content_archived=true;
+      }
+      this.archive_retrieved=true;
+      console.log("archive retrieved");
+    })
   }
 
   bd_one_shot_calls(){
    
     this.BdOneShotService.retrieve_bd_by_id(this.bd_id).subscribe(r => {
-      this.viewnumber = r[0].viewnumber;
-      this.authorid=r[0].authorid;
-      this.Profile_Edition_Service.get_pseudo_by_user_id(r[0].authorid).subscribe(r=>{
-        this.pseudo = r[0].nickname;
-      });
-      this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
-        if (l[0]!=null && l[0]!=undefined){
-          if (l[0].publication_id==this.bd_id && l[0].publication_category=="comics" && l[0].format==this.type){
-            this.content_emphasized=true;
-          }
-        }
-      });
-      this.pseudo=r[0].nickname;
-      this.commentariesnumber = r[0].commentarynumbers;
-      this.highlight=r[0].highlight;
-      this.title=r[0].title;
-      this.style=r[0].category;
-      this.firsttag=r[0].firsttag;
-      this.secondtag=r[0].secondtag;
-      this.likesnumber =r[0].likesnumber ;
-      this.lovesnumber =r[0].lovesnumber ;
-      this.thirdtag=r[0].thirdtag;
-      this.thumbnail_color=r[0].thumbnail_color;
-      this.pagesnumber=r[0].pagesnumber;
-      this.status=r[0].status
-      this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
-
-      this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,this.bd_id,"one-shot").subscribe(e=>{
-        if(e[0].list_to_send.length>0){
-          this.list_of_author_recommendations_comics=e[0].list_to_send;
-          this.list_of_author_recommendations_comics_retrieved=true;
-        }
-        this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
-          if(e[0].list_to_send.length >0){
-            this.list_of_author_recommendations_drawings=e[0].list_to_send;
-            this.list_of_author_recommendations_drawings_retrieved=true;
-          }
-          this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
-            if(e[0].list_to_send.length >0){
-              this.list_of_author_recommendations_writings=e[0].list_to_send;
-              this.list_of_author_recommendations_writings_retrieved=true;
-            }
-            this.list_of_author_recommendations_retrieved=true;
-          });
-        });
-      });
-
-      this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"comics",this.bd_id,"one-shot",r[0].category,r[0].firsttag).subscribe(e=>{
-        if(e[0].list_to_send.length >0){
-          this.list_of_recommendations_by_tag=e[0].list_to_send;
-          console.log(e[0].list_to_send);
-          this.list_of_recommendations_by_tag_retrieved=true;
-        }
-      });
-
-
-      this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-        if (this.authorid == l[0].id){
-          this.mode_visiteur = false;
-          this.mode_visiteur_added = true;
+      if(!r[0]){
+        this.router.navigateByUrl("/");
+        return;
+      }
+      else{
+        let title =this.activatedRoute.snapshot.paramMap.get('title');
+        if(r[0].title !=title ){
+          this.router.navigateByUrl("/");
+          return;
         }
         else{
-          this.NotationService.add_view('bd', 'one-shot',  r[0].category, this.bd_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
-            this.createdAt_view = r[0].createdAt;
+          
+          this.check_archive();
+          this.viewnumber = r[0].viewnumber;
+          this.authorid=r[0].authorid;
+          this.Profile_Edition_Service.get_pseudo_by_user_id(r[0].authorid).subscribe(r=>{
+            this.pseudo = r[0].nickname;
           });
-          this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
-            if(information[0].value){
-              this.already_subscribed=true;
+          this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+            if (l[0]!=null && l[0]!=undefined){
+              if (l[0].publication_id==this.bd_id && l[0].publication_category=="comics" && l[0].format==this.type){
+                this.content_emphasized=true;
+              }
+            }
+          });
+          this.pseudo=r[0].nickname;
+          this.commentariesnumber = r[0].commentarynumbers;
+          this.highlight=r[0].highlight;
+          this.title=r[0].title;
+          this.style=r[0].category;
+          this.firsttag=r[0].firsttag;
+          this.secondtag=r[0].secondtag;
+          this.likesnumber =r[0].likesnumber ;
+          this.lovesnumber =r[0].lovesnumber ;
+          this.thirdtag=r[0].thirdtag;
+          this.pagesnumber=r[0].pagesnumber;
+          this.status=r[0].status
+          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
+
+          this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,this.bd_id).subscribe(e=>{
+            if(e[0].list_to_send.length>0){
+              this.list_of_author_recommendations_comics=e[0].list_to_send;
+              this.list_of_author_recommendations_comics_retrieved=true;
+            }
+            this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+              if(e[0].list_to_send.length >0){
+                this.list_of_author_recommendations_drawings=e[0].list_to_send;
+                this.list_of_author_recommendations_drawings_retrieved=true;
+              }
+              this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+                if(e[0].list_to_send.length >0){
+                  this.list_of_author_recommendations_writings=e[0].list_to_send;
+                  this.list_of_author_recommendations_writings_retrieved=true;
+                }
+                this.list_of_author_recommendations_retrieved=true;
+              });
+            });
+          });
+
+          this.get_recommendations_by_tag();
+
+          this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+            if (this.authorid == l[0].id){
+              this.mode_visiteur = false;
               this.mode_visiteur_added = true;
             }
             else{
-              this.mode_visiteur_added = true;
-            }
-          });         
-        }  
-        
-      });
+              this.NotationService.add_view('bd', 'one-shot',  r[0].category, this.bd_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
+                this.createdAt_view = r[0].createdAt;
+              });
+              this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
+                if(information[0].value){
+                  this.already_subscribed=true;
+                  this.mode_visiteur_added = true;
+                }
+                else{
+                  this.mode_visiteur_added = true;
+                }
+              });         
+            };
 
-      
-      this.NotationService.get_loves('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
-        let list_of_loves= r[0];
-        if (list_of_loves.length != 0){
-        this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-          for (let i=0;i<list_of_loves.length;i++){
-            this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
-            if (list_of_loves[i].author_id_who_loves == l[0].id){
-              this.loved = true;
+            if(!this.mode_visiteur){
+              this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,title,"clicked").subscribe(p=>{
+                if(!p[0].value){
+                  this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+                }
+              })
             }
-          }
-         
-        });
-      }
-      });
-      this.NotationService.get_likes('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
-        let list_of_likes= r[0];
-        if (list_of_likes.length != 0){
-        this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-          for (let i=0;i<list_of_likes.length;i++){
-            this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
-            if (list_of_likes[i].author_id_who_likes == l[0].id){
-              this.liked = true;
+            else{
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
             }
-          }
+            
+          });
+
           
-        });
+          this.NotationService.get_loves('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
+            let list_of_loves= r[0];
+            if (list_of_loves.length != 0){
+            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+              for (let i=0;i<list_of_loves.length;i++){
+                this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
+                if (list_of_loves[i].author_id_who_loves == l[0].id){
+                  this.loved = true;
+                }
+              }
+            
+            });
+          }
+          });
+          this.NotationService.get_likes('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
+            let list_of_likes= r[0];
+            if (list_of_likes.length != 0){
+            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+              for (let i=0;i<list_of_likes.length;i++){
+                this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
+                if (list_of_likes[i].author_id_who_likes == l[0].id){
+                  this.liked = true;
+                }
+              }
+              
+            });
+          }
+          });
+          
+
+          this.get_bd_oneshot_pages(this.bd_id,r[0].pagesnumber);
+
+          this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).subscribe(r=> {
+            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.profile_picture = SafeURL;
+          });
+
+          this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
+            this.user_name = r[0].firstname + ' ' + r[0].lastname;
+            this.primary_description=r[0].primary_description;
+          });
+        }
       }
-      });
       
-
-      this.get_bd_oneshot_pages(this.bd_id,r[0].pagesnumber);
-
-      this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-      });
-
-      this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
-        this.user_name = r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-      });
-
     });
   }
 
@@ -551,7 +679,20 @@ export class ArtworkComicComponent implements OnInit {
               this.mode_visiteur_added = true;
             }
           });         
-        }  
+        };
+
+        if(!this.mode_visiteur){
+          this.navbar.check_if_research_exists("Comic",this.type,this.bd_id,this.title,"clicked").subscribe(p=>{
+            if(!p[0].value){
+              this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe(l=>{
+              });
+            }
+          })
+        }
+        else{
+          this.navbar.add_main_research_to_history("Comic",this.type,this.bd_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe(l=>{
+          });
+        }
         
       });
 
@@ -788,13 +929,10 @@ export class ArtworkComicComponent implements OnInit {
       
         for( let k=0; k< total_pages; k++ ) {
           this.BdSerieService.retrieve_bd_page(bd_id,chapter_number,k).subscribe(r=>{
-            console.log(r[1])
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);
             let SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_pages_by_chapter[chapter_number-1][r[1]]=(SafeURL);
             if(k==total_pages-1){
-              console.log("show pages")
-              console.log(chapter_number);
               this.initialize_thumbnails();
               this.swiper.slideTo(0,false,false);
               this.show_pages[chapter_number-1]=true;
@@ -1191,7 +1329,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   new_comment() {
-    this.commentariesnumber ++;
+    this.commentariesnumber++;
+    this.cd.detectChanges();
   }
 
   removed_comment() {

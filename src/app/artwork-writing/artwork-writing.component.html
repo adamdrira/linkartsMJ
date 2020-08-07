@@ -26,7 +26,7 @@
                             <mat-icon class="icon" *ngIf="zoom == 1" (click)="zoom_button();">zoom_in</mat-icon>
                              
 
-                            <div class="pages-controller-container"  [ngClass]="{'invisible': !display_pages}">
+                            <div class="pages-controller-container"  >
                                 Page :
                                 <input type="text" aria-label="" role="navigation" size="5">
                                 <div class="total-pages">
@@ -73,11 +73,10 @@
             
                             <div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
                                 <div class="slide-container">
-                                    <div class="loading-page">
+                                    <!--<div class="loading-page">
                                         <mat-spinner diameter="50"  *ngIf="!display_writing "></mat-spinner>
-                                    </div>
+                                    </div>-->
                                     <pdf-viewer
-                                    [ngClass]="{'invisible': !display_writing}"
                                     class="pdf-document"
                                     [src]="pdfSrc"
                                     [zoom]="zoom"
@@ -182,7 +181,7 @@
                     <div *ngFor="let item of list_of_recommendations_by_tag; let i=index" [ngClass]="{'invisible': !display_writings_recommendations_others }">
                         <app-thumbnail-writing
                             (sendLoaded)="sendLoadedWritingsOthers( $event );"
-                            [item]=item[0]
+                            [item]=item
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-writing>
                     </div>
@@ -364,15 +363,15 @@
 
             </div>
             <!--Line 3 : AD-->
-            <!--<div class="d3-ad-container">
+            <div class="d3-ad-container">
                 <div class="d3-ad">
                 </div>
                 <div class="d3-link">
-                    <span>Consulter le produit dans la bibliothèque</span>
+                    <span>Soutenez le site en faisant un don </span>
                     <div class="d3-icon">
                     </div>
                 </div>
-            </div>-->
+            </div>
             <!--Line 4 : OPTIONAL VIDEO-->
             <!--<div class="d4-video-container" id="scrollToComments">
 
@@ -401,15 +400,31 @@
                 <div *ngIf="category_index==0" class="description-container">
                     <div  class="categories-container"  [ngClass]="{'invisible': !display_right_container }">
                         &bull;
-                        <div  class="tag-container"><span>{{style}}</span> </div>
+                        <div  class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Writing/{{style}}/all">
+                                <span>{{style}}</span>
+                            </a>
+                        </div>
                         <div *ngIf="type=='Série'"  class="tag-container"> <span>Série</span> </div>
                         <div *ngIf="type=='One shot'"  class="tag-container"><span>One-shot</span>  </div>
                     </div>
                     <div class="categories-container"  [ngClass]="{'invisible': !display_right_container }">  
                         &bull;
-                        <div class="tag-container"><span >{{firsttag}}</span></div>
-                        <div  *ngIf="secondtag!=null" class="tag-container"><span>{{secondtag}}</span></div>
-                        <div  *ngIf="thirdtag!=null" class="tag-container"><span >{{thirdtag}}</span></div>
+                        <div class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Writing/{{style}}/{{firsttag}}">
+                                <span >{{firsttag}}</span>
+                            </a>
+                        </div>
+                        <div  *ngIf="secondtag!=null" class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Writing/{{style}}/{{secondtag}}">
+                                <span >{{secondtag}}</span>
+                            </a>
+                        </div>
+                        <div  *ngIf="thirdtag!=null" class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Writing/{{style}}/{{thirdtag}}">
+                                <span >{{thirdtag}}</span>
+                            </a>
+                        </div>
                     </div>
                     <div style="margin-left:20px">
                         {{highlight}}

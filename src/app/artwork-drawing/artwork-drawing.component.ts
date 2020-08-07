@@ -227,12 +227,12 @@ export class ArtworkDrawingComponent implements OnInit {
         if( result ) {
           if(this.type=="one-shot"){
             this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
-              location.reload();
+              this.status="private";
             });
           }
           else{
             this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
-              location.reload();
+              this.status="private";
             });
           }
             
@@ -249,12 +249,12 @@ export class ArtworkDrawingComponent implements OnInit {
       if( result ) {
         if(this.type=="one-shot"){
           this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
-            location.reload();
+            this.status="public";
           });
         }
         else{
           this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
-            location.reload();
+            this.status="public";
           });
         }
           
@@ -271,13 +271,19 @@ export class ArtworkDrawingComponent implements OnInit {
         if(this.type=="one-shot"){
           console.log("suppression en cours");
           this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
-            this.router.navigate( [ `/account/${this.pseudo}/${this.authorid}`]);
+            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
           });
         }
         else{
           console.log("suppression en cours");
           this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
-            this.router.navigate( [ `/account/${this.pseudo}/${this.authorid}`]);
+            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
           });
         }
 
@@ -299,29 +305,67 @@ export class ArtworkDrawingComponent implements OnInit {
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
-      this.router.navigate(["/"]);
+      this.router.navigateByUrl("/");
+      return;
     }
 
     console.log(this.type);
     let drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
     this.drawing_id = drawing_id;
 
-    this.Subscribing_service.get_archives_drawings().subscribe(r=>{
-        if(r[0].format==this.type && r[0].publication_id==this.drawing_id){
-          console.log("call true")
-          this.content_archived=true;
-        }
-        this.archive_retrieved=true;
-    })
+    
+    
 
     if (this.type =="one-shot"){
-      this.drawing_one_shot_calls();
+      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.drawing_id).subscribe(r => {
+        if(!r[0]){
+          this.router.navigateByUrl("/");
+            return;
+        }
+        else{
+          let title =this.activatedRoute.snapshot.paramMap.get('title');
+          if(r[0].title !=title ){
+            this.router.navigateByUrl("/");
+            return;
+          }
+          else{
+            
+            this.check_archive();
+            this.drawing_one_shot_calls();
+          }
+        }
+      })
     }
 
     else if (this.type =="artbook"){
-      this.drawing_artbook_calls();
+      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.drawing_id).subscribe(r => {
+        if(!r[0]){
+          this.router.navigateByUrl("/");
+            return
+        }
+        else{
+          let title =this.activatedRoute.snapshot.paramMap.get('title');
+          if(r[0].title !=title ){
+            this.router.navigateByUrl("/");
+            return
+          }
+          else{
+            this.check_archive();
+            this.drawing_artbook_calls();
+          }
+        }
+      })
     }
     
+  }
+
+  check_archive(){
+    this.Subscribing_service.check_if_publication_archived("drawings",this.type ,this.drawing_id).subscribe(r=>{
+      if(r[0].value){
+        this.content_archived=true;
+      }
+      this.archive_retrieved=true;
+    })
   }
 
   drawing_one_shot_calls(){
@@ -354,17 +398,17 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
 
-      this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0,"serie").subscribe(e=>{
+      this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
         if(e[0].list_to_send.length>0){
           this.list_of_author_recommendations_comics=e[0].list_to_send;
           this.list_of_author_recommendations_comics_retrieved=true;
         }
-        this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id,"one-shot").subscribe(e=>{
+        this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).subscribe(e=>{
           if(e[0].list_to_send.length >0){
             this.list_of_author_recommendations_drawings=e[0].list_to_send;
             this.list_of_author_recommendations_drawings_retrieved=true;
           }
-          this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
+          this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
             if(e[0].list_to_send.length >0){
               this.list_of_author_recommendations_writings=e[0].list_to_send;
               this.list_of_author_recommendations_writings_retrieved=true;
@@ -374,16 +418,7 @@ export class ArtworkDrawingComponent implements OnInit {
         });
       });
 
-      this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"drawing",this.drawing_id,"one-shot",r[0].category,r[0].firsttag).subscribe(e=>{
-        if(e[0].list_to_send.length >0){
-          this.list_of_recommendations_by_tag=e[0].list_to_send[0];
-          this.list_of_recommendations_by_tag_retrieved=true;
-        }
-        else{
-          this.list_of_recommendations_by_tag_retrieved=true;
-        }
-      });
-
+      this.get_recommendations_by_tag();
 
       this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
         if(information[0].value){
@@ -410,9 +445,22 @@ export class ArtworkDrawingComponent implements OnInit {
               this.mode_visiteur_added = true;
             }
           });         
-        }  
+        };
+
+        if(!this.mode_visiteur){
+          this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").subscribe(p=>{
+            if(!p[0].value){
+              this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+            }
+          })
+        }
+        else{
+          this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+        } 
         
       });
+
+      
       
       this.NotationService.get_loves('drawing', 'one-shot', r[0].category, this.drawing_id,0).subscribe(r=>{
         let list_of_loves= r[0];
@@ -492,17 +540,17 @@ export class ArtworkDrawingComponent implements OnInit {
       this.status=r[0].status;
       this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
 
-      this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0,"serie").subscribe(e=>{
+      this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
         if(e[0].list_to_send.length>0){
           this.list_of_author_recommendations_comics=e[0].list_to_send;
           this.list_of_author_recommendations_comics_retrieved=true;
         }
-        this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id,"artbook").subscribe(e=>{
+        this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).subscribe(e=>{
           if(e[0].list_to_send.length >0){
             this.list_of_author_recommendations_drawings=e[0].list_to_send;
             this.list_of_author_recommendations_drawings_retrieved=true;
           }
-          this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0,"").subscribe(e=>{
+          this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
             if(e[0].list_to_send.length >0){
               this.list_of_author_recommendations_writings=e[0].list_to_send;
               this.list_of_author_recommendations_writings_retrieved=true;
@@ -512,13 +560,7 @@ export class ArtworkDrawingComponent implements OnInit {
         });
       });
 
-      this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"drawing",this.drawing_id,"artbook",r[0].category,r[0].firsttag).subscribe(e=>{
-        console.log(e);
-        if(e[0].list_to_send.length >0){
-          this.list_of_recommendations_by_tag=e[0].list_to_send[0];
-          this.list_of_recommendations_by_tag_retrieved=true;
-        }
-      });
+      this.get_recommendations_by_tag();
 
       this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
         if(information[0].value){
@@ -546,7 +588,18 @@ export class ArtworkDrawingComponent implements OnInit {
               this.mode_visiteur_added = true;
             }
           });         
-        }  
+        };
+
+        if(!this.mode_visiteur){
+          this.navbar.check_if_research_exists("Drawing",this.type,this.drawing_id,this.title,"clicked").subscribe(p=>{
+            if(!p[0].value){
+              this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+            }
+          })
+        }
+        else{
+          this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+        } 
         
       });
       
@@ -598,6 +651,93 @@ export class ArtworkDrawingComponent implements OnInit {
     });
   }
 
+
+  get_recommendations_by_tag(){
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.firsttag,6).subscribe(u=>{
+      if(u[0].length>0){
+        console.log(u[0])
+        let list_of_first_propositions=u[0];
+        console.log(list_of_first_propositions)
+        if(list_of_first_propositions.length<6 && this.secondtag){
+          this.Community_recommendation.get_artwork_recommendations_by_tag('Drawing',this.type,this.drawing_id,this.style,this.secondtag,6-list_of_first_propositions.length).subscribe(r=>{
+            if(r[0].length>0){
+              console.log(r[0])
+              let len=list_of_first_propositions.length;
+              for(let j=0;j<r[0].length;j++){
+                let ok=true;
+                for(let k=0;k<len;k++){
+                  if(  list_of_first_propositions[k].format==r[0][j].format && list_of_first_propositions[k].target_id==r[0][j].target_id){
+                    ok=false;
+                  }
+                  if(k==len-1){
+                    if(ok){
+                      list_of_first_propositions.push(r[0][j])
+                    }
+                  }
+                }
+              }
+              console.log(list_of_first_propositions)
+              this.get_recommendations_by_tags_contents(list_of_first_propositions)
+            }
+            else{
+              this.get_recommendations_by_tags_contents(list_of_first_propositions)
+            }
+          })
+        }
+        else{
+          this.get_recommendations_by_tags_contents(list_of_first_propositions)
+        }
+      }
+      else{
+        this.list_of_recommendations_by_tag_retrieved=true;
+      }
+      
+    })
+  }
+
+  get_recommendations_by_tags_contents(list_of_first_propositions){
+    let len=list_of_first_propositions.length;
+    let indice=0;
+    for(let k=0;k<len;k++){
+      if( list_of_first_propositions[k].format==this.type && list_of_first_propositions[k].target_id==this.drawing_id){
+        indice=k;
+      }
+      if(k==len-1){
+        list_of_first_propositions.splice(indice,1);
+        console.log(list_of_first_propositions)
+        let compteur_propositions=0;
+        if(list_of_first_propositions.length>0){
+          for(let i=0;i<list_of_first_propositions.length;i++){
+            if(list_of_first_propositions[i].format=="artbook"){
+              this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
+                this.list_of_recommendations_by_tag[i]=comic[0];
+                compteur_propositions++;
+                if(compteur_propositions==list_of_first_propositions.length){
+                  console.log(this.list_of_recommendations_by_tag);
+                  this.list_of_recommendations_by_tag_retrieved=true;
+                }
+              })
+            }
+            else{
+              this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
+                this.list_of_recommendations_by_tag[i]=comic[0];
+                compteur_propositions++;
+                if(compteur_propositions==list_of_first_propositions.length){
+                  console.log(this.list_of_recommendations_by_tag);
+                  this.list_of_recommendations_by_tag_retrieved=true;
+                }
+              })
+            }
+            
+          }
+        }
+        else{
+          this.list_of_recommendations_by_tag_retrieved=true;
+        }
+        
+      }
+    }
+  }
 
   /******************************************************* */
   /******************** AFTER VIEW INIT ****************** */

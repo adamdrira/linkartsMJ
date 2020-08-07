@@ -388,15 +388,15 @@
 
             </div>
             <!--Line 3 : AD-->
-            <!--<div class="d3-ad-container">
+            <div class="d3-ad-container">
                 <div class="d3-ad">
                 </div>
                 <div class="d3-link">
-                    <span>Consulter le produit dans la bibliothèque</span>
+                    <span>Soutenez le site en faisant un don </span>
                     <div class="d3-icon">
                     </div>
                 </div>
-            </div>-->
+            </div>
             <!--Line 4 : OPTIONAL VIDEO-->
             <!--<div class="d4-video-container" id="scrollToComments">
 
@@ -425,15 +425,31 @@
                 <div *ngIf="category_index==0" class="description-container">
                     <div  class="categories-container"  [ngClass]="{'invisible': !display_right_container }">
                         &bull;
-                        <div  class="tag-container"><span>{{style}}</span> </div>
+                        <div  class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/all">
+                                <span>{{style}}</span>
+                            </a>
+                        </div>
                         <div *ngIf="type=='artbook'"  class="tag-container"> <span>Artbook</span> </div>
                         <div *ngIf="type=='one-shot'"  class="tag-container"><span>One-shot</span>  </div>
                     </div>
                     <div class="categories-container"  [ngClass]="{'invisible': !display_right_container }">  
                         &bull;
-                        <div class="tag-container"><span >{{firsttag}}</span></div>
-                        <div  *ngIf="secondtag!=null" class="tag-container"><span>{{secondtag}}</span></div>
-                        <div  *ngIf="thirdtag!=null" class="tag-container"><span >{{thirdtag}}</span></div>
+                        <div class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{firsttag}}">
+                                <span >{{firsttag}}</span>
+                            </a>
+                        </div>
+                        <div  *ngIf="secondtag!=null" class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{secondtag}}">
+                                <span >{{secondtag}}</span>
+                            </a>
+                        </div>
+                        <div  *ngIf="thirdtag!=null" class="tag-container">
+                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{thirdtag}}">
+                                <span >{{thirdtag}}</span>
+                            </a>
+                        </div>
                     </div>
                     <div style="margin-left:20px">
                         {{highlight}}
