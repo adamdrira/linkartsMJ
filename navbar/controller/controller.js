@@ -53,7 +53,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                   throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -64,7 +64,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                   throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -98,7 +98,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                   throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -109,7 +109,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                   throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -147,7 +147,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -158,7 +158,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -192,7 +192,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
             }
             else{
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -228,7 +228,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -239,7 +239,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -277,7 +277,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -288,7 +288,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
                 }
                 else{
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -324,7 +324,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -357,7 +357,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 }
                 else{
                     
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -369,7 +369,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 }
                 else{
                     
-                    result = JSON.parse(JSON.stringify(results.rows));
+                    let result = JSON.parse(JSON.stringify(results.rows));
                     res.status(200).send([result]);
                 }
             })
@@ -404,7 +404,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -436,7 +436,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -469,7 +469,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -502,7 +502,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -535,7 +535,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
             }
             else{
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -571,7 +571,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -606,7 +606,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -642,7 +642,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -678,7 +678,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -713,7 +713,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
             }
             else{
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -744,7 +744,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 throw error
             }
             else{
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -777,7 +777,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -812,7 +812,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             }
             else{
                 
-                result = JSON.parse(JSON.stringify(results.rows));
+                let result = JSON.parse(JSON.stringify(results.rows));
                 res.status(200).send([result]);
             }
         })
@@ -909,6 +909,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                             "secondtag":secondtag,
                             "thirdtag":thirdtag,
                         }).then(result=>{
+                            console.log("send let result 1")
                             res.status(200).send([result])
                         } )
                     }
@@ -945,6 +946,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                                     "thirdtag":thirdtag,
                                 }).then(result2=>{
                                     if(i==result.length-1){
+                                        console.log("send let result 2")
                                         res.status(200).send([result1])
                                     }
                                 })
@@ -952,6 +954,10 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                            
                            
                         } )
+                    }
+                    else{
+                        console.log("send let result 3")
+                        res.status(200).send([{"value":false}])
                     }
                 }
                 else{
@@ -970,6 +976,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                         "secondtag":secondtag,
                         "thirdtag":thirdtag,
                     }).then(result=>{
+                        console.log("send let result 4")
                         res.status(200).send([result])
                     } )
                 }
