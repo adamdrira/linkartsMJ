@@ -63,7 +63,6 @@ export class ThumbnailWritingComponent implements OnInit {
   date_upload: string;
   date_upload_to_show: string;
   writing_id: string;
-  format:string;
   thumbnail_picture:SafeUrl;
 
   @Input() item:any;
@@ -87,9 +86,6 @@ export class ThumbnailWritingComponent implements OnInit {
     this.lovesnumber = this.item.lovesnumber;
     this.date_upload = this.item.createdAt;
     this.writing_id = this.item.writing_id;
-    this.thumbnail_color = this.item.thumbnail_color;
-    this.thumbnail_police = this.item.thumbnail_police;
-    this.format = this.item.format;
     this.Writing_Upload_Service.retrieve_thumbnail_picture(this.item.name_coverpage).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
