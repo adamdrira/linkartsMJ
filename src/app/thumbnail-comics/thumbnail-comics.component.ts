@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -19,6 +19,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
   constructor(
     private sanitizer:DomSanitizer,
+    private cd: ChangeDetectorRef,
     private BdOneShotService: BdOneShotService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
@@ -42,6 +43,7 @@ export class ThumbnailComicsComponent implements OnInit {
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
   @ViewChild("thumbnail", {static:false}) thumbnail: ElementRef;
   @ViewChild("thumbnail1", {static:false}) thumbnail1: ElementRef;
+  
 
   //animation
   swiper:any;
@@ -77,7 +79,7 @@ export class ThumbnailComicsComponent implements OnInit {
   date_upload: string;
   date_upload_to_show: string;
   
-
+  imageloaded=false;
 
 
 
@@ -304,10 +306,12 @@ export class ThumbnailComicsComponent implements OnInit {
   }
 
   
-  imageloaded=false;
+ 
   loaded(){
     this.imageloaded=true;
     this.send_loaded.emit(true);
+    $(".miniature").css("visibility","visible");
+    this.cd.detectChanges();
   }
 
   pp_is_loaded=false;

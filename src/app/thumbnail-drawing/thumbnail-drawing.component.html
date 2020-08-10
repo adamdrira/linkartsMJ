@@ -5,7 +5,8 @@
     <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}">
         <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
-            <img [src]="thumbnail_picture" (load)="dosomething()">
+
+            <img class="miniature" [src]="thumbnail_picture" (load)="dosomething()" style="visibility:hidden" >
             <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
                 
                 <!--********************-->

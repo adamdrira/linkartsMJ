@@ -15,7 +15,7 @@
                     <a href='/artwork-writing/{{title}}/{{writing_id}}'>
                         <div class="element-writing border-recto">
 
-                            <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}" >
+                            <div class="miniature" style="visibility:hidden">
                                 <img [src]="thumbnail_picture" (load)="loaded()" >
                             </div>
 

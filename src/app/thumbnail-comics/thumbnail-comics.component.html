@@ -16,7 +16,7 @@
                         <a href='/artwork-comic/{{format}}/{{title}}/{{bd_id}}'>
                             <div class="element-book border-recto">
 
-                                <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}">
+                                <div class="miniature" style="visibility:hidden" >
                                         <img [src]="thumbnail_picture" (load)="loaded()">
                                 </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
@@ -19,6 +19,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private sanitizer :DomSanitizer,
     private Writing_Upload_Service:Writing_Upload_Service,
     private rd:Renderer2,
+    private cd:ChangeDetectorRef,
 
     ) { }
 
@@ -291,7 +292,10 @@ export class ThumbnailWritingComponent implements OnInit {
   imageloaded=false;
   loaded(){
     this.imageloaded=true;
+    $(".miniature").css("visibility","visible");
     this.sendLoaded.emit(true);
+    this.cd.detectChanges();
+    
   }
   
   pp_is_loaded=false;

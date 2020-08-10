@@ -69,7 +69,7 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   tagsSplit: string;
   showDrawingDetails:boolean = false;
-  
+  imageloaded=false;
 
   
 
@@ -303,7 +303,10 @@ export class ThumbnailDrawingComponent implements OnInit {
   }
 
   dosomething(){
+    this.imageloaded=true;
+    $(".miniature").css("visibility","visible");
     this.sendLoaded.emit(true);
+    this.cd.detectChanges();
   }
 
   pp_is_loaded=false;
