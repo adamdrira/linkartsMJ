@@ -292,7 +292,7 @@ export class ThumbnailWritingComponent implements OnInit {
   imageloaded=false;
   loaded(){
     this.imageloaded=true;
-    $(".miniature").css("visibility","visible");
+    $(".miniature").css("visibility","");
     this.sendLoaded.emit(true);
     this.cd.detectChanges();
     

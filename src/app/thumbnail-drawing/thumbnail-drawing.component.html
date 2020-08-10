@@ -1,13 +1,13 @@
 
-<div class="drawing-container">
+<div class="drawing-container"  class="miniature" style="visibility:hidden"  >
         
     
     <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}">
         <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
 
-            <img class="miniature" [src]="thumbnail_picture" (load)="dosomething()" style="visibility:hidden" >
-            <div #thumbnail class="display-on-hover" [ngClass]="{'invisible':!showDrawingDetails}">
+            <img [src]="thumbnail_picture" (load)="dosomething()" >
+            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
                 
                 <!--********************-->
                 <!--Title container-->

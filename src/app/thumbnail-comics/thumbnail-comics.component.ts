@@ -310,7 +310,7 @@ export class ThumbnailComicsComponent implements OnInit {
   loaded(){
     this.imageloaded=true;
     this.send_loaded.emit(true);
-    $(".miniature").css("visibility","visible");
+    $(".miniature").css("visibility","");
     this.cd.detectChanges();
   }
 

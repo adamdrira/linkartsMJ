@@ -3,6 +3,8 @@
     visibility:hidden;
   }
   
-  
+.visible{
+  opacity:1 !important;
+}
   
 @import '../../thumbnail-drawing-styles.css';

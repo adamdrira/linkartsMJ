@@ -304,7 +304,7 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   dosomething(){
     this.imageloaded=true;
-    $(".miniature").css("visibility","visible");
+    $(".miniature").css("visibility","");
     this.sendLoaded.emit(true);
     this.cd.detectChanges();
   }
