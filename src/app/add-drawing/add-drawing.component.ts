@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -8,6 +8,13 @@ import { Drawings_Artbook_Service} from '../services/drawings_artbook.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
+
+import { pattern } from '../helpers/patterns';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Observable } from 'rxjs';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { startWith, map } from 'rxjs/operators';
 
 
 declare var $: any;
@@ -36,11 +43,17 @@ export class AddDrawingComponent implements OnInit {
     this.REAL_step = 0;
     this.CURRENT_step = 0;
     this.modal_displayed = false;
+    
+    
+    this.filteredGenres = this.genreCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
   }
 
   
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
+  @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
   
   @Output() started = new EventEmitter<any>();
@@ -51,10 +64,6 @@ export class AddDrawingComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-  tags: string[];
-  tagsValidator:boolean = false;
-  drawings_tags=["Abstrait","Action","Aventure","Animaux","Enfants","Epique","Esotérisme","Fanart","Fantaisie","Femme","Fresque","Guerre","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Journalisme","Monstre","Paysage","Portrait","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Western"];
 
 
   ngOnInit() {
@@ -62,15 +71,11 @@ export class AddDrawingComponent implements OnInit {
     this.createFormControlsDrawings();
     this.createFormDrawings();
 
-    this.initialize_selectors();
-    this.initialize_taginputs_fd();
-
     this.cd.detectChanges();
 
   }
 
   ngAfterContentInit() {
-      this.initialize_taginputs_fd();
   }
 
   
@@ -103,76 +108,39 @@ export class AddDrawingComponent implements OnInit {
   }
 
 
+  onFormatChange(e:any) {
 
-  initialize_selectors() {
 
-    let THIS = this;
+    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
 
-    $(document).ready(function () {
-      $('.fdselect0').SumoSelect({});
-    });
-    $(document).ready(function () {
-      $('.fdselect1').SumoSelect({});
-    });
-
-    this.cd.detectChanges();
-
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
+      });
     
-    $(".fdselect0").change(function(){
-
-      THIS.cd.detectChanges();
-      if( (THIS.REAL_step != THIS.CURRENT_step) && (THIS.fd.controls['fdFormat'].value != $(this).val()) && (!THIS.modal_displayed) ) {
-
-        const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
-        });
-      
-        dialogRef.afterClosed().subscribe(result => {
-          if( result ) {
-            THIS.fd.controls['fdFormat'].setValue( $(".fdselect0").val() );
-            THIS.REAL_step--;
-            THIS.modal_displayed = true;
-            THIS.cd.detectChanges();
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          this.REAL_step--;
+          this.modal_displayed = true;
+          this.cd.detectChanges();
+        }
+        else {
+          if( this.fd.controls['fdFormat'].value == "Œuvre unique" ) {
+            this.fd.controls['fdFormat'].setValue("Artbook");
           }
           else {
-            $('.fdselect0')[0].sumo.selectItem( THIS.fd.controls['fdFormat'].value );
-            THIS.cd.detectChanges();
+            this.fd.controls['fdFormat'].setValue("Œuvre unique");
           }
-        });
+          this.cd.detectChanges();
+        }
+      });
 
-      }
-
-      else {
-        THIS.fd.controls['fdFormat'].setValue( $(this).val() );
-      }
-
-      THIS.cd.detectChanges();
-
-    });
-    
-
-
-    $(".fdselect1").change(function(){
-      THIS.fd.controls['fdCategory'].setValue( $(this).val() );
-    });
-
-
-  }
-
-
-  initialize_taginputs_fd() {
-
-    $('.multipleSelectfd').fastselect({
-      maxItems: 3
-    });
-    
-    this.cd.detectChanges();
+    }
 
   }
 
 
 
-  fdDisplayErrors: boolean = false;
+
   fd: FormGroup;
   fdTitle: FormControl;
   fdDescription: FormControl;
@@ -182,10 +150,10 @@ export class AddDrawingComponent implements OnInit {
   monetised:boolean = false;
   
   createFormControlsDrawings() {
-    this.fdTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdCategory = new FormControl('', Validators.required);
-    this.fdTags = new FormControl('');
+    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
+    this.fdCategory = new FormControl('', [Validators.required]);
+    this.fdTags = new FormControl( this.genres , [Validators.required]);
     this.fdFormat = new FormControl('', Validators.required);
   }
 
@@ -204,57 +172,52 @@ export class AddDrawingComponent implements OnInit {
   validate_form_drawings() {
 
 
-    this.tags = $(".multipleSelectfd").val();
-    if( this.tags.length == 0 ) {
-      this.fdDisplayErrors = true;
-      this.tagsValidator = false;
-    }
-    else {
-      this.tagsValidator = true;
-    }
+    if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
-    if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") && this.tagsValidator ) {
-       this.tags = $(".multipleSelectfd").val();
-        console.log('ok1')
+      if( this.CURRENT_step < (this.REAL_step) ) {
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+        .subscribe(inf=>{
+          this.CURRENT_step++;
 
-              if( this.CURRENT_step < (this.REAL_step) ) {
-                this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-                .subscribe(inf=>{
-                  this.CURRENT_step++;
-                  
-                });
-              }
-              else {
-                this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-                .subscribe((val)=> {
-                  this.CURRENT_step++;
-                  this.REAL_step++;
-                  });
-              }
+          this.cd.detectChanges();
+          window.scroll(0,0);
+        });
+      }
+      else {
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+        .subscribe((val)=> {
+          this.CURRENT_step++;
+          this.REAL_step++;
 
-            this.fdDisplayErrors = false;
+          this.cd.detectChanges();
+          window.scroll(0,0);
+          });
+      }
+
     }
 
-    else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") && this.tagsValidator ) {
-      this.tags = $(".multipleSelectfd").val();
-       console.log('ok1')
+    else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") ) {
 
-             if( this.CURRENT_step < (this.REAL_step) ) {
-               this.Drawings_Artbook_Service.ModifyArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags, this.fd.value.fdDescription, this.monetised)
-               .subscribe(inf=>{
-                 this.CURRENT_step++;
-                 
-               });
-             }
-             else {
-               this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.tags,this.fd.value.fdDescription, this.monetised)
-               .subscribe((val)=> {
-                 this.CURRENT_step++;
-                 this.REAL_step++;
-                 });
-             }
+        if( this.CURRENT_step < (this.REAL_step) ) {
+          this.Drawings_Artbook_Service.ModifyArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+          .subscribe(inf=>{
+            this.CURRENT_step++;
 
-           this.fdDisplayErrors = false;
+            this.cd.detectChanges();
+            window.scroll(0,0);
+          });
+        }
+        else {
+          this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription, this.monetised)
+          .subscribe((val)=> {
+            this.CURRENT_step++;
+            this.REAL_step++;
+
+            this.cd.detectChanges();
+            window.scroll(0,0);
+            });
+        }
+
        
     }
 
@@ -262,11 +225,102 @@ export class AddDrawingComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
       });
-      this.fdDisplayErrors = true;
     }
 
   }
 
 
+
+  //AJOUTÉ
+  listOfFormats = ["Œuvre unique","Artbook"];
+  listOfCategories = ["Traditionnel","Digital"];
+  compareObjects(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
+  
+  //GENRES
+  @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  genreCtrl = new FormControl();
+  filteredGenres: Observable<string[]>;
+  genres: string[] = [];
+
+  allGenres: string[] = ["Abstrait","Action","Aventure","Animaux","Enfants","Epique","Esotérisme","Fanart","Fantaisie","Femme","Fresque","Guerre","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Journalisme","Monstre","Paysage","Portrait","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Western"];
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 3 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.allGenres.length; i++ ) {
+        if( this.allGenres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.allGenres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genreCtrl.setValue(null);
+    this.fdTags.updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.fdTags.updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+
+    
+    if( this.genres.length >= 3 ) {
+      this.genreInput.nativeElement.value = '';
+      this.genreCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genreInput.nativeElement.value = '';
+        this.genreCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genreInput.nativeElement.value = '';
+    this.genreCtrl.setValue(null);
+    this.fdTags.updateValueAndValidity();
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  
 
 }

@@ -43,6 +43,7 @@ export class AddAlbumComicComponent implements OnInit {
   now_in_seconds:number;
 
   @Input() author_name: string;
+  @Input() pseudo: string;
   @Input() user_id: number;
   @Input() profile_picture: SafeUrl;
   @Input() primary_description: string;

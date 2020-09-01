@@ -2,6 +2,11 @@
 <div class="artbook-upload-container">                
 
 
+    <!--burst_mode
+filter
+view_carousel
+view_module
+-->
     
     <div #swiperController class="swiper-container-thumbnails">
         <div class="swiper-wrapper">
@@ -17,7 +22,10 @@
 
                 <div class="img-container">
                     <ng-container *ngIf="!item.instance.uploader.queue[0]">
-                        <span>Aucune image téléchargée</span>
+                        <mat-icon >error</mat-icon>
+                        <span>
+                            Aucune image téléchargée
+                        </span>
                     </ng-container>
                     <ng-container *ngIf="item.instance.uploader.queue[0]">
                         <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
@@ -25,14 +33,15 @@
                  </div>
 
                 <button mat-button class="remove_page_button" (click)="remove_page(i);">
-                    <span>Retirer</span>
+                    <mat-icon>remove_circle_outline</mat-icon>
+                    Retirer
                 </button>
 
             </div>
 
             <div class="swiper-slide add-page">
                 <button class="add-page-button" (click)="add_page();">
-                    <div class="icon1"></div>
+                    <mat-icon>note_add</mat-icon>
                     <span>Nouvelle page</span>
                 </button>
             </div>
@@ -64,143 +73,134 @@
 
 </div>
 
-
-
-<div class="artbook-upload-container">
-    
-
-    <div class="form-container thumbnail">
-        <div class="form-container-name">
-            <span>Édition de la miniature</span>
-        </div>
-        <div class="form-container-data">
-            
-            
-
-            
-
-            <div class="thumbnail-container">
-
-                <div *ngIf="!image_uploaded" class="image-container">
-                    <span>Aucune image téléchargée</span>
-                </div>
-
-                <div *ngIf="image_uploaded" class="crop-container">
-                    <div class="img-container">
-                        <div class="full-crop">
-                            <img #image [src]="imageSource" crossorigin>
-                        </div>
-                        <div class="buttons-container">
-                            <button mat-raised-button class="style0" (click)="cancel_crop();">Annuler</button>
-                            <button mat-raised-button class="style1" (click)="set_crop();">Valider</button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="crop">
-
-                    <div class="img-preview">
-                        <span *ngIf="imageDestination == ''">Aucune miniature sélectionnée</span>
-
-                        <div *ngIf="imageDestination != ''" class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
-
-                            <img [src]="imageDestination">
-                            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
-                                
-                                <!--********************-->
-                                <!--Title container-->
-                                <!--********************-->
-                                <div class="title-container">
-                                    <span class="title">{{name}}</span>
-                                </div>
-                                <!--********************-->
-                                <!--Author container-->
-                                <!--********************-->
-                                <div class="author-container">
-                                    <div class="left-container">
-                                        <img [src]="profile_picture">
-                                    </div>
-                                    <div class="right-container">
-                                        <span class="author-name">{{author_name}}</span>
-                                        <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
-                                    </div>
-                                </div>
-                                <!--********************-->
-                                <!--Data container-->
-                                <!--********************-->
-                                <div class="stats-container">
-                                    <div class="figure-container-views">
-                                        <span>__</span>
-                                        <div class="view-logo">
-                                        </div>
-                                    </div>
-                                    <div class="figure-container-likes">
-                                        <span>__</span>
-                                        <div class="like-logo">
-                                        </div>
-                                    </div>
-                                    <div class="figure-container-loves">
-                                        <span>__</span>
-                                        <div class="love-logo">
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--********************-->
-                                <!--Categories container-->
-                                <!--********************-->
-                                <div class="categories-container">  
-                                    <span class="categories">{{category}} :</span>
-                                    <span *ngIf="tagsSplit"> &nbsp; {{tagsSplit}}</span>
-                                </div>
-                                <!--********************-->
-                                <!--Date container-->
-                                <!--********************-->
-                                <div class="date-container">
-                                    <span>Publié maintenant</span>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!--******************************************************-->
-            <!--Couleur-->
-            <!--******************************************************-->
-            <div class="form-group">
-                <label for="artworkColor">Couleur du filtre</label>
-                <select class="drawingSelectColor" style="height: 100%;">
-                    <option selected value="" disabled="true">Sélectionner une couleur </option>
-                    <option>Bleu</option>
-                    <option>Noir</option>
-                    <option>Vert</option>
-                    <option>Jaune</option>
-                    <option>Rouge</option>
-                    <option>Violet</option>
-                    <option>Rose</option>
-                    <option>Marron</option>
-                    <option>Orange</option>
-                    <option>Gris</option>
-                </select>
-                <p *ngIf="displayErrors">Veuillez sélectionner une couleur</p>
-            </div>
-            
-            
-
-        </div>
+<div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" >
+    <div class="form-container-name">
+        <span>Édition de la miniature</span>
+    </div>
+    <div class="form-container-data">
         
+        <div class="crop-container">
+            <div class="img-container">
+                <div class="full-crop">
+                    <img #image [src]="imageSource" crossorigin>
+                </div>
+                <div class="buttons-container">
+                    <button mat-raised-button class="style0" (click)="cancel_crop();">
+                        <mat-icon>close</mat-icon>
+                        <span>Annuler</span>
+                    </button>
+                    <button mat-raised-button class="style1" (click)="set_crop();">
+                        <mat-icon>crop_free</mat-icon>
+                        <span>Valider</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="crop" *ngIf="imageDestination != ''" id="target3">
+
+
+            <div class="img-preview" >
+
+                <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+                    <img [src]="imageDestination">
+                    <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}" style="cursor:default;">
+                        
+                        <div class="artbook-icon">
+                            <mat-icon>collections</mat-icon>
+                        </div>
+                        <!--********************-->
+                        <!--Title container-->
+                        <!--********************-->
+                        <div class="title-container">
+                            <span class="title">{{name}}</span>
+                        </div>
+                        <!--********************-->
+                        <!--Author container-->
+                        <!--********************-->
+                        <div class="author-container">
+                            <div class="left-container">
+                                <img [src]="profile_picture">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">{{author_name}}</span>
+                                <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                            </div>
+                        </div>
+                        <!--********************-->
+                        <!--Data container-->
+                        <!--********************-->
+                        <div class="stats-container">
+                            <div class="figure-container views">
+                                <div>
+                                    <mat-icon>visibility</mat-icon>
+                                    <span>&nbsp;</span>
+                                    <!--<div class="view-logo"></div>-->
+                                </div>
+                            </div>
+                            <div class="figure-container likes">
+                                <div>
+                                    <mat-icon>thumb_up</mat-icon>
+                                    <span>&nbsp;</span>
+                                </div>
+                            </div>
+                            <div class="figure-container loves">
+                                <div>
+                                    <mat-icon>favorite</mat-icon>
+                                    <span>&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!--********************-->
+                        <!--Type container-->
+                        <!--********************-->
+                        <!--<div class="verso-type" *ngIf="format">
+                            <ng-container *ngIf="format=='One-shot'">
+                                <div class="tag-container"><span>One shot</span></div>
+                            </ng-container>
+        
+                            <ng-container *ngIf="format!='One-shot'">
+                                <div class="tag-container"><span>Série</span></div>
+                            </ng-container>
+                        </div>
+                        <div class="verso-type" *ngIf="!format">
+                            <div class="tag-container"><span>Format</span></div>
+                        </div>-->
+                        <!--********************-->
+                        <!--Date container-->
+                        <!--********************-->
+                        <div class="date-container">
+                            <span>Date de publication</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+            <div class="form-item" style="margin-top:40px;">
+                <mat-form-field>
+                    <mat-label>Couleur du filtre</mat-label>
+                    <mat-select disableOptionCentering (selectionChange)="onColorChange($event)">
+                        <mat-option *ngFor="let obj of listOfColors" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+
+        </div>
 
     </div>
-
+    
 
 </div>
 
 
-<button mat-raised-button class="submit-button style1" (click)="validateAll();">
+<button mat-raised-button *ngIf="imageDestination != ''" class="submit-button style1" (click)="validateAll();">
     <span>Valider</span>
 </button>
-

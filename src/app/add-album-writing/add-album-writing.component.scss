@@ -35,12 +35,11 @@
     padding:30px 45px;
     text-align:left;
     margin:20px auto 20px auto;
-    background:rgb(216, 216, 216);
-    box-shadow:0 0px 15px 0 dimgrey;
     border-radius:40px;
 }
 
 .album-preview .album-name {
+    color: #203864;
     margin-bottom: 20px;
     font-size:23px;
     font-weight: bold;
@@ -91,7 +90,7 @@
     margin-left:auto;
     margin-right:auto;
     //transition:width 200ms;
-    background:rgb(228, 228, 228);
+    background: #f3faff;
     height:520px;
     overflow:hidden;
 }

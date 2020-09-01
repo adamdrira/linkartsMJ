@@ -1,8 +1,4 @@
 
-<div class="top-container">
-    <span class="logo">Linkarts</span>
-
-</div>
 
 <div class="container-fluid">
 
@@ -36,6 +32,7 @@
     <div *ngIf="(opened_category$ | async)==0" class="form">
         <app-add-comic 
             author_name={{author_name}} 
+            pseudo={{pseudo}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
             
@@ -47,6 +44,7 @@
     <div *ngIf="(opened_category$ | async)==1" class="form">
         <app-add-drawing 
             author_name={{author_name}} 
+            pseudo={{pseudo}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
 
@@ -58,6 +56,7 @@
     <div *ngIf="(opened_category$ | async)==2" class="form">
         <app-add-writing 
             author_name={{author_name}} 
+            pseudo={{pseudo}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
 

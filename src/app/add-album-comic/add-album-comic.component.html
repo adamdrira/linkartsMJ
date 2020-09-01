@@ -6,8 +6,8 @@
     <form [formGroup]="albumForm" novalidate>
 
         <mat-form-field class="album-name-input">
-            <mat-label>Nom de l'album</mat-label>
-            <input matInput class="matInput" formControlName="formName" autocomplete="off" required placeholder="Saisir un nom">
+            <mat-label>Nom de la section</mat-label>
+            <input matInput class="matInput" maxlength="30" formControlName="formName" autocomplete="off" required placeholder="Saisir un nom">
         </mat-form-field>
 
     </form>
@@ -29,6 +29,7 @@
                 <app-thumbnail-album-comic #thumbnailAlbum class="swiper-slide" *ngFor="let item of list_bd_oneshot | filterAlbum : searchText; let i = index"
                     [primary_description]=primary_description
                     [author_name]=author_name
+                    [pseudo]=pseudo
                     [bd_element]=item
                     format='one-shot'
                     [now_in_seconds]=now_in_seconds
@@ -42,6 +43,7 @@
                 <app-thumbnail-album-comic #thumbnailAlbum class="swiper-slide" *ngFor="let item of list_bd_series | filterAlbum : searchText; let i = index"
                     [primary_description]=primary_description
                     [author_name]=author_name
+                    [pseudo]=pseudo
                     [bd_element]=item
                     format='serie'
                     [now_in_seconds]=now_in_seconds

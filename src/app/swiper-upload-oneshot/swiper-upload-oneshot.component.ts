@@ -92,16 +92,16 @@ export class SwiperUploadOneshotComponent implements OnInit {
         580: {
           slidesPerView: 1,
         },
-        860: {
+        700: {
             slidesPerView: 2,
         },
-        1150: {
+        900: {
             slidesPerView: 3,
         },
-        1450: {
+        1400: {
             slidesPerView: 4,
         },
-        1770: {
+        1700: {
             slidesPerView: 5,
         }
       }

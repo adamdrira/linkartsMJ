@@ -22,6 +22,7 @@
 
                 <div class="img-container">
                     <ng-container *ngIf="!item.instance.uploader.queue[0]">
+                        <mat-icon >error</mat-icon>
                         <span>Aucune image téléchargée</span>
                     </ng-container>
                     <ng-container *ngIf="item.instance.uploader.queue[0]">
@@ -30,6 +31,7 @@
                  </div>
 
                 <button mat-button class="remove_page_button" [disabled]="validated_chapter" (click)="remove_page(i);">
+                    <mat-icon>remove_circle_outline</mat-icon>
                     Retirer
                 </button>
 
@@ -37,7 +39,7 @@
 
             <div class="swiper-slide add-page">
                 <button class="add-page-button" [disabled]="validated_chapter" (click)="add_page();">
-                    <div class="icon1"></div>
+                    <mat-icon>note_add</mat-icon>
                     <span>Nouvelle page</span>
                 </button>
             </div>
@@ -58,6 +60,7 @@
             <div class="total-pages">
                 <span (click)="initialize_swiper();">/ 37</span>
             </div>
+
         </div>
     </div>
     
@@ -67,10 +70,12 @@
         </div>
     </div>
 
-    
+            
     <button mat-raised-button class="validate-chapter-button style0" *ngIf="!validated_chapter" (click)="validateAll();">
+        <mat-icon>cloud_upload</mat-icon>
         <span>Valider ce chapitre</span>
     </button>
+    
 
 </div>
 

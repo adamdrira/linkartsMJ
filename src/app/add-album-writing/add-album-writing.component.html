@@ -29,6 +29,7 @@
                 <app-thumbnail-album-writing #thumbnailAlbum class="swiper-slide" *ngFor="let item of list_writings | filterAlbum : searchText; let i = index"
                     [primary_description]=primary_description
                     [author_name]=author_name
+                    [pseudo]=pseudo
                     [writing_element]=item
                     [now_in_seconds]=now_in_seconds
                     state="swiper"

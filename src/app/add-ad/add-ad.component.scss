@@ -1,235 +1,40 @@
 
+@import '../../material-styles.css';
 
-//*************************************************************
-//Steps
-//*************************************************************
 
-.steps {
-    width:100%;
-    display:flex;
-    justify-content: center;
-    font-size:20px;
-    cursor:default;
-}
+/******************************************************************************-->
+<!--*****************************************************************************-->
+<!--******************************* f00 form ************************************-->
+<!--*****************************************************************************-->
+<!--******************************************************************************/
 
-.steps .step-container {
-    display:flex;
-    margin-left:20px;
-    margin-right:20px;
-}
 
-.steps .step-container .step {
-    cursor: default;
-    display: flex;
-    width: 35px;
-    height: 35px;
-    margin-right: 15px;
-    border: 2px solid rgb(226, 226, 226);
-    border-radius: 50%;
-}
 
-.step-container span {
-    margin:auto auto;
-    color: rgb(226, 226, 226);
-    font-weight: bold;
-}
 
-.step-container .step span {
-    line-height: 20px;
-}
-
-.steps .opened .step {
-    color: rgb(32,56,100);
-    border:2px solid rgb(32,56,100);
-}
-.steps .opened span {
-    color: rgb(32,56,100);
-}
-
-.horizontal-line {
-    width: 10%;
-    height: 5px;
-    margin: auto 0px auto 0px;
-    border-bottom: 1px solid #d3d3db;
+.swiper-container2 {
+    height:200px;
 }
 
 
-//*************************************************************
-//Forms
-//*************************************************************
+/******************************************************************************-->
+<!--*****************************************************************************-->
+<!--******************************* f01 form ************************************-->
+<!--*****************************************************************************-->
+<!--******************************************************************************/
 
-
-form {
-    width:100%;
-    margin-left:auto;
-    margin-right: auto;
-}
-
-.form-container {
-    width:100%;
-    margin:30px auto 50px auto;
-    background:rgba(248,248,248);
-    border-radius: 0px 0px 10px 10px;
-}
-
-.form-container .form-container-name {
-    width:100%;
-    height:60px;
-    display:flex;
-    background-color: rgb(192, 209, 241);
-    border-radius:10px 10px 0px 0px;
-}
-
-.form-container .form-container-name span {
-    margin: auto auto auto auto;
-    font-size: 1.3rem;
-}
-
-.form-container .form-container-data {
-    width:95%;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-.form-container .form-container-flex {
-    display:flex;
-    width:95%;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-.form-container .form-container-flex .flex-left-container {
-    width:50%;
-    margin-right:10px;
-    padding-right:20px;
-    border-right: 1px solid rgb(232, 232, 232);
-}
-
-.form-container .form-container-flex .flex-right-container {
-    width:50%;
-    margin-left:10px;
-}
-
-.form-group label {
-    font-weight: bold;
-    margin-bottom:5px;
-}
-
-.form-group p {
-    font-size: 1.1rem;
-    margin-top: 5px;
-    margin-bottom: 0px !important;
-    color:rgb(97, 0, 0);
-}
-
-//thumbnail
-
-.thumbnail-container {
-    width:30%;
-    margin:30px auto 50px auto;
-    background:rgba(248,248,248);
-    border-radius: 0px 0px 10px 10px;
-}
-
-.thumbnail-container .thumbnail-container-name {
-    width:100%;
-    height:60px;
-    display:flex;
-    background-color: rgb(192, 209, 241);
-    border-radius:10px 10px 0px 0px;
-}
-
-.thumbnail-container .thumbnail-container-name span {
-    margin: auto auto auto auto;
-    font-size: 1.3rem;
-}
-
-.thumbnail-container .thumbnail-container-data {
-    width:95%;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-.thumbnail-container .thumbnail-container-flex {
-    display:block;
-    width:95%;
-
-    //padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-//pictures
-
-.pictures-container {
-    width:100%;
-    margin:30px auto 50px auto;
-    background:rgba(248,248,248);
-    border-radius: 0px 0px 10px 10px;
-}
-
-.pictures-container .pictures-container-name {
-    width:100%;
-    height:60px;
-    display:flex;
-    background-color: rgb(192, 209, 241);
-    border-radius:10px 10px 0px 0px;
-}
-
-.pictures-container .pictures-container-name span {
-    margin: auto auto auto auto;
-    font-size: 1.3rem;
-}
-
-.pictures-container .pictures-container-data {
-    width:95%;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-.pictures-container .pictures-container-flex {
-    display:block;
-    width:95%;
-
-    //padding-top: 25px;
-    padding-bottom: 25px;
-    margin:20px auto 20px auto;
-}
-
-
-//adam
-
-.container1 {
-    display:flex;
-    margin:auto 20px auto 20px;
-}
-
-.container2 {
-    width: 50%;
-    display:block;
-    margin:auto;
-}
 
 
 //ng-deeps
+/*
 ::ng-deep .form-control {
     height:45px;
     font-size:unset;
     color:unset;
+}*/
+
+::ng-deep .form-container .optWrapper .options .opt.disabled {
+    display:none;
 }
-
-::ng-deep .form-control2 {
-    height:45px;
-    width: 150px;
-    font-size:unset;
-    color:unset;
-}
-
-
 
 ::ng-deep .form-container .SumoSelect {
     display:block;
@@ -241,40 +46,7 @@ form {
     border-radius:4px;
 }
 
-::ng-deep .form-container .optWrapper .options .opt.disabled {
-    display:none;
-}
-
-::ng-deep .bootstrap-tagsinput {
-    display:flex;
-    height:45px;
-    line-height: unset;
-}
-
-::ng-deep .bootstrap-tagsinput .label-info {
-    border-radius:5px;
-    padding-left:10px;
-    padding-right:10px;
-    height: 80%;
-    margin-top: auto;
-    margin-bottom: auto;
-    background-color:rgb(114, 203, 221);
-    color:rgb(50, 50, 50);
-}
-
-
-::ng-deep .modal {
-    height:unset !important;
-    overflow:visible !important;
-}
-
-::ng-deep .blocker {
-    z-index:100000;
-}
-
-
 ::ng-deep {
-    @import "../../assets/fastselect/fastselect.scss";
     .fstResults{
         z-index:20 !important;
     }  
@@ -293,6 +65,10 @@ form {
     .mat-slide-toggle.mat-checked .mat-ripple-element {
         background-color: rgb(32,56,100) !important;
     }
+
+    .mat-form-field-wrapper {
+        height:100%;
+    }
 }
 
 
@@ -303,8 +79,9 @@ form {
 
 .read_conditions {
     cursor:pointer;
+    color:grey;
 }
 .read_conditions:hover {
     text-decoration: underline;
-    color:rgb(32,56,100);
+    color:rgb(78, 78, 78);
 }

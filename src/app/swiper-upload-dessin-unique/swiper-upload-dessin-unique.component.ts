@@ -4,6 +4,7 @@ import { Drawings_CoverService} from '../services/drawings_cover.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import { first } from 'rxjs/operators';
 
+import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
@@ -34,28 +35,26 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
      ) { 
     this.image_uploaded = false;
-    this.tagsSplit = '';
   }
 
 
   
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
+  @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
   
   @Input() name: string;
   @Input() description: string;
   @Input() format: string;
   @Input() category: string;
-  @Input() tags: string[];
+  @Input() tags: any;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if(changes.tags) {
-      this.update_tags();
-    }
-  }
 
-  tagsSplit: string;
+  
+  listOfColors = ["Bleu","Noir","Vert","Jaune","Rouge","Violet","Marron","Orange","Gris"];
+
+
   image_src: SafeUrl;
   image_uploaded: boolean = false;
   upload:boolean = false;
@@ -83,29 +82,12 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   
   ngOnInit(): void {
 
-    this.initialize_selectors();
   }
 
   ngAfterViewInit() {
-
-    this.update_tags();
   }
 
 
-
-  update_tags() {
-
-    if( this.tags.length >= 1 ) {
-      this.tagsSplit = this.tags[0].split("'",2)[1]
-    }
-    if( this.tags.length >= 2 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[1].split("'",2)[1]
-    }
-    if( this.tags.length >= 3 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[2].split("'",2)[1]
-    }
-
-  }
 
 
   showDetails() {
@@ -116,23 +98,21 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.showDrawingDetails=false;
   }
 
-  initialize_selectors() {
+  onColorChange(e:any) {
     
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.drawingSelectColor').SumoSelect({});
-    });
-
-    $(".drawingSelectColor").change(function(){
-      THIS.color = $(this).val();
-      THIS.Drawings_Onepage_Service.update_filter(THIS.color).subscribe();
-      THIS.set_color();
-
-    });
+    this.color = e.value;
+    this.Drawings_Onepage_Service.update_filter(this.color).subscribe();
+    this.set_color();
   }
 
   set_color() {
+
+    this.thumbnail_background = get_color_code( this.color );
+    if( this.thumbnail ) {
+      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.color ));
+    }
+
+    /*
     if( this.color == "Bleu" ) {
       this.thumbnail_background = "rgba(47, 87, 151, 0.7)";
       if( this.thumbnail ) {
@@ -192,25 +172,26 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       if( this.thumbnail ) {
         this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
       }
-    }
+    }*/
   }
 
   initialize_cropper(content: ElementRef) {
     
     if( !this.cropperInitialized ) {
       this.cropper = new Cropper(content.nativeElement, {
-        zoomable: false,
-        scalable: false,
-        checkCrossOrigin: true,
         guides: false,
-        viewMode: 1,
-        responsive: true,
-        movable: false,
-        cropmove:'mousemove',
+        viewMode:2,
+        autoCropArea:1,
+        center:true,
+        restore:false,
+        zoomOnWheel:false
+
       });
       this.cropperInitialized = true;
     }
 
+    this.cd.detectChanges();
+    this.scroll(document.getElementById("target2"));
   }
 
   set_crop() {
@@ -245,6 +226,11 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     this.cd.detectChanges();
     this.set_color();
+    this.cd.detectChanges();
+    
+    let el = document.getElementById("target3");
+    var topOfElement = el.offsetTop - 200;
+    window.scroll({top: topOfElement, behavior:"smooth"});
   }
 
   cancel_crop(){
@@ -255,6 +241,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     this.Drawings_CoverService.remove_cover_from_folder().subscribe();
     this.imageDestination='';
+    this.color='';
     this.confirmation = false;
   }
 
@@ -270,7 +257,10 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       this.imageSource="";
       this.imageDestination="";
     }
+  }
 
+  scroll(el:HTMLElement) {
+    el.scrollIntoView({behavior:"smooth"});
   }
 
   get_image( event2: SafeUrl) {
@@ -283,7 +273,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     let errorMsg1 : string = "Le dessin n'a pas été téléchargé";
     let errorMsg2 : string = "La vignette n'a pas été éditée";
-    let errorMsg3 : string = "La couleur de fond n'a pas été sélectionnée";
+    let errorMsg3 : string = "La couleur du filtre n'a pas été sélectionnée";
 
     if( !this.image_uploaded ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {

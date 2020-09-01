@@ -16,6 +16,14 @@ import { SafeUrl } from '@angular/platform-browser';
 import { ThemePalette } from '@angular/material/core';
 
 
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { pattern } from '../helpers/patterns';
+
+
 declare var Swiper: any;
 declare var $ : any;
 
@@ -48,11 +56,18 @@ export class AddComicComponent implements OnInit {
     this.REAL_step = 0;
     this.CURRENT_step = 0;
     this.modal_displayed = false;
+
+    
+    this.filteredGenres = this.genreCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
+
   }
 
   
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
+  @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
   
   @Output() started = new EventEmitter<any>();
@@ -61,20 +76,12 @@ export class AddComicComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-  tags: string[];
-  tagsValidator:boolean = false;
-  comics_tags=["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
-
   
   ngOnInit() {
 
     
     this.createFormControls00();
     this.createForm00();
-
-    this.initialize_selectors_f00();
-    this.initialize_taginputs_f00();
 
     this.cd.detectChanges();
     
@@ -91,7 +98,6 @@ export class AddComicComponent implements OnInit {
   //********************************************************************************************************* */
 
 
-  f00DisplayErrors: boolean = false;
   f00: FormGroup;
   f00Title: FormControl;
   f00Description: FormControl;
@@ -99,85 +105,55 @@ export class AddComicComponent implements OnInit {
   f00Tags: FormControl;
   f00Format: FormControl;
   f00SerieFirstChapter: FormControl;
-  color:string;
   monetised:boolean = false;
 
-  initialize_selectors_f00() {
-    let THIS = this;
+  
+  onFormatChange(e:any) {
 
 
-    $(document).ready(function () {
-      $('.f00select0').SumoSelect({});
-    });
-    $(document).ready(function () {
-      $('.f00select1').SumoSelect({});
-    });
+    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
+      
+      //show modal
+      //Attention, changer le format annulera toute la sélection de l'étape 2.
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:true, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
+      });
 
-    this.cd.detectChanges();
-
-    $(".f00select0").change(function(){
-      THIS.f00.controls['f00Category'].setValue( $(this).val() );
-
-      if($(".f00select0").val() == "BD") {
-        THIS.color = "linear-gradient(-220deg,#044fa9,#25bfe6)";
-      }
-      else if($(".f00select0").val() == "Comics") {
-        THIS.color = "linear-gradient(-220deg,#1a844e,#77d05a)";
-      }
-      else if($(".f00select0").val() == "Manga") {
-        THIS.color = "linear-gradient(-220deg,#ee5842,#ed973c)";
-      }
-      else if($(".f00select0").val() == "Webtoon") {
-        THIS.color = "linear-gradient(-220deg,#8051a7,#d262a5)";
-      }
-
-      THIS.cd.detectChanges();
-    });
-
-
-
-    $('.f00select1').change(function(){
-      if( (THIS.REAL_step != THIS.CURRENT_step) && (THIS.f00.controls['f00Format'].value != $(this).val()) && (!THIS.modal_displayed) ) {
-        
-        //show modal
-        //Attention, changer le format annulera toute la sélection de l'étape 2.
-        const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:true, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          if( result ) {
-            if( $(".f00select1").val() == "Série" ) {
-              THIS.AddValidator();
-            }
-            else {
-              THIS.RemoveValidator();
-            }
-            THIS.f00.controls['f00Format'].setValue( $(".f00select1").val() );
-            THIS.REAL_step--;
-            THIS.modal_displayed = true;
-            THIS.cd.detectChanges();
+      dialogRef.afterClosed().subscribe(result => {
+        if( result ) {
+          if( this.f00.controls['f00Format'].value == "Série" ) {
+            this.AddValidator();
           }
           else {
-            $('.f00select1')[0].sumo.selectItem( THIS.f00.controls['f00Format'].value );
-            THIS.cd.detectChanges();
+            this.RemoveValidator();
           }
-        });
-
-      }
-
-      else {
-        if( $(".f00select1").val() == "Série" ) {
-          THIS.AddValidator();
+          this.REAL_step--;
+          this.modal_displayed = true;
+          this.cd.detectChanges();
         }
         else {
-          THIS.RemoveValidator();
+          if( this.f00.controls['f00Format'].value == "Série" ) {
+            this.f00.controls['f00Format'].setValue("One-shot");
+          }
+          else {
+            this.f00.controls['f00Format'].setValue("Série");
+          }
+          this.cd.detectChanges();
         }
-        THIS.f00.controls['f00Format'].setValue( $(this).val() );
-      }
+      });
 
-      THIS.cd.detectChanges();
-    });
+    }
+
+    else {
+      if( this.f00.controls['f00Format'].value == "Série" ) {
+        this.AddValidator();
+      }
+      else {
+        this.RemoveValidator();
+      }
+    }
+
+    this.cd.detectChanges();
 
 
   }
@@ -212,21 +188,14 @@ export class AddComicComponent implements OnInit {
 
 
 
-  initialize_taginputs_f00() {
-    let THIS = this;
-
-    $('.multipleSelect').fastselect({
-      maxItems: 3
-    });
-  }
-
+  
   createFormControls00() {
-    this.f00Title = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.f00Description = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
+    this.f00Title = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
     this.f00Category = new FormControl('', Validators.required);
-    this.f00Tags = new FormControl('');
-    this.f00Format = new FormControl('', Validators.required);
-    this.f00SerieFirstChapter = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
+    this.f00Tags = new FormControl( this.genres, [Validators.required]);
+    this.f00Format = new FormControl('', [Validators.required]);
+    this.f00SerieFirstChapter = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
   }
 
   createForm00() {
@@ -246,7 +215,7 @@ export class AddComicComponent implements OnInit {
     this.f00SerieFirstChapter.updateValueAndValidity();
   }
   AddValidator(){
-    this.f00SerieFirstChapter.setValidators( [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ] );
+    this.f00SerieFirstChapter.setValidators( [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ] );
     this.f00SerieFirstChapter.updateValueAndValidity();
   }
 
@@ -255,86 +224,188 @@ export class AddComicComponent implements OnInit {
   }
 
   validateForm00() {
-
-    this.tags = $(".multipleSelect").val();
-
-    if( this.tags.length == 0 ) {
-      this.f00DisplayErrors = true;
-      this.tagsValidator = false;
-    }
-    else {
-      this.tagsValidator = true;
-    }
     
 
-    if ( this.f00.valid && (this.f00.value.f00Format == "One-shot") && this.Bd_CoverService.get_confirmation() && this.tagsValidator ) {
+    if( this.f00.value.f00Format == "One-shot" ) {
+      this.RemoveValidator();
+    }
+    else {
+      this.AddValidator();
+    }
+
+
+    if ( this.f00.valid && (this.f00.value.f00Format == "One-shot") && this.Bd_CoverService.get_confirmation() ) {
         this.started.emit();
-        this.f00DisplayErrors = false;
-        this.tags = $(".multipleSelect").val();
         //If MODIFICATION
 
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdOneShotService.ModifyBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.tags, this.f00.value.f00Description, this.monetised )
+          this.bdOneShotService.ModifyBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.CURRENT_step++;
+            
+            this.cd.detectChanges();
+            window.scroll(0,0);
           });
         }
         //Else if NEW Step1
         else {
-          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.tags, this.f00.value.f00Description, this.monetised )
+          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
             this._upload.f00_validation();
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.CURRENT_step++;
             this.REAL_step++;
+
+            this.cd.detectChanges();
+            window.scroll(0,0);
             });
         }
     }
 
-    else if ( this.f00.valid && (this.f00.value.f00Format == "Série") && this.Bd_CoverService.get_confirmation() && this.tagsValidator ) {
+    else if ( this.f00.valid && (this.f00.value.f00Format == "Série") && this.Bd_CoverService.get_confirmation() ) {
         this.started.emit();
-        this.f00DisplayErrors = false;
-        this.tags = $(".multipleSelect").val();
         //If MODIFICATION
 
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdSerieService.ModifyBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.tags, this.f00.value.f00Description, this.monetised )
+          this.bdSerieService.ModifyBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.bdSerieService.modify_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;
+
+            this.cd.detectChanges();
+            window.scroll(0,0);
           });
         }
         //Else if NEW Step1
         else {
-          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.tags, this.f00.value.f00Description, this.monetised )
+          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
             this._upload.f00_validation();
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.bdSerieService.add_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;
             this.REAL_step++;
+
+            this.cd.detectChanges();
+            window.scroll(0,0);
             });
         }
         
     }
 
     else {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-      });
-      this.f00DisplayErrors = true;
+      if( !this.f00.valid ) {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        });
+      }
+      else {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+        });
+      }
     }
     
   }
   
   cancel_all() {
       this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
+  }
+
+
+  
+  //AJOUTÉ
+  listOfFormats = ["One-shot","Série"];
+  listOfStyles = ["BD","Comics","Manga","Webtoon"];
+  compareObjects(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
+  //GENRES
+  @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  genreCtrl = new FormControl();
+  filteredGenres: Observable<string[]>;
+  genres: string[] = [];
+  allGenres: string[] = ["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
+  "Policier","Religion","Romantique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 3 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.allGenres.length; i++ ) {
+        if( this.allGenres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.allGenres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genreCtrl.setValue(null);
+    this.f00Tags.updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.f00Tags.updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+
+    
+    if( this.genres.length >= 3 ) {
+      this.genreInput.nativeElement.value = '';
+      this.genreCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genreInput.nativeElement.value = '';
+        this.genreCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genreInput.nativeElement.value = '';
+    this.genreCtrl.setValue(null);
+    this.f00Tags.updateValueAndValidity();
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
   }
 
 

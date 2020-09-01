@@ -13,7 +13,7 @@ import { Albums_service } from '../services/albums.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
-
+declare var Swiper:any;
 declare var Muuri:any;
 declare var $:any;
 
@@ -41,13 +41,14 @@ export class AddAlbumDrawingComponent implements OnInit {
   now_in_seconds:number;
 
   @Input() author_name: string;
+  @Input() pseudo: string;
   @Input() user_id: number;
   @Input() profile_picture: SafeUrl;
   @Input() primary_description: string;
   @Input() list_drawings_onepage: any;
   @Input() list_drawings_artbook: any;
   
-  
+  swiper:any;
 
   //form variables
   formName: FormControl = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
@@ -84,7 +85,12 @@ export class AddAlbumDrawingComponent implements OnInit {
         }
       }
     }
-
+    this.cd.detectChanges();
+    if( this.swiper ) {
+      this.swiper.update();
+    }
+    this.cd.detectChanges();
+    window.dispatchEvent(new Event('resize'));
     
   }
 
@@ -101,8 +107,38 @@ export class AddAlbumDrawingComponent implements OnInit {
 
   ngAfterViewInit() {
 
+    
+
+    this.swiper = new Swiper('.swiper-container', {
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        580: {
+          slidesPerView: 1,
+        },
+        860: {
+            slidesPerView: 2,
+        },
+        1150: {
+            slidesPerView: 3,
+        },
+        1450: {
+            slidesPerView: 4,
+        },
+        1770: {
+            slidesPerView: 5,
+        }
+      }
+    });
 
   }
+
 
   resize_event() {
     window.dispatchEvent(new Event('resize'));
@@ -227,12 +263,7 @@ export class AddAlbumDrawingComponent implements OnInit {
       });
       return;
     }
-    if( this.cover_album_number==undefined ) {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Veuillez sélectionner un format de miniature'},
-      });
-      return;
-    }
+   
     
     
     this.gridAlbum.refreshItems().layout();
@@ -258,7 +289,7 @@ export class AddAlbumDrawingComponent implements OnInit {
         console.log( this.album_list[ solution[i] ].instance.item.title );
         this.album_list_to_send.push(this.album_list[ solution[i] ].instance.item);
         if(i==solution.length-1){
-          this.Albums_service.add_album_drawings(this.albumForm.value.formName,this.album_list_to_send,this.cover_album_number).subscribe(information=>{
+          this.Albums_service.add_album_drawings(this.albumForm.value.formName,this.album_list_to_send,0).subscribe(information=>{
             location.reload();
           });
 

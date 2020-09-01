@@ -1,4 +1,10 @@
 @import '../../thumbnail-drawing-styles.css';
+@import '../swiper-styles.scss';
+
+
+app-uploader-dessin-unique {
+  width:100% !important;
+}
 
 .dessin-unique-upload-container {
     margin-top:30px;
@@ -7,130 +13,98 @@
 }
 
 
-.form-group {
-  width:95%;
-  margin-top:30px;
-  margin-bottom:50px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-.form-group label {
-  font-weight: bold;
-  margin-bottom:5px;
-}
-
-.form-group p {
-  font-size: 1.1rem;
-  margin-top: 5px;
-  margin-bottom: 0px !important;
-  color:rgb(97, 0, 0);
-}
-
-.dessin-unique-upload-container .form-container {
-    width:100%;
-    margin:30px auto 50px auto;
-    background:rgba(248,248,248);
-    border-radius: 0px 0px 10px 10px;
-}
-
-.dessin-unique-upload-container .form-container.upload {
-  height:600px;
+.form-container-data {
+  padding-bottom:0px !important;
 }
 
 
-
-
-.dessin-unique-upload-container .form-container-name {
-    width:100%;
-    height:60px;
-    display:flex;
-    background-color: rgb(192, 209, 241);
-    border-radius:10px 10px 0px 0px;
-}
-
-
-.form-container .form-container-name span {
-    margin: auto auto auto auto;
-    font-size: 1.3rem;
-}
-
-.form-container .form-container-data {
-    height: calc( 100% - 60px );
-}
-
-
-.form-container-data .thumbnail-container {
-    display:flex;
-    width:100%;
-    padding-bottom: 50px;
-}
-
-.form-container-data .thumbnail-container .image-container {
+.form-container-data .image-container {
   display:flex;
   width: calc( 100% - 340px );
   margin-top:30px;
   margin-bottom:30px;
 }
 
-.form-container-data .thumbnail-container .image-container span {
+.form-container-data .image-container span {
   margin:auto 
   auto;
 }
 
 
-.form-container-data .thumbnail-container .crop-container {
-  width: 50%;
-  height: 100%;
-  border-right: 1px solid rgb(228, 228, 228);
+.form-container-data .crop-container {
+  width:100%;
   display:flex;
-  margin-top: 30px;
   margin-bottom: 30px;
 }
 
-.form-container-data .thumbnail-container .crop {
+.form-container-data .crop {
   display: block;
-  width: 50%;
+  width: 100%;
   height: fit-content;
   margin: auto auto;
   text-align: center;
 }
 
 
-.form-container-data .thumbnail-container .img-container {
-  height:100%;
-  width:60%;
+.form-container-data .img-container {
+  width:100%;
   display:flex;
   flex-direction: column;
   margin:auto auto auto auto;
 }
 
-.form-container-data .thumbnail-container .img-container .full-crop {
-  height:500px;
+.form-container-data .img-container .full-crop {
   width:100%;
+  max-height:600px;
   border-radius:7px;
   margin:auto auto;
+  position:relative;
   overflow:hidden;
 }
 
 
-.form-container-data .thumbnail-container .img-container .buttons-container {
-  display:flex;
+
+::ng-deep .cropper-canvas {
+  overflow:hidden !important;
 }
 
-.form-container-data .thumbnail-container .img-container .buttons-container button {
-  margin: 10px auto 10px auto;
+
+.form-container-data .img-container .buttons-container {
+  display:flex;
+  justify-content: center;
+}
+
+.form-container-data .img-container .buttons-container button {
+  margin: 20px;
+  border-radius: 20px;
   display: flex;
   outline: none;
-  width: 150px;
+}
+
+.form-container-data .img-container .buttons-container button span {
+  margin-right:10px;
+}
+
+.form-container-data .img-container .buttons-container button.style0 mat-icon {
+  margin: auto 5px auto 10px;
+  color: rgb(32,56,100);
+  font-size: 25px;
+  width:unset !important;
+  height:unset !important;
+}
+
+.form-container-data .img-container .buttons-container button.style1 mat-icon {
+  margin: auto 5px auto 10px;
+  color: white;
+  font-size: 25px;
+  width:unset !important;
+  height:unset !important;
 }
 
 
-
-.form-container-data .thumbnail-container .img-preview {
+.form-container-data .img-preview {
   display:flex;
-  min-height:180px;
-  width:300px !important;
+  width:280px !important;
   margin: auto auto;
   box-shadow: 0px 0px 12px rgb(119, 119, 119);
   border-radius: 12px;
@@ -138,17 +112,17 @@
   background: white;
 }
 
-.form-container-data .thumbnail-container .img-preview > span {
+.form-container-data .img-preview > span {
   margin:auto auto;
 }
 
-.thumbnail-container .img-preview .final-thumbnail {
+.img-preview .final-thumbnail {
   position:relative;
   width: 100%;
   height: 100%;
   border-radius:12px;
 }
-.thumbnail-container .img-preview .final-thumbnail > img {
+.img-preview .final-thumbnail > img {
   width:100%;
   height:100%;
   -o-object-fit: cover;

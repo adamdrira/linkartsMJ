@@ -8,56 +8,6 @@
 <!--*****************************************************************************-->
 <!--******************************************************************************/
 
-.steps {
-    width:100%;
-    display:flex;
-    justify-content: center;
-    font-size:20px;
-    cursor:default;
-}
-
-.steps .step-container {
-    display:flex;
-    margin-left:20px;
-    margin-right:20px;
-}
-
-.steps .step-container .step {
-    cursor: default;
-    display: flex;
-    width: 35px;
-    height: 35px;
-    margin-right: 15px;
-    border: 2px solid rgb(226, 226, 226);
-    border-radius: 50%;
-}
-
-.step-container span {
-    margin:auto auto;
-    color: rgb(226, 226, 226);
-    font-weight: bold;
-}
-
-.step-container .step span {
-    line-height: 20px;
-}
-
-.steps .opened .step {
-    color: rgb(32,56,100);
-    border:2px solid rgb(32,56,100);
-}
-.steps .opened span {
-    color: rgb(32,56,100);
-}
-
-.horizontal-line {
-    width: 10%;
-    height: 5px;
-    margin: auto 0px auto 0px;
-    border-bottom: 1px solid #d3d3db;
-}
-
-
 
 
 
@@ -75,10 +25,15 @@
 
 
 //ng-deeps
+/*
 ::ng-deep .form-control {
     height:45px;
     font-size:unset;
     color:unset;
+}*/
+
+::ng-deep .form-container .optWrapper .options .opt.disabled {
+    display:none;
 }
 
 ::ng-deep .form-container .SumoSelect {
@@ -91,40 +46,7 @@
     border-radius:4px;
 }
 
-::ng-deep .form-container .optWrapper .options .opt.disabled {
-    display:none;
-}
-
-::ng-deep .bootstrap-tagsinput {
-    display:flex;
-    height:45px;
-    line-height: unset;
-}
-
-::ng-deep .bootstrap-tagsinput .label-info {
-    border-radius:5px;
-    padding-left:10px;
-    padding-right:10px;
-    height: 80%;
-    margin-top: auto;
-    margin-bottom: auto;
-    background-color:rgb(114, 203, 221);
-    color:rgb(50, 50, 50);
-}
-
-
-::ng-deep .modal {
-    height:unset !important;
-    overflow:visible !important;
-}
-
-::ng-deep .blocker {
-    z-index:100000;
-}
-
-
 ::ng-deep {
-    @import "../../assets/fastselect/fastselect.scss";
     .fstResults{
         z-index:20 !important;
     }  
@@ -143,20 +65,26 @@
     .mat-slide-toggle.mat-checked .mat-ripple-element {
         background-color: rgb(32,56,100) !important;
     }
+
+    .mat-form-field-wrapper {
+        height:100%;
+    }
 }
 
 
 .monetisation-container {
     display:flex;
+    flex-wrap: wrap;
     margin-top:10px;
 }
 
 .read_conditions {
     cursor:pointer;
+    color:grey;
 }
 .read_conditions:hover {
     text-decoration: underline;
-    color:rgb(32,56,100);
+    color:rgb(78, 78, 78);
 }
 
 

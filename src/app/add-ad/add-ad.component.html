@@ -1,18 +1,6 @@
 
 
 
-        <!--Forms : adding drawing-->
-        <div class="steps">
-            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
-                <span>Publication d'une annonce</span>
-            </div>
-            <div class="horizontal-line">
-            </div>
-        </div>
-
-
-        
-
         <!--*****************************************************************************-->
         <!--*****************************************************************************-->
         <!--******************************** primary information ************************-->
@@ -21,174 +9,156 @@
         <div>
 
             
-            <button mat-raised-button class="step-back-button style0" (click)="back_home();">
+            <button mat-raised-button class="step-back-button" (click)="back_home();">
                 <div class="back-icon"></div>
                 <span>Retour</span>
             </button>
 
             
-            
-            <form>
+            <form [formGroup]="fd" novalidate>
+                <div class="form-container">
+
+                    <div class="form-container-name">
+                        <span>Informations de base</span>
+                    </div>
+
+
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Titre</mat-label>
+                            <input matInput formControlName="fdTitle" maxLength="30" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdTitle'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Localisation préférentielle</mat-label>
+                            <input matInput formControlName="fdPreferential_location" maxLength="30" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdPreferential_location'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdPreferential_location'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
+                    
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Type de projet</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdProject_type">
+                                <mat-option  *ngFor="let obj of listOfTypes" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdProject_type'].invalid">Veuillez sélectionner un type de projet</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Description personnelle (comment vous décriveriez-vous)</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdMydescription">
+                                <mat-option  *ngFor="let obj of listOfDescriptions" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdMydescription'].invalid">Veuillez sélectionner une description</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-chip-list #chipList formControlName="fdTargets" aria-label="Genre selection">
+                              <mat-chip
+                                *ngFor="let genre of genres"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="remove(genre)">
+                                {{genre}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                              </mat-chip>
+                              <input
+                                placeholder="Descriptions des cibles préférentielles (maximum : 2)"
+                                #genreInput
+                                [formControl]="genreCtrl"
+                                [matAutocomplete]="auto"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                              <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                                {{genre}}
+                              </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                    
+                    
+                    <div class="form-item" style="height:50px;">
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="remuneration" (change)="setRemuneration( $event )" style="font-weight:bold;">
+                                Cette collaboration est rémunérée
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+
+                    <div class="form-item" *ngIf="remuneration" >
+                        <mat-form-field>
+                            <mat-label>Montant en €(optionnel)</mat-label>
+                            <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
+                            <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
+                        </mat-form-field>
+                    </div>
+
+                        
+                    <div class="form-item" style="height:unset !important;">
+                        <mat-form-field>
+                            <mat-label>Description</mat-label>
+                        
+                            <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="2000" autocomplete="off"></textarea>
+                            <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/2000</div>
+                        </mat-form-field>
+                    </div>
+
+    
+                </div>
+
+                
                 <div class="form-container">
                     <div class="form-container-name">
-                        <span>Informations primaires</span>
+                        <span>Edition de la miniature</span>
                     </div>
-
-                    <div class="form-container-flex">
-                        <div class="flex-left-container">
-
-                            <div [formGroup]="fd" novalidate>
-                                <div class="form-group">
-                                    <label for="artworkTitle">Titre</label>
-                                    <input type="text" formControlName="fdTitle" class="form-control"  maxlength="30" placeholder="Titre de l'annonce" autocomplete="off" required/>
-                                    <p *ngIf="!fdTitle.valid  && fdDisplayErrors">Veuillez saisir un titre valide</p>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="artworkTitle">Localisation préferentielle</label>
-                                    <input type="text" formControlName="fdPreferential_location" class="form-control"  maxlength="40" placeholder="exemple : Paris, France" autocomplete="off" required/>
-                                    <p *ngIf="!fdPreferential_location.valid  && fdDisplayErrors">Veuillez saisir une localisation valide</p>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="artworkCategory">Type de projet</label>
-                                    <select formControlName="fdProject_type" class="fdselect1" style="height: 100%;">
-                                        <option value="" disabled="true">Sélectionner un type de projet</option>
-                                        <option label="Bande dessinée">Bandes dessinées en tout genre</option>
-                                        <option label="BD européenne">BD européennes</option>
-                                        <option label="Comics">Comics</option>
-                                        <option label="Manga">Manga</option>
-                                        <option label="Webtoon">Webtoon</option>
-                                        <option label="Dessin ">Dessin en tout genre</option>
-                                        <option label="Dessin numérique">Dessin digital</option>
-                                        <option label="Dessin traditionnel">Dessin traditionnel</option>
-                                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                                        <option label="Article">Article</option>
-                                        <option label="Poésie">Poésie</option>
-                                        <option label="Roman">Roman</option>
-                                        <option label="Roman illustré">Roman illustré</option>
-                                        <option label="Scénario">Scénario</option>
-                                    </select>
-                                    <p *ngIf="fdProject_type.value == '' && fdDisplayErrors">Veuillez sélectionner une catégorie</p>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="artworkFormat">Description personnelle</label>
-                                    <select formControlName="fdMydescription" class="fdselect0" style="height: 100%;">
-                                        <option value="" disabled="true">Comment vous décriveriez-vous le mieux?</option>
-                                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                                        <option label="Artiste">Artiste en tout genre</option>
-                                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                                        <option label="Ecrivain">Ecrivain</option>
-                                        <option label="Dessinateur">Dessinateur</option>
-                                        <option label="Scénariste">Scénariste</option>
-                                        
-                                    </select>
-                                    <p *ngIf="fdMydescription.value == '' && fdDisplayErrors">Veuillez sélectionner une description personnelle</p>
-                                </div>
-
-                                
-
-                                <div class="form-group">
-                                    <label for="artworkTags">Descriptions des cibles préferentielles </label>
-                                    <select formControlName="fdTargets" class="multipleSelectfd" placeholder="Sélectionneur au moins une cible (max : 2)" multiple name="language">
-                                        <option value="Professionnel non artiste">Professionnel non artiste</option>
-                                        <option value="Artiste">Artiste en tout genre</option>
-                                        <option value="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                                        <option value="Ecrivain">Ecrivain</option>
-                                        <option value="Dessinateur">Dessinateur</option>
-                                        <option value="Scénariste">Scénariste</option>
-                                    </select>
-                                    <p *ngIf="!tagsValidator && fdDisplayErrors">Veuillez sélectionner au moins une cible</p>
-                                </div>
-                            </div>
-
-                        <div [formGroup]="fd2" novalidate>
-                            <div class="form-group">
-                                <label>Collaboration rémunérée</label>
-                                <div class="monetisation-container">
-                                    <mat-slide-toggle [checked]="remuneration" (change)="setRemuneration( $event )">
-                                        <span *ngIf="remuneration">Oui</span>
-                                        <span *ngIf="!remuneration">Non</span>
-                                    </mat-slide-toggle>
-                                    &nbsp; 
-                                    &nbsp; 
-                                </div>
-                                <div class="form-group" *ngIf="remuneration" >
-                                    <label for="artworkTitle">Voulez-vous spécifier un montant ? </label>
-                                    <input type="text" formControlName="fdPrice"  class="form-control2"   maxlength="20" placeholder="exemple : 40,00" autocomplete="off" required/>
-                                    <span>	&#8364;</span>
-                                    <p *ngIf="fd2DisplayErrors">Veuillez saisir un nombre uniquement composé de chiffres et de virgules</p>
-                                </div>
-                            </div>
-                        </div>
-                            
-
-                        </div>
-
-                        <ng-container [formGroup]="fd3" novalidate>
-                            <div class="flex-right-container">
-                                <div class="form-group">
-                                    <label for="artworkDescription">Description</label>
-                                    <textarea type="text" formControlName="fdDescription" maxlength="2000" style="height: 500px;resize:none;" class="form-control" placeholder="Description de l'œuvre (2000 caractères max)" autocomplete="off" required>
-                                    </textarea>
-                                    <p *ngIf="!fdDescription.valid && fdDisplayErrors">Veuillez saisir une description valide</p>
-                                </div>
-                            </div>
-                        </ng-container>
-                            
-                        
-                    </div>
-
-                </div>
-            </form>
-
-            <div class="container1">
-                <div class="thumbnail-container">
-                    <div class="thumbnail-container-name">
-                        <span>Edition de la photo de présentation</span>
-                    </div>
-                    <div class="thumbnail-container-flex">
-                        <app-uploader-thumbnail-ad></app-uploader-thumbnail-ad>
-                    </div>
+                    <app-uploader-thumbnail-ad></app-uploader-thumbnail-ad>
                 </div>
 
-                <div class="container2">
-
-                    <!--<div class="pictures-container">
-                        <div class="pictures-container-name">
-                            <span>Images complémentaires</span>
-                        </div>
-                        <div class="pictures-container-flex">
-                            <app-uploader-pictures-ad
-                            [status]="status_pictures" 
-                            [id_ad]="id_ad"
-                            (uploaded)="all_pictures_uploaded( $event );"></app-uploader-pictures-ad>
-                        </div>
-                    </div>-->
-        
-                    <div class="pictures-container">
-                        <div class="pictures-container-name">
-                            <span>Fichiers complémentaires</span>
-                        </div>
-                        <div class="pictures-container-flex">
-                            <app-uploader-attachments-ad
-                            [status]="status_pictures" 
-                            [id_ad]="id_ad"
-                            (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-attachments-ad>
-                        </div>
-                    </div>
-
-                </div>
-    
                 
-            </div>
+                <div class="form-container">
+                    <div class="form-container-name">
+                        <span>Documents complémentaires</span>
+                    </div>
+
+                    <app-uploader-attachments-ad
+                    [status]="status_pictures" 
+                    [id_ad]="id_ad"
+                    (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-attachments-ad>
+                </div>
+
+                
+                <button mat-raised-button class="submit-button style1" (click)="validate_form_ads();">
+                    <span>Valider </span>
+                </button>
+
+            </form>
             
-
-
-            <button mat-raised-button class="submit-button style1" (click)="validate_form_ads();">
-                <span>Valider </span>
-            </button>
         </div>
 
 

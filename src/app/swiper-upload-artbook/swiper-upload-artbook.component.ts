@@ -9,6 +9,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { first } from 'rxjs/operators';
 
 
+import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
@@ -44,12 +45,11 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
     ) {
 
-      this.tagsSplit = '';
-
   }
 
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
+  @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
 
   @Input() name: string;
@@ -58,15 +58,10 @@ export class SwiperUploadArtbookComponent implements OnInit {
   @Input() format: string;
   @Input() tags: string[];
 
-  tagsSplit: string;
-  
 
-  ngOnChanges(changes: SimpleChanges) {
-    if(changes.tags) {
-      this.update_tags();
-    }
-  }
-  
+  listOfColors = ["Bleu","Noir","Vert","Jaune","Rouge","Violet","Marron","Orange","Gris"];
+
+
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -81,7 +76,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
   @ViewChild('thumbnailDrawing', {static: false }) thumbnailDrawing:ElementRef;
 
   @ViewChild("thumbnail", {static:false}) thumbnail: ElementRef;
-  thumbnail_background:string;
 
   @ViewChild("image") set imageElement(content: ElementRef) {
     if( this.image_uploaded ) {
@@ -105,30 +99,13 @@ export class SwiperUploadArtbookComponent implements OnInit {
   
   ngOnInit(): void {
 
-    this.initialize_selectors();
-
   }
 
   ngAfterViewInit() {
-
-
     this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();
-
-    if( this.tags.length >= 1 ) {
-      this.tagsSplit = this.tags[0].split("'",2)[1]
-    }
-    if( this.tags.length >= 2 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[1].split("'",2)[1]
-    }
-    if( this.tags.length >= 3 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[2].split("'",2)[1]
-    }
-
-    
   }
-
   
 
   showDetails() {
@@ -139,19 +116,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
     this.showDrawingDetails=false;
   }
 
-  update_tags() {
-
-    if( this.tags.length >= 1 ) {
-      this.tagsSplit = this.tags[0].split("'",2)[1]
-    }
-    if( this.tags.length >= 2 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[1].split("'",2)[1]
-    }
-    if( this.tags.length >= 3 ) {
-      this.tagsSplit = this.tagsSplit + ", " + this.tags[2].split("'",2)[1]
-    }
-
-  }
 
   initialize_swiper_controller() {
 
@@ -169,16 +133,16 @@ export class SwiperUploadArtbookComponent implements OnInit {
         580: {
           slidesPerView: 1,
         },
-        860: {
+        700: {
             slidesPerView: 2,
         },
-        1150: {
+        900: {
             slidesPerView: 3,
         },
-        1450: {
+        1400: {
             slidesPerView: 4,
         },
-        1770: {
+        1700: {
             slidesPerView: 5,
         }
       }
@@ -398,86 +362,20 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
 
 
-  initialize_selectors() {
+  onColorChange(e:any) {
     
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.drawingSelectColor').SumoSelect({});
-    });
-
-    $(".drawingSelectColor").change(function(){
-      THIS.color = $(this).val();
-      THIS.Drawings_Artbook_Service.update_filter(THIS.color).subscribe();
-      THIS.set_color();
-
-    });
-
+    this.color = e.value;
+    this.Drawings_Artbook_Service.update_filter(this.color).subscribe();
+    this.set_color();
   }
-
+  
   
   set_color() {
-    if( this.color == "Bleu" ) {
-      this.thumbnail_background = "rgba(47, 87, 151, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
-      }
-    }
-    else if( this.color == "Noir" ) {
-      this.thumbnail_background = "rgba(59, 56, 56, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
-      }
-    }
-    else if( this.color == "Vert" ) {
-      this.thumbnail_background = "rgba(84, 130, 53, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
-      }
-    }
-    else if( this.color == "Jaune" ) {
-      this.thumbnail_background = "rgba(191, 144, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Rouge" ) {
-      this.thumbnail_background = "rgba(160, 0, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Violet" ) {
-      this.thumbnail_background = "rgba(148, 0, 148, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
-      }
-    }
-    else if( this.color == "Rose" ) {
-      this.thumbnail_background = "rgba(255, 153, 255, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
-      }
-    }
-    else if( this.color == "Marron" ) {
-      this.thumbnail_background = "rgba(102, 51, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Orange" ) {
-      this.thumbnail_background = "rgba(197, 90, 17, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
-      }
-    }
-    else if( this.color == "Gris" ) {
-      this.thumbnail_background = "rgba(166, 166, 166, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
-      }
+    if( this.thumbnail ) {
+      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.color ));
     }
   }
+
 
 
 
@@ -526,6 +424,11 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
     this.cd.detectChanges();
     this.set_color();
+    this.cd.detectChanges();
+    
+    let el = document.getElementById("target3");
+    var topOfElement = el.offsetTop - 200;
+    window.scroll({top: topOfElement, behavior:"smooth"});
   }
 
   cancel_crop(){
@@ -573,7 +476,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     else if( !this.color ) {
       this.displayErrors = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"La couleur de fond n'a pas été sélectionnée"},
+        data: {showChoice:false, text:"La couleur du filtre n'a pas été sélectionnée"},
       });
     }
     

@@ -1,24 +1,6 @@
 
 
 
-        <!--Forms : adding drawing-->
-        <div class="steps">
-            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
-                <div class="step">
-                    <span>1</span>
-                </div>
-                <span>Présentation du projet</span>
-            </div>
-            <!--<div class="horizontal-line">
-            </div>-->
-            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
-                <div class="step">
-                    <span>2</span>
-                </div>
-                <span>Téléchargement</span>
-            </div>
-        </div>
-
 
         
 
@@ -30,12 +12,32 @@
         <div *ngIf="REAL_step>=0 || CURRENT_step==0" [hidden]="CURRENT_step!=0">
 
             
-            <button mat-raised-button class="step-back-button style0" (click)="back_home();">
+            <button mat-raised-button class="step-back-button" (click)="back_home();">
                 <div class="back-icon"></div>
                 <span>Retour</span>
             </button>
 
-            
+                
+
+            <!--Forms : adding drawing-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <!--<div class="horizontal-line">
+                </div>-->
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+
+
             <form [formGroup]="fd" novalidate>
 
                 <div class="form-container">
@@ -43,68 +45,99 @@
                         <span>Présentation du projet</span>
                     </div>
 
-                    <div class="form-container-flex">
-                        <div class="flex-left-container">
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Titre</mat-label>
+                            <input matInput formControlName="fdTitle" maxLength="30" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdTitle'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="artworkTitle">Titre</label>
-                                <input type="text" formControlName="fdTitle" class="form-control" placeholder="Nom de l'œuvre (30 caractères max)" autocomplete="off" required/>
-                                <p *ngIf="!fdTitle.valid  && fdDisplayErrors">Veuillez saisir un titre valide</p>
-                            </div>
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Format</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdFormat" (selectionChange)="onFormatChange($event)">
+                                <mat-option  *ngFor="let obj of listOfFormats" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdFormat'].invalid">Veuillez sélectionner un format</mat-error>
+                        </mat-form-field>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="artworkFormat">Format</label>
-                                <select formControlName="fdFormat" class="fdselect0" style="height: 100%;">
-                                    <option value="" disabled="true">Sélectionner un format</option>
-                                    <option label="Oeuvre unique">Œuvre unique</option>
-                                    <option label="Artbook">Artbook</option>
-                                </select>
-                                <p *ngIf="fdFormat.value == '' && fdDisplayErrors">Veuillez sélectionner un format</p>
-                            </div>
+                    
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Catégorie</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdCategory">
+                                <mat-option  *ngFor="let obj of listOfCategories" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdCategory'].invalid">Veuillez sélectionner une catégorie</mat-error>
+                        </mat-form-field>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="artworkCategory">Catégorie</label>
-                                <select formControlName="fdCategory" class="fdselect1" style="height: 100%;">
-                                    <option value="" disabled="true">Sélectionner une catégorie</option>
-                                    <option label="Traditionnel">Traditionnel</option>
-                                    <option label="Digital">Digital</option>
-                                </select>
-                                <p *ngIf="fdCategory.value == '' && fdDisplayErrors">Veuillez sélectionner une catégorie</p>
-                            </div>
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-chip-list #chipList formControlName="fdTags" aria-label="Genre selection">
+                              <mat-chip
+                                *ngFor="let genre of genres"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="remove(genre)">
+                                {{genre}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                              </mat-chip>
+                              <input
+                                placeholder="Genres (maximum : 3)"
+                                #genreInput
+                                [formControl]="genreCtrl"
+                                [matAutocomplete]="auto"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                              <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                                {{genre}}
+                              </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="artworkTags">Genres</label>
-                                <select formControlName="fdTags" class="multipleSelectfd" placeholder="Sélectionner des genres (max : 3)" multiple name="language">
-                                    <option value="{{drawings_tags[i]}}" *ngFor="let item of drawings_tags;let i=index">{{item}}</option>
-                                </select>
-                                <p *ngIf="!tagsValidator && fdDisplayErrors">Veuillez sélectionner au moins un genre</p>
-                            </div>
 
+                    <!--******************************************************-->
+                    <!--Description-->
+                    <!--******************************************************-->
+
+                                    
+                    <div class="form-item" style="height:unset !important;">
+                        <mat-form-field>
+                            <mat-label>Description</mat-label>
+                        
+                            <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="500" autocomplete="off"></textarea>
+                            <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/500</div>
+                        </mat-form-field>
+                    </div>
+                    
+                    <div class="form-item">
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
+                                Je souhaite monétiser mon œuvre
+                            </mat-slide-toggle>
+                            &nbsp; 
+                            &nbsp; 
+                            <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
                         </div>
-
-                        <div class="flex-right-container">
-
-                            <div class="form-group">
-                                <label for="artworkDescription">Description</label>
-                                <textarea type="text" formControlName="fdDescription" maxlength="500" style="height: 200px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
-                                </textarea>
-                                <p *ngIf="!fdDescription.valid && fdDisplayErrors">Veuillez saisir une description valide</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Monétisation</label>
-                                <div class="monetisation-container">
-                                    <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
-                                        Je souhaite monétiser mon œuvre
-                                    </mat-slide-toggle>
-                                    &nbsp; 
-                                    &nbsp; 
-                                    <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
-                                </div>
-                            </div>
-                            
-                        </div>
-
                     </div>
 
                 </div>
@@ -123,22 +156,43 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && fd.value.fdFormat=='Œuvre unique' " [hidden]="CURRENT_step==0 && fd.value.fdFormat=='Œuvre unique'">
 
             
-            <button mat-raised-button class="step-back-button style0" (click)="step_back();">
+            <button mat-raised-button class="step-back-button" (click)="step_back();">
                 <div class="back-icon"></div>
                 <span>Retour</span>
             </button>
+
+                
+            <!--Forms : adding drawing-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <!--<div class="horizontal-line">
+                </div>-->
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+
 
             <app-swiper-upload-dessin-unique 
 
                 author_name={{author_name}} 
                 primary_description={{primary_description}}
+                pseudo={{pseudo}}
                 [profile_picture]=profile_picture
 
                 [name]=fd.value.fdTitle
                 [description]=fd.value.fdDescription
                 [category]=fd.value.fdCategory
                 [format]=fd.value.fdFormat
-                [tags]=tags>
+                [tags]=fd.value.fdTags>
 
             </app-swiper-upload-dessin-unique>
         </div>
@@ -148,22 +202,44 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && fd.value.fdFormat=='Artbook' " [hidden]="CURRENT_step==0 && fd.value.fdFormat=='Artbook'">
 
             
-            <button mat-raised-button class="step-back-button style0" (click)="step_back();">
+            <button mat-raised-button class="step-back-button" (click)="step_back();">
                 <div class="back-icon"></div>
                 <span>Retour</span>
             </button>
             
+            
+
+            <!--Forms : adding drawing-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <!--<div class="horizontal-line">
+                </div>-->
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+
+
             <app-swiper-upload-artbook 
 
                 author_name={{author_name}} 
                 primary_description={{primary_description}}
+                pseudo={{pseudo}}
                 [profile_picture]=profile_picture
                 
                 [name]=fd.value.fdTitle
                 [description]=fd.value.fdDescription
                 [category]=fd.value.fdCategory
                 [format]=fd.value.fdFormat
-                [tags]=tags>
+                [tags]=fdTags>
 
             </app-swiper-upload-artbook>
         </div>

@@ -17,7 +17,10 @@
 
                 <div class="img-container">
                     <ng-container *ngIf="!item.instance.uploader.queue[0]">
-                        <span>Aucune image téléchargée</span>
+                        <mat-icon >error</mat-icon>
+                        <span>
+                            Aucune image téléchargée
+                        </span>
                     </ng-container>
                     <ng-container *ngIf="item.instance.uploader.queue[0]">
                         <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
@@ -25,6 +28,7 @@
                  </div>
 
                 <button mat-button class="remove_page_button" (click)="remove_page(i);">
+                    <mat-icon>remove_circle_outline</mat-icon>
                     Retirer
                 </button>
 
@@ -32,7 +36,7 @@
 
             <div class="swiper-slide add-page">
                 <button class="add-page-button" (click)="add_page();">
-                    <div class="icon1"></div>
+                    <mat-icon>note_add</mat-icon>
                     <span>Nouvelle page</span>
                 </button>
             </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, HostListener, ViewChild } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -10,6 +10,14 @@ import { Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { UploaderPicturesAdComponent } from '../uploader-pictures-ad/uploader-pictures-ad.component';
 import { SafeUrl } from '@angular/platform-browser';
+
+
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { pattern } from '../helpers/patterns';
 
 
 declare var $: any;
@@ -44,6 +52,11 @@ export class AddAdComponent implements OnInit {
   ) { 
     
     this.CURRENT_step = 0;
+    
+    this.filteredGenres = this.genreCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
+
   }
 
   
@@ -59,8 +72,6 @@ export class AddAdComponent implements OnInit {
 
   dropdowns = this._constants.filters.categories[0].dropdowns;
   CURRENT_step: number;
-  targets: string[];
-  tagsValidator:boolean = false;
 
   status_pictures:boolean=false;
   pictures_uploaded:boolean=false;
@@ -71,20 +82,13 @@ export class AddAdComponent implements OnInit {
 
     this.createFormControlsAds();
     this.createFormAd();
-    this.createFormAd2();
-    this.createFormAd3();
-    this.initialize_selectors();
-    this.initialize_tagtargets_fd();
 
     this.cd.detectChanges();
-
   }
 
   ngAfterContentInit() {
-      this.initialize_tagtargets_fd();
   }
 
-  
 
   back_home() {
     this.cancelled.emit();
@@ -92,53 +96,7 @@ export class AddAdComponent implements OnInit {
 
 
 
-  initialize_selectors() {
-
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.fdselect0').SumoSelect({});
-    });
-    $(document).ready(function () {
-      $('.fdselect1').SumoSelect({});
-    });
-
-    this.cd.detectChanges();
-
-    
-    $(".fdselect0").change(function(){
-
-      THIS.fd.controls['fdMydescription'].setValue( $(this).val() );
-
-    });
-    
-
-
-    $(".fdselect1").change(function(){
-      THIS.fd.controls['fdProject_type'].setValue( $(this).val() );
-    });
-
-
-  }
-
-
-  initialize_tagtargets_fd() {
-
-    $('.multipleSelectfd').fastselect({
-      maxItems: 2
-    });
-    
-    this.cd.detectChanges();
-
-  }
-
-
-
-  fdDisplayErrors: boolean = false;
-  fd2DisplayErrors: boolean = false;
   fd: FormGroup;
-  fd2: FormGroup;
-  fd3: FormGroup;
   fdTitle: FormControl;
   fdDescription: FormControl;
   fdPrice:FormControl;
@@ -150,13 +108,13 @@ export class AddAdComponent implements OnInit {
   remuneration:boolean = false;
   
   createFormControlsAds() {
-    this.fdTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdMydescription= new FormControl('', Validators.required);
-    this.fdDescription=new FormControl('', [Validators.required, Validators.maxLength(2000), Validators.pattern("^[^\\s]+.*") ]);
-    this.fdPrice = new FormControl('',Validators.pattern("^[\\d,\\s]+$"));
-    this.fdTargets = new FormControl('');
-    this.fdProject_type = new FormControl('', Validators.required);
-    this.fdPreferential_location=new FormControl('', [Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
+    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fdMydescription = new FormControl('', Validators.required);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
+    this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("integer") ) ]);
+    this.fdTargets = new FormControl( this.genres, [Validators.required]);
+    this.fdProject_type = new FormControl('', [Validators.required]);
+    this.fdPreferential_location = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("location") ) ]);
   }
 
   createFormAd() {
@@ -165,36 +123,13 @@ export class AddAdComponent implements OnInit {
       fdMydescription: this.fdMydescription,
       fdTargets: this.fdTargets,
       fdProject_type: this.fdProject_type,
-      fdPreferential_location:this.fdPreferential_location
-    });
-  }
-
-  createFormAd2() {
-    this.fd2 = new FormGroup({
-      fdPrice: this.fdPrice
-    });
-  }
-
-  createFormAd3() {
-    this.fd3 = new FormGroup({
-      fdDescription:  this.fdDescription
+      fdPreferential_location:this.fdPreferential_location,
+      fdPrice: this.fdPrice,
+      fdDescription:  this.fdDescription,
     });
   }
 
 
-  /*all_pictures_uploaded( event: boolean) {
-    this.pictures_uploaded = event;
-
-    if(this.attachments_uploaded && this.pictures_uploaded){
-      console.log("tous les téléchargments sont finis/ pictures");
-      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
-    }
-
-    if(!event) {
-      alert("problème lors du télechargement");
-    }
-
-  }*/
 
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
@@ -205,55 +140,37 @@ export class AddAdComponent implements OnInit {
   setRemuneration(e){
     if(e.checked){
       this.remuneration = true;
-      console.log(this.fd2.valid)
-
-   }else{
+   }
+   else{
     this.remuneration = false;
-    console.log(this.fd2.valid)
    }
   }
 
 
+
+
   validate_form_ads() {
 
-
-    this.targets = $(".multipleSelectfd").val();
-    if( this.targets.length == 0 ) {
-      this.fdDisplayErrors = true;
-      this.tagsValidator = false;
-    }
-    else {
-      this.tagsValidator = true;
-    }
-
-    if(this.remuneration && !this.fd2.valid){
-      if(this.fd2.value.fdPrice.length==0){
-        this.fd2DisplayErrors = false;
+    
+    if(this.remuneration && !this.fd.valid){
+      if(this.fd.value.fdPrice.length==0){
         this.price_value ="0";
         console.log(this.price_value);
       }
-      else{
-        this.fd2DisplayErrors = true;
-        console.log(this.fd2.value.fdPrice);
-      }
-      
     }
-    else if(this.remuneration && this.fd2.valid){
-      this.fd2DisplayErrors = false;
-      this.price_value =this.fd2.value.fdPrice;
+    else if(this.remuneration && this.fd.valid){
+      this.price_value =this.fd.value.fdPrice;
     }
     else if(!this.remuneration){
-      this.fd2DisplayErrors = false;
       this.price_value ="0";
     }
     
 
-    if ( this.fd.valid && this.fd3.valid && this.tagsValidator && !this.fd2DisplayErrors && this.Ads_service.get_thumbnail_confirmation() ) {
-       this.targets = $(".multipleSelectfd").val();
+    if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() ) {
         console.log(this.price_value);
         console.log("ok");
-        console.log(this.fd3.value.fdDescription);
-        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd3.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.targets,this.remuneration,this.price_value)
+        console.log(this.fd.value.fdDescription);
+        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value)
           .subscribe((val)=> {
             this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
               this.id_ad=l[0].id;
@@ -261,31 +178,118 @@ export class AddAdComponent implements OnInit {
               console.log(l);
             })           
           });
-
-        this.fdDisplayErrors = false;
     }
 
 
-    else if(this.fd.valid && this.fd3.valid && !this.fd2DisplayErrors  && this.tagsValidator && !this.Ads_service.get_thumbnail_confirmation()){
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'La photo de présentation doit être uplaodée'},
-      });
-
-    }
-    else {
+    else if(!this.fd.valid){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
       });
-      this.fdDisplayErrors = true;
+    }
+    else {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+      });
     }
 
   }
 
   cancel_all(){ 
-
       this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
-    
   }
+
+
+
+  //Ajouté par Mokhtar
+  listOfTypes = ["Bandes dessinées en tout genre","BD européennes","Comics","Manga","Webtoon","Dessin en tout genre","Dessin digital",
+"Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
+
+  listOfDescriptions = ["Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  
+  compareObjects(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
+  //GENRES
+  @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  genreCtrl = new FormControl();
+  filteredGenres: Observable<string[]>;
+  genres: string[] = [];
+  allGenres: string[] = ["Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 2 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.allGenres.length; i++ ) {
+        if( this.allGenres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.allGenres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genreCtrl.setValue(null);
+    this.fdTargets.updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.fdTargets.updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+
+    
+    if( this.genres.length >= 2 ) {
+      this.genreInput.nativeElement.value = '';
+      this.genreCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genreInput.nativeElement.value = '';
+        this.genreCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genreInput.nativeElement.value = '';
+    this.genreCtrl.setValue(null);
+    this.fdTargets.updateValueAndValidity();
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
 
 
 

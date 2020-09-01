@@ -20,7 +20,7 @@
 
     <div class="artwork-selector">
 
-        <div class="container-selection-drawings">
+        <!--<div class="container-selection-drawings">
             <div class="d-flex flex-wrap" >
 
                 <ng-container >
@@ -58,8 +58,55 @@
             <div #noResult class="no-result">
                 <span>Aucun résultat</span>
             </div>
-        </div>
+        </div>-->
 
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                
+
+                <app-thumbnail-album-drawing #thumbnailAlbum class="swiper-slide"
+                    *ngFor="let item of list_drawings_onepage | filterAlbum : searchText; let i = index; let last = last"
+                        [primary_description]=primary_description
+                        [author_name]=author_name
+                        [pseudo]=pseudo
+                        [item]=item
+                        format='one-shot'
+                        [now_in_seconds]=now_in_seconds
+                        state="swiper"
+                        
+                        (elementSelected)="add_to_album($event);"
+                        (elementRemoved)="remove_from_album($event);">
+
+                    </app-thumbnail-album-drawing>
+        
+                    <app-thumbnail-album-drawing #thumbnailAlbum class="swiper-slide"
+                    *ngFor="let item of list_drawings_artbook | filterAlbum : searchText; let i = index; let last = last"
+                        [primary_description]=primary_description
+                        [author_name]=author_name
+                        [pseudo]=pseudo
+                        [item]=item
+                        format='artbook'
+                        [now_in_seconds]=now_in_seconds
+                        state="swiper"
+                        
+                        (elementSelected)="add_to_album($event);"
+                        (elementRemoved)="remove_from_album($event);">
+                        
+
+                    </app-thumbnail-album-drawing>
+
+                <div #noResult class="no-result">
+                    <span>Aucun résultat</span>
+                </div>
+                
+
+
+                
+            </div>
+            <!-- Swiper -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
 
     </div>
 

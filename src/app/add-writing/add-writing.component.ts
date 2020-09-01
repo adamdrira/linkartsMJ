@@ -9,6 +9,13 @@ import { Writing_CoverService } from '../services/writing_cover.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
+import { startWith, map } from 'rxjs/operators';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Observable } from 'rxjs';
+import { MatChipInputEvent } from '@angular/material/chips';
+
+import { pattern } from '../helpers/patterns';
 
 declare var $: any;
 
@@ -35,21 +42,23 @@ export class AddWritingComponent implements OnInit {
     public dialog: MatDialog,
     private Writing_CoverService:Writing_CoverService,
     private Profile_Edition_Service:Profile_Edition_Service
-  ) { }
+  ) { 
+
+    this.filteredGenres = this.genreCtrl.valueChanges.pipe(
+      startWith(null),
+      map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
+
+  }
 
 
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('profile_picture') profile_picture:SafeUrl;
 
+  @Input('pseudo') pseudo:string;
 
   dropdowns = this._constants.filters.categories[0].dropdowns;
-  tags: string[];
-  tagsValidator:boolean = false;
   user_id:number;
-  pseudo:string;
-  writings_tags=["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Thriller","Western"];
 
 
   @Output() cancelled = new EventEmitter<any>();
@@ -141,8 +150,6 @@ export class AddWritingComponent implements OnInit {
   }
 
   
-
-  fwDisplayErrors: boolean = false;
   fw: FormGroup;
   fwTitle: FormControl;
   fwDescription: FormControl;
@@ -154,10 +161,10 @@ export class AddWritingComponent implements OnInit {
 
   
   createFormControlsWritings() {
-    this.fwTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fwDescription = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
-    this.fwCategory = new FormControl('', Validators.required);
-    this.fwTags = new FormControl('');
+    this.fwTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
+    this.fwCategory = new FormControl('', [Validators.required]);
+    this.fwTags = new FormControl( this.genres , [Validators.required]);
     //this.fwFormat = new FormControl('', Validators.required);
   }
 
@@ -175,27 +182,14 @@ export class AddWritingComponent implements OnInit {
 
   validate_form_writing() {
 
-    this.tags = $(".multipleSelectfw").val();
-
-    if( this.tags.length == 0 ) {
-      this.fwDisplayErrors = true;
-      this.tagsValidator = false;
-    }
-    else {
-      this.tagsValidator = true;
-    }
-
     
-    if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() && this.tagsValidator ) {
-
-      this.fwDisplayErrors = false;
-      this.tags = $(".multipleSelectfw").val();
+    if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() ) {
 
       
        this.Writing_Upload_Service.CreateWriting(
           this.fw.value.fwTitle,
           this.fw.value.fwCategory, 
-          this.tags, 
+          this.fw.value.fwTags, 
           this.fw.value.fwDescription,  
           this.monetised )
         .subscribe( v => {
@@ -205,15 +199,25 @@ export class AddWritingComponent implements OnInit {
          
         });
       
-       this.fwDisplayErrors = false; 
     }
 
 
     else {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-      });
-      this.fwDisplayErrors = true;
+      if( !this.fw.valid ) {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        });
+      }
+      else if ( !this.Writing_Upload_Service.get_confirmation() ){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez télécharger l\'écrit en PDF, puis le valider.'},
+        });
+      }
+      else {
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+        });
+      }
     }
   }    
 
@@ -223,9 +227,98 @@ export class AddWritingComponent implements OnInit {
   }
 
   cancel_all(){
-
     this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
-    
   }
+
+  
+  //AJOUTÉ
+  listOfCategories = ["Roman illustré","Roman","Scénario","Article","Poésie"];
+  compareObjects(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
+  //GENRES
+  @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  genreCtrl = new FormControl();
+  filteredGenres: Observable<string[]>;
+  genres: string[] = [];
+
+  allGenres: string[] = ["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 3 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.allGenres.length; i++ ) {
+        if( this.allGenres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.allGenres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genreCtrl.setValue(null);
+    this.fwTags.updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.fwTags.updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+
+    
+    if( this.genres.length >= 3 ) {
+      this.genreInput.nativeElement.value = '';
+      this.genreCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genreInput.nativeElement.value = '';
+        this.genreCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genreInput.nativeElement.value = '';
+    this.genreCtrl.setValue(null);
+    this.fwTags.updateValueAndValidity();
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+
   
 }
