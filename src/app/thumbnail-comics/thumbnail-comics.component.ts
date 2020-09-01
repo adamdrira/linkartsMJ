@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 declare var Swiper: any;
 declare var $:any;
@@ -19,7 +22,6 @@ export class ThumbnailComicsComponent implements OnInit {
 
   constructor(
     private sanitizer:DomSanitizer,
-    private cd: ChangeDetectorRef,
     private BdOneShotService: BdOneShotService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
@@ -31,7 +33,6 @@ export class ThumbnailComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.resize_width();
     this.resize_comic();
   }
 
@@ -43,7 +44,6 @@ export class ThumbnailComicsComponent implements OnInit {
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
   @ViewChild("thumbnail", {static:false}) thumbnail: ElementRef;
   @ViewChild("thumbnail1", {static:false}) thumbnail1: ElementRef;
-  
 
   //animation
   swiper:any;
@@ -79,7 +79,7 @@ export class ThumbnailComicsComponent implements OnInit {
   date_upload: string;
   date_upload_to_show: string;
   
-  imageloaded=false;
+
 
 
 
@@ -93,9 +93,9 @@ export class ThumbnailComicsComponent implements OnInit {
     this.secondtag = this.item.secondtag
     this.thirdtag = this.item.thirdtag
     this.pagesnumber = this.item.pagesnumber
-    this.viewnumber = this.item.viewnumber
-    this.likesnumber = this.item.likesnumber
-    this.lovesnumber = this.item.lovesnumber
+    this.viewnumber = number_in_k_or_m(this.item.viewnumber)
+    this.likesnumber = number_in_k_or_m(this.item.likesnumber)
+    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber)
     this.chaptersnumber = this.item.chaptersnumber
     this.date_upload = this.item.createdAt
     this.bd_id = this.item.bd_id
@@ -132,77 +132,14 @@ export class ThumbnailComicsComponent implements OnInit {
       this.pseudo=r[0].nickname;
       this.primary_description=r[0].primary_description;
     });
-    this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
+
+
+    //this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+    this.date_upload_to_show = get_date_to_show( date_in_seconds( this.now_in_seconds, this.date_upload ) );
   }
 
   
-
-  date_in_seconds(){
-
-    var uploaded_date = this.date_upload.substring(0,this.date_upload.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-   // alert( now_in_seconds - uploaded_date_in_second );
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
-
+  
 
   ngAfterViewInit() {
 
@@ -221,7 +158,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
 
 
-    this.swiper = new Swiper( this.thumbnail.nativeElement.children[0] , {
+    this.swiper = new Swiper( this.thumbnail.nativeElement, {
       effect: 'flip',
       speed: 500,
       keyboard: {
@@ -259,59 +196,24 @@ export class ThumbnailComicsComponent implements OnInit {
 
   comics_per_line() {
     var width = $('.container-comics').width();
-    if( width >= 1510 ) {
-      this.send_number_of_thumbnails.emit({number:5});
-      return 5;
-    }
-    else if( width >= 1290 ) {
-      this.send_number_of_thumbnails.emit({number:4});
-      return 4;
-    }
-    else if( width >= 960) {
-      this.send_number_of_thumbnails.emit({number:3});
-      return 3;
-    }
-    else if( width >= 640) {
-      this.send_number_of_thumbnails.emit({number:2});
-      return 2;
-    }
-    else {
+
+    var n = Math.round(width/310);
+    if( width < 620 ) {
       this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }
-  }
+    else {
+      this.send_number_of_thumbnails.emit({number:n});
+      return n;
+    }
 
-  resize_width(){
-    let width = $(".container-fluid").width();
-    console.log(width);
-    
-    if( width <= 700) {
-      $(".border-recto").css("box-shadow","none");
-      $(".border-verso").css("box-shadow","none");
-     }
-    else{
-      $(".border-recto").css("box-shadow","0 5px 15px rgba(0, 0, 0, 0.25);");
-      $(".border-verso").css("box-shadow","0 5px 15px rgba(0, 0, 0, 0.25);");
-    }
-    
-    if( width <= 750) {
-      $(".element-book").css("width","240px");
-      $(".element-book").css("height","360px");
-     }
-    else{
-      $(".element-book").css("width","280px");
-      $(".element-book").css("height","400px");
-    }
-    
   }
 
   
- 
+  imageloaded=false;
   loaded(){
     this.imageloaded=true;
     this.send_loaded.emit(true);
-    $(".miniature").css("visibility","");
-    this.cd.detectChanges();
   }
 
   pp_is_loaded=false;

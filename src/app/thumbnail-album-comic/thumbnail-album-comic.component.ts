@@ -4,6 +4,7 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 declare var $:any;
 
@@ -20,6 +21,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
   user_id: number;
   profile_picture: SafeUrl;
   @Input() author_name: string;
+  @Input() pseudo: string;
   @Input() primary_description: string;
   @Input() bd_element: any;
   @Input() format: string;
@@ -31,6 +33,9 @@ export class ThumbnailAlbumComicComponent implements OnInit {
   thumbnail_picture:SafeUrl;
   date_upload_to_show: string = "";
 
+  viewnumber:string;
+  likesnumber:string;
+  lovesnumber:string;
 
   selected: boolean = false;
   @Output() elementSelected = new EventEmitter<{format: string, id_key:number}>();
@@ -59,6 +64,10 @@ export class ThumbnailAlbumComicComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.viewnumber = number_in_k_or_m(this.bd_element.viewnumber)
+    this.likesnumber = number_in_k_or_m(this.bd_element.likesnumber)
+    this.lovesnumber = number_in_k_or_m(this.bd_element.lovesnumber)
 
     this.user_id = this.bd_element.authorid;
 

@@ -25,26 +25,30 @@
                 </div>
                 <div class="right-container">
                     <span class="author-name">{{author_name}}</span>
-                    <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                    <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
                 </div>
             </div>
             <!--********************-->
             <!--Data container-->
             <!--********************-->
             <div class="stats-container">
-                <div class="figure-container-views">
-                    <span>{{bd_element.viewnumber}}</span>
-                    <div class="view-logo">
+                <div class="figure-container views">
+                    <div>
+                        <span>{{viewnumber}}</span>
+                        <mat-icon>visibility</mat-icon>
+                        <!--<div class="view-logo"></div>-->
                     </div>
                 </div>
-                <div class="figure-container-likes">
-                    <span>{{bd_element.likesnumber}}</span>
-                    <div class="like-logo">
+                <div class="figure-container likes">
+                    <div>
+                        <span>{{likesnumber}}</span>
+                        <mat-icon>thumb_up</mat-icon>
                     </div>
                 </div>
-                <div class="figure-container-loves">
-                    <span>{{bd_element.lovesnumber}}</span>
-                    <div class="love-logo">
+                <div class="figure-container loves">
+                    <div>
+                        <span>{{lovesnumber}}</span>
+                        <mat-icon>favorite</mat-icon>
                     </div>
                 </div>
             </div>

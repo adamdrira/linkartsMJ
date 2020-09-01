@@ -4,6 +4,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 declare var $:any;
 
@@ -59,6 +60,7 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
   @Input() format: string;
   @Input() author_name:string;
   @Input() primary_description:string;
+  @Input() pseudo: string;
  
   
   tagsSplit: string;
@@ -87,9 +89,9 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;
     this.pagesnumber = this.item.pagesnumber;
-    this.viewnumber = this.item.viewnumber;
-    this.likesnumber = this.item.likesnumber;
-    this.lovesnumber = this.item.lovesnumber;
+    this.viewnumber = number_in_k_or_m(this.item.viewnumber);
+    this.likesnumber = number_in_k_or_m(this.item.likesnumber);
+    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber);
     this.date_upload = this.item.createdAt;
     this.drawing_id = this.item.writing_id;
     this.thumbnail_color = this.item.thumbnail_color;
@@ -127,9 +129,69 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
   ngAfterViewInit() {
     
     this.resize_drawing();
+    this.set_color();
   }
 
 
+
+
+
+  @ViewChild("thumbnail", {static:true}) thumbnail: ElementRef;
+  set_color() {
+
+
+    if( this.thumbnail_color == "Bleu" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Noir" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Vert" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Jaune" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Rouge" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Violet" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Rose" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Marron" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Orange" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
+      }
+    }
+    else if( this.thumbnail_color == "Gris" ) {
+      if( this.thumbnail ) {
+        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
+      }
+    }
+
+  }
 
 
   date_in_seconds(){

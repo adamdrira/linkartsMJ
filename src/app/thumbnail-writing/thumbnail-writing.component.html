@@ -2,121 +2,140 @@
 
 <div class="writing-container">
 
-
-    <div #thumbnail class="col-writing text-center">
-        
+        <div class="col-writing text-center">
             
-        <div class="swiper-container">
-            <div class="swiper-wrapper">
-
-                <!--Slide recto-->
-                <div class="swiper-slide" >
-                    
-                    <a href='/artwork-writing/{{title}}/{{writing_id}}'>
-                        <div class="element-writing border-recto">
-
-                            <div class="miniature" style="visibility:hidden">
-                                <img [src]="thumbnail_picture" (load)="loaded()" >
-                            </div>
-
-
-                            <div #thumbnailRecto class="absolute-thumbnail-data">
-                                <!--********************-->
-                                <!--Title container-->
-                                <!--********************-->
-                                <div class="title-container">
-                                    <span class="title">{{title}}</span>
-                                </div>
-                                <!--********************-->
-                                <!--Author container-->
-                                <!--********************-->
-                                <div class="author-container">
-                                    <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
-                                        <img [src]="profile_picture" (load)="pp_loaded()">
-                                    </div>
-                                    <div class="right-container">
-                                        <span class="author-name">{{author_name}}</span>
-                                        <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
-                                    </div>
-                                </div>
-                                <!--********************-->
-                                <!--Data container-->
-                                <!--********************-->
-                                <div class="stats-container">
-                                    <div class="figure-container-views">
-                                        <span>{{viewnumber}}</span>
-                                        <div class="view-logo">
-                                        </div>
-                                    </div>
-                                    <div class="figure-container-likes">
-                                        <span>{{likesnumber}}</span>
-                                        <div class="like-logo">
-                                        </div>
-                                    </div>
-                                    <div class="figure-container-loves">
-                                        <span>{{lovesnumber}}</span>
-                                        <div class="love-logo">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </a>
-
-
-                </div>
-
-                <!--Slide verso-->
-                <div class="swiper-slide">
-
-                    <a href='/artwork-writing/{{title}}/{{writing_id}}'>
-                        <div #thumbnailVerso class="element-writing border-verso">
-                        
-                            <!--********************-->
-                            <!--Title container-->
-                            <!--********************-->
-                            <div class="verso-resume">
-                                <span class="resume">Résumé</span>
-                            </div>
-                            <div class="horizontal-line">
-                            </div>
-                            <!--********************-->
-                            <!--Description container-->
-                            <!--********************-->
-                            <div class="verso-description">
-                                <span>{{highlight}}</span>
-                            </div>
-                            <!--********************-->
-                            <!--Categories container-->
-                            <!--********************-->
-                            <div class="categories-container">  
-                                <span class="categories" *ngIf="category=='Scenario'">Scénario :</span>
-                                <span class="categories" *ngIf="category=='Poetry'">Poésie :</span>
-                                <span class="categories" *ngIf="category=='Illustrated novel'">Roman illustré :</span>
-                                <span class="categories" *ngIf="category!='Scenario' &&  category!='Poetry' && category!='Illustrated novel'">{{category}} :</span>
-                                <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
-                                <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
-                                <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
-                            </div>
-                            <!--********************-->
-                            <!--Date container-->
-                            <!--********************-->
-                            <div class="date-container">
-                                <span>{{date_upload_to_show}}</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-                </div>
-
-
                 
-            </div>
+
+            <a href='/artwork-writing/{{title}}/{{writing_id}}'>
+                <div #thumbnail class="swiper-container">
+                    <div class="swiper-wrapper">
+
+                        <!--Slide recto-->
+                        <div class="swiper-slide" >
+                            
+                            <div class="element-writing border-recto">
+
+                                <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}" >
+                                    <img [src]="thumbnail_picture" (load)="loaded()" >
+                                </div>
+
+
+                                <div #thumbnailRecto class="absolute-thumbnail-data">
+                                    <!--********************-->
+                                    <!--Title container-->
+                                    <!--********************-->
+                                    <div class="title-container">
+                                        <span class="title">{{title}}</span>
+                                    </div>
+                                    <!--********************-->
+                                    <!--Author container-->
+                                    <!--********************-->
+                                    <div class="author-container">
+                                        <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
+                                            <img [src]="profile_picture" (load)="pp_loaded()">
+                                        </div>
+                                        <div class="right-container">
+                                            <span class="author-name">{{author_name}}</span>
+                                            <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                                        </div>
+                                    </div>
+                                    <!--********************-->
+                                    <!--Data container-->
+                                    <!--********************-->
+                                    <div class="stats-container">
+                                        <div class="figure-container views">
+                                            <div>
+                                                <span>{{viewnumber}}</span>
+                                                <mat-icon>visibility</mat-icon>
+                                                <!--<div class="view-logo"></div>-->
+                                            </div>
+                                        </div>
+                                        <div class="figure-container likes">
+                                            <div>
+                                                <span>{{likesnumber}}</span>
+                                                <mat-icon>thumb_up</mat-icon>
+                                            </div>
+                                        </div>
+                                        <div class="figure-container loves">
+                                            <div>
+                                                <span>{{lovesnumber}}</span>
+                                                <mat-icon>favorite</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+
+                        <!--Slide verso-->
+                        <div class="swiper-slide">
+
+                            <div #thumbnailVerso class="element-writing border-verso">
+                            
+                                <!--********************-->
+                                <!--Category container-->
+                                <!--********************-->
+                                <div class="verso-resume">
+                                    <span class="resume" *ngIf="!category">Catégorie</span>
+                                    <span class="resume">{{category}}</span>
+                                </div>
+                                <div class="horizontal-line">
+                                </div>
+                                <!--********************-->
+                                <!--Description container-->
+                                <!--********************-->
+                                <div class="verso-description">
+                                    <span *ngIf="!highlight">
+                                        Description
+                                    </span>
+                                    <span *ngIf="highlight">
+                                        {{highlight}}
+                                    </span>
+                                </div>
+                                <!--********************-->
+                                <!--Categories container-->
+                                <!--********************-->
+                                <div class="categories-container">
+                                    <div *ngIf="firsttag" class="tag-container"><span  class="categories" >{{firsttag}}</span></div>
+                                    <div  *ngIf="secondtag" class="tag-container"><span  class="categories" >{{secondtag}}</span></div>
+                                    <div  *ngIf="thirdtag" class="tag-container"><span  class="categories" >{{thirdtag}}</span></div>
+                                </div>
+                                <div class="categories-container" *ngIf="!firsttag">  
+                                    <div class="tag-container"><span class="categories">Genres</span></div>
+                                </div>
+                                <!--********************-->
+                                <!--Categories container-->
+                                <!--********************-->
+                                <!--<div class="categories-container">  
+                                    <span class="categories" *ngIf="category=='Scenario'">Scénario :</span>
+                                    <span class="categories" *ngIf="category=='Poetry'">Poésie :</span>
+                                    <span class="categories" *ngIf="category=='Illustrated novel'">Roman illustré :</span>
+                                    <span class="categories" *ngIf="category!='Scenario' &&  category!='Poetry' && category!='Illustrated novel'">{{category}} :</span>
+                                    <span *ngIf="firsttag!=null"> &nbsp; {{firsttag}}</span>
+                                    <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
+                                    <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
+                                </div>-->
+                                <!--********************-->
+                                <!--Date container-->
+                                <!--********************-->
+                                <div class="date-container">
+                                    <span>{{date_upload_to_show}}</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        
+                    </div>
+                </div>
+
+            </a>
+
+
         </div>
-
-
-    </div>
     
 </div>

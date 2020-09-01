@@ -3,6 +3,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 declare var $:any;
 
@@ -29,6 +30,7 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     user_id: number;
     profile_picture: SafeUrl;
     @Input() author_name: string;
+    @Input() pseudo: string;
     @Input() primary_description: string;
     @Input() writing_element: any;
     @Input() now_in_seconds: number;
@@ -39,6 +41,9 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     date_upload_to_show: string = "";
     thumbnail_picture:SafeUrl;
 
+    viewnumber:string;
+    likesnumber:string;
+    lovesnumber:string;
 
     selected: boolean = false;
     @Output() elementSelected = new EventEmitter<{id_key:number}>();
@@ -59,6 +64,10 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
   
   ngOnInit(): void {
 
+
+    this.viewnumber = number_in_k_or_m(this.writing_element.viewnumber)
+    this.likesnumber = number_in_k_or_m(this.writing_element.likesnumber)
+    this.lovesnumber = number_in_k_or_m(this.writing_element.lovesnumber)
 
     this.user_id = this.writing_element.authorid;
 

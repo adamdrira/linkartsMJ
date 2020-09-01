@@ -4,6 +4,13 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
+import { get_color_code } from '../helpers/drawings-colors';
+
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
+
+import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+
 
 declare var $:any;
 
@@ -39,6 +46,7 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   thumbnail_picture:SafeUrl;
   author_name:string;
+  pseudo:string;
   primary_description:string;
   /*Inputs*/
   user_id: number;
@@ -69,7 +77,7 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   tagsSplit: string;
   showDrawingDetails:boolean = false;
-  imageloaded=false;
+  
 
   
 
@@ -85,9 +93,9 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;
     this.pagesnumber = this.item.pagesnumber;
-    this.viewnumber = this.item.viewnumber;
-    this.likesnumber = this.item.likesnumber;
-    this.lovesnumber = this.item.lovesnumber;
+    this.viewnumber = number_in_k_or_m(this.item.viewnumber)
+    this.likesnumber = number_in_k_or_m(this.item.likesnumber)
+    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber)
     this.date_upload = this.item.createdAt;
     this.drawing_id = this.item.drawing_id;
     this.thumbnail_color = this.item.thumbnail_color;
@@ -118,11 +126,11 @@ export class ThumbnailDrawingComponent implements OnInit {
 
     this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.pseudo=r[0].nickname;
       this.primary_description=r[0].primary_description;
     });
 
-    this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
-
+    this.date_upload_to_show = get_date_to_show( date_in_seconds( this.now_in_seconds, this.date_upload ) );
   }
 
   ngAfterViewInit() {
@@ -135,127 +143,11 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   set_color() {
 
-
-    if( this.thumbnail_color == "Bleu" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Noir" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Vert" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Jaune" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Rouge" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Violet" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Rose" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Marron" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Orange" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Gris" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
-      }
+    if( this.thumbnail ) {
+      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.thumbnail_color ));
     }
 
   }
-
-
-
-  date_in_seconds(){
-
-    var uploaded_date = this.date_upload.substring(0,this.date_upload.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
-
 
 
 
@@ -284,29 +176,18 @@ export class ThumbnailDrawingComponent implements OnInit {
   drawings_per_line() {
     var width = $('.container-drawings').width();
 
-    if( width > 1700 ) {
-      return 5;
-    }
-    else if( width > 1300 ) {
-      return 4;
-    }
-    else if( width > 1000) {
-      return 3;
-    }
-    else if( width > 600) {
-      return 2;
-    }
-    else {
+    var n = Math.round(width/330);
+    if( width < 660 ) {
       return 1;
     }
-
+    else {
+      return n;
+    }
+    
   }
 
   dosomething(){
-    this.imageloaded=true;
-    $(".miniature").css("visibility","");
     this.sendLoaded.emit(true);
-    this.cd.detectChanges();
   }
 
   pp_is_loaded=false;

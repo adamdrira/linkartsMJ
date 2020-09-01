@@ -1,5 +1,6 @@
 
-<div class="container-fluid">
+<div class="container-fluid" [ngClass]="{'invisible': !(list_writings_added && list_drawings_artbook_added
+&& list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added)}">
     <main role="main">
         
         <div class="account-container">
@@ -95,8 +96,7 @@
         
 
         <div class="panel-controller">
-            <div *ngIf="archives_received && list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added " class="middle-container">
+            <div  class="middle-container">
 
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">home</mat-icon>
@@ -104,7 +104,12 @@
                 </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">art_track</mat-icon>
-                    Œuvres ({{number_of_artpieces}})
+                    <ng-container *ngIf="!mode_visiteur">
+                        Œuvres ({{number_of_artpieces}})
+                    </ng-container>
+                    <ng-container *ngIf="mode_visiteur">
+                        Œuvres ({{number_of_artpieces}})
+                    </ng-container>
                 </button>
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">announcement</mat-icon>
@@ -118,18 +123,6 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">subscriptions</mat-icon>
                     Abonnements ({{users_subscribed_to_list.length}})
                 </button>
-                <!--<button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">whatshot</mat-icon>
-                    Tendances (4)
-                </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">thumb_up</mat-icon>
-                    J'aime (5,212)
-                </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">favorite</mat-icon>
-                    J'adore (4,304)
-                </button>-->
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
@@ -139,7 +132,7 @@
                     Archives 
                 </button>
                 <a href="/add-artwork">
-                    <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category opened" style="background: rgb(158 206 236);color: rgb(32, 56, 100);">
+                    <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category">
                         <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
                         Publier 
                     </button>
@@ -149,7 +142,7 @@
         </div>
 
 
-        <div *ngIf="opened_section==0 && archives_received && list_writings_added && list_drawings_artbook_added
+        <div *ngIf="opened_section==0 && list_writings_added && list_drawings_artbook_added
             && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
         
             <ng-container *ngIf="emphasized_artwork_added" >
@@ -165,7 +158,7 @@
             </ng-container>
             
 
-            <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur" >
+            <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
                 <div class="title">
                     <span>Œuvre mise en avant</span>
                 </div>
@@ -177,76 +170,91 @@
             
 
             <ng-container *ngIf="!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added">
-                <div class="title">
-                    <span>Nouveautés</span>
+                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
+                    <a href="/add-artwork">
+                        <button mat-raised-button >
+                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
+                            Publier votre première oeuvre !
+                        </button>
+                    </a>
                 </div>
                 <div class="highlighted_artwork" *ngIf="mode_visiteur">
-                    <span>L'utilisateur n'a pas de nouveautés</span>
-                </div>
-                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
-                    <span>Vous n'avez pas de nouveautés</span>
+                    <span>Aucune oeuvre de disponible pour cet utilisateur</span>
                 </div>
             </ng-container>
 
 
-            
-            <div class="title" *ngIf="new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added">
-                <span>Nouveautés</span>
-            </div>
+            <ng-container *ngIf="new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added">
 
-            <div *ngIf="new_comic_contents_added" class="bd-container">
-                
-                <div class="artwork-type-title">
-                    Bandes dessinées
+                <div class="title"  >
+                    <span>Nouveautés</span>
                 </div>
-                <div class="container-comics newDrawings">
-                    <div *ngFor="let item of new_comic_contents" class="new-artwork" #getwidth>
-                        <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
-                        [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
-                        <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
-                        [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+    
+                <div *ngIf="new_comic_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_comic_contents}">
+                    
+                    <div class="artwork-type-title">
+                        Bandes dessinées
+                    </div>
+                    <div class="container-comics newDrawings " >
+                        <div *ngFor="let item of new_comic_contents,let i=index" class="new-artwork" #getwidth>
+                            <app-thumbnail-comics 
+                            *ngIf="item.chaptersnumber == null" 
+                            (send_loaded)="new_contents_comics_thumbnails($event)"
+                            [item]=item format='one-shot' 
+                            now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics> 
+                            <app-thumbnail-comics 
+                            (send_loaded)="new_contents_comics_thumbnails($event)"
+                            *ngIf="item.chaptersnumber>=0"
+                            [item]=item format='serie' now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div *ngIf="new_drawing_contents_added" class="bd-container">
-                
-                <div class="artwork-type-title">
-                    Dessins
+    
+                <div *ngIf="new_drawing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents}">
+                    
+                    <div class="artwork-type-title">
+                        Dessins
+                    </div>
+                    <div class="container-drawings newDrawings">
+                        <div *ngFor="let item of new_drawing_contents" style="height:280px; margin:40px 0px 30px 0px" class="new-artwork" #getwidth>
+                            <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                (sendLoaded)="new_contents_drawings_thumbnails($event)"
+                                [item]=item
+                                format='one-shot'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-drawing>
+                            <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                (sendLoaded)="new_contents_drawings_thumbnails($event)"
+                                [item]=item 
+                                format='artbook'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-drawing>
+                        </div>
+                    </div>
+                    
                 </div>
-                <div class="container-drawings newDrawings">
-                    <div *ngFor="let item of new_drawing_contents" style="height:280px; margin:40px 0px 30px 0px;" class="new-artwork" #getwidth>
-                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+    
+                
+                <div *ngIf="new_writing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_writing_contents}">
+                    
+                    <div class="artwork-type-title">
+                        Écrits
+                    </div>
+                    <div class="container-writings newDrawings">
+                        <div *ngFor="let item of new_writing_contents" style="height:300px;" class="new-artwork" #getwidth>
+                            <app-thumbnail-writing
+                            (sendLoaded)="new_contents_writings_thumbnails($event)"
                             [item]=item
-                            format='one-shot'
                             now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-drawing>
-                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
-                            [item]=item 
-                            format='artbook'
-                            now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-drawing>
+                            ></app-thumbnail-writing>
+                        </div>
                     </div>
+                    
                 </div>
-                
-            </div>
-
+            </ng-container >
             
-            <div *ngIf="new_writing_contents_added" class="bd-container">
-                
-                <div class="artwork-type-title">
-                    Écrits
-                </div>
-                <div class="container-writings newDrawings">
-                    <div *ngFor="let item of new_writing_contents" style="height:300px;" class="new-artwork" #getwidth>
-                        <app-thumbnail-writing
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-writing>
-                    </div>
-                </div>
-                
-            </div>
 
 
         </div>
@@ -254,7 +262,7 @@
 
 
 
-        <ng-container *ngIf="opened_section==1 && number_of_artpieces==0 && new_comic_contents_added && new_writing_contents_added && new_drawing_contents_added">
+        <!--<ng-container *ngIf="opened_section==1 && number_of_artpieces==0 && list_bd_oneshot_added && list_bd_series_added && list_writings_added && list_drawings_artbook_added && list_drawings_onepage_added">
             <div class="highlighted_artwork" *ngIf="mode_visiteur">
                 <span>L'utilisateur n'a publié aucune œuvre</span>
             </div>
@@ -266,41 +274,50 @@
                     <a href="/add-artwork">Cliquez ici pour publier une œuvre</a>
                 </span>
             </div>
-        </ng-container>
+        </ng-container>-->
             
-        <ng-container *ngIf="opened_section==1 && archives_received && list_writings_added && list_drawings_artbook_added
+        <ng-container *ngIf="opened_section==1 && list_writings_added && list_drawings_artbook_added
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
             
             <div class="logos-container">
                 <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
                     <div class="image1"></div>
-                    <span>
-                        Bandes dessinées ({{list_bd_oneshot.length + list_bd_series.length}})
+                    <span *ngIf="!mode_visiteur">
+                        Bandes dessinées ({{visible_number_of_comics}})
+                    </span>
+                    <span *ngIf="mode_visiteur">
+                        Bandes dessinées ({{visible_number_of_comics}})
                     </span>
                 </div>
                 <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
                     <div class="image2"></div>
-                    <span>
-                        Dessins ({{list_drawings_onepage.length + list_drawings_artbook.length}})
+                    <span  *ngIf="!mode_visiteur">
+                        Dessins ({{visible_number_of_drawings}})
+                    </span>
+                    <span  *ngIf="mode_visiteur">
+                        Dessins ({{visible_number_of_drawings}})
                     </span>
                 </div>
                 <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target>
                     <div class="image3"></div>
-                    <span>
-                        Écrits ({{list_writings.length}})
+                    <span *ngIf="!mode_visiteur">
+                        Écrits ({{visible_number_of_writings}})
+                    </span>
+                    <span *ngIf="mode_visiteur">
+                        Écrits ({{visible_number_of_writings}})
                     </span>
                 </div>
             </div>
 
             
-            <ng-container *ngIf="opened_category != -1 && opened_category!=null">
+            <ng-container *ngIf="opened_category != -1">
                 
 
                 <div class="albums-container">
                     <div class="albums-filter">
                         <!-- Titres des albums bd-->
                         <ng-container *ngIf="opened_category==0 && list_albums_bd_added && (list_bd_oneshot.length != 0 || list_bd_series.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_bd; let i=index" style="position:relative;">
+                            <div *ngFor="let element of list_titles_albums_bd; let i=index" style="position:relative;margin-bottom:5px">
 
                                 <ng-container *ngIf="!(i==1 && list_bd_oneshot.length==0) && !(i==2 && list_bd_series.length==0)">
 
@@ -341,53 +358,19 @@
                                     </ng-container>
 
 
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_bd_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
+                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="content-action text-center" 
                                     (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                                        
-
-                                        <!--MODE MON COMPTE-->
-                                        <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
-                                        
-                                        <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 )">{{element}}
-                                        </div>
-
-                                        <div *ngIf="!mode_visiteur && i>2">{{element}}
-                                        </div>
-
-
-                                        <!--MODE VISITEUR-->
-                                        <div *ngIf="mode_visiteur && i==0">
-                                                {{element}}                      
-                                        </div>
-                                        <div *ngIf="i==1 || i==2">
-                                            <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='standard'">
-                                                {{element}}
-                                            </div>                              
-                                        </div>
-                                        <div *ngIf="i>2">
-                                            <div *ngIf="mode_visiteur  && list_bd_albums_status[i-1]=='public'">
-                                                {{element}}
-                                            </div>                              
-                                        </div>
-
-
+                                        <div >{{element}}</div>
                                     </button>
                                 </ng-container>
 
                             </div>
 
                         </ng-container>
-                        
-                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added && mode_visiteur && (list_bd_oneshot.length == 0 && list_bd_series.length == 0)">
-                            L'utilisateur n'a pas encore publié de bandes dessinées
-                        </ng-container>
-                        <ng-container *ngIf="opened_category==0 && list_albums_bd_added && !mode_visiteur && (list_bd_oneshot.length == 0 && list_bd_series.length == 0)">
-                            Vous n'avez pas encore publié de bandes dessinées
-                        </ng-container>
 
                         <!-- Titres des albums drawing-->
                         <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && (list_drawings_onepage.length != 0 || list_drawings_artbook.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_drawings; let i=index" style="position:relative;">
+                            <div *ngFor="let element of list_titles_albums_drawings; let i=index" style="position:relative;margin-bottom:5px">
                                 
                                 
                                 <ng-container *ngIf="!(i==1 && list_drawings_onepage.length==0) && !(i==2 && list_drawings_artbook.length==0)">
@@ -428,35 +411,9 @@
                                         </mat-menu>
                                     </ng-container>
 
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_drawing_albums_status[i-1]!=='hidden')" class="content-action text-center" 
+                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="content-action text-center" 
                                     (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-
-
-                                        <!--MODE MON COMPTE-->
-                                        <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
-
-                                        <div *ngIf="!mode_visiteur && ( i == 1 || i == 2 ) ">{{element}}
-                                        </div>
-
-                                        <div *ngIf="!mode_visiteur && i>2">{{element}}
-                                        </div>
-
-
-                                        <!--MODE VISITEUR-->
-                                        <div *ngIf="mode_visiteur && i==0">
-                                                {{element}}                      
-                                        </div>
-                                        <div *ngIf="i==1 || i==2">
-                                            <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='standard'">
-                                                {{element}}
-                                            </div>                              
-                                        </div>
-                                        <div *ngIf="i>2">
-                                            <div *ngIf="mode_visiteur  && list_drawing_albums_status[i-1]=='public'">
-                                                {{element}}
-                                            </div>                              
-                                        </div>
-
+                                        <div>{{element}}</div>
                                     </button>
                                 </ng-container>
                             </div>
@@ -464,16 +421,9 @@
 
                         </ng-container>
 
-                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && mode_visiteur && (list_drawings_onepage.length == 0 && list_drawings_artbook.length == 0)">
-                            L'utilisateur n'a pas encore publié de dessins
-                        </ng-container>
-                        <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && !mode_visiteur && (list_drawings_onepage.length == 0 && list_drawings_artbook.length == 0)">
-                            Vous n'avez pas encore publié de dessins
-                        </ng-container>
-
                         <!-- Titres des albums writing-->
                         <ng-container *ngIf="opened_category==2 && (list_writings.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_writings; let i=index" style="position:relative;">
+                            <div *ngFor="let element of list_titles_albums_writings; let i=index" style="position:relative;margin-bottom:5px">
 
                                 
                                 <ng-container *ngIf="!mode_visiteur && i>0">
@@ -496,36 +446,23 @@
                                     </mat-menu>
                                 </ng-container>
 
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_writings_albums_status[i-1]!=='hidden')"  class="content-action text-center" 
+                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="content-action text-center" 
                                 (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-
-                                    <!--MODE MON COMPTE-->
-                                    <div *ngIf="!mode_visiteur && i == 0 ">{{element}}</div>
-                                    
-                                    <div *ngIf="!mode_visiteur && i>0">{{element}}
-                                    </div>
-
+                                    <div>{{element}}</div>
                                 </button>
                                     
                             </div>
 
                         </ng-container>
 
-                        <ng-container *ngIf="opened_category==2 && list_albums_drawings_added && mode_visiteur && (list_writings.length == 0)">
-                            L'utilisateur n'a pas encore publié d'écrits
-                        </ng-container>
-                        <ng-container *ngIf="opened_category==2 && list_albums_drawings_added && !mode_visiteur && (list_writings.length == 0)">
-                            Vous n'avez pas encore publié d'écrits
-                        </ng-container>
 
-
-                        <div>
+                        <div style="margin-bottom:5px">
                             <!--AJOUT ALBUM BD-->
-                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==0 && (list_bd_series.length!=0 || list_bd_oneshot.length!=0)" class="add-album" (click)="start_add_album( opened_category )">
+                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==0 && number_of_comics!=0" class="add-album" (click)="start_add_album( opened_category )">
                                 <ng-container *ngIf="add_album == -1">
                                     <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
                                     <span>
-                                        Créer une série
+                                        Créer une séction
                                     </span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
@@ -536,11 +473,11 @@
                                 </ng-container>
                             </button>
                             <!--AJOUT ALBUM DESSINS-->
-                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==1 && (list_drawings_artbook.length!=0 || list_drawings_onepage.length!=0)" class="add-album" (click)="start_add_album( opened_category )">
+                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==1 && (number_of_drawings!=0)" class="add-album" (click)="start_add_album( opened_category )">
                                 <ng-container *ngIf="add_album == -1">
                                     <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
                                     <span>
-                                        Créer un album
+                                        Créer une séction
                                     </span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
@@ -551,11 +488,11 @@
                                 </ng-container>
                             </button>
                             <!--AJOUT ALBUM ECRITS-->
-                            <button mat-raised-button style="width: 360px !important;" *ngIf="!mode_visiteur && opened_category==2 && list_writings.length!=0" class="add-album" (click)="start_add_album( opened_category )">
+                            <button mat-raised-button style="width: 360px !important;" *ngIf="!mode_visiteur && opened_category==2 && number_of_writings!=0" class="add-album" (click)="start_add_album( opened_category )">
                                 <ng-container *ngIf="add_album == -1">
                                     <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
                                     <span>
-                                        Créer une série/un recueil
+                                        Créer une séction
                                     </span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
@@ -581,7 +518,7 @@
                 <!--**********************************-->
                 <!--**********************************-->
                 
-                <div class="artworks-container">
+                <div class="artworks-container" *ngIf=" opened_category>=0  && opened_section==1">
 
                     <!------------------------------------------------------------------------->
                     <!------------------------------------------------------------------------->
@@ -590,29 +527,38 @@
                     <!------------------------------------------------------------------------->
                     <ng-container *ngIf="add_album==-1">
                         
-                        
+                        <div class="loading-page" *ngIf="contents_loading">
+                            <mat-spinner diameter="30" ></mat-spinner>
+                        </div>
                         <!------------------------------------------------------------------------->
                         <!------------------- VISUALISATION DES BANDES DESSINEES ------------------>
                         <!------------------------------------------------------------------------->
-                        <div *ngIf="opened_category==0" class="bd-container">
+                        <div *ngIf="opened_category==0" class="bd-container" [ngClass]="{'really-invisible': !display_comics_thumbnails}">
                             
                             <!--TOUS LES ALBUMS-->
                             <ng-container *ngIf="opened_album==0">
                                 <!--On parcourt tous les ajoutés albums-->
                                 <ng-container *ngIf="list_albums_bd_added">
-                                    <div *ngFor="let item of list_titles_albums_bd_added ; let i = index">
+                                    <div *ngFor="let item of list_titles_albums_bd_added; let i = index">
 
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
                                             <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                                 </div>
-                                            <div class="bd-thumbnails-container container-comics">
-                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail>
+                                            <div class="bd-thumbnails-container container-comics" #container_comics  >
+                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1].slice(0,number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]);let j=index" >
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
-                                                    [item]=item2 format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+                                                    [item]=item2 
+                                                    format='one-shot' 
+                                                    now_in_seconds={{now_in_seconds}}
+                                                    (send_loaded)="display_albums_comics_thumbnails()"
+                                                    ></app-thumbnail-comics> 
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber>=0"
-                                                    [item]=item2 format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                                    [item]=item2 
+                                                    format='serie' 
+                                                    now_in_seconds={{now_in_seconds}}
+                                                    (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                                 </div>
                                             </div>
                                         </div>
@@ -620,13 +566,23 @@
                                             <div class="artwork-type-title">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                             </div>
-                                            <div class="bd-thumbnails-container container-comics">
-                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1]" #bdThumbnail>
+                                            <div class="bd-thumbnails-container container-comics" #container_comics  >
+                                                <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1].slice(0,number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]);let j=index" #bdThumbnail>
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
-                                                    [item]=item2 format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+                                                    [item]=item2 
+                                                    format='one-shot' 
+                                                    now_in_seconds={{now_in_seconds}}
+                                                    (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics> 
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber>=0"
-                                                    [item]=item2 format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                                    [item]=item2 
+                                                    format='serie' 
+                                                    now_in_seconds={{now_in_seconds}}
+                                                    (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="list_albums_bd[list_titles_albums_bd_added.length-i-1].length>number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]" class="see-more" (click)="see_more_comics(list_titles_albums_bd_added.length-i+1,0)">
+                                            <div class="icon">
                                             </div>
                                         </div>
                                     </div>
@@ -640,9 +596,12 @@
                                                 Séries
                                             </div>
                                         </div>
-                                        <div class="bd-thumbnails-container container-comics">
-                                            <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
-                                            [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                        <div class="bd-thumbnails-container container-comics" #container_comics  >
+                                            <app-thumbnail-comics *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index" #container_comics
+                                            [item]=item 
+                                            format='serie' 
+                                            now_in_seconds={{now_in_seconds}}
+                                            (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                         </div>
                                     </div>
                                     <div *ngIf="!mode_visiteur">
@@ -650,10 +609,16 @@
                                             <div class="artwork-type-title">
                                                 Séries
                                             </div>
-                                             <div class="bd-thumbnails-container container-comics">
-                                                <app-thumbnail-comics *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
-                                                [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                             <div class="bd-thumbnails-container container-comics"  #container_comics >
+                                                <app-thumbnail-comics 
+                                                *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index"
+                                                [item]=item format='serie' now_in_seconds={{now_in_seconds}}
+                                                (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="list_bd_series.length>number_of_comics_to_show_by_album[1]" class="see-more" (click)="see_more_comics(1,0)">
+                                        <div class="icon">
                                         </div>
                                     </div>
                                 </div>
@@ -666,9 +631,10 @@
                                                 One-shots
                                             </div>
                                         </div>
-                                        <div class="bd-thumbnails-container container-comics">
-                                            <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
-                                            [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                        <div class="bd-thumbnails-container container-comics" #container_comics >
+                                            <app-thumbnail-comics *ngFor="let item of list_bd_oneshot.slice(0,number_of_comics_to_show_by_album[0]) ; let i = index" #bdThumbnail
+                                            [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}
+                                            (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                         </div>
                                     </div>
                                     <div *ngIf="!mode_visiteur">
@@ -676,10 +642,15 @@
                                             <div class="artwork-type-title">
                                                 One-shots
                                             </div>
-                                            <div class="bd-thumbnails-container container-comics">
-                                                <app-thumbnail-comics *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
-                                                [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+                                            <div class="bd-thumbnails-container container-comics" #container_comics >
+                                                <app-thumbnail-comics *ngFor="let item of list_bd_oneshot.slice(0,number_of_comics_to_show_by_album[0]) ; let i = index" #bdThumbnail
+                                                [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}
+                                                (send_loaded)="display_albums_comics_thumbnails()"></app-thumbnail-comics>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="list_bd_oneshot.length>number_of_comics_to_show_by_album[0]" class="see-more" (click)="see_more_comics(0,0)">
+                                        <div class="icon">
                                         </div>
                                     </div>
                                 </div>
@@ -690,39 +661,46 @@
 
                             <!--ONE SHOTS-->
                             <ng-container *ngIf="opened_album==1">
-                                <div class="bd-thumbnails-container container-comics">
+                                <div class="bd-thumbnails-container container-comics" #container_comics >
                                     <app-thumbnail-comics  *ngFor="let item of list_bd_oneshot ; let i = index" #bdThumbnail
                                         [item]=item
                                         format='one-shot'
                                         now_in_seconds={{now_in_seconds}}
+                                        (send_loaded)="display_albums_comics_thumbnails()"
                                     ></app-thumbnail-comics>
                                 </div>
                             </ng-container>
 
                             <!--SERIES-->
                             <ng-container *ngIf="opened_album==2">
-                                <div class="bd-thumbnails-container container-comics">
-                                    <app-thumbnail-comics  *ngFor="let item of list_bd_series ; let i = index" #bdThumbnail
+                                <div class="bd-thumbnails-container container-comics" #container_comics>
+                                    <app-thumbnail-comics  *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index" #bdThumbnail
                                         [item]=item
                                         format='serie'
                                         now_in_seconds={{now_in_seconds}}
+                                        (send_loaded)="display_albums_comics_thumbnails()"
                                     ></app-thumbnail-comics>
+                                </div>
+                                <div class="loading-page" *ngIf="new_contents_loading">
+                                    <mat-spinner diameter="20" ></mat-spinner>
                                 </div>
                             </ng-container>
 
                             <!--AUTRES ALBUMS-->
                             <ng-container *ngIf="opened_album>=3">
-                                <div class="bd-thumbnails-container container-comics">
-                                    <div *ngFor="let item of list_albums_bd[opened_album - 3] ; let j = index" #bdThumbnail>
+                                <div class="bd-thumbnails-container container-comics" #container_comics>
+                                    <div *ngFor="let item of list_albums_bd[opened_album - 3].slice(0,number_of_comics_to_show_by_album[opened_album-1]) ; let j = index" #bdThumbnail>
                                         <app-thumbnail-comics *ngIf="item.chaptersnumber == null"
                                             [item]=item
                                             format='one-shot'
                                             now_in_seconds={{now_in_seconds}}
+                                            (send_loaded)="display_albums_comics_thumbnails()"
                                         ></app-thumbnail-comics>
                                         <app-thumbnail-comics *ngIf="item.chaptersnumber >=0"
                                             [item]=item 
                                             format='serie'
                                             now_in_seconds={{now_in_seconds}}
+                                            (send_loaded)="display_albums_comics_thumbnails()"
                                         ></app-thumbnail-comics>
                                     </div>
                                 </div>
@@ -736,54 +714,108 @@
                         
                         <!------------------------------------------------------------------------->
                         <!----------------------- VISUALISATION DES DESSINS ----------------------->
-                        <!------------------------------------------------------------------------->
-                        <div *ngIf="opened_category==1" class="drawings-container" #albumToShow [ngClass]="{'albumVisible':list_visibility_albums_drawings }">
+                        <!--------------------------------------------------------------------- ---->
+                        <div *ngIf="opened_category==1" class="bd-container"  [ngClass]="{'really-invisible':!list_visibility_albums_drawings }">
                             <ng-container *ngIf="opened_album==0" >
                                 
-                                <!--<!- -On parcourt tous les albums ajoutés- ->
+                               
+
                                 <ng-container *ngIf="list_albums_drawings_added">
                                     <div *ngFor="let item of list_titles_albums_drawings_added ; let i = index">
 
-                                        <!- -On affiche les albums- ->
-                                    
-                                        <div *ngIf="!mode_visiteur">
-                                            <div *ngFor="let j of list_of_cover_index">
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px 10px">
-                                                    <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
-                                                        [pictures_number]=j
-                                                        [album_name]=list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]
-                                                        [pictures_list]=array_of_selected_safeurls[list_titles_albums_drawings_added.length-i-1]
-                                                        >                      
-                                                    </app-thumbnail-cover-album-drawing>
+                                        <!--On affiche l'album-->
+                                        <div *ngIf="!mode_visiteur" >
+                                            <div class="bd-container"  #container_drawings>
+                                                <div class="artwork-type-title">
+                                                    {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
+                                                </div>
+                                                <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
+                                                    <div *ngFor="let item of list_albums_drawings[list_titles_albums_drawings_added.length-i-1].slice(0,number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1])"  
+                                                     class="grid-item" >
+                                                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                                            (sendLoaded)="sendLoaded( $event );"
+                                                            [item]=item
+                                                            format='one-shot'
+                                                            now_in_seconds={{now_in_seconds}}
+                                                        ></app-thumbnail-drawing>
+                                                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                                            (sendLoaded)="sendLoaded( $event );"
+                                                            [item]=item
+                                                            format='artbook'
+                                                            now_in_seconds={{now_in_seconds}}
+                                                        ></app-thumbnail-drawing>
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" 
+                                                    class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
+                                                    <div class="icon">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'" style="display:flex;">
-                                            <div *ngFor="let j of list_of_cover_index">
-                                                <div *ngIf="cover_album_numbers[list_titles_albums_drawings_added.length-i-1] == j" style="margin:20px 10px">
-                                                    <app-thumbnail-cover-album-drawing [ngClass]="{ 'selected' :0 }"
-                                                        [pictures_number]=j
-                                                        [pictures_list]=array_of_selected_safeurls[list_titles_albums_drawings_added.length-i-1]
-                                                        >                      
-                                                    </app-thumbnail-cover-album-drawing>
+
+                                        <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
+                                            <div class="bd-container" #container_drawings>
+                                                <div class="artwork-type-title">
+                                                    {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
+                                                </div>
+                                                <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+                                                    <div *ngFor="let item of list_albums_drawings[list_titles_albums_drawings_added.length-i-1].slice(0,number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1])"  class="grid-item">
+                                                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                                            (sendLoaded)="sendLoaded( $event );"
+                                                            [item]=item
+                                                            format='one-shot'
+                                                            now_in_seconds={{now_in_seconds}}
+                                                        ></app-thumbnail-drawing>
+                                                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                                            (sendLoaded)="sendLoaded( $event );"
+                                                            [item]=item
+                                                            format='artbook'
+                                                            now_in_seconds={{now_in_seconds}}
+                                                        ></app-thumbnail-drawing>
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                    <div class="grid-item" style="height:1px;width:100px;">
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
+                                                    <div class="icon">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                     </div>
-                                </ng-container>-->
+                                </ng-container>
 
 
                                 <div *ngIf="list_drawings_artbook_added && list_drawings_artbook.length!=0 ">
                                     <div *ngIf="mode_visiteur && list_drawing_albums_status[1]=='standard'">
-                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container">
+                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
                                                 Artbooks
                                             </div>
 
                                             <div  class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
-                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="grid-item">
+                                                <div *ngFor="let item of list_drawings_artbook.slice(0,number_of_drawings_to_show_by_album[1])" class="grid-item">
                                                     <app-thumbnail-drawing
                                                         [item]=item
                                                         format='artbook'
@@ -801,22 +833,26 @@
                                                 </div>
                                                 <div class="grid-item" style="height:1px;width:100px;">
                                                 </div>
-                                                
+                                                <div class="grid-item" style="height:1px;width:100px;">
+                                                </div>
                                             </div>
-
+                                            <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
+                                                <div class="icon">
+                                                </div>
+                                            </div>
 
                                         </div>
                                     </div>
 
                                     <div *ngIf="!mode_visiteur">
-                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container">
+                                        <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
                                                 Artbooks
                                             </div>
 
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                                <div *ngFor="let item of list_drawings_artbook; let i = index" class="grid-item">
+                                                <div *ngFor="let item of list_drawings_artbook.slice(0,number_of_drawings_to_show_by_album[1])" class="grid-item">
                                                     <app-thumbnail-drawing
                                                         [item]=item
                                                         format='artbook'
@@ -834,23 +870,27 @@
                                                 </div>
                                                 <div class="grid-item" style="height:1px;width:100px;">
                                                 </div>
-                                    
+                                                <div class="grid-item" style="height:1px;width:100px;">
+                                                </div>
                                             </div>
-
+                                            <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
+                                                <div class="icon">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div *ngIf="list_drawings_onepage_added && list_drawings_onepage.length!=0 ">                              
                                     <div *ngIf=" mode_visiteur && list_drawing_albums_status[0]=='standard'" >
-                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container">
+                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
                                                 One-shots
                                             </div>
 
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item">
+                                                <div *ngFor="let item of list_drawings_onepage.slice(0,number_of_drawings_to_show_by_album[0])" class="grid-item">
                                                     <app-thumbnail-drawing
                                                         [item]=item
                                                         format='one-shot'
@@ -868,18 +908,24 @@
                                                 </div>
                                                 <div class="grid-item" style="height:1px;width:100px;">
                                                 </div>
+                                                <div class="grid-item" style="height:1px;width:100px;">
+                                                </div>
                                                 
+                                            </div>
+                                            <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
+                                                <div class="icon">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div *ngIf=" !mode_visiteur " >
-                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container">
+                                        <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
 
                                             <div class="artwork-type-title">
                                                 One-shots
                                             </div>
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
-                                                <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item" #getwidth>
+                                                <div *ngFor="let item of list_drawings_onepage.slice(0,number_of_drawings_to_show_by_album[0])" class="grid-item" #getwidth>
                                                     <app-thumbnail-drawing 
                                                         [item]=item
                                                         format='one-shot'
@@ -897,18 +943,22 @@
                                                 </div>
                                                 <div class="grid-item" style="height:1px;width:100px;">
                                                 </div>
-                                                
+                                                <div class="grid-item" style="height:1px;width:100px;">
+                                                </div>
                                             </div>
-
+                                            <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
+                                                <div class="icon">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </ng-container>
 
                             <!--One-shots album-->
-                            <div class="drawing-container" >
+                            <div class="bd-container" #container_drawings>
                                 <div *ngIf="opened_album==1" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                    <div *ngFor="let item of list_drawings_onepage; let i = index" class="grid-item" #getwidth>
+                                    <div *ngFor="let item of list_drawings_onepage.slice(0,number_of_drawings_to_show_by_album[0])" class="grid-item" #getwidth>
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='one-shot'
@@ -926,15 +976,17 @@
                                     </div>
                                     <div class="grid-item" style="height:1px;width:100px;">
                                     </div>
+                                    <div class="grid-item" style="height:1px;width:100px;">
+                                    </div>
                                     
                                 </div>
                             </div>
 
 
                             <!--Artbooks album-->
-                            <div class="drawing-container">
+                            <div class="bd-container" #container_drawings>
                                 <div *ngIf="opened_album==2" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                    <div *ngFor="let item of list_drawings_artbook; let i = index" class="grid-item" #getwidth>
+                                    <div *ngFor="let item of list_drawings_artbook.slice(0,number_of_drawings_to_show_by_album[1])" class="grid-item" #getwidth>
                                         <app-thumbnail-drawing 
                                             [item]=item
                                             format='artbook'
@@ -951,17 +1003,19 @@
                                     </div>
                                     <div class="grid-item" style="height:1px;width:100px;">
                                     </div>
-
+                                    <div class="grid-item" style="height:1px;width:100px;">
+                                    </div>
+                                   
                                 </div>
                             </div>
 
                             
                             <!--Autres albums-->
                            
-                            <div class="drawing-container" *ngIf="opened_album>=3" >
+                            <div class="bd-container" *ngIf="opened_album>=3" #container_drawings>
                                 <div *ngFor="let elem of list_titles_albums_drawings_added;let indice=index">
                                     <div *ngIf="(opened_album-3)==indice" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                                        <div *ngFor="let item of list_albums_drawings[opened_album - 3] ; let j = index" class="grid-item" #getwidth>
+                                        <div *ngFor="let item of list_albums_drawings[opened_album - 3].slice(0,number_of_drawings_to_show_by_album[opened_album-1])" class="grid-item" #getwidth>
                                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                                 [item]=item
                                                 format='one-shot'
@@ -985,7 +1039,8 @@
                                         </div>
                                         <div class="grid-item" style="height:1px;width:100px;">
                                         </div>
-
+                                        <div class="grid-item" style="height:1px;width:100px;">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -999,7 +1054,7 @@
                         <!------------------------------------------------------------------------->
                         
 
-                        <div *ngIf="opened_category==2" class="bd-container">
+                        <div *ngIf="opened_category==2" class="bd-container" #container_writings [ngClass]="{'invisible': !display_writings_thumbnails}">
                         
                             <ng-container *ngIf="opened_album==0">
                                 <ng-container *ngIf="list_albums_writings_added">
@@ -1012,8 +1067,9 @@
                                             </div>
 
                                             <div class="writing-thumbnails-container container-writings">
-                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail>
-                                                    <app-thumbnail-writing class="writing-component-container" 
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1].slice(0,number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i])" >
+                                                    <app-thumbnail-writing 
+                                                        (sendLoaded)="display_albums_writing_thumbnails( $event );"
                                                         [item]=item
                                                         now_in_seconds={{now_in_seconds}}
                                                     ></app-thumbnail-writing>
@@ -1027,8 +1083,9 @@
                                             </div>
 
                                             <div class="writing-thumbnails-container container-writings">
-                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1]; let i = index" #writingThumbnail>
-                                                    <app-thumbnail-writing class="writing-component-container" 
+                                                <div *ngFor="let item of list_albums_writings[list_titles_albums_writings_added.length-i-1].slice(0,number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i])" >
+                                                    <app-thumbnail-writing
+                                                        (sendLoaded)="display_albums_writing_thumbnails( $event );"
                                                         [item]=item
                                                         now_in_seconds={{now_in_seconds}}
                                                     ></app-thumbnail-writing>
@@ -1036,25 +1093,43 @@
                                             </div>
 
                                         </div>
+                                        <div *ngIf="list_albums_writings[list_titles_albums_writings_added.length-i-1].length>number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i]" class="see-more" (click)="see_more_writings(list_titles_albums_writings_added.length-i,0)">
+                                            <div class="icon">
+                                            </div>
+                                        </div>
                                     </div>
+                                    
                                 </ng-container>
 
-                                <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container container-writings">   
-                                    <div *ngFor="let item of list_writings; let i = index" #writingThumbnail>
-                                        <app-thumbnail-writing
-                                            [item]=item
-                                            now_in_seconds={{now_in_seconds}}
-                                        ></app-thumbnail-writing>
+                                <ng-container>
+                                    <div *ngIf="list_titles_albums_writings_added.length>0" class="artwork-type-title">
+                                        Tout
                                     </div>
-                                </div>
+                                    <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container container-writings">   
+                                    
+                                        <div *ngFor="let item of list_writings.slice(0,number_of_writings_to_show_by_album[0])">
+                                            <app-thumbnail-writing 
+                                            (sendLoaded)="display_albums_writing_thumbnails( $event );"
+                                                [item]=item
+                                                now_in_seconds={{now_in_seconds}}
+                                            ></app-thumbnail-writing>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="list_writings.length>number_of_writings_to_show_by_album[0]" class="see-more" (click)="see_more_writings(0,0)">
+                                        <div class="icon">
+                                        </div>
+                                    </div>
+                                </ng-container>
+                               
                             </ng-container>
 
 
                             <!--Autres albums-->
                             <ng-container *ngIf="opened_album>=1">
                                 <div class="writing-thumbnails-container container-writings">
-                                    <div *ngFor="let item of list_albums_writings[opened_album - 1] ; let j = index" #writingThumbnail>
-                                        <app-thumbnail-writing
+                                    <div *ngFor="let item of list_albums_writings[opened_album - 1].slice(0,number_of_writings_to_show_by_album[opened_album])" >
+                                        <app-thumbnail-writing 
+                                        (sendLoaded)="display_albums_writing_thumbnails( $event );"
                                         [item]=item
                                         now_in_seconds={{now_in_seconds}}
                                         ></app-thumbnail-writing>
@@ -1075,6 +1150,7 @@
                     <ng-container *ngIf="add_album==0">
                         <app-add-album-comic 
                             [author_name]=author_name
+                            [pseudo]=pseudo
                             [user_id]=user_id
                             [profile_picture]=profile_picture
                             [primary_description]=primary_description
@@ -1088,6 +1164,7 @@
                     <ng-container *ngIf="add_album==1 && list_drawings_onepage_added && list_drawings_artbook_added">
                         <app-add-album-drawing
                             [author_name]=author_name
+                            [pseudo]=pseudo
                             [user_id]=user_id
                             [profile_picture]=profile_picture
                             [primary_description]=primary_description
@@ -1101,6 +1178,7 @@
                     <ng-container *ngIf="add_album==2 && list_writings_added">
                         <app-add-album-writing
                             [author_name]=author_name
+                            [pseudo]=pseudo
                             [user_id]=user_id
                             [profile_picture]=profile_picture
                             [primary_description]=primary_description
@@ -1119,30 +1197,36 @@
             
         </ng-container>
 
+        <ng-container *ngIf="(list_writings_added && list_drawings_artbook_added
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added)">
 
-        <ng-container *ngIf="opened_section==2 && list_of_ads_added">
-            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
-            [item]=item
-            now_in_seconds={{now_in_seconds}}
-            ></app-thumbnail-ad>
-            <div *ngIf="list_of_ads.length==0">
-                L'utilsiateur n'a publié aucune annonce
-            </div>
+            <ng-container *ngIf="opened_section==2 && list_of_ads_added">
+                
+                
+                <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
+                style="margin-top:20px"
+                [item]=item
+                now_in_seconds={{now_in_seconds}}
+                ></app-thumbnail-ad>
+                
+               
+                <div *ngIf="list_of_ads.length==0">
+                    L'utilsiateur n'a publié aucune annonce
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="opened_section==6">
+                <app-archives
+                ></app-archives>
+            </ng-container>
+
+            <ng-container *ngIf="opened_section==5">
+                <app-account-about></app-account-about>
+            </ng-container>
+
         </ng-container>
 
-        <ng-container *ngIf="opened_section==6 && archives_received">
-            <app-archives
-            [archives_comics]=archives_comics
-            [archives_ads]=archives_ads
-            [archives_drawings]=archives_drawings
-            [archives_writings]=archives_writings
-            now_in_seconds={{now_in_seconds}}
-            ></app-archives>
-        </ng-container>
-
-        <ng-container *ngIf="opened_section==5">
-            <app-account-about></app-account-about>
-        </ng-container>
+        
 
        
 
