@@ -109,9 +109,32 @@ export class UploaderPicturesAdComponent implements OnInit {
         });
       }
       else{
-        file.withCredentials = true; 
-        let index = this.uploader.queue.indexOf(file);
-        this.displayContent(file,index);
+        
+        var re = /(?:\.([^.]+))?$/;
+        let size = file._file.size/1024/1024;
+
+
+        if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+          console.log(re.exec(file._file.name)[1])
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+          });
+        }
+        else{
+          if(Math.trunc(size)>=10){
+            this.uploader.queue.pop();
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            });
+          }
+          else{
+            file.withCredentials = true; 
+            let index = this.uploader.queue.indexOf(file);
+            this.displayContent(file,index);
+          }
+        }
+        
       }
      
       

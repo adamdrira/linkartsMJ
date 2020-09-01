@@ -6,6 +6,10 @@ import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { first } from 'rxjs/operators';
 
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
+
 declare var $:any;
 
 
@@ -24,7 +28,8 @@ export class UploaderCoverWritingComponent implements OnInit {
     private Writing_CoverService: Writing_CoverService, 
     private rd:Renderer2,
     private cd:ChangeDetectorRef,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    public dialog: MatDialog,
     
     ){
 
@@ -46,6 +51,7 @@ export class UploaderCoverWritingComponent implements OnInit {
 
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
+  @Input('pseudo') pseudo:string;
   @Input('profile_picture') profile_picture:SafeUrl;
 
   @Input('name') name: string;
@@ -54,6 +60,10 @@ export class UploaderCoverWritingComponent implements OnInit {
   @Input('format') format: string;
   @Input('color') color: string;
 
+  
+  @Input('firsttag') firsttag: string;
+  @Input('secondtag') secondtag: string;
+  @Input('thirdtag') thirdtag: string;
  
 
   ngOnChanges(changes: SimpleChanges) {
@@ -120,9 +130,32 @@ export class UploaderCoverWritingComponent implements OnInit {
 
     this.uploader.onAfterAddingFile = async (file) => {
         
-      file.withCredentials = true; 
-      this.afficheruploader = false;
-      this.afficherpreview = true;
+      
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
+
+
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficheruploader = false;
+          this.afficherpreview = true;
+        }
+      }
+      
     };
 
       this.uploader.onCompleteItem = (file) => {

@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
 const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
@@ -75,12 +77,12 @@ get upload(): boolean {
      private sanitizer:DomSanitizer,  
      private bdOneShotService: BdOneShotService, 
      private router: Router,
-     private Profile_Edition_Service:Profile_Edition_Service
+     private Profile_Edition_Service:Profile_Edition_Service,
+     public dialog: MatDialog,
      ){
 
     this.uploader = new FileUploader({
       //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
-      
 
     });
 
@@ -114,16 +116,38 @@ get upload(): boolean {
     })
     
     this.uploader.onAfterAddingFile = async (file) => {
-      file.withCredentials = true; 
-      this.afficheruploader = false;
-      this.afficherpreview = true;
+
+      
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
+
+
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficheruploader = false;
+          this.afficherpreview = true;
+        }
+      }
     };
 
-    this.uploader.onCompleteItem = (file) => {
 
+    this.uploader.onCompleteItem = (file) => {
     if( (this._page + 1) == this.total_pages ) {
       this.bdOneShotService.validate_bd(this.total_pages).subscribe(r=>{this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}`] );})
-      
     }
   
     }

@@ -23,7 +23,6 @@
 
             </div>
         </div>
-        
 
     </div>
 
@@ -42,10 +41,6 @@
 
         <div class="buttons-container">
             <ng-container *ngIf="!uploader.queue[0].isSuccess">
-                <!--<button type="button" class="btn btn-success btn-xs"
-                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-                    <span class="glyphicon glyphicon-upload">Télécharger</span> 
-                </button>-->
                 <button  type="button" class="btn btn-danger btn-xs"
                         (click)="remove_beforeupload(uploader.queue[0]);" >
                     <span class="glyphicon glyphicon-trash">Supprimer</span> 

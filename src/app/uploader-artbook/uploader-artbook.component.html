@@ -1,7 +1,6 @@
+
 <div class="upload-container">
 
-
-    
 
     <div *ngIf="afficheruploader" class="uploader-container">
 
@@ -11,20 +10,20 @@
                     <div class="upload-icon"></div>
                     <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
                 </div>
-            </div>
-        </div>
-        
-        <div class="button-container">
-            <label>
-                <div class="select-button">
-                    Sélectionner un fichier
+                
+                <div class="button-container">
+                    <label>
+                        <div class="select-button">
+                            Sélectionner un fichier
+                        </div>
+                        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                    </label>
                 </div>
-                <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-            </label>
+
+            </div>
         </div>
 
     </div>
-
 
 
 
@@ -43,10 +42,6 @@
 
         <div class="buttons-container">
             <ng-container *ngIf="!uploader.queue[0].isSuccess">
-                <!--<button type="button" class="btn btn-success btn-xs"
-                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-                    <span class="glyphicon glyphicon-upload">Télécharger</span> 
-                </button>-->
                 <button  type="button" class="btn btn-danger btn-xs"
                         (click)="remove_beforeupload(uploader.queue[0]);" >
                     <span class="glyphicon glyphicon-trash">Supprimer</span> 
@@ -61,6 +56,7 @@
         </div>          
             
     </ng-container>
+    
 
 
 </div>

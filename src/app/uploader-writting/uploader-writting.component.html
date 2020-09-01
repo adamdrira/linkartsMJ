@@ -1,6 +1,7 @@
 <div class="button-container" *ngIf="!afficherpreview">
     <label>
         <div class="select-button">
+            <mat-icon>picture_as_pdf</mat-icon>
             <span>Télécharger l'écrit en pdf</span>
         </div>
         <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
@@ -11,25 +12,28 @@
 
 
 <div class="name-container" *ngIf="afficherpreview">
-    <span><b>Fichier sélectionné :</b> {{ uploader.queue[0]?.file?.name }}</span>
+    <span><b>Fichier sélectionné : </b> <i style="color:rgb(100,100,100);">{{ uploader.queue[0]?.file?.name }}</i></span>
 
-    <ng-container *ngIf="!uploader.queue[0].isSuccess">
+    <div *ngIf="!uploader.queue[0].isSuccess">
 
         <button mat-raised-button class="button style1"
             (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || confirmation_for_extension">
+            <mat-icon>check</mat-icon>
             <span>Valider</span> 
         </button>
 
         <button mat-raised-button class="button style0"
             (click)="remove_beforeupload(uploader.queue[0]);">
+            <mat-icon>refresh</mat-icon>
             <span class="">Recommencer</span> 
         </button>
-    </ng-container>
+    </div>
 
     <ng-container *ngIf="uploader.queue[0].isSuccess">
         <button mat-raised-button class="button style0"
             (click)="remove_afterupload(uploader.queue[0]);">
-        <span class="">Recommencer</span> 
+            <mat-icon>refresh</mat-icon>
+            <span class="">Recommencer</span> 
         </button>
     </ng-container>
 

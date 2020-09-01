@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
 
 const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 
@@ -82,7 +85,8 @@ export class UploaderArtbookComponent implements OnInit {
     private sanitizer:DomSanitizer, 
     private Drawings_Artbook_Service:Drawings_Artbook_Service, 
     private router: Router,
-    private Profile_Edition_Service:Profile_Edition_Service
+    private Profile_Edition_Service:Profile_Edition_Service,
+    public dialog: MatDialog,
     ){
 
     this.uploader = new FileUploader({
@@ -113,16 +117,35 @@ export class UploaderArtbookComponent implements OnInit {
     
 
     this.uploader.onAfterAddingFile = async (file) => {
-      console.log(this.uploader);
-      file.withCredentials = true; 
-      this.afficheruploader = false;
-      this.afficherpreview = true;
+      
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
 
-      let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.SafeURL =SafeURL;
 
-      this.sendPicture.emit( {page: this._page, image: SafeURL, changePage: false, removing: false} );
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficheruploader = false;
+          this.afficherpreview = true;
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.SafeURL =SafeURL;
+          this.sendPicture.emit( {page: this._page, image: SafeURL, changePage: false, removing: false} );
+        }
+      }
         
     };
 

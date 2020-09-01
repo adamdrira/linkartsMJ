@@ -96,6 +96,7 @@ export class UploaderAttachmentsAdComponent implements OnInit {
 
     this.uploader.onAfterAddingFile = async (file) => {
 
+      
       var re = /(?:\.([^.]+))?$/;
       let index = this.uploader.queue.indexOf(file);
       let size = file._file.size/1024/1024;
@@ -114,10 +115,10 @@ export class UploaderAttachmentsAdComponent implements OnInit {
             data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},
           });
         }
-        else if(Math.trunc(size)>10){
+        else if(Math.trunc(size)>=10){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}`},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
           });
         }
         else{

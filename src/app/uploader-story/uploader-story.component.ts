@@ -76,21 +76,30 @@ export class UploaderStoryComponent implements OnInit {
 
     this.uploader.onAfterAddingFile = async (file) => {
 
+      
       var re = /(?:\.([^.]+))?$/;
-      console.log(re.exec(file._file.name)[1]);
-      if(re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg" && re.exec(file._file.name)[1]!="svg" ){
+      let size = file._file.size/1024/1024;
+
+
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez sélectionner une image valide (.jpg,.png,.svg)'},
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
         });
-
-        
       }
       else{
-        file.withCredentials = true; 
-        this.afficherpreview = true;
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficherpreview = true;
+        }
       }
-        
       
     };
 

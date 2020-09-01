@@ -4,6 +4,11 @@ import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser'
 import { Ads_service } from '../services/ads.service';
 import { first } from 'rxjs/operators';
 
+
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
+
 declare var $:any;
 
 const url = 'http://localhost:4600/routes/upload_thumbnail_ad';
@@ -21,7 +26,8 @@ export class UploaderThumbnailAdComponent implements OnInit {
     private Ads_service: Ads_service, 
     private rd:Renderer2,
     private cd:ChangeDetectorRef,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    public dialog: MatDialog,
     
     ){
 
@@ -94,9 +100,31 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
     this.uploader.onAfterAddingFile = async (file) => {
         
-      file.withCredentials = true; 
-      this.afficheruploader = false;
-      this.afficherpreview = true;
+      
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
+
+
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficheruploader = false;
+          this.afficherpreview = true;
+        }
+      }
     };
 
       this.uploader.onCompleteItem = (file) => {

@@ -54,8 +54,10 @@ export class UploaderWrittingComponent implements OnInit {
    
     this.uploader.onAfterAddingFile = async (file) => {
 
+
       console.log( this.uploader);
       var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
 
       if(re.exec(file._file.name)[1]!="pdf"){
         this.uploader.queue.pop();
@@ -64,8 +66,17 @@ export class UploaderWrittingComponent implements OnInit {
         });
       }
       else{
-        file.withCredentials = true; 
-        this.afficherpreview = true;
+        
+        if(Math.trunc(size)>=50){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 50mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          file.withCredentials = true; 
+          this.afficherpreview = true;
+        }
         //this.uploader.setOptions({ headers: [{name:'type',value:re.exec(file._file.name)[1]}]});
       }
       

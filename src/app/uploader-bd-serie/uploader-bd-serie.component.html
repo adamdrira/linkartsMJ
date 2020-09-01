@@ -10,16 +10,17 @@
                     <div class="upload-icon"></div>
                     <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
                 </div>
-            </div>
-        </div>
-        
-        <div class="button-container">
-            <label>
-                <div class="select-button">
-                    Sélectionner un fichier
+
+                <div class="button-container">
+                    <label>
+                        <div class="select-button">
+                            Sélectionner un fichier
+                        </div>
+                        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                    </label>
                 </div>
-                <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-            </label>
+
+            </div>
         </div>
 
     </div>

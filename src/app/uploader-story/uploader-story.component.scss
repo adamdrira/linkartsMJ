@@ -47,7 +47,7 @@ height:100%;
   margin:auto auto 10px auto;
   height:60px;
   width:60px;
-  background:rgb(59, 59, 59);
+  background:rgb(32,56,100);
   -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
 }
@@ -55,7 +55,7 @@ height:100%;
 
 .thumbnail-container .image-container .dropzone .icon-container span {
   font-size:18px;
-  color:rgb(59, 59, 59);
+  color: rgb(32,56,100);
   opacity:1;
   transition:opacity 200ms;
 }
@@ -90,16 +90,22 @@ height:100%;
   display:flex;
   cursor:pointer;
   margin:auto auto;
-  padding:10px 15px 10px 15px;
-  background:rgb(240, 240, 240);
-  box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.26);
-  border-radius:10px;
-  border:1px solid rgb(219, 219, 219);
+  font-size: 17px;
+  background: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 50px;
+  box-shadow: 0px 0px 10px 1px #dae6ee !important;
+  border: 1px solid #85a1b3 !important;
+  outline: none !important;
+  padding: 15px 30px;
 }
 
 .thumbnail-container .image-container .upload-picture:hover {
-  background:rgb(236, 236, 236);
-  box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+  background:rgb(246, 249, 253);
 }
 
 

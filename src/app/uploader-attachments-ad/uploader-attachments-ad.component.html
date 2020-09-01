@@ -1,36 +1,86 @@
-<div class="uplaoder-container">
-    <div class="button-container" >
-        <label>
-            <div class="select-button">
-                <span>Sélectionner jusqu'à 5 fichiers complémentaires</span>
-            </div>
-            <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-        </label>
-        
-    </div>
 
-
-    <tr class="name-container" >
-        <td *ngFor="let item of uploader.queue; let i=index">
-            <span *ngIf="!list_of_contents_type[i]">{{ uploader.queue[i]?.file?.name }} et {{ item?.file?.size/1024/1024 | number:'.2' }} MB</span>
-            
-            <span *ngIf="list_of_contents_type[i]"><img [src]="list_of_pictures[i]" style="max-width:140px;max-height:140px;"></span>
+<!--<div class="button-container" >
+    <label>
+        <div class="select-button">
+            <span>Sélectionner jusqu'à 5 fichiers complémentaires</span>
+        </div>
+        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+    </label>
     
+</div>-->
 
-            <div>
+<div class="button-container">
+    <label>
+        <div class="select-button">
+            <mat-icon>photo_library</mat-icon>
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span>Ajouter une pièce jointe</span>
+            <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+        </div>
+    </label>
+</div>
 
-                <!--<button mat-raised-button class="button style1"
-                    (click)="uploader.queue[i].upload();" [disabled]="uploader.queue[i].isReady || uploader.queue[i].isUploading || uploader.queue[i].isSuccess">
-                    <span>Valider</span> 
-                </button>-->
 
-                <button mat-raised-button class="button style0"
-                    (click)="remove_beforeupload(uploader.queue[i],i);">
-                    <span class="">Supprimer</span> 
-                </button>
-            </div>
-        </td>
+
+<!--<tr class="name-container" >
+    <td *ngFor="let item of uploader.queue; let i=index">
+        <span *ngIf="!list_of_contents_type[i]">{{ uploader.queue[i]?.file?.name }} et {{ item?.file?.size/1024/1024 | number:'.2' }} MB</span>
+        
+        <span *ngIf="list_of_contents_type[i]"><img [src]="list_of_pictures[i]" style="max-width:140px;max-height:140px;"></span>
+
+
+        <div>
+
+            <button mat-raised-button class="button style0"
+                (click)="remove_beforeupload(uploader.queue[i],i);">
+                <span class="">Supprimer</span> 
+            </button>
+        </div>
+    </td>
+
+</tr>-->
+
+
+
+<div class="attachments">
+    <div *ngFor="let item of uploader.queue; let i=index" class="attachment-container">
         
 
-    </tr>
+        <div *ngIf="list_of_contents_type[i]" class="attachment-picture">
+            <img [src]="list_of_pictures[i]">
+            
+            <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        
+        <div *ngIf="!list_of_contents_type[i]" class="attachment-picture">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <span><i>{{ uploader.queue[i]?.file?.name }}</i></span>
+
+        
+        
+        <!--<div class="left-container">
+            <span><i>{{ uploader.queue[i]?.file?.name }}</i></span>
+        </div>
+        
+        <div *ngIf="list_of_contents_type[i]"  class="attachment-picture">
+            <img [src]="list_of_pictures[i]">
+        </div>
+
+        <div>
+            <button mat-raised-button class="button style0"
+                (click)="remove_beforeupload(uploader.queue[i],i);">
+                <span class="">Supprimer</span> 
+            </button>
+        </div>-->
+
+    </div>
 </div>
+

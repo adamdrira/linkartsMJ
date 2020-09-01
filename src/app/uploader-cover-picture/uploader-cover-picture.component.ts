@@ -7,6 +7,9 @@ import { MatSliderChange } from '@angular/material/slider';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
 
+import { MatDialog } from '@angular/material/dialog';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+
 declare var Cropper:any;
 declare var $:any;
 
@@ -22,6 +25,7 @@ export class UploaderCoverPictureComponent implements OnInit {
     private sanitizer:DomSanitizer, 
     private Profile_Edition_Service:Profile_Edition_Service,
     private router: Router,
+    public dialog: MatDialog,
     ) { 
     
     this.uploader = new FileUploader({
@@ -69,8 +73,31 @@ export class UploaderCoverPictureComponent implements OnInit {
     })
 
     this.uploader.onAfterAddingFile = async (file) => {
-      this.image_uploaded = true;
-      file.withCredentials = true; 
+
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
+
+
+      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+          });
+        }
+        else{
+          this.image_uploaded = true;
+          file.withCredentials = true; 
+        }
+      }
+      
 
     };
     this.uploader.onCompleteItem = (file) => {

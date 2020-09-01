@@ -1,6 +1,6 @@
 
 
-<div class="writing-container">
+<div class="writing-container-2">
 
 
     <div #thumbnail class="col-writing text-center" style="display:flex;">
@@ -16,8 +16,8 @@
                         <div *ngIf="afficheruploader" class="uploader-container">
                             <div class="dropzone">
                                 <div class="icon-container">
-                                    <div class="upload-icon"></div>
                                     <label>
+                                        <div class="upload-icon"></div>
                                         <div class="select-button">
                                             Sélectionner un fichier
                                         </div>
@@ -75,24 +75,31 @@
                             </div>
                             <div class="right-container">
                                 <span class="author-name">{{author_name}}</span>
-                                <span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>
+                                <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
                             </div>
                         </div>
                         <!--********************-->
                         <!--Data container-->
                         <!--********************-->
                         <div class="stats-container">
-                            <div class="figure-container-views">
-                                <span></span>
-                                <div class="view-logo"></div>
+                            <div class="figure-container views">
+                                <div>
+                                    <mat-icon>visibility</mat-icon>
+                                    <span>&nbsp;</span>
+                                    <!--<div class="view-logo"></div>-->
+                                </div>
                             </div>
-                            <div class="figure-container-likes">
-                                <span></span>
-                                <div class="like-logo"></div>
+                            <div class="figure-container likes">
+                                <div>
+                                    <mat-icon>thumb_up</mat-icon>
+                                    <span>&nbsp;</span>
+                                </div>
                             </div>
-                            <div class="figure-container-loves">
-                                <span></span>
-                                <div class="love-logo"></div>
+                            <div class="figure-container loves">
+                                <div>
+                                    <mat-icon>favorite</mat-icon>
+                                    <span>&nbsp;</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -108,10 +115,11 @@
                 <div #thumbnailVerso class="element-writing border-verso">
                 
                     <!--********************-->
-                    <!--Title container-->
+                    <!--Category container-->
                     <!--********************-->
                     <div class="verso-resume">
-                        <span class="resume">Résumé</span>
+                        <span class="resume" *ngIf="!category">Catégorie</span>
+                        <span class="resume">{{category}}</span>
                     </div>
                     <div class="horizontal-line">
                     </div>
@@ -119,24 +127,23 @@
                     <!--Description container-->
                     <!--********************-->
                     <div class="verso-description">
-                        <span *ngIf="description==''">
-                            Description de l'oeuvre
+                        <span *ngIf="!description">
+                            Description
                         </span>
-                        <span *ngIf="description!=''">
+                        <span *ngIf="description">
                             {{description}}
                         </span>
                     </div>
                     <!--********************-->
-                    <!--Type container-->
-                    <!--********************-->
-                    <div class="verso-type">
-                        <span>{{format}}</span>
-                    </div>
-                    <!--********************-->
                     <!--Categories container-->
                     <!--********************-->
-                    <div class="categories-container">  
-                        <span class="categories">Catégorie et genres</span>
+                    <div class="categories-container">
+                        <div *ngIf="firsttag" class="tag-container"><span  class="categories" >{{firsttag}}</span></div>
+                        <div  *ngIf="secondtag" class="tag-container"><span  class="categories" >{{secondtag}}</span></div>
+                        <div  *ngIf="thirdtag" class="tag-container"><span  class="categories" >{{thirdtag}}</span></div>
+                    </div>
+                    <div class="categories-container" *ngIf="!firsttag">  
+                        <div class="tag-container"><span class="categories">Genres</span></div>
                     </div>
                     <!--********************-->
                     <!--Date container-->
