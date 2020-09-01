@@ -32,16 +32,15 @@
     /*border:1px solid rgb(206, 206, 206);*/
 
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
-    /*border-radius:4px;*/
     border-radius: 40px 4px 40px 4px;
     overflow: hidden;
   }
   
   .border-verso {
-    border-radius: 4px 40px 4px 40px ;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
     background: rgb(109, 124, 152);
-    padding: 15px 15px 15px 15px;
+    padding: 15px 20px 20px 20px;
+    border-radius: 4px 40px 4px 40px;
     overflow: hidden;
   }
   
@@ -89,13 +88,14 @@
     flex-direction: column;
     width:100%;
     text-align:left;
+    margin-bottom: 10px;
     }
     
     .title-container span.title {
     font-weight: bold;
     margin: auto auto;
     font-size: 18px;
-    line-height: 20px;
+    line-height: 23px;
     display: -webkit-box;
     width: 100%;
     -webkit-box-orient: vertical;
@@ -150,169 +150,179 @@
     text-overflow: ellipsis;
     }
     
-    .stats-container {    
+  .stats-container {    
     width: 100%;
     height: 22px;
-    font-size: 1.1rem;
     color: #3b3b3b;
     display: flex;
     margin-top: 7px;
     margin-bottom: 7px;
-    font-size: 1rem;
-    justify-content: space-between;
-    }
-    
-    .figure-container-views,
-    .figure-container-likes,
-    .figure-container-loves
-    {
-    display: flex;
-    border-radius: 6px;
-    align-items: center;
-    width: 60px;
-    height: 25px;
-    }
-    
-    
-    .figure-container-views {
-      background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
-      color:white;
-      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
-    }
-    
-    .figure-container-likes {
-      background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
-      color:white;
-      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
-    }
-    
-    .figure-container-loves {    
-      background-image: linear-gradient(to left, #8a0101, #e60000);
-      color:white;
-      box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
-    }
-    
-    .figure-container-views span,
-    .figure-container-likes span,
-    .figure-container-loves span
-    {
-    margin:auto 5px auto auto;
-    }
-    
-    
-    
-    .view-logo {
-    width:20px;
-    height:20px;
-    margin:auto auto auto 0px;
-    background-color: rgb(255, 255, 255);
-    -webkit-mask:  url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
-    mask: url("/assets/img/svg/eye.svg") no-repeat 50% 50%;
-    }
-    
-    .like-logo {
-     width:18px;
-     height:18px;
-     margin:2px auto auto 0px;
-     background-color: rgb(255, 255, 255);
-     -webkit-mask:  url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
-     mask: url("/assets/img/svg/like-2.svg") no-repeat 50% 50%;
-    }
-    
-    .love-logo {
-    width:14px;
-    height:14px;
-    margin:auto auto auto 0px;
-    background-color: rgb(255, 255, 255);
-    -webkit-mask:  url("/assets/img/svg/love.svg") no-repeat 50% 50%;
-    mask: url("/assets/img/svg/love.svg") no-repeat 50% 50%;
-    }
-    
-    
-  
-  
-  
-  /*********Face verso*************/
-  
-  
-  .border-verso .verso-resume {
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-size:1.4rem;
-    text-align:left;
-    display:flex;
-  }
-  
-  
-  .element-writing .horizontal-line {
-    width: 60px;
-    height: 2px;
-    margin: 0px auto 0px 0px;
-    background: white;
-  }
-  
-  .border-verso .verso-description {    
-    width: 100%;
-    text-align: left;
-    line-height: 1.5rem;
-    margin-top: 10px;
-    overflow-y: hidden;
-    word-break: break-word;
-  }
-  
-  .border-verso .verso-description span {
-    margin: auto auto;
+    /*font-size: 1rem;*/
     font-size: 15px;
-    line-height: 20px;
-    display: -webkit-box;
-    width: 100%;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
-    -webkit-line-clamp: 11;
+    justify-content: space-between;
+  }
+  
+  .figure-container
+  {
+    display: flex;
+    border-radius: 16px;
+    align-items: center;
+    min-width: 65px;
+    border: solid 2px #ffffff;
+    color:white;
+  }
+  
+  
+  .figure-container.views {
+    background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
+    /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  
+  }
+  
+  .figure-container.likes {
+    background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
+     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  }
+  
+  .figure-container.loves {    
+    background-image: linear-gradient(to left, #8a0101, #e60000);
+     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  }
+  
+  .figure-container
+  {
+    margin:auto 5px auto auto;
+  }
+
+  .figure-container > div {
+    display:flex;
+    margin:auto auto;
+  }
+  
+
+  .stats-container .figure-container.views mat-icon {
+    height:unset;
+    width:unset;
+    font-size: 20px;
+    margin: 1px auto auto 5px;
+  }
+  .stats-container .figure-container.likes mat-icon {
+    height:unset;
+    width:unset;
+    font-size: 17px;
+    margin: 2px auto auto 5px;
+  }
+  .stats-container .figure-container.loves mat-icon {
+    height:unset;
+    width:unset;
+    font-size: 16px;
+    margin: 3px auto auto 4px;
   }
   
     
-  .categories-container {
-      width:100%;
-      white-space: nowrap;
-      text-align:left;
-      line-height: 20px;
-      margin-top: auto;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      }
-      
-  .categories-container span {
-      font-size:1rem;
+  
+/*********Face verso*************/
+
+
+.border-verso .verso-resume {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size:1.4rem;
+  text-align:left;
+  display:flex;
+}
+
+
+.element-writing .horizontal-line {
+  width: 60px;
+  height: 3px;
+  margin: 0px auto 0px 0px;
+  background: rgb(255, 255, 255);
+}
+
+.border-verso .verso-description {    
+  width: 100%;
+  text-align: left;
+  line-height: 1.5rem;
+  margin-top: 10px;
+  overflow-y: hidden;
+  word-break: break-word;
+}
+
+.border-verso .verso-description span {
+  margin: auto auto;
+  font-size: 15px;
+  line-height: 22px;
+  display: -webkit-box;
+  width: 100%;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  -webkit-line-clamp: 7;
+}
+
+  
+.categories-container {
+  width:100%;
+  display:flex;
+  align-items:center;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  text-align:left;
+  line-height: 20px;
+  margin-top: auto;
+  flex-wrap: wrap;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   }
   
-  .date-container {
-      width:100%;
-      margin-top: 10px;
-      line-height: 1.3rem;
-      text-align:left;
-  }
-  
-  .date-container span {
-      font-size:13px;
-  }
-  
-  
-  .border-verso .verso-type {
-    width: 100%;
-    text-align: left;
-    margin-top: 0px;
-    line-height: 1.15rem;
-  }
-  
-  .border-verso .verso-type span {
-    font-size:1rem;
-  }
-  
-  
+.categories-container span {
+  font-size:1rem;
+}
+
+.tag-container{
+  border: solid 2px white;
+  border-radius: 20px;
+  padding: 0px 10px 2px 10px;
+  display: flex;
+  background-color: black;
+  margin: auto 4px 3px 0px;
+}
+
+.tag-container .mat-icon {
+  font-size: 18px;
+  line-height: 18px;
+  margin-left: 3px;
+  width:unset !important;
+  height:unset !important;
+}
+
+.date-container {
+  width:100%;
+  margin-top: 10px;
+  line-height: 1.3rem;
+  text-align:left;
+}
+
+.date-container span {
+  font-size:13px;
+}
+
+
+.border-verso .verso-type {
+width: 100%;
+display:flex;
+align-items:center;
+text-align: left;
+margin-top: 0px;
+line-height: 1.15rem;
+}
+
+.border-verso .verso-type span {
+font-size:1rem;
+}
 
 
 
