@@ -1,9 +1,12 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
 import { SearchbarService } from '../services/searchbar.service';
+
+import {MatInputModule} from '@angular/material/input';
+
 
 declare var Swiper: any
 declare var $: any 
@@ -26,6 +29,15 @@ export class HomeLinkcollabComponent implements OnInit {
     this.navbar.setActiveSection(1);
     this.navbar.show();
   }
+
+
+
+  @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.cd.detectChanges();
+      this.initialize_heights();
+  };
+  
 
   now_in_seconds:number;
   subcategory:number;
@@ -60,6 +72,20 @@ export class HomeLinkcollabComponent implements OnInit {
     
   }
 
+  
+  ngAfterViewChecked() {
+    this.initialize_heights();
+  }
+
+  initialize_heights() {
+    //if( !this.fullscreen_mode ) {
+      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      this.cd.detectChanges();
+    //}
+  }
+
+
 
   open_subcategory(i) {
 
@@ -88,7 +114,8 @@ export class HomeLinkcollabComponent implements OnInit {
       $(".SelectBox3").SumoSelect({
       });    
       $(".SelectBox4").SumoSelect({
-        
+      });
+      $(".SelectBox5").SumoSelect({
       });
     });
     $('.panel-controller .right-container').hide().delay(80).show('fast');
@@ -126,10 +153,10 @@ export class HomeLinkcollabComponent implements OnInit {
     });
     $(".SelectBox4").change(function(){
       console.log($(this).val());
-      if($(this).val()=="Trie par pertinence"){
+      if($(this).val()=="Tri par pertinence"){
         THIS.sorting="pertinence";
       }
-      if($(this).val()=="Trie par le plus récent"){
+      if($(this).val()=="Tri par le plus récent"){
         THIS.sorting="récent";
       }
       else{

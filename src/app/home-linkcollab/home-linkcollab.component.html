@@ -1,172 +1,266 @@
 
 
 
+
 <div class="container-fluid">
-    <main role="main">
-      
-      
-        <!--<div class="logos-container">
-
-            <div class="logo">
-                <div class="image1"></div>
-                <span>
-                    Trouvez les collaborateurs idéaux pour réalisez vos projets les plus ambitieux.
-                </span>
-            </div>
-            <div class="logo">
-                <div class="image2"></div>
-                <span>
-                    Avancez  seul ou en équipe jusqu’à vous ouvrir les portes des maisons d’édition.
-                </span>
-            </div>
-
-            <div class="logo">
-                <div class="image3"></div>
-                <span>
-                    Réalisez ou soumettez des demandes de prestations de services reliées à notre univers artistique.
-                </span>
-            </div>
+    <main role="main" class="main">
+        
 
 
-        </div>-->
 
-        <div class="categories-container">
-            <div class="category-filter">
-                <div class="content-action text-center opened" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-                    <span>Collaborations bénévoles</span>
-                    <div class="bottom-border">
+        <div id="left-container">
+
+            <div class="categories-container">
+                <div class="category-filter">
+                    <div class="content-action text-center opened" [ngClass]="{'opened' : subcategory==0}" (click)="open_subcategory(0);">
+                        <span>Collaborations bénévoles</span>
+                        <div class="bottom-border">
+                        </div>
                     </div>
-                </div>
-                <div class="content-action text-center" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
-                    <span>Collaborations rémunérées</span>
-                    <div class="bottom-border">
+                    <div class="content-action text-center" [ngClass]="{'opened' : subcategory==1}" (click)="open_subcategory(1);">
+                        <span>Collaborations rémunérées</span>
+                        <div class="bottom-border">
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="left-container-scrollable">
+
+                <div class="panel-controller">
+                    <div class="dropdowns-container" *ngIf="subcategory==0">
+                        
+                        <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Bandes dessinées">Bandes dessinées</option>
+                            <option label="BD européennes">BD européennes</option>
+                            <option label="Comics">Comics</option>
+                            <option label="Manga">Manga</option>
+                            <option label="Dessin ">Dessin en tout genre</option>
+                            <option label="Dessin numérique">Dessin numérique</option>
+                            <option label="Dessin traditionnel">Dessin traditionnel</option>
+                            <option label="Ecrit en tout genre">Ecrit en tout genre</option>
+                            <option label="Articles">Articles</option>
+                            <option label="Roman">Roman</option>
+                            <option label="Roman illustré">Roman illustré</option>
+                            <option label="Scénario">Scénario</option>
+                        </select>
+                        <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Professionnel non artiste">Professionnel non artiste</option>
+                            <option label="Artiste">Artiste</option>
+                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                            <option label="Ecrivain">Ecrivain</option>
+                            <option label="Dessinateur">Dessinateur</option>
+                            <option label="Scénariste">Scénariste</option>
+                        </select>
+                        <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Professionnel non artiste">Professionnel non artiste</option>
+                            <option label="Artiste">Artiste</option>
+                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                            <option label="Ecrivain">Ecrivain</option>
+                            <option label="Dessinateur">Dessinateur</option>
+                            <option label="Scénariste">Scénariste</option>
+                        </select>
+                        <select name="somename" class="SelectBox4" placeholder="Tri par pertinence" style="height: 100%;">
+                            <option disabled selected value="Pertinence"></option>
+                            <option label="pertinence">Tri par pertinence</option>
+                            <option label="récent">Tri par le plus récent</option>
+                            <option label="ancient">Tri par le plus ancient</option>
+                        </select>
+                        
+                    </div>
+
+                    <div class="dropdowns-container" *ngIf="subcategory==1">
+                        <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Bandes dessinées">Bandes dessinées</option>
+                            <option label="BD européennes">BD européennes</option>
+                            <option label="Comics">Comics</option>
+                            <option label="Manga">Manga</option>
+                            <option label="Dessin ">Dessin en tout genre</option>
+                            <option label="Dessin numérique">Dessin numérique</option>
+                            <option label="Dessin traditionnel">Dessin traditionnel</option>
+                            <option label="Ecrit en tout genre">Ecrit en tout genre</option>
+                            <option label="Articles">Articles</option>
+                            <option label="Roman">Roman</option>
+                            <option label="Roman illustré">Roman illustré</option>
+                            <option label="Scénario">Scénario</option>
+                        </select>
+                        <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Professionnel non artiste">Professionnel non artiste</option>
+                            <option label="Artiste">Artiste</option>
+                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                            <option label="Ecrivain">Ecrivain</option>
+                            <option label="Dessinateur">Dessinateur</option>
+                            <option label="Scénariste">Scénariste</option>
+                        </select>
+                        <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Professionnel non artiste">Professionnel non artiste</option>
+                            <option label="Artiste">Artiste</option>
+                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                            <option label="Ecrivain">Ecrivain</option>
+                            <option label="Dessinateur">Dessinateur</option>
+                            <option label="Scénariste">Scénariste</option>
+                        </select>
+                        <select name="somename" class="SelectBox4" placeholder="Tri par pertinence" style="height: 100%;">
+                            <option disabled selected value="none"></option>
+                            <option label="pertinence">Tri par pertinence</option>
+                            <option label="récent">Tri par le plus récent</option>
+                            <option label="ancient">Tri par le plus ancient</option>
+                        </select>
+                        
+                    </div>
+                </div>
+
+
+                <div *ngIf="list_of_ads_received">
+                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                </div>
+                
+
+            </div>
+
         </div>
 
 
-        <div class="panel-controller">
-            <!--<div class="left-container">
-                <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-                    Collaborations bénévoles
+
+        <div id="right-container">
+
+            <div class="categories-container">
+                <div class="category-filter">
+                    <div class="content-action text-center">
+                        <span>Nos partenaires</span>
+                    </div>
                 </div>
-                <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
-                    Collaborations rémunérées
-                </div>
-            </div>-->
+            </div>
+            
+            <div class="right-container-scrollable">
 
-
-            <div class="right-container">
-
-                <div class="dropdowns-container" *ngIf="subcategory==0">
-                    
-                    <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Bandes dessinées">Bandes dessinées</option>
-                        <option label="BD européennes">BD européennes</option>
-                        <option label="Comics">Comics</option>
-                        <option label="Manga">Manga</option>
-                        <option label="Dessin ">Dessin en tout genre</option>
-                        <option label="Dessin numérique">Dessin numérique</option>
-                        <option label="Dessin traditionnel">Dessin traditionnel</option>
-                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                        <option label="Articles">Articles</option>
-                        <option label="Scénario">Poésie</option>
-                        <option label="Roman">Roman</option>
-                        <option label="Roman illustré">Roman illustré</option>
-                        <option label="Scénario">Scénario</option>
-                    </select>
-                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>
-                    </select>
-                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>
-                    </select>
-                    <select name="somename" class="SelectBox4" placeholder="Trie par pertinence" style="height: 100%;">
-                        <option disabled selected value="Pertinence"></option>
-                        <option label="pertinence">Trie par pertinence</option>
-                        <option label="récent">Trie par le plus récent</option>
-                        <option label="ancient">Trie par le plus ancient</option>
-                    </select>
-                    
+                <div class="panel-controller">
+                    <div class="dropdowns-container">
+                        <select name="somename" class="SelectBox5" placeholder="Trier par type" style="height: 100%;">
+                            <option label="Bandes dessinées">Bandes dessinées</option>
+                            <option label="Dessins">Dessins</option>
+                            <option label="Écrits">Écrits</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="dropdowns-container" *ngIf="subcategory==1">
-                    <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Bandes dessinées">Bandes dessinées</option>
-                        <option label="BD européennes">BD européennes</option>
-                        <option label="Comics">Comics</option>
-                        <option label="Manga">Manga</option>
-                        <option label="Dessin ">Dessin en tout genre</option>
-                        <option label="Dessin numérique">Dessin numérique</option>
-                        <option label="Dessin traditionnel">Dessin traditionnel</option>
-                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                        <option label="Articles">Articles</option>
-                        <option label="Roman">Roman</option>
-                        <option label="Roman illustré">Roman illustré</option>
-                        <option label="Scénario">Scénario</option>
-                    </select>
-                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>
-                    </select>
-                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>
-                    </select>
-                    <select name="somename" class="SelectBox4" placeholder="Trie par pertinence" style="height: 100%;">
-                        <option disabled selected value="Pertinence"></option>
-                        <option label="pertinence">Trie par pertinence</option>
-                        <option label="récent">Trie par le plus récent</option>
-                        <option label="ancient">Trie par le plus ancient</option>
-                    </select>
-                    
-                </div>
-                
 
-                
+                <div class="search-container">
+                    <mat-form-field class="search-input">
+                        <mat-label>Rechercher</mat-label>
+                        <input matInput placeholder="Rechercher" autocomplete="off">
+                    </mat-form-field>
+                </div>
+
+
+
+                <div class="item-container">
+                    <div class="picture-container">
+                        <img src="../../assets/img/pokemon.jpg">
+                        <button mat-raised-button class="submit-project-button style0">
+                            Soumettre un projet
+                        </button>
+                    </div>
+                    <div class="detail-container">
+                        <!--********************-->
+                        <!--Author container-->
+                        <!--********************-->
+                        <div class="author-container">
+                            <div class="left-container">
+                                <img src="../../assets/img/pokemon.jpg">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">
+                                    Glénat
+                                </span>
+                                <div class="author-location">
+                                    <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
+                                    <span>Paris, France</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-container">
+                    <div class="picture-container">
+                        <img src="../../assets/img/pokemon.jpg">
+                        <button mat-raised-button class="submit-project-button style0">
+                            Soumettre un projet
+                        </button>
+                    </div>
+                    <div class="detail-container">
+                        <!--********************-->
+                        <!--Author container-->
+                        <!--********************-->
+                        <div class="author-container">
+                            <div class="left-container">
+                                <img src="../../assets/img/pokemon.jpg">
+                            </div>
+                            <div class="right-container">
+                                <span class="author-name">
+                                    Glénat
+                                </span>
+                                <div class="author-location">
+                                    <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
+                                    <span>Paris, France</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
 
             </div>
+
+
+
         </div>
 
-        <div *ngIf="list_of_ads_received">
-            <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
-            [item]=item
-            now_in_seconds={{now_in_seconds}}
-            ></app-thumbnail-ad>
-        </div>
-        <!--<app-media-top-offers></app-media-top-offers>-->
+
+        
 
         
 
