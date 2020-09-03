@@ -194,7 +194,7 @@ export class ThumbnailWritingComponent implements OnInit {
   writings_per_line() {
     var width = $('.container-writings').width();
 
-    var n = Math.round(width/310);
+    var n = Math.floor(width/310);
     if( width < 620 ) {
       return 1;
     }
