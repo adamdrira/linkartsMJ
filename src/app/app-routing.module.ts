@@ -25,7 +25,7 @@ import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-
 import { AddAdComponent } from './add-ad/add-ad.component';
 import { MainSearchbarResultsComponent } from './main-searchbar-results/main-searchbar-results.component';
 import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
-
+import { AdPageComponent } from './ad-page/ad-page.component';
 const routes: Routes = [
 
   {path:'', component:HomeLinkartsComponent,  data: {category: 0}},
@@ -38,9 +38,9 @@ const routes: Routes = [
   {path:'account/:pseudo/:id', component:AccountComponent, data: {section: 0}},
   {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1}},
 
-  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
+  /*{path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
   {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}},
-  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}},
+  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}},*/
 
   {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2}},
   {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5}},
@@ -58,7 +58,7 @@ const routes: Routes = [
   {path:'add-artwork/drawing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 1}},
   {path:'add-artwork/writing', component:AddArtworkComponent, canActivate: [AuthGuard], data: {section: 2}},
   {path:'add-artwork/ad', component:AddArtworkComponent,canActivate: [AuthGuard],  data: {section: 3}},
-  {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard],  data: {section: 3}},
+  {path:'handle-comics-chapter/:id', component:AddComicsChapterComponent,canActivate: [AuthGuard],  data: {section: 4}},
   
 
   //Catégories Linkarts
@@ -67,8 +67,9 @@ const routes: Routes = [
   {path:'decouverte', component:HomeLinkartsComponent,  data: {category: 3}},
 
   //messagerie
-  {path:'chat', component:ChatFriendsListComponent, canActivate: [AuthGuard]},
-  
+  {path:'chat', component:ChatFriendsListComponent, canActivate: [AuthGuard],  data: {section: 1}},
+  {path:'chat/:pseudo/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard],  data: {section: 2}},
+  {path:'chat/group/:name/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard],  data: {section: 3}},
   //Components tests
   {path:'test', component:TestComponent, canActivate: [AuthGuard]},
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard]},
@@ -80,9 +81,11 @@ const routes: Routes = [
   //Contenu
   {path:'artwork', component:ArtworkComponent},
   {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent},
-  {path:'artwork-comic/:format/:title/:bd_id', component:ArtworkComicComponent},
+  {path:'artwork-comic/:format/:title/:bd_id', component:ArtworkComicComponent,  data: {section: 1}},
+  {path:'artwork-comic/:format/:title/:bd_id/:chapter_number', component:ArtworkComicComponent,  data: {section: 2}},
   {path:'artwork-drawing/:format/:title/:drawing_id', component:ArtworkDrawingComponent},
-  
+  {path:'ad-page/:title/:id', component:AdPageComponent},
+
   //Linkcollab
   {path:'linkcollab', component:HomeLinkcollabComponent},
   {path:'linkcollab/collaborations_benevoles', component:LinkcollabBenevoleComponent},

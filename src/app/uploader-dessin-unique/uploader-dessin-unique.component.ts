@@ -5,7 +5,8 @@ import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service'
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-
+import {NotificationsService}from '../services/notifications.service';
+import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
@@ -21,46 +22,9 @@ const url = 'http://localhost:4600/routes/upload_drawing_onepage/';
 
 export class UploaderDessinUniqueComponent implements OnInit {
 
-
-  uploader:FileUploader;
-  hasBaseDropZoneOver:boolean;
-  hasAnotherDropZoneOver:boolean;
-  response:string;
-
-  //pour cacher l'uploader dans certains cas
-  afficherpreview :boolean = false;
-  afficheruploader:boolean = true;
-
-  user_id:number;
-  pseudo:string;
-
-   
-
-   //Modification 04 avril
-   @Output() uploaded = new EventEmitter<boolean>();
-   @Output() image = new EventEmitter<SafeUrl>();
-
-
-   @Input() bdtitle: String;
-
-   _upload:boolean;
-
-   @Input() set upload(upload: boolean) {
-    this._upload=upload;
-    if (upload){
-      this.upload_image();
-    }
-  }
-
- get upload(): boolean {
-
-   return this._upload;
-
- }
-
-   
-
   constructor (
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,  
     private Drawings_Onepage_Service: Drawings_Onepage_Service, 
     private router: Router,
@@ -81,6 +45,47 @@ export class UploaderDessinUniqueComponent implements OnInit {
   }
 
 
+  uploader:FileUploader;
+  hasBaseDropZoneOver:boolean;
+  hasAnotherDropZoneOver:boolean;
+  response:string;
+
+  //pour cacher l'uploader dans certains cas
+  afficherpreview :boolean = false;
+  afficheruploader:boolean = true;
+
+  user_id:number;
+  visitor_name:string;
+  pseudo:string;
+  drawing_id:number;
+   
+
+   //Modification 04 avril
+   @Output() uploaded = new EventEmitter<boolean>();
+   @Output() image = new EventEmitter<SafeUrl>();
+
+
+   @Input() title:string;
+
+   _upload:boolean;
+
+   @Input() set upload(upload: boolean) {
+    this._upload=upload;
+    if (upload){
+      this.upload_image();
+    }
+  }
+
+ get upload(): boolean {
+
+   return this._upload;
+
+ }
+
+   
+
+  
+
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
@@ -94,10 +99,11 @@ export class UploaderDessinUniqueComponent implements OnInit {
   
 
   ngOnInit() {
-
+    this.drawing_id=parseInt(this.Drawings_Onepage_Service.get_drawing_id_cookies());
       this.Profile_Edition_Service.get_current_user().subscribe(r=>{
         this.user_id = r[0].id;
         this.pseudo = r[0].nickname;
+        this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
       })
     
       this.uploader.onAfterAddingFile = async (file) => {
@@ -137,7 +143,25 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.Drawings_Onepage_Service.validate_drawing().subscribe(r=>{this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );})
+        this.Drawings_Onepage_Service.validate_drawing().subscribe(r=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"add_publication",
+              id_user_name:this.visitor_name,
+              id_user:this.user_id, 
+              publication_category:'drawing',
+              publication_name:this.title,
+              format:'one-shot',
+              publication_id:this.drawing_id,
+              chapter_number:0,
+              information:"add",
+              status:"unchecked",
+            }
+            this.chatService.messages.next(message_to_send);
+            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          }) 
+        })
         
       }
 

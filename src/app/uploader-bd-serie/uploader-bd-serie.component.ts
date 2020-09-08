@@ -21,62 +21,6 @@ const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
 })
 export class UploaderBdSerieComponent implements OnInit{
 
-
-
-  uploader:FileUploader;
-  hasBaseDropZoneOver:boolean;
-  hasAnotherDropZoneOver:boolean;
-  response:string;
-
-  total_pages:number;
-  @Output() sendValidated = new EventEmitter<boolean>();
-  
-
-  //pour cacher l'uploader dans certains cas
-  afficherpreview :boolean;
-  afficheruploader:boolean;
-
-  _page: number;
-  _chapter:number;
-  _upload:boolean;
-
-   //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
-   @Input() set page(page: number) {
-     this._page=page;
-   }
-
- get page(): number {
-  return this._page;
-}
-
-@Input() set chapter(chapter: number) {
-  this._chapter=chapter;
-  let bd_id = this.BdSerieService.get_bdid_cookies();
-  let URL = url + this.page.toString() + '/' + chapter + '/' + bd_id;
-  console.log('suivant : ' + URL)
-  this.uploader.setOptions({ url: URL});
-
-}
-
-get chapter(): number {
-
-return this._chapter;
-
-}
-@Input() set upload(upload: boolean) {
-  this._upload=upload;
-  if (upload){
-    this.upload_image();
-  }
-}
-
-get upload(): boolean {
-
- return this._upload;
-
-}
-
-
   constructor (
     private sanitizer:DomSanitizer,  
     private BdSerieService: BdSerieService, 
@@ -96,6 +40,67 @@ get upload(): boolean {
   }
 
 
+  uploader:FileUploader;
+  hasBaseDropZoneOver:boolean;
+  hasAnotherDropZoneOver:boolean;
+  response:string;
+
+  total_pages:number;
+  @Output() sendValidated = new EventEmitter<boolean>();
+  
+
+  //pour cacher l'uploader dans certains cas
+  afficherpreview :boolean;
+  afficheruploader:boolean;
+  //@Input() bd_id:number;
+  @Input()  bd_id:number;
+  
+  _page: number;
+  _chapter:number;
+  _upload:boolean;
+
+  //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
+  @Input() set page(page: number) {
+    this._page=page;
+  }
+
+ get page(): number {
+  return this._page;
+  }
+
+  @Input() set chapter(chapter: number) {
+    this._chapter=chapter;
+    console.log(this.bd_id)
+    let bd_id = (this.bd_id).toString();
+    let URL = url + this.page.toString() + '/' + chapter + '/' + bd_id;
+    console.log('suivant : ' + URL)
+    this.uploader.setOptions({ url: URL});
+
+  }
+
+
+
+  get chapter(): number {
+
+  return this._chapter;
+
+  }
+  @Input() set upload(upload: boolean) {
+    this._upload=upload;
+    if (upload){
+      this.upload_image();
+    }
+  }
+
+  get upload(): boolean {
+
+  return this._upload;
+
+  }
+  
+
+  
+
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
   }
@@ -114,7 +119,7 @@ get upload(): boolean {
 
   ngOnInit() {
 
-
+    console.log(this.bd_id);
     this.uploader.onAfterAddingFile = async (file) => {
 
       

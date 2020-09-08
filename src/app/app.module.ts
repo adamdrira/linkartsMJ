@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CompilerFactory, Compiler } from '@angular/core';
 
+import {MatDatepickerModule} from '@angular/material/datepicker';
+
+import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
+
 import {MatSliderModule} from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
@@ -142,13 +146,30 @@ import {WebSocketService} from './services/websocket.service';
 import {ChatService} from './services/chat.service';
 import { PopupAdWriteResponsesComponent } from './popup-ad-write-responses/popup-ad-write-responses.component';
 import { UploaderAdResponseAttachmentsComponent } from './uploader-ad-response-attachments/uploader-ad-response-attachments.component';
-import { UploaderAdResponsePicturesComponent } from './uploader-ad-response-pictures/uploader-ad-response-pictures.component';
 import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
 import { ChatComponent } from './chat/chat.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { ChatRightContainerComponent } from './chat-right-container/chat-right-container.component';
 
+
+
+//a ajouter
+import { AccountAboutComponent } from './account-about/account-about.component';
+import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
+import { MainSearchbarResultsComponent } from './main-searchbar-results/main-searchbar-results.component';
+import { PopupLikesAndLovesComponent } from './popup-likes-and-loves/popup-likes-and-loves.component';
+
+
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { UploaderChatProfilePictureComponent } from './uploader-chat-profile-picture/uploader-chat-profile-picture.component';
+import { PopupChatGroupMembersComponent } from './popup-chat-group-members/popup-chat-group-members.component';
+import { AdPageComponent } from './ad-page/ad-page.component';
+
+
 @NgModule({
+
+
   declarations: [
     KeysPipe,
     FilterAlbumPipe,
@@ -243,10 +264,16 @@ import { ChatRightContainerComponent } from './chat-right-container/chat-right-c
     PopupAdAttachmentsComponent,
     PopupAdWriteResponsesComponent,
     UploaderAdResponseAttachmentsComponent,
-    UploaderAdResponsePicturesComponent,
     ChatFriendsListComponent,
     ChatComponent,
     ChatRightContainerComponent,
+    AccountAboutComponent,
+    AddComicsChapterComponent,
+    MainSearchbarResultsComponent,
+    PopupLikesAndLovesComponent,
+    UploaderChatProfilePictureComponent,
+    PopupChatGroupMembersComponent,
+    AdPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -279,6 +306,12 @@ import { ChatRightContainerComponent } from './chat-right-container/chat-right-c
     MatProgressSpinnerModule,
     MatToolbarModule,
     
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+
+    
   ],
   providers: [
     ConstantsService,
@@ -288,7 +321,10 @@ import { ChatRightContainerComponent } from './chat-right-container/chat-right-c
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     CookieService,
     WebSocketService,
-    ChatService
+    ChatService,
+
+    MatDatepickerModule,
+
   ],
   bootstrap: [AppComponent]
 })
