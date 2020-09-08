@@ -1,0 +1,108 @@
+<div class="full-container">
+        
+
+    <div *ngIf="panels_data[0][0].name!=''" class="searchbar-title ">
+        {{ panels_data[0][0].name }}
+    </div>
+    <div *ngIf="panels_data[0][0].name!=''" class="divider-horizontal"></div>
+    
+
+    <div class="searchbar-container">
+
+        <div class="category-container" #megaMenu>
+            <div class="category-button" (click)="open_panel()">
+                
+                <ng-container *ngIf="searchbarservice.status!=0">
+                    <div class="icon-list-container">
+                        <div class="icon-list">
+                        </div>
+                    </div>
+                    <div class="text-container-60p">
+                        <span class="text">
+                            Tris et catégories
+                        </span>
+                    </div>
+                    <div class="icon-arrow-container">
+                        <div class="icon-arrow">
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="searchbarservice.status==0">
+                    <div class="icon-list-container">
+                        <div class="icon-list">
+                        </div>
+                    </div>
+                    <div class="text-container-100p">
+                        
+                        <select name="somename" class="SelectBox" style="height: 100%;">
+                            <option value="0">Artiste</option>
+                            <option value="1">BD et Mangas</option>
+                            <option value="2">Dessins</option>
+                            <option value="3">Ecrits</option>
+                        </select>
+
+                    </div>
+                </ng-container>
+
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="searchbar">
+                <input #input 
+                    style="font-size: 1.2rem;"
+                    (focus)="activateBorder()" 
+                    (focusout)="disactivateBorder()"
+                    onfocus="this.placeholder = ''"
+                    onblur="this.placeholder = 'Rechercher (i.e. un artiste, un dessin, une animation, une BD, …)'"
+                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher (i.e. un artiste, un dessin, une animation, une BD, …)'">
+            </div>
+        </div>
+
+        <!--MEGA MENU-->
+        <ng-container *ngIf="searchbarservice.status!=0">
+            <div class="mega-menu-container" *ngIf="panels_data[0].opened==1" [@enterAnimation]>
+                <div class="row">
+                    <ul *ngFor="let element2 of panels_data; let i0=index; let first=first" class="list-unstyled col-md-3 col-sm-3 col-3"
+                        [class.col-md-3]="first">
+                        <ng-container *ngFor="let element3 of element2; let i1=index">
+                            <div ><b> {{ element3.title }} </b></div>
+                                <li *ngFor="let element4 of element3.values; let i2=index" 
+                                (click)="click_checkbox(i0,i1,i2)">
+                                    <div>
+                                        {{ element4.value }}
+                                    </div>
+                                    <div class="checkbox">
+                                        <div class="checkbox--content" *ngIf="element4.checked == 1" [@enterAnimation]></div>
+                                    </div>
+                                </li>
+                        </ng-container>
+                    </ul>
+                </div>
+
+                <div class="validate-button" (click)="close_panel()">
+                    <span>Valider</span>
+                </div>
+
+
+            </div>
+        </ng-container>
+
+    </div>
+
+    <div class="submit-container">
+        <div class="submit-button">
+            <span>Rechercher</span>
+        </div>
+
+        <div *ngIf="searchbarservice.status==0" class="add-button">
+            <span>Publier une œuvre</span>
+            <div class="pictures-indicator">
+                <div class="icon-pictures"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

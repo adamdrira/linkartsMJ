@@ -81,7 +81,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   
   ngOnInit(): void {
-
+   
   }
 
   ngAfterViewInit() {
@@ -112,67 +112,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.color ));
     }
 
-    /*
-    if( this.color == "Bleu" ) {
-      this.thumbnail_background = "rgba(47, 87, 151, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
-      }
-    }
-    else if( this.color == "Noir" ) {
-      this.thumbnail_background = "rgba(59, 56, 56, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
-      }
-    }
-    else if( this.color == "Vert" ) {
-      this.thumbnail_background = "rgba(84, 130, 53, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
-      }
-    }
-    else if( this.color == "Jaune" ) {
-      this.thumbnail_background = "rgba(191, 144, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Rouge" ) {
-      this.thumbnail_background = "rgba(160, 0, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Violet" ) {
-      this.thumbnail_background = "rgba(148, 0, 148, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
-      }
-    }
-    else if( this.color == "Rose" ) {
-      this.thumbnail_background = "rgba(255, 153, 255, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
-      }
-    }
-    else if( this.color == "Marron" ) {
-      this.thumbnail_background = "rgba(102, 51, 0, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
-      }
-    }
-    else if( this.color == "Orange" ) {
-      this.thumbnail_background = "rgba(197, 90, 17, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
-      }
-    }
-    else if( this.color == "Gris" ) {
-      this.thumbnail_background = "rgba(166, 166, 166, 0.7)";
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
-      }
-    }*/
+    
   }
 
   initialize_cropper(content: ElementRef) {

@@ -109,7 +109,7 @@ export class Writing_Upload_Service {
    validate_writing(){
      return this.httpClient.post('http://localhost:4600/routes/validation_upload_writing/',{writing_id:this.writing_id}, {withCredentials:true}).pipe(map(information=>{
 
-      return this.Subscribing_service.validate_content("writing","writing",this.writing_id,0).subscribe(l=>{
+      return this.Subscribing_service.validate_content("writing","unknown",this.writing_id,0).subscribe(l=>{
         return information;
       }); 
     }));

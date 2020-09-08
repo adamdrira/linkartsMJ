@@ -32,7 +32,7 @@ export class BdOneShotService {
     return this.httpClient.post('http://localhost:4600/routes/add_bd_oneshot', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, monetization:monetization}, {withCredentials:true}).pipe(map((information)=>{
         this.CookieService.delete('current_bd_oneshot_id','/');
         this.CookieService.delete('current_bd_serie_id','/');
-        this.CookieService.set('current_bd_oneshot_id', information[0].bd_id, undefined, '/');
+        this.CookieService.set('current_bd_oneshot_id', information[0].bd_id, undefined, '/','localhost',undefined,'Lax');
         this.Subscribing_service.add_content('comics', 'one-shot', information[0].bd_id,0).subscribe(r=>{})
         return information[0].bd_id;
     }));

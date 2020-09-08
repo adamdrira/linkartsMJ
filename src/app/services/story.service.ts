@@ -30,7 +30,13 @@ export class Story_service {
   };
 
   get_all_my_stories(): Observable<Object>{
-    return this.httpClient.get('http://localhost:4600/routes/get_all_my_stories', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.get(`http://localhost:4600/routes/get_all_my_stories`, {withCredentials:true}).pipe(map(information=>{
+          return information
+      }));
+  };
+
+  hide_story(id:number): Observable<Object>{
+    return this.httpClient.post('http://localhost:4600/routes/hide_story', {id:id},{withCredentials:true}).pipe(map(information=>{
           return information
       }));
   };

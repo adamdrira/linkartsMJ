@@ -48,7 +48,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
 
   @Input() type: string;
-  
+  @Input() bdtitle: string;
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -266,6 +266,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
     this.swiper.update();
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
+    this.componentRef[ this.componentRef.length - 1 ].instance.bdtitle = this.bdtitle;
   }
 
   event_removed_page() {

@@ -3,7 +3,7 @@
 
 
     <div class="swiper-container456" id="target1">
-        <app-uploader-dessin-unique [upload]=upload (uploaded)="uploaded_image( $event );" (image)="get_image( $event );"></app-uploader-dessin-unique>
+        <app-uploader-dessin-unique [upload]=upload [title]=name (uploaded)="uploaded_image( $event );" (image)="get_image( $event );"></app-uploader-dessin-unique>
     </div>
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">
@@ -83,21 +83,7 @@
                                 </div>
                             </div>
                             
-                            <!--********************-->
-                            <!--Type container-->
-                            <!--********************-->
-                            <!--<div class="verso-type" *ngIf="format">
-                                <ng-container *ngIf="format=='One-shot'">
-                                    <div class="tag-container"><span>One shot</span></div>
-                                </ng-container>
-            
-                                <ng-container *ngIf="format!='One-shot'">
-                                    <div class="tag-container"><span>Série</span></div>
-                                </ng-container>
-                            </div>
-                            <div class="verso-type" *ngIf="!format">
-                                <div class="tag-container"><span>Format</span></div>
-                            </div>-->
+                           
                             <!--********************-->
                             <!--Date container-->
                             <!--********************-->
@@ -109,27 +95,6 @@
                     </div>
                 </div>
 
-                    
-                <!--******************************************************-->
-                <!--Couleur-->
-                <!--******************************************************-->
-                <!--<div class="form-group">
-                    <label for="artworkColor">Couleur du filtre</label>
-                    <select class="drawingSelectColor" style="height: 100%;">
-                        <option selected value="" disabled="true">Sélectionner une couleur </option>
-                        <option>Bleu</option>
-                        <option>Noir</option>
-                        <option>Vert</option>
-                        <option>Jaune</option>
-                        <option>Rouge</option>
-                        <option>Violet</option>
-                        <option>Rose</option>
-                        <option>Marron</option>
-                        <option>Orange</option>
-                        <option>Gris</option>
-                    </select>
-                    <p *ngIf="displayErrors">Veuillez sélectionner une couleur</p>
-                </div>-->
                 
                 
                 

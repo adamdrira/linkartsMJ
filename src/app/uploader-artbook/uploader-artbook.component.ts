@@ -5,8 +5,8 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-
-
+import {NotificationsService}from '../services/notifications.service';
+import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
@@ -22,6 +22,29 @@ const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 
 
 export class UploaderArtbookComponent implements OnInit {
+
+  constructor (
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+    private sanitizer:DomSanitizer, 
+    private Drawings_Artbook_Service:Drawings_Artbook_Service, 
+    private router: Router,
+    private Profile_Edition_Service:Profile_Edition_Service,
+    public dialog: MatDialog,
+    ){
+
+    this.uploader = new FileUploader({
+      url:url,
+      //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
+      
+
+    });
+
+    this.hasBaseDropZoneOver = false;
+    this.hasAnotherDropZoneOver = false;
+
+  }
+
 
 
   @Output() sendPicture = new EventEmitter<object>();
@@ -42,10 +65,13 @@ export class UploaderArtbookComponent implements OnInit {
   _upload:boolean;
 
   user_id:number;
+  visitor_name:string;
   pseudo:string;
+  drawing_id:number;
 
 
    //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
+   @Input() title:string;
    @Input() set page(page: number) {
      this._page=page;
      let drawing_id = this.Drawings_Artbook_Service.get_artbookid_cookies();
@@ -81,26 +107,7 @@ export class UploaderArtbookComponent implements OnInit {
 
 
 
-  constructor (
-    private sanitizer:DomSanitizer, 
-    private Drawings_Artbook_Service:Drawings_Artbook_Service, 
-    private router: Router,
-    private Profile_Edition_Service:Profile_Edition_Service,
-    public dialog: MatDialog,
-    ){
-
-    this.uploader = new FileUploader({
-      url:url,
-      //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
-      
-
-    });
-
-    this.hasBaseDropZoneOver = false;
-    this.hasAnotherDropZoneOver = false;
-
-  }
-
+  
 
   ngAfterContentInit() {
     this.afficherpreview = false;
@@ -109,10 +116,12 @@ export class UploaderArtbookComponent implements OnInit {
   
 
   ngOnInit(): void {
-
+    console.log(this.title)
+    this.drawing_id=parseInt(this.Drawings_Artbook_Service.get_artbookid_cookies());
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
+      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
     })
     
 
@@ -152,7 +161,26 @@ export class UploaderArtbookComponent implements OnInit {
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        this.Drawings_Artbook_Service.validate_drawing(this.total_pages).subscribe(r=>{this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );})
+        this.Drawings_Artbook_Service.validate_drawing(this.total_pages).subscribe(r=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'artbook',this.drawing_id,0).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"add_publication",
+              id_user_name:this.visitor_name,
+              id_user:this.user_id, 
+              publication_category:'drawing',
+              publication_name:this.title,
+              format:'artbook',
+              publication_id:this.drawing_id,
+              chapter_number:0,
+              information:"add",
+              status:"unchecked",
+            }
+            this.chatService.messages.next(message_to_send);
+            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          }) 
+          
+        })
   
       }
   

@@ -13,7 +13,8 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import {NotificationsService}from '../services/notifications.service';
+import {ChatService}from '../services/chat.service';
 
 const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 
@@ -27,6 +28,25 @@ const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 })
 export class Uploader_bd_oneshot implements OnInit{
 
+  constructor (
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+     private sanitizer:DomSanitizer,  
+     private bdOneShotService: BdOneShotService, 
+     private router: Router,
+     private Profile_Edition_Service:Profile_Edition_Service,
+     public dialog: MatDialog,
+     ){
+
+    this.uploader = new FileUploader({
+      //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
+
+    });
+
+    this.hasBaseDropZoneOver = false;
+    this.hasAnotherDropZoneOver = false;
+
+  }
 
 
   uploader:FileUploader;
@@ -34,7 +54,7 @@ export class Uploader_bd_oneshot implements OnInit{
   hasAnotherDropZoneOver:boolean;
   response:string;
   total_pages:number;
-
+  bd_id:number;
   //pour cacher l'uploader dans certains cas
   afficherpreview :boolean;
   afficheruploader:boolean;
@@ -42,6 +62,7 @@ export class Uploader_bd_oneshot implements OnInit{
   _page: number;
   _upload:boolean;
   user_id:number;
+  visitor_name:string;
   pseudo:string;
 
    //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
@@ -71,25 +92,9 @@ get upload(): boolean {
  return this._upload;
 
 }
-   @Input() bdtitle: String;
+   @Input() bdtitle: string;
 
-  constructor (
-     private sanitizer:DomSanitizer,  
-     private bdOneShotService: BdOneShotService, 
-     private router: Router,
-     private Profile_Edition_Service:Profile_Edition_Service,
-     public dialog: MatDialog,
-     ){
-
-    this.uploader = new FileUploader({
-      //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
-
-    });
-
-    this.hasBaseDropZoneOver = false;
-    this.hasAnotherDropZoneOver = false;
-
-  }
+ 
 
 
 
@@ -109,10 +114,11 @@ get upload(): boolean {
 
   ngOnInit() {
 
-
+    this.bd_id=parseInt(this.bdOneShotService.get_bdid_cookies());
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
+      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
     })
     
     this.uploader.onAfterAddingFile = async (file) => {
@@ -147,7 +153,25 @@ get upload(): boolean {
 
     this.uploader.onCompleteItem = (file) => {
     if( (this._page + 1) == this.total_pages ) {
-      this.bdOneShotService.validate_bd(this.total_pages).subscribe(r=>{this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}`] );})
+      this.bdOneShotService.validate_bd(this.total_pages).subscribe(r=>{
+        this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0).subscribe(l=>{
+          let message_to_send ={
+            for_notifications:true,
+            type:"add_publication",
+            id_user_name:this.visitor_name,
+            id_user:this.user_id, 
+            publication_category:'comic',
+            publication_name:this.bdtitle,
+            format:'one-shot',
+            publication_id:this.bd_id,
+            chapter_number:0,
+            information:"add",
+            status:"unchecked",
+          }
+          this.chatService.messages.next(message_to_send);
+          this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+        }) 
+      })
     }
   
     }

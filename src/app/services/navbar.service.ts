@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError,map} from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 @Injectable()
 export class NavbarService {
 
+   
     active_section: number;
     height: number;//in px
-    visible: boolean;
+    visible: boolean=false;
     account: string;
     component_visible=false;
+    using_chat=false;
+
+    private notificationSubject: BehaviorSubject<object>;
+    public notification: Observable<object>;
     constructor(
         private httpClient: HttpClient,
     ) {
-        this.visible=false;
+        this.notificationSubject = new BehaviorSubject<object>(null);
+        this.notification = this.notificationSubject.asObservable();
     }
 
     setActiveSection(i: number) { this.active_section = i; }
@@ -25,9 +31,32 @@ export class NavbarService {
     show() { this.visible = true; }
     set_account_type(account){this.account=account}
     getAccount(){ return this.account; }
-
-
     
+
+    set_using_chat(){this.using_chat=true}
+    get_using_chat(){ return this.using_chat}
+
+
+
+     /********************************************* NOTIFICATIONS **************************************/
+    /********************************************* NOTIFICATIONS **************************************/
+    /********************************************* NOTIFICATIONS **************************************/
+    /********************************************* NOTIFICATIONS **************************************/
+    /********************************************* NOTIFICATIONS **************************************/
+    /********************************************* NOTIFICATIONS **************************************/
+
+    add_notification_from_chat(object){
+      this.notificationSubject.next(object);
+    }
+    
+
+    /********************************************* SEARCHBAR **************************************/
+    /********************************************* SEARCHBAR **************************************/
+    /********************************************* SEARCHBAR **************************************/
+    /********************************************* SEARCHBAR **************************************/
+    /********************************************* SEARCHBAR **************************************/
+    /********************************************* SEARCHBAR **************************************/
+
 
     get_most_researched_navbar(category,compteur,status){
       console.log(compteur);
@@ -43,26 +72,6 @@ export class NavbarService {
       }));
     }
 
-    
-
-    /*get_main_searchbar_propositions(text,compteur){
-        return this.httpClient.get(`http://localhost:4600/routes/get_main_searchbar_propositions/${text}`, {withCredentials:true}).pipe(map((information)=>{
-          return [information,compteur];
-        }));
-    }
-
-    get_most_researched_main_propositions_gen(text,limit,compteur){
-        return this.httpClient.get(`http://localhost:4600/routes/get_most_researched_main_propositions_gen/${text}/${limit}`, {withCredentials:true}).pipe(map((information)=>{
-          return [information,compteur];
-        }));
-    }
-
-
-    get_main_searchbar_ideas(category,text,compteur){
-      return this.httpClient.get(`http://localhost:4600/routes/get_main_searchbar_ideas/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{
-        return [information,compteur];
-      }));
-    }*/
 
     get_specific_propositions_navbar(category,text,compteur){
         return this.httpClient.get(`http://localhost:4600/routes/get_specific_propositions_navbar/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{

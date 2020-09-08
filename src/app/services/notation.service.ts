@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap, map, delay } from 'rxjs/operators';
-import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
-import { Subscribing_service } from './subscribing.service';
 
 
 @Injectable({
@@ -139,8 +136,8 @@ export class NotationService {
       }));
     }
 
-    add_view_time(category, format, style, publication_id,chapter_number,view_time,createdAt_view){
-      return this.httpClient.post('http://localhost:4600/routes/add_view_time',{category:category,format:format,style:style,publication_id:publication_id,chapter_number:chapter_number,view_time:view_time, createdAt_view:createdAt_view}, {withCredentials:true}).pipe(map((information)=>{
+    add_view_time(view_time,id_view_created){
+      return this.httpClient.post('http://localhost:4600/routes/add_view_time',{view_time:view_time, id_view_created:id_view_created}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }

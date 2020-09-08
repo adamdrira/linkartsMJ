@@ -12,6 +12,7 @@ export class AuthenticationService {
     public currentUser: Observable<string>;
     private currentUserTypeSubject: BehaviorSubject<string>;
     public currentUserType: Observable<string>;
+   
 
     constructor(private http: HttpClient, private CookieService: CookieService) {
         this.currentUserSubject = new BehaviorSubject<string>( this.CookieService.get('currentUser') );
@@ -35,7 +36,7 @@ export class AuthenticationService {
                 console.log(res);
                 if(!res.msg){
                     console.log("reset cookie")
-                    this.CookieService.set('currentUser', res.token, 365*10, '/');
+                    this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     this.currentUserSubject.next( this.CookieService.get('currentUser') );
                 }
                 return res;
@@ -56,8 +57,8 @@ export class AuthenticationService {
         return this.http.post<any>(this.usersUrl+'/users/create_visitor', { })
             .pipe(map(res => {
                 console.log(res);
-                this.CookieService.set('currentVisitor', res.token, 365*10, '/');
-                this.CookieService.set('currentUser', res.token, 365*10, '/');
+                this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
+                this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                 this.currentUserSubject.next( this.CookieService.get('currentUser') );
                 this.currentUserTypeSubject.next("visitor");
                 return res
@@ -70,7 +71,7 @@ export class AuthenticationService {
         if(visitor){
             console.log("dans visitor")
             //this.CookieService.delete('currentUser', '/')
-            this.CookieService.set('currentUser', visitor, 365*10, '/');
+            this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
             this.currentUserSubject.next(visitor);
         }
         else{
@@ -95,13 +96,13 @@ export class AuthenticationService {
                 }
                 if( res.msg == "TOKEN_REFRESH" ) {
                     //this.CookieService.delete('currentUser','/');
-                    this.CookieService.set('currentUser', res.token, 365*10, '/');
+                    this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                 }
                 else if(res.status=="visitor"){
                     console.log("visitor mode");
                     if(res.token){
-                        this.CookieService.set('currentVisitor', res.token, 365*10, '/');
-                        this.CookieService.set('currentUser', res.token, 365*10, '/');
+                        this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
+                        this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     }
                 }
                 this.currentUserSubject.next(this.CookieService.get('currentUser'));

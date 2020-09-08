@@ -98,7 +98,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
   
   
   ngOnInit(): void {
-
   }
 
   ngAfterViewInit() {
@@ -317,7 +316,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
     this.swiper.update();
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
-
+    this.componentRef[ this.componentRef.length - 1 ].instance.title = this.name;
 
     this.componentRef[ this.componentRef.length - 1 ].instance.sendPicture.subscribe( v => {
       if( v.page == 0 && !v.removing && !v.changePage ) {

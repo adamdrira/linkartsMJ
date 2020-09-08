@@ -29,7 +29,7 @@ export class Drawings_Artbook_Service {
         console.log(information[0]) 
         this.CookieService.delete('current_drawing_artbook_id');
         this.CookieService.delete('current_drawing_onepage_id');
-        this.CookieService.set('current_drawing_artbook_id', information[0].drawing_id, undefined, '/');
+        this.CookieService.set('current_drawing_artbook_id', information[0].drawing_id, undefined, '/','localhost',undefined,'Lax');
         this.Subscribing_service.add_content('drawing', 'artbook', information[0].drawing_id,0).subscribe(r=>{});
         return information[0].drawing_id
     }));

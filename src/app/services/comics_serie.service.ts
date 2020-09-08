@@ -30,7 +30,7 @@ export class BdSerieService {
         console.log(information[0]) 
         this.CookieService.delete('current_bd_oneshot_id','/');
         this.CookieService.delete('current_bd_serie_id','/');
-        this.CookieService.set('current_bd_serie_id', information[0].bd_id, undefined, '/');
+        this.CookieService.set('current_bd_serie_id', information[0].bd_id, undefined, '/','localhost',undefined,'Lax');
         return this.CookieService.get('current_bd_serie_id')
     }));
   }
@@ -54,7 +54,7 @@ export class BdSerieService {
 
   }
   add_chapter_bd_serie2(bd_id,chapter_number: number, Title:string){
-    this.CookieService.set('current_bd_serie_id', bd_id, undefined, '/');
+    this.CookieService.set('current_bd_serie_id', bd_id, undefined, '/','localhost',undefined,'Lax');
     this.Subscribing_service.add_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
     return this.httpClient.post('http://localhost:4600/routes/add_chapter_bd_serie', {Title: Title, chapter_number:chapter_number, bd_id:bd_id}, {withCredentials:true}).pipe(map((information)=>{
       return information

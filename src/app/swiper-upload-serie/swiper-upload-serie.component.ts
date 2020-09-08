@@ -33,6 +33,7 @@ export class SwiperUploadSerieComponent implements OnInit {
 
 
   constructor(private rd: Renderer2, 
+    
     private el: ElementRef,
     private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
@@ -48,10 +49,11 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   @Input() type: string;
   @Input() chapter: number;
-
+  @Input() name: string;
+  @Input() bdtitle: string;
   @Output() validated = new EventEmitter<any>();
   validated_chapter: boolean = false;
-  
+  @Input() bd_id:number;
   
   
   f00: FormGroup;
@@ -77,7 +79,7 @@ export class SwiperUploadSerieComponent implements OnInit {
   
 
   ngOnInit() {
-
+    
     this.createFormControls00();
     this.createForm00();
 
@@ -282,9 +284,10 @@ export class SwiperUploadSerieComponent implements OnInit {
 
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
     this.swiper.update();
+    this.componentRef[ this.componentRef.length - 1 ].instance.bd_id = this.bd_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.chapter = this.chapter;
-
+  
     this.cd.detectChanges();
   }
 
@@ -335,6 +338,7 @@ export class SwiperUploadSerieComponent implements OnInit {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
         }
+        
         this.validated.emit();
         this.validated_chapter=true;
       }
