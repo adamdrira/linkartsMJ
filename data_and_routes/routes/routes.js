@@ -19,6 +19,7 @@ const controller_albums= require('../../albums_edition/controller/controller');
 const controller_ads= require('../../ads/controller/controller');
 const controller_chat= require('../../chat/controller/controller');
 const controller_navbar= require('../../navbar/controller/controller');
+const controller_notifications= require('../../notifications/controller/controller');
 const bd_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const bd_serie_seq= require('../../comics_serie/models/sequelize');
 const drawings_one_page_seq= require('../../drawings_one_shot_and_cover/models/sequelize');
@@ -31,8 +32,10 @@ const ads_seq= require('../../ads/model/sequelize');
 const chat_seq = require('../../chat/model/sequelize');
 const navbar_seq = require('../../navbar/model/sequelize');
 const albums_seq = require('../../albums_edition/model/sequelize');
-const authentification = require('../../authentication/db.config');
+const notifications_seq = require('../../notifications/model/sequelize');
 const trendings_seq = require('../../p_trendings/model/sequelize');
+const authentification = require('../../authentication/db.config');
+
 
 
 
@@ -61,7 +64,7 @@ router.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
-//getter pour les utilisateurs
+//fonctions pour les recommendations et les trendings
 router.post('/view_table_by_author_to_python',recommendations.get_view_table_by_user)
 router.post('/get_first_recommendation_bd_os_for_user',recommendations.get_first_recommendation_bd_os_for_user)
 router.post('/get_first_recommendation_bd_serie_for_user',recommendations.get_first_recommendation_bd_serie_for_user)
@@ -82,7 +85,7 @@ router.post('/get_artwork_recommendations_by_tag',recommendations_artwork.get_ar
 
 
 
-//BdOneShot
+//mise en relation des requetes tables sql et des fichiers js
 controller_bd_oneshot(router,bd_oneshot_seq.list_comics_one_shot,  bd_oneshot_seq.list_pages_comics_one_shot,authentification.users);
 controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie,authentification.users);
 controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,authentification.users);
@@ -110,11 +113,46 @@ controller_subscribings(router,
    subscribings_seq.list_of_contents, 
    subscribings_seq.list_of_archives,
    authentification.users,
+   navbar_seq.list_of_navbar_researches
     );
 controller_albums(router, albums_seq.list_of_albums);
 controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
 controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses,authentification.users);
-controller_chat(router,chat_seq.list_of_messages,chat_seq.list_of_chat_friends,chat_seq.list_of_chat_spams,chat_seq.list_of_chat_search,chat_seq.list_of_chat_sections,subscribings_seq.list_of_subscribings,authentification.users)
+controller_chat(router,chat_seq.list_of_messages,
+  chat_seq.list_of_chat_friends,
+  chat_seq.list_of_chat_spams,
+  chat_seq.list_of_chat_search,
+  chat_seq.list_of_chat_sections,
+  subscribings_seq.list_of_subscribings,
+  authentification.users,
+  chat_seq.list_of_chat_groups,
+  chat_seq.list_of_chat_groups_reactions);
+controller_notifications(router,
+  notifications_seq.list_of_notifications,
+  notifications_seq.list_of_notifications_spams,
+  chat_seq.list_of_messages,
+  chat_seq.list_of_chat_friends,
+  chat_seq.list_of_chat_sections,
+  chat_seq.list_of_chat_groups,
+  chat_seq.list_of_chat_groups_reactions,
+  subscribings_seq.list_of_subscribings,
+  authentification.users,
+  bd_oneshot_seq.list_comics_one_shot,
+  bd_serie_seq.Liste_Bd_Serie,
+  bd_serie_seq.Chapters_Bd_Serie,
+  drawings_one_page_seq.Drawings_one_page,
+  drawings_artbook_seq.Liste_Drawings_Artbook,
+  writings_seq.Liste_Writings,
+  profile_notation_seq.List_of_views,
+  profile_notation_seq.List_of_comments,
+  profile_notation_seq.List_of_comments_answers,
+  profile_notation_seq.List_of_comments_likes,
+  profile_notation_seq.List_of_comments_answers_likes,
+  profile_notation_seq.List_of_likes,
+  profile_notation_seq.List_of_loves,
+  ads_seq.list_of_ads,
+  ads_seq.list_of_ads_responses,
+  );
 controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users)
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
