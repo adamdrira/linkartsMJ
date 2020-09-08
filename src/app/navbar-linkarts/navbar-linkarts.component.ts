@@ -1,3 +1,4 @@
+import { ChatService} from '../services/chat.service';
 import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import {ElementRef,Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
@@ -15,6 +16,9 @@ import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import {NotificationsService} from '../services/notifications.service';
+import { WebSocketService } from '../services/websocket.service';
+
 
 declare var $: any;
 
@@ -55,8 +59,11 @@ export class NavbarLinkartsComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+    
     ) {
-        
+      
     }
 
   
@@ -73,7 +80,14 @@ export class NavbarLinkartsComponent implements OnInit {
   show_researches_propositions=false;
   show_selector=false;
 
+  check_chat_service=false;
+  check_notifications_from_service=false;
+  list_of_notifications=[];
+  index_of_notifications_to_show=10;
+  show_notifications=false;
+
   @ViewChild('input') input:ElementRef;
+  @ViewChild('notifications') notifications:ElementRef;
   @ViewChild('propositions') propositions:ElementRef;
   @ViewChild('navbarLogo') navbarLogo:ElementRef;
 
@@ -85,6 +99,8 @@ export class NavbarLinkartsComponent implements OnInit {
   first_filters_writings=["Article","Poésie", "Roman", "Roman illustré", "Scénario"];
   first_filters=[this.first_filters_artists,this.first_filters_ads,this.first_filters_comics,this.first_filters_drawings,this.first_filters_writings];
 
+  //notificaitons 
+  display_new_messages=false;
   @HostListener('document:click', ['$event'])
   clickout(event) {
     if(this.focus_activated){
@@ -92,6 +108,11 @@ export class NavbarLinkartsComponent implements OnInit {
         this.focus_activated=false;
         this.show_researches_propositions=false;
         this.cancel_research();
+      } 
+    }
+    if(this.show_notifications){
+      if(!this.notifications.nativeElement.contains(event.target) ) {
+        this.show_notifications=false;
       } 
     }
   }
@@ -106,6 +127,8 @@ export class NavbarLinkartsComponent implements OnInit {
     this.AuthenticationService.tokenCheck().subscribe(r=>{
       if(r=="account"){
         this.type_of_profile="account";
+        console.log(this.type_of_profile)
+        this.retrieve_profile();
       }
       else{
         this.type_of_profile="visitor";
@@ -113,9 +136,11 @@ export class NavbarLinkartsComponent implements OnInit {
       //this.navbar.set_account_type(this.type_of_profile);
       console.log("in constructor")
       this.type_of_profile_retrieved=true;
-      this.retrieve_profile()
+      
       
     });
+
+    
 
     let interval = setInterval( () => {
 
@@ -130,12 +155,77 @@ export class NavbarLinkartsComponent implements OnInit {
           clearInterval(interval);
         }
       }
-
     },50);
+
+    let chatinterval = setInterval(()=>{
+      if(this.chatService.messages && !this.navbar.get_using_chat()){
+        this.check_chat_service=true;
+        this.check_chat_service_func();
+        clearInterval(chatinterval);
+      }
+      else if(this.chatService.messages && this.navbar.get_using_chat()){
+        this.check_notifications_from_service=true;
+        this.check_notifications_from_service_func();
+        clearInterval(chatinterval);
+      }
+    },1000)
+
+
+    
+
+    
 
   }
 
+ 
+  check_notifications_from_service_func(){
+    this.navbar.notification.subscribe(msg=>{
+      if(msg[0] && !msg[0].is_from_server && msg[0].id_user!="server"){
+        console.log(msg[0])
+        this.sort_notifications(msg);
+      }
+    })  
+  }
+  
 
+  check_chat_service_func(){
+    this.chatService.messages.subscribe(msg=>{
+      if(msg[0] && !msg[0].is_from_server && msg[0].id_user!="server"){
+        console.log(msg[0])
+        this.sort_notifications(msg);
+      }
+    })
+  }
+
+  sort_notifications(msg){
+    if(msg[0].for_notifications){
+      console.log(msg[0].information)
+      if(msg[0].information=='add'){
+        this.list_of_notifications.splice(0,0,msg[0])
+      }
+      else if(msg[0].information=='remove'){
+        let index=-1;
+        for(let i=0;i<this.list_of_notifications.length;i++){
+          if(this.list_of_notifications[i].id_user==msg[0].id_user &&
+            this.list_of_notifications[i].publication_category==msg[0].publication_category && 
+            this.list_of_notifications[i].publication_id==msg[0].publication_id && 
+            this.list_of_notifications[i].type==msg[0].type && 
+            this.list_of_notifications[i].information=='add' &&
+            this.list_of_notifications[i].format==msg[0].format && 
+            this.list_of_notifications[i].chapter_number==msg[0].chapter_number){
+              index=i;
+            }
+        }
+        console.log(this.list_of_notifications[index])
+        if(index>=0){
+          this.list_of_notifications.splice(index,1)
+        }
+        
+      }
+      
+      console.log(this.list_of_notifications)
+    }
+  }
 
   retrieve_profile(){
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
@@ -146,7 +236,22 @@ export class NavbarLinkartsComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
-        this.data_retrieved=true;
+        this.NotificationsService.get_list_of_notifications().subscribe(r=>{
+          console.log(r[0])
+          if(r[0].length>0){
+            for(let i=0;i<r[0].length;i++){
+              this.list_of_notifications[i]=r[0][i];
+              if(i== r[0].length-1 || i==this.index_of_notifications_to_show){
+                this.data_retrieved=true;
+                console.log(this.list_of_notifications)
+              }
+            }
+          }
+          else{
+            this.data_retrieved=true;
+          }
+          
+        });
       });
     })
   }
@@ -155,7 +260,41 @@ export class NavbarLinkartsComponent implements OnInit {
     this.pp_is_loaded=true;
   }
  
- 
+  open_notifications(){
+    if(this.show_notifications){
+      this.show_notifications=false;
+      return
+    }
+    let modify=false;
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      if(this.list_of_notifications[i].status=="unchecked"){
+        modify=true;
+        this.list_of_notifications[i].status="checked";
+      }
+    }
+    if(modify){
+      this.NotificationsService.change_all_notifications_status_to_checked().subscribe(r=>{
+        this.show_notifications=true;
+      })
+    }
+    else{
+      this.show_notifications=true;
+    }
+    
+    
+  }
+
+
+  add_notification_seen(i){
+    if(this.list_of_notifications[i].status!="seen"){
+      this.list_of_notifications[i].status="seen";
+      let elem=this.list_of_notifications[i]
+      this.NotificationsService.change_notification_status_to_seen(elem.id_user,elem.type,elem.publication_category,elem.format,elem.publication_id,elem.chapter_number).subscribe(r=>{
+        this.show_notifications=true;
+      })
+    }
+    
+  }
 
   /******************************************** SEARCHBAR******************************* */
   /******************************************** SEARCHBAR******************************* */

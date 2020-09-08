@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -8,6 +8,7 @@ import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 declare var $: any;
@@ -30,6 +31,7 @@ export class CommentsComponent implements OnInit {
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
     private router:Router,
+    private cd: ChangeDetectorRef,
     private NotationService:NotationService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
@@ -48,8 +50,10 @@ export class CommentsComponent implements OnInit {
   @Output() new_comment = new EventEmitter<any>();
   @Output() removed_comment = new EventEmitter<any>();
   
-
-
+  @ViewChild('commentary') commentary:ElementRef;
+  comment: FormControl;
+  comment_container: FormGroup;
+  
   profile_picture:SafeUrl;
   comments_list:any = [];
   display_comments=false;
@@ -68,7 +72,10 @@ export class CommentsComponent implements OnInit {
   ngOnInit(): void {
 
     console.log(this.type_of_account);
-
+    this.comment = new FormControl('');
+    this.comment_container = new FormGroup({
+      comment: this.comment,
+    });
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       if(r[0].id==this.authorid){
@@ -98,15 +105,7 @@ export class CommentsComponent implements OnInit {
         this.comments_list=l[0];
         if(this.comments_list.length>0){
           await this.sort_comments(this.comments_list);
-          /*for(let j=0;j<l[0].length;j++){
-            if(this.comments_list[j].author_id_who_comments==r[0].id){
-              this.visitor_mode_list.push(false);
-            }
-            else{
-              this.visitor_mode_list.push(true);
-            }
-            
-          }*/
+          console.log(this.comments_list)
           this.display_comments=true;
           
         }
@@ -116,7 +115,7 @@ export class CommentsComponent implements OnInit {
    
     let THIS=this;
     $('textarea.textarea-add-comment').on('keydown', function(e){
-      
+      console.log($('textarea.textarea-add-comment').val());
       if(e.which == 13) {
         e.preventDefault();
         
@@ -141,6 +140,36 @@ export class CommentsComponent implements OnInit {
       $(this).height(totalHeight + 10);
     });
 
+  }
+
+  
+
+    
+  number_of_shift=0;
+  check_commentary(event){
+    if(event.key=="Shift"){
+      this.number_of_shift=1;
+    }
+    else if(event.key!="Enter"){
+      this.number_of_shift=0;
+    }
+    else if(event.key=="Enter"){
+      if(this.number_of_shift==0){
+        if(this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
+
+          this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment).subscribe(r=>{
+            this.my_comments_list.splice(0, 0, r[0]);
+            this.display_comments=true;
+            this.new_comment.emit();
+            this.cd.detectChanges();
+            this.comment.reset();
+          });
+          
+        }
+         
+      }
+      this.number_of_shift=0;
+    }
   }
 
   remove_comment(i){

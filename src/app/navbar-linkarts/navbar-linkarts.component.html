@@ -221,7 +221,7 @@
         <div class="navbar-l1-icons-container" style="  width: 240px;
         margin: auto 30px auto 0px;" *ngIf="type_of_profile=='account'" >
 
-          <a href="/chat">
+          <a href="/chat" [ngClass]="{'invisible':!data_retrieved}">
             <div class="icon-container">
               <div class="icon icon-messenger">
               </div>
@@ -230,10 +230,102 @@
           </a>
                         
 
-          <div class="icon-container">
+          <div #notifications class="icon-container" (click)="open_notifications()" [ngClass]="{'invisible':!data_retrieved}">
             <div class="icon icon-bell">
             </div>
             <div class="title">Notifications</div>
+            <div  class="notifications-container" [ngClass]="{'invisible':!show_notifications}">
+              <div style="display:block;margin-bottom: 5px;" *ngFor="let notif of list_of_notifications.slice(0,index_of_notifications_to_show),let i=index" [ngClass]="{'not-seen':list_of_notifications[i].status=='unchecked' || list_of_notifications[i].status=='checked','seen':list_of_notifications[i].status=='seen'}" (click)="add_notification_seen(i)">
+              
+                 <!-- ---------------------------Publciation add----------------------------------->
+
+                <div  *ngIf="notif.type=='add_publication'" >
+
+                  <ng-container *ngIf="notif.publication_category=='comic'">
+                    <a style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span >{{notif.id_user_name}} a publiée une bande dessinée : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='drawing'">
+                    <a *ngIf="notif.format=='one-shot'" style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span >{{notif.id_user_name}} a publié un dessin : {{notif.publication_name}}</span>
+                    </a>
+                    <a *ngIf="notif.format!='one-shot'"  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span >{{notif.id_user_name}} a publié un artbook : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='writing'">
+                    <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a publié un écrit : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='ad'">
+                    <a  style="color:black" href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a publié une annonce : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+                  
+                </div>
+
+                <!-- ---------------------------Publciation like----------------------------------->
+                
+                <div  *ngIf="notif.type=='publication_like'" >
+
+                  <ng-container *ngIf="notif.publication_category=='comic'">
+                    <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                      <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
+                    </a>
+                    <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='drawing'">
+                    <a style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='writing'">
+                    <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+                  
+                </div>
+
+                <!-- ---------------------------Publciation love----------------------------------->
+
+                <div *ngIf="notif.type=='publication_love'" >
+                  <ng-container *ngIf="notif.publication_category=='comic'">
+                    <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                      <span >{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
+                    </a>
+                    <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='drawing'">
+                    <a  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="notif.publication_category=='writing'">
+                    <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                      <span>{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
+                    </a>
+                  </ng-container>
+                </div>
+
+                
+                <mat-divider></mat-divider>
+              </div>
+            </div>
           </div>
 
           <a href="/account/{{pseudo}}/{{user_id}}" *ngIf="data_retrieved">

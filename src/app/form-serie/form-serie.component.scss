@@ -1,51 +1,50 @@
 
 
  .chapters-controller {
-    width:500px;
-    height:fit-content;
+    width: 100%;
+    height: fit-content;
+    border-radius: 5px;
+    overflow: hidden;
     margin: 30px auto 50px auto;
-    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.16);
+    border: 1px solid #d0d9ec;
+    box-shadow: 0px 1px 10px 1px rgb(227 232 245);
 }
 
  .chapters-title {
-    display:flex;
-    height:50px;
-    background-color: rgb(192, 209, 241);
-    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    background-color: #d9e5ff;
 }
 
  .chapters-title > span {
-    font-size:1.2rem;
+    font-size: 17px;
+    color: rgb(32,56,100);
+    font-weight:bold;
     margin:auto auto auto 20px;
 }
 
- .chapters-controller .add-chapter-button {
-    display:flex;
-    margin:auto 20px auto auto;
-    padding-left:10px;
-    padding-right:10px;
-    height:30px;
-    background-image:linear-gradient(90deg, #2491ee 0, #1cc7f2 100%);
-    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
-    border-radius:8px;
-    cursor:pointer;
+.chapters-controller .add-chapter-button {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 10px 10px auto;
+    display: flex;
 }
 
- .chapters-controller .add-chapter-button .plus-icon {
-    width:15px;
-    height:15px;
-    margin:auto 5px auto 5px;
-    background-color: white;
-    -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
-    mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+.chapters-controller .add-chapter-button mat-icon {
+    margin: auto 5px auto auto;
+    color: rgb(32,56,100);
+    width:unset;
+    height:unset;
 }
 
- .chapters-controller .add-chapter-button span {
-    color:white;
-    margin:auto 5px auto 5px;
-    cursor:pointer;
+.validate-chapter-button mat-icon {
+    margin: auto 5px auto auto;
+    color: rgb(32,56,100);
+    width:unset;
+    height:unset;
 }
-
 
 
  .chapters-list {
@@ -56,15 +55,13 @@
 
  .chapters-list .chapter {
     display:flex;
-    height:65px !important;
-    padding-top:5px;
-    padding-bottom:0px;
+    flex-wrap: wrap;
+    padding-top:10px;
+    padding-bottom:10px;
     border-top:1px solid rgb(230,230,230);
 }
 
- .chapters-list .chapter * {
-    font-size:1rem !important;
-}
+
 
  .chapters-list .selected {
     background: rgb(240, 242, 251);
@@ -79,6 +76,7 @@
  .chapters-list .chapter .chapter-validated {
     width: 40px;
     display:flex;
+    cursor:pointer;
 }
 
  .chapters-list .chapter .chapter-validated .validated-icon {
@@ -91,10 +89,11 @@
 }
 
  .chapters-list .chapter .chapter-number {
-    cursor:pointer;
+    cursor:default;
     padding-left:5px;
     width: 110px;
     display:flex;
+    cursor:pointer;
     //background:red;
 }
 
@@ -105,11 +104,17 @@
 
  .chapters-list .chapter .chapter-name {
     display:flex;
+    min-width:200px;
     padding-left:5px;
-    height:fit-content;
     margin: auto auto;
-    width:calc(100% - 40px - 110px - 80px);
+    width:calc(100% - 40px - 110px - 140px);
 }
+
+.form-item2 {
+    position:relative;
+    height:70px;
+}
+
 
 
  .chapters-list .chapter .chapter-name span {
@@ -117,21 +122,33 @@
 }
 
 
- .chapters-list .chapter .chapter-name .mat-input {
-    width: calc( 100% - 30px );
-    height: 55px !important;
-    max-height: 55px !important;
-    margin:auto auto auto 0px;
-}
-
-
  .chapters-list .chapter .chapter-icons {
-    width:15%;
-    height: 30px;
+    width:95px;
+    height: 100%;
     display:flex;
     margin: auto auto auto auto;
+    cursor:pointer;
     //background:grey;
 }
+
+
+.chapters-list .chapter button {
+    height: 37px;
+    width: 37px;
+    outline: none;
+    margin-left:auto;
+    margin-right:10px;
+    margin-top:auto;
+    margin-bottom:auto;
+    background: #d9e5ff;
+    border: 1px solid rgb(180, 197, 234);
+}
+
+
+.chapters-list .chapter mat-icon {
+    font-size:22px !important;
+}
+
 
 
  .chapters-list .chapter .button {
@@ -244,11 +261,44 @@
 
 ::ng-deep .mat-form-field {
     font-family:unset;
+    width: calc( 100% - 30px );
+    height:100%;
+    margin:auto auto auto 0px;
 }
 
 ::ng-deep .disabled .mat-form-field-underline {
     background-image:unset !important;
     background-color: rgba(0,0,0,.42) !important;
+}
+
+.mat-input-element {
+    line-height: 22px !important;
+    padding-right: 70px !important;
+}
+
+.mat-dialog-container {
+    position:relative !important;
+}
+
+.form-item2 .mat-form-field {
+    width:100%;
+}
+
+.form-item2 .mat-form-field .mat-form-field-flex {
+    padding-left: 10px !important;
+}
+
+.form-item2 .mat-form-field textarea {
+    max-height:180px;
+    min-height:100px;
+}
+
+.form-item2 .length-indicator {
+    position: absolute;
+    right: 15px;
+    color: grey;    
+    font-size: 15px;
+    top: 5px;
 }
 
 

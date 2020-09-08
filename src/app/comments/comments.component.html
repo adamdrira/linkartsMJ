@@ -67,9 +67,16 @@
 
         </div>
 
-        <div class="right-container">
+        <div [formGroup]="comment_container" class="right-container">
 
-            <textarea type="text" class="textarea-add-comment" style="resize:none;" autocomplete="off" placeholder="Ajouter un commentaire ..."></textarea>
+            <textarea 
+            formControlName="comment"
+            type="text"
+            (keydown)="check_commentary($event)"
+             class="textarea-add-comment" 
+             style="resize:none;" 
+             autocomplete="off" 
+             placeholder="Ajouter un commentaire ..."></textarea>
                                     
         </div>
 

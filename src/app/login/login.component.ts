@@ -1,11 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { SignupComponent } from '../signup/signup.component';
+
+import { pattern } from '../helpers/patterns';
+
+
 
 @Component({
   selector: 'app-login',
@@ -30,7 +35,7 @@ export class LoginComponent implements OnInit {
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<LoginComponent>,
       private cd:ChangeDetectorRef,
-  
+      public dialog: MatDialog,
   
       @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -44,9 +49,15 @@ export class LoginComponent implements OnInit {
       });
 
       this.ResetPasswordForm=this.formBuilder.group({
-        mail_recuperation: ['', Validators.required],
-    });
+        mail_recuperation: ['', 
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("mail")),
+          Validators.maxLength(100),
+        ]),
+      ],
       
+    });
   }
 
   // convenience getter for easy access to form fields
@@ -71,36 +82,52 @@ export class LoginComponent implements OnInit {
       this.authenticationService.reset_password(this.g.mail_recuperation.value).subscribe(r=>{
         // crééer un mail pro pour gérer ça
       })
-
   }
+
+
+
+  signup() {
+    this.dialog.closeAll();
+    const dialogRef = this.dialog.open(SignupComponent, {});
+  }
+
 
   
-  onSubmit() {
-
-      this.submitted = true;
-
-      // stop here if form is invalid
-      if (this.loginForm.invalid) {
-          return;
-      }
-
-      this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value)
-          .subscribe(
-              data => {
-                  this.loading=false
-                  console.log(data.msg);
-                  if(data.token){
-                    location.reload();
-                  }
-                  if(data.msg=="error"){
-                      console.log("error");
-                      this.display_wrong_data=true;
-                  }
-                  
-              },
-              error => {
-                  this.loading = false;
-              });
+  @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.login();
   }
+  
+
+  login() {
+
+    if(this.loading) {
+      return;
+    }
+    
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.loginForm.invalid) {
+        return;
+    }
+
+    this.loading = true;
+    this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+          this.loading=false
+          console.log(data.msg);
+          if(data.token){
+            location.reload();
+          }
+          if(data.msg=="error"){
+              console.log("error");
+              this.display_wrong_data=true;
+          }
+          
+      },
+      error => {
+          this.loading = false;
+      });
+    }
+
+
 }

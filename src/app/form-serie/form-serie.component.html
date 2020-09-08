@@ -4,26 +4,32 @@
 
     <div class="chapters-title">
         <span>Liste des chapitres</span>
-        <div class="add-chapter-button" (click)="add_series_chapter();">
+        <!--<div class="add-chapter-button" (click)="add_series_chapter();">
             <div class="plus-icon"></div>
             <span>Ajouter</span>
-        </div>
+        </div>-->
+        
+        <button mat-raised-button class="add-chapter-button style0" (click)="add_series_chapter();">
+            <mat-icon>library_add</mat-icon>
+            <span>Ajouter un chapitre</span>
+        </button>
+
     </div>
 
 
     <div class="chapters-list" formArrayName="chapters" *ngIf="form_number==0">
         <ng-container *ngFor="let element of componentRef; let i = index" class="test">
             <div class="chapter" [ngClass]="{ 'selected' : i==current_chapter }" >
-                <div class="chapter-validated">
+                <div class="chapter-validated" (click)="open_chapter(i);">
                     <div *ngIf="element.chapterValidated" class="validated-icon">
                     </div>
                 </div>
                 <div class="chapter-number" (click)="open_chapter(i);">
                     <span>Chapitre {{element.chapter + 1}}</span>
                 </div>
-                <div class="chapter-name">
+                <div class="chapter-name form-item2">
                     <!--<span *ngIf="edit_name!=i"> {{element.name}} </span>-->
-                    <mat-form-field class="mat-input disabled" *ngIf="edit_name!=i">
+                    <mat-form-field floatLabel='never' class="disabled" *ngIf="edit_name!=i">
                         <mat-label>Nom du chapitre</mat-label>
                         
                         <input matInput disabled
@@ -31,23 +37,38 @@
                         *ngIf="edit_name!=i"/>
                     </mat-form-field>
 
-                    <mat-form-field class="mat-input" *ngIf="edit_name==i" >
+                    <mat-form-field floatLabel='never' *ngIf="edit_name==i" >
                         <mat-label>Nom du chapitre</mat-label>
-                        <input #changeName matInput
+                        <input #changeName matInput maxLength="30"
                         type="text" value=element.name autocomplete="off" 
                         *ngIf="edit_name==i" 
                         (keyup.enter)="validate_name(i);"
                         [formControlName]="i"
                         />
+                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide
+                        </mat-error>
+                        <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
                     </mat-form-field>
 
-                    <button class="button-name" (click)="validate_name(i);" *ngIf="edit_name==i">
-                        <div class="validate-icon"></div>
-                    </button>
+
                 </div>
 
-                <div class="chapter-icons">
-                    <div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
+                <div class="chapter-icons" (click)="open_chapter(i);">     
+
+                    <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);">
+                        <mat-icon>done</mat-icon>
+                    </button>  
+                    <!--<button mat-icon-button *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
+                        <mat-icon>clear</mat-icon>
+                    </button>-->
+                    <button mat-icon-button *ngIf="edit_name==-1" (click)="set_edit_name(i,'modify');">
+                        <mat-icon>edit</mat-icon>
+                    </button>         
+                    <button mat-icon-button *ngIf="edit_name==-1" (click)="openDeleteDialog(i);">
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                    
+                    <!--<div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
                         <div class="delete-icon"></div>
                     </div>
                     <button class="button" (click)="set_edit_name(i,'modify');" *ngIf="edit_name==-1">
@@ -55,7 +76,7 @@
                     </button>
                     <button class="button" (click)="openDeleteDialog(i);" *ngIf="edit_name==-1">
                         <div class="delete-icon"></div>
-                    </button>
+                    </button>-->
                 </div>
 
             </div>
@@ -74,30 +95,46 @@
                 <div class="chapter-number" (click)="open_chapter(i);">
                     <span>Chapitre {{element.chapter_number}}</span>
                 </div>
-                <div class="chapter-name">
-                    <mat-form-field class="mat-input disabled" *ngIf="edit_name!=i">
+                <div class="chapter-name form-item2">
+                    <mat-form-field class="disabled" floatLabel='never' *ngIf="edit_name!=i">
                         <mat-label>Nom du chapitre</mat-label>
                         
                         <input matInput disabled
                         type="text" [value]=element.title autocomplete="off"/>
                     </mat-form-field>
 
-                    <mat-form-field class="mat-input" *ngIf="edit_name==i" >
+                    <mat-form-field floatLabel='never' *ngIf="edit_name==i" >
                         <mat-label>Nom du chapitre</mat-label>
-                        <input #changeName matInput
+                        <input #changeName matInput maxLength="30"
                         type="text" value=element.title autocomplete="off" 
                         (keyup.enter)="validate_name(i);"
                         [formControlName]="i"
                         />
+                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide
+                        </mat-error>
+                        <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
                     </mat-form-field>
+  
 
-                    <button class="button-name" (click)="validate_name(i);" *ngIf="edit_name==i">
-                        <div class="validate-icon"></div>
-                    </button>
                 </div>
 
                 <div class="chapter-icons">
-                    <div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
+                    
+                                                
+                    <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);">
+                        <mat-icon>done</mat-icon>
+                    </button>  
+                    <!--<button mat-icon-button *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
+                        <mat-icon>clear</mat-icon>
+                    </button>-->
+
+                    <button mat-icon-button *ngIf="edit_name==-1" (click)="set_edit_name(i,'modify');">
+                        <mat-icon>edit</mat-icon>
+                    </button>         
+                    <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1" (click)="openDeleteDialog(i);">
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                    <!--<div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
                         <div class="delete-icon"></div>
                     </div>
                     <button class="button" (click)="set_edit_name(i,'modify');" *ngIf="edit_name==-1">
@@ -105,7 +142,7 @@
                     </button>
                     <button  class="button" (click)="openDeleteDialog(i);" *ngIf="edit_name==-1 && i==list_of_chapters.length-1">
                         <div class="delete-icon"></div>
-                    </button>
+                    </button>-->
                 </div>
 
             </div>
@@ -119,17 +156,16 @@
 
 <div class="pages-controller" *ngIf="form_number==0">
 
-    <ng-container *ngFor="let element of componentRef; let i = index" class="test">
-        <app-swiper-upload-serie *ngIf=element.swiperInitialized type="Série" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
+    <ng-container *ngFor="let element of componentRef; let i = index" >
+        <app-swiper-upload-serie *ngIf=element.swiperInitialized type="Série" [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
     </ng-container>
     
 
 </div>
 
 <div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
-
-    <ng-container  class="test">
-        <app-swiper-upload-serie type="Série" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
+    <ng-container  >
+        <app-swiper-upload-serie type="Série" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
     </ng-container>
     
 
@@ -138,7 +174,7 @@
 
 
 <button mat-raised-button class="submit-button style1" (click)="validateAll();">
-    <span>Tout valider</span>
+    <span>Valider la série</span>
 </button>
 
 

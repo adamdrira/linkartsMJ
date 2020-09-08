@@ -1,4 +1,4 @@
-<div *ngIf="!reset_password_menu">
+<!--<div *ngIf="!reset_password_menu">
     <h2>Connexion</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -55,4 +55,128 @@
             
         </div>
     </form>
+</div>-->
+
+
+
+<div class="popup-container" *ngIf="!reset_password_menu">
+    <div class="popup-step">
+
+        <div class="back-and-logo">
+            <div class="logo">
+                logo
+            </div>
+        </div>
+        <div class="step-name">
+            <span>Connexion</span>
+        </div>
+        <div class="step-form" [formGroup]="loginForm">
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Pseudonyme ou e-mail</mat-label>
+                    <input matInput formControlName="username" autocomplete="off">
+                    <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un pseudonyme ou une adresse mail</mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput formControlName="password" type="password" autocomplete="off">
+                    <mat-error *ngIf="loginForm.controls['password'].invalid">Veuillez saisir un mot de passe
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+
+        <div class="step-validation">
+
+            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="login();">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <span *ngIf="!loading">Se connecter</span>
+            </button>
+
+        </div>
+        
+        <div style="display: flex;height: 40px;width: 400px;">
+            <div (click)="signup()" class="btn btn-link" style="margin:auto auto auto 0px;cursor:pointer;">S'inscrire</div>
+            <div (click)="open_reset_password()" class="btn btn-link" style="margin:auto 0px auto auto; cursor:pointer;">Mot de passe oublié</div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<div class="popup-container" *ngIf="reset_password_menu">
+    
+    
+    <div class="popup-step">
+        <div class="back-and-logo">
+            <div class="back-button">
+                <button mat-raised-button class="style0" (click)="open_connexion_menu();">
+                    <span>Retour</span>
+                </button>
+            </div>
+            <div class="logo">
+                logo
+            </div>
+        </div>
+
+        
+        <div class="step-name">
+            <span>Récupérer mon mot de passe</span>
+        </div>
+        <div class="step-form" [formGroup]="ResetPasswordForm">
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Adresse mail</mat-label>
+                    <input matInput formControlName="mail_recuperation" autocomplete="off">
+                    <mat-error *ngIf="ResetPasswordForm.controls['mail_recuperation'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            
+        </div>
+
+        <div class="step-validation">
+            <button mat-raised-button [disabled]="loading" class="submit-button style0" (click)="onSubmitReset();">
+                <span>Envoyer</span>
+            </button>
+        </div>
+
+
+
+
+
+
+    </div>
+
+    <!--<form [formGroup]="ResetPasswordForm" (ngSubmit)="onSubmitReset()">
+        <div class="form-group">
+            <label for="mail_recuperation">Adresse mail</label>
+            <input type="text" formControlName="mail_recuperation" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+            <div *ngIf="submitted_reset && g.mail_recuperation.errors" class="invalid-feedback">
+                <div *ngIf="g.mail_recuperation.errors.required">Veuillez inscire un mail valide</div>
+                
+            </div>
+        </div>
+        <div class="form-group">
+            
+            <button [disabled]="loading" class="btn btn-primary" >
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                Envoyer un mail de récupération
+            </button>
+            <div *ngIf="wrong_email_reset_password" style="color:red">Adresse mail erronée</div>
+            
+        </div>
+    </form>-->
+
+
+
 </div>

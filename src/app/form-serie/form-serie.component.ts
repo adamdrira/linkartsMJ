@@ -4,7 +4,8 @@ import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
 import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-
+import {NotificationsService}from '../services/notifications.service';
+import {ChatService}from '../services/chat.service';
 
 import { async } from '@angular/core/testing';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
+import { pattern } from '../helpers/patterns';
 
 
 declare var $: any;
@@ -44,15 +46,10 @@ value:string="add";
   }
 
   constructor (
-    private rd: Renderer2,
-    private el: ElementRef,
-    private _constants: ConstantsService, 
-    private _upload: UploadService,
-    private resolver: ComponentFactoryResolver, 
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
     private bdSerieService: BdSerieService,
-    private fb:FormBuilder,
     private router:Router,
     public dialog: MatDialog,
     private Profile_Edition_Service:Profile_Edition_Service
@@ -71,6 +68,9 @@ value:string="add";
   @Input() chapter: string;
   @Input() form_number: number;
   @Input() list_of_chapters: any;
+  @Input() bdtitle: string;
+  @Input() bd_id_add_comics:number;
+  bd_id:number;
   list_of_chapters_validated:any[]=[];
   list_of_new_chapters:any[]=[];
   //for series chapters
@@ -85,7 +85,7 @@ value:string="add";
   form: FormGroup;
   user_id:number;
   pseudo:string;
-
+  visitor_name:string;
 
   @ViewChild("cancelDeleteChapter", {static:false}) cancelDeleteChapter:ElementRef;
   @ViewChild("continueDeleteChapter", {static:false}) continueDeleteChapter:ElementRef;
@@ -99,12 +99,20 @@ value:string="add";
 
     console.log(this.form_number);
     console.log(this.list_of_chapters);
+    if(this.form_number==0){
+      this.bd_id=parseInt(this.bdSerieService.get_bdid_cookies());
+    }
+    else{
+      this.bd_id=this.bd_id_add_comics
+    }
+    console.log(this.bd_id)
     if(this.form_number==1){
       this.current_chapter==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number-1;
     }
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
+      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
     })
     
  
@@ -118,12 +126,14 @@ value:string="add";
       this.addChapter();
       (<FormArray>this.form.get('chapters')).controls[0].setValue( this.chapter );
       this.componentRef[ this.componentRef.length - 1 ].name = this.chapter;
+      this.componentRef[ this.componentRef.length - 1 ].bdtitle = this.bdtitle;
       this.chapter_creation_in_progress=true;
       this.initialized = true;
     }
 
     else{
       for(let i=0;i<this.list_of_chapters.length;i++){
+        
         this.list_of_chapters_validated[i]=true,
         this.list_of_new_chapters[i]=false;
         this.addChapter();
@@ -148,7 +158,7 @@ value:string="add";
     return this.form.get('chapters') as FormArray; 
   }
   addChapter() { 
-    this.chapters.push(new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ] )); 
+    this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ] )); 
   }
   deleteChapter() { 
     this.chapters.removeAt( this.chapters.length - 1 ); 
@@ -259,7 +269,7 @@ value:string="add";
     console.log("add chapitre");
       if( this.chapter_creation_in_progress ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:"Vous avez déjà un chapitre en cours d'ajout"},
+          data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
         });
       }
       else if(this.form_number==0){
@@ -462,7 +472,26 @@ value:string="add";
       else {
         this.bdSerieService.validate_bd_serie(this.componentRef.length).subscribe(r=>{
           console.log(r);
-          this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"add_publication",
+              id_user_name:this.visitor_name,
+              id_user:this.user_id, 
+              publication_category:'comic',
+              publication_name:this.bdtitle,
+              format:'serie',
+              publication_id:this.bd_id,
+              chapter_number:this.componentRef.length,
+              information:"add",
+              status:"unchecked",
+            }
+            this.chatService.messages.next(message_to_send);
+            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+            
+          }) 
+          
         })
       }
     }
@@ -475,7 +504,7 @@ value:string="add";
       }
       if(!valid) {
   
-        errorMsg = errorMsg + "merci de les valider ou de supprimer ces chapitres.";
+        errorMsg = errorMsg + "merci de valider ou de supprimer ces chapitres.";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:errorMsg},
@@ -483,7 +512,40 @@ value:string="add";
   
       }
       else {
+        let type="extend_publication";
+        let compt=0;
+        for(let i=0;i<this.list_of_new_chapters.length;i++){
+          if(this.list_of_new_chapters[i]){
+            compt+=1;
+          }
+        }
+
+        if(compt==0){
           this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          
+        }
+        else{
+          this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:type,
+              id_user_name:this.visitor_name,
+              id_user:this.user_id, 
+              publication_category:'comic',
+              publication_name:this.bdtitle,
+              format:'serie',
+              publication_id:this.bd_id,
+              chapter_number:compt,
+              information:"add",
+              status:"unchecked",
+            }
+            this.chatService.messages.next(message_to_send);
+            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+            
+          }) 
+        }
+        
+        
       }
     }
     

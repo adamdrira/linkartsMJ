@@ -164,3 +164,16 @@
     border-radius: 10px;
     background-color: inherit;
 }
+
+.section-title{
+    display: flex;
+    height: 60px;
+    padding: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(32,56,100);
+}
+
+.invisible{
+    visibility:hidden;
+}

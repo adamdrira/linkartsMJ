@@ -12,8 +12,21 @@
                 </div>
             </div>
 
+
+             <!--
+                   BARRE DE NAVIGATION POUR LES SECTIONS/CONVERSATIONS
+                   BARRE DE NAVIGATION POUR LES SECTIONS/CONVERSATIONS
+                   BARRE DE NAVIGATION POUR LES SECTIONS/CONVERSATIONS
+                -->
+
+
             <div class="discussions-container col-md-6">
-                <div class="options-container">
+                 <!--
+                    POUR LES CONTACTS POUR LES CONTACTS
+                    POUR LES CONTACTS POUR LES CONTACTS
+                    POUR LES CONTACTS POUR LES CONTACTS
+                -->
+                <div class="options-container" *ngIf="spam=='false'">
                     <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_chat_section()"> 	
                         <mat-icon class="item-icon">library_add</mat-icon>
                     </button>
@@ -93,29 +106,100 @@
                     </div>
                 </div>
                 
-                
+                 <!--
+                    POUR LES SPAMS POUR LES SPAMS
+                    POUR LES SPAMS POUR LES SPAMS
+                    POUR LES SPAMS POUR LES SPAMS
+                -->
+                <div class="options-container" *ngIf="spam!='false'">
+                    <span >
+                        Discussion principale
+                    </span>
+                </div>
             </div>
            
-            <div class="col-md-3" style="text-align:right;" [ngClass]="{'unvisible':!top_pp_loaded }" >
+            <div class="col-md-3" style="text-align: right;
+            padding-left: 5px;
+            padding-right: 0px;
+            display: flex;
+            justify-content: end;
+            align-items: center;" [ngClass]="{'unvisible':!top_pp_loaded }" >
 
-                <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" >
-                    <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="initiateSearch()" >
-                        <mat-icon class="item-icon" style="font-size: 30px; width: 30px;margin:auto auto;">search</mat-icon>
-                    </button>
-                </div>
+            <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" style="  margin: auto 0px auto auto;">
+                <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="initiateSearch()" >
+                    <mat-icon class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">search</mat-icon>
+                </button>
+            </div>
 
-                <div *ngIf="show_searchbar_top" class="search-bar-messages" >
-                    <form>
-                        <mat-form-field [formGroup]="research_messages" floatLabel='never'>
-                            <mat-label>Rechercher un message</mat-label>
-                            <input #research matInput autocomplete="off" formControlName="research_message" (keydown)="on_keydown_research($event)">
-                        </mat-form-field>
-                    </form>
-            
-                    <button mat-button tabIndex="-1" class="mat-icon-button" (click)="endSearch()">
-                        <mat-icon  class="item-icon" style="font-size: 30px; width: 30px;margin:auto auto;">close</mat-icon>
+            <div *ngIf="show_searchbar_top" class="search-bar-messages"  style="  margin: auto 0px auto auto;" >
+                <form>
+                    <mat-form-field [formGroup]="research_messages" floatLabel='never'>
+                        <mat-label>Rechercher un message</mat-label>
+                        <input #research matInput autocomplete="off" formControlName="research_message" (keydown)="on_keydown_research($event)">
+                    </mat-form-field>
+                </form>
+        
+                <button mat-button tabIndex="-1" class="mat-icon-button" (click)="endSearch()">
+                    <mat-icon  class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">close</mat-icon>
+                </button>
+            </div>
+
+            <!-- --------------------------------OPTIONS--------------------------------- -->
+            <!-- --------------------------------OPTIONS--------------------------------- -->
+            <!-- --------------------------------OPTIONS--------------------------------- -->
+
+            <!-- --------------------------------POUR LES UTILISATEURS--------------------------------- -->
+            <ng-container *ngIf="friend_type=='user'">
+                <button  mat-icon-button tabIndex="-1" class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                    <mat-icon class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions="matMenu">
+                    <button class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">edit</mat-icon>
+                        <span>Mettre en sourdine</span>
                     </button>
-                </div>
+                    <button class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Bloquer l'utilisateur</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Retirer de mes contacts</span>
+                    </button>
+                </mat-menu>
+
+            <!-- --------------------------------POUR LES GROUPES--------------------------------- -->
+            </ng-container>
+            <ng-container *ngIf="friend_type=='group'">
+                <button  mat-icon-button tabIndex="-1" class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                    <mat-icon class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions="matMenu">
+                    <button class="mat-menu-item" mat-menu-item (click)="change_profile_picture()" > 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Modifier la photo de profile</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item (click)="add_a_friend()" > 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Ajouter un contact</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item  (click)="display_members_of_the_group()"> 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Liste des membres</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">edit</mat-icon>
+                        <span>Mettre en sourdine</span>
+                    </button>
+                    <button class="mat-menu-item" mat-menu-item  (click)="exit_group()"> 	
+                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <span>Quitter le groupe</span>
+                    </button>
+                    
+                </mat-menu>
+
+            </ng-container>
+                
             </div>
            
             <div *ngIf="show_research_results" class="top-container-for-reasearch" >
@@ -161,12 +245,21 @@
 
 
                 <mat-spinner diameter="20" *ngIf="show_spinner"></mat-spinner>
-                <div class="loading-page">
-                    <mat-spinner diameter="50" *ngIf="!put_messages_visible "></mat-spinner>
+                <div class="loading-page" *ngIf="!put_messages_visible ">
+                    <mat-spinner diameter="40"  ></mat-spinner>
                 </div>
 
-                <!--<perfect-scrollbar >-->
-                    <div #myScrollContainer class="messages-container" id="messages-container" [ngClass]="{'unvisible':!put_messages_visible}">
+                 <!--
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                    DEBUT DES MESSAGES DE CLASSIQUES
+                -->
+                    <div #myScrollContainer class="messages-container" id="messages-container" [ngClass]="{'unvisible':!put_messages_visible}" *ngIf="friend_type=='user'">
 
                         
                         <div *ngIf='display_messages' style="width:100%;">
@@ -187,18 +280,24 @@
                             </div>
                             
                             <div #message_children *ngFor="let item of list_of_messages; let i = index" class="message"
-                            [ngClass]="{'bottom-with-reactions':(list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver!=null ||list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user!=null),
-                                            'more-margin-for-date':(list_of_messages[list_of_messages.length- i] && get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt))}">
+                            [ngClass]="{'more-margin-for-date':(list_of_messages[list_of_messages.length- i] && 
+                                            get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt))
+                                            && (list_of_messages[list_of_messages.length -1 - i].createdAt || !today_triggered)}">
 
                                 <div *ngIf="list_of_messages[list_of_messages.length- i]" class="display-date">
-                                    <div *ngIf="get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt)">
-                                        {{show_date_of_timestamp(list_of_messages[list_of_messages.length -1 - i].createdAt)}}
+                                    <div *ngIf="get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt)
+                                    && (list_of_messages[list_of_messages.length -1 - i].createdAt || !today_triggered)">
+                                        {{show_date_of_timestamp(list_of_messages.length -1 - i)}}
                                     </div>
                                 </div>
                                 
+                                <!------------------------------------- MY MESSAGES------------------------------------------->
+                                <!------------------------------------- MY MESSAGES------------------------------------------->
+                                <!------------------------------------- MY MESSAGES------------------------------------------->
+
 
                                 <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
-                                    <div class="my-message-content" >
+                                    <div class="my-message-content" [ngClass]="{'less-margin-for-user':(list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user )}">
 
 
                                         <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
@@ -240,10 +339,43 @@
                                     
                                         
                                         
-                                        <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+                                        <div class="content only-message" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
                                                 Message supprimé
                                         </div>
-                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'" class="content">
+
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'" class="content" 
+                                        [ngClass]="{
+                                        'only-message':
+                                        (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
+                                            && (
+                                                   (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i].is_from_server)
+                                                || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i].is_from_server)
+
+                                                || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                                || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                                )
+                                        ) 
+                                        || ( !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i] 
+                                            && (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user 
+                                                || list_of_messages[list_of_messages.length- i].is_from_server
+                                                || list_of_messages[list_of_messages.length- i-1].date_shown)
+                                                ) 
+                                        || ( !list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && 
+                                            (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user 
+                                            || list_of_messages[list_of_messages.length- i-2].is_from_server
+                                            || list_of_messages[list_of_messages.length- i-2].date_shown)
+                                            )
+                                        || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2]
+                                        ),
+                                        'my-top-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user && list_of_messages[list_of_messages.length- i-2].id_user==list_of_messages[list_of_messages.length- i-1].id_user)
+                                        || (!list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user),
+                                        'my-middle-message':list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user  && current_user_id==list_of_messages[list_of_messages.length- i].id_user,
+                                        'my-bottom-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i-2].id_user && current_user_id==list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i].id_user),
+                                        'margin-for-emojis':list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user != list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver }">
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
                                                 <div class="response-message">
                                                     {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
@@ -288,10 +420,10 @@
                                             </div>
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                                    <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                                    <img (load)=loaded_image($event) [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -299,11 +431,13 @@
                                                 </div> 
                                             </div>
                                         </div >
-                                        <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received'">
+
+                                        <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
                                             <div class="received">
 
                                             </div>
                                         </div>
+
                                         <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
                                             <div *ngIf="display_retry[list_of_messages.length -1 - i]">
                                                 <div style="margin-right:5px;cursor:default;text-align:center;">
@@ -319,16 +453,22 @@
                                         <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'"
                                         style="margin-right:15px;">
                                             <div class="friend-picture">
-                                                <img (load)="loaded_image($event)" [src]="friend_picture">
+                                                <img (load)="loaded_image()" [src]="friend_picture">
                                             </div>
                                             
                                         </div>
                                     </div>
                                     
                                 </ng-container>
+
+                                <!------------------------------------- FRIEND MESSAGES------------------------------------------->
+                                <!------------------------------------- FRIEND USERS MESSAGES------------------------------------------->
+                                <!------------------------------------- FRIEND USERS MESSAGES------------------------------------------->
+
                                 <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                                     
-                                    <div class="friend-message-content">
+                                    <div class="friend-message-content"  
+                                    [ngClass]="{ 'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user}">
 
                                         <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
                                             <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
@@ -342,17 +482,52 @@
                                             </div>
                                         </div>
 
-
                                         <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]"
                                         style="margin-left:15px;">
                                             <div class="friend-picture">
-                                                <img (load)="loaded_image($event)" [src]="friend_picture">
+                                                <img (load)="loaded_image()" [src]="friend_picture">
                                             </div>
                                         </div>
-                                        <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+
+                                        <div class="content only-message" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
                                             Message supprimé
                                         </div>
-                                        <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
+
+                                        <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                        [ngClass]="{
+                                        'friend-top-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user && list_of_messages[list_of_messages.length- i-2].id_user==list_of_messages[list_of_messages.length- i-1].id_user)
+                                        || (!list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user),
+                                        'friend-middle-message':list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i-2].id_user  && current_user_id!=list_of_messages[list_of_messages.length- i].id_user,
+                                        'friend-bottom-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user && current_user_id!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i].id_user),
+
+                                        'only-message':
+                                        (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
+                                            && (
+                                                   (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i].is_from_server)
+                                                || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i].is_from_server)
+                                                
+                                                || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                                || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                                || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                                )
+                                        ) 
+                                        || ( !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i] && 
+                                                (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user 
+                                                || list_of_messages[list_of_messages.length- i].is_from_server
+                                                || list_of_messages[list_of_messages.length- i-1].date_shown)
+                                            ) 
+                                        || ( !list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && 
+                                                (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user 
+                                                || list_of_messages[list_of_messages.length- i-2].is_from_server
+                                                || list_of_messages[list_of_messages.length- i-2].date_shown)
+                                            )
+                                        || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2]
+                                        ),
+
+                                        'margin-for-emojis':list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user != list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver  }">
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
                                                     <div class="response-message">
                                                         {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
@@ -398,10 +573,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                                        <img (load)=loaded_image($event) style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                        <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                                        <img (load)=loaded_image($event) [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                        <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                         <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -436,11 +611,15 @@
                                     </div>
                                     
                                 </ng-container>
-        
-                                <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
-                                    
-                                    <div class="new-contact-message-content">
-                                            {{friend_name}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                
+                                <!-- MESSAGES SERVER -->
+                                <!--  MESSAGES SERVER -->
+                                <!--  MESSAGES SERVER  -->
+                                <!--  MESSAGES SERVER  -->
+
+                                <ng-container #emojis_reactions *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New' && list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                    <div class="new-contact-message-content" >
+                                            {{friend_name}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement
                                     </div>
                                 </ng-container>
                                 
@@ -450,12 +629,513 @@
                             <div *ngIf="show_research_results && show_less_results " class="show-less">
                                 <mat-spinner diameter="20" *ngIf="show_spinner_for_less" ></mat-spinner>
                                 <button mat-raised-button class="show-less-button style0" *ngIf="!show_spinner_for_less" (click)="see_less_messages()">
-                                    <span>Voir moins</span>
+                                    <span>Voir plus</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                <!--</perfect-scrollbar>-->
+
+
+
+
+                <!--
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                    DEBUT DES MESSAGES DE GROUPES
+                -->
+
+
+
+
+                <div #myScrollContainer class="messages-container" id="messages-container" [ngClass]="{'unvisible':!put_messages_visible || !list_of_users_names_retrieved}" *ngIf="friend_type!='user'">
+
+                        
+                    <div *ngIf='display_messages' style="width:100%;">
+
+                        <div *ngIf="trigger_no_more" class="show-more">
+                            <div style="text-align: center;">
+                                <span>
+                                    Début de la discussion : {{list_of_messages_date[list_of_messages.length -1]}}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div *ngIf="show_research_results && !trigger_no_more" class="show-more">
+                            <mat-spinner diameter="20" *ngIf="show_spinner_for_more" ></mat-spinner>
+                            <button mat-raised-button class="show-more-button style0" *ngIf="!show_spinner_for_more" (click)="see_more_messages()">
+                                <span>Voir plus</span>
+                            </button>
+                        </div>
+                        
+                        <div #message_children *ngFor="let item of list_of_messages; let i = index" class="message"
+                        [ngClass]="{'more-margin-for-date':(list_of_messages[list_of_messages.length- i] 
+                        && get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt))
+                        && (list_of_messages[list_of_messages.length -1 - i].createdAt || !today_triggered)}">
+
+                            <div *ngIf="list_of_messages[list_of_messages.length- i]" class="display-date">
+                                <div *ngIf="get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt)
+                                && (list_of_messages[list_of_messages.length -1 - i].createdAt || !today_triggered)">
+                                    {{show_date_of_timestamp(list_of_messages.length -1 - i)}}
+                                </div>
+                            </div>
+                            
+
+                            <!-- MES MESSAGES -->
+                            <!-- MES MESSAGES -->
+                            <!-- MES MESSAGES -->
+                            <!-- MES MESSAGES -->
+
+                            <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                <div class="my-message-content" 
+                                [ngClass]="{
+                                'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user,
+                                'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server)}">
+
+                                <div class="my-user-name" *ngIf="list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server)">
+                                    {{list_of_users_names[list_of_messages[list_of_messages.length- i-1].id_user]}}
+                                </div>
+
+                                <div class="user-profiles-who-saw" *ngIf=" list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1">
+                                    <div *ngFor="let id of list_of_messages[list_of_messages.length- 1 - i].list_of_users_who_saw">
+                                        <div class="user-profile-who-saw" *ngIf="id!=current_user_id && !has_user_saw_something_else_after(id,list_of_messages.length- i-1)">
+                                            <img  [src]="list_of_users_profile_pictures[id]">
+                                            <div class="display-who-saw">
+                                                <span> vu par {{list_of_users_names[id]}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                                <div class="display-seen-by-all" *ngIf="list_of_messages.length-1==i && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length==list_of_messages[list_of_messages.length- i-1].list_of_users_in_the_group.length ">
+                                    <span > vu par tous</span>
+                                </div>
+
+
+                                <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
+                                    <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
+                                        <ngx-emoji
+                                        (emojiClick)="reaction_click($event,list_of_messages.length -1 - i)"
+                                        useButton="true"
+                                        set="apple"
+                                        emoji="{{emoji}}"
+                                        size="30"
+                                        ></ngx-emoji>
+                                    </div>
+                                </div>
+                                
+                                <div class="options">
+                                    
+                                    <div class="date-option">
+                                        <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                    </div>
+
+                                    <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                                        <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                    </button>
+                                    <mat-menu  #artworkOptions="matMenu">
+                                        <button class="mat-menu-item" mat-menu-item (click)="delete_message(list_of_messages.length -1 - i)" > 	
+                                            <mat-icon class="item-icon">edit</mat-icon>
+                                            <span>Supprimer</span>
+                                        </button>
+                                        <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)"> 	
+                                            <mat-icon class="item-icon">view_carousel</mat-icon>
+                                            <span>Répondre</span>
+                                        </button>
+                                        <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
+                                            <mat-icon class="item-icon">view_carousel</mat-icon>
+                                            <span>Réagir</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            
+                                
+                                
+                                <div class="content only-message" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+                                        Message supprimé
+                                </div>
+
+                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'" class="content" 
+                                [ngClass]="{
+                                
+                                'only-message':
+                                (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
+                                    && (
+                                            (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                        || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                        || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i].is_from_server)
+                                        || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i].is_from_server)
+
+                                        || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                        || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                        || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                         )
+                                ) 
+                                || ( !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i] && 
+                                    (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user 
+                                    || list_of_messages[list_of_messages.length- i].is_from_server
+                                    || list_of_messages[list_of_messages.length- i-1].date_shown)
+                                    ) 
+                                || ( !list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && 
+                                    (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user 
+                                    || list_of_messages[list_of_messages.length- i-2].is_from_server
+                                    || list_of_messages[list_of_messages.length- i-2].date_shown)
+                                    )
+                                || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2]
+                                ),
+                                'my-top-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user && list_of_messages[list_of_messages.length- i-2].id_user==list_of_messages[list_of_messages.length- i-1].id_user)
+                                        || (!list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user),
+                                'my-middle-message':list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user  && current_user_id==list_of_messages[list_of_messages.length- i].id_user,
+                                'my-bottom-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i-2].id_user && current_user_id==list_of_messages[list_of_messages.length- i].id_user)
+                                    || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i].id_user),
+                                'margin-for-emojis':list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]}">
+                                    
+                                
+                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
+                                        <div class="response-message">
+                                            {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
+                                        </div>
+                                    </div>
+
+                                
+                                    <div class="emoji-reaction-content" (click)="see_emoji_reaction_by_user(list_of_messages[list_of_messages.length -1 - i].id)" *ngIf="list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]">
+                                        <ng-container *ngFor="let emoji of list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].sort();let j=index">
+                                            <div class="emoji-reaction-content-center" *ngIf="
+                                            (j==0 
+                                                || (j>0 && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]!=list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j])
+                                            ) ">
+                                                <ngx-emoji 
+                                                useButton="true"
+                                                set="apple"
+                                                emoji="{{emoji}}"
+                                                size="22"
+                                                ></ngx-emoji>
+                                            </div>
+                                            <div class="emoji-reaction-content-center" *ngIf=" 
+                                                j>0 
+                                                && (
+                                                        (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].length -1==j
+                                                             && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]==list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                        )
+                                                        ||
+                                                        (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].length -1>j
+                                                             && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]==list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                             && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j+1]!=list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                        )
+                                                    )
+                                                ">
+                                                <span style="color: darkgrey;
+                                                padding: 0px 5px 0px 5px;">
+                                                    {{get_number_of_same_emoji(list_of_messages[list_of_messages.length -1 - i].id,list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j])}}
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                       
+                                    </div>
+
+                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                        {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                    </div>
+
+                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                            <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                        </div> 
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                            <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                            <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                        </div> 
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                            <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                        </div> 
+                                    </div>
+                                    </div >
+
+                                    <div class="state" *ngIf="(list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted') &&  list_of_messages[list_of_messages.length -1 - i].list_of_users_who_saw.length==1">
+                                        <div class="received">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
+                                        <div *ngIf="display_retry[list_of_messages.length -1 - i]">
+                                            <div style="margin-right:5px;cursor:default;text-align:center;">
+                                                Message non envoyé. 
+                                                <div (click)="retry(list_of_messages.length -1 - i)" style="font-weight:600;cursor:pointer;">Réessayer</div> 
+                                            </div>
+                                            <!--<button (click)="retry(list_of_messages.length -1 - i)">retry</button>-->
+                                        </div>
+                                        <div *ngIf="!display_retry[list_of_messages.length -1 - i]" class="send_in_progress">
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </ng-container>
+
+
+                            <!-- MESSAGES AUTRES UTILISATEURS -->
+                            <!--  MESSAGES AUTRES UTILISATEURS  -->
+                            <!--  MESSAGES AUTRES UTILISATEURS  -->
+                            <!--  MESSAGES AUTRES UTILISATEURS  -->
+
+
+                            <ng-container *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                
+                                <div class="friend-message-content"  
+                                [ngClass]="{
+                                    'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
+                                    'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server)}">
+
+                                    <div class="friend-user-name" *ngIf="list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server)">
+                                        {{list_of_users_names[list_of_messages[list_of_messages.length- i-1].id_user]}}
+                                    </div>
+                                    
+                                    <div #emojis_reactions class="main-container-reactions closed" [ngClass]="{'my-reactions':list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id,'friend-reactions':list_of_messages[list_of_messages.length -1 - i].id_user!=current_user_id }">
+                                        <div class="container-reactions" *ngFor="let emoji of emojis_list; let j=index">
+                                            <ngx-emoji
+                                            (emojiClick)="reaction_click($event,list_of_messages.length -1 - i)"
+                                            useButton="true"
+                                            set="apple"
+                                            emoji="{{emoji}}"
+                                            size="30"
+                                            ></ngx-emoji>
+                                        </div>
+                                    </div>
+
+
+                                    <div *ngIf="
+                                    (
+                                            (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user)
+                                         || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user)
+                                    ) 
+                                    ||
+                                    (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
+                                        && (
+                                                (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i].is_from_server)
+                                            || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i].is_from_server)
+
+                                            || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                            || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                            )
+                                    ) 
+                                    || ( !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i] && 
+                                        (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user 
+                                             || list_of_messages[list_of_messages.length- i].is_from_server
+                                             || list_of_messages[list_of_messages.length- i-1].date_shown)
+                                        ) 
+                                    || ( !list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && 
+                                        (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user 
+                                            || list_of_messages[list_of_messages.length- i-2].is_from_server
+                                            || list_of_messages[list_of_messages.length- i-2].date_shown)
+                                        )
+                                    || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2])"
+                                    style="margin-left:15px;">
+                                        <div class="friend-picture">
+                                            <img  [src]="list_of_users_profile_pictures[list_of_messages[list_of_messages.length- i-1].id_user]">
+                                        </div>
+                                    </div>
+
+                                    <div class="content only-message" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='deleted'">
+                                        Message supprimé
+                                    </div>
+
+                                    <div class="content" *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
+                                    [ngClass]="{
+                                    'only-message':
+                                    (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] 
+                                        && (
+                                                (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i].is_from_server)
+                                            || (list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length- i].is_from_server)
+
+                                            || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user)
+                                            || (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                            || (list_of_messages[list_of_messages.length- i-2].date_shown && list_of_messages[list_of_messages.length- i-1].date_shown)
+                                            )
+                                    ) 
+                                    || ( !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i] && 
+                                        (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i].id_user 
+                                             || list_of_messages[list_of_messages.length- i].is_from_server
+                                             || list_of_messages[list_of_messages.length- i-1].date_shown)
+                                        ) 
+                                    || ( !list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && 
+                                        (list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user 
+                                            || list_of_messages[list_of_messages.length- i-2].is_from_server
+                                            || list_of_messages[list_of_messages.length- i-2].date_shown)
+                                        )
+                                    || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2]),
+
+                                    'friend-top-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user && list_of_messages[list_of_messages.length- i-2].id_user==list_of_messages[list_of_messages.length- i-1].id_user)
+                                        || (!list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user),
+                                    'friend-middle-message':list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i-2].id_user  && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user,
+                                    'friend-bottom-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user!=list_of_messages[list_of_messages.length- i-2].id_user && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user)
+                                        || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user),
+                                    'margin-for-emojis':list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]}">
+                                            
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response" class="response-content" (click)="show_response(list_of_messages.length -1 - i)">                            
+                                                <div class="response-message">
+                                                    {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
+                                                </div>
+                                            </div>
+
+                                            <div class="emoji-reaction-content" (click)="see_emoji_reaction_by_user(list_of_messages[list_of_messages.length -1 - i].id)" *ngIf="list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]">
+                                                <ng-container *ngFor="let emoji of list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].sort();let j=index">
+                                                    <div class="emoji-reaction-content-center" *ngIf="
+                                                    (j==0 
+                                                        || (j>0 && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]!=list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j])
+                                                    ) ">
+                                                        <ngx-emoji 
+                                                        useButton="true"
+                                                        set="apple"
+                                                        emoji="{{emoji}}"
+                                                        size="22"
+                                                        ></ngx-emoji>
+                                                    </div>
+                                                    <div class="emoji-reaction-content-center" *ngIf=" 
+                                                        j>0 
+                                                        && (
+                                                                (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].length -1==j
+                                                                     && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]==list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                                )
+                                                                ||
+                                                                (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id].length -1>j
+                                                                     && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j-1]==list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                                     && list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j+1]!=list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j]
+                                                                )
+                                                            )
+                                                        ">
+                                                        <span style="color: darkgrey;
+                                                        padding: 0px 5px 0px 5px;">
+                                                            {{get_number_of_same_emoji(list_of_messages[list_of_messages.length -1 - i].id,list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id][j])}}
+                                                        </span>
+                                                    </div>
+                                                </ng-container>
+                                                
+                                               
+                                            </div>
+                                            
+                                            <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                                {{list_of_messages[list_of_messages.length -1 - i].message}}
+                                            </div>
+                                            <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                    <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                </div> 
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                                    <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                </div> 
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
+                                                    <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                </div> 
+                                            </div>
+                                    </div>
+                                
+                                    
+
+                                    <div class="options">
+
+                                        
+                                        <div class="date-option">
+                                            <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                        </div>
+
+                                        <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
+                                            <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                        </button>
+                                        <mat-menu  #artworkOptions="matMenu">
+                                            <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)" > 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Répondre</span>
+                                            </button>
+                                            <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
+                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <span>Réagir</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+
+                                    <div class="user-profiles-who-saw-friend" *ngIf="list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1">
+                                        <div *ngFor="let id of list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw">
+                                            <div class="user-profile-who-saw-friend" *ngIf="id!=current_user_id && !has_user_saw_something_else_after(id,list_of_messages.length- i-1)">
+                                                <img  [src]="list_of_users_profile_pictures[id]">
+                                                <div class="display-who-saw">
+                                                    <span> vu par {{list_of_users_names[id]}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="display-seen-by-all-friend" *ngIf="i==list_of_messages.length-1 && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length==list_of_messages[list_of_messages.length- i-1].list_of_users_in_the_group.length ">
+                                        <span > vu par tous</span>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </ng-container>
+    
+                            <!-- MESSAGES SERVER -->
+                            <!--  MESSAGES SERVER -->
+                            <!--  MESSAGES SERVER  -->
+                            <!--  MESSAGES SERVER  -->
+                            <ng-container #emojis_reactions *ngIf="list_of_messages[list_of_messages.length -1 - i].is_from_server">
+                                <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New'">
+                                    Bienvenue dans le groupe : {{friend_name}}.
+                                </div>
+                                <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='Exit'">
+                                    <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
+                                        {{list_of_messages[list_of_messages.length -1 - i].real_id_user}} a quitté le groupe
+                                    </span>
+                                    <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
+                                       {{list_of_messages[list_of_messages.length -1 - i].id_user}} a quitté le groupe
+                                    </span>
+                                </div>
+                                <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='New_friend_in_the_group'">
+                                    <div *ngFor="let item of list_of_messages[list_of_messages.length -1 - i].list_of_names_added; let j=index">
+                                        <span *ngIf="list_of_messages[list_of_messages.length -1 - i].real_id_user">
+                                            {{list_of_messages[list_of_messages.length -1 - i].real_id_user}} a ajouté {{item}} au groupe.
+                                        </span>
+                                        <span *ngIf="!list_of_messages[list_of_messages.length -1 - i].real_id_user">
+                                            {{list_of_messages[list_of_messages.length -1 - i].id_user}} a ajouté {{item}} au groupe.
+                                        </span>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            
+                        </div>
+
+
+                        <div *ngIf="show_research_results && show_less_results " class="show-less">
+                            <mat-spinner diameter="20" *ngIf="show_spinner_for_less" ></mat-spinner>
+                            <button mat-raised-button class="show-less-button style0" *ngIf="!show_spinner_for_less" (click)="see_less_messages()">
+                                <span>Voir plus</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                    FIN DES MESSAGES
+                -->
     
                 <div *ngIf="spam!='false' && response_exist && response_exist_retrieved" class="add-to_contact">
                     {{friend_name}} ne fait pas parti de vos contacts. Voulez-vous l'ajouter à vos contacts ?<br />
@@ -572,12 +1252,15 @@
 
     <div class="right-container" *ngIf="spam=='false'">
         <app-chat-right-container
+        [chat_section_to_open]="chat_section_to_open"
         [id_chat_section]="id_chat_section"
         [spam]="spam"
         [current_user_id]="current_user_id" 
         [current_user_pseudo]="current_user_pseudo"
         [current_user_name]="current_user_name" 
         [current_user_profile_picture]="current_user_profile_picture" 
+        [chat_friend_id]="chat_friend_id"
+        [friend_type]="friend_type"
         [friend_id]="friend_id" 
         [friend_pseudo]="friend_pseudo"
         [friend_name]="friend_name"
