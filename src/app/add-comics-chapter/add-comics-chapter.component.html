@@ -4,11 +4,13 @@
 </div>
 
 <div class="container-fluid">
-    <div class="form" *ngIf="list_of_chapters_retrieved">
-        <div *ngIf="comics_data_retrieved"> {{comics_data.title}}</div>
+    <div class="form" *ngIf="list_of_chapters_retrieved && comics_data_retrieved">
+        <div> {{comics_data.title}}</div>
         <app-form-serie 
         form_number=1
-        [list_of_chapters]=list_of_chapters
+        [bdtitle]="comics_data.title"
+        [bd_id_add_comics]="bd_id"
+        [list_of_chapters]="list_of_chapters"
         [chapter]="chapter_test"
         ></app-form-serie>
     </div>

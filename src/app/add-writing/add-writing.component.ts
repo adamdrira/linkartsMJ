@@ -16,6 +16,8 @@ import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 import { pattern } from '../helpers/patterns';
+import {NotificationsService} from '../services/notifications.service';
+import { ChatService} from '../services/chat.service';
 
 declare var $: any;
 
@@ -34,11 +36,12 @@ export class AddWritingComponent implements OnInit {
 
 
   constructor(
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private _constants: ConstantsService, 
     private cd: ChangeDetectorRef,
     private Writing_Upload_Service:Writing_Upload_Service,
     private router: Router,
-    private rd:Renderer2,
     public dialog: MatDialog,
     private Writing_CoverService:Writing_CoverService,
     private Profile_Edition_Service:Profile_Edition_Service
@@ -56,7 +59,7 @@ export class AddWritingComponent implements OnInit {
   @Input('profile_picture') profile_picture:SafeUrl;
 
   @Input('pseudo') pseudo:string;
-
+  visitor_name:string;
   dropdowns = this._constants.filters.categories[0].dropdowns;
   user_id:number;
 
@@ -73,6 +76,7 @@ export class AddWritingComponent implements OnInit {
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
+      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
     })
 
     this.createFormControlsWritings();
@@ -194,7 +198,26 @@ export class AddWritingComponent implements OnInit {
           this.monetised )
         .subscribe( v => {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
-            this.Writing_Upload_Service.validate_writing().subscribe(r=>{this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );})
+            this.Writing_Upload_Service.validate_writing().subscribe(r=>{
+              this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.visitor_name,
+                  id_user:this.user_id, 
+                  publication_category:'writing',
+                  publication_name:this.title,
+                  format:'unknown',
+                  publication_id:v[0].writing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+              }) 
+              
+            })
           })
          
         });

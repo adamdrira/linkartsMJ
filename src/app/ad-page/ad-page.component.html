@@ -1,0 +1,182 @@
+
+<div class="container-fluid artwork-comic" >
+
+    
+
+    <main role="main">
+        
+
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--Left container : TOP CONTAINER (CONTROL BAR) and CONTENT-CONTAINER (CONTENTS)-->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <div id="left-container" *ngIf="attachments_retrieved" >
+
+
+            <div #leftContainer class="first-div">
+
+                
+                <div class="content-container">
+
+                
+                </div>
+
+            </div>
+
+
+
+            <div style="display:flex;justify-content: center;">
+                <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
+                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">account_circle</mat-icon>
+                    <span>Annonces du même auteur</span>
+                </div>
+                <div class="title" [ngClass]="{'opened': left_container_category_index==1 }" (click)="open_left_container_category(1);">
+                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">burst_mode</mat-icon>
+                    <span>Annonces similaires</span>
+                </div>
+            </div>
+
+
+
+            <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved" >
+               
+                 <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_author_ads">
+                    <div *ngFor="let item of list_of_author_ads; let i=index"  >
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div style="    display: flex;
+                    justify-content: center;
+                    margin: auto;" *ngIf="list_of_author_ads.length==0">
+                        Aucune recommendation n'est actuellement disponible pour cette oeuvre
+                    </div>
+                </div>
+
+                <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_other_ads">
+                    <div *ngFor="let item of list_of_other_ads; let i=index"  >
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div style="    display: flex;
+                    justify-content: center;
+                    margin: auto;" *ngIf="list_of_other_ads.length==0">
+                        Aucune recommendation n'est actuellement disponible pour cette oeuvre
+                    </div>
+                </div>
+            
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!---------------RIGHT CONTAINER -------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <div id="right-container" *ngIf="attachments_retrieved" >
+            
+
+
+        
+            <!--options pour un visiteur -->
+            <button *ngIf="visitor_mode_added && visitor_mode  && type_of_account=='account'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="options">
+                <mat-icon class="optionsButton">more_vert</mat-icon>
+            </button>
+            <mat-menu #options="matMenu">
+                <button mat-menu-item>
+                <mat-icon>no_encryption</mat-icon>
+                <span>Signaler</span>
+                </button>
+                <button mat-menu-item (click)="archive()">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Archiver</span>
+                </button>
+            </mat-menu>
+
+            <div class="d0-title-container">
+                <span>{{item.title}}</span>
+            </div>
+            <!--Line 1 : AUTHOR INFORMATION-->
+            <div class="d1-profile-container">
+
+            
+                
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="author-container" >
+                    <div class="left-container" >
+                        <img (load)="profile_picture_loaded()" [src]="profile_picture" [ngClass]="{'invisible': !profile_picture_is_loaded }">
+                    </div>
+                    <div class="right-container">
+                        <span class="author-name" *ngIf="pseudo!=''">
+                            <a href="/account/{{pseudo}}/{{item.id_user}}">
+                                {{author_name}}
+                            </a>
+                        </span>
+                        <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
+                    </div>
+                </div>
+
+                <div  *ngIf="visitor_mode && visitor_mode_added" class="d1-container-buttons">
+                    <button (click)="subscribtion()" *ngIf="already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
+                        <mat-icon class="item-icon" style=" color:#010119">person_remove</mat-icon> 
+                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Se désabonner</span>
+                      </button>
+                    <button (click)="subscribtion()" *ngIf="!already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
+                        <mat-icon class="item-icon" style=" color:#010119">person_add</mat-icon> 
+                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >S'abonner</span>
+                      </button>
+                </div>
+                    
+            </div>
+            <!--Line 2 : LIKES-LOVES, NUMBER OF VIEWS/COMMENTS, DATE-->
+            <div class="d2-likes-container" >
+               
+                <div class="line3">
+                    <div class="line-3-container">
+                        <mat-icon class="eye-icon">visibility</mat-icon>
+                        <span  *ngIf="item.number_of_responses == 0">Aucune réponse</span>
+                        <span  *ngIf="item.number_of_responses == 1">1 réponse</span>
+                        <span  *ngIf="item.number_of_responses > 1">{{item.number_of_responses}} vues</span>
+                    </div>
+                </div>
+
+                <div class="line5">
+                    <span >
+                        {{date_to_show}}
+                    </span>
+                </div>
+
+            </div>
+            <!--Line 3 : AD-->
+            <div class="d3-ad-container">
+                <div class="d3-ad">
+                </div>
+                <div class="d3-link">
+                    <span>Soutenez le site en faisant un don </span>
+                    <div class="d3-icon">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+    </main>
+</div>

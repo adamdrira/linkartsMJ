@@ -21,7 +21,11 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
-
+import {NotificationsService} from '../services/notifications.service';
+import { ChatService} from '../services/chat.service';
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
+import { Location } from '@angular/common';
 
 declare var Swiper: any;
 declare var $: any;
@@ -44,6 +48,10 @@ export class ArtworkDrawingComponent implements OnInit {
   constructor(
     private rd: Renderer2,
     public navbar: NavbarService,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+    public route :ActivatedRoute,
+    private location:Location,
     private activatedRoute: ActivatedRoute,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private sanitizer:DomSanitizer,
@@ -149,10 +157,10 @@ export class ArtworkDrawingComponent implements OnInit {
   date_upload:string;
 
   begining_time_of_view:number=Math.trunc( new Date().getTime()/1000);
-  createdAt_view:string;
-
+  id_view_created:number;
   already_subscribed:boolean=false;
   visitor_id:number;
+  visitor_name:string;
   mode_visiteur=true;
   mode_visiteur_added=false;
 
@@ -175,125 +183,8 @@ export class ArtworkDrawingComponent implements OnInit {
   list_of_users_ids_loves:any[]=[];
   list_of_users_ids_likes:any[]=[];
   
-  /******************************************************************** */
-  /****VARIABLES ET FONCTIONS D'EDITION******************************** */
-  /******************************************************************** */
-  //visible : true ou privé : false
+
   visible:boolean = false;
-  edit_information() {
-    const dialogRef = this.dialog.open(PopupFormDrawingComponent, {
-      data: {
-      format:this.type, 
-      drawing_id: this.drawing_id, 
-      title: this.title, 
-      highlight:this.highlight, 
-      style:this.style, 
-      firsttag:this.firsttag,
-      secondtag:this.secondtag, 
-      thirdtag:this.thirdtag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture
-      
-    },
-    });
-  }
-  edit_thumbnail() {
-    const dialogRef = this.dialog.open(PopupEditCoverDrawingComponent, {
-      data: {type:"edit_comic_thumbnail",
-      format:this.type,
-      drawing_id: this.drawing_id,
-      title: this.title,
-      style:this.style, 
-      firsttag:this.firsttag,
-      secondtag:this.secondtag, 
-      thirdtag:this.thirdtag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture,
-
-    },
-    });
-  }
-
-
-  set_private() {
-
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        if( result ) {
-          if(this.type=="one-shot"){
-            this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
-              this.status="private";
-            });
-          }
-          else{
-            this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
-              this.status="private";
-            });
-          }
-            
-        }
-
-      }
-    });
-  }
-  set_public() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        if(this.type=="one-shot"){
-          this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
-            this.status="public";
-          });
-        }
-        else{
-          this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
-            this.status="public";
-          });
-        }
-          
-      }
-    });
-  }
-
-  remove_artwork() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        if(this.type=="one-shot"){
-          console.log("suppression en cours");
-          this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
-            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
-            })
-          });
-        }
-        else{
-          console.log("suppression en cours");
-          this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
-            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
-            })
-          });
-        }
-
-      }
-    });
-  }
-  /******************************************************************** */
-  /****FIN DES VARIABLES D'EDITION************************************* */
-  /******************************************************************** */
-
 
 
 
@@ -396,7 +287,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
+      this.date_upload_to_show =get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
       this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
         if(e[0].list_to_send.length>0){
@@ -427,6 +318,8 @@ export class ArtworkDrawingComponent implements OnInit {
       });
 
       this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+        this.visitor_id=l[0].id;
+        this.visitor_name=l[0].firstname + ' ' + l[0].lastname;
         if (this.authorid == l[0].id){
           this.mode_visiteur = false;
           this.mode_visiteur_added = true;
@@ -434,7 +327,7 @@ export class ArtworkDrawingComponent implements OnInit {
         else{
           console.log("adding view")
           this.NotationService.add_view('drawing', 'one-shot', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
-            this.createdAt_view = r[0].createdAt;
+            this.id_view_created = r[0].id;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
             if(information[0].value){
@@ -538,7 +431,7 @@ export class ArtworkDrawingComponent implements OnInit {
       this.thirdtag=r[0].thirdtag;
       this.pagesnumber=r[0].pagesnumber;
       this.status=r[0].status;
-      this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
+      this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
 
       this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
         if(e[0].list_to_send.length>0){
@@ -569,6 +462,8 @@ export class ArtworkDrawingComponent implements OnInit {
       });
       
       this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+        this.visitor_id=l[0].id;
+        this.visitor_name=l[0].firstname + ' ' + l[0].lastname;
         console.log("getting current user")
         if (this.authorid == l[0].id){
           this.mode_visiteur = false;
@@ -577,7 +472,7 @@ export class ArtworkDrawingComponent implements OnInit {
         else{
           console.log("else and add view")
           this.NotationService.add_view('drawing', 'artbook', r[0].category, this.drawing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
-            this.createdAt_view = r[0].createdAt;
+            this.id_view_created = r[0].id;
           });
           this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
             if(information[0].value){
@@ -760,72 +655,6 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
   ngAfterViewChecked() {
     this.initialize_heights();
-  }
-
-
-  
-  date_in_seconds(date){
-    var uploaded_date = date.substring(0,date.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-   // alert( now_in_seconds - uploaded_date_in_second );
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
   }
 
 
@@ -1074,29 +903,66 @@ export class ArtworkDrawingComponent implements OnInit {
         if(this.type=='one-shot'){
           this.NotationService.remove_like('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
             
-                (async () => { 
-                  const getCurrentCity = () => {
-                  this.likesnumber=r[0].likesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.liked=false;
-                  this.like_in_progress=false;
-              })();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=false;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_like','drawing','one-shot',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'drawing',
+                  format:'one-shot',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.liked=false;
+                this.like_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
+           
           });
         }
         else if(this.type=='artbook'){      
           this.NotationService.remove_like('drawing', 'artbook', this.style, this.drawing_id,0).subscribe(r=>{      
               
-            (async () => { 
-                  const getCurrentCity = () => {
-                  this.likesnumber=r[0].likesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.liked=false;
-                  this.like_in_progress=false;
-              })();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=false;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_like','drawing','artbook',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'drawing',
+                  format:'artbook',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.liked=false;
+                this.like_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
           
           });
         }
@@ -1104,15 +970,34 @@ export class ArtworkDrawingComponent implements OnInit {
       else {
         if(this.type=='one-shot'){  
           this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-              (async () => { 
-                const getCurrentCity = () => {
-                this.likesnumber=r[0].likesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=true;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'drawing',
+                  publication_name:this.title,
+                  format:'one-shot',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.liked=true;
                 this.like_in_progress=false;
-            })();
+                this.cd.detectChanges();
+              })
+            }
             
           });
         }
@@ -1120,15 +1005,34 @@ export class ArtworkDrawingComponent implements OnInit {
         
           this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               
-            (async () => { 
-                const getCurrentCity = () => {
-                this.likesnumber=r[0].likesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=true;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'drawing',
+                  publication_name:this.title,
+                  format:'artbook',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.liked=true;
-                this.like_in_progress=false;            
-            })();  
+                this.like_in_progress=false;
+                this.cd.detectChanges();
+              })
+            } 
           });
         }
       }
@@ -1148,28 +1052,64 @@ export class ArtworkDrawingComponent implements OnInit {
       if(this.loved) {     
         if(this.type=='one-shot'){
           this.NotationService.remove_love('drawing', 'one-shot', this.style, this.drawing_id,0).subscribe(r=>{
-                (async () => { 
-                  const getCurrentCity = () => {
-                  this.lovesnumber=r[0].lovesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.loved=false;
-                  this.love_in_progress=false;
-              })();
+            this.lovesnumber=r[0].lovesnumber;
+            if(this.authorid==this.visitor_id){
+              this.loved=false;
+              this.love_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_love','drawing','one-shot',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'drawing',
+                  format:'one-shot',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.loved=false;
+                this.love_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
           });
         }
         else if(this.type=='artbook'){      
           this.NotationService.remove_love('drawing', 'artbook', this.style, this.drawing_id,0).subscribe(r=>{      
-                (async () => { 
-                  const getCurrentCity = () => {
-                  this.lovesnumber=r[0].lovesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.loved=false;
-                  this.love_in_progress=false;
-              })();
+            this.lovesnumber=r[0].lovesnumber;
+            if(this.authorid==this.visitor_id){
+              this.loved=false;
+              this.love_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_love','drawing','artbook',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'drawing',
+                  format:'artbook',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.loved=false;
+                this.love_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
           
           });
         }
@@ -1177,30 +1117,70 @@ export class ArtworkDrawingComponent implements OnInit {
       else {
         if(this.type=='one-shot'){  
           this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-              (async () => { 
-                const getCurrentCity = () => {
-                this.lovesnumber=r[0].lovesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+            this.lovesnumber=r[0].lovesnumber;
+                           
+            if(this.authorid==this.visitor_id){
+              this.loved=true;
+              this.love_in_progress=false; 
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'drawing',
+                  publication_name:this.title,
+                  format:'one-shot',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.loved=true;
-                this.love_in_progress=false;
-            })();
+                this.love_in_progress=false; 
+                this.cd.detectChanges();
+              }) 
+            }
             
           });
         }
         else if(this.type=='artbook'){
         
           this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              (async () => { 
-                const getCurrentCity = () => {
-                this.lovesnumber=r[0].lovesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+            this.lovesnumber=r[0].lovesnumber;
+                           
+            if(this.authorid==this.visitor_id){
+              this.loved=true;
+              this.love_in_progress=false; 
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'drawing',
+                  publication_name:this.title,
+                  format:'artbook',
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.loved=true;
-                this.love_in_progress=false;            
-            })();  
+                this.love_in_progress=false; 
+                this.cd.detectChanges();
+              }) 
+            } 
           });
         }
       }
@@ -1244,11 +1224,11 @@ export class ArtworkDrawingComponent implements OnInit {
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && ending_time_of_view>3){
-        this.NotationService.add_view_time('drawing', 'one-shot', this.style, this.drawing_id,0,ending_time_of_view,this.createdAt_view).subscribe(r=>{
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
       if(this.type=='artbook' && ending_time_of_view>3){
-        this.NotationService.add_view_time('drawing', 'artbook', this.style, this.drawing_id,0 ,ending_time_of_view,this.createdAt_view).subscribe(r=>{
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
     }
@@ -1290,13 +1270,13 @@ export class ArtworkDrawingComponent implements OnInit {
 
   emphasize(){
       this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id,0).subscribe(r=>{
-        location.reload();
+        this.content_emphasized=true;
       });
   }
 
   remove_emphasizing(){
       this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id,0).subscribe(t=>{
-        location.reload();
+        this.content_emphasized=false;
       });
   }
 
@@ -1368,6 +1348,138 @@ export class ArtworkDrawingComponent implements OnInit {
    
   }
 
+
+    /******************************************************************** */
+  /****VARIABLES ET FONCTIONS D'EDITION******************************** */
+  /******************************************************************** */
+  //visible : true ou privé : false
+ 
+  edit_information() {
+    const dialogRef = this.dialog.open(PopupFormDrawingComponent, {
+      data: {
+      format:this.type, 
+      drawing_id: this.drawing_id, 
+      title: this.title, 
+      highlight:this.highlight, 
+      style:this.style, 
+      firsttag:this.firsttag,
+      secondtag:this.secondtag, 
+      thirdtag:this.thirdtag,
+      author_name: this.user_name,
+      primary_description: this.primary_description, 
+      profile_picture: this.profile_picture
+      
+    },
+    });
+  }
+  edit_thumbnail() {
+    const dialogRef = this.dialog.open(PopupEditCoverDrawingComponent, {
+      data: {type:"edit_comic_thumbnail",
+      format:this.type,
+      drawing_id: this.drawing_id,
+      title: this.title,
+      style:this.style, 
+      firsttag:this.firsttag,
+      secondtag:this.secondtag, 
+      thirdtag:this.thirdtag,
+      author_name: this.user_name,
+      primary_description: this.primary_description, 
+      profile_picture: this.profile_picture,
+
+    },
+    });
+  }
+
+
+  set_private() {
+
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        if( result ) {
+          if(this.type=="one-shot"){
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
+              console.log(r)
+              this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
+                this.status="private";
+              });
+            })
+           
+          }
+          else{
+            this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"private").subscribe(r=>{
+              console.log(r)
+              this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
+                this.status="private";
+              });
+            })
+            
+          }
+            
+        }
+
+      }
+    });
+  }
+  set_public() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        if(this.type=="one-shot"){
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
+            console.log(r)
+            this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
+              this.status="public";
+            });
+          })
+          
+        }
+        else{
+          this.Subscribing_service.change_content_status("drawing",this.type,this.drawing_id,0,"ok").subscribe(r=>{
+            console.log(r)
+            this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
+              this.status="public";
+            });
+          })
+         
+        }
+          
+      }
+    });
+  }
+
+  remove_artwork() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        if(this.type=="one-shot"){
+          console.log("suppression en cours");
+          this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
+            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
+          });
+        }
+        else{
+          console.log("suppression en cours");
+          this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
+            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
+          });
+        }
+
+      }
+    });
+  }
 }
 
 

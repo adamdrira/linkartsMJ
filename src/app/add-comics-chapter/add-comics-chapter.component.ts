@@ -34,7 +34,7 @@ export class AddComicsChapterComponent implements OnInit {
     console.log(this.bd_id)
 
     this.BdSerieService.retrieve_chapters_by_id(this.bd_id).subscribe(r=>{
-      console.log(r)
+      console.log(r[0])
       this.list_of_chapters=r[0];
       this.list_of_chapters_retrieved=true;
     })

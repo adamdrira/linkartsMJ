@@ -346,11 +346,11 @@
             <!--Line 2 : LIKES-LOVES, NUMBER OF VIEWS/COMMENTS, DATE-->
             <div class="d2-likes-container" >
                 <div class="line1" [ngClass]="{'invisible': !display_right_container }">
-                    <button mat-raised-button  class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
+                    <button mat-raised-button [disabled]="like_in_progress" class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
                         <mat-icon class="d2-button-icon">thumb_up</mat-icon>
                         <span>J'aime</span>
                     </button>
-                    <button mat-raised-button  class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
+                    <button mat-raised-button [disabled]="love_in_progress" class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
                         <mat-icon class="d2-button-icon">favorite</mat-icon>
                         <span>J'adore</span>
                     </button>

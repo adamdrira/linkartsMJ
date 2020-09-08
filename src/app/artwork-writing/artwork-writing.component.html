@@ -321,11 +321,11 @@
             <!--Line 2 : LIKES-LOVES, NUMBER OF VIEWS/COMMENTS, DATE-->
             <div class="d2-likes-container" >
                 <div class="line1" [ngClass]="{'invisible': !display_right_container }">
-                    <button mat-raised-button  class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
+                    <button mat-raised-button [disabled]="like_in_progress" class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
                         <mat-icon class="d2-button-icon">thumb_up</mat-icon>
                         <span>J'aime</span>
                     </button>
-                    <button mat-raised-button  class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
+                    <button mat-raised-button [disabled]="love_in_progress" class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
                         <mat-icon class="d2-button-icon">favorite</mat-icon>
                         <span>J'adore</span>
                     </button>
@@ -402,11 +402,12 @@
                         &bull;
                         <div  class="tag-container">
                             <a href="/main-research-style-and-tag/1/Writing/{{style}}/all">
-                                <span>{{style}}</span>
+                                <span *ngIf="style=='Poetry'">Poésie</span>
+                                <span *ngIf="style=='Illustrated novel'">Roman illustré</span>
+                                <span *ngIf="style=='Scenario'">Scénario</span>
+                                <span *ngIf="style!='Poetry' && style!='Illustrated novel' && style!='Scenario'">{{style}}</span>
                             </a>
                         </div>
-                        <div *ngIf="type=='Série'"  class="tag-container"> <span>Série</span> </div>
-                        <div *ngIf="type=='One shot'"  class="tag-container"><span>One-shot</span>  </div>
                     </div>
                     <div class="categories-container"  [ngClass]="{'invisible': !display_right_container }">  
                         &bull;
@@ -434,7 +435,7 @@
                     <app-comments 
                     [type_of_account]=type_of_account
                     category='writing'
-                    [format]=type
+                    format='unknown'
                     [style]=style
                     [publication_id]=writing_id
                     chapter_number=0

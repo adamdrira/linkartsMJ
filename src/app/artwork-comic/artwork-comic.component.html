@@ -13,28 +13,19 @@
         <!--------------------------------------------------------------------------------->
         <div id="left-container">
 
-            <!--
-            <!- -ONE-SHOT COMIC- ->
-            <div *ngIf="type=='one-shot'" class="oneshot-container">
-                <span>{{title}}</span>
-            </div>
-            <!- -SERIE COMIC- ->
-            <div *ngIf="type=='serie'" class="serie-container">
-                <div class="name-container">
-                    <span>{{title}}</span>
-                </div>
-                <div class="chapter-container">
-                    <select class="chapterSelector" >
-                        <ng-container *ngFor="let item of chapterList; let i = index "><option value="{{i}}">chapitre {{item.chapter_number}} : {{item.title}}</option></ng-container>
-                    </select>
-                </div>
-            </div>-->
-
 
             <div #leftContainer class="first-div">
 
                 <div class="top-container">
                     <div class="dropdowns-container">
+
+                        <!--<div class="options-container" [ngClass]="{'like-invisible':!(current_chapter>0)}">
+                            <a class="other-chapter" href="/artwork-comic/{{type}}/{{title}}/{{bd_id}}/{{current_chapter}}">
+                                <span><mat-icon class="icon">navigate_before</mat-icon></span>
+                                <span style="margin-right: 15px;">Chapitre {{current_chapter}}</span>
+                            </a>
+                        </div>-->
+
                         <div class="options-container">
                             
                             
@@ -55,15 +46,40 @@
 
                             
                             <div *ngIf="type=='serie'" class="serie-container">
-                                <div class="chapter-container" >
-                                    <select class="chapterSelector" [ngClass]="{'invisible': !sumo_ready }">
-                                        <ng-container *ngFor="let item of chapterList; let i = index "><option value="{{i}}">chapitre {{item.chapter_number}} : {{item.title}}</option></ng-container>
+                                <mat-icon class="icon"  [ngStyle]="{'color':current_chapter>0 ? 'white' : 'rgb(86 111 148)' }" *ngIf="type=='serie' && chapterList.length>1" (click)="change_chapter_filter_bottom_to_top('down')">skip_previous</mat-icon>
+                                <mat-icon class="icon" [ngStyle]="{'color':current_chapter>0 ? 'white' : 'rgb(86 111 148)' }" *ngIf="type=='serie' && chapterList.length>1" (click)="change_chapter('before')">navigate_before</mat-icon>
+
+                                <div class="chapter-container"  [formGroup]="chapter_name_group" >
+                                    <select formControlName="chapter_name_control"  class="chapterSelector" [ngClass]="{'invisible':!sumo_ready}"> 
+                                        <option  value="{{current_chapter}}" selected disabled>{{chapter_name_to_show}}</option>
+                                        <ng-container *ngIf="chapter_filter_bottom_to_top">
+                                            <option *ngFor="let item of chapterList; let i = index " value="{{i}}"> chapitre {{item.chapter_number}} : {{item.title}}</option> 
+                                        </ng-container>
+                                        <ng-container *ngIf="!chapter_filter_bottom_to_top">
+                                            <option *ngFor="let item of chapterList; let i = index " value="{{chapterList.length-i-1}}"> chapitre {{chapterList[chapterList.length-i-1].chapter_number}} : {{chapterList[chapterList.length-i-1].title}}</option> 
+                                        </ng-container>
+                                        
                                     </select>
+                                    <!--<select class="chapterSelector" *ngFor="let item of chapterList; let i = index " [ngClass]="{'invisible': !sumo_ready }">
+                                        <option value="{{i}}">chapitre {{item.chapter_number}} : {{item.title}}</option>
+                                    </select>-->
                                 </div>
+
+                                <mat-icon class="icon"  [ngStyle]="{'color':chapterList.length>current_chapter+1 ? 'white' : 'rgb(86 111 148)' }" *ngIf="type=='serie' && chapterList.length>1" (click)="change_chapter('next')">navigate_next</mat-icon>
+                                <mat-icon class="icon"  [ngStyle]="{'color':chapterList.length>current_chapter+1 ? 'white' : 'rgb(86 111 148)' }" *ngIf="type=='serie' && chapterList.length>1" (click)="change_chapter_filter_bottom_to_top('up')">skip_next</mat-icon>
                             </div>
 
 
                         </div>
+
+                        <!--<div class="options-container" [ngClass]="{'like-invisible':!(chapterList.length>current_chapter+1)}">
+                            <a class="other-chapter" href="/artwork-comic/{{type}}/{{title}}/{{bd_id}}/{{current_chapter + 2}}">
+                                <span style="margin-left: 15px;">Chapitre {{current_chapter+2}}</span>
+                                <span>
+                                    <mat-icon class="icon">navigate_next</mat-icon>
+                                </span>
+                            </a>
+                        </div>-->
                     </div>
                 </div>
 
@@ -376,11 +392,11 @@
             <!--Line 2 : LIKES-LOVES, NUMBER OF VIEWS/COMMENTS, DATE-->
             <div class="d2-likes-container" >
                 <div class="line1" [ngClass]="{'invisible': !display_right_container }">
-                    <button mat-raised-button  class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
+                    <button mat-raised-button [disabled]="like_in_progress" class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
                         <mat-icon class="d2-button-icon">thumb_up</mat-icon>
                         <span>J'aime</span>
                     </button>
-                    <button mat-raised-button  class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
+                    <button mat-raised-button [disabled]="love_in_progress" class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
                         <mat-icon class="d2-button-icon">favorite</mat-icon>
                         <span>J'adore</span>
                     </button>

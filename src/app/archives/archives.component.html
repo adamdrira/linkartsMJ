@@ -1,53 +1,5 @@
 
 
-
-<!--<div class="categories-container">
-    <div class="category-filter">
-        <div #category class="content-action text-center opened" (click)="open_category(0);">
-            Bandes dessinées
-        </div>
-        <div class="divider-vertical"></div>
-        <div #category class="content-action text-center" (click)="open_category(1);">
-            Dessins
-        </div>
-        <div class="divider-vertical"></div>
-        <div #category class="content-action text-center" (click)="open_category(2);">
-            Écrits
-        </div>
-        <div class="divider-vertical"></div>
-        <div #category class="content-action text-center" (click)="open_category(3);">
-            Stories
-        </div>
-        <div class="divider-vertical"></div>
-        <div #category class="content-action text-center" (click)="open_category(4);">
-            Annonces
-        </div>
-    </div>
-</div>
-
-
-
-<div class="albums-container">
-    <div class="albums-filter">
-        <!- - archives comics, écrits, dessins- ->
-        <ng-container *ngIf="opened_category==0 || opened_category==1 || opened_category==2 ">
-            <div  *ngFor="let element of titles_archives; let i=index" class="content-action text-center" 
-            (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                    {{element}}  
-             </div>                           
-        </ng-container>
-        <!- - stories- ->
-        <div *ngIf="opened_category==3">
-            Toutes mes stories         
-        </div>
-        <!- - stories- ->
-        <div *ngIf="opened_category==4 ">
-            Toutes les annonces archivées        
-        </div>
-    </div>
-</div>-->
-
-
             
 <div class="logos-container" #target>
     <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);">
@@ -65,31 +17,39 @@
 </div>
 
 
-<div class="albums-filter" style="display:flex;justify-content: center;">
+<div class="albums-filter" style="display:flex;justify-content: center;" *ngIf="opened_category>=0">
     <div>
-        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 0 }" (click)="open_album(0);">
+        <button mat-raised-button *ngIf="(opened_category == 0 && private_list_of_comics.length>0) || (opened_category == 1 && list_of_comics.length>0)" class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 0 }" (click)="open_album(0);">
             <div>Bandes dessinées</div>
         </button>
     </div>
     <div>
-        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 1 }" (click)="open_album(1);">
+        <button mat-raised-button *ngIf="(opened_category == 0 && private_list_of_drawings.length>0) || (opened_category == 1 && list_of_drawings.length>0)"  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 1 }" (click)="open_album(1);">
             <div>Dessins</div>
         </button>
     </div>
     <div>
-        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 2 }" (click)="open_album(2);">
+        <button mat-raised-button  *ngIf="(opened_category == 0 && private_list_of_writings.length>0) || (opened_category == 1 && list_of_writings.length>0)" class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 2 }" (click)="open_album(2);">
             <div>Écrits</div>
         </button>
     </div>
-    <div *ngIf="opened_category == 0">
+    <div *ngIf="opened_category == 0 && list_of_stories_data.length>0">
         <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 3 }" (click)="open_album(3);">
             <div>Stories</div>
         </button>
     </div>
-    <div *ngIf="opened_category == 1">
+    <div *ngIf="opened_category == 1 && list_of_ads.length>0">
         <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_album == 4 }" (click)="open_album(4);">
             <div>Annonces</div>
         </button>
+    </div>
+    <div  class="display:flex;justify-content:center" *ngIf=" opened_category == 1 && !(list_of_ads.length>0 ||  list_of_writings.length>0
+      || list_of_drawings.length>0 || list_of_comics.length>0)">
+        Archives vides
+    </div>
+    <div  class="display:flex;justify-content:center" *ngIf=" opened_category == 0 && !(list_of_stories_data.length>0 || private_list_of_writings.length>0 
+        || private_list_of_drawings.length>0 || private_list_of_comics.length>0)">
+        Archives vides
     </div>
 </div>
 
@@ -97,100 +57,149 @@
 
 
 
-<div class="artworks-container">
+<div class="artworks-container" *ngIf="opened_album>=0">
+
+    <div style="display: flex;justify-content: center;" *ngIf="contents_loading">
+        <mat-spinner diameter="30" ></mat-spinner>
+    </div>
 
     <!--!!!!!!!!!!!!!!!!-->
     <!--bandes dessinées-->
     <!--!!!!!!!!!!!!!!!!-->
-    <div *ngIf="opened_album==0">
+    <div *ngIf="opened_album==0 && private_list_of_comics_sorted && list_of_comics_added" [ngClass]="{'invisible':!display_comics }" >
         <!--Mes archives-->
-        <div *ngIf="opened_category==0" class="bd-thumbnails-container container-comics" >
-            <ng-container *ngIf="private_list_of_comics_sorted">
-                <ng-container *ngFor="let item of private_list_of_comics">
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
-                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
-                    [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+        <div *ngIf="opened_category==0" class="bd-thumbnails-container container-comics" #container_comics >
+                <ng-container *ngFor="let item of private_list_of_comics.slice(0,this.number_of_comics_to_show_by_category[0])">
+                    <app-thumbnail-comics 
+                    *ngIf="item.chaptersnumber == null" 
+                    [item]=item 
+                    format='one-shot' 
+                    now_in_seconds={{now_in_seconds}}
+                    (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics> 
+                    <app-thumbnail-comics 
+                    *ngIf="item.chaptersnumber>=0"
+                    [item]=item 
+                    format='serie' 
+                    now_in_seconds={{now_in_seconds}}
+                    (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics>
                 </ng-container>
-            </ng-container>
         </div>
         <!--Autres utilisateurs-->
-        <div *ngIf="opened_category==1" class="bd-thumbnails-container container-comics" >
-            <ng-container *ngIf="list_of_comics_added">
-                <ng-container *ngFor="let item of list_of_comics">
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber == null" 
-                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
-                    <app-thumbnail-comics *ngIf="item.chaptersnumber>=0"
-                    [item]=item format='serie' now_in_seconds={{now_in_seconds}}></app-thumbnail-comics>
+        <div *ngIf="opened_category==1" class="bd-thumbnails-container container-comics" #container_comics  >
+                <ng-container *ngFor="let item of list_of_comics.slice(0,this.number_of_comics_to_show_by_category[1])">
+                    <app-thumbnail-comics 
+                    *ngIf="item.chaptersnumber == null" 
+                    [item]=item 
+                    format='one-shot' 
+                    (send_loaded)="display_comics_thumbnails()"
+                    now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
+                    <app-thumbnail-comics 
+                    *ngIf="item.chaptersnumber>=0"
+                    [item]=item 
+                    format='serie' 
+                    now_in_seconds={{now_in_seconds}}
+                    (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics>
                 </ng-container>
-            </ng-container>
         </div>
     </div>
 
     <!--!!!!!!!!!!!!!!!!-->
     <!--dessins-->
     <!--!!!!!!!!!!!!!!!!-->
-    <div *ngIf="opened_album==1" #albumToShow class="drawings-container" [ngClass]="{'albumVisible':list_visibility_albums_drawings }">
+    <div *ngIf="opened_album==1 && private_list_of_drawings_sorted && list_of_drawings_added" class="drawings-container" #container_drawings [ngClass]="{'invisible':!list_visibility_albums_drawings }"  
+    >
         <!--Mes archives-->
         <div *ngIf="opened_category==0" class="drawing-container" >
-            <div *ngIf="private_list_of_drawings_sorted" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                <div *ngFor="let item of private_list_of_drawings" class="grid-item" #getwidth>
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null" 
-                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-drawing> 
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
-                    [item]=item format='artbook' now_in_seconds={{now_in_seconds}}></app-thumbnail-drawing>
+
+            <div  class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+                <div *ngFor="let item of private_list_of_drawings.slice(0,this.number_of_drawings_to_show_by_category[0])" class="grid-item">
+                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                        (sendLoaded)="display_drawings_thumbnails();"
+                        [item]=item
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                    <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                        (sendLoaded)="display_drawings_thumbnails();"
+                        [item]=item
+                        format='artbook'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
                 </div>
             </div>
         </div>
         <!--Autres utilisateurs-->
         <div *ngIf="opened_category==1" class="drawing-container" >
-            <div *ngIf="list_of_drawings_added" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                <div *ngFor="let item of list_of_drawings" class="grid-item" #getwidth>
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null" 
-                    [item]=item format='one-shot' now_in_seconds={{now_in_seconds}}></app-thumbnail-drawing> 
-                    <app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
-                    [item]=item format='artbook' now_in_seconds={{now_in_seconds}}></app-thumbnail-drawing>
+            <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+                <div *ngFor="let item of list_of_drawings.slice(0,this.number_of_drawings_to_show_by_category[1])" class="grid-item">
+                    <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                        (sendLoaded)="display_drawings_thumbnails();"
+                        [item]=item
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                    <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                        (sendLoaded)="display_drawings_thumbnails();"
+                        [item]=item
+                        format='artbook'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
+                </div>
+                <div class="grid-item" style="height:1px;width:100px;">
                 </div>
             </div>
+
         </div>
     </div>
 
     <!--!!!!!!!!!!!!!!!!-->
     <!--writings-->
     <!--!!!!!!!!!!!!!!!!-->
-    <div *ngIf="opened_album==2">
+    <div *ngIf="opened_album==2 && private_list_of_writings_sorted && list_of_writings_added" [ngClass]="{'invisible':!display_writings }">
         <!--Mes archives-->
-        <div *ngIf="opened_category==0" class="writing-thumbnails-container container-writings">
-            <ng-container *ngIf="private_list_of_writings_sorted">
-                <ng-container *ngFor="let item of private_list_of_writings; let i = index">
+        <div *ngIf="opened_category==0" class="writing-thumbnails-container container-writings" #container_writings>
+                <ng-container *ngFor="let item of private_list_of_writings.slice(0,this.number_of_writings_to_show_by_category[0]); let i = index">
                     <app-thumbnail-writing
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
+                        (sendLoaded)="display_writings_thumbnails();"
                     ></app-thumbnail-writing>
                 </ng-container>
-            </ng-container>
         </div>
         <!--Autres utilisateurs-->
-        <div *ngIf="opened_category==1" class="writing-thumbnails-container container-writings">
-            <div *ngIf="list_of_writings_added">
-                <div *ngFor="let item of list_of_writings; let i = index">
+        <div *ngIf="opened_category==1" class="writing-thumbnails-container container-writings" #container_writings>
+                <div *ngFor="let item of list_of_writings.slice(0,this.number_of_writings_to_show_by_category[1]); let i = index">
                     <app-thumbnail-writing
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
+                        (sendLoaded)="display_writings_thumbnails();"
                     ></app-thumbnail-writing>
                 </div>
-            </div>
         </div>
     </div>
     
     <!--!!!!!!!!!!!!!!!!-->
     <!--stories-->
     <!--!!!!!!!!!!!!!!!!-->
-    <div *ngIf="opened_album==3">
-        <div *ngIf="list_of_stories_data_received" class="container-stories">
+    <div *ngIf="opened_album==3 && list_of_stories_received && list_of_stories_data_received" [ngClass]="{'invisible':!display_stories }"  >
+        <div class="container-stories" #container_stories>
 
-            <div *ngFor="let item of list_of_stories_data; let i = index" class="thumbnail-story">
-                <img [src]="list_of_stories[i]">
+            <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" class="thumbnail-story" [ngClass]="{'invisible':!list_display_stories[i] }">
+                <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)">
                 <div class="story-bottom-container">
                     <span>{{item.createdAt | date}}</span>
                 </div>
@@ -201,26 +210,24 @@
                 </button>
                 <mat-menu  #storyOptions="matMenu">
                     
-                    <button class="mat-menu-item" mat-menu-item> 	
+                    <button class="mat-menu-item" mat-menu-item (click)="hide_story(i)"> 	
                         <mat-icon class="item-icon">visibility_off</mat-icon>
-                        <span>test1</span>
-                    </button>
-                    <button class="mat-menu-item" mat-menu-item> 	
-                        <mat-icon class="item-icon">visibility</mat-icon>
-                        <span>test2</span>
+                        <span>ne plus afficher</span>
                     </button>
 
                 </mat-menu>
 
 
             </div>
+
         </div>
+
     </div>
     
     <!--!!!!!!!!!!!!!!!!-->
     <!--annonces-->
     <!--!!!!!!!!!!!!!!!!-->
-    <div *ngIf="opened_album==4">
+    <div *ngIf="opened_album==4" >
         <div *ngIf="list_of_ads_added">
             <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:40px">
                 <app-thumbnail-ad 

@@ -16,6 +16,12 @@ import { PopupEditCoverWritingComponent } from '../popup-edit-cover-writing/popu
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 
+import {NotificationsService} from '../services/notifications.service';
+import { ChatService} from '../services/chat.service';
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
+import { Location } from '@angular/common';
+
 declare var Swiper: any;
 declare var $: any;
 
@@ -35,8 +41,11 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   constructor(
-    private rd: Renderer2,
     public navbar: NavbarService,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
+    public route :ActivatedRoute,
+    private location:Location,
     private activatedRoute: ActivatedRoute,
     private sanitizer:DomSanitizer,
     private cd: ChangeDetectorRef,
@@ -120,7 +129,6 @@ export class ArtworkWritingComponent implements OnInit {
   like_in_progress=false;
   loved:boolean=false;
   love_in_progress=false;
-  type:string;
   status:string;
   total_pages:number;
   pdfSrc:SafeUrl;
@@ -149,8 +157,7 @@ export class ArtworkWritingComponent implements OnInit {
   date_upload:string;
 
   begining_time_of_view:number=Math.trunc( new Date().getTime()/1000);
-  createdAt_view:string;
-
+  id_view_created:number;
   already_subscribed:boolean=false;
 
   list_of_author_recommendations_comics:any[]=[];
@@ -172,96 +179,12 @@ export class ArtworkWritingComponent implements OnInit {
 
   content_emphasized=false;
 
-  //variables à déterminer
+
+  visitor_id:number;
+  visitor_name:string;
   mode_visiteur = true;
-  mode_visiteur_added = false;
-  /******************************************************************** */
-  /****VARIABLES ET FONCTIONS D'EDITION******************************** */
-  /******************************************************************** */
-  //visible : true ou privé : false
+  mode_visiteur_added = false; 
   visible:boolean = false;
-  edit_information() {
-    const dialogRef = this.dialog.open(PopupFormWritingComponent, {
-      data: {
-      format:this.type, 
-      writing_id: this.writing_id, 
-      title: this.title, 
-      highlight:this.highlight, 
-      style:this.style, 
-      firsttag:this.firsttag,
-      secondtag:this.secondtag, 
-      thirdtag:this.thirdtag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture
-    },
-    });
-  }
-
-  edit_thumbnail() {
-    const dialogRef = this.dialog.open(PopupEditCoverWritingComponent, {
-      data: {type:"edit_comic_thumbnail",
-      format:this.type,
-      writing_id: this.writing_id,
-      title: this.title,
-      style:this.style, 
-      firsttag:this.firsttag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture,
-      thumbnail_picture:this.thumbnail_picture
-    },
-    });
-  }
-
-  
-
-  set_private() {
-
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").subscribe(r=>{
-          location.reload();
-        });
-      }
-    });
-  }
-  set_public() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").subscribe(r=>{
-          location.reload();
-        });
-      }
-    });
-  }
-
-  remove_artwork() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if( result ) {
-        console.log(this.writing_id);
-        this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
-          this.navbar.delete_publication_from_research("Writing",this.type,this.writing_id).subscribe(r=>{
-            this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-            return;
-          })
-        });
-
-      }
-    });
-  }
-  /******************************************************************** */
-  /****FIN DES VARIABLES D'EDITION************************************* */
-  /******************************************************************** */
 
 
 
@@ -284,7 +207,7 @@ export class ArtworkWritingComponent implements OnInit {
         let title =this.activatedRoute.snapshot.paramMap.get('title');
         if(r[0].title !=title ){
           this.router.navigateByUrl("/");
-        return;
+          return;
         }
         else{
           
@@ -306,7 +229,6 @@ export class ArtworkWritingComponent implements OnInit {
           this.highlight=r[0].highlight;
           this.title=r[0].title;
           this.style=r[0].category;
-          this.type=r[0].format;
           this.firsttag=r[0].firsttag;
           this.secondtag=r[0].secondtag;
           this.thirdtag=r[0].thirdtag;
@@ -314,7 +236,7 @@ export class ArtworkWritingComponent implements OnInit {
           this.lovesnumber =r[0].lovesnumber ;
           this.status=r[0].status;
           this.thumbnail_picture=r[0].name_coverpage ;
-          this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(r[0].createdAt) );
+          this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
     
           this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
             if(e[0].list_to_send.length>0){
@@ -357,13 +279,15 @@ export class ArtworkWritingComponent implements OnInit {
           });
           
           this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+            this.visitor_id=l[0].id;
+            this.visitor_name=l[0].firstname + ' ' + l[0].lastname;
             if (this.authorid == l[0].id){
               this.mode_visiteur = false;
               this.mode_visiteur_added = true;
             }
             else{
-              this.NotationService.add_view('writing',  this.type, r[0].category, this.writing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
-                this.createdAt_view = r[0].createdAt;
+              this.NotationService.add_view('writing',  "unknown", r[0].category, this.writing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
+                this.id_view_created = r[0].id;
               });
               this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
                 if(information[0].value){
@@ -376,18 +300,18 @@ export class ArtworkWritingComponent implements OnInit {
               });         
             }  
             if(!this.mode_visiteur){
-              this.navbar.check_if_research_exists("Writing",this.type,this.writing_id,title,"clicked").subscribe(p=>{
+              this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,title,"clicked").subscribe(p=>{
                 if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Writing",this.type,this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+                  this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
                 }
               })
             }
             else{
-              this.navbar.add_main_research_to_history("Writing",this.type,this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
+              this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
             }this.check_archive();
           });
           
-          this.NotationService.get_loves('writing',  this.type, r[0].category, this.writing_id,0).subscribe(r=>{
+          this.NotationService.get_loves('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
             let list_of_loves= r[0];
             if (list_of_loves.length != 0){
             this.Profile_Edition_Service.get_current_user().subscribe(l=>{
@@ -400,7 +324,7 @@ export class ArtworkWritingComponent implements OnInit {
             });
           }
           });
-          this.NotationService.get_likes('writing',  this.type, r[0].category, this.writing_id,0).subscribe(r=>{
+          this.NotationService.get_likes('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
             let list_of_likes= r[0];
             if (list_of_likes.length != 0){
             this.Profile_Edition_Service.get_current_user().subscribe(l=>{
@@ -444,13 +368,13 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   get_recommendations_by_tag(){
-    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',this.type,this.writing_id,this.style,this.firsttag,6).subscribe(u=>{
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.firsttag,6).subscribe(u=>{
       if(u[0].length>0){
         console.log(u[0])
         let list_of_first_propositions=u[0];
         console.log(list_of_first_propositions)
         if(list_of_first_propositions.length<6 && this.secondtag){
-          this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',this.type,this.writing_id,this.style,this.secondtag,6-list_of_first_propositions.length).subscribe(r=>{
+          this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.secondtag,6-list_of_first_propositions.length).subscribe(r=>{
             if(r[0].length>0){
               console.log(r[0])
               let len=list_of_first_propositions.length;
@@ -490,7 +414,7 @@ export class ArtworkWritingComponent implements OnInit {
     let len=list_of_first_propositions.length;
     let indice=0;
     for(let k=0;k<len;k++){
-      if( list_of_first_propositions[k].format==this.type && list_of_first_propositions[k].target_id==this.writing_id){
+      if( list_of_first_propositions[k].format=="unknown" && list_of_first_propositions[k].target_id==this.writing_id){
         indice=k;
       }
       if(k==len-1){
@@ -519,7 +443,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   check_archive(){
-    this.Subscribing_service.check_if_publication_archived("writing",this.type ,this.writing_id).subscribe(r=>{
+    this.Subscribing_service.check_if_publication_archived("writing","unknown" ,this.writing_id).subscribe(r=>{
       if(r[0].value){
         this.content_archived=true;
       }
@@ -527,68 +451,7 @@ export class ArtworkWritingComponent implements OnInit {
     })
   }
 
-  date_in_seconds(date){
-    var uploaded_date = date.substring(0,date.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
+  
 
 
   /******************************************************* */
@@ -757,33 +620,70 @@ export class ArtworkWritingComponent implements OnInit {
     if(this.type_of_account=="account"){
       this.like_in_progress=true;
       if(this.liked) {        
-          this.NotationService.remove_like('writing', this.type, this.style, this.writing_id,0).subscribe(r=>{      
+          this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
               
-            (async () => { 
-                  const getCurrentCity = () => {
-                  this.likesnumber=r[0].likesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.liked=false;
-                  this.like_in_progress=false;
-              })();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=false;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'writing',
+                  format:'unknown',
+                  publication_id:this.writing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.liked=false;
+                this.like_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
           
           });
       }
       else {
         
-          this.NotationService.add_like('writing', this.type, this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+          this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               
-            (async () => { 
-                const getCurrentCity = () => {
-                this.likesnumber=r[0].likesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+            this.likesnumber=r[0].likesnumber;
+            if(this.authorid==this.visitor_id){
+              this.liked=true;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_like",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'writing',
+                  publication_name:this.title,
+                  format:'unknown',
+                  publication_id:this.writing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.liked=true;
-                this.like_in_progress=false;            
-            })();  
+                this.like_in_progress=false;
+                this.cd.detectChanges();
+              })
+            } 
           });
       }
     }
@@ -798,31 +698,71 @@ export class ArtworkWritingComponent implements OnInit {
     if(this.type_of_account=="account"){
       this.love_in_progress=true;
       if(this.loved) {      
-          this.NotationService.remove_love('writing', this.type, this.style, this.writing_id,0).subscribe(r=>{      
-                (async () => { 
-                  const getCurrentCity = () => {
-                  this.lovesnumber=r[0].lovesnumber;
-                  return Promise.resolve('Lyon');
-                };
-                  await getCurrentCity();
-                  this.loved=false;
-                  this.love_in_progress=false;
-              })();
+          this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
+            
+
+            this.lovesnumber=r[0].lovesnumber;
+            if(this.authorid==this.visitor_id){
+              this.loved=false;
+              this.love_in_progress=false;
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid, 
+                  publication_category:'writing',
+                  format:'unknown',
+                  publication_id:this.writing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
+                this.loved=false;
+                this.love_in_progress=false;
+                this.cd.detectChanges();
+              })
+            }
           
           });
         
       }
       else {      
-          this.NotationService.add_love('writing', this.type, this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              (async () => { 
-                const getCurrentCity = () => {
-                this.lovesnumber=r[0].lovesnumber;
-                return Promise.resolve('Lyon');
-              };
-                await getCurrentCity();
+          this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+            this.lovesnumber=r[0].lovesnumber;
+                           
+            if(this.authorid==this.visitor_id){
+              this.loved=true;
+              this.love_in_progress=false; 
+              this.cd.detectChanges();
+            }
+            else{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"publication_love",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  id_receiver:this.authorid,
+                  publication_category:'writing',
+                  publication_name:this.title,
+                  format:'unknown',
+                  publication_id:this.writing_id,
+                  chapter_number:0,
+                  information:"add",
+                  status:"unchecked",
+                }
+                this.chatService.messages.next(message_to_send);
                 this.loved=true;
-                this.love_in_progress=false;            
-            })();  
+                this.love_in_progress=false; 
+                this.cd.detectChanges();
+              }) 
+            }   
           });
       }
     }
@@ -860,7 +800,7 @@ export class ArtworkWritingComponent implements OnInit {
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if (ending_time_of_view>3){
-        this.NotationService.add_view_time('writing', this.type, this.style, this.writing_id,0,ending_time_of_view,this.createdAt_view).subscribe();
+        this.NotationService.add_view_time(ending_time_of_view,this.id_view_created).subscribe();
         }
       }
   }
@@ -887,25 +827,25 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   archive(){
-    this.Subscribing_service.archive("writings",this.type,this.writing_id).subscribe(r=>{
+    this.Subscribing_service.archive("writings","unknown",this.writing_id).subscribe(r=>{
       this.content_archived=true;
     });
   }
   unarchive(){
-    this.Subscribing_service.unarchive("writings",this.type,this.writing_id).subscribe(r=>{
+    this.Subscribing_service.unarchive("writings","unknown",this.writing_id).subscribe(r=>{
       this.content_archived=false;
     });
   }
 
   emphasize(){
-    this.Emphasize_service.emphasize_content("writing",this.type,this.writing_id,0).subscribe(r=>{
-      location.reload();
+    this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id,0).subscribe(r=>{
+      this.content_emphasized=true;
     });
   }
 
   remove_emphasizing(){
-      this.Emphasize_service.remove_emphasizing("writing",this.type,this.writing_id,0).subscribe(t=>{
-        location.reload();
+      this.Emphasize_service.remove_emphasizing("writing","unknown",this.writing_id,0).subscribe(t=>{
+        this.content_emphasized=false;
       });
   }
 
@@ -989,22 +929,100 @@ afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
 pdf_is_loaded(){
   console.log("laod compelte")
   
-  /*let compt=0;
-  if(this.type='artbook'){
-    for(let j=0;j<this.list_drawing_pages.length;j++){
-      if(this.display_drawings[i]){
-        compt+=1;
-      }
-      if(compt==this.list_drawing_pages.length){
-        this.display_pages=true;
-      }
-    }
-  }
-  else{
-    this.display_pages=true;
-  }*/
  
 }
+
+
+ /******************************************************************** */
+  /****FONCTIONS D'EDITION******************************** */
+  /******************************************************************** */
+  //visible : true ou privé : false
+ 
+  edit_information() {
+    const dialogRef = this.dialog.open(PopupFormWritingComponent, {
+      data: { 
+      writing_id: this.writing_id, 
+      title: this.title, 
+      highlight:this.highlight, 
+      style:this.style, 
+      firsttag:this.firsttag,
+      secondtag:this.secondtag, 
+      thirdtag:this.thirdtag,
+      author_name: this.user_name,
+      primary_description: this.primary_description, 
+      profile_picture: this.profile_picture
+    },
+    });
+  }
+
+  edit_thumbnail() {
+    const dialogRef = this.dialog.open(PopupEditCoverWritingComponent, {
+      data: {type:"edit_comic_thumbnail",
+      writing_id: this.writing_id,
+      title: this.title,
+      style:this.style, 
+      firsttag:this.firsttag,
+      author_name: this.user_name,
+      primary_description: this.primary_description, 
+      profile_picture: this.profile_picture,
+      thumbnail_picture:this.thumbnail_picture
+    },
+    });
+  }
+
+  
+
+  set_private() {
+
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"private").subscribe(r=>{
+          console.log(r);
+          this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").subscribe(r=>{
+            this.status="private";
+          });
+        })
+        
+      }
+    });
+  }
+  set_public() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"ok").subscribe(r=>{
+          console.log(r);
+          this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").subscribe(r=>{
+            this.status="public";
+          });
+        })
+       
+      }
+    });
+  }
+
+  remove_artwork() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if( result ) {
+        console.log(this.writing_id);
+        this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
+          this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).subscribe(r=>{
+            this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+            return;
+          })
+        });
+
+      }
+    });
+  }
 
 
 }

@@ -11,7 +11,8 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { UploaderPicturesAdComponent } from '../uploader-pictures-ad/uploader-pictures-ad.component';
 import { SafeUrl } from '@angular/platform-browser';
 
-
+import {NotificationsService}from '../services/notifications.service';
+import {ChatService}from '../services/chat.service';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -37,17 +38,12 @@ export class AddAdComponent implements OnInit {
 
 
   constructor(
-    private rd: Renderer2, 
-    private el: ElementRef,
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private _constants: ConstantsService, 
-    private _upload: UploadService,
-    private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
     private Ads_service:Ads_service,
-    private CookieService: CookieService,
     private router:Router,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
   ) { 
     
@@ -65,7 +61,7 @@ export class AddAdComponent implements OnInit {
   @Input('profile_picture') profile_picture:SafeUrl;
   @Input('pseudo') pseudo:string;
   @Input('id') id:number;
-
+  ad_id:number;
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
@@ -134,7 +130,25 @@ export class AddAdComponent implements OnInit {
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
     console.log("done")
-    this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
+    this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle,this.fd.value.fdProject_type,this.ad_id,0).subscribe(l=>{
+      let message_to_send ={
+        for_notifications:true,
+        type:"add_publication",
+        id_user_name:this.author_name,
+        id_user:this.id, 
+        publication_category:'ad',
+        publication_name:this.fd.value.fdTitle,
+        format:this.fd.value.fdProject_type,
+        publication_id:this.ad_id,
+        chapter_number:0,
+        information:"add",
+        status:"unchecked",
+      }
+      this.chatService.messages.next(message_to_send);
+      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
+      
+    }) 
+    
   }
 
   setRemuneration(e){
@@ -172,6 +186,7 @@ export class AddAdComponent implements OnInit {
         console.log(this.fd.value.fdDescription);
         this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value)
           .subscribe((val)=> {
+            this.ad_id=val[0].id;
             this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
               this.id_ad=l[0].id;
               this.status_pictures=true;

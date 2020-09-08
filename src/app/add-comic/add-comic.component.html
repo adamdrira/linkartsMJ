@@ -230,7 +230,7 @@
                 </div>
             </div>
 
-            <app-swiper-upload-oneshot [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
+            <app-swiper-upload-oneshot [bdtitle]="f00.value.f00Title" [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
 
 
         </div>
@@ -265,6 +265,7 @@
             
             <app-form-serie 
             form_number=0
+            [bdtitle]="f00.value.f00Title"
             [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
 
 
