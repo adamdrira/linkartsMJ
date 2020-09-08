@@ -1,0 +1,8 @@
+id,author_id_who_looks,publication_category,format,style,publication_id,chapter_number,createdAt,updatedAt
+1,2,bd,serie,Comics,2,1,2020-04-17T00:31:32.040Z,2020-04-17T00:31:32.040Z
+2,2,bd,one-shot,Manga,5,0,2020-04-17T00:31:40.613Z,2020-04-17T00:31:40.613Z
+3,2,bd,one-shot,Manga,5,0,2020-04-17T00:31:47.726Z,2020-04-17T00:31:47.726Z
+4,2,bd,one-shot,Comics,4,0,2020-04-17T00:31:59.861Z,2020-04-17T00:31:59.861Z
+5,2,bd,one-shot,Comics,4,0,2020-04-17T00:32:03.704Z,2020-04-17T00:32:03.704Z
+6,2,drawing,artbook,Digital,3,0,2020-04-17T00:32:10.656Z,2020-04-17T00:32:10.656Z
+7,2,writing,Série,Scénario,3,0,2020-04-17T00:32:18.689Z,2020-04-17T00:32:18.689Z
