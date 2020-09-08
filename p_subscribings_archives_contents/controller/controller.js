@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 
 
 
-module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives, list_of_users) => {
+module.exports = (router, list_of_subscribings, list_of_contents,list_of_archives, list_of_users, list_of_navbar) => {
 
     function get_current_user(token){
         var user = 0
@@ -20,15 +20,13 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         let publication_id=req.body.publication_id;
         let  format = req.body.format;
         let  publication_category = req.body.publication_category;
-        (async () => {
-                list_of_archives.create({
-                        "id_archiver": current_user,
-                        "publication_id":publication_id,
-                        "format":format,
-                        "publication_category":publication_category,
-                    })
-                    .then(archives=>{res.status(200).send([archives])})        
-        })();
+        list_of_archives.create({
+                "id_archiver": current_user,
+                "publication_id":publication_id,
+                "format":format,
+                "publication_category":publication_category,
+            })
+            .then(archives=>{res.status(200).send([archives])})     
     });
 
     router.post('/unarchive', function (req, res) {
@@ -36,28 +34,25 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         let publication_id=req.body.publication_id;
         let  format = req.body.format;
         let  publication_category = req.body.publication_category;
-        (async () => {
-            
-                list_of_archives.findOne({
-                    where:{
-                        id_archiver: current_user,
-                        publication_id:publication_id,
-                        format:format,
-                        publication_category:publication_category,
-                        }
-                    })
-                    .then(archives=>{
+        list_of_archives.findOne({
+            where:{
+                id_archiver: current_user,
+                publication_id:publication_id,
+                format:format,
+                publication_category:publication_category,
+                }
+            })
+            .then(archives=>{
 
-                        archives.destroy({
-                            truncate: false
-                          })
-                        res.status(200).json([{"delete":"ok"}])
-                    })        
-        })();
+                archives.destroy({
+                    truncate: false
+                    })
+                res.status(200).json([{"delete":"ok"}])
+            })   
     });
 
     
-
+    
     
 
     router.get('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
@@ -375,14 +370,14 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         
     });
 
+
     router.post('/validate_content', function (req, res) {
-        let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {    
+        let current_user = get_current_user(req.cookies.currentUser);  
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
         const chapter_number = req.body.chapter_number;
-        contents = await list_of_contents.findOne({
+        list_of_contents.findOne({
             where: {
                 id_user:current_user,
                 publication_category:category,
@@ -395,9 +390,71 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 "status":"ok"
             }).then(content => {res.status(200).send([content])})
         })
-            
-        })();
         
+    });
+
+    router.post('/change_content_status', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);  
+        const category = req.body.category;
+        const format = req.body.format;
+        const publication_id = parseInt(req.body.publication_id);
+        const chapter_number = req.body.chapter_number;
+        const status=req.body.status;
+        list_of_contents.findOne({
+            where: {
+                id_user:current_user,
+                publication_category:category,
+                format: format,
+                publication_id: publication_id,
+                chapter_number: chapter_number
+            },
+        }).then(first_content=>{
+            first_content.update({
+                "status":status
+            }).then(content => {
+                let cat=(category=="writing")?"Writing":(category=="drawing")?"Drawing":"Comic";
+                console.log("catcat")
+                console.log(cat)
+                list_of_navbar.findAll({
+                    where: {
+                        publication_category:cat,
+                        format: format,
+                        target_id: publication_id,
+                    },
+                }).then(research=>{
+                    if(research.length>0){
+                        for(let i=0;i<research.length;i++){
+                            if(status=="private"){
+                                let stat=(research[i].status=="clicked")?"clicked_private":"clicked_after_research_private"
+                                research[i].update({
+                                    "status":stat,
+                                }).then(l=>{
+                                    if(i==research.length-1){
+                                        res.status(200).send([content])
+                                    }
+                                })
+                            }
+                            else{
+                                let stat=(research[i].status=="clicked_private")?"clicked":"clicked_after_research"
+                                research[i].update({
+                                    "status":stat,
+                                }).then(l=>{
+                                    if(i==research.length-1){
+                                        res.status(200).send([content])
+                                    }
+                                })
+                            }
+                        }
+                    }
+                    else{
+                        res.status(200).send([content])
+                    }
+                    
+                    
+                })
+                
+            })
+        })    
     });
 
     router.delete('/remove_content/:category/:format/:publication_id/:chapter_number', function (req, res) {

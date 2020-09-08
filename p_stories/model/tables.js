@@ -12,6 +12,7 @@ exports.list_of_stories = (sequelize, DataTypes) => {
         id_user: DataTypes.INTEGER,
         file_name: DataTypes.STRING,
         views_number: DataTypes.INTEGER,
+        status:DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name

@@ -180,7 +180,6 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
       }
     })
     .then(User =>  {
-      
         res.status(200).send([User]);
       } );
   })();

@@ -33,15 +33,6 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             const remuneration = req.body.remuneration;
             const price_value = req.body.price_value;
             console.log(price_value);
-            for (let i = 0; i < targets.length; i++){
-              if (targets[i] !=null){
-                targets[i] = targets[i].substring(1);
-                while(targets[i].charAt(0) <='9' && targets[i].charAt(0) >='0'){  
-                    targets[i] = targets[i].substr(1);
-                }
-                targets[i] = targets[i].substring(3,targets[i].length - 1); 
-              }
-            };
 
             list_of_ads.create({
                   "id_user": current_user,

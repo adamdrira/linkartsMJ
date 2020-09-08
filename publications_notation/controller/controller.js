@@ -75,9 +75,7 @@ module.exports = (router,
                         "likesnumber":likes,
                         }) 
                         .then(chapter =>  { 
-                            (async () => {
-                                
-                                bd_serie = await Liste_Bd_Serie.findOne({
+                                Liste_Bd_Serie.findOne({
                                     where: {
                                     bd_id: chapter.bd_id,
                                     }
@@ -89,8 +87,6 @@ module.exports = (router,
                                     })
                                 })                   
                                 .then(res.status(200).send([chapter]))
-                            })();
-                            
                             })
                     })                 
 
@@ -687,26 +683,18 @@ module.exports = (router,
     router.post('/add_view_time', function (req, res) {
         
         let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {    
-        const category = req.body.category;
-        const format = req.body.format;
-        const style = req.body.style;
-        const createdAt_view = req.body.createdAt_view;
+        const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
-        const publication_id = parseInt(req.body.publication_id);
-        const chapter_number = req.body.chapter_number;
-        
+        console.log("add_view_time")
+        console.log(id_view_created)
+
+        console.log(view_time)
 
         console.log("adding view time in progress");
-            list_of_view = await List_of_views.findOne({
+        if(id_view_created>0){
+            List_of_views.findOne({
                 where: {
-                    author_id_who_looks:current_user,
-                    publication_category: category,
-                    format:format,
-                    style:style,
-                    publication_id:publication_id,
-                    chapter_number:chapter_number,
-                    createdAt:createdAt_view
+                    id:id_view_created,
                 }
             })
             .then(list_of_view =>  {
@@ -715,8 +703,9 @@ module.exports = (router,
                 })
                 .then(res.status(200).send([list_of_view]))
             });  
+        }
+           
             
-    })();
         
         });
 

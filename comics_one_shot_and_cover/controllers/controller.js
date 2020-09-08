@@ -54,7 +54,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    for (let i = 0; i < Tags.length; i++){
+    /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
         while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
@@ -62,36 +62,26 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
         }
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
       }
-    }
-      if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
-        return res.send({
-          success: false
-        });
+    }*/
+    Liste_bd_os.create({
+      "authorid": current_user,
+      "title":title,
+      "category": category,
+      "highlight":highlight,
+      "firsttag": Tags[0],
+      "secondtag": Tags[1],
+      "thirdtag": Tags[2],
+      "pagesnumber": 0,
+      "likesnumber": 0,
+      "lovesnumber": 0,
+      "viewnumber": 0,
+      "commentarynumbers":0,
+      "monetization":monetization,
+    }).then(r =>  {
+      res.status(200).send([r]);
+      }); 
         
-      } else { 
-        console.log('information uploaded correctly');
-              Liste_bd_os.create({
-                "authorid": current_user,
-                "title":title,
-                "category": category,
-                "highlight":highlight,
-                "firsttag": Tags[0],
-                "secondtag": Tags[1],
-                "thirdtag": Tags[2],
-                "pagesnumber": 0,
-                "likesnumber": 0,
-                "lovesnumber": 0,
-                "viewnumber": 0,
-                "commentarynumbers":0,
-                "monetization":monetization,
-            })
-          
-          .then(r =>  {
-          res.status(200).send([r]);
-          }); 
-        
-      }
+      
   
     });
     
@@ -143,7 +133,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
     const bd_id = parseInt(req.body.bd_id);
-    for (let i = 0; i < Tags.length; i++){
+    /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
         while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
@@ -151,7 +141,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
         }
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
       }
-    }
+    }*/
 
       if (Object.keys(req.body).length === 0 ) {
         console.log("information isn't uploaded correctly");
@@ -193,7 +183,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
       const category = req.body.Category;
       const Tags = req.body.Tags;
       const bd_id = parseInt(req.body.bd_id);
-      for (let i = 0; i < Tags.length; i++){
+      /*for (let i = 0; i < Tags.length; i++){
         if (Tags[i] !=null){
           Tags[i] = Tags[i].substring(1);
           while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
@@ -201,7 +191,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
           }
           Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
         }
-      }
+      }*/
   
         if (Object.keys(req.body).length === 0 ) {
           console.log("information isn't uploaded correctly");

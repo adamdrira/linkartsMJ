@@ -149,7 +149,7 @@ exports.getCurrentUser = async (req, res) => {
 
 	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
-			return res.status(401).json({msg: "error"});
+			return res.status(200).json({msg: "error"});
 		}
 		else{
 			const user = await User.findOne( { where: { id : decoded.id} } )
@@ -183,7 +183,7 @@ exports.checkToken = async (req, res) => {
 	}*/
 	jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
-			console.log("error");
+			console.log("error but ok");
 			User.create({
 				"nickname":"visitor",
 				"status":"visitor",

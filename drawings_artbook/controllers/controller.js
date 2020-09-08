@@ -26,7 +26,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    for (let i = 0; i < Tags.length; i++){
+    /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
         while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
@@ -35,7 +35,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
         console.log(Tags[i]);
       }
-    }
+    }*/
 
       if (Object.keys(req.body).length === 0 ) {
         console.log("information isn't uploaded correctly");
@@ -84,7 +84,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
     const drawing_id = parseInt(req.body.drawing_id);
-    for (let i = 0; i < Tags.length; i++){
+    /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
         while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
@@ -93,7 +93,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
         console.log(Tags[i]);
       }
-    }
+    }*/
 
       if (Object.keys(req.body).length === 0 ) {
         console.log("information isn't uploaded correctly");

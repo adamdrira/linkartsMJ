@@ -9,7 +9,9 @@ exports.list_of_messages = (sequelize, DataTypes) => {
         autoIncrement: true
       },
       id_user: DataTypes.INTEGER,
+      id_user_name:DataTypes.STRING,
       id_receiver: DataTypes.INTEGER,
+      is_a_group_chat:DataTypes.BOOLEAN,
       message:DataTypes.STRING(3000),
       is_a_response:DataTypes.BOOLEAN,
       is_an_attachment:DataTypes.BOOLEAN,
@@ -17,15 +19,16 @@ exports.list_of_messages = (sequelize, DataTypes) => {
       server_message:DataTypes.STRING,
       id_message_responding:DataTypes.INTEGER,
       message_responding_to:DataTypes.STRING(3000),
-      like:DataTypes.BOOLEAN,
       attachment_name:DataTypes.STRING,
       attachment_type:DataTypes.STRING,
       size:DataTypes.STRING,
       status:DataTypes.STRING,
+      list_of_users_who_saw:DataTypes.ARRAY(DataTypes.INTEGER),
+      list_of_users_in_the_group:DataTypes.ARRAY(DataTypes.INTEGER),
       id_chat_section:DataTypes.INTEGER,
       emoji_reaction_user:DataTypes.STRING,
       emoji_reaction_receiver:DataTypes.STRING,
-      id_group_chat:DataTypes.INTEGER,
+      list_of_names_added:DataTypes.ARRAY(DataTypes.STRING),
       
     },
     {
@@ -41,11 +44,45 @@ exports.list_of_messages = (sequelize, DataTypes) => {
     },
     id_user: DataTypes.INTEGER,
     id_receiver: DataTypes.INTEGER,
+    is_a_group_chat: DataTypes.BOOLEAN,
+    chat_profile_pic_name:DataTypes.STRING,
+    profile_pic_origin:DataTypes.STRING,
     date:DataTypes.DATE,
   },
   {
     freezeTableName: true // Model tableName will be the same as the model name
   }
+)
+
+var list_of_chat_groups = sequelize.define('list_of_chat_groups', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  name: DataTypes.STRING,
+  list_of_receivers_ids: DataTypes.ARRAY(DataTypes.INTEGER),
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
+)
+
+var list_of_chat_groups_reactions = sequelize.define('list_of_chat_groups_reactions', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  id_user: DataTypes.INTEGER,
+  id_group_chat: DataTypes.INTEGER,
+  id_message:DataTypes.INTEGER,
+  emoji_reaction:DataTypes.STRING,
+},
+{
+  freezeTableName: true // Model tableName will be the same as the model name
+}
 )
 
 var list_of_chat_spams= sequelize.define('list_of_chat_spams', {
@@ -72,6 +109,8 @@ var list_of_chat_search= sequelize.define('list_of_chat_search', {
   },
   id_user: DataTypes.INTEGER,
   id_receiver: DataTypes.INTEGER,
+  is_a_group_chat: DataTypes.BOOLEAN,
+  date:DataTypes.DATE,
 },
 {
   freezeTableName: true // Model tableName will be the same as the model name
@@ -88,6 +127,7 @@ var list_of_chat_sections = sequelize.define('list_of_chat_sections', {
   id_chat_section:DataTypes.INTEGER,
   id_user: DataTypes.INTEGER,
   id_receiver: DataTypes.INTEGER,
+  is_a_group_chat: DataTypes.BOOLEAN,
   chat_section_name:DataTypes.STRING,
 },
 {
@@ -110,6 +150,12 @@ list_of_messages.belongsTo(User, {
 });
 
 
- return {list_of_messages,list_of_chat_friends,list_of_chat_spams,list_of_chat_search,list_of_chat_sections};
+ return {list_of_messages,
+  list_of_chat_friends,
+  list_of_chat_groups,
+  list_of_chat_groups_reactions,
+  list_of_chat_spams,
+  list_of_chat_search,
+  list_of_chat_sections};
 }
 

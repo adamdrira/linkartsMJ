@@ -50,7 +50,7 @@ app.get('*', (req,res)=> {
 });*/
 
 /*****************Partie recupération python files ********************/
-const PATH = './data/routes/python_files/classement_tendances_bd_oneshot.json';
+/*const PATH = './data/routes/python_files/classement_tendances_bd_oneshot.json';
 
 app.post('/python', function(req, res) {
   if (!req.files){
@@ -70,7 +70,7 @@ app.post('/python', function(req, res) {
     }
     res.send('File uploaded!');
   });
-});
+});*/
 
 
 module.exports = app;

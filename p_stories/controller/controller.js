@@ -66,16 +66,8 @@ module.exports = (router, list_of_stories,list_of_views) => {
 
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
         const Op = Sequelize.Op;
-        //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        /*var ss = String(yesterday.getSeconds()).padStart(2, '0');
-        var mi = String(yesterday.getMinutes()).padStart(2, '0');
-        var hh = String(yesterday.getHours()).padStart(2, '0');
-        var dd = String(yesterday.getDate()).padStart(2, '0');
-        var mm = String(yesterday.getMonth()+1).padStart(2, '0'); 
-        var yyyy = String(yesterday.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
 
         (async () => {
     
@@ -93,22 +85,42 @@ module.exports = (router, list_of_stories,list_of_views) => {
                 res.status(200).send([stories]);
               }); 
         })();
-        });
+    });
 
-        router.get('/get_all_my_stories', function (req, res) {
-            let current_user = get_current_user(req.cookies.currentUser);
-            list_of_stories.findAll({
-                    where: {
-                      id_user: current_user,
-                    },
-                    order: [
-                        ['createdAt', 'DESC']
-                      ],
-                  })
-                  .then(stories =>  {
-                    res.status(200).send([stories]);
-                  }); 
-            });
+    router.get('/get_all_my_stories', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);
+        let limit= req.params.limit;
+        let offset= req.params.offset;
+        list_of_stories.findAll({
+                where: {
+                    id_user: current_user,
+                    status:"display",
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+                })
+                .then(stories =>  {
+                res.status(200).send([stories]);
+                }); 
+    });
+
+    router.post('/hide_story', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);
+        let id=req.body.id;
+        list_of_stories.findOne({
+                where: {
+                    id_user: current_user,
+                    id:id,
+                }
+                })
+                .then(story =>  {
+                    story.update({
+                        "status":"hide"
+                    })
+                    res.status(200).send([story]);
+                }); 
+    });
 
     router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
         const current_user = get_current_user(req.cookies.currentUser);
