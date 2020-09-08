@@ -37,8 +37,7 @@ export class HomeLinkartsComponent implements OnInit {
       this.cd.detectChanges();
       this.display_selector();
     }
-  
-  @ViewChildren('category') categories:QueryList<ElementRef>;
+    
   
   category_index:number = -1;
   type_of_profile_retrieved=false;
@@ -60,10 +59,7 @@ export class HomeLinkartsComponent implements OnInit {
 
   open_category(i : number) {
     this.category_index=i;
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("opened");
-    })
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
+    
     if( i==0 ) {
       this.location.go("/");
     }
@@ -87,11 +83,11 @@ export class HomeLinkartsComponent implements OnInit {
       if(r!=''){
         this.type_of_profile=r;
         this.type_of_profile_retrieved=true;
+        console.log( this.type_of_profile)
         this.initializeselector();
         this.display_selector();
         this.initialize_heights();
         this.open_category( this.route.snapshot.data['category'] );
-        this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
       }
     })
     this.display_selector();

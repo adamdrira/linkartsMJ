@@ -106,7 +106,7 @@
    }
 
    .category-filter .content-action:hover .title{
-    color:#010119 !important;
+    color:rgb(32,56,100) !important;
   }
 
    .category-filter .content-action span {
@@ -177,7 +177,7 @@
 
   .content-action {
      cursor:pointer;
-     width:200px;
+     padding:20px;
      margin-left:10px;
      margin-right:10px;
      padding-bottom:5px;
@@ -187,13 +187,12 @@
     border-radius: 30px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background-color: #4bacdd;
-    width: 210px;
-    color: #010119 ;
-    text-shadow: -0.06ex 0 #010119, 0.06ex 0 #010119;
+    color: rgb(32,56,100) ;
+    text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
   }
 
   .title-opened{
-    color: #010119 !important;
+    color: rgb(32,56,100)!important;
   }
   
   .category-filter .opened .bottom-border {
@@ -203,9 +202,9 @@
   }
   
   .categories-container .content-action:hover {
-    color: #010119 !important;
+    color: rgb(32,56,100) !important;
     transition:text-shadow 200ms;
-    text-shadow: -0.06ex 0 #010119, 0.06ex 0 #010119;
+    text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
   }
 
   .categories-container .content-action:hover .bottom-border {
@@ -216,19 +215,19 @@
   }
 
   .categories-container .content-action:hover .icon-recommendation {
-    background-color: #010119;
+    background-color: rgb(32,56,100) !important;
   }
 
   .categories-container .content-action:hover .icon-trendings {
-    background-color: #010119;
+    background-color: rgb(32,56,100)!important;
   }
 
   .categories-container .content-action:hover .icon-newsfeed {
-    background-color: #010119;
+    background-color: rgb(32,56,100)!important;
   }
 
   .icon-clicked{
-    background-color:#010119 !important;
+    background-color:rgb(32,56,100) !important;
   }
 
   #left-container {
@@ -278,7 +277,6 @@
 }
 
 .panel-controller {
-  margin-top:30px;
   width:100%;
   height:50px;
   border-bottom: 1px solid rgb(173, 173, 173); 
