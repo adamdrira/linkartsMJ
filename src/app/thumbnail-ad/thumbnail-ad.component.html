@@ -31,7 +31,7 @@
             
                         <div *ngIf="visitor_mode" class="more-information">
                             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                                <mat-icon>more_vert</mat-icon>
+                                <mat-icon>more_horiz</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu">
                                 <button mat-menu-item>
@@ -46,7 +46,7 @@
                         </div>
                         <div *ngIf="!visitor_mode" class="more-information">
                             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                                <mat-icon>more_vert</mat-icon>
+                                <mat-icon>more_horiz</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu">
                                 <button mat-menu-item (click)="update()">
@@ -178,16 +178,16 @@
 
                         <div class="categories">
                             <div class="category" [ngClass]="{'opened': category_index == 0 }" (click)="open_category(0);">
+                                <mat-icon>description</mat-icon>
                                 <span>Description</span>
-                                <div class="bottom-border"></div>
                             </div>
                             <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);">
+                                <mat-icon>image</mat-icon>
                                 <span>Images ({{list_of_pictures.length}})</span>
-                                <div class="bottom-border"></div>
                             </div>
                             <div class="category" [ngClass]="{'opened': category_index == 2 }" (click)="open_category(2);">
+                                <mat-icon>picture_as_pdf</mat-icon>
                                 <span>Fichiers ({{list_of_attachments.length}})</span>
-                                <div class="bottom-border"></div>
                             </div>
                         </div>
 
@@ -197,19 +197,18 @@
                         </div>
 
                         <div *ngIf="category_index==1" class="section-container" style="display:flex;flex-wrap: wrap;">
-                            <div *ngFor="let picture of list_of_pictures, let i=index" (click)="read_pictures(i)" 
-                            style="width:140px;height:140px;margin-right: 10px;margin-bottom: 10px;">
+                            <div *ngFor="let picture of list_of_pictures, let i=index" (click)="read_pictures(i)" class="image-container">
                                 <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                             </div>
                         </div>
 
                         <div *ngIf="category_index==2" class="section-container">
-                            <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
+                            <div *ngFor="let attachment of list_of_attachments, let i=index" class="attachments-container">
                                 <div *ngIf="list_of_attachments[i]" (click)="read_attachment(i)" class="attachment-item">
-                                    <img src='../../assets/img/pdf_image.png' style="height:25px;width:25px;object-fit: contain;">
-                                    <div> {{list_of_attachments_name[i]}}</div>
+                                    <mat-icon>picture_as_pdf</mat-icon>
                                 </div>
-                            </ng-container>
+                                <span><i>{{list_of_attachments_name[i]}}</i></span>
+                            </div>
                         </div>
 
 
@@ -270,16 +269,14 @@
 
                             <div class="categories">
                                 <div class="category" [ngClass]="{'opened': category_index == 0 }" (click)="open_category(0);">
+                                    <mat-icon>description</mat-icon>
                                     <span>Description</span>
-                                    <div class="bottom-border"></div>
                                 </div>
                                 <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);">
                                     <span>Images ({{response_list_of_pictures.length}})</span>
-                                    <div class="bottom-border"></div>
                                 </div>
                                 <div class="category" [ngClass]="{'opened': category_index == 2 }" (click)="open_category(2);">
                                     <span>Fichiers ({{response_list_of_attachments.length}})</span>
-                                    <div class="bottom-border"></div>
                                 </div>
                             </div>
 
@@ -300,8 +297,7 @@
 
                                 <div *ngIf="category_index==1" class="section-container-2" style="display:flex;flex-wrap: wrap;">
 
-                                    <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)" 
-                                    style="width:140px;height:140px;margin-right: 10px;margin-bottom: 10px;">
+                                    <div *ngFor="let picture of response_list_of_pictures, let i=index" class="image-container" (click)="read_pictures_response(i)">
                                         <img [src]="response_list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                                     </div>
 
@@ -318,12 +314,12 @@
                                 </div>-->
 
                                 <div *ngIf="category_index==2" class="section-container-2">
-                                    <ng-container *ngFor="let attachment of response_list_of_attachments, let i=index">
-                                        <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)" class="attachment-item">
+                                    <div *ngFor="let attachment of response_list_of_attachments, let i=index" class="attachments-container">
+                                        <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)"  class="attachment-item">
                                             <img src='../../assets/img/pdf_image.png' style="height:25px;width:25px;object-fit: contain;">
-                                            <div> {{response_list_of_attachments_name[i]}}</div>
                                         </div>
-                                    </ng-container>
+                                        <span><i>{{response_list_of_attachments_name[i]}}</i></span>
+                                    </div>
                                 </div>
 
 

@@ -11,18 +11,28 @@
         <div id="left-container">
 
             <div class="categories-container">
-                <div class="category-filter">
-                    <div class="content-action text-center opened" [ngClass]="{'opened' : subcategory==0}" (click)="open_subcategory(0);">
-                        <span>Collaborations bénévoles</span>
-                        <div class="bottom-border">
+                
+                <div class="category-filter put-on-the-left">
+                    <div class="content-action text-center" (click)="open_subcategory(0);" [ngClass]="{'opened': subcategory==0 }">
+                        <div class="title" [ngClass]="{'title-opened': subcategory==0 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': subcategory==0 }">
+                                </div>
+                            </div>
+                          Collaborations bénévoles
                         </div>
                     </div>
-                    <div class="content-action text-center" [ngClass]="{'opened' : subcategory==1}" (click)="open_subcategory(1);">
-                        <span>Collaborations rémunérées</span>
-                        <div class="bottom-border">
+                    <div class="content-action text-center" (click)="open_subcategory(1)" [ngClass]="{'opened': subcategory==1 }">
+                        <div class="title" [ngClass]="{'title-opened': subcategory==1 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
+                                </div>
+                            </div>
+                            Collaborations rémunérées
                         </div>
                     </div>
                 </div>
+
             </div>
 
 
@@ -125,30 +135,6 @@
 
 
                 <div *ngIf="list_of_ads_received">
-                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
-                    </div>
-                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
-                    </div>
-                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
-                    </div>
-                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
-                    </div>
                     <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
                         <app-thumbnail-ad 
                         [item]=item

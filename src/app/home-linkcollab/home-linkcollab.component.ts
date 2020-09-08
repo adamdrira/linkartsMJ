@@ -92,6 +92,7 @@ export class HomeLinkcollabComponent implements OnInit {
     if( this.subcategory==i ) {
       return;
     }
+    
     if(i==1){
       this.remuneration=true;
       this.get_sorted_ads(this);
