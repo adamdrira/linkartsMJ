@@ -42,4 +42,11 @@
     <app-uploader-profile-picture></app-uploader-profile-picture>
 </ng-container>
 
+<ng-container *ngIf="data.type=='edit_chat_profile_picture' && id_retrieved">
+    <app-uploader-chat-profile-picture
+    [id_receiver]="id_receiver_for_group"
+    >
+    </app-uploader-chat-profile-picture>
+</ng-container>
+
 

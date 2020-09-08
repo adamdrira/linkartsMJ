@@ -27,6 +27,10 @@ export class PopupFormComponent implements OnInit {
 
   display_errors:boolean = false;
 
+  //modify group profile pic
+  id_receiver_for_group:number;
+  id_retrieved=false;
+
   ngOnInit(): void {
 
     this.createFormControls();
@@ -34,6 +38,11 @@ export class PopupFormComponent implements OnInit {
 
     this.cd.detectChanges();
     
+    if(this.data.type=='edit_chat_profile_picture'){
+      this.id_receiver_for_group=this.data.id_receiver;
+      console.log(this.id_receiver_for_group)
+      this.id_retrieved=true;
+    }
 
   }
 
