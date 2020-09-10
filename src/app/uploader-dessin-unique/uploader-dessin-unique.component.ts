@@ -144,7 +144,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
         this.Drawings_Onepage_Service.validate_drawing().subscribe(r=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
@@ -157,6 +157,8 @@ export class UploaderDessinUniqueComponent implements OnInit {
               chapter_number:0,
               information:"add",
               status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
             this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );

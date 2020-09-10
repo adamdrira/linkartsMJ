@@ -26,6 +26,8 @@ import { AddAdComponent } from './add-ad/add-ad.component';
 import { MainSearchbarResultsComponent } from './main-searchbar-results/main-searchbar-results.component';
 import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 const routes: Routes = [
 
   {path:'', component:HomeLinkartsComponent,  data: {category: 0}},
@@ -62,9 +64,12 @@ const routes: Routes = [
   
 
   //Catégories Linkarts
+
+  
+  {path:'recommendations', component:HomeLinkartsComponent,  data: {category: 0}},
   {path:'classement', component:HomeLinkartsComponent,  data: {category: 1}},
   {path:'subscribings', component:HomeLinkartsComponent,canActivate: [AuthGuard],  data: {category: 2}},
-  {path:'decouverte', component:HomeLinkartsComponent,  data: {category: 3}},
+  //{path:'decouverte', component:HomeLinkartsComponent,  data: {category: 3}},
 
   //messagerie
   {path:'chat', component:ChatFriendsListComponent, canActivate: [AuthGuard],  data: {section: 1}},
@@ -96,7 +101,10 @@ const routes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'signup', component:SignupComponent},
   {path:'password_reset', component:PasswordResetComponent},
+  
 
+  //page not found
+  {path:'page_not_found', component:PageNotFoundComponent},
   //Autre
   {path:'**', redirectTo:''}
 ];
