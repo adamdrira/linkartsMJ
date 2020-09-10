@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popup-ad-write-responses.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import {get_date_to_show} from '../helpers/dates';
@@ -30,7 +30,7 @@ declare var Swiper: any
 
 export class AdPageComponent implements OnInit {
   constructor(
-    private rd: Renderer2,
+    private router:Router,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     public navbar: NavbarService,
@@ -116,13 +116,22 @@ export class AdPageComponent implements OnInit {
   list_of_author_ads:any[]=[];
   list_of_other_ads:any[]=[];
 
+
+  commentariesnumber:number;
   ngOnInit() {
 
 
     this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+    let title = this.activatedRoute.snapshot.paramMap.get('title');
 
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
+      console.log(m[0]);
+      console.log(title)
+      if(!m[0] || title!=m[0].title || m[0].status=="deleted"){
+        this.router.navigateByUrl("/page_not_found");
+      }
       this.item=m[0];
+      this.commentariesnumber=m[0].commentariesnumber;
       console.log(this.item);
       console.log(this.item.title)
       this.Profile_Edition_Service.get_current_user().subscribe(r=>{
@@ -137,6 +146,18 @@ export class AdPageComponent implements OnInit {
           }
           else{
             this.visitor_mode_added = true;
+          }
+          if(!this.visitor_mode){
+            this.navbar.check_if_research_exists("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked").subscribe(p=>{
+              if(!p[0].value){
+                this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two).subscribe(l=>{
+                });
+              }
+            })
+          }
+          else{
+            this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two).subscribe(l=>{
+            });
           }
         }); 
       });
@@ -341,10 +362,23 @@ export class AdPageComponent implements OnInit {
   }
 
   delete(){
-    this.Ads_service.delete_attachment(this.item.id).subscribe(l=>{
-      console.log(l);
-      location.reload();
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.Ads_service.delete_attachment(this.item.id).subscribe(l=>{
+          console.log(l);
+          this.navbar.delete_publication_from_research("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+            console.log(r)
+            alert("done")
+            this.router.navigateByUrl( `/account/${this.pseudo}/${this.visitor_id}`);
+            return;
+          })
+        })
+      }
     })
+   
   };
 
   archive(){
@@ -911,6 +945,15 @@ export class AdPageComponent implements OnInit {
 
     }
     
+  }
+
+  new_comment() {
+    this.commentariesnumber++;
+    this.cd.detectChanges();
+  }
+
+  removed_comment() {
+    this.commentariesnumber--;
   }
 
 

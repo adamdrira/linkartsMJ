@@ -1,9 +1,9 @@
 
 <div class="comment">
     
-    <div class="left-container">
+    <div class="left-container" [ngClass]="{'invisible':!main_pp_is_loaded}">
         <div class="img-container">
-            <img [src]=profile_picture>
+            <img [src]=profile_picture (load)="load_main_pp()" >
         </div>
     </div>
 
@@ -39,10 +39,10 @@
                 <div class="action">Likes</div>
                 <div class="separator">•</div>
 
-                <div (click)="add_or_remove_like()" class="action">
+                <button [disabled]="like_in_progress" (click)="add_or_remove_like()" class="action">
                     <div class="likesnumber">{{number_of_likes}}</div>
                     <div class="like-icon"></div>
-                </div>
+                </button>
             </ng-container>
             
 
@@ -67,9 +67,9 @@
 
         <ng-container *ngIf="see_responses">
             <div *ngFor="let item of responses_list;let i=index" class="response">
-                <div class="left-container">
+                <div class="left-container" [ngClass]="{'invisible':!profile_picture_list_loaded[i]}">
                     <div class="img-container">
-                        <img [src]=profile_picture_list[i]>
+                        <img [src]=profile_picture_list[i] (load)="load_pp_list(i)" >
                     </div>
                 </div>
                 <div class="right-container">
@@ -88,10 +88,10 @@
                         <div class="action">Likes</div>
                         <div class="separator">•</div>
             
-                        <div (click)="add_or_remove_answer_like(i)" class="action">
+                        <button [disabled]="answer_like_in_progress" (click)="add_or_remove_answer_like(i)" class="action">
                             <div  class="likesnumber">{{item.likesnumber}}</div>
                             <div class="like-icon"></div>
-                        </div>
+                        </button>
             
                         <div class="date-container">
                             {{item.date}}
@@ -118,9 +118,9 @@
 
             <div  class="response-input">
                 
-                <div class="left-container">
+                <div class="left-container" [ngClass]="{'invisible':!pp_is_loaded}">
                     <div class="img-container">
-                        <img [src]=profile_picture>
+                        <img [src]=visitor_profile_picture (load)="load_pp()" >
                     </div>
                 </div>
                 <div class="right-container">

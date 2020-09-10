@@ -711,3 +711,11 @@
 .seen{
   background:white;
 }
+
+.number-of-notifs-container{
+  position:absolute;
+  right:5px;
+  background:red;
+  display:flex;
+  align-items: center;
+}

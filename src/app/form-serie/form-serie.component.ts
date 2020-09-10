@@ -473,7 +473,7 @@ value:string="add";
         this.bdSerieService.validate_bd_serie(this.componentRef.length).subscribe(r=>{
           console.log(r);
           
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length).subscribe(l=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
@@ -486,6 +486,8 @@ value:string="add";
               chapter_number:this.componentRef.length,
               information:"add",
               status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
             this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
@@ -525,7 +527,7 @@ value:string="add";
           
         }
         else{
-          this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt).subscribe(l=>{
+          this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
               type:type,
@@ -538,6 +540,8 @@ value:string="add";
               chapter_number:compt,
               information:"add",
               status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
             this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );

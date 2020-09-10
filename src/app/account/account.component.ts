@@ -319,12 +319,12 @@ export class AccountComponent implements OnInit {
     
     this.Profile_Edition_Service.retrieve_profile_data( this.user_id ).subscribe( r => {
       if( !r[0] || r[0].status=="visitor") {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/page_not_found');
         return
       }
 
       if( this.pseudo != r[0].nickname ) {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/page_not_found');
         return
       }
       else{

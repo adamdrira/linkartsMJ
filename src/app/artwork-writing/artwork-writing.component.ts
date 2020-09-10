@@ -199,14 +199,14 @@ export class ArtworkWritingComponent implements OnInit {
     this.writing_id  = parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
 
     this.Writing_Upload_Service.retrieve_writing_information_by_id(this.writing_id).subscribe(r => {
-      if(!r[0]){
-        this.router.navigateByUrl("/");
+      if(!r[0] || r[0].status=="deleted"){
+        this.router.navigateByUrl("/page_not_found");
         return;
       }
       else{
         let title =this.activatedRoute.snapshot.paramMap.get('title');
         if(r[0].title !=title ){
-          this.router.navigateByUrl("/");
+          this.router.navigateByUrl("/page_not_found");
           return;
         }
         else{
@@ -629,7 +629,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -642,6 +642,8 @@ export class ArtworkWritingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=false;
@@ -663,7 +665,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -677,6 +679,8 @@ export class ArtworkWritingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=true;
@@ -708,7 +712,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -721,6 +725,8 @@ export class ArtworkWritingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=false;
@@ -742,7 +748,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -756,6 +762,8 @@ export class ArtworkWritingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=true;
@@ -1015,8 +1023,26 @@ pdf_is_loaded(){
         console.log(this.writing_id);
         this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
           this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).subscribe(r=>{
-            this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-            return;
+            this.NotificationsService.remove_notification('add_publication','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"add_publication",
+                id_user_name:this.visitor_name,
+                id_user:this.visitor_id, 
+                id_receiver:this.authorid, 
+                publication_category:'writing',
+                format:'unknown',
+                publication_id:this.writing_id,
+                chapter_number:0,
+                information:"remove",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.chatService.messages.next(message_to_send);
+              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+              return;
+            })
           })
         });
 

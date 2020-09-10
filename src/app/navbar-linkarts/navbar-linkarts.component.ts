@@ -17,7 +17,7 @@ import {LoginComponent} from '../login/login.component';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
-import { WebSocketService } from '../services/websocket.service';
+import { Ads_service } from '../services/ads.service';
 
 
 declare var $: any;
@@ -59,6 +59,7 @@ export class NavbarLinkartsComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
+    private Ads_service:Ads_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
     
@@ -83,7 +84,7 @@ export class NavbarLinkartsComponent implements OnInit {
   check_chat_service=false;
   check_notifications_from_service=false;
   list_of_notifications=[];
-  index_of_notifications_to_show=10;
+  index_of_notifications_to_show=15;
   show_notifications=false;
 
   @ViewChild('input') input:ElementRef;
@@ -113,13 +114,15 @@ export class NavbarLinkartsComponent implements OnInit {
     if(this.show_notifications){
       if(!this.notifications.nativeElement.contains(event.target) ) {
         this.show_notifications=false;
+        this.change_notifications_status_to_checked();
       } 
     }
   }
 
   
 
-  v:boolean = true;
+  margin_is_not_set:boolean = true;
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   ngOnInit() {
     window.addEventListener('scroll', this.scroll, true);
     this.setHeight();
@@ -133,7 +136,6 @@ export class NavbarLinkartsComponent implements OnInit {
       else{
         this.type_of_profile="visitor";
       }
-      //this.navbar.set_account_type(this.type_of_profile);
       console.log("in constructor")
       this.type_of_profile_retrieved=true;
       
@@ -141,10 +143,10 @@ export class NavbarLinkartsComponent implements OnInit {
     });
 
     
-
+    //resize interval
     let interval = setInterval( () => {
 
-      if( this.v ) {
+      if( this.margin_is_not_set ) {
         this.setHeight();
         this.define_margin_top();
       }
@@ -157,6 +159,7 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     },50);
 
+    //connexion to chat service interval
     let chatinterval = setInterval(()=>{
       if(this.chatService.messages && !this.navbar.get_using_chat()){
         this.check_chat_service=true;
@@ -171,7 +174,17 @@ export class NavbarLinkartsComponent implements OnInit {
     },1000)
 
 
-    
+    //scroll managment interval
+
+    setInterval(() => {
+      // après avoir cliqué sur "voir tous les résultats" dans la liste des propositions classique
+      if(this.show_notifications){
+        if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
+          this.index_of_notifications_to_show+=10;
+        }
+       
+      }
+    }, 500);
 
     
 
@@ -198,9 +211,10 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   sort_notifications(msg){
+    console.log("sorting notif")
     if(msg[0].for_notifications){
       console.log(msg[0].information)
-      if(msg[0].information=='add'){
+      if(msg[0].information!='remove'){
         this.list_of_notifications.splice(0,0,msg[0])
       }
       else if(msg[0].information=='remove'){
@@ -210,7 +224,8 @@ export class NavbarLinkartsComponent implements OnInit {
             this.list_of_notifications[i].publication_category==msg[0].publication_category && 
             this.list_of_notifications[i].publication_id==msg[0].publication_id && 
             this.list_of_notifications[i].type==msg[0].type && 
-            this.list_of_notifications[i].information=='add' &&
+            this.list_of_notifications[i].is_comment_answer==msg[0].is_comment_answer && 
+            this.list_of_notifications[i].comment_id==msg[0].comment_id && 
             this.list_of_notifications[i].format==msg[0].format && 
             this.list_of_notifications[i].chapter_number==msg[0].chapter_number){
               index=i;
@@ -222,7 +237,7 @@ export class NavbarLinkartsComponent implements OnInit {
         }
         
       }
-      
+      this.get_final_list_of_notifications_to_show();
       console.log(this.list_of_notifications)
     }
   }
@@ -241,9 +256,10 @@ export class NavbarLinkartsComponent implements OnInit {
           if(r[0].length>0){
             for(let i=0;i<r[0].length;i++){
               this.list_of_notifications[i]=r[0][i];
-              if(i== r[0].length-1 || i==this.index_of_notifications_to_show){
-                this.data_retrieved=true;
-                console.log(this.list_of_notifications)
+              if(i==r[0].length-1){
+                console.log("end retrieve profile")
+                this.get_final_list_of_notifications_to_show();
+                
               }
             }
           }
@@ -263,20 +279,10 @@ export class NavbarLinkartsComponent implements OnInit {
   open_notifications(){
     if(this.show_notifications){
       this.show_notifications=false;
+      this.change_notifications_status_to_checked();
       return
     }
-    let modify=false;
-    for(let i=0;i<this.list_of_notifications.length;i++){
-      if(this.list_of_notifications[i].status=="unchecked"){
-        modify=true;
-        this.list_of_notifications[i].status="checked";
-      }
-    }
-    if(modify){
-      this.NotificationsService.change_all_notifications_status_to_checked().subscribe(r=>{
-        this.show_notifications=true;
-      })
-    }
+    
     else{
       this.show_notifications=true;
     }
@@ -284,16 +290,101 @@ export class NavbarLinkartsComponent implements OnInit {
     
   }
 
-
+  change_notifications_status_to_checked(){
+    console.log("change_notifications_status_to_checked")
+    let modify=false;
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      if(this.list_of_notifications[i].status=="unchecked"){
+        modify=true;
+        this.list_of_notifications[i].status="checked";
+        this.final_list_of_notifications_to_show[i]="checked";
+      }
+    }
+    if(modify){
+      this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).subscribe(r=>{
+        
+      })
+    }
+  }
   add_notification_seen(i){
-    if(this.list_of_notifications[i].status!="seen"){
+    /*if(this.list_of_notifications[i].status!="seen"){
       this.list_of_notifications[i].status="seen";
       let elem=this.list_of_notifications[i]
       this.NotificationsService.change_notification_status_to_seen(elem.id_user,elem.type,elem.publication_category,elem.format,elem.publication_id,elem.chapter_number).subscribe(r=>{
         this.show_notifications=true;
       })
-    }
+    }*/
     
+  }
+
+  dictionnary_of_similar_notifications={};
+  final_list_of_notifications_to_show=[];
+  get_final_list_of_notifications_to_show(){
+    this.final_list_of_notifications_to_show=[];
+    this.dictionnary_of_similar_notifications={};
+    this.dictionnary_of_similar_notifications[0]=[];
+    this.final_list_of_notifications_to_show[0]=this.list_of_notifications[0];
+    for(let i=1;i<this.list_of_notifications.length;i++){
+      this.dictionnary_of_similar_notifications[i]=[];
+      let similar_found=false;
+      for(let j=0;j<i;j++){
+        if(this.list_of_notifications[i].type=='comment_like' || this.list_of_notifications[i].type=='comment_answer_like' || this.list_of_notifications[i].type=='comment_answer'){
+          if(this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
+            this.list_of_notifications[i].publication_id==this.list_of_notifications[j].publication_id && 
+            this.list_of_notifications[i].type==this.list_of_notifications[j].type && 
+            this.list_of_notifications[i].is_comment_answer==this.list_of_notifications[j].is_comment_answer && 
+            this.list_of_notifications[i].comment_id==this.list_of_notifications[j].comment_id && 
+            this.list_of_notifications[i].format==this.list_of_notifications[j].format && 
+            this.list_of_notifications[i].chapter_number==this.list_of_notifications[j].chapter_number){
+              if(!similar_found && this.list_of_notifications[i].id_user!=this.list_of_notifications[j].id_user){
+                this.dictionnary_of_similar_notifications[j].push(this.list_of_notifications[i]);
+                similar_found=true;
+              }
+              if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
+                console.log("similar user notif " + i + ' et ' + j)
+                similar_found=true;
+              }
+              
+            }
+        }
+        else if( 
+          this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
+          this.list_of_notifications[i].publication_id==this.list_of_notifications[j].publication_id && 
+          this.list_of_notifications[i].type==this.list_of_notifications[j].type && 
+          this.list_of_notifications[i].format==this.list_of_notifications[j].format && 
+          this.list_of_notifications[i].chapter_number==this.list_of_notifications[j].chapter_number){
+            if(!similar_found && this.list_of_notifications[i].id_user!=this.list_of_notifications[j].id_user){
+              this.dictionnary_of_similar_notifications[j].push(this.list_of_notifications[i]);
+              similar_found=true;
+            }
+            if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
+              console.log("similar user notif " + i + ' et ' + j)
+              similar_found=true;
+            }
+        }
+      }
+      if(!similar_found ){
+          this.final_list_of_notifications_to_show[i]=this.list_of_notifications[i];
+      }
+    }
+    this.data_retrieved=true;
+    this.display_number_of_unchecked_notifications();
+    console.log(this.final_list_of_notifications_to_show)
+    console.log(this.dictionnary_of_similar_notifications)
+    console.log(this.list_of_notifications)
+  }
+
+  number_of_unchecked_notifications=0
+  display_number_of_unchecked_notifications(){
+    let number=0;
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      if(this.list_of_notifications[i].status=="unchecked"){
+        number+=1;
+      }
+    }
+    this.number_of_unchecked_notifications=number;
+    console.log("number_of_unchecked_notifications")
+    console.log(number)
   }
 
   /******************************************** SEARCHBAR******************************* */
@@ -363,9 +454,15 @@ export class NavbarLinkartsComponent implements OnInit {
                 if(n[1]==this.compteur_recent){
                   console.log(n[0][0]);
                   this.list_of_first_propositions_history=n[0][0];
-                  for(let i=0;i<n[0][0].length;i++){
-                    this.get_first_propositions(i,n[1])
+                  if(n[0][0].length>0){
+                    for(let i=0;i<n[0][0].length;i++){
+                      this.get_first_propositions(i,n[1])
+                    }
                   }
+                  else{
+                    this.loading_recent=false;
+                  }
+                  
                 }
               })
             }
@@ -415,42 +512,8 @@ export class NavbarLinkartsComponent implements OnInit {
     //vérifier que ca ne commence pas par un espace aussi
 
     if(this.input.nativeElement.value!=''){
-      /*équivalent aux propositions
-      this.most_researched_propositions=[];
-      this.navbar.get_main_searchbar_ideas(this.publication_category,this.input.nativeElement.value,this.compteur_research).subscribe(r=>{
-        console.log(r[0][0])
-        if(r[1]==this.compteur_research){
-          this.most_researched_propositions=r[0][0]
-        }
-      })*/
       this.show_most_researched_propositions=false;
 
-      /*if(this.publication_category=="All"){
-        this.navbar.get_main_searchbar_propositions(this.input.nativeElement.value, this.compteur_research).subscribe(m=>{
-          if(m[1]==this.compteur_research){
-            this.list_of_first_propositions=m[0][0];
-            if(this.list_of_first_propositions.length<10){
-              this.navbar.get_most_researched_main_propositions_gen(this.input.nativeElement.value,10-this.list_of_first_propositions.length,m[1]).subscribe(r=>{
-                if(r[1]==this.compteur_research){
-                  if(r[0][0].length>0){
-                    this.list_of_first_propositions=this.list_of_first_propositions.concat(r[0][0]);
-                  }
-                  for(let i=0;i<this.list_of_first_propositions.length;i++){
-                    this.get_other_propositions(i,m[1]);
-                  }
-                }
-                
-              })
-            }
-            else{
-              for(let i=0;i<this.list_of_first_propositions.length;i++){
-                this.get_other_propositions(i,m[1]);
-              }
-            }
-          }
-         
-        })
-      }*/
         this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).subscribe(m=>{
           console.log(m[0][0]);
           if(m[1]==this.compteur_research){
@@ -520,13 +583,6 @@ export class NavbarLinkartsComponent implements OnInit {
         })
     }
     else{
-      //a executer si on lance la première fonction dans le if
-      /*this.navbar.get_most_researched_main_propositions(this.publication_category,this.compteur_research,"researched").subscribe(r=>{
-        console.log(r[0][0])
-        if(r[1]==this.compteur_research){
-          this.most_researched_propositions=r[0][0]
-        }
-      })*/
       
       if(this.most_researched_propositions.length==0 || this.list_of_first_propositions_history.length==0){
         this.get_trendings();
@@ -565,6 +621,28 @@ export class NavbarLinkartsComponent implements OnInit {
           });
         }
         
+      })
+    }
+
+    if(this.list_of_first_propositions_history[i].publication_category=="Ad"){
+      console.log("artist");
+      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(ad=>{
+        if(compteur==this.compteur_recent){
+          this.list_of_last_propositions_history[i]=ad[0];
+          this.Ads_service.retrieve_ad_thumbnail_picture(ad[0].thumbnail_name ).subscribe(t=> {
+            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            if(compteur==this.compteur_recent){
+              this.list_of_thumbnails_history[i] = SafeURL;
+              this.compteur_first_propositions++;
+              if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                console.log(this.list_of_last_propositions_history)
+                this.show_first_propositions=true;
+                this.loading_recent=false;
+              }
+            }
+          })
+        }
       })
     }
 
@@ -700,6 +778,32 @@ export class NavbarLinkartsComponent implements OnInit {
               this.compteur_other_propositions++;
               console.log(this.compteur_other_propositions)
               console.log(this.list_of_first_propositions)
+              if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                console.log(this.list_of_last_propositions)
+                this.show_other_propositions=true;
+                this.loading_other=false;
+              }
+            }
+           
+          });
+        }
+        
+      })
+    }
+
+    if(this.list_of_first_propositions[i].publication_category=="Ad"){
+      console.log("artist");
+      this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
+        if(compteur==this.compteur_research){
+          this.list_of_last_propositions[i]=profile[0];
+          this.Ads_service.retrieve_ad_thumbnail_picture(profile[0].thumbnail_name ).subscribe(t=> {
+            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            if(compteur==this.compteur_research){
+              this.list_of_thumbnails[i] = SafeURL;
+              this.compteur_other_propositions++;
+              console.log(this.compteur_other_propositions)
+              console.log(this.list_of_last_propositions)
               if(this.compteur_other_propositions==this.list_of_first_propositions.length){
                 console.log(this.list_of_last_propositions)
                 this.show_other_propositions=true;
@@ -907,7 +1011,7 @@ export class NavbarLinkartsComponent implements OnInit {
         $(".navbar-margin").css("height", "10px" );
       }
 
-      this.v=false;
+      this.margin_is_not_set=false;
     }
     
   }

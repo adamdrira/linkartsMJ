@@ -199,7 +199,7 @@ export class AddWritingComponent implements OnInit {
         .subscribe( v => {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing().subscribe(r=>{
-              this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"add_publication",
@@ -212,6 +212,8 @@ export class AddWritingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );

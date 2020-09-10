@@ -208,7 +208,7 @@ export class ArtworkComicComponent implements OnInit {
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     this.type_of_comic_retrieved=true;
     if( this.type != "one-shot" && this.type != "serie") {
-      this.router.navigateByUrl("/");
+      this.router.navigateByUrl("/page_not_found");
       return;
     }
 
@@ -237,8 +237,8 @@ export class ArtworkComicComponent implements OnInit {
         console.log(this.current_chapter);
       }
       this.BdSerieService.retrieve_bd_by_id(this.bd_id).subscribe(r => { 
-        if(!r[0] || r[0].chaptersnumbe<this.current_chapter || this.type!='serie'){
-          this.router.navigateByUrl("/");
+        if(!r[0] || r[0].chaptersnumbe<this.current_chapter || this.type!='serie' || r[0].status=="deleted"){
+          this.router.navigateByUrl("/page_not_found");
           return
         }
         else{
@@ -402,14 +402,14 @@ export class ArtworkComicComponent implements OnInit {
   bd_one_shot_calls(){
    
     this.BdOneShotService.retrieve_bd_by_id(this.bd_id).subscribe(r => {
-      if(!r[0]){
-        this.router.navigateByUrl("/");
+      if(!r[0] || r[0].status=="deleted"){
+        this.router.navigateByUrl("/page_not_found");
         return;
       }
       else{
         let title =this.activatedRoute.snapshot.paramMap.get('title');
         if(r[0].title !=title ){
-          this.router.navigateByUrl("/");
+          this.router.navigateByUrl("/page_not_found");
           return;
         }
         else{
@@ -1218,7 +1218,7 @@ export class ArtworkComicComponent implements OnInit {
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0).subscribe(l=>{
+                    this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_like",
@@ -1230,6 +1230,8 @@ export class ArtworkComicComponent implements OnInit {
                         publication_id:this.bd_id,
                         chapter_number:0,
                         information:"remove",
+                        is_comment_answer:false,
+                        comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
                       this.liked=false;
@@ -1251,7 +1253,7 @@ export class ArtworkComicComponent implements OnInit {
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1).subscribe(l=>{
+                    this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_like",
@@ -1263,6 +1265,8 @@ export class ArtworkComicComponent implements OnInit {
                         publication_id:this.bd_id,
                         chapter_number:this.current_chapter + 1,
                         information:"remove",
+                        is_comment_answer:false,
+                        comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
                       this.liked=false;
@@ -1286,7 +1290,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1300,6 +1304,8 @@ export class ArtworkComicComponent implements OnInit {
                       chapter_number:0,
                       information:"add",
                       status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
                     }
                     this.chatService.messages.next(message_to_send);
                     this.liked=true;
@@ -1321,7 +1327,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_like",
@@ -1335,6 +1341,8 @@ export class ArtworkComicComponent implements OnInit {
                       chapter_number:this.current_chapter + 1,
                       information:"add",
                       status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
                     }
                     this.chatService.messages.next(message_to_send);
                     this.liked=true;
@@ -1368,7 +1376,7 @@ export class ArtworkComicComponent implements OnInit {
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0).subscribe(l=>{
+                    this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_love",
@@ -1380,6 +1388,8 @@ export class ArtworkComicComponent implements OnInit {
                         publication_id:this.bd_id,
                         chapter_number:0,
                         information:"remove",
+                        is_comment_answer:false,
+                        comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
                       this.loved=false;
@@ -1401,7 +1411,7 @@ export class ArtworkComicComponent implements OnInit {
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1).subscribe(l=>{
+                    this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_love",
@@ -1413,6 +1423,8 @@ export class ArtworkComicComponent implements OnInit {
                         publication_id:this.bd_id,
                         chapter_number:this.current_chapter + 1,
                         information:"remove",
+                        is_comment_answer:false,
+                        comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
                       this.loved=false;
@@ -1438,7 +1450,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -1452,6 +1464,8 @@ export class ArtworkComicComponent implements OnInit {
                       chapter_number:0,
                       information:"add",
                       status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
                     }
                     this.chatService.messages.next(message_to_send);
                     this.loved=true;
@@ -1474,7 +1488,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.cd.detectChanges();
                 }
                 else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1).subscribe(l=>{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
                     let message_to_send ={
                       for_notifications:true,
                       type:"publication_love",
@@ -1488,6 +1502,8 @@ export class ArtworkComicComponent implements OnInit {
                       chapter_number:this.current_chapter + 1,
                       information:"add",
                       status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
                     }
                     this.chatService.messages.next(message_to_send);
                     this.loved=true;
@@ -1533,7 +1549,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   removed_comment() {
-    this.commentariesnumber --;
+    this.commentariesnumber--;
   }
 
   
@@ -1798,8 +1814,24 @@ export class ArtworkComicComponent implements OnInit {
         if(this.type=="one-shot"){
           this.BdOneShotService.RemoveBdOneshot(this.bd_id).subscribe(r=>{
             this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
+              this.NotificationsService.remove_notification('add_publication','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  publication_category:'comic',
+                  format:'one-shot',
+                  publication_id:this.bd_id,
+                  chapter_number:0,
+                  information:"remove",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.chatService.messages.next(message_to_send);
+                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                return;
+              })
             })
             
           });
@@ -1807,8 +1839,24 @@ export class ArtworkComicComponent implements OnInit {
         else{
           this.BdSerieService.RemoveBdSerie(this.bd_id).subscribe(r=>{
             this.navbar.delete_publication_from_research("Comic",this.type,this.bd_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
+              this.NotificationsService.remove_notification('add_publication','comic','serie',this.bd_id,0,false,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  publication_category:'comic',
+                  format:'serie',
+                  publication_id:this.bd_id,
+                  chapter_number:0,
+                  information:"remove",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.chatService.messages.next(message_to_send);
+                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                return;
+              })
             })
           });
         }

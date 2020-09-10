@@ -2,7 +2,10 @@ import { Component, OnInit, Input, ChangeDetectorRef, SimpleChanges, ElementRef,
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ChatService } from '../services/chat.service';
+import { NotificationsService } from '../services/notifications.service';
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
 
 declare var $:any;
 
@@ -23,6 +26,8 @@ export interface reponses {
 export class CommentElementComponent implements OnInit {
 
   constructor(
+    private chatService:ChatService,
+    private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
@@ -44,16 +49,21 @@ export class CommentElementComponent implements OnInit {
 
   @Input() comment_id;
   @Input() comment_information:any;
-
-
+  @Input() visitor_name:string;
+  @Input() visitor_id:number;
+  @Input() visitor_profile_picture:SafeUrl;
+  @Input() title:string;
   @Input() now_in_seconds:any;
   date_upload_to_show:any;
   
-
+  like_in_progress=false;
+  answer_like_in_progress=false;
   //récupéré
   user_name:string;
   primary_description:string;
   profile_picture:SafeUrl;
+  main_pp_is_loaded=false;
+  pp_is_loaded=false;
   pseudo:string;
   authorid:number;
   //à récupérer
@@ -77,6 +87,7 @@ export class CommentElementComponent implements OnInit {
   
   responses_list:any[] = [];
   profile_picture_list:SafeUrl[] = [];
+  profile_picture_list_loaded= [];
   visitor_mode_list:any[]=[];
   liked_list:any[]=[];
   pseudo_list:any[] = [];
@@ -96,7 +107,7 @@ export class CommentElementComponent implements OnInit {
   
 
   ngOnInit(): void {
-    this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds(this.comment_information.createdAt) );
+    this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
     this.comment=this.comment_information.commentary;
     this.category=this.comment_information.publication_category;
     this.id=this.comment_information.id;
@@ -106,6 +117,8 @@ export class CommentElementComponent implements OnInit {
     this.chapter_number=this.comment_information.chapter_number;
     this.number_of_likes=this.comment_information.number_of_likes;
     this.likes_checked=true;
+
+    
     this.NotationService.get_commentary_answers_by_id(this.comment_information.id).subscribe(info=>{
       if(info[0].length!=0){
         for(let i=0;i<info[0].length;i++){
@@ -116,7 +129,7 @@ export class CommentElementComponent implements OnInit {
               id:info[0][i].id,
               comment:info[0][i].commentary,
               likesnumber:info[0][i].number_of_likes,
-              date:this.get_date_to_show(this.date_in_seconds(info[0][i].createdAt))
+              date:get_date_to_show(date_in_seconds(this.now_in_seconds,info[0][i].createdAt))
             });
             this.Profile_Edition_Service.retrieve_profile_picture(info[0][i].author_id_who_replies ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -212,37 +225,184 @@ export class CommentElementComponent implements OnInit {
           this.responses_list.splice(index, 1);
         }
       }
+      this.NotificationsService.remove_notification('comment_answer',this.category,this.format,this.publication_id,this.chapter_number,true,this.responses_list[i].id).subscribe(l=>{
+        let message_to_send ={
+          for_notifications:true,
+          type:"comment_answer",
+          id_user_name:this.visitor_name,
+          id_user:this.visitor_id, 
+          id_receiver:this.authorid,
+          publication_category:this.category,
+          publication_name:this.title,
+          format:this.format,
+          publication_id:this.publication_id,
+          chapter_number:this.chapter_number,
+          information:"remove",
+          status:"unchecked",
+          is_comment_answer:true,
+          comment_id:this.responses_list[i].id,
+        }
+        this.chatService.messages.next(message_to_send);
+        this.cd.detectChanges();
+      })
       
     })
   }
 
 
   add_or_remove_like(){
+    console.log(this.comment)
+    this.like_in_progress=true;
     if(this.liked){
       this.NotationService.remove_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
-        this.number_of_likes=this.number_of_likes-1;
-        this.liked=false;
+        if(this.visitor_id!=this.authorid){
+          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,false,this.id).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"comment_like",
+              id_user_name:this.visitor_name,
+              id_user:this.visitor_id, 
+              id_receiver:this.authorid,
+              publication_category:this.category,
+              publication_name:this.title,
+              format:this.format,
+              publication_id:this.publication_id,
+              chapter_number:this.chapter_number,
+              information:"remove",
+              status:"unchecked",
+              is_comment_answer:false,
+              comment_id:this.id,
+            }
+            this.chatService.messages.next(message_to_send);
+            this.number_of_likes=this.number_of_likes-1;
+            this.liked=false;
+            this.like_in_progress=false;
+            this.cd.detectChanges();
+          })
+        }
+        else{
+          this.number_of_likes=this.number_of_likes-1;
+          this.liked=false;
+          this.like_in_progress=false;
+          this.cd.detectChanges();
+        }
+        
       })
     }
     else{
       this.NotationService.add_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
-        this.number_of_likes=this.number_of_likes+1;
-        this.liked=true;
+        
+          if(this.visitor_id!=this.authorid){
+            this.NotificationsService.add_notification('comment_like',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment,false,this.id).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"comment_like",
+                id_user_name:this.visitor_name,
+                id_user:this.visitor_id, 
+                id_receiver:this.authorid,
+                publication_category:this.category,
+                publication_name:this.title,
+                format:this.format,
+                publication_id:this.publication_id,
+                chapter_number:this.chapter_number,
+                information:this.comment,
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:this.id,
+              }
+              this.chatService.messages.next(message_to_send);
+              this.number_of_likes=this.number_of_likes+1;
+              this.liked=true;
+              this.like_in_progress=false;
+              this.cd.detectChanges();
+            })
+          }
+          else{
+            this.number_of_likes=this.number_of_likes+1;
+            this.liked=true;
+            this.like_in_progress=false;
+            this.cd.detectChanges();
+          }
+          
+          
       })
     }
   }
 
   add_or_remove_answer_like(i){
+    console.log(this.responses_list[i].comment)
+    this.answer_like_in_progress=true;
     if(this.liked_list[i]){
       this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
-        this.responses_list[i].likesnumber=this.responses_list[i].likesnumber-1;
-        this.liked_list[i]=false;
+        if(this.visitor_id!=this.responses_list[i].id_user){
+          this.NotificationsService.remove_notification('comment_like',this.category,this.format,this.publication_id,this.chapter_number,true,this.responses_list[i].id).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"comment_like",
+              id_user_name:this.visitor_name,
+              id_user:this.visitor_id, 
+              id_receiver:this.responses_list[i].id_user,
+              publication_category:this.category,
+              publication_name:this.title,
+              format:this.format,
+              publication_id:this.publication_id,
+              chapter_number:this.chapter_number,
+              information:"remove",
+              status:"unchecked",
+              is_comment_answer:true,
+              comment_id:this.responses_list[i].id,
+            }
+            this.chatService.messages.next(message_to_send);
+            this.responses_list[i].likesnumber=this.responses_list[i].likesnumber-1;
+            this.liked_list[i]=false;
+            this.answer_like_in_progress=false;
+            this.cd.detectChanges();
+          })
+        }
+        else{
+          this.responses_list[i].likesnumber=this.responses_list[i].likesnumber-1;
+          this.liked_list[i]=false;
+          this.answer_like_in_progress=false;
+          this.cd.detectChanges();
+        }
+        
       })
     }
     else{
       this.NotationService.add_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
-        this.responses_list[i].likesnumber=this.responses_list[i].likesnumber+1;
-        this.liked_list[i]=true;
+        if(this.visitor_id!=this.responses_list[i].id_user){
+         
+          this.NotificationsService.add_notification('comment_answer_like',this.visitor_id,this.visitor_name,this.responses_list[i].id_user,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.responses_list[i].comment,true,this.responses_list[i].id).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"comment_answer_like",
+              id_user_name:this.visitor_name,
+              id_user:this.visitor_id, 
+              id_receiver:this.responses_list[i].id_user,
+              publication_category:this.category,
+              publication_name:this.title,
+              format:this.format,
+              publication_id:this.publication_id,
+              chapter_number:this.chapter_number,
+              information:this.responses_list[i].comment,
+              status:"unchecked",
+              is_comment_answer:true,
+              comment_id:this.responses_list[i].id,
+            }
+            this.chatService.messages.next(message_to_send);
+            this.responses_list[i].likesnumber=this.responses_list[i].likesnumber+1;
+            this.liked_list[i]=true;
+            this.answer_like_in_progress=false;
+            this.cd.detectChanges()
+          })
+        }
+        else{
+          this.responses_list[i].likesnumber=this.responses_list[i].likesnumber+1;
+          this.liked_list[i]=true;
+          this.answer_like_in_progress=false;
+          this.cd.detectChanges()
+        }
+       
       })
     }
 
@@ -257,73 +417,9 @@ export class CommentElementComponent implements OnInit {
     this.cd.detectChanges();
     this.resize_textareas();
 
-    let THIS=this;
-
   }
 
-  date_in_seconds(date){
-    var uploaded_date = date.substring(0,date.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
+ 
 
   set_editable() {
     this.see_more();
@@ -344,57 +440,81 @@ export class CommentElementComponent implements OnInit {
     this.cd.detectChanges();
   }
   
+ 
+
   onKeydown(event) {
-    if (event.key === "Enter" && this.edit_comment) {
-      this.set_not_editable();
+    //edit a commentary
 
-      this.changed.emit();
-      this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value,this.id)
-          .subscribe(l=>{
-            this.comment=l[0].commentary;
-      });
-      this.resize_textareas();
+    if (event.key == "Enter" && this.edit_comment) {
+      if(this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
+        this.set_not_editable();
+
+        this.changed.emit();
+        this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value,this.id)
+            .subscribe(l=>{
+              this.comment=l[0].commentary;
+        });
+        this.resize_textareas();
+      }
+      
     }
   }
 
+
+  number_of_shift=0;
+   //edit a response
   onKeydownResponse(event, i: number) {
-    if (event.key === "Enter" && this.editable_response == i) {
-      this.set_not_editable_response();
-      this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value,this.responses_list[i].id)
-          .subscribe(l=>{
-            console.log(l[0].commentary);
-            this.responses_list.splice(i, 1,
-              {
-                author_id :l[0].author_id_who_replies,
-                id:l[0].id,
-                comment:l[0].commentary,
-                likesnumber:l[0].number_of_likes,
-                date:this.responses_list[i].date,
-              });
-       });
-      this.resize_textareas();
+   
+
+    if(event.key=="Shift"){
+      this.number_of_shift=1;
     }
+    else if(event.key!="Enter"){
+      this.number_of_shift=0;
+    }
+    else if(event.key=="Enter" && this.editable_response == i){
+      if(this.number_of_shift==0){
+        if(this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
+          this.set_not_editable_response();
+          this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value,this.responses_list[i].id).subscribe(l=>{
+                console.log(l[0].commentary);
+                this.responses_list.splice(i, 1,
+                  {
+                    author_id :l[0].author_id_who_replies,
+                    id:l[0].id,
+                    comment:l[0].commentary,
+                    likesnumber:l[0].number_of_likes,
+                    date:this.responses_list[i].date,
+                  });
+                    this.resize_textareas();
+                    this.cd.detectChanges();
+          });
+          
+        }
+      }
+      this.number_of_shift=0;
+    }
+
+    
   }
 
+//respond to a commentary
   onKeydownResponseToComment(event) {
-    if (event.key === "Enter") {
-
-      
-      event.preventDefault();
-      
-      if( this.textareaRESPONSEtoCOMMENT.nativeElement.value ) {
+    if(event.key=="Shift"){
+      this.number_of_shift=1;
+    }
+    else if(event.key!="Enter"){
+      this.number_of_shift=0;
+    }
+    else if(event.key=="Enter" ){
+      if(this.number_of_shift==0){
+        if(this.textareaRESPONSEtoCOMMENT.nativeElement.value!='' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length>0){
+          event.preventDefault();
 
         this.NotationService.add_answer_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.textareaRESPONSEtoCOMMENT.nativeElement.value,this.id)
           .subscribe(l=>{
-            this.liked_list.splice(0,0,false);
-            this.responses_list.splice(0, 0,
-              {
-                author_id :l[0].author_id_who_replies,
-                id:l[0].id,
-                comment:l[0].commentary,
-                likesnumber:l[0].number_of_likes,
-                date:this.get_date_to_show(this.date_in_seconds(l[0].createdAt))
-              });
+           
+            if(this.visitor_id!=this.authorid){
               this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -402,16 +522,71 @@ export class CommentElementComponent implements OnInit {
                 this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s=> {
                   this.pseudo_list.splice(0, 0,s[0].nickname);
                   this.author_name_list.splice(0, 0,s[0].firstname + ' ' + s[0].lastname);
+
+                  this.liked_list.splice(0,0,false);
+                  this.responses_list.splice(0, 0,
+                    {
+                      author_id :l[0].author_id_who_replies,
+                      id:l[0].id,
+                      comment:l[0].commentary,
+                      likesnumber:l[0].number_of_likes,
+                      date:get_date_to_show(date_in_seconds(this.now_in_seconds,l[0].createdAt))
+                    });
+
+                  this.NotificationsService.add_notification('comment_answer',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment,true,l[0].id).subscribe(l=>{
+                    let message_to_send ={
+                      for_notifications:true,
+                      type:"comment_answer",
+                      id_user_name:this.visitor_name,
+                      id_user:this.visitor_id, 
+                      id_receiver:this.authorid,
+                      publication_category:this.category,
+                      publication_name:this.title,
+                      format:this.format,
+                      publication_id:this.publication_id,
+                      chapter_number:this.chapter_number,
+                      information:this.comment,
+                      status:"unchecked",
+                      is_comment_answer:true,
+                      comment_id:l[0].id,
+                    }
+                    this.chatService.messages.next(message_to_send);
+                    this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+                    this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+                    this.resize_textareas();
+                    this.cd.detectChanges()
+                  })
                 });
               });
-          });
-        
-      }
-      this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
-      this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+            }
+            else{
+              this.profile_picture_list.splice(0, 0,this.profile_picture);
+                this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s=> {
+                  this.pseudo_list.splice(0, 0,s[0].nickname);
+                  this.author_name_list.splice(0, 0,s[0].firstname + ' ' + s[0].lastname);
 
-      this.resize_textareas();
+                  this.liked_list.splice(0,0,false);
+                  this.responses_list.splice(0, 0,
+                    {
+                      author_id :l[0].author_id_who_replies,
+                      id:l[0].id,
+                      comment:l[0].commentary,
+                      likesnumber:l[0].number_of_likes,
+                      date:get_date_to_show(date_in_seconds(this.now_in_seconds,l[0].createdAt))
+                    });
+                    this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+                    this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+                    this.resize_textareas();
+                    this.cd.detectChanges();
+                });
+            }
+              
+          });
+        }
+      }
+      this.number_of_shift=0;
     }
+   
   }
 
   see_more() {
@@ -475,6 +650,17 @@ export class CommentElementComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  load_pp(){
+    this.pp_is_loaded=true;
+  }
+
+  load_main_pp(){
+    this.main_pp_is_loaded=true;
+  }
+
+  load_pp_list(i){
+    this.profile_picture_list_loaded[i]=true;
+  }
   
 
 }

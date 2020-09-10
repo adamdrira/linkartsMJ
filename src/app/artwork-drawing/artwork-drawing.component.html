@@ -458,6 +458,7 @@
                 <div *ngIf="category_index==1"  [ngClass]="{'invisible': !display_right_container }" class="comments-container">
                     <app-comments 
                     [type_of_account]=type_of_account
+                    [title]="title"
                     category='drawing'
                     [format]=type
                     [style]=style

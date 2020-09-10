@@ -105,6 +105,18 @@
                 </button>
             </mat-menu>
 
+
+            <!--options pour un utilisateur -->
+            <button *ngIf="visitor_mode_added && !visitor_mode  && type_of_account=='account'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="menu">
+                <mat-icon class="optionsButton">more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="delete()">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Supprimer</span>
+                </button>
+            </mat-menu>
+
             <div class="d0-title-container">
                 <span>{{item.title}}</span>
             </div>
@@ -170,6 +182,21 @@
                     <div class="d3-icon">
                     </div>
                 </div>
+            </div>
+            <div class="comments-container">
+                <app-comments 
+                [type_of_account]=type_of_account
+                [title]="item.title"
+                category='ad'
+                [format]="item.type_of_project"
+                [style]="item.remuneration"
+                [publication_id]="item.id"
+                chapter_number=0
+                [authorid]="item.id_user"
+                (new_comment)="new_comment();"
+                (removed_comment)="removed_comment();"
+
+                ></app-comments>
             </div>
 
         </div>

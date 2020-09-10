@@ -196,7 +196,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
-      this.router.navigateByUrl("/");
+      this.router.navigateByUrl("/page_not_found");
       return;
     }
 
@@ -209,14 +209,14 @@ export class ArtworkDrawingComponent implements OnInit {
 
     if (this.type =="one-shot"){
       this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.drawing_id).subscribe(r => {
-        if(!r[0]){
-          this.router.navigateByUrl("/");
+        if(!r[0] || r[0].status=="deleted"){
+          this.router.navigateByUrl("/page_not_found");
             return;
         }
         else{
           let title =this.activatedRoute.snapshot.paramMap.get('title');
           if(r[0].title !=title ){
-            this.router.navigateByUrl("/");
+            this.router.navigateByUrl("/page_not_found");
             return;
           }
           else{
@@ -230,14 +230,14 @@ export class ArtworkDrawingComponent implements OnInit {
 
     else if (this.type =="artbook"){
       this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.drawing_id).subscribe(r => {
-        if(!r[0]){
-          this.router.navigateByUrl("/");
+        if(!r[0] || r[0].status=="deleted"){
+          this.router.navigateByUrl("/page_not_found");
             return
         }
         else{
           let title =this.activatedRoute.snapshot.paramMap.get('title');
           if(r[0].title !=title ){
-            this.router.navigateByUrl("/");
+            this.router.navigateByUrl("/page_not_found");
             return
           }
           else{
@@ -498,6 +498,7 @@ export class ArtworkDrawingComponent implements OnInit {
         
       });
       
+      console.log(r[0].category)
       this.NotationService.get_loves('drawing', 'artbook', r[0].category, this.drawing_id,0).subscribe(r=>{
         let list_of_loves= r[0];
         console.log(r[0]);
@@ -910,7 +911,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_like','drawing','one-shot',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_like','drawing','one-shot',this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -923,6 +924,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=false;
@@ -943,7 +946,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_like','drawing','artbook',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_like','drawing','artbook',this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -956,6 +959,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=false;
@@ -977,7 +982,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -991,6 +996,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=true;
@@ -1012,7 +1019,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_like",
@@ -1026,6 +1033,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.liked=true;
@@ -1059,7 +1068,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_love','drawing','one-shot',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_love','drawing','one-shot',this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -1072,6 +1081,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=false;
@@ -1090,7 +1101,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.remove_notification('publication_love','drawing','artbook',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.remove_notification('publication_love','drawing','artbook',this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -1103,6 +1114,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"remove",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=false;
@@ -1125,7 +1138,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -1139,6 +1152,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=true;
@@ -1151,7 +1166,7 @@ export class ArtworkDrawingComponent implements OnInit {
         }
         else if(this.type=='artbook'){
         
-          this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+          this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
             this.lovesnumber=r[0].lovesnumber;
                            
             if(this.authorid==this.visitor_id){
@@ -1160,7 +1175,7 @@ export class ArtworkDrawingComponent implements OnInit {
               this.cd.detectChanges();
             }
             else{
-              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0).subscribe(l=>{
+              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
                   type:"publication_love",
@@ -1174,6 +1189,8 @@ export class ArtworkDrawingComponent implements OnInit {
                   chapter_number:0,
                   information:"add",
                   status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
                 }
                 this.chatService.messages.next(message_to_send);
                 this.loved=true;
@@ -1462,8 +1479,25 @@ export class ArtworkDrawingComponent implements OnInit {
           console.log("suppression en cours");
           this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
             this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
+              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  publication_category:'drawing',
+                  format:this.type,
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.chatService.messages.next(message_to_send);
+                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                return;
+              })
             })
           });
         }
@@ -1471,8 +1505,25 @@ export class ArtworkDrawingComponent implements OnInit {
           console.log("suppression en cours");
           this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
             this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
-              this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
-              return;
+              this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
+                let message_to_send ={
+                  for_notifications:true,
+                  type:"add_publication",
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id, 
+                  publication_category:'drawing',
+                  format:this.type,
+                  publication_id:this.drawing_id,
+                  chapter_number:0,
+                  information:"remove",
+                  status:"unchecked",
+                  is_comment_answer:false,
+                  comment_id:0,
+                }
+                this.chatService.messages.next(message_to_send);
+                this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
+                return;
+              })
             })
           });
         }
