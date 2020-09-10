@@ -23,7 +23,7 @@
                     </div>
 
 
-                    <div class="right-container">
+                    <!--<div class="right-container">
                         <span *ngIf="item.remuneration">
                             <span *ngIf="item.price_value!='0'">	{{item.price_value}}</span>
                             <span>	&#8364;</span>
@@ -59,7 +59,7 @@
                                 </button>
                             </mat-menu>
                         </div>
-                    </div>
+                    </div>-->
 
                 </div>
 
@@ -116,60 +116,23 @@
                     </div>
 
                     
-                    <button mat-raised-button *ngIf="visitor_mode" class="ad-button style1" (click)="respond();">
-                        <span>Répondre</span>
-                        <mat-icon style="font-size: 24px;margin: auto auto auto 0px;">send</mat-icon>
-                    </button>
-                    <button mat-raised-button *ngIf="!visitor_mode && see_responses==0" class="ad-button style1" (click)="responses();">
-                        <span>Voir les réponses</span>
-                        <mat-icon style="font-size: 24px;margin: auto auto auto 0px;">keyboard_arrow_down</mat-icon>
-                    </button>
-                    <button mat-raised-button *ngIf="!visitor_mode && (see_responses==1 || see_responses==2)" class="ad-button style1" (click)="return_to_ad(0);">
-                        <span>Voir l'annonce</span>
-                        <mat-icon style="font-size: 24px;margin: auto auto auto 0px;">text_snippet</mat-icon>
-                    </button>
+                   
+                    <a  href='/ad-page/{{item.title}}/{{item.id}}'>
+                        <button mat-raised-button class="ad-button style1" >
+                            <span>Consulter</span>
+                        </button>
+                    </a>
+                    
                     
                 </div>
 
 
-                    <!--<div class="author-container">
-                        <div class="left-container">
-                            <img [src]="profile_picture">
-                        </div>
-                        <div class="right-container">
-                            <div class="right-left-container">
-                                <div class="author-name">
-                                    {{author_name}}
-                                </div>
-                                <div class="my_description">
-                                    {{item.my_description}}
-                                </div>
-                                <div class="location">
-                                    {{item.location}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="right-right-container">
-                            <div class="target" >
-                                {{item.target_one}}
-                            </div>
-                            <div class="target" *ngIf="item.target_two != null ">
-                                {{item.target_two}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="options-container">
-                        <div class="apply-button" *ngIf="visitor_mode" (click)="respond()">
-                            Répondre
-                        </div>
-                        <div class="apply-button" *ngIf="!visitor_mode && see_responses==0" (click)="responses()">
-                            Voir les réponses
-                        </div>
-                        <div class="apply-button" *ngIf="!visitor_mode && (see_responses==1 || see_responses==2) " (click)="return_to_ad(0)">
-                            Voir l'annonce
-                        </div>
-                    </div>-->
+                    <!-- ---------------------------middle-container ------------->
+                    <!-- ---------------------------middle-container ------------->
+                    <!-- ---------------------------middle-container ------------->
+                    <!-- ---------------------------middle-container------------->
+                    <!-- ---------------------------middle-container ------------->
+                
 
 
                 <div class="middle-container">
@@ -191,16 +154,44 @@
                             </div>
                         </div>
 
+
+                        <!-- ---------------------------description------------->
+                         <!-- ---------------------------description------------->
                         
-                        <div *ngIf="category_index==0" class="section-container">
-                            {{item.description}}
+                        <div *ngIf="category_index==0" class="section-container" style="display:block">
+                            <div >
+                                Catégorie : {{item.type_of_project}}
+                            </div>
+                            <div>
+                                <span *ngIf="item.remuneration">Projet rémunéré </span>
+                                <span *ngIf="item.price_value!='0'"> : {{item.price_value}}</span>
+                                <span *ngIf="item.price_value!='0'">	&#8364;</span>
+                            </div>
+                            <div>
+                                {{date_to_show}}
+                            </div>
+                            <div>
+                                <span *ngIf="item.number_of_responses==0">Aucun retours</span>
+                                <span *ngIf="item.number_of_responses==1">{{item.number_of_responses}} retour</span>
+                                <span *ngIf="item.number_of_responses>1">{{item.number_of_responses}} retours</span>
+                            </div>
+                            <div >
+                                {{item.description}}
+                            </div>
+                            
                         </div>
+
+                        <!-- ---------------------------LIST OF PICTURES------------->
+                         <!-- ---------------------------LIST OF PICTURES ------------->
 
                         <div *ngIf="category_index==1" class="section-container" style="display:flex;flex-wrap: wrap;">
                             <div *ngFor="let picture of list_of_pictures, let i=index" (click)="read_pictures(i)" class="image-container">
                                 <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                             </div>
                         </div>
+
+                          <!-- ---------------------------LIST OF FILES------------->
+                         <!-- ---------------------------LIST OF FILES ------------->
 
                         <div *ngIf="category_index==2" class="section-container">
                             <div *ngFor="let attachment of list_of_attachments, let i=index" class="attachments-container">
@@ -214,6 +205,15 @@
 
 
                     </ng-container>
+
+
+
+                    <!-- ---------------------------LIST OF RESPPONSES TO PUT IN AD-PAGE ------------->
+                    <!-- ---------------------------LIST OF RESPPONSES TO PUT IN AD-PAGE ------------->
+                    <!-- ---------------------------LIST OF RESPPONSES TO PUT IN AD-PAGE ------------->
+                    <!-- ---------------------------LIST OF RESPPONSES TO PUT IN AD-PAGE ------------->
+                    <!-- ---------------------------LIST OF RESPPONSES TO PUT IN AD-PAGE ------------->
+
 
 
 
@@ -282,12 +282,7 @@
 
 
 
-                            <!--<div class="category">
-                                <button (click)="return_to_ad(1)">retour</button>
-                                <div #category class="category-description" [ngClass]="status1" (mouseover)="status1='hovered'" (mouseout)="status1=''" (click)="open_category(0);">Description</div>
-                                <div #category class="category-attachments" [ngClass]="status2" (mouseover)="status2='hovered'" (mouseout)="status2=''" (click)="open_category(1);">Images ({{response_list_of_pictures.length}})</div>
-                                <div #category class="category-attachments" [ngClass]="status3" (mouseover)="status3='hovered'" (mouseout)="status3=''" (click)="open_category(2);">Fichiers ({{response_list_of_attachments.length}})</div>
-                            </div>-->
+                           
                             
                             <div class="category-content-1">
                                 <div *ngIf="category_index==0" class="section-container-2">
@@ -304,14 +299,7 @@
                                 </div>
 
 
-                                <!--<div *ngIf="category_index==2" class="attachments-container">
-                                    <div *ngFor="let attachment of response_list_of_attachments, let i=index">
-                                        <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)">
-                                            <img src='../../assets/img/pdf_image.png'>
-                                            <div> {{response_list_of_attachments_name[i]}}</div>
-                                        </div>
-                                    </div>
-                                </div>-->
+                              
 
                                 <div *ngIf="category_index==2" class="section-container-2">
                                     <div *ngFor="let attachment of response_list_of_attachments, let i=index" class="attachments-container">
@@ -335,17 +323,7 @@
 
 
                 
-                <div class="bottom-container">
-                    <div class="left-container">
-                        {{item.type_of_project}}
-                    </div>
-
-                    <div class="right-container">
-                        <span *ngIf="item.number_of_responses==0">{{date_to_show}} - Pas de retours</span>
-                        <span *ngIf="item.number_of_responses==1">{{date_to_show}} - {{item.number_of_responses}} retour</span>
-                        <span *ngIf="item.number_of_responses>1">{{date_to_show}} - {{item.number_of_responses}} retours</span>
-                    </div>
-                </div>
+                
 
             </div>
 

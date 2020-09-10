@@ -14,7 +14,9 @@
   .offer-main-container{
     display: block;
     width: calc(100% - 15px);
-    margin: auto auto;
+    max-width:1250px;
+    height: 350px;
+    margin: 30px auto 30px auto;
     background: #fcfcfc;
     border-radius: 25px;
     overflow: hidden;

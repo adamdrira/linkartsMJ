@@ -130,7 +130,7 @@ export class AddAdComponent implements OnInit {
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
     console.log("done")
-    this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle,this.fd.value.fdProject_type,this.ad_id,0).subscribe(l=>{
+    this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle,this.fd.value.fdProject_type,this.ad_id,0,"add",false,0).subscribe(l=>{
       let message_to_send ={
         for_notifications:true,
         type:"add_publication",
@@ -143,6 +143,8 @@ export class AddAdComponent implements OnInit {
         chapter_number:0,
         information:"add",
         status:"unchecked",
+        is_comment_answer:false,
+        comment_id:0,
       }
       this.chatService.messages.next(message_to_send);
       this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );

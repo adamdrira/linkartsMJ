@@ -57,9 +57,8 @@ export class ThumbnailAdComponent implements OnInit {
   thumbnail_picture:SafeUrl;
   list_of_attachments_name:any[]=[];
   list_of_pictures:any[]=[];
-  pictures_retrieved=true;
   list_of_attachments:any[]=[];
-  attachments_retrieved=true;
+  attachments_retrieved=false;
   visitor_mode=true;
 
 
@@ -79,7 +78,6 @@ export class ThumbnailAdComponent implements OnInit {
   response_list_of_attachments=[];
   response_list_of_attachments_name=[];
   response_list_of_attachments_type=[];
-  response_pictures_retrieved=false;
   response_attachments_retrieved=false;
 
   ngOnInit() {
@@ -611,248 +609,254 @@ export class ThumbnailAdComponent implements OnInit {
     let u=0;
     var re = /(?:\.([^.]+))?$/;
     console.log(item);
-    for(let i=0;i<item.number_of_attachments;i++){
-      if(i==0){
-        console.log(re.exec(item.attachment_name_one)[1]);
-        if(re.exec(item.attachment_name_one)[1]!="pdf"){
-          this.list_of_attachments_name[i] = item.attachment_real_name_one;
-          this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
+    if(item.number_of_attachments>0){
+      for(let i=0;i<item.number_of_attachments;i++){
+        if(i==0){
+          console.log(re.exec(item.attachment_name_one)[1]);
+          if(re.exec(item.attachment_name_one)[1]!="pdf"){
+            this.list_of_attachments_name[i] = item.attachment_real_name_one;
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
+              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[l[1]] = SafeURL;
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
                 }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
                 }
+                this.attachments_retrieved=true;;
+                
               }
-              this.attachments_retrieved=true;;
-              
-            }
-          });
+            });
+          }
+          else{
+            this.list_of_attachments_name[i] = item.attachment_real_name_one;
+            this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
+              this.list_of_attachments[l[1]] = l[0];
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+                
+              }
+            });
+          }
+          
         }
-        else{
-          this.list_of_attachments_name[i] = item.attachment_real_name_one;
-          this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-            this.list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
+        if(i==1){
+          console.log(re.exec(item.attachment_name_two)[1]);
+          if(re.exec(item.attachment_name_two)[1]!="pdf"){
+            this.list_of_attachments_name[i] = item.attachment_real_name_two;
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
+              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[l[1]] = SafeURL;
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
                 }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
                 }
+                this.attachments_retrieved=true;;
               }
-              this.attachments_retrieved=true;;
-              
-            }
-          });
+            });
+          }
+          else{
+            this.list_of_attachments_name[i] = item.attachment_real_name_two;
+            this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
+              this.list_of_attachments[l[1]] = l[0];
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            });
+          }
+          
         }
-        
+        if(i==2){
+          console.log(re.exec(item.attachment_name_three)[1]);
+          if(re.exec(item.attachment_name_three)[1]!="pdf"){
+            this.list_of_attachments_name[i] = item.attachment_real_name_three;
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
+              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[l[1]] = SafeURL;
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            });
+          }
+          else{
+            this.list_of_attachments_name[i] = item.attachment_real_name_three;
+            this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
+              this.list_of_attachments[l[1]] = l[0];
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            });
+          }
+          
+        };
+        if(i==3){
+          console.log(re.exec(item.attachment_name_four)[1]);
+          if(re.exec(item.attachment_name_four)[1]!="pdf"){
+            this.list_of_attachments_name[i] = item.attachment_real_name_four;
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
+              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[l[1]] = SafeURL;
+              u++
+              if(u==item.number_of_attachments){
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            })
+          }
+          else{
+            this.list_of_attachments_name[i] = item.attachment_real_name_four;
+            this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
+              this.list_of_attachments[l[1]] = l[0];
+              u++
+              if(u==item.number_of_attachments){
+                console.log(3)
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            })
+          }
+          
+        };
+        if(i==4){
+          console.log(re.exec(item.attachment_name_five)[1]);
+          if(re.exec(item.attachment_name_five)[1]!="pdf"){
+            this.list_of_attachments_name[i] = item.attachment_real_name_five;
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
+              let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_pictures[l[1]] = SafeURL;
+              u++
+              if(u==item.number_of_attachments){
+                console.log(4)
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            })
+          }
+          else{
+            this.list_of_attachments_name[i] = item.attachment_real_name_five;
+            this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
+              this.list_of_attachments[l[1]] = l[0];
+              u++
+              if(u==item.number_of_attachments){
+  
+                for(let j=0;j<this.list_of_pictures.length;j++){
+                  if(!this.list_of_pictures[j]){
+                    this.list_of_pictures.splice(j,1);
+                  }
+                }
+                for(let j=0;j<this.list_of_attachments.length;j++){
+                  if(!this.list_of_attachments[j]){
+                    this.list_of_attachments.splice(j,1);
+                  }
+                }
+                this.attachments_retrieved=true;;
+              }
+            })
+          }
+          
+        };
       }
-      if(i==1){
-        console.log(re.exec(item.attachment_name_two)[1]);
-        if(re.exec(item.attachment_name_two)[1]!="pdf"){
-          this.list_of_attachments_name[i] = item.attachment_real_name_two;
-          this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          });
-        }
-        else{
-          this.list_of_attachments_name[i] = item.attachment_real_name_two;
-          this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-            this.list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          });
-        }
-        
-      }
-      if(i==2){
-        console.log(re.exec(item.attachment_name_three)[1]);
-        if(re.exec(item.attachment_name_three)[1]!="pdf"){
-          this.list_of_attachments_name[i] = item.attachment_real_name_three;
-          this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          });
-        }
-        else{
-          this.list_of_attachments_name[i] = item.attachment_real_name_three;
-          this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-            this.list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          });
-        }
-        
-      };
-      if(i==3){
-        console.log(re.exec(item.attachment_name_four)[1]);
-        if(re.exec(item.attachment_name_four)[1]!="pdf"){
-          this.list_of_attachments_name[i] = item.attachment_real_name_four;
-          this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          })
-        }
-        else{
-          this.list_of_attachments_name[i] = item.attachment_real_name_four;
-          this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-            this.list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              console.log(3)
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          })
-        }
-        
-      };
-      if(i==4){
-        console.log(re.exec(item.attachment_name_five)[1]);
-        if(re.exec(item.attachment_name_five)[1]!="pdf"){
-          this.list_of_attachments_name[i] = item.attachment_real_name_five;
-          this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              console.log(4)
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          })
-        }
-        else{
-          this.list_of_attachments_name[i] = item.attachment_real_name_five;
-          this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-            this.list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-
-              for(let j=0;j<this.list_of_pictures.length;j++){
-                if(!this.list_of_pictures[j]){
-                  this.list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.list_of_attachments.length;j++){
-                if(!this.list_of_attachments[j]){
-                  this.list_of_attachments.splice(j,1);
-                }
-              }
-              this.attachments_retrieved=true;;
-            }
-          })
-        }
-        
-      };
     }
+    else{
+      this.attachments_retrieved=true;
+    }
+    
   }
 
   return_to_ad(i){
