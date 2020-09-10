@@ -1037,9 +1037,13 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
         let publication_category=req.params.publication_category;
         let format=req.params.format;
         let target_id=parseInt(req.params.target_id);
+        console.log("delete_publication_from_research")
+        console.log(id_user)
+        console.log(publication_category)
+        console.log(format)
+        console.log(target_id)
         list_of_navbar_researches.destroy({
             where:{
-                id_user:id_user,
                 publication_category:publication_category,
                 format:format,
                 target_id:target_id,

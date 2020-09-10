@@ -168,9 +168,10 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
               "number_of_drawings":number_of_drawings,
             })
           }
-          artbook.destroy({
-            truncate: false
+          artbook.update({
+            "status":"deleted"
           })
+          res.status(200).send([artbook]);
           
         });
       })
@@ -194,8 +195,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
                         "status":status
                   }).then(drawing => {
                       res.status(200).send(drawing)
-                  }
-                  )
+                  })
                   
               }); 
           })();     

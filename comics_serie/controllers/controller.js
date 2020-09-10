@@ -113,8 +113,8 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               })
             }
             if(bd){
-              bd.destroy({
-                truncate: false
+              bd.update({
+                "status": "deleted"
               });
               res.status(200).send([bd]);
             }

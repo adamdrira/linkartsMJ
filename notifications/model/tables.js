@@ -19,7 +19,9 @@ exports.list_of_notifications = (sequelize, DataTypes) => {
         publication_id: DataTypes.INTEGER,
         chapter_number: DataTypes.INTEGER,
         status:DataTypes.STRING,
-        information:DataTypes.STRING,
+        is_comment_answer:DataTypes.BOOLEAN,
+        comment_id: DataTypes.INTEGER,
+        information:DataTypes.STRING(2000),
         },
       {
         freezeTableName: true // Model tableName will be the same as the model name

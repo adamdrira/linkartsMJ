@@ -283,9 +283,9 @@ module.exports = (router, drawings_one_page,list_of_users) => {
               })
             }
             drawing.destroy({
-              truncate: false
-          })
-          res.json([drawing]);
+              "status":"deleted"
+            })
+            res.status(200).send([drawing]);
           });
         })
       });

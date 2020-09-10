@@ -881,6 +881,20 @@ module.exports = (router,
                 }); 
                 
                 }
+
+                else if(category=="ad"){
+                    list_of_ads.findOne({
+                        where: {
+                            id: publication_id,
+                        }
+                    })
+                    .then(ad =>  {
+                        const number = ad.commentarynumbers + 1;
+                        ad.update({
+                        "commentarynumbers":number,
+                        })
+                    });
+                }
                 console.log('ajout de commentair ok');
                 List_of_comments.create({
                         "author_id_who_comments": current_user,
@@ -1350,8 +1364,21 @@ module.exports = (router,
             }); 
             
             }
-            { 
-            console.log('suppression de love ok');
+            
+            else if(category=="ad"){
+                list_of_ads.findOne({
+                    where: {
+                        id: publication_id,
+                    }
+                })
+                .then(ad =>  {
+                    const number = ad.commentarynumbers - 1;
+                    ad.update({
+                    "commentarynumbers":number,
+                    })
+                });
+            };
+            console.log('suppression de commentaire ok');
             List_of_comments.findOne({
                 where: {
                     id:comment_id,
@@ -1378,7 +1405,7 @@ module.exports = (router,
                 res.status(200).send([comments]);
             })
             
-            }
+            
         })();
     });
 

@@ -85,7 +85,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
     chapter_number: DataTypes.INTEGER,
     number_of_likes:DataTypes.INTEGER,
     number_of_answers:DataTypes.INTEGER,
-    commentary:DataTypes.STRING,
+    commentary:DataTypes.STRING(1500),
   },
   {
     freezeTableName: true 
@@ -115,7 +115,7 @@ var comments_answers = sequelize.define('list_of_comments_answers', {
   author_id_who_replies: DataTypes.INTEGER,
   number_of_likes:DataTypes.INTEGER,
   comment_id: DataTypes.INTEGER,
-  commentary:DataTypes.STRING,
+  commentary:DataTypes.STRING(1500),
 },
 {
   freezeTableName: true 

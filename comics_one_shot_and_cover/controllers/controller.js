@@ -108,8 +108,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
                 "number_of_comics":number_of_comics,
               })
             }
-            bd.destroy({
-              truncate: false
+            bd.update({
+              "status": "deleted"
             });
             res.json([bd]);
           })
@@ -183,16 +183,6 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
       const category = req.body.Category;
       const Tags = req.body.Tags;
       const bd_id = parseInt(req.body.bd_id);
-      /*for (let i = 0; i < Tags.length; i++){
-        if (Tags[i] !=null){
-          Tags[i] = Tags[i].substring(1);
-          while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-              Tags[i] = Tags[i].substr(1);
-          }
-          Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        }
-      }*/
-  
         if (Object.keys(req.body).length === 0 ) {
           console.log("information isn't uploaded correctly");
           return res.send({

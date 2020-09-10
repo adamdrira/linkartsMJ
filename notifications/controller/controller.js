@@ -52,7 +52,8 @@ module.exports = (router,
             ,
             order: [
                 ['createdAt', 'DESC']
-              ]
+              ],
+            limit:150,
             })
             .then(notifications=>{res.status(200).send([notifications])})     
     });
@@ -100,8 +101,11 @@ module.exports = (router,
         const publication_category = req.body.publication_category;
         const format = req.body.format;
         const publication_id = req.body.publication_id;
+        const information = req.body.information;
         const id_user_name=req.body.id_user_name;
+        const is_comment_answer = req.body.is_comment_answer;
         const chapter_number = req.body.chapter_number;
+        const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
         if(id_receiver){
             list_of_notifications.create({
@@ -114,7 +118,9 @@ module.exports = (router,
                 "format":format,
                 "publication_id":publication_id,
                 "chapter_number":chapter_number,
-                "information":'add',
+                "is_comment_answer":is_comment_answer,
+                "information":information,
+                "comment_id":comment_id,
                 "status":"unchecked"
             })
             .then(notification=>{res.status(200).send([notification])})   
@@ -168,6 +174,8 @@ module.exports = (router,
         const format = req.body.format;
         const publication_id = req.body.publication_id;
         const chapter_number = req.body.chapter_number;
+        const is_comment_answer= req.body.is_comment_answer;
+        const comment_id = req.body.comment_id;
         const Op = Sequelize.Op;
         list_of_notifications.destroy({
                 where:{
@@ -176,7 +184,9 @@ module.exports = (router,
                     publication_category:publication_category,
                     format:format,
                     publication_id:publication_id,
+                    is_comment_answer:is_comment_answer,
                     chapter_number:chapter_number,
+                    comment_id:comment_id,
                 }
            
             },{truncate:false})
@@ -187,9 +197,9 @@ module.exports = (router,
     
 
     router.post('/change_all_notifications_status_to_checked', function (req, res) {
-        console.log("change_all_notifications_status_to_checked")
-        console.log(req.cookies.currentUser)
-        let current_user = get_current_user(req.cookies.currentUser);
+        console.log("change_all_notifications_status_to_checked");
+        let current_user = req.body.user_id;
+        console.log(current_user)
         const Op = Sequelize.Op;
         list_of_notifications.findAll({
                 where:{
