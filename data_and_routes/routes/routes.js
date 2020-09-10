@@ -106,7 +106,8 @@ profile_notation(
    profile_notation_seq.List_of_comments,
    profile_notation_seq.List_of_comments_answers,
    profile_notation_seq.List_of_comments_likes,
-   profile_notation_seq.List_of_comments_answers_likes
+   profile_notation_seq.List_of_comments_answers_likes,
+   ads_seq.list_of_ads,
    );
 controller_subscribings(router,
    subscribings_seq.list_of_subscribings, 
