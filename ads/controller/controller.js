@@ -613,8 +613,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 "number_of_ads":number_of_ads,
               })
             })
-            ad.destroy({
-                  truncate: false
+            ad.update({
+                  "status": "deleted"
               });
               res.status(200).send([ad]);
             });

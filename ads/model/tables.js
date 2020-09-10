@@ -35,6 +35,7 @@ exports.list_of_ads = (sequelize, DataTypes) => {
         price_value:DataTypes.STRING,
         status:DataTypes.STRING,
         date:DataTypes.DATE,
+        commentariesnumber: DataTypes.INTEGER,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
