@@ -123,7 +123,10 @@ export class AdPageComponent implements OnInit {
 
     this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.activatedRoute.snapshot.paramMap.get('title');
-
+    if(!(this.ad_id>0)){
+      this.router.navigateByUrl('/page_not_found');
+        return
+    }
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
       console.log(m[0]);
       console.log(title)
