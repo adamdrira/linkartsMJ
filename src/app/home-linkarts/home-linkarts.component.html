@@ -3,7 +3,19 @@
       
 
 
-        <div id="left-container" *ngIf="type_of_profile_retrieved" [ngClass]="{'left-container-extended':type_of_profile=='visitor' }">
+        <div class="stories-title" *ngIf="type_of_profile_retrieved && type_of_profile=='account'">
+            <div class="icon-container">
+                <div class="icon icon-stories" >
+                </div>
+            </div>
+            Stories
+        </div>
+        <div class="storiesbar">
+            <app-stories></app-stories>
+        </div>
+
+
+        <div *ngIf="type_of_profile_retrieved">
 
             <div class="categories-container">
                 <div class="category-filter2" [ngClass]="{'invisible':!little_screen }">
@@ -52,43 +64,17 @@
             </div>
     
     
-            <div class="left-container-scrollable">
-                <ng-container *ngIf="this.category_index==0">
-                    <app-recommendations></app-recommendations>
-                </ng-container>
-                <ng-container *ngIf="this.category_index==1">
-                    <app-trendings></app-trendings>
-                </ng-container>
-                <ng-container *ngIf="this.category_index==2">
-                    <app-subscribings></app-subscribings>
-                </ng-container>
-            </div>
+            <ng-container *ngIf="this.category_index==0">
+                <app-recommendations></app-recommendations>
+            </ng-container>
+            <ng-container *ngIf="this.category_index==1">
+                <app-trendings></app-trendings>
+            </ng-container>
+            <ng-container *ngIf="this.category_index==2">
+                <app-subscribings></app-subscribings>
+            </ng-container>
     
         </div>
-
-
-
-        <div *ngIf="type_of_profile_retrieved && type_of_profile=='account'" id="right-container" >
-
-            <div class="categories-container">
-                <div class="category-filter">
-                    <div class="content-action text-center">
-                        <div class="title" > 
-                            <div class="icon-container">
-                                <div class="icon icon-stories" >
-                                </div>
-                            </div>
-                          Stories
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="storiesbar">
-                <app-stories></app-stories>
-            </div>
-
-        </div>
-  
 
 
     </main>

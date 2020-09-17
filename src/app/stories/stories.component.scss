@@ -10,10 +10,11 @@
 }
 
 .story {
-    cursor:pointer;
+    cursor: pointer;
+    margin: auto auto;
     display: flex;
-    height:100px;
-    margin-bottom: 20px;
+    height: 95px;
+    width: 250px;
     border-radius: 10px;
     background: rgba(4, 20, 49, 0.82);
     overflow: hidden;
@@ -79,12 +80,12 @@
     opacity: 0.5;
 }
 
-.right-container-scrollable {
-    overflow-y: scroll;
-    height: 100%;
-  }
 
 ::-webkit-scrollbar {
     width: 0px;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+.swiper-slide {
+    display:flex;
 }

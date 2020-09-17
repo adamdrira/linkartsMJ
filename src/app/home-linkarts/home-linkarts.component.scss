@@ -29,6 +29,7 @@
 
   .main {
     display:flex;
+    flex-direction: column;
   }
 
 
@@ -53,8 +54,7 @@
  
    .storiesbar {
      width:100%;
-     height:100%;
-     overflow-y:auto;
+     margin-bottom: 15px;
    }
  
    .searchbar {
@@ -114,7 +114,18 @@
      margin:auto auto;
    }
 
-   .title{
+   .stories-title{
+    display:flex;
+    cursor:default;
+    align-items:center;
+    justify-content: center;
+    color: #53627d;
+    margin:auto auto;
+    margin-top: 25px;
+    margin-bottom: 10px;
+   }
+
+   .title {
     display:flex; 
     align-items:center;
     color: #53627d;
@@ -230,27 +241,7 @@
     background-color:rgb(32,56,100) !important;
   }
 
-  #left-container {
-    width:calc(100% - 330px);
-    padding:20px;
-    overflow:hidden;
-  }
-
-  #left-container .left-container-scrollable {
-    overflow-y: scroll;
-    height: 100%;
-  }
-
-  #right-container {
-    width:330px;
-    padding:20px;
-    overflow:hidden;
-  }
-
-  .left-container-extended{
-    width:100% !important;
-  }
-
+  
 ::-webkit-scrollbar {
     width: 0px;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
@@ -299,7 +290,6 @@
 
 .icon-container {
   position: relative;
-  cursor: pointer;
   display: block;
   width: 20px;
   margin-right:10px;

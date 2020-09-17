@@ -65,7 +65,6 @@ export class AdPageComponent implements OnInit {
   status1:String;
   status2:String;
   status3:String;
-  category_index: number = 0;//0 pour description, 1 pour pieces-jointes.
 
   author_name: string;
   pseudo: string;
@@ -90,6 +89,7 @@ export class AdPageComponent implements OnInit {
   visitor_mode_added=false;
 
   //responses
+  
   list_of_responses:any[]=[];
   list_of_dates:any[]=[];
   list_of_profile_pictures:any[]=[];
@@ -107,6 +107,7 @@ export class AdPageComponent implements OnInit {
   response_list_of_attachments_type=[];
   response_pictures_retrieved=false;
   response_attachments_retrieved=false;
+  b:number;
 
   display_author_ads=false;
   display_other_ads=false;
@@ -118,15 +119,29 @@ export class AdPageComponent implements OnInit {
 
 
   commentariesnumber:number;
+
+  
+
+  /******************************************************* */
+  /******************** AFTER VIEW CHECKED *************** */
+  /******************************************************* */
+  ngAfterViewChecked() {
+    this.initialize_heights();
+  }
+  initialize_heights() {
+    //if( !this.fullscreen_mode ) {
+      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+    //}
+  }
+
+
   ngOnInit() {
 
 
     this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.activatedRoute.snapshot.paramMap.get('title');
-    if(!(this.ad_id>0)){
-      this.router.navigateByUrl('/page_not_found');
-        return
-    }
+
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
       console.log(m[0]);
       console.log(title)
@@ -256,20 +271,9 @@ export class AdPageComponent implements OnInit {
   }
 
 
-  
-  open_category(i : number) {
-    this.category_index=i;
-    this.cd.detectChanges();
-  }
-
-
-
 
   
   ngAfterViewInit() {
-
-
-    this.open_category(0);
 
     var swiper = new Swiper('.swiper-container', {
       navigation: {
@@ -300,9 +304,10 @@ export class AdPageComponent implements OnInit {
   
 
   responses(){
+    
     this.see_responses=1;
     this.Ads_service.get_all_responses(this.item.id).subscribe(r=>{
-      this.list_of_responses=r[0]
+      this.list_of_responses=r[0];
       if (r[0]!=null){
         let compt=0
         for (let i=0;i<r[0].length;i++){
@@ -330,10 +335,10 @@ export class AdPageComponent implements OnInit {
   }
 
   see_response(i){
+    this.b=i;
     this.response_to_read=this.list_of_responses[i];
     this.get_response_contents(this.response_to_read);
     this.see_responses=2;
-    this.category_index=0;
   }
 
   read_pictures(i:number){

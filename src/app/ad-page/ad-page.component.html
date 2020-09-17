@@ -14,19 +14,274 @@
         <div id="left-container" *ngIf="attachments_retrieved" >
 
 
-            <div #leftContainer class="first-div">
-
                 
-                <div class="content-container">
 
-                
+                <!--
+                    ----------images
+                    ----------type de projet
+                    ----------rémunération
+                    ----------description
+                    ----------localisation
+                    ----------cibles
+                    ----------fichiers
+                    ----------ajout de réponse
+                    si propriétaire : voir les réponses
+                -->
+
+
+            <div class="first-div">
+
+
+                <div style="display:flex;flex-wrap:wrap;justify-content: space-between;margin-bottom:10px;">
+                    <div class="project-title">
+                        {{item.title}}
+                    </div>
+                    <button mat-raised-button class="submit-button style0" *ngIf="visitor_mode" (click)="respond();">
+                        <mat-icon>post_add</mat-icon>
+                        <span>Répondre à l'offre</span>
+                    </button>
+                    <button mat-raised-button class="submit-button style0" *ngIf="!visitor_mode && see_responses==0" (click)="responses();">
+                        <mat-icon>keyboard_arrow_down</mat-icon>
+                        <span>Voir les réponses</span>
+                    </button>
+                    <button mat-raised-button class="submit-button style0" *ngIf="!visitor_mode && (see_responses==1 || see_responses==2)" (click)="return_to_ad(0);">
+                        <mat-icon>text_snippet</mat-icon>
+                        <span>Voir l'annonce</span>
+                    </button>
                 </div>
+
+                
+                <ng-container *ngIf="see_responses==0 && attachments_retrieved">
+                    
+                    <div *ngIf="list_of_pictures.length == 1" style="width:100%;height:400px;display:flex;">
+                        <div class="images" (click)="read_pictures(0)">
+                            <img [src]="list_of_pictures[0]">
+                        </div>
+                    </div>
+
+                    <div *ngIf="list_of_pictures.length == 2" style="width:100%;height:400px;display:flex;">
+                        <div class="images" style="width:50%;padding: 10px 10px 10px 0px;" (click)="read_pictures(0)">
+                            <img [src]="list_of_pictures[0]">
+                        </div>
+                        <div class="images" style="width:50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(1)">
+                            <img [src]="list_of_pictures[1]">
+                        </div>
+                    </div>
+
+                    <div *ngIf="list_of_pictures.length >= 3" style="width:100%;height:400px;display:flex;position:relative;">
+                        <div class="images" style="width:50%;padding: 10px 10px 10px 0px;" (click)="read_pictures(0)">
+                            <img [src]="list_of_pictures[0]">
+                        </div>
+                        <div class="images" style="width:50%;">
+                            <div style="height:50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(1)">
+                                <img [src]="list_of_pictures[1]">
+                            </div>
+                            <div style="height:50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(2)">
+                                <img [src]="list_of_pictures[2]">
+                            </div>
+                        </div>
+                        
+                        <div class="see-more-photos" *ngIf="list_of_pictures.length > 3" (click)="read_pictures(3)">
+                            Voir toutes les photos ({{list_of_pictures.length}})
+                        </div>
+                    </div>
+
+                    <ng-container *ngIf="list_of_pictures.length == 0">
+                        <div class="response-horizontal-line"></div>
+                    </ng-container>
+                    <ng-container *ngIf="list_of_pictures.length > 0">
+                        <div class="horizontal-line"></div>
+                    </ng-container>
+
+                    <div class="project-type">
+                        <mat-icon>work</mat-icon>
+                        {{item.type_of_project}}
+                    </div>
+                    <div class="project-location" *ngIf="item.remuneration">
+                        <mat-icon>attach_money</mat-icon>
+                        <span>Rémunération : {{item.price_value}}€</span>
+                    </div>
+                    <div class="project-location">
+                        <mat-icon>location_on</mat-icon>
+                        <span>{{item.location}}</span>
+                    </div>
+
+
+                    <div class="horizontal-line"></div>
+                    <div class="project-description">
+                        <div>
+                            <mat-icon>description</mat-icon>
+                            Description
+                        </div>
+                        {{item.description}}
+                    </div>
+
+
+                    <div class="horizontal-line"></div>
+                    <div class="project-cibles">
+                        <ng-container *ngIf="item.target_two == null">
+                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
+                                <mat-icon>how_to_reg</mat-icon>
+                                Cible
+                            </div>
+                            <div>
+                                <mat-icon>person</mat-icon>
+                                <span>{{item.target_one}}</span>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="item.target_two != null">
+                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
+                                <mat-icon>how_to_reg</mat-icon>
+                                Cibles
+                            </div>
+                            <div>
+                                <span>{{item.target_one}}</span>
+                            </div>
+                            <div>
+                                <span>{{item.target_two}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+
+
+                    <ng-container *ngIf="list_of_attachments.length>0">
+                        <div class="horizontal-line"></div>
+                        <div class="project-files">
+                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">Documents joints</div>
+                            <div class="section-container">
+                                <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
+                                    <div *ngIf="list_of_attachments[i]"class="attachments-container">
+                                        <div (click)="read_attachment(i)" class="attachment-item">
+                                            <mat-icon>picture_as_pdf</mat-icon>
+                                        </div>
+                                        <span><i>{{list_of_attachments_name[i]}}</i></span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                    
+                </ng-container>
+
+                
+                <ng-container *ngIf="see_responses==1">
+
+                    <div class="horizontal-line"></div>
+                    <div class="project-responses" style="font-weight:bold;font-size:19px;margin-bottom:10px;">
+                        <ng-container *ngIf="list_of_profile_pictures.length">Liste des réponses</ng-container>
+                        <ng-container *ngIf="!list_of_profile_pictures.length">Aucune réponse</ng-container>
+                    </div>
+
+                    <div *ngIf="answers_retrieved" class="responses-container">
+                        <div *ngFor="let item of list_of_profile_pictures; let i=index" class="response">
+                            <div class="author-container" style="width:unset !important;">
+                                <div class="left-container">
+                                    <img  [src]="list_of_profile_pictures[i]">
+                                </div>
+                                <a href="/account/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}">
+                                    <div class="right-container">
+                                        <div class="author-name">{{list_of_authors_name[i]}}</div>
+                                        <div class="author-description">@{{list_of_pseudos[i]}}</div>
+                                        <div class="author-description">{{list_of_dates[i]}}</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <button mat-raised-button class="style1" (click)="see_response(i);">
+                                <span>Voir la réponse</span>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+
+                
+                <ng-container *ngIf="see_responses==2">
+                    <div class="horizontal-line"></div>
+
+
+                    <div style="display:flex;flex-wrap:wrap;justify-content: space-between;margin-bottom:20px;">
+                        <div style="margin:0px auto auto 0px;font-weight:bold;cursor:default;">Réponse de {{list_of_authors_name[b]}}</div>
+                        <button mat-raised-button class="style1 response2" (click)="return_to_ad(1)">
+                            <span>Retour</span>
+                        </button>
+                    </div>
+
+                    <div *ngIf="response_attachments_retrieved" class="response-2">
+                        <div class="category-content-1">
+                            <div class="section-container-2">
+                                <div>
+                                    <mat-icon>email</mat-icon>
+                                    Message
+                                </div>
+                                {{response_to_read.description}}
+                            </div>
+
+                            
+                            <ng-container *ngIf="response_list_of_pictures.length">
+                                <div class="response-horizontal-line"></div>
+                                <div class="section-container-2">
+                                    <div>
+                                        <mat-icon>image</mat-icon>
+                                        Images
+                                    </div>
+                                </div>
+                                <div class="section-container-2" style="display:flex;flex-wrap: wrap;">
+                                    <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)" class="image-container">
+                                        <img [src]="response_list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="response_list_of_attachments.length">
+                                <div class="response-horizontal-line"></div>
+                                <div class="section-container-2">
+                                    <div>
+                                        <mat-icon>attachment</mat-icon>
+                                        Pièces-jointes
+                                    </div>
+                                </div>
+                                <div class="section-container-2" style="display:flex;flex-wrap: wrap;">
+                                    <div *ngFor="let attachment of response_list_of_attachments, let i=index" class="attachment-container" (click)="read_attachment_response(i)">
+                                        <div class="attachment-picture">
+                                            <mat-icon>picture_as_pdf</mat-icon>
+                                        </div>
+                                        <span> {{response_list_of_attachments_name[i]}}</span>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <!--<div class="section-container-2" style="display:flex;flex-wrap: wrap;">
+                                <div *ngFor="let attachment of response_list_of_attachments, let i=index" (click)="read_attachment_response(i)" class="attachment-item">
+                                    <mat-icon>picture_as_pdf</mat-icon>
+                                    <div> {{response_list_of_attachments_name[i]}}</div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="!list_of_contents_type[i]" class="attachment-picture">
+                                <mat-icon>picture_as_pdf</mat-icon>
+                                <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                            <span><i>{{ uploader.queue[i]?.file?.name }}</i></span>-->
+
+                            <!--<div class="section-container-2">
+                                <ng-container *ngFor="let attachment of response_list_of_attachments, let i=index">
+                                    <div *ngIf="response_list_of_attachments[i]" (click)="read_attachment_response(i)" class="attachment-item">
+                                        <img src='../../assets/img/pdf_image.png' style="height:25px;width:25px;object-fit: contain;">
+                                        <div> {{response_list_of_attachments_name[i]}}</div>
+                                    </div>
+                                </ng-container>
+                            </div>-->
+                        </div>
+                    </div>
+                </ng-container>
+
+
 
             </div>
 
 
 
-            <div style="display:flex;justify-content: center;">
+            <div style="display:flex;justify-content: center;" *ngIf="see_responses==0">
                 <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
                     <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">account_circle</mat-icon>
                     <span>Annonces du même auteur</span>
@@ -39,10 +294,9 @@
 
 
 
-            <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved" >
-               
+            <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved && see_responses==0" >
                  <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_author_ads">
-                    <div *ngFor="let item of list_of_author_ads; let i=index"  >
+                    <div *ngFor="let item of list_of_author_ads; let i=index" style="padding-left:20px;padding-right:20px;">
                         <app-thumbnail-ad 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
@@ -51,12 +305,11 @@
                     <div style="    display: flex;
                     justify-content: center;
                     margin: auto;" *ngIf="list_of_author_ads.length==0">
-                        Aucune recommendation n'est actuellement disponible pour cette oeuvre
+                        Aucune recommendation n'est actuellement disponible pour cette annonce
                     </div>
                 </div>
-
                 <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_other_ads">
-                    <div *ngFor="let item of list_of_other_ads; let i=index"  >
+                    <div *ngFor="let item of list_of_other_ads; let i=index">
                         <app-thumbnail-ad 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
@@ -65,12 +318,9 @@
                     <div style="    display: flex;
                     justify-content: center;
                     margin: auto;" *ngIf="list_of_other_ads.length==0">
-                        Aucune recommendation n'est actuellement disponible pour cette oeuvre
+                        Aucune recommendation n'est actuellement disponible pour cette annonce
                     </div>
                 </div>
-            
-
-
             </div>
 
 
@@ -118,7 +368,6 @@
             </mat-menu>
 
             <div class="d0-title-container">
-                <span>{{item.title}}</span>
             </div>
             <!--Line 1 : AUTHOR INFORMATION-->
             <div class="d1-profile-container">
@@ -139,6 +388,7 @@
                             </a>
                         </span>
                         <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
+                        <span class="author-description" *ngIf="primary_description!=''">{{primary_description}}</span>
                     </div>
                 </div>
 

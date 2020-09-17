@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 
 declare var $: any
+declare var Swiper:any;
 
 @Component({
   selector: 'app-stories',
@@ -36,6 +37,10 @@ export class StoriesComponent implements OnInit {
     onResize(event) {
       this.update_new_contents();
     }
+
+
+  swiper:any;
+
 
   final_list_of_users:any[]=[];
   list_of_users:any[]=[];
@@ -71,6 +76,29 @@ export class StoriesComponent implements OnInit {
   
 
   list_index_debut_updated:any[];
+
+
+  
+  initialize_swiper() {
+    this.swiper = new Swiper('.swiper-container', {
+      speed: 500,
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      keyboard: {
+        enabled: true,
+      },
+      observer: true,
+    });
+  }
 
   ngOnInit() {
 
@@ -452,6 +480,7 @@ export class StoriesComponent implements OnInit {
           console.log(THIS.list_of_author_names);
           console.log(THIS.list_of_state);
           THIS.users_retrieved=true;
+          THIS.initialize_swiper();
           THIS.cd.detectChanges();
         }
       }
@@ -461,6 +490,7 @@ export class StoriesComponent implements OnInit {
         console.log(THIS.list_of_author_names);
         console.log(THIS.list_of_state);
         THIS.users_retrieved=true;
+        THIS.initialize_swiper();
         THIS.cd.detectChanges();
     }
   }

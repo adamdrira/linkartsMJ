@@ -115,12 +115,13 @@
                         </div>
                     </div>
 
-                    
-                   
-                    <a  href='/ad-page/{{item.title}}/{{item.id}}'>
-                        <button mat-raised-button class="ad-button style1" >
-                            <span>Consulter</span>
-                        </button>
+
+                    <a href='/ad-page/{{item.title}}/{{item.id}}'>
+                        <div>
+                            <button mat-raised-button class="ad-button style0" >
+                                <span>Consulter</span>
+                            </button>
+                        </div>
                     </a>
                     
                     
@@ -158,26 +159,32 @@
                         <!-- ---------------------------description------------->
                          <!-- ---------------------------description------------->
                         
-                        <div *ngIf="category_index==0" class="section-container" style="display:block">
-                            <div >
-                                Catégorie : {{item.type_of_project}}
+                        <div *ngIf="category_index==0" class="section-container">
+
+                            <div style="font-weight: bold;font-size: 16px;">
+                                {{item.type_of_project}}
                             </div>
+
                             <div>
-                                <span *ngIf="item.remuneration">Projet rémunéré </span>
+                                <span *ngIf="item.remuneration" style="font-weight:bold;">Projet rémunéré </span>
                                 <span *ngIf="item.price_value!='0'"> : {{item.price_value}}</span>
                                 <span *ngIf="item.price_value!='0'">	&#8364;</span>
                             </div>
-                            <div>
-                                {{date_to_show}}
-                            </div>
-                            <div>
-                                <span *ngIf="item.number_of_responses==0">Aucun retours</span>
+
+                            <span class="item-description">
+                                {{item.description}}
+                            </span>
+
+                            <div class="item-returns">
+                                <span *ngIf="item.number_of_responses==0">Aucun retour</span>
                                 <span *ngIf="item.number_of_responses==1">{{item.number_of_responses}} retour</span>
                                 <span *ngIf="item.number_of_responses>1">{{item.number_of_responses}} retours</span>
                             </div>
-                            <div >
-                                {{item.description}}
+
+                            <div class="item-date">
+                                <span>{{date_to_show}}</span>
                             </div>
+                            
                             
                         </div>
 
@@ -194,12 +201,14 @@
                          <!-- ---------------------------LIST OF FILES ------------->
 
                         <div *ngIf="category_index==2" class="section-container">
-                            <div *ngFor="let attachment of list_of_attachments, let i=index" class="attachments-container">
-                                <div *ngIf="list_of_attachments[i]" (click)="read_attachment(i)" class="attachment-item">
-                                    <mat-icon>picture_as_pdf</mat-icon>
+                            <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
+                                <div *ngIf="list_of_attachments[i]"class="attachments-container">
+                                    <div (click)="read_attachment(i)" class="attachment-item">
+                                        <mat-icon>picture_as_pdf</mat-icon>
+                                    </div>
+                                    <span><i>{{list_of_attachments_name[i]}}</i></span>
                                 </div>
-                                <span><i>{{list_of_attachments_name[i]}}</i></span>
-                            </div>
+                            </ng-container>
                         </div>
 
 

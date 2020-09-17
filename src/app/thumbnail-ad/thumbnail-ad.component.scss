@@ -14,19 +14,19 @@
   .offer-main-container{
     display: block;
     width: calc(100% - 15px);
-    max-width:1250px;
+    max-width: 1250px;
     height: 350px;
     margin: 30px auto 30px auto;
-    background: #fcfcfc;
-    border-radius: 25px;
+    background: #f3f3f3;
+    border-radius: 10px 20px 20px 10px;
     overflow: hidden;
-    box-shadow: 0px 0px 11px 2px #d8dee8;
-    border: 1px solid #d6dae0;
-    transition:all 200ms;
+    box-shadow: 0px 0px 11px 2px #a0a7b3;
+    border: 1px solid #9aa6b9;
+    transition: all 200ms;
   }
 
   .offer-main-container:hover {
-    box-shadow: 0px 0px 11px 2px #b7c2d6;
+    box-shadow: 0px 0px 11px 2px #787f8a;
     border: 1px solid #bac2d1;
   }
 
@@ -123,13 +123,14 @@
     padding: 8px 10px;
     justify-content: space-around;
     width: 100%;
-    background: #ebeef3;
-    border-radius: 8px;
+    background: #e8f0f5;
+    border: 2px solid #cfe2ee;
+    border-radius: 17px;
   }
 
   .offer-container .offer-right-container .middle-container {
     
-    height: 180px;
+    height: 210px;
     width:100%;
     display:flex;
     flex-direction: column;
@@ -190,7 +191,6 @@
 }
 
 .cible-container {
-  height:100%;
   margin-right:auto;
   padding-left:15px;
   padding-right:15px;
@@ -211,11 +211,14 @@
 
 
 .ad-button {
-  margin:auto auto;
+  margin:10px auto;
   height:40px;
+  outline:none !important;
   width:170px;
   min-width: 170px !important;
   padding:3px 18px;
+  border-radius: 15px !important;
+  background: #e5f0f7 !important;
 }
 
 
@@ -223,7 +226,7 @@
   display:flex;
 }
 ::ng-deep .ad-button .mat-button-wrapper span{
-  margin:auto 5px auto auto !important;
+  margin: auto auto;
 }
 
 
@@ -300,11 +303,33 @@
   overflow-y:auto;
   word-break: break-word;
   display:flex;
+  flex-direction:column;
   font-size: 15px;
-  padding:0px 15px 0px 15px;
+  padding:10px 5px 5px 5px;
   width:100%;
   height: calc(100% - 40px - 10px);
   cursor:default;
+}
+
+.section-container .item-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 18px;
+  white-space: normal;
+  -webkit-line-clamp: 3;
+}
+
+.section-container .item-returns {
+  margin-top: auto;
+  line-height: 16px;
+  font-size: 14px;
+}
+.section-container .item-date {
+  font-weight: bold;
+  font-size: 14px;
 }
 
 
