@@ -9,7 +9,7 @@ const httpOptions = {
 
 @Injectable({ providedIn: 'root' })
 export class PasswordResetService {
-    private usersUrl = 'http://localhost:4600/api';  // URL to web api
+    private usersUrl = 'api';  // URL to web api
 
     constructor( private http: HttpClient ) {
         

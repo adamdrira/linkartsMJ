@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
       
   }
 
+  hide=true;
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
           username: ['', Validators.required],
@@ -85,6 +86,9 @@ export class LoginComponent implements OnInit {
   }
 
 
+  change_password_type(){
+    this.hide=!this.hide;
+  }
 
   signup() {
     this.dialog.closeAll();

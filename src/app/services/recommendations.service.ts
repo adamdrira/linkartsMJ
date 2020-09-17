@@ -22,25 +22,25 @@ export class Community_recommendation {
   }
 
   send_list_view_to_python(){
-    return this.httpClient.post('http://localhost:4600/routes/view_table_by_author_to_python', {}, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post('routes/view_table_by_author_to_python', {}, {withCredentials:true}).pipe(map((information)=>{
       return parseInt(information[0].length);
       }));
   }
 
   see_more_recommendations_bd(style){
-    return this.httpClient.post(`http://localhost:4600/routes/see_more_recommendations_bd`, {style:style}, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/see_more_recommendations_bd`, {style:style}, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
 
   see_more_recommendations_writings(style){
-    return this.httpClient.post(`http://localhost:4600/routes/see_more_recommendations_writings`, {style:style}, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/see_more_recommendations_writings`, {style:style}, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
 
   see_more_recommendations_drawings(style){
-    return this.httpClient.post(`http://localhost:4600/routes/see_more_recommendations_drawings`, {style:style}, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.post(`routes/see_more_recommendations_drawings`, {style:style}, {withCredentials:true}).pipe(map(information=>{
         return information;
       }));
   };
@@ -49,93 +49,93 @@ export class Community_recommendation {
 
 
   send_rankings(){
-    return this.httpClient.post('http://localhost:4600/routes/send_rankings', {},).pipe(map((information)=>{
+    return this.httpClient.post('routes/send_rankings', {},).pipe(map((information)=>{
       return information;
       }));
   }
 
   sorted_category_list(){
-   return this.httpClient.get('http://localhost:4600/python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
+   return this.httpClient.get('python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
         return information;
      }));
  };
 
  sorted_favourite_type_list(){
-  return this.httpClient.get('http://localhost:4600/python/sorted_favourite_type_list', {withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.get('python/sorted_favourite_type_list', {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
 };
 
 delete_recommendations_artpieces(){
-  return this.httpClient.delete('http://localhost:4600/python/delete_recommendations_artpieces',{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.delete('python/delete_recommendations_artpieces',{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_first_recommendation_bd_os_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{  
+  return this.httpClient.post('routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{  
     return information;
     }));
 };
 get_first_recommendation_bd_serie_for_user(index_bd,index_drawing,index_writing){
   console.log("getting bd serie recom")
-  return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_bd_serie_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_first_recommendation_bd_serie_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
     console.log(information);
     return information;
     }));
 };
 get_first_recommendation_drawing_os_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_drawing_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_first_recommendation_drawing_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
     
     return information;
     }));
 };
 get_first_recommendation_drawing_artbook_for_user(index_bd,index_drawing,index_writing){
   
-  return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_drawing_artbook_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_first_recommendation_drawing_artbook_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
      
     return information;
     }));
 };
 get_first_recommendation_writings_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('http://localhost:4600/routes/get_first_recommendation_writings_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_first_recommendation_writings_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
       return information;
     }));
 };
 
 complete_recommendation_by_category(number,style:string,category){
-  return this.httpClient.post('http://localhost:4600/routes/complete_recommendation_by_category', {number:number,style:style,category:category},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/complete_recommendation_by_category', {number:number,style:style,category:category},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 };
 
 get_comics_recommendations_by_author(id_user,publication_id){
-  return this.httpClient.post('http://localhost:4600/routes/get_comics_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_comics_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_drawings_recommendations_by_author(id_user,publication_id){
-  return this.httpClient.post('http://localhost:4600/routes/get_drawings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_drawings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_writings_recommendations_by_author(id_user,publication_id){
-  return this.httpClient.post('http://localhost:4600/routes/get_writings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_writings_recommendations_by_author', {id_user:id_user,publication_id:publication_id},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_recommendations_by_tag(id_user,publication_category,publication_id,format,style,firsttag){
-  return this.httpClient.post('http://localhost:4600/routes/get_recommendations_by_tag', {id_user:id_user,publication_id:publication_id,format:format,publication_category:publication_category,style:style,firsttag:firsttag},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_recommendations_by_tag', {id_user:id_user,publication_id:publication_id,format:format,publication_category:publication_category,style:style,firsttag:firsttag},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }
 
 get_artwork_recommendations_by_tag(category,format,target_id,first_filter,second_filter,limit){
   console.log(first_filter)
-  return this.httpClient.post('http://localhost:4600/routes/get_artwork_recommendations_by_tag', {category:category,format:format,target_id:target_id,first_filter:first_filter,second_filter:second_filter,limit:limit},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_artwork_recommendations_by_tag', {category:category,format:format,target_id:target_id,first_filter:first_filter,second_filter:second_filter,limit:limit},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));
 }

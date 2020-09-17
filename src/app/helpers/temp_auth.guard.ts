@@ -4,7 +4,8 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+
+export class TempAuthGuard implements CanActivate {
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService
@@ -13,19 +14,20 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):Promise<boolean> {
         
 
-        const currentUser = this.authenticationService.currentUserValue;
+        const currentUser = this.authenticationService.currentInvitedUserValue;
+        console.log(currentUser)
         if ( currentUser ) {
             console.log(currentUser);
             return new Promise(resolve=>{
                 this.authenticationService
-                .tokenCheck()
+                .check_invited_user()
                  .subscribe(
-                    (status:any) => {
-                        console.log(status);
-                        if(status=="account"){
+                    res => {
+                        console.log(res);
+                        if(res){
                             resolve(true);
                         }
-                        else if(status=="visitor"){
+                        else{
                             resolve(false);
                         }
                         
@@ -33,9 +35,8 @@ export class AuthGuard implements CanActivate {
             })
         }
         else{
-            this.router.navigate(['/login'])
+            this.router.navigate(['/login_invited_user']);
             return new Promise(resolve=>{resolve(false)})
-          
         }
         
         /*this.router.navigate(['/login']);

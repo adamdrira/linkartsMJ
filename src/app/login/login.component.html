@@ -81,11 +81,14 @@
             </div>
             
             <div class="form-item">
-                <mat-form-field>
+                <mat-form-field style="position:relative">
                     <mat-label>Mot de passe</mat-label>
                     <input matInput formControlName="password" type="password" autocomplete="off">
-                    <mat-error *ngIf="loginForm.controls['password'].invalid">Veuillez saisir un mot de passe
+                    <mat-error *ngIf="loginForm.controls['password'].invalid">Veuillez saisir un mot de passe valide
                     </mat-error>
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
+                        <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
+                    </div>
                 </mat-form-field>
             </div>
 

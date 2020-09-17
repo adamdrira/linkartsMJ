@@ -7,18 +7,24 @@ import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-    private usersUrl = 'http://localhost:4600/api';  // URL to web api
+    private usersUrl = 'api';  // URL to web api
     private currentUserSubject: BehaviorSubject<string>;
     public currentUser: Observable<string>;
     private currentUserTypeSubject: BehaviorSubject<string>;
     public currentUserType: Observable<string>;
+    private inviteduserSubject: BehaviorSubject<string>;
+    public inviteduser: Observable<string>;
    
 
     constructor(private http: HttpClient, private CookieService: CookieService) {
         this.currentUserSubject = new BehaviorSubject<string>( this.CookieService.get('currentUser') );
         this.currentUser = this.currentUserSubject.asObservable();
+
         this.currentUserTypeSubject = new BehaviorSubject<string>('');
         this.currentUserType = this.currentUserTypeSubject.asObservable();
+
+        this.inviteduserSubject = new BehaviorSubject<string>( this.CookieService.get('inviteduser') );
+        this.inviteduser = this.inviteduserSubject.asObservable();
     }
     
 
@@ -30,14 +36,45 @@ export class AuthenticationService {
         return this.currentUserTypeSubject.value;
     }
 
+    public get currentInvitedUserValue(): string {
+        return this.inviteduserSubject.value;
+    }
+
+    login_invited_user(mail:string,password:string):Observable<any>{
+        return this.http.post<any>('api/users/encrypt_data', { mail: mail, password: password }).pipe(map(r=>{
+            this.CookieService.set('inviteduser', r.token, 365*10, '/','localhost',undefined,'Lax');
+            this.inviteduserSubject.next(r.token);
+            return r
+        }))
+    }
+
+    check_invited_user(){
+        return this.http.post<any>('api/users/check_invited_user', {}, {withCredentials:true}).pipe(map(res => {
+            console.log(res)
+            if(res.msg=="TOKEN_OK"){
+                return true
+            }
+            else if( res.msg == "TOKEN_REFRESH" ) {
+                //this.CookieService.delete('currentUser','/');
+                this.CookieService.set('inviteduser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                return true;
+            }
+            else{
+                return false;
+            }
+        }))
+    }
+    
+
     login(username, password) {
-        return this.http.post<any>(this.usersUrl+'/users/login', { mail_or_username: username, password: password })
+        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password })
             .pipe(map(res => {
                 console.log(res);
                 if(!res.msg){
                     console.log("reset cookie")
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     this.currentUserSubject.next( this.CookieService.get('currentUser') );
+                    this.currentUserTypeSubject.next("account");
                 }
                 return res;
             }));
@@ -52,9 +89,10 @@ export class AuthenticationService {
             }));
     }
 
+    
     create_visitor() {
         console.log("debut creation visitor 35");
-        return this.http.post<any>(this.usersUrl+'/users/create_visitor', { })
+        return this.http.post<any>('api/users/create_visitor', { })
             .pipe(map(res => {
                 console.log(res);
                 this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
@@ -73,6 +111,7 @@ export class AuthenticationService {
             //this.CookieService.delete('currentUser', '/')
             this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
             this.currentUserSubject.next(visitor);
+            this.currentUserTypeSubject.next("visitor");
         }
         else{
             console.log("dans autre");
@@ -85,7 +124,7 @@ export class AuthenticationService {
 
     tokenCheck() {
         console.log("checking token 65")
-        return this.http.post<any>(this.usersUrl+'/users/checkToken', {},{withCredentials:true} )
+        return this.http.post<any>('api/users/checkToken', {},{withCredentials:true} )
             .pipe(map(res => {
                 console.log(res);
                 if( res.msg == "TOKEN_UNKNOWN" ) {
@@ -97,6 +136,7 @@ export class AuthenticationService {
                 if( res.msg == "TOKEN_REFRESH" ) {
                     //this.CookieService.delete('currentUser','/');
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                    
                 }
                 else if(res.status=="visitor"){
                     console.log("visitor mode");

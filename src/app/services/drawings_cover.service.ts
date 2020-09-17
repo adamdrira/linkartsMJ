@@ -38,7 +38,7 @@ export class Drawings_CoverService {
     const formData = new FormData();
     formData.append('cover', cover, "image");
     console.log(formData.getAll('cover'));
-    return this.httpClient.post('http://localhost:4600/routes/add_cover_drawing_onepage_tofolder', formData, {withCredentials: true} ).pipe(map((information)=>{
+    return this.httpClient.post('routes/add_cover_drawing_onepage_tofolder', formData, {withCredentials: true} ).pipe(map((information)=>{
       this.covername= information[0].cover_name
       return information;
     }));
@@ -51,13 +51,13 @@ export class Drawings_CoverService {
    console.log(format);
     if(format==="Œuvre unique"){
       let drawing_id = this.CookieService.get('current_drawing_onepage_id');
-      return this.httpClient.post('http://localhost:4600/routes/add_cover_drawing_onepage_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post('routes/add_cover_drawing_onepage_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
     else if(format==="Artbook"){
       let drawing_id = this.CookieService.get('current_drawing_artbook_id');
-      return this.httpClient.post('http://localhost:4600/routes/add_cover_drawing_artbook_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post('routes/add_cover_drawing_artbook_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
         console.log("ajout de la cover artbook")
         return information;
       }));
@@ -67,12 +67,12 @@ export class Drawings_CoverService {
   add_covername_to_sql2(format:string,drawing_id){
     console.log(format);
      if(format==="Œuvre unique"){
-       return this.httpClient.post('http://localhost:4600/routes/add_cover_drawing_onepage_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
+       return this.httpClient.post('routes/add_cover_drawing_onepage_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
          return information;
        }));
      }
      else if(format==="Artbook"){
-       return this.httpClient.post('http://localhost:4600/routes/add_cover_drawing_artbook_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
+       return this.httpClient.post('routes/add_cover_drawing_artbook_todatabase', {name: this.covername, drawing_id: drawing_id}, {withCredentials:true}).pipe(map((information)=>{
          console.log("ajout de la cover artbook")
          return information;
        }));
@@ -82,7 +82,7 @@ export class Drawings_CoverService {
 
    //remove the page file from the folder associated
    remove_cover_from_folder() {
-    return this.httpClient.delete(`http://localhost:4600/routes/remove_cover_drawing_from_folder/${this.covername}`, {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.delete(`routes/remove_cover_drawing_from_folder/${this.covername}`, {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
    };

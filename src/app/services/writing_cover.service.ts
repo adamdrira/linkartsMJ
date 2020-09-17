@@ -25,7 +25,7 @@ export class Writing_CoverService {
   
 
   get_cover_name(){
-   return this.httpClient.get('http://localhost:4600/routes/get_cookies_writing', {withCredentials:true
+   return this.httpClient.get('routes/get_cookies_writing', {withCredentials:true
   }).pipe(map(information=>{
        this.covername = information[0].name_cover_writing;
        return this.covername
@@ -44,7 +44,7 @@ export class Writing_CoverService {
 
 
   add_covername_to_sql(writing_id){
-      return this.httpClient.post('http://localhost:4600/routes/add_cover_writing_todatabase', {name: this.covername, writing_id: writing_id},{withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post('routes/add_cover_writing_todatabase', {name: this.covername, writing_id: writing_id},{withCredentials:true}).pipe(map((information)=>{
         this.CookieService.delete('name_cover_writing');
         return information;
       }));
@@ -55,13 +55,13 @@ export class Writing_CoverService {
    //remove the page file from the folder associated
    remove_cover_from_folder() {
     this.CookieService.delete('name_cover_bd_oneshot'); 
-    return this.httpClient.delete(`http://localhost:4600/routes/remove_cover_bd_from_folder/${this.covername}`).pipe(map(information=>{
+    return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${this.covername}`).pipe(map(information=>{
       return information;
     }));
    };
 
    remove_last_cover_from_folder(file_name){
-     return this.httpClient.delete(`http://localhost:4600/routes/remove_last_cover_from_folder/${file_name}`).pipe(map(information=>{
+     return this.httpClient.delete(`routes/remove_last_cover_from_folder/${file_name}`).pipe(map(information=>{
          return information;
   }));
  };

@@ -136,7 +136,8 @@ export class ArtworkComicComponent implements OnInit {
   //for list of loves and likes
   list_of_users_ids_loves:any[]=[];
   list_of_users_ids_likes:any[]=[];
-
+  list_of_users_ids_likes_retrieved=false;
+  list_of_users_ids_loves_retrieved=false;
 
 
 
@@ -213,6 +214,10 @@ export class ArtworkComicComponent implements OnInit {
     }
 
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('bd_id'));
+    if(!(this.bd_id>0)){
+      this.router.navigateByUrl('/page_not_found');
+        return
+    }
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
       this.visitor_id = l[0].id;
@@ -510,7 +515,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.loved = true;
                 }
               }
-            
+              this.list_of_users_ids_loves_retrieved=true;
             });
           }
           });
@@ -525,7 +530,7 @@ export class ArtworkComicComponent implements OnInit {
                   this.liked = true;
                 }
               }
-              
+              this.list_of_users_ids_likes_retrieved=true;
             });
           }
           });
@@ -934,33 +939,38 @@ export class ArtworkComicComponent implements OnInit {
   get_bd_serie_chapter_pages(bd_id,chapter_number,total_pages) {
       console.log("get_bd_serie_chapter_pages")
       console.log(chapter_number);
-      console.log(total_pages)
+      console.log(total_pages);
+      this.list_of_users_ids_loves_retrieved=false;
+      this.list_of_users_ids_likes_retrieved=false;
 
       this.NotationService.get_loves('bd', 'serie', this.style, this.bd_id,chapter_number).subscribe(r=>{
         let list_of_loves= r[0];
-        this.list_of_users_ids_loves[chapter_number]=[];
+        this.list_of_users_ids_loves[chapter_number-1]=[];
         if (list_of_loves.length != 0){
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
           for (let i=0;i<list_of_loves.length;i++){
-            this.list_of_users_ids_loves[chapter_number].push(list_of_loves[i].author_id_who_loves);
+            this.list_of_users_ids_loves[chapter_number-1].push(list_of_loves[i].author_id_who_loves);
             if (list_of_loves[i].author_id_who_loves == l[0].id){
               this.loved = true;
             }
           }
+          this.list_of_users_ids_loves_retrieved=true;
         });
       }
       });
       this.NotationService.get_likes('bd', 'serie', this.style, this.bd_id,chapter_number).subscribe(r=>{
         let list_of_likes= r[0];
-        this.list_of_users_ids_likes[chapter_number]=[];
+        this.list_of_users_ids_likes[chapter_number-1]=[];
         if (list_of_likes.length != 0){
           this.Profile_Edition_Service.get_current_user().subscribe(l=>{
             for (let i=0;i<list_of_likes.length;i++){
-              this.list_of_users_ids_likes[chapter_number].push(list_of_likes[i].author_id_who_likes);
+              this.list_of_users_ids_likes[chapter_number-1].push(list_of_likes[i].author_id_who_likes);
               if (list_of_likes[i].author_id_who_likes == l[0].id){
                 this.liked = true;
               }
             }
+            this.list_of_users_ids_likes_retrieved=true;
+            console.log(this.list_of_users_ids_likes)
           });
         }
       });
@@ -1206,54 +1216,92 @@ export class ArtworkComicComponent implements OnInit {
   
   click_like() {
     if(this.type_of_account=="account"){
-      this.like_in_progress=true;
-      if(this.liked) {     
-        if(this.type=='one-shot'){
-          this.NotationService.remove_like('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
-
-                  this.likesnumber=r[0].likesnumber;
-                  if(this.authorid==this.visitor_id){
-                    this.liked=false;
-                    this.like_in_progress=false;
-                    this.cd.detectChanges();
-                  }
-                  else{
-                    this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
-                      let message_to_send ={
-                        for_notifications:true,
-                        type:"publication_like",
-                        id_user_name:this.visitor_name,
-                        id_user:this.visitor_id, 
-                        id_receiver:this.authorid, 
-                        publication_category:'comic',
-                        format:'one-shot',
-                        publication_id:this.bd_id,
-                        chapter_number:0,
-                        information:"remove",
-                        is_comment_answer:false,
-                        comment_id:0,
-                      }
-                      this.chatService.messages.next(message_to_send);
+      if(this.list_of_users_ids_likes_retrieved){
+        this.like_in_progress=true;
+        if(this.liked) {     
+          if(this.type=='one-shot'){
+            this.NotationService.remove_like('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+  
+                    this.likesnumber=r[0].likesnumber;
+                    if(this.authorid==this.visitor_id){
                       this.liked=false;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
-                    })
-                  }
-                 
-                  
-          });
+                    }
+                    else{
+                      this.NotificationsService.remove_notification('publication_like','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
+                        let message_to_send ={
+                          for_notifications:true,
+                          type:"publication_like",
+                          id_user_name:this.visitor_name,
+                          id_user:this.visitor_id, 
+                          id_receiver:this.authorid, 
+                          publication_category:'comic',
+                          format:'one-shot',
+                          publication_id:this.bd_id,
+                          chapter_number:0,
+                          information:"remove",
+                          is_comment_answer:false,
+                          comment_id:0,
+                        }
+                        this.chatService.messages.next(message_to_send);
+                        this.liked=false;
+                        this.like_in_progress=false;
+                        this.cd.detectChanges();
+                      })
+                    }
+                   
+                    
+            });
+          }
+          else if(this.type=='serie'){      
+            this.NotationService.remove_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
+  
+                    this.likesnumber=r[0].likesnumber;
+                    if(this.authorid==this.visitor_id){
+                      this.liked=false;
+                      this.like_in_progress=false;
+                      this.cd.detectChanges();
+                    }
+                    else{
+                      this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
+                        let message_to_send ={
+                          for_notifications:true,
+                          type:"publication_like",
+                          id_user_name:this.visitor_name,
+                          id_user:this.visitor_id, 
+                          id_receiver:this.authorid,
+                          publication_category:'comic',
+                          format:'serie',
+                          publication_id:this.bd_id,
+                          chapter_number:this.current_chapter + 1,
+                          information:"remove",
+                          is_comment_answer:false,
+                          comment_id:0,
+                        }
+                        this.chatService.messages.next(message_to_send);
+                        this.liked=false;
+                        this.like_in_progress=false;
+                        this.cd.detectChanges();
+                      })
+                    }
+                    
+            
+            });
+          }
         }
-        else if(this.type=='serie'){      
-          this.NotationService.remove_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
-
+        else {
+          if(this.type=='one-shot'){  
+            this.NotationService.add_like('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
+  
                   this.likesnumber=r[0].likesnumber;
                   if(this.authorid==this.visitor_id){
-                    this.liked=false;
+                    this.liked=true;
                     this.like_in_progress=false;
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_like','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
+                    this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_like",
@@ -1261,99 +1309,64 @@ export class ArtworkComicComponent implements OnInit {
                         id_user:this.visitor_id, 
                         id_receiver:this.authorid,
                         publication_category:'comic',
-                        format:'serie',
+                        publication_name:this.title,
+                        format:'one-shot',
                         publication_id:this.bd_id,
-                        chapter_number:this.current_chapter + 1,
-                        information:"remove",
+                        chapter_number:0,
+                        information:"add",
+                        status:"unchecked",
                         is_comment_answer:false,
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.liked=false;
+                      this.liked=true;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
                     })
                   }
-                  
+                 
+            });
+          }
+          else if(this.type=='serie'){
           
-          });
-        }
-      }
-      else {
-        if(this.type=='one-shot'){  
-          this.NotationService.add_like('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-
-                this.likesnumber=r[0].likesnumber;
-                if(this.authorid==this.visitor_id){
-                  this.liked=true;
-                  this.like_in_progress=false;
-                  this.cd.detectChanges();
-                }
-                else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
-                    let message_to_send ={
-                      for_notifications:true,
-                      type:"publication_like",
-                      id_user_name:this.visitor_name,
-                      id_user:this.visitor_id, 
-                      id_receiver:this.authorid,
-                      publication_category:'comic',
-                      publication_name:this.title,
-                      format:'one-shot',
-                      publication_id:this.bd_id,
-                      chapter_number:0,
-                      information:"add",
-                      status:"unchecked",
-                      is_comment_answer:false,
-                      comment_id:0,
-                    }
-                    this.chatService.messages.next(message_to_send);
+            this.NotationService.add_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+  
+                  this.likesnumber=r[0].likesnumber;
+                  if(this.authorid==this.visitor_id){
                     this.liked=true;
                     this.like_in_progress=false;
                     this.cd.detectChanges();
-                  })
-                }
-               
-          });
-        }
-        else if(this.type=='serie'){
-        
-          this.NotationService.add_like('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-
-                this.likesnumber=r[0].likesnumber;
-                if(this.authorid==this.visitor_id){
-                  this.liked=true;
-                  this.like_in_progress=false;
-                  this.cd.detectChanges();
-                }
-                else{
-                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
-                    let message_to_send ={
-                      for_notifications:true,
-                      type:"publication_like",
-                      id_user_name:this.visitor_name,
-                      id_user:this.visitor_id, 
-                      id_receiver:this.authorid,
-                      publication_category:'comic',
-                      publication_name:this.title,
-                      format:'serie',
-                      publication_id:this.bd_id,
-                      chapter_number:this.current_chapter + 1,
-                      information:"add",
-                      status:"unchecked",
-                      is_comment_answer:false,
-                      comment_id:0,
-                    }
-                    this.chatService.messages.next(message_to_send);
-                    this.liked=true;
-                    this.like_in_progress=false;
-                    this.cd.detectChanges();
-                  }) 
-                }
-                  
-          });
+                  }
+                  else{
+                    this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
+                      let message_to_send ={
+                        for_notifications:true,
+                        type:"publication_like",
+                        id_user_name:this.visitor_name,
+                        id_user:this.visitor_id, 
+                        id_receiver:this.authorid,
+                        publication_category:'comic',
+                        publication_name:this.title,
+                        format:'serie',
+                        publication_id:this.bd_id,
+                        chapter_number:this.current_chapter + 1,
+                        information:"add",
+                        status:"unchecked",
+                        is_comment_answer:false,
+                        comment_id:0,
+                      }
+                      this.chatService.messages.next(message_to_send);
+                      this.liked=true;
+                      this.like_in_progress=false;
+                      this.cd.detectChanges();
+                    }) 
+                  }
+                    
+            });
+          }
         }
       }
+      
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -1364,54 +1377,94 @@ export class ArtworkComicComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
-      this.love_in_progress=true;
-      if(this.loved) {     
-        if(this.type=='one-shot'){
-          this.NotationService.remove_love('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
-             
-                  this.lovesnumber=r[0].lovesnumber;
-                  if(this.authorid==this.visitor_id){
-                    this.loved=false;
-                    this.love_in_progress=false;
-                    this.cd.detectChanges();
-                  }
-                  else{
-                    this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
-                      let message_to_send ={
-                        for_notifications:true,
-                        type:"publication_love",
-                        id_user_name:this.visitor_name,
-                        id_user:this.visitor_id, 
-                        id_receiver:this.authorid, 
-                        publication_category:'comic',
-                        format:'one-shot',
-                        publication_id:this.bd_id,
-                        chapter_number:0,
-                        information:"remove",
-                        is_comment_answer:false,
-                        comment_id:0,
-                      }
-                      this.chatService.messages.next(message_to_send);
+      if(this.list_of_users_ids_loves_retrieved){
+        this.love_in_progress=true;
+        if(this.loved) {     
+          if(this.type=='one-shot'){
+            this.NotationService.remove_love('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
+               
+                    this.lovesnumber=r[0].lovesnumber;
+                    if(this.authorid==this.visitor_id){
                       this.loved=false;
                       this.love_in_progress=false;
                       this.cd.detectChanges();
-                    })
-                  }
-                 
-          });
-        }
-        else if(this.type=='serie'){      
-          this.NotationService.remove_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
-                
-                  this.lovesnumber=r[0].lovesnumber;
+                    }
+                    else{
+                      this.NotificationsService.remove_notification('publication_love','comic','one-shot',this.bd_id,0,false,0).subscribe(l=>{
+                        let message_to_send ={
+                          for_notifications:true,
+                          type:"publication_love",
+                          id_user_name:this.visitor_name,
+                          id_user:this.visitor_id, 
+                          id_receiver:this.authorid, 
+                          publication_category:'comic',
+                          format:'one-shot',
+                          publication_id:this.bd_id,
+                          chapter_number:0,
+                          information:"remove",
+                          is_comment_answer:false,
+                          comment_id:0,
+                        }
+                        this.chatService.messages.next(message_to_send);
+                        this.loved=false;
+                        this.love_in_progress=false;
+                        this.cd.detectChanges();
+                      })
+                    }
+                   
+            });
+          }
+          else if(this.type=='serie'){      
+            this.NotationService.remove_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1).subscribe(r=>{      
                   
+                    this.lovesnumber=r[0].lovesnumber;
+                    
+                    if(this.authorid==this.visitor_id){
+                      this.loved=false;
+                      this.love_in_progress=false;
+                      this.cd.detectChanges();
+                    }
+                    else{
+                      this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
+                        let message_to_send ={
+                          for_notifications:true,
+                          type:"publication_love",
+                          id_user_name:this.visitor_name,
+                          id_user:this.visitor_id, 
+                          id_receiver:this.authorid,
+                          publication_category:'comic',
+                          format:'serie',
+                          publication_id:this.bd_id,
+                          chapter_number:this.current_chapter + 1,
+                          information:"remove",
+                          is_comment_answer:false,
+                          comment_id:0,
+                        }
+                        this.chatService.messages.next(message_to_send);
+                        this.loved=false;
+                       this.love_in_progress=false;
+                        this.cd.detectChanges();
+                      })
+                    }
+                    
+                
+            
+            });
+          }
+        }
+        else {
+          if(this.type=='one-shot'){  
+            this.NotationService.add_love('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
+               
+                  this.lovesnumber=r[0].lovesnumber;
+                 
                   if(this.authorid==this.visitor_id){
-                    this.loved=false;
+                    this.loved=true;
                     this.love_in_progress=false;
                     this.cd.detectChanges();
                   }
                   else{
-                    this.NotificationsService.remove_notification('publication_love','comic','serie',this.bd_id,this.current_chapter + 1,false,0).subscribe(l=>{
+                    this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
                       let message_to_send ={
                         for_notifications:true,
                         type:"publication_love",
@@ -1419,102 +1472,65 @@ export class ArtworkComicComponent implements OnInit {
                         id_user:this.visitor_id, 
                         id_receiver:this.authorid,
                         publication_category:'comic',
-                        format:'serie',
+                        publication_name:this.title,
+                        format:'one-shot',
                         publication_id:this.bd_id,
-                        chapter_number:this.current_chapter + 1,
-                        information:"remove",
+                        chapter_number:0,
+                        information:"add",
+                        status:"unchecked",
                         is_comment_answer:false,
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.loved=false;
-                     this.love_in_progress=false;
+                      this.loved=true;
+                      this.love_in_progress=false;
                       this.cd.detectChanges();
                     })
                   }
-                  
               
+            });
+          }
+          else if(this.type=='serie'){
           
-          });
-        }
-      }
-      else {
-        if(this.type=='one-shot'){  
-          this.NotationService.add_love('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-             
-                this.lovesnumber=r[0].lovesnumber;
-               
-                if(this.authorid==this.visitor_id){
-                  this.loved=true;
-                  this.love_in_progress=false;
-                  this.cd.detectChanges();
-                }
-                else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
-                    let message_to_send ={
-                      for_notifications:true,
-                      type:"publication_love",
-                      id_user_name:this.visitor_name,
-                      id_user:this.visitor_id, 
-                      id_receiver:this.authorid,
-                      publication_category:'comic',
-                      publication_name:this.title,
-                      format:'one-shot',
-                      publication_id:this.bd_id,
-                      chapter_number:0,
-                      information:"add",
-                      status:"unchecked",
-                      is_comment_answer:false,
-                      comment_id:0,
-                    }
-                    this.chatService.messages.next(message_to_send);
-                    this.loved=true;
-                    this.love_in_progress=false;
-                    this.cd.detectChanges();
-                  })
-                }
-            
-          });
-        }
-        else if(this.type=='serie'){
-        
-          this.NotationService.add_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-    
-                this.lovesnumber=r[0].lovesnumber;
-                           
-                if(this.authorid==this.visitor_id){
-                  this.loved=true;
-                  this.love_in_progress=false; 
-                  this.cd.detectChanges();
-                }
-                else{
-                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
-                    let message_to_send ={
-                      for_notifications:true,
-                      type:"publication_love",
-                      id_user_name:this.visitor_name,
-                      id_user:this.visitor_id, 
-                      id_receiver:this.authorid,
-                      publication_category:'comic',
-                      publication_name:this.title,
-                      format:'serie',
-                      publication_id:this.bd_id,
-                      chapter_number:this.current_chapter + 1,
-                      information:"add",
-                      status:"unchecked",
-                      is_comment_answer:false,
-                      comment_id:0,
-                    }
-                    this.chatService.messages.next(message_to_send);
+            this.NotationService.add_love('bd', 'serie', this.style, this.bd_id,this.current_chapter + 1,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+      
+                  this.lovesnumber=r[0].lovesnumber;
+                             
+                  if(this.authorid==this.visitor_id){
                     this.loved=true;
                     this.love_in_progress=false; 
                     this.cd.detectChanges();
-                  }) 
-                }
-                  
-          });
+                  }
+                  else{
+                    this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'comic',this.title,'serie',this.bd_id,this.current_chapter + 1,"add",false,0).subscribe(l=>{
+                      let message_to_send ={
+                        for_notifications:true,
+                        type:"publication_love",
+                        id_user_name:this.visitor_name,
+                        id_user:this.visitor_id, 
+                        id_receiver:this.authorid,
+                        publication_category:'comic',
+                        publication_name:this.title,
+                        format:'serie',
+                        publication_id:this.bd_id,
+                        chapter_number:this.current_chapter + 1,
+                        information:"add",
+                        status:"unchecked",
+                        is_comment_answer:false,
+                        comment_id:0,
+                      }
+                      this.chatService.messages.next(message_to_send);
+                      this.loved=true;
+                      this.love_in_progress=false; 
+                      this.cd.detectChanges();
+                    }) 
+                  }
+                    
+            });
+          }
         }
       }
+      
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -1525,6 +1541,8 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   show_likes(){
+    console.log(this.current_chapter)
+    console.log(this.list_of_users_ids_likes)
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter]},
     });

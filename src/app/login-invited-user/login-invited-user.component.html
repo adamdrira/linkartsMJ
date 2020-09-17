@@ -1,0 +1,103 @@
+
+
+
+<div class="popup-container" *ngIf="!reset_password_menu">
+    <div class="popup-step">
+
+        <div class="back-and-logo">
+            <div class="logo">
+                logo
+            </div>
+        </div>
+        <div class="step-name">
+            <span>Connexion</span>
+        </div>
+        <div class="step-form" [formGroup]="loginForm">
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Mail</mat-label>
+                    <input matInput formControlName="mail" autocomplete="off">
+                    <mat-error *ngIf="loginForm.controls['mail'].invalid">Veuillez saisir un mail valide</mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="form-item">
+                <mat-form-field style="position:relative">
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <mat-error *ngIf="loginForm.controls['password'].invalid">Veuillez saisir un mot de passe valide
+                    </mat-error>
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
+                        <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
+                    </div>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+
+        <div class="step-validation">
+
+            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="login();">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <span *ngIf="!loading">Se connecter</span>
+            </button>
+
+        </div>
+        
+       
+    </div>
+</div>
+
+
+
+
+<div class="popup-container" *ngIf="reset_password_menu">
+    
+    
+    <div class="popup-step">
+        <div class="back-and-logo">
+            <div class="back-button">
+                <button mat-raised-button class="style0" (click)="open_connexion_menu();">
+                    <span>Retour</span>
+                </button>
+            </div>
+            <div class="logo">
+                logo
+            </div>
+        </div>
+
+        
+        <div class="step-name">
+            <span>Récupérer mon mot de passe</span>
+        </div>
+        <div class="step-form" [formGroup]="ResetPasswordForm">
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Adresse mail</mat-label>
+                    <input matInput formControlName="mail_recuperation" autocomplete="off">
+                    <mat-error *ngIf="ResetPasswordForm.controls['mail_recuperation'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            
+        </div>
+
+        <div class="step-validation">
+            <button mat-raised-button [disabled]="loading" class="submit-button style0" (click)="onSubmitReset();">
+                <span>Envoyer</span>
+            </button>
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+</div>

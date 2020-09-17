@@ -197,6 +197,10 @@ export class ArtworkWritingComponent implements OnInit {
 
     
     this.writing_id  = parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
+    if(!(this.writing_id>0)){
+      this.router.navigateByUrl('/page_not_found');
+        return
+    }
 
     this.Writing_Upload_Service.retrieve_writing_information_by_id(this.writing_id).subscribe(r => {
       if(!r[0] || r[0].status=="deleted"){

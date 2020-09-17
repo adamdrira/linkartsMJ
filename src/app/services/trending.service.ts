@@ -30,7 +30,7 @@ export class Trending_service {
   date = this.yyyy.toString() + '-' +  this.mm + '-' + this.dd;
 
   send_rankings_and_get_trendings_comics(){
-    return this.httpClient.post('http://localhost:4600/routes/send_rankings_and_get_trendings_comics', {}).pipe(map((information)=>{
+    return this.httpClient.post('routes/send_rankings_and_get_trendings_comics', {}).pipe(map((information)=>{
         if (information[0].data=='sent'){
            return 'get_comics_trendings'
          }       
@@ -42,20 +42,20 @@ export class Trending_service {
   }
 
   get_comics_trendings(){
-    return this.httpClient.get(`http://localhost:4600/python/get_comics_trendings/${this.date}`).pipe(map((information)=>{
+    return this.httpClient.get(`python/get_comics_trendings/${this.date}`).pipe(map((information)=>{
         return information;
       }));
   }
 
 
   get_drawings_trendings(){
-    return this.httpClient.get(`http://localhost:4600/routes/get_drawings_trendings/${this.date}`).pipe(map((information)=>{
+    return this.httpClient.get(`routes/get_drawings_trendings/${this.date}`).pipe(map((information)=>{
         return information;
       }));
   }
 
   get_writings_trendings(){
-    return this.httpClient.get(`http://localhost:4600/routes/get_writings_trendings/${this.date}`).pipe(map((information)=>{
+    return this.httpClient.get(`routes/get_writings_trendings/${this.date}`).pipe(map((information)=>{
         return information;
       }));
   }

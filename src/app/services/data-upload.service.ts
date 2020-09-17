@@ -20,14 +20,14 @@ export class DataUploadService {
   //ok
   getuploadedFileInformation(){
     //ici on obtient le json du contenu uploadé
-    return this.httpClient.get('http://localhost:4600/routes/getUserFileForBdOneShot').pipe(map((upload)=>{
+    return this.httpClient.get('routes/getUserFileForBdOneShot').pipe(map((upload)=>{
       return upload;
     }));
   }
 
   getUploadedFileInformation() {
     //ici on obtient le json du contenu uploadé
-    return this.httpClient.get('http://localhost:4600/routes/userfile').pipe(map((upload)=>{
+    return this.httpClient.get('routes/userfile').pipe(map((upload)=>{
       return upload;
     }));
   }
@@ -36,7 +36,7 @@ export class DataUploadService {
  
   //uploader le fichier ok
   getImageUploadForBdOneShot(name: String) {
-   return this.httpClient.get(`http://localhost:4600/routes/uploadedBdOneShot/${name}`, {responseType: 'blob'});
+   return this.httpClient.get(`routes/uploadedBdOneShot/${name}`, {responseType: 'blob'});
   }
 
   //renommer le fichier uploadé et accépté : REGLER LES POSTS REQUEST AVEC ANGULAR
@@ -65,7 +65,7 @@ export class DataUploadService {
 
   //On supprime le fichier en base de donnée
   supprimerBd(authorid: number, date:String) {
-    return this.httpClient.delete(`http://localhost:4600/routes/deleteBdAfterCancel/${authorid}/${date}`, httpOptions)
+    return this.httpClient.delete(`routes/deleteBdAfterCancel/${authorid}/${date}`, httpOptions)
    } 
 
 

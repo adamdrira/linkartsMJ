@@ -11,7 +11,7 @@ export class PostsService {
   constructor(private httpClient: HttpClient) {}
 
   getAllPosts() {
-    return this.httpClient.get('http://localhost:4600/routes/posts').pipe(map((posts)=>{
+    return this.httpClient.get('routes/posts').pipe(map((posts)=>{
       return posts;
     }));
   }

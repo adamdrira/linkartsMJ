@@ -2,20 +2,9 @@
     <main role="main" class="main" >
       
 
+        
 
-        <div class="stories-title" *ngIf="type_of_profile_retrieved && type_of_profile=='account'">
-            <div class="icon-container">
-                <div class="icon icon-stories" >
-                </div>
-            </div>
-            Stories
-        </div>
-        <div class="storiesbar">
-            <app-stories></app-stories>
-        </div>
-
-
-        <div *ngIf="type_of_profile_retrieved">
+        <div id="left-container-extended" *ngIf="type_of_profile_retrieved" [ngClass]="{'left-container-extended':type_of_profile=='visitor' }">
 
             <div class="categories-container">
                 <div class="category-filter2" [ngClass]="{'invisible':!little_screen }">
@@ -27,7 +16,7 @@
                 </div>
                 
 
-                <div class="category-filter" [ngClass]="{'invisible':little_screen,'put-on-the-left':type_of_profile=='account'}">
+                <div class="category-filter" [ngClass]="{'invisible':little_screen}">
                     <div class="content-action text-center" (click)="open_category(0);" [ngClass]="{'opened': category_index==0 }">
                         <div class="title" [ngClass]="{'title-opened': category_index==0 }"> 
                             <div class="icon-container">
@@ -64,17 +53,24 @@
             </div>
     
     
-            <ng-container *ngIf="this.category_index==0">
-                <app-recommendations></app-recommendations>
-            </ng-container>
-            <ng-container *ngIf="this.category_index==1">
-                <app-trendings></app-trendings>
-            </ng-container>
-            <ng-container *ngIf="this.category_index==2">
-                <app-subscribings></app-subscribings>
-            </ng-container>
+            <div class="left-container-scrollable">
+                <ng-container *ngIf="this.category_index==0">
+                    <app-recommendations></app-recommendations>
+                </ng-container>
+                <ng-container *ngIf="this.category_index==1">
+                    <app-trendings></app-trendings>
+                </ng-container>
+                <ng-container *ngIf="this.category_index==2">
+                    <app-subscribings></app-subscribings>
+                </ng-container>
+            </div>
     
         </div>
+
+
+
+        
+  
 
 
     </main>

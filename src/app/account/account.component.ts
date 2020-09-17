@@ -315,7 +315,10 @@ export class AccountComponent implements OnInit {
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    
+    if(!(this.user_id>0)){
+      this.router.navigateByUrl('/page_not_found');
+        return
+    }
     
     this.Profile_Edition_Service.retrieve_profile_data( this.user_id ).subscribe( r => {
       if( !r[0] || r[0].status=="visitor") {

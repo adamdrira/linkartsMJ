@@ -61,28 +61,29 @@ export class HomeLinkartsComponent implements OnInit {
     this.category_index=i;
     
     if( i==0 ) {
-      this.location.go("/");
+      this.location.go("recommendations");
     }
     else if( i==1 ) {
-      this.location.go("/classement");
+      this.location.go("trendings");
     }
     else if( i==2 ) {
-      this.location.go("/subscribings");
+      this.location.go("subscribings");
     }
-    else if( i==3 ) {
+    /*else if( i==3 ) {
       this.location.go("/decouverte");
-    }
+    }*/
     
 
   }
 
-
+  change_profile_number=0;
   ngOnInit() {
 
     this.authenticationService.currentUserType.subscribe(r=>{
-      if(r!=''){
+      if(r!='' && this.change_profile_number<2){
         this.type_of_profile=r;
         this.type_of_profile_retrieved=true;
+        this.change_profile_number++;
         console.log( this.type_of_profile)
         this.initializeselector();
         this.display_selector();

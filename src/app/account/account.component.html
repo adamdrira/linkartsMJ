@@ -67,10 +67,12 @@
                     </div>
 
                     <div *ngIf="mode_visiteur && type_of_profile_retrieved" class="visitor-buttons-container">
-                        <button mat-raised-button  class="visitor-button style0">
-                            <div class="message-icon"></div>
-                            <span>Écrire</span>
-                        </button>
+                        <a href="chat/{{pseudo}}/{{user_id}}">
+                            <button mat-raised-button  class="visitor-button style0">
+                                <div class="message-icon"></div>
+                                    <span>Écrire</span>
+                            </button>
+                        </a>
                         <button *ngIf="!already_subscribed" (click)="subscribtion()" mat-raised-button class="visitor-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
                             <div class="subscribe-icon"></div>
                             <span>S'abonner</span>
@@ -222,12 +224,14 @@
                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 (sendLoaded)="new_contents_drawings_thumbnails($event)"
                                 [item]=item
+                                for_news="yes"
                                 format='one-shot'
                                 now_in_seconds={{now_in_seconds}}
                             ></app-thumbnail-drawing>
                             <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                                 (sendLoaded)="new_contents_drawings_thumbnails($event)"
                                 [item]=item 
+                                for_news="yes"
                                 format='artbook'
                                 now_in_seconds={{now_in_seconds}}
                             ></app-thumbnail-drawing>

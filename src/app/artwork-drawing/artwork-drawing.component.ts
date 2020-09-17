@@ -201,10 +201,11 @@ export class ArtworkDrawingComponent implements OnInit {
     }
 
     console.log(this.type);
-    let drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
-    this.drawing_id = drawing_id;
-
-    
+    this.drawing_id = parseInt(this.activatedRoute.snapshot.paramMap.get('drawing_id'));
+    if(!(this.drawing_id>0)){
+      this.router.navigateByUrl('/page_not_found');
+        return
+    }
     
 
     if (this.type =="one-shot"){

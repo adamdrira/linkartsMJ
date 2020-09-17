@@ -28,8 +28,7 @@
   }
 
   .main {
-    display:flex;
-    flex-direction: column;
+    display:block;
   }
 
 
@@ -54,7 +53,8 @@
  
    .storiesbar {
      width:100%;
-     margin-bottom: 15px;
+     //height:100%;
+     //overflow-y:auto;
    }
  
    .searchbar {
@@ -106,7 +106,7 @@
    }
 
    .category-filter .content-action:hover .title{
-    color:rgb(32,56,100) !important;
+    color:rgb(32,56,100) ;
   }
 
    .category-filter .content-action span {
@@ -114,18 +114,7 @@
      margin:auto auto;
    }
 
-   .stories-title{
-    display:flex;
-    cursor:default;
-    align-items:center;
-    justify-content: center;
-    color: #53627d;
-    margin:auto auto;
-    margin-top: 25px;
-    margin-bottom: 10px;
-   }
-
-   .title {
+   .title{
     display:flex; 
     align-items:center;
     color: #53627d;
@@ -153,6 +142,7 @@
     position:relative;
     display:flex;
     justify-content:center;
+    margin-top: 20px;
     margin-bottom: 20px;
     border-radius:10px 10px 0px 0px;
     -webkit-transition: opacity 500ms;
@@ -161,7 +151,7 @@
   }
 
   .put-on-the-left{
-    justify-content:left !important;
+    //justify-content:left !important;
   }
 
   .category-filter2 {
@@ -197,13 +187,14 @@
   .categories-container .opened {
     border-radius: 30px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    background-color: #4bacdd;
-    color: rgb(32,56,100) ;
-    text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
+    background-color: hsl(219, 52%, 26%);
+    color: white !important;
+    text-shadow: -0.04ex 0 white, 0.04ex 0 !important;
   }
 
   .title-opened{
-    color: rgb(32,56,100)!important;
+    color: white!important;
+    
   }
   
   .category-filter .opened .bottom-border {
@@ -213,7 +204,7 @@
   }
   
   .categories-container .content-action:hover {
-    color: rgb(32,56,100) !important;
+    color: rgb(32,56,100) ;
     transition:text-shadow 200ms;
     text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
   }
@@ -226,22 +217,43 @@
   }
 
   .categories-container .content-action:hover .icon-recommendation {
-    background-color: rgb(32,56,100) !important;
+    background-color: rgb(32,56,100) ;
   }
 
   .categories-container .content-action:hover .icon-trendings {
-    background-color: rgb(32,56,100)!important;
+    background-color: rgb(32,56,100);
   }
 
   .categories-container .content-action:hover .icon-newsfeed {
-    background-color: rgb(32,56,100)!important;
+    background-color: rgb(32,56,100);
   }
 
   .icon-clicked{
-    background-color:rgb(32,56,100) !important;
+    background-color:#ffffff !important;
   }
 
-  
+  #left-container {
+    width:calc(100% - 330px);
+    padding:20px;
+    overflow:hidden;
+  }
+
+  #left-container .left-container-scrollable {
+    overflow-y: scroll;
+    height: 100%;
+  }
+
+  #right-container {
+    //width:330px;
+    padding:20px;
+    height: 160px;
+    overflow:hidden;
+  }
+
+  .left-container-extended{
+    width:100% !important;
+  }
+
 ::-webkit-scrollbar {
     width: 0px;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
@@ -255,11 +267,11 @@
 
 ::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    background: rgba(30, 82, 145, 0.2);  
+    background: rgb(32,56,100);  
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(30, 82, 145, 0.2);  
+  background: rgb(32,56,100);  
 }
 
 
@@ -290,6 +302,7 @@
 
 .icon-container {
   position: relative;
+  cursor: pointer;
   display: block;
   width: 20px;
   margin-right:10px;
