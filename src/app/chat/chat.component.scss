@@ -194,11 +194,11 @@ a {
     opacity:1;
 }
 
-.unvisible {
+.invisible {
     visibility:hidden;
 }
 
-.really-unvisible{
+.really-invisible{
     display:none !important;
 }
 
@@ -344,7 +344,8 @@ a {
     white-space: nowrap;
     padding: 0px;
     width: 92%;
-    display: block;
+    display: flex;
+    align-items: center;
 }
 
 ::ng-deep .discussions-container .SumoSelect .optWrapper {
@@ -396,7 +397,7 @@ a {
 }
 
 .main-left-container .middle-container{
-    height:calc(100% - 80px);
+    height:calc(100% - 152px);
     width:100%;
 }
 
@@ -457,7 +458,7 @@ a {
 .messages-container {
     width: 100%;
     
-    height:100%;
+    height:100% !important;
     overflow-y:auto;
 }
 
@@ -649,7 +650,7 @@ a {
 
   
   .send-message-container .send_message {
-    height:100%;
+    //height:100%;
     width:100%;
     z-index:10;
     display:flex;
@@ -792,7 +793,7 @@ a {
 .message .my-message-content .content .emoji-reaction-content{
     display: flex;
     align-items: center;
-    bottom: -21px;
+    bottom: -15px;
     position: absolute;
     padding:2px 4px 0px 4px;
     right: 0px;
@@ -806,7 +807,7 @@ a {
     align-items: center;
     padding: 2px 4px 0px 4px;
     display: flex;
-    bottom: -21px;
+    bottom: -15px;
     left: 0px;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);

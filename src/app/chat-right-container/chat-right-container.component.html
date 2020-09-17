@@ -1,15 +1,6 @@
 <div class="main-right-container">
 
-    <!--<div class="author-container">
-      <div class="left-container">
-          <img [src]="friend_picture" (load)=pp_loaded() [ngClass]="{'invisible':!pp_is_laoded}">
-      </div>
-      <a>
-          <div class="right-container">
-              <span class="author-name">{{chat_section_to_open}} </span>
-          </div>
-      </a>
-    </div>-->
+  
 
     <div class="section-title">
       <span>{{chat_section_to_open}} </span>
@@ -18,8 +9,9 @@
 
     
     <div #myScrollContainer class="main-options-container" id="main-options-container">
-      <!--<div>-->
-          <div class="options-container" *ngIf="list_of_files_retrieved && list_of_pictures_retrieved">
+          
+      
+          <div class="options-container" >
             <mat-accordion>
 
               <mat-expansion-panel (opened)="panelOpenState_0 = true"
@@ -28,11 +20,16 @@
                   <mat-panel-title>
                     Fichiers partagés
                   </mat-panel-title>
-                  <mat-panel-description>
+                  <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
                     {{total_size_of_files[0] | number:'.2' }} MB 
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-                <mat-list >
+                <div *ngIf="!list_of_files_retrieved ">
+                  <div class="show-more" >
+                    <mat-spinner diameter="20" ></mat-spinner>
+                  </div>
+                </div>
+                <mat-list *ngIf="list_of_files_retrieved" >
                   <mat-list-item *ngFor="let file of list_of_files,let i=index">
                     <mat-icon mat-list-icon>folder</mat-icon>
                     <div mat-line>
@@ -54,11 +51,16 @@
                   <mat-panel-title>
                     Images partagées
                   </mat-panel-title>
-                  <mat-panel-description>
+                  <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
                     {{total_size_of_pictures[0] | number:'.2' }} MB 
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-                <mat-list>
+                <div *ngIf="!list_of_pictures_retrieved">
+                  <div class="show-more" >
+                    <mat-spinner diameter="20" ></mat-spinner>
+                  </div>
+                </div>
+                <mat-list *ngIf="list_of_pictures_retrieved">
                   <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
                     <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i) [ngClass]="{'invisible':!list_of_images_loaded[i]}" >
                     <div mat-line>
@@ -72,30 +74,11 @@
               </mat-expansion-panel>
 
 
-              
-              <!--<mat-action-row>
-                <mat-panel-title>
-                  Bloquer l'utilisateur
-                </mat-panel-title>
-                <div class="mat-action-icon">
-                  <mat-icon class="button">error</mat-icon>
-                </div>
-              </mat-action-row>
-              <mat-action-row>
-                  <mat-panel-title>
-                  Signaler la conversation
-                  </mat-panel-title>
-                  <div class="mat-action-icon">
-                    <mat-icon class="button">block</mat-icon>
-                  </div>
-              </mat-action-row>-->
-
-
 
 
             </mat-accordion>
         </div>
-      <!--</div>-->
+      
     </div>
         
     

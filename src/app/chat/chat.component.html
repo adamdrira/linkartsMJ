@@ -4,11 +4,14 @@
         <div class="top-container row">
 
             <div class="author-container col-md-3">
-                <div class="left-container" [ngClass]="{'unvisible':!top_pp_loaded }">
+                <div class="left-container" [ngClass]="{'invisible':!top_pp_loaded }">
                     <img [src]="friend_picture" (load)="top_pp_is_loaded()">
                 </div>
                 <div class="right-container">
-                    <span class="author-name">{{friend_name}} </span>
+                    <a href="/account/{{friend_pseudo}}/{{friend_id}}" style="color:rgb(32,56,100);">
+                        <span class="author-name">{{friend_name}} </span>
+                    </a>
+                   
                 </div>
             </div>
 
@@ -37,8 +40,8 @@
                         <mat-icon class="item-icon">delete</mat-icon>
                     </button>
                     <div class="dropdown-container"  [formGroup]="chat_section_group" >
-                        <div  class="chat-section-container sumo" [ngClass]="{'really-unvisible':activate_add_chat_section ||activate_research_chat_section}">
-                            <select formControlName="chat_section_name"  class="chat-section" style="height: 100%; width:100%;" [ngClass]="{'really-unvisible':!top_sumo_loaded}"> 
+                        <div  class="chat-section-container sumo" [ngClass]="{'really-invisible':activate_add_chat_section ||activate_research_chat_section}">
+                            <select formControlName="chat_section_name"  class="chat-section" style="height: 100%; width:100%;" [ngClass]="{'really-invisible':!top_sumo_loaded}"> 
                                 <option  value="" selected disabled>{{chat_section_to_open}}</option>
                                 <option *ngFor="let section of list_of_chat_sections;let i=index;" > {{section}}</option> 
                             </select>
@@ -123,7 +126,7 @@
             padding-right: 0px;
             display: flex;
             justify-content: end;
-            align-items: center;" [ngClass]="{'unvisible':!top_pp_loaded }" >
+            align-items: center;" [ngClass]="{'invisible':!top_pp_loaded }" >
 
             <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" style="  margin: auto 0px auto auto;">
                 <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="initiateSearch()" >
@@ -259,7 +262,7 @@
                     DEBUT DES MESSAGES DE CLASSIQUES
                     DEBUT DES MESSAGES DE CLASSIQUES
                 -->
-                    <div #myScrollContainer class="messages-container" id="messages-container" [ngClass]="{'unvisible':!put_messages_visible}" *ngIf="friend_type=='user'">
+                    <div #myScrollContainer class="messages-container" stye="height:100%" [ngClass]="{'invisible':!put_messages_visible}" *ngIf="friend_type=='user'">
 
                         
                         <div *ngIf='display_messages' style="width:100%;">
@@ -420,10 +423,10 @@
                                             </div>
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                                    <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                                    <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -439,21 +442,23 @@
                                         </div>
 
                                         <div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
-                                            <div *ngIf="display_retry[list_of_messages.length -1 - i]">
+                                            <!--<div *ngIf="display_retry[list_of_messages.length -1 - i]">
                                                 <div style="margin-right:5px;cursor:default;text-align:center;">
                                                     Message non envoyé. 
                                                     <div (click)="retry(list_of_messages.length -1 - i)" style="font-weight:600;cursor:pointer;">Réessayer</div> 
                                                 </div>
-                                                <!--<button (click)="retry(list_of_messages.length -1 - i)">retry</button>-->
+                                               
                                             </div>
                                             <div *ngIf="!display_retry[list_of_messages.length -1 - i]" class="send_in_progress">
+                                            </div>-->
+                                            <div class="send_in_progress">
                                             </div>
                                         </div>
                                         
                                         <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'"
                                         style="margin-right:15px;">
                                             <div class="friend-picture">
-                                                <img (load)="loaded_image()" [src]="friend_picture">
+                                                <img (load)="loaded_image(-(list_of_messages.length -1 - i)-1)" [ngClass]="{'invisible':!list_of_pp_loaded_classic[list_of_messages.length -1 - i]}" [src]="friend_picture">
                                             </div>
                                             
                                         </div>
@@ -485,7 +490,7 @@
                                         <div *ngIf="list_of_show_pp_left[list_of_messages.length -1 - i]"
                                         style="margin-left:15px;">
                                             <div class="friend-picture">
-                                                <img (load)="loaded_image()" [src]="friend_picture">
+                                                <img (load)="loaded_image(-(list_of_messages.length -1 - i)-1)" [ngClass]="{'invisible':!list_of_pp_loaded_classic[list_of_messages.length -1 - i]}" [src]="friend_picture">
                                             </div>
                                         </div>
 
@@ -573,10 +578,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                                        <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                        <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                                        <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                        <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                         <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -652,7 +657,7 @@
 
 
 
-                <div #myScrollContainer class="messages-container" id="messages-container" [ngClass]="{'unvisible':!put_messages_visible || !list_of_users_names_retrieved}" *ngIf="friend_type!='user'">
+                <div #myScrollContainer class="messages-container" stye="height:100%" [ngClass]="{'invisible':!put_messages_visible || !list_of_users_names_retrieved}" *ngIf="friend_type!='user'">
 
                         
                     <div *ngIf='display_messages' style="width:100%;">
@@ -844,10 +849,10 @@
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                            <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                            <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                         </div> 
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                            <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                            <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                             <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                         </div> 
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -1029,10 +1034,10 @@
                                             </div>
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
-                                                    <img (load)=loaded_image() style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
-                                                    <img (load)=loaded_image() [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
+                                                    <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">

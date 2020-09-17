@@ -18,7 +18,7 @@
             </div>-->
 
             <div class="formdata-container">
-                <form [formGroup]="formData" style="align-self:center;padding:0 10px;">
+                <form [formGroup]="formData" style="align-self:center;padding:0 10px; margin: auto;">
                     <mat-radio-group formControlName="IsActive"
                      (change)="radioChange($event)">
                         <mat-radio-button value="Mes contacts"  >Mes contacts</mat-radio-button>
@@ -117,7 +117,7 @@
         <!-- List of contacts-->
         <!-- List of contacts-->
 
-        <div #myScrollContainer class="subscribers-container" id="subscribers-container">
+        <div #myScrollContainer class="subscribers-container" >
 
 
             <!-- list of friends -->

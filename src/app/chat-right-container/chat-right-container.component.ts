@@ -6,8 +6,9 @@ import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscribing_service } from '../services/subscribing.service';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { ChatComponent } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
+import { getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 
 declare var $: any;
 
@@ -19,6 +20,7 @@ declare var $: any;
 export class ChatRightContainerComponent implements OnInit {
 
   constructor(private chatService:ChatService,
+    private ChatComponent:ChatComponent,
     private FormBuilder:FormBuilder,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
@@ -115,10 +117,10 @@ export class ChatRightContainerComponent implements OnInit {
   }
 
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
-  can_get_other_files=true;
+  can_get_other_files=false;
   date_of_last_file:string;
   show_scroll_files=false;
-  can_get_other_pictures=true;
+  can_get_other_pictures=false;
   date_of_last_picture:string;
   show_scroll_pictures=false;
 
@@ -161,6 +163,9 @@ export class ChatRightContainerComponent implements OnInit {
                       if(compt==r[0].length){
                         this.date_of_last_file=r[0][r[0].length-1].createdAt;
                         this.show_scroll_files=false;
+                        if(compt<14){
+                          this.can_get_other_files=false;
+                        }
                         this.cd.detectChanges();
                         //this.myScrollContainer.nativeElement.scrollTop=this.myScrollContainer.nativeElement.scrollHeight-this.myScrollContainer.nativeElement.getBoundingClientRect().height
                       }
@@ -168,6 +173,7 @@ export class ChatRightContainerComponent implements OnInit {
                   }
               }
               else{
+                this.can_get_other_files=false;
                 this.show_scroll_files=false;
                 this.can_get_other_files=false;
               }
@@ -195,12 +201,16 @@ export class ChatRightContainerComponent implements OnInit {
                       if(compt==r[0].length){
                         this.date_of_last_picture=r[0][r[0].length-1].createdAt;
                         this.show_scroll_pictures=false;
+                        if(compt<14){
+                          this.can_get_other_pictures=false;
+                        }
                         this.cd.detectChanges();
                       }
                     })
                   }
               }
               else{
+                this.can_get_other_pictures=false;
                 this.show_scroll_pictures=false;
                 this.can_get_other_pictures=false;
               }
@@ -214,6 +224,24 @@ export class ChatRightContainerComponent implements OnInit {
       
     }, 200);
 
+
+    this.ChatComponent.reload_list_of_files.subscribe(m=>{
+      if(m){
+        this.list_of_files_retrieved=false;
+        this.list_of_pictures_retrieved=false;
+        this.list_of_files_src=[];
+        this.list_of_pictures_src=[];
+        this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
+          console.log(l[0][0])
+          this.total_size_of_files[0]=Number(l[0][0].total);
+          this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
+            console.log(r[0][0])
+            this.total_size_of_pictures[0]=Number(r[0][0].total);
+            this.get_files_and_pictures(this.id_chat_section);
+          })
+        })
+      }
+    })
   }
 
 
@@ -233,6 +261,9 @@ export class ChatRightContainerComponent implements OnInit {
             compt++;
             if(compt==l[0].length){
               this.date_of_last_file=l[0][l[0].length-1].createdAt;
+              if(compt>=14){
+                this.can_get_other_files=true
+              }
               this.list_of_files_retrieved=true;
             }
           })
@@ -257,6 +288,9 @@ export class ChatRightContainerComponent implements OnInit {
             compt++;
             if(compt==l[0].length){
               this.date_of_last_picture=l[0][l[0].length-1].createdAt;
+              if(compt>=14){
+                this.can_get_other_pictures=true
+              }
               this.list_of_pictures_retrieved=true;
             }
           })

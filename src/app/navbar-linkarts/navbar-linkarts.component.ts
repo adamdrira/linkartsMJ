@@ -18,7 +18,9 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
-
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { SignupComponent } from '../signup/signup.component';
+import {get_date_to_show_chat} from '../helpers/dates';
 
 declare var $: any;
 
@@ -80,15 +82,21 @@ export class NavbarLinkartsComponent implements OnInit {
   focus_activated=false;
   show_researches_propositions=false;
   show_selector=false;
-
+  using_chat=false;
+  using_chat_retrieved=false;
   check_chat_service=false;
   check_notifications_from_service=false;
   list_of_notifications=[];
+  list_of_messages=[];
+  number_of_unseen_messages:number;
+  number_of_unchecked_notifications=100;
   index_of_notifications_to_show=15;
   show_notifications=false;
+  show_chat_messages=false;
 
   @ViewChild('input') input:ElementRef;
   @ViewChild('notifications') notifications:ElementRef;
+  @ViewChild('chat') chat:ElementRef;
   @ViewChild('propositions') propositions:ElementRef;
   @ViewChild('navbarLogo') navbarLogo:ElementRef;
 
@@ -100,10 +108,37 @@ export class NavbarLinkartsComponent implements OnInit {
   first_filters_writings=["Article","Poésie", "Roman", "Roman illustré", "Scénario"];
   first_filters=[this.first_filters_artists,this.first_filters_ads,this.first_filters_comics,this.first_filters_drawings,this.first_filters_writings];
 
+   //check presence
+   user_present=true;
+
   //notificaitons 
   display_new_messages=false;
+  logo_is_loaded=false;
+  
+  @HostListener('window:focus', ['$event'])
+  onFocus(event: any): void {
+    if(!this.user_present && this.type_of_profile=='account' && !this.show_chat_messages){
+       this.list_of_friends_retrieved=false;
+       this.user_present=true;
+       this.sort_friends_list();
+    }
+
+  }
+
+  @HostListener('window:blur', ['$event'])
+    onBlur(event: any): void {
+    /*this.user_present=false;
+    this.show_chat_messages=false;
+    this.show_notifications=false;*/
+  }
+
   @HostListener('document:click', ['$event'])
   clickout(event) {
+    if(!this.user_present && !this.show_notifications && this.type_of_profile=='account'){
+      this.user_present=true;
+      this.list_of_friends_retrieved=false;
+      this.sort_friends_list();
+    }
     if(this.focus_activated){
       if(!this.input.nativeElement.contains(event.target) && !this.propositions.nativeElement.contains(event.target) ) {
         this.focus_activated=false;
@@ -117,12 +152,22 @@ export class NavbarLinkartsComponent implements OnInit {
         this.change_notifications_status_to_checked();
       } 
     }
+    if(this.show_chat_messages){
+      if(!this.chat.nativeElement.contains(event.target) ) {
+        this.list_of_chat_friends_ids=[]; 
+        this.show_chat_messages=false;
+        this.number_of_unseen_messages=0;
+        this.cd.detectChanges();
+      } 
+    }
   }
 
   
 
   margin_is_not_set:boolean = true;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  @ViewChild('myScrollContainer_chat') private myScrollContainer_chat: ElementRef;
+
   ngOnInit() {
     window.addEventListener('scroll', this.scroll, true);
     this.setHeight();
@@ -134,6 +179,8 @@ export class NavbarLinkartsComponent implements OnInit {
         this.retrieve_profile();
       }
       else{
+        this.data_retrieved=true;
+        this.using_chat_retrieved=true;
         this.type_of_profile="visitor";
       }
       console.log("in constructor")
@@ -162,16 +209,31 @@ export class NavbarLinkartsComponent implements OnInit {
     //connexion to chat service interval
     let chatinterval = setInterval(()=>{
       if(this.chatService.messages && !this.navbar.get_using_chat()){
+        console.log("if not using chat")
+        this.using_chat_retrieved=true;
         this.check_chat_service=true;
         this.check_chat_service_func();
         clearInterval(chatinterval);
+        this.cd.detectChanges();
       }
-      else if(this.chatService.messages && this.navbar.get_using_chat()){
+      /*else if(this.chatService.messages && this.navbar.get_using_chat()){
+        console.log("else if using chat")
+        this.using_chat_retrieved=true;
+        this.using_chat=true;
         this.check_notifications_from_service=true;
         this.check_notifications_from_service_func();
         clearInterval(chatinterval);
+        this.cd.detectChanges();
+      }*/
+    },50)
+
+    console.log("check_notifications_from_service_func");
+    this.navbar.notification.subscribe(msg=>{
+      if(msg && msg[0].for_notifications){
+        console.log(msg[0])
+        this.sort_notifications(msg);
       }
-    },1000)
+    })  
 
 
     //scroll managment interval
@@ -180,9 +242,35 @@ export class NavbarLinkartsComponent implements OnInit {
       // après avoir cliqué sur "voir tous les résultats" dans la liste des propositions classique
       if(this.show_notifications){
         if((this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.8)){
-          this.index_of_notifications_to_show+=10;
+          if(this.index_of_notifications_to_show<this.final_list_of_notifications_to_show.length){
+
+            let number_of_notifs=0;
+            let index_fin=-1;
+            for(let i=this.index_of_notifications_to_show;i<this.final_list_of_notifications_to_show.length;i++){
+              if(this.final_list_of_notifications_to_show[i]){
+                number_of_notifs+=1;
+              }
+              if(number_of_notifs==10){
+                index_fin=i;
+              }
+            }
+
+            if(index_fin>0){
+              this.index_of_notifications_to_show=index_fin;
+            }
+            else{
+              this.index_of_notifications_to_show=this.final_list_of_notifications_to_show.length;
+            }
+          }
+          
         }
-       
+      }
+      if(this.show_chat_messages){
+        if((this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
+          if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
+            this.number_of_friends_to_show+=10;
+          }
+        }
       }
     }, 500);
 
@@ -191,25 +279,64 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
  
-  check_notifications_from_service_func(){
-    this.navbar.notification.subscribe(msg=>{
-      if(msg[0] && !msg[0].is_from_server && msg[0].id_user!="server"){
-        console.log(msg[0])
-        this.sort_notifications(msg);
-      }
-    })  
-  }
-  
+ 
 
   check_chat_service_func(){
     this.chatService.messages.subscribe(msg=>{
-      if(msg[0] && !msg[0].is_from_server && msg[0].id_user!="server"){
+      if(msg[0].for_notifications){
         console.log(msg[0])
         this.sort_notifications(msg);
+      }
+      else{
+        this.chat_service_managment_function(msg);
+        
       }
     })
   }
 
+  
+
+  retrieve_profile(){
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.user_id=r[0].id;
+      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.pseudo=r[0].nickname;
+      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.profile_picture = SafeURL;
+        this.chatService.get_number_of_unseen_messages().subscribe(a=>{
+          console.log(a);
+          this.number_of_unseen_messages=a[0].number_of_unseen_messages;
+          this.NotificationsService.get_list_of_notifications().subscribe(r=>{
+            console.log(r[0])
+            if(r[0].length>0){
+              for(let i=0;i<r[0].length;i++){
+                this.list_of_notifications[i]=r[0][i];
+                if(i==r[0].length-1){
+                  console.log("end retrieve profile")
+                  this.get_final_list_of_notifications_to_show();
+                  this.sort_friends_list();
+                }
+              }
+            }
+            else{
+              this.data_retrieved=true;
+              this.sort_friends_list();
+            }
+          });
+          
+        })
+
+        
+      });
+    })
+  }
+
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
+ 
   sort_notifications(msg){
     console.log("sorting notif")
     if(msg[0].for_notifications){
@@ -240,42 +367,12 @@ export class NavbarLinkartsComponent implements OnInit {
       this.get_final_list_of_notifications_to_show();
       console.log(this.list_of_notifications)
     }
+    else{
+      this.list_of_messages.splice(0,0,msg[0]);
+
+    }
   }
 
-  retrieve_profile(){
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.user_id=r[0].id;
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
-      this.pseudo=r[0].nickname;
-      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-        this.NotificationsService.get_list_of_notifications().subscribe(r=>{
-          console.log(r[0])
-          if(r[0].length>0){
-            for(let i=0;i<r[0].length;i++){
-              this.list_of_notifications[i]=r[0][i];
-              if(i==r[0].length-1){
-                console.log("end retrieve profile")
-                this.get_final_list_of_notifications_to_show();
-                
-              }
-            }
-          }
-          else{
-            this.data_retrieved=true;
-          }
-          
-        });
-      });
-    })
-  }
-
-  pp_loaded(){
-    this.pp_is_loaded=true;
-  }
- 
   open_notifications(){
     if(this.show_notifications){
       this.show_notifications=false;
@@ -297,24 +394,14 @@ export class NavbarLinkartsComponent implements OnInit {
       if(this.list_of_notifications[i].status=="unchecked"){
         modify=true;
         this.list_of_notifications[i].status="checked";
-        this.final_list_of_notifications_to_show[i]="checked";
+        this.final_list_of_notifications_to_show[i].status="checked";
       }
     }
     if(modify){
-      this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).subscribe(r=>{
-        
+      this.NotificationsService.change_all_notifications_status_to_checked(this.user_id).subscribe(r=>{  
       })
     }
-  }
-  add_notification_seen(i){
-    /*if(this.list_of_notifications[i].status!="seen"){
-      this.list_of_notifications[i].status="seen";
-      let elem=this.list_of_notifications[i]
-      this.NotificationsService.change_notification_status_to_seen(elem.id_user,elem.type,elem.publication_category,elem.format,elem.publication_id,elem.chapter_number).subscribe(r=>{
-        this.show_notifications=true;
-      })
-    }*/
-    
+    this.number_of_unchecked_notifications=0;
   }
 
   dictionnary_of_similar_notifications={};
@@ -324,6 +411,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.dictionnary_of_similar_notifications={};
     this.dictionnary_of_similar_notifications[0]=[];
     this.final_list_of_notifications_to_show[0]=this.list_of_notifications[0];
+    let number_of_empties=0;
     for(let i=1;i<this.list_of_notifications.length;i++){
       this.dictionnary_of_similar_notifications[i]=[];
       let similar_found=false;
@@ -366,7 +454,11 @@ export class NavbarLinkartsComponent implements OnInit {
       if(!similar_found ){
           this.final_list_of_notifications_to_show[i]=this.list_of_notifications[i];
       }
+      else if(i<20){
+        number_of_empties+=1
+      }
     }
+    this.index_of_notifications_to_show=15+number_of_empties;
     this.data_retrieved=true;
     this.display_number_of_unchecked_notifications();
     console.log(this.final_list_of_notifications_to_show)
@@ -374,7 +466,7 @@ export class NavbarLinkartsComponent implements OnInit {
     console.log(this.list_of_notifications)
   }
 
-  number_of_unchecked_notifications=0
+ 
   display_number_of_unchecked_notifications(){
     let number=0;
     for(let i=0;i<this.list_of_notifications.length;i++){
@@ -408,6 +500,7 @@ export class NavbarLinkartsComponent implements OnInit {
   pp_thumb_hist_is_loaded:any[]=[];
   first_option:boolean;
   show_most_researched_propositions=false;
+  first_propositions_retrieved=false;
   activateFocus() {
     if(this.focus_activated){
       return
@@ -447,6 +540,7 @@ export class NavbarLinkartsComponent implements OnInit {
               for(let i=0;i<m[0][0].length;i++){
                 this.get_first_propositions(i,m[1])
               }
+              this.first_propositions_retrieved=true;
             }
             else{
               this.first_option=false;
@@ -458,9 +552,11 @@ export class NavbarLinkartsComponent implements OnInit {
                     for(let i=0;i<n[0][0].length;i++){
                       this.get_first_propositions(i,n[1])
                     }
+                    this.first_propositions_retrieved=true;
                   }
                   else{
                     this.loading_recent=false;
+                    this.first_propositions_retrieved=true;
                   }
                   
                 }
@@ -512,7 +608,8 @@ export class NavbarLinkartsComponent implements OnInit {
     //vérifier que ca ne commence pas par un espace aussi
 
     if(this.input.nativeElement.value!=''){
-      this.show_most_researched_propositions=false;
+      if(this.input.nativeElement.value.replace(/\s/g, '').length>0){
+        this.show_most_researched_propositions=false;
 
         this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).subscribe(m=>{
           console.log(m[0][0]);
@@ -581,10 +678,12 @@ export class NavbarLinkartsComponent implements OnInit {
           
          
         })
+      }
+      
     }
     else{
       
-      if(this.most_researched_propositions.length==0 || this.list_of_first_propositions_history.length==0){
+      if(this.most_researched_propositions.length==0 || this.list_of_first_propositions_history.length==0 || !this.first_propositions_retrieved){
         this.get_trendings();
       }
       else{
@@ -986,12 +1085,17 @@ export class NavbarLinkartsComponent implements OnInit {
 /***************************************logout  **********************************/
   logout(){
     this.AuthenticationService.logout();
+    
     //this.type_of_profile="visitor";
     location.reload();
   }
 
   login(){
     const dialogRef = this.dialog.open(LoginComponent, {});
+  }
+
+  signup(){
+    const dialogRef = this.dialog.open(SignupComponent, {});
   }
 
   /***************************************Style navbar **********************************/
@@ -1026,12 +1130,6 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
  
-
-  /*ngAfterViewContent() {
-    this.setHeight();
-    this.define_margin_top();
-  }*/
-  
 
 
   //Scrolling managements
@@ -1086,5 +1184,594 @@ initialize_selectors(){
 
 
 
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
+/********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
 
+//chat_friends and groups
+list_of_chat_friends_ids:number[]=[]; // id de la liste list_of_chat_friends
+number_of_friends_to_show:number=10;
+list_of_friends_types:any[]=[];
+list_of_friends_profile_pictures:any[]=[];
+list_of_friends_pseudos:any[]=[];
+list_of_friends_names:any[]=[];
+list_of_friends_ids:any[]=[];
+list_of_friends_last_message:any[]=[];
+list_of_friends_retrieved=false;
+list_of_friends_date=[]
+list_of_friends_users_only=[];
+
+list_of_last_connection_dates=[];
+list_of_friends_connected=[];
+connections_status_retrieved=false;
+list_of_groups_retrieved=false;
+list_of_groups_ids=[];
+
+open_messages(){
+  if(this.show_chat_messages){
+    this.show_chat_messages=false;
+    return;
+  }
+  else if(this.navbar.get_using_chat()){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:'Vous êtes déjà dans la messagerie'},
+    });
+  }
+  else{
+    this.show_chat_messages=true;
+    this.cd.detectChanges();
+  }
+ 
+}
+
+
+
+sort_friends_list() {
+  this.list_of_chat_friends_ids=[]; 
+  this.number_of_friends_to_show=10;
+  this.list_of_friends_types=[];
+  this.list_of_friends_profile_pictures=[];
+  this.list_of_friends_pseudos=[];
+  this.list_of_friends_names=[];
+  this.list_of_friends_ids=[];
+  this.list_of_friends_last_message=[];
+  this.list_of_friends_retrieved=false;
+  this.list_of_friends_date=[]
+  this.list_of_friends_users_only=[];
+
+  this.list_of_last_connection_dates=[];
+  this.list_of_friends_connected=[];
+  this.connections_status_retrieved=false;
+  this.list_of_groups_retrieved=false;
+  this.list_of_groups_ids=[];
+
+  console.log("first sort friends list")
+  this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
+    if(r[0].length>0){
+      let compt=0;
+      console.log(r[0])
+      for(let i=0;i<r[0].length;i++){
+        this.list_of_chat_friends_ids[i]=r[0][i].id;
+        if(r[0][i].id_user==this.user_id){
+            this.list_of_friends_types[i]='user';
+            this.list_of_friends_users_only[i]=r[0][i].id_receiver;
+            this.list_of_friends_ids[i]=r[0][i].id_receiver;
+            this.list_of_friends_date[i]=new Date(r[0][i].date).getTime()/1000;
+            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_receiver).subscribe(s=>{
+              this.list_of_friends_pseudos[i]=s[0].nickname;
+              this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_receiver ).subscribe(t=> {
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_friends_profile_pictures[i] = SafeURL;
+                compt ++;
+                if(compt==r[0].length){
+                  console.log(this.list_of_friends_ids)
+                  this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
+                    this.list_of_friends_last_message=u[0].list_of_friends_messages;
+                      this.sort_friends_groups_chats_list();
+                  });
+                }
+              });
+            });
+        }
+        else{
+            this.list_of_friends_types[i]='user';
+            this.list_of_friends_ids[i]=r[0][i].id_user;
+            this.list_of_friends_users_only[i]=r[0][i].id_user;
+            this.list_of_friends_date[i]=new Date(r[0][i].date).getTime()/1000;
+            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(s=>{
+              this.list_of_friends_pseudos[i]=s[0].nickname;
+              this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.Profile_Edition_Service.retrieve_profile_picture(  r[0][i].id_user ).subscribe(t=> {
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_friends_profile_pictures[i] = SafeURL;
+                compt ++;
+                if(compt==r[0].length){
+                  console.log(this.list_of_friends_ids)
+                  this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
+                    this.list_of_friends_last_message=u[0].list_of_friends_messages;
+                    console.log(this.list_of_friends_last_message)
+                      this.sort_friends_groups_chats_list();
+                  });
+                }
+              });
+            });
+        }
+      }
+    }
+    else{
+      console.log("régler le cas 0 ...")
+    }
+    
+  })
+};
+
+
+sort_friends_groups_chats_list(){
+  let len =this.list_of_friends_ids.length;
+  this.chatService.get_my_list_of_groups().subscribe(l=>{
+    let list_of_names=[]
+    console.log(l[0]);
+    if(l[0].length>0){
+      for(let k=0;k<l[0].length;k++){
+        
+        list_of_names.push(l[0][k].name)
+        this.list_of_friends_names[len+k]=l[0][k].name;
+        this.list_of_friends_pseudos[len+k]=l[0][k].name
+        this.list_of_groups_ids[k]=l[0][k].id;
+        if(k==l[0].length-1){
+          console.log(this.list_of_groups_ids)
+          // get_list_of_groups_I_am_in sans les spams
+          this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).subscribe(r=>{
+            console.log(r[0].friends)
+            let compt=0;
+            let list_of_ids=[]
+            for(let i=0;i<r[0].friends.length;i++){
+              list_of_ids.push(r[0].friends[i].id_receiver);
+              this.list_of_chat_friends_ids[len+i]=r[0].friends[i].id;
+              this.list_of_friends_ids[len+i]=r[0].friends[i].id_receiver;
+              this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
+              this.list_of_friends_types[len+i]='group';
+              console.log(r[0].friends[i].chat_profile_pic_name);
+              console.log(r[0].friends[i].profile_pic_origin)
+              this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
+                console.log(t);
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_friends_profile_pictures[len+i]=SafeURL;
+                compt ++;
+                if(compt==r[0].friends.length){
+                  console.log(this.list_of_friends_ids)
+                  console.log(list_of_names)
+                  console.log(list_of_ids)
+                  this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
+                    console.log(u[0])
+                    this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
+                    console.log(this.list_of_friends_last_message);
+                    this.sort_list_of_groups_and_friends();
+                  });
+                }
+              });
+            }
+          })
+        }
+      }
+      
+    }
+    else{
+      this.get_connections_status();
+      this.list_of_friends_retrieved=true;
+    }
+    
+    
+    
+  })
+}
+
+sort_list_of_groups_and_friends(){
+  let length=this.list_of_friends_ids.length
+  for(let i=1;i<length;i++){
+    for(let j=0;j<i;j++){
+      if(this.list_of_friends_date[i]>this.list_of_friends_date[j]){
+        this.list_of_chat_friends_ids.splice(j,0,this.list_of_chat_friends_ids.splice(i,1)[0]);
+        this.list_of_friends_last_message.splice(j,0,this.list_of_friends_last_message.splice(i,1)[0]);
+        this.list_of_friends_date.splice(j,0,this.list_of_friends_date.splice(i,1)[0]);
+        this.list_of_friends_ids.splice(j,0,this.list_of_friends_ids.splice(i,1)[0]);
+        this.list_of_friends_types.splice(j,0,this.list_of_friends_types.splice(i,1)[0]);
+        this.list_of_friends_names.splice(j,0,this.list_of_friends_names.splice(i,1)[0]);
+        this.list_of_friends_pseudos.splice(j,0,this.list_of_friends_pseudos.splice(i,1)[0]);
+        this.list_of_friends_profile_pictures.splice(j,0,this.list_of_friends_profile_pictures.splice(i,1)[0]);
+      }
+      if(i==length-1 && j==length-2){
+        this.get_connections_status();
+        this.list_of_friends_retrieved=true;
+        
+      }
+    }
+  }
+}
+
+get_connections_status(){
+  this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
+    r[0].list_of_users_connected;
+    let compt=0
+    for(let i=0;i<this.list_of_friends_types.length;i++){
+      
+      if(this.list_of_friends_types[i]=='user'){
+        let id=this.list_of_friends_ids[i]
+        let index=this.list_of_friends_users_only.indexOf(id);
+        this.list_of_friends_connected[i]=r[0].list_of_users_connected[index];
+        if(r[0].date_of_webSockets_last_connection[id]){
+          let now=Math.trunc( new Date().getTime()/1000);
+          let date=r[0].date_of_webSockets_last_connection[id];
+          date = date.replace("T",' ');
+          date = date.replace("-",'/').replace("-",'/');
+          let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+          this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
+        }
+        compt++;
+        if(compt==this.list_of_groups_ids.length){
+          this.connections_status_retrieved=true;
+          this.cd.detectChanges()
+        }
+      }
+      else{
+        this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
+          let list=l[0].list_of_receivers_ids;
+          let value=false;
+          for(let j=0;j<list.length;j++){
+            if(list[j]!=this.user_id){
+              let index=this.list_of_friends_users_only.indexOf(list[j])
+              if(r[0].list_of_users_connected[index]){
+                value=true;
+              }
+            }
+          }
+          this.list_of_friends_connected[i]=value;
+          compt++;
+          if(compt==this.list_of_groups_ids.length){
+            this.connections_status_retrieved=true;
+            this.cd.detectChanges()
+          }
+        })
+      }
+    }
+  })
+}
+
+//un utilisateur a quitté le groupe
+display_exit(event){
+  let index=-1;
+  for(let i=0;i<this.list_of_friends_ids.length;i++){
+    if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]=='group'){
+      index=i;
+    }
+  }
+  this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
+  this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
+  this.list_of_friends_last_message[index]=event.message;
+  this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
+  this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+  this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
+  this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
+  this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+  this.cd.detectChanges()
+}
+
+change_message_status(event){
+  console.log(event);
+  console.log(this.list_of_friends_ids);
+  console.log(this.list_of_friends_names)
+  console.log(this.list_of_friends_last_message)
+  if(!event.spam){
+    
+    let index_friend=-1;
+    for(let i=0;i<this.list_of_friends_ids.length;i++){
+      if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type){
+        index_friend=i;
+      }
+    }
+    console.log(index_friend)
+    
+    if(index_friend>=0){
+      if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
+        this.list_of_friends_last_message[index_friend].status="deleted";
+      } 
+      if(event.status=="seen" &&  this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
+        if(event.friend_type=='group'){
+           if( (this.list_of_friends_last_message[index_friend].id_user==this.user_id && this.user_id!=event.real_friend_id)
+             || this.list_of_friends_last_message[index_friend].id_user!=this.user_id ){
+               console.log("putting messages group to seen")
+              if( this.list_of_friends_last_message[index_friend].list_of_users_who_saw.indexOf(event.real_friend_id)<0){
+                this.list_of_friends_last_message[index_friend].list_of_users_who_saw.push(event.real_friend_id);
+              }
+           }
+        }
+        else if((this.list_of_friends_last_message[index_friend].id_user==this.user_id && this.user_id!=event.real_friend_id)
+        || this.list_of_friends_last_message[index_friend].id_user!=this.user_id){
+          this.list_of_friends_last_message[index_friend].status="seen";
+        }
+        
+        
+      } 
+      
+      
+    }
+    else{
+      console.log("error friend not retrieved")
+    }
+    
+  }
+  this.cd.detectChanges()
+}
+
+  new_sort_friends_list(event){
+    console.log("getting message from chat")
+    console.log(event);
+    console.log(this.list_of_friends_ids)
+    console.log(this.list_of_friends_types)
+    let index=-1;
+    for(let i=0;i<this.list_of_friends_ids.length;i++){
+      if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type ){
+        index=i;
+      }
+    }
+    console.log(index)
+    if(index>=0){
+      console.log("a friend message")
+      //fait partie de la liste des contacts
+      console.log(event.message);
+      this.list_of_friends_last_message[index]=event.message;
+      this.cd.detectChanges();
+      //put message to received
+      this.list_of_friends_last_message[index].status="received";
+      console.log("received");
+      this.cd.detectChanges();
+      
+      this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
+      this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
+      this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
+      this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+      this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
+      this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
+      this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+      console.log(this.list_of_friends_last_message)
+      this.cd.detectChanges();
+
+    }
+    else{
+      console.log("dans le else new sort")
+      //à compléter
+      console.log(event);
+      if(event.friend_type=='group'){
+        this.get_group_chat_name(event.friend_id,event.message,false);
+      }
+      
+    }
+  }
+
+
+  add_group_to_contacts(event){
+    console.log("adding group to contacts")
+    console.log(event);
+    this.get_group_chat_name(event.friend_id,event.message,event.value)
+  }
+  
+
+  get_group_chat_name(id,message,value){
+    console.log("get_group_chat_name")
+    console.log(id);
+    console.log(message)
+    let pseudo = message.group_name;
+    let name =message.group_name;
+    this.chatService.get_group_chat_as_friend(id).subscribe(s=>{
+      console.log(s[0])
+      
+      this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).subscribe(t=> {
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        let picture = SafeURL;
+        this.list_of_chat_friends_ids.splice(0,0,s[0].id)
+        this.list_of_friends_types.splice(0,0,'group');
+        this.list_of_friends_ids.splice(0,0,id);
+        this.list_of_friends_last_message.splice(0,0,message);
+        this.list_of_friends_last_message[0].status="received";
+        this.list_of_friends_names.splice(0,0,name);
+        this.list_of_friends_profile_pictures.splice(0,0,picture);
+        this.list_of_friends_pseudos.splice(0,0,pseudo);
+        console.log(this.list_of_friends_last_message);
+        console.log(this.list_of_friends_types)
+        console.log(this.list_of_friends_names)
+        this.cd.detectChanges();
+      })
+      
+    })
+  }
+  
+  
+  show_date_of_timestamp(item,i){
+    let timestamp=item.createdAt;
+    
+    let date=new Date(timestamp)
+    let day=String(date.getDate()).padStart(2, '0')
+    let dat_today=new Date();
+    let today=String(dat_today.getDate()).padStart(2, '0')
+    let time=new Date(timestamp).getTime()/1000;
+    let time_now= new Date().getTime()/1000;
+    if(!item.createdAt ){
+        let hour =String(dat_today.getHours()).padStart(2, '0');
+        let min =String(dat_today.getMinutes()).padStart(2, '0');
+        this.list_of_friends_last_message[i].date=hour+':'+min;
+        return (hour+':'+min)
+    }
+
+    if(time_now-time>604800){
+      let month=String(date.getMonth() + 1).padStart(2, '0');
+      let year = date.getFullYear();
+      return day+'/'+month+'/'+year;
+    }
+    else if(time_now-time>86400){
+      let date=new Date(timestamp);
+      let day=String(date).substring(0,3);
+      if(day=="Mon"){
+        return("Lun");
+      }
+      if(day=='Tue'){
+        return"Mar";
+      }
+      if(day=='Wed'){
+        return"Mer";
+      }
+      if(day=='Thu'){
+        return"Jeu";
+      }
+      if(day=="Fri"){
+        return"Ven";
+      }
+      if(day=='Thu'){
+        return"Sam";
+      }
+      if(day=='Thu'){
+        return"Dim";
+      }
+      else{
+        return day
+      } 
+    }
+    else if(day!=today){
+      return ("Hier")
+    }
+    else if(day==today){
+      let hour =String(date.getHours()).padStart(2, '0');
+      let min =String(date.getMinutes()).padStart(2, '0');
+      return (hour+':'+min)
+    }
+   
+  }
+  
+  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
+  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
+  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
+  /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
+
+  chat_service_managment_function(msg){
+   
+    if(!msg[0].for_notifications){
+      console.log(msg[0])
+      console.log(this.list_of_messages)
+      //a person sends a message
+      if(msg[0].id_user!="server" && !msg[0].is_from_server){
+        console.log("it's not from server");
+        console.log(msg[0].status)
+        if(msg[0].is_a_group_chat){
+          console.log("is from a group");
+          if( msg[0].status=="seen"){
+            console.log("in the else if seen")
+            console.log("change message status 2")
+            this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_receiver,friend_type:'group',spam:false,real_friend_id:msg[0].id_user});
+          }
+          else{
+            console.log(msg[0].status)
+            console.log("in the else ");
+            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group'});
+            if(!this.show_chat_messages){
+              this.number_of_unseen_messages+=1;
+            }
+            this.cd.detectChanges;
+          }
+        }
+        else{
+          console.log("is from a user ");
+          
+          // not the friend I am talking to but seen
+          if(msg[0].status=="seen"){
+            console.log("in the else if seen")
+            console.log("change message status 3")
+            this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
+          }
+          // not the friend I am talking to and not seen
+          else{
+            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
+            if(!this.show_chat_messages){
+              this.number_of_unseen_messages+=1;
+            }
+            this.cd.detectChanges;
+          }
+        }
+        
+      }
+      else if(msg[0].server_message=="received_new"){
+        console.log("received new but not here")
+        this.new_sort_friends_list({friend_id:msg[0].message.id_receiver,message:msg[0].message,friend_type:'user'});
+        if(!this.show_chat_messages){
+          this.number_of_unseen_messages+=1;
+        }
+        this.cd.detectChanges;
+      }
+      //a message from the server to tell that the message has been sent
+      else if(msg[0].message=="New"){
+        console.log("new");
+        if(msg[0].is_a_group_chat){
+          console.log("adding new group to contacts")
+          this.add_group_to_contacts({friend_id:msg[0].id_receiver,message:msg[0]});
+          this.cd.detectChanges;
+        }
+        else{
+            this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
+            if(!this.show_chat_messages){
+              this.number_of_unseen_messages+=1;
+            }
+            this.cd.detectChanges;
+        }
+      }
+      else if(msg[0].message=="New_friend_in_the_group"){
+        console.log("New_friend_in_the_group");
+        this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group',value:false});
+        if(!this.show_chat_messages){
+          this.number_of_unseen_messages+=1;
+        }
+        this.cd.detectChanges;
+        
+      }
+      else if(msg[0].message=="Exit"){
+        console.log("Exit");
+        if(msg[0].is_a_group_chat){
+          this.display_exit({friend_id:msg[0].id_user,message:msg[0]});
+          if(!this.show_chat_messages){
+            this.number_of_unseen_messages+=1;
+          }
+          this.cd.detectChanges;
+        }
+      }
+    }
+  }
+
+  open_chat(i){
+    console.log(this.list_of_friends_ids[i]);
+    console.log(this.list_of_friends_types[i]);
+  }
+
+  get_chat_url(i){
+    if(this.list_of_friends_types[i]=='group'){
+      return `group/${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
+    }
+    else{
+      return `${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
+    }
+  }
+
+  logo_loaded(){
+    this.logo_is_loaded=true;
+  }
+
+
+
+
+
+  
 }

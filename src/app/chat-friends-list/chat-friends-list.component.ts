@@ -7,6 +7,7 @@ import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import {get_date_to_show_chat} from '../helpers/dates';
@@ -31,6 +32,7 @@ export class ChatFriendsListComponent implements OnInit {
     private cd: ChangeDetectorRef,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
+    private AuthenticationService:AuthenticationService,
     ){
       this.navbar.show();
       
@@ -60,7 +62,7 @@ export class ChatFriendsListComponent implements OnInit {
   spam='false';
   section="Mes contacts";
 
-  //chat_friends
+  //chat_friends and groups
   list_of_chat_friends_ids:number[]=[]; // id de la liste list_of_chat_friends
   number_of_friends_to_show:number;
   list_of_friends_types:any[]=[];
@@ -74,6 +76,8 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_friends_users_only=[];
   list_of_last_connection_dates=[];
 
+  list_of_groups_retrieved=false;
+  list_of_groups_ids=[];
   // for chat component
   chat_friend_id:number; // id de la list list_of_chat_friends
   friend_id: number;
@@ -164,13 +168,27 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
+    this.AuthenticationService.currentUserType.subscribe(r=>{
+      console.log(r)
+      if(r!="account"){
+        
+        //alert("not account")
+        
+        //location.reload();
+      }
+    })
     this.active_section = this.route.snapshot.data['section'];
+    
     if(this.active_section==2){
       let pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
       this.active_section_user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+      if(!(this.active_section_user_id>0)){
+        this.location.go('/chat')
+        location.reload();
+      }
       console.log( this.active_section_user_id )
       this.Profile_Edition_Service.retrieve_profile_data(this.active_section_user_id).subscribe(r=>{
-        if(!r[0] || r[0].pseudo!=pseudo){
+        if(!r[0] || r[0].nickname!=pseudo){
           this.location.go('/chat')
           location.reload();
         }
@@ -179,11 +197,14 @@ export class ChatFriendsListComponent implements OnInit {
     if(this.active_section==3){
       let name= this.activatedRoute.snapshot.paramMap.get('name');
       this.active_section_user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
+      if(!(this.active_section_user_id>0)){
+        this.location.go('/chat')
+        location.reload();
+      }
       console.log( this.active_section_user_id )
       this.chatService.get_group_chat_information(this.active_section_user_id).subscribe(r=>{
         if(!r[0] || r[0].name!=name){
-          this.location.go('/chat')
-          location.reload();
+          
         }
       })
       console.log(name);
@@ -379,8 +400,7 @@ export class ChatFriendsListComponent implements OnInit {
     })
   };
 
-  list_of_groups_retrieved=false;
-  list_of_groups_ids=[];
+  
   sort_friends_groups_chats_list(){
     let len =this.list_of_friends_ids.length;
     this.chatService.get_my_list_of_groups().subscribe(l=>{
@@ -738,6 +758,7 @@ export class ChatFriendsListComponent implements OnInit {
 /*****************************************************emit managment ********************** */
 
 
+//un utilisateur a quitté le groupe
 display_exit(event){
   let index=-1;
   for(let i=0;i<this.list_of_friends_ids.length;i++){
@@ -1007,30 +1028,41 @@ change_message_status(event){
     if(this.selected_list_of_new_friends_names.length>0){
       this.chatService.add_new_friends_to_a_group(this.id_group_where_friends_are_added,this.selected_list_of_new_friends_ids).subscribe(r=>{
         console.log(r[0])
-        let group_name=r[0].name;
-        if(r[0]){
-          let message_one ={
-            id_user_name:this.current_user_name,
-            id_user:this.current_user,   
-            id_receiver:this.id_group_where_friends_are_added,  
-            message:"New_friend_in_the_group",
-            list_of_users_who_saw:[this.current_user],
-            user_name:this.current_user_name,
-            group_name:group_name,
-            list_of_users_in_the_group:r[0].list_of_receivers_ids,
-            list_of_names_added:this.selected_list_of_new_friends_names,
-            is_from_server:true,
-            status:"sent",
-            id_chat_section:1,
-            attachment_name:"none",
-            attachment_type:"none",
-            is_a_response:false,
-            is_an_attachment:false,
-            is_a_group_chat:true,
-          };
-          this.chatService.messages.next(message_one);
-          this.cancel_add_friend_group();
+        if(r[0] && r[0].warning){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Le groupe ne peut contenir plus de 10 utilisateurs."},
+          });
+          this.selected_list_of_new_friends_names=[];
+          this.selected_list_of_new_friends_ids=[];
         }
+        else if(r[0]){
+          let group_name=r[0].name;
+          if(r[0]){
+            let message_one ={
+              id_user_name:this.current_user_name,
+              id_user:this.current_user,   
+              id_receiver:this.id_group_where_friends_are_added,  
+              message:"New_friend_in_the_group",
+              list_of_users_who_saw:[this.current_user],
+              user_name:this.current_user_name,
+              group_name:group_name,
+              list_of_users_in_the_group:r[0].list_of_receivers_ids,
+              list_of_names_added:this.selected_list_of_new_friends_names,
+              is_from_server:true,
+              status:"sent",
+              id_chat_section:1,
+              attachment_name:"none",
+              attachment_type:"none",
+              is_a_response:false,
+              is_an_attachment:false,
+              is_a_group_chat:true,
+            };
+            this.chatService.messages.next(message_one);
+            this.cancel_add_friend_group();
+          }
+        }
+        
+       
       })
     }
     else{
