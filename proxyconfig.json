@@ -1,0 +1,17 @@
+{
+    "/api/*":{
+        "target":"http://localhost:4600",
+        "secure":false,
+        "changeOrigin":true
+    },
+    "/routes/*":{
+        "target":"http://localhost:4600",
+        "secure":false,
+        "changeOrigin":true
+    },
+    "/python/*":{
+        "target":"http://localhost:4600",
+        "secure":false,
+        "changeOrigin":true
+    }
+}
