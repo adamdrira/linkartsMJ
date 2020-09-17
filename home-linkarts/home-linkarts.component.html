@@ -1,0 +1,81 @@
+<div class="container-fluid" >
+    <main role="main" class="main" >
+      
+
+
+        <div class="stories-title" *ngIf="type_of_profile_retrieved && type_of_profile=='account'">
+            <div class="icon-container">
+                <div class="icon icon-stories" >
+                </div>
+            </div>
+            Stories
+        </div>
+        <div class="storiesbar">
+            <app-stories></app-stories>
+        </div>
+
+
+        <div *ngIf="type_of_profile_retrieved">
+
+            <div class="categories-container">
+                <div class="category-filter2" [ngClass]="{'invisible':!little_screen }">
+                    <select class="f00select1" style="height: 100%; margin-bottom: 4px;font-size: 1.1rem; color: #203864;  text-shadow: -0.06ex 0 #203864, 0.06ex 0 #203864;">
+                        <option selected value="defaultValue" >Recommandations</option>
+                        <option label="1">Tendances</option>
+                        <option label="2">Abonnements</option>
+                    </select>
+                </div>
+                
+
+                <div class="category-filter" [ngClass]="{'invisible':little_screen,'put-on-the-left':type_of_profile=='account'}">
+                    <div class="content-action text-center" (click)="open_category(0);" [ngClass]="{'opened': category_index==0 }">
+                        <div class="title" [ngClass]="{'title-opened': category_index==0 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': category_index==0 }">
+                                </div>
+                            </div>
+                          Recommandations
+                        </div>
+                    </div>
+                    <div class="content-action text-center" (click)="open_category(1)" [ngClass]="{'opened': category_index==1 }">
+                        <div class="title" [ngClass]="{'title-opened': category_index==1 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': category_index==1 }">
+                                </div>
+                            </div>
+                          Tendances
+                        </div>
+                    </div>
+                    <div class="content-action text-center" (click)="open_category(2)" *ngIf="type_of_profile=='account'" [ngClass]="{'opened': category_index==2 }">
+                        <div class="title" [ngClass]="{'title-opened': category_index==2 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed" [ngClass]="{'icon-clicked': category_index==2 }">
+                                </div>
+                            </div>
+                          Abonnements
+                        </div>
+                    </div>
+                    <!--<div class="content-action text-center" (click)="open_category(3)">
+                        <span>Mode découverte</span> 
+                        <div class="bottom-border">
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+    
+    
+            <ng-container *ngIf="this.category_index==0">
+                <app-recommendations></app-recommendations>
+            </ng-container>
+            <ng-container *ngIf="this.category_index==1">
+                <app-trendings></app-trendings>
+            </ng-container>
+            <ng-container *ngIf="this.category_index==2">
+                <app-subscribings></app-subscribings>
+            </ng-container>
+    
+        </div>
+
+
+    </main>
+</div>
