@@ -170,27 +170,61 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                 id:id_user_to_subscribe,
                             }
                         }).then(user=>{
-                            let number=user.subscribers_number +1;
-                            user.update({
-                                'subscribers': Sequelize.fn('array_append', Sequelize.col('subscribers'), current_user),
-                                'subscribers_number':number,
-                            },
-                               ).then(user=>{
+                            let list = user.subscribers;
+                            if(!list.includes(current_user)){
+                                let number=user.subscribers_number +1;
+                                user.update({
+                                    'subscribers': Sequelize.fn('array_append', Sequelize.col('subscribers'), current_user),
+                                    'subscribers_number':number,
+                                })
+                                .then(user=>{
+                                    list_of_users.findOne({
+                                        where:{
+                                            id:current_user,
+                                        }
+                                    }).then(user1=>{
+                                        let list1 = user1.subscribings;
+                                        if(list1.includes(id_user_to_subscribe)){
+                                                res.status(200).send([{"subscribings":"already sbscribed"}])
+                                        }
+                                        else{
+                                            let number1=user1.subscribings_number +1;
+                                            user1.update( {
+                                                'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
+                                                'subscribings_number':number1,
+                                            },
+                                            ).then(m=>{
+                                                res.status(200).send([subscribings])
+                                            })
+                                        }
+                                    
+                                    })
+                                })
+                            }
+                            else{
                                 list_of_users.findOne({
                                     where:{
                                         id:current_user,
                                     }
                                 }).then(user1=>{
-                                    let number1=user1.subscribings_number +1;
-                                    user1.update( {
-                                        'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
-                                        'subscribings_number':number1,
-                                    },
-                                    ).then(m=>{
-                                        res.status(200).send([subscribings])
-                                    })
+                                    let list1 = user1.subscribings;
+                                    if(list1.includes(id_user_to_subscribe)){
+                                            res.status(200).send([{"subscribings":"already sbscribed"}])
+                                    }
+                                    else{
+                                        let number1=user1.subscribings_number +1;
+                                        user1.update( {
+                                            'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
+                                            'subscribings_number':number1,
+                                        },
+                                        ).then(m=>{
+                                            res.status(200).send([subscribings])
+                                        })
+                                    }
+                                
                                 })
-                            })
+                            }
+                            
                         })
                     })        
 

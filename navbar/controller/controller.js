@@ -913,7 +913,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                             res.status(200).send([result])
                         } )
                     }
-                    else if((now_in_seconds - uploaded_date_in_second)>360){
+                    else if((now_in_seconds - uploaded_date_in_second)>10800){
                         list_of_navbar_researches.create({
                             "id_user":id_user,
                             "publication_category":publication_category,

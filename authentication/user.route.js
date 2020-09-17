@@ -14,7 +14,9 @@ module.exports = function(app) {
 
     //getuserID
     app.get('/api/userid', users.getCurrentUser);
-
+    //pseudo check
+    app.post('/api/users/check_pseudo', users.check_pseudo);
+    
     app.post('/api/users/create_visitor', users.create_visitor);
     
     // 
@@ -22,6 +24,11 @@ module.exports = function(app) {
  
     // 
     app.post('/api/users/checkMail', users.checkMail);
+
+
+    //for test
+    app.post('/api/users/encrypt_data', users.encrypt_data);
+    app.post('/api/users/check_invited_user', users.check_invited_user);
 
 }
 

@@ -134,27 +134,33 @@ module.exports = (router,
             }).then(user=>{
                 let subscribers=user.subscribers;
                 let compt=0;
-                for(let i=0;i<subscribers.length;i++){
-                    list_of_notifications.create({
-                        "type":type,
-                        "id_user":current_user,
-                        "publication_name":publication_name,
-                        "id_user_name":user.firstname + ' ' + user.lastname,
-                        "id_receiver":subscribers[i],
-                        "publication_category":publication_category,
-                        "format":format,
-                        "publication_id":publication_id,
-                        "chapter_number":chapter_number,
-                        "status":"unchecked"
-                    })
-                    .then(notification=>{
-                        compt++;
-                        if(compt==subscribers.length){
-                            res.status(200).send([notification])
-                        }
-                        
-                    })   
+                if(subscribers.length>0){
+                    for(let i=0;i<subscribers.length;i++){
+                        list_of_notifications.create({
+                            "type":type,
+                            "id_user":current_user,
+                            "publication_name":publication_name,
+                            "id_user_name":user.firstname + ' ' + user.lastname,
+                            "id_receiver":subscribers[i],
+                            "publication_category":publication_category,
+                            "format":format,
+                            "publication_id":publication_id,
+                            "chapter_number":chapter_number,
+                            "status":"unchecked"
+                        })
+                        .then(notification=>{
+                            compt++;
+                            if(compt==subscribers.length){
+                                res.status(200).send([notification])
+                            }
+                            
+                        })   
+                    }
                 }
+                else{
+                    res.status(200).send([{nothing:"nothing"}])
+                }
+                
             })
         }
         

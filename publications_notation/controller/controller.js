@@ -549,7 +549,7 @@ module.exports = (router,
 
     router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {    
+   
         const category = req.params.category;
         const format = req.params.format;
         const style = req.params.style;
@@ -564,119 +564,22 @@ module.exports = (router,
         console.log(category);
         console.log(style);
         console.log(publication_id)
-        if (category === "bd" ) {
-            if(format === "one-shot"){
-                bd = await Liste_Bd_Oneshot.findOne({
-                    where: {
-                        bd_id: publication_id,
-                    }
-                    })
-                    .then(bd =>  {
-                    const views = bd.viewnumber + 1;
-                    bd.update({
-                        "viewnumber":views,
-                    })
-                    }); 
-                
-            }
-            else if (format === "serie"){
-
-                chapter = await Chapters_Bd_Serie.findOne({
-                    where: {
-                        bd_id: publication_id,
-                        chapter_number:chapter_number,
-                    }
-                    })
-                    .then(chapter =>  {
-                    const views = chapter.viewnumber + 1;
-                    chapter.update({
-                        "viewnumber":views,
-                    })
-                    .then(chapter =>  {  
-                        console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
-                        (async () => {
-                            bd_serie = await Liste_Bd_Serie.findOne({
-                                where: {
-                                bd_id: chapter.bd_id,
-                                }
-                            })
-                            .then(bd_serie =>  {
-                                console.log(bd_serie.viewnumber);
-                                const viewnumber = bd_serie.viewnumber + 1;
-                                bd_serie.update({
-                                "viewnumber":viewnumber,
-                                })
-                            })  
-                        })();
-                        
-                        })
-                    })
-
-            }
+        console.log('ajout de view ok');
+        List_of_views.create({
+            "author_id_who_looks": current_user,
+            "publication_category":category,
+            "format": format,
+            "style":style,
+            "firsttag":firsttag,
+            "secondtag":secondtag,
+            "thirdtag":thirdtag,
+            "publication_id": publication_id,
+            "chapter_number": chapter_number,
+            "author_id_viewed":author_id_viewed
+        })
+        .then(list_of_view => {res.status(200).send([list_of_view])})
             
-        }
-
-        else  if (category === "drawing" ) {
-            if(format === "one-shot"){
-                drawing = await Drawings_one_page.findOne({
-                    where: {
-                        drawing_id: publication_id,
-                    }
-                })
-                .then(drawing =>  {
-                    const views = drawing.viewnumber + 1;
-                    drawing.update({
-                    "viewnumber":views,
-                    })
-                }); 
-            }
-
-            else if(format === "artbook"){
-                drawing = await Liste_Drawings_Artbook.findOne({
-                    where: {
-                    drawing_id: publication_id,
-                    }
-                })
-                .then(drawing =>  {
-                    const views = drawing.viewnumber + 1;
-                    drawing.update({
-                    "viewnumber":views,
-                    })
-                }); 
-            }
-        }
-
-        else  if (category === "writing" ) {
-            console.log("ajout vu pour writing");
-            writing = await Liste_Writings.findOne({
-                where: {
-                    writing_id: publication_id,
-                }
-            })
-            .then(writing =>  {
-                const views = writing.viewnumber + 1;
-                writing.update({
-                "viewnumber":views,
-                })
-            }); 
-            
-        }
-            console.log('ajout de view ok');
-            List_of_views.create({
-                "author_id_who_looks": current_user,
-                "publication_category":category,
-                "format": format,
-                "style":style,
-                "firsttag":firsttag,
-                "secondtag":secondtag,
-                "thirdtag":thirdtag,
-                "publication_id": publication_id,
-                "chapter_number": chapter_number,
-                "author_id_viewed":author_id_viewed
-            })
-            .then(list_of_view => {res.status(200).send([list_of_view])})
-            
-        })();
+       
         
         });
 
@@ -699,9 +602,107 @@ module.exports = (router,
             })
             .then(list_of_view =>  {
                 list_of_view.update({
-                "view_time":view_time,
-                })
-                .then(res.status(200).send([list_of_view]))
+                    "view_time":view_time,
+                }).then(view=>{
+                    if(view_time>3){
+                        if (view.publication_category=== "bd" ) {
+                            if(view.format === "one-shot"){
+                                Liste_Bd_Oneshot.findOne({
+                                    where: {
+                                        bd_id: view.publication_id,
+                                    }
+                                    })
+                                    .then(bd =>  {
+                                        const views = bd.viewnumber + 1;
+                                        bd.update({
+                                            "viewnumber":views,
+                                        })
+                                    }); 
+                                
+                            }
+                            else if (view.format === "serie"){
+                
+                                Chapters_Bd_Serie.findOne({
+                                    where: {
+                                        bd_id: view.publication_id,
+                                        chapter_number:view.chapter_number,
+                                    }
+                                    })
+                                    .then(chapter =>  {
+                                    const views = chapter.viewnumber + 1;
+                                    chapter.update({
+                                        "viewnumber":views,
+                                    })
+                                    .then(chapter =>  {  
+                                        console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
+                                    
+                                            Liste_Bd_Serie.findOne({
+                                                where: {
+                                                bd_id: chapter.bd_id,
+                                                }
+                                            })
+                                            .then(bd_serie =>  {
+                                                console.log(bd_serie.viewnumber);
+                                                const viewnumber = bd_serie.viewnumber + 1;
+                                                bd_serie.update({
+                                                "viewnumber":viewnumber,
+                                                })
+                                            })  
+                                        
+                                        })
+                                    })
+                
+                            }
+                            
+                        }
+                        else if (view.publication_category === "drawing" ) {
+                            if(view.format === "one-shot"){
+                                Drawings_one_page.findOne({
+                                    where: {
+                                        drawing_id: view.publication_id,
+                                    }
+                                })
+                                .then(drawing =>  {
+                                    const views = drawing.viewnumber + 1;
+                                    drawing.update({
+                                    "viewnumber":views,
+                                    })
+                                }); 
+                            }
+                
+                            else if(view.format === "artbook"){
+                                Liste_Drawings_Artbook.findOne({
+                                    where: {
+                                        drawing_id: view.publication_id,
+                                    }
+                                })
+                                .then(drawing =>  {
+                                    const views = drawing.viewnumber + 1;
+                                    drawing.update({
+                                    "viewnumber":views,
+                                    })
+                                }); 
+                            }
+                        }
+                        else if (view.publication_category === "writing" ) {
+                            console.log("ajout vu pour writing");
+                            Liste_Writings.findOne({
+                                where: {
+                                    writing_id: view.publication_id,
+                                }
+                            })
+                            .then(writing =>  {
+                                const views = writing.viewnumber + 1;
+                                writing.update({
+                                "viewnumber":views,
+                                })
+                            }); 
+                            
+                        }
+                    }
+                        
+                    
+                }).then(res.status(200).send([list_of_view]))
             });  
         }
            

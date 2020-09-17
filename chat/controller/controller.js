@@ -39,6 +39,160 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
            }); 
      });
 
+     router.get('/get_number_of_unseen_messages',function(req,res){
+      console.log("get_number_of_unseen_messages")
+      let current_user = get_current_user(req.cookies.currentUser);
+      const Op = Sequelize.Op;
+      let list_of_users=[];
+      let list_of_groups=[];
+      let number_of_unseen_messages=0;
+      list_of_chat_friends.findAll({
+           where: {
+              [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
+              is_a_group_chat:{[Op.not]: true},
+           },
+           order: [
+               ['date', 'DESC']
+             ],
+         })
+         .then(friends =>  {
+              for(let j=0;j<friends.length;j++){
+                if(friends[j].id_user==current_user && friends[j].id_receiver!=current_user){
+                  list_of_users.push(friends[j].id_receiver)
+                }
+                else if(friends[j].id_user!=current_user && friends[j].id_receiver==current_user){
+                  list_of_users.push(friends[j].id_user)
+                }
+              }
+              list_of_chat_groups.findAll({
+                where: {
+                  list_of_receivers_ids: { [Op.contains]: [current_user] },
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                  ],
+              }).then(groups=>{
+                for(let j=0;j<groups.length;j++){
+                  list_of_groups.push(groups[j].id)
+                }
+                let compt1=0;
+                for(let i=0;i<list_of_users.length;i++){
+                  list_of_messages.findAll({
+                    where:{
+                      id_user:list_of_users[i],
+                      id_receiver:current_user,
+                      status:"received",
+                      is_a_group_chat:false,
+                    },
+                    limit:1,
+                    order: [
+                      ['createdAt', 'DESC']
+                    ],
+                    
+                  }).then(r=>{
+                    if(r.length>0){
+                      number_of_unseen_messages+=1;
+                    }
+                    compt1+=1;
+                    console.log("number_of_unseen_messages users")
+                    console.log(number_of_unseen_messages)
+                    if(compt1==list_of_users.length){
+                      let compt2=0;
+                      if(list_of_groups.length==0){
+                        res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
+                      }
+                      else{
+                        for(let k=0;k<list_of_groups.length;k++){
+                          console.log("finding list_of_users_who_saw length")
+                          list_of_messages.findAll({
+                            where:{
+                              id_user:{[Op.ne]:current_user},
+                              id_receiver:list_of_groups[k],
+                              
+                              is_a_group_chat:true,
+                            },
+                            where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
+                            limit:1,
+                            order: [
+                              ['createdAt', 'DESC']
+                            ],
+                            
+                          }).then(r=>{
+                              if(r.length>0){
+                                number_of_unseen_messages+=1;
+                              }
+                              compt2+=1;
+                              if(compt2==list_of_groups.length){
+                                console.log("number_of_unseen_messages end")
+                                console.log(number_of_unseen_messages)
+                                res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
+                              }
+                            })
+                        }
+                      }
+                      
+                      
+                    }
+                  })
+                }
+              })
+         }); 
+     })
+
+     router.get('/get_number_of_unseen_messages_spams',function(req,res){
+      console.log("get_number_of_unseen_messages_spams")
+      let current_user = get_current_user(req.cookies.currentUser);
+      const Op = Sequelize.Op;
+      let list_of_users=[];
+      let number_of_unseen_messages=0;
+      list_of_chat_spams.findAll({
+           where: {
+              [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
+           },
+           order: [
+               ['date', 'DESC']
+             ],
+         })
+         .then(friends =>  {
+              for(let j=0;j<friends.length;j++){
+                if(friends[j].id_user==current_user && friends[j].id_receiver!=current_user){
+                  list_of_users.push(friends[j].id_receiver)
+                }
+                else if(friends[j].id_user!=current_user && friends[j].id_receiver==current_user){
+                  list_of_users.push(friends[j].id_user)
+                }
+              }
+
+                
+              let compt1=0;
+              for(let i=0;i<list_of_users.length;i++){
+                list_of_messages.findAll({
+                  where:{
+                    id_user:list_of_users[i],
+                    id_receiver:current_user,
+                    status:"received",
+                    is_a_group_chat:false,
+                  },
+                  limit:1,
+                  order: [
+                    ['createdAt', 'DESC']
+                  ],
+                  
+                }).then(r=>{
+                  if(r.length>0){
+                    number_of_unseen_messages+=1;
+                  }
+                  compt1+=1;
+                  console.log("get_number_of_unseen_messages_spams spams")
+                  console.log(number_of_unseen_messages)
+                  if(compt1==list_of_users.length){
+                    res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
+                  }
+                })
+              }
+         }); 
+     })
+
      router.get('/get_list_of_spams', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
@@ -325,7 +479,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       if(id_friend==id_user && !is_a_group_chat){
           res.status(200).send([{value:true}])
         } 
-      else{
+      else if(!is_a_group_chat && id_friend!=id_user){
         list_of_messages.findOne({
           where: {
             id_chat_section:id_chat_section,
@@ -342,6 +496,23 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           }
         });
       }
+      else if(is_a_group_chat ){
+        list_of_messages.findOne({
+          where: {
+            id_chat_section:id_chat_section,
+            id_receiver:id_friend,
+            is_a_group_chat:true,
+          }
+        }).then( message=>{
+          if(message){
+            res.status(200).send([{value:true}])
+          }
+          else{
+            res.status(200).send([{value:false}])
+          }
+        });
+      }
+    
     
    });
 
@@ -526,7 +697,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           get_other_users();
         }
         else{
-          // si on crééer un groupe on va aussi chercher les utilisateurs amis.
+          // si on créée un groupe on va aussi chercher les utilisateurs amis.
           let list_of_users_ids=[];
           for(let i=0;i<list_of_related_users.length;i++){
             list_of_users_ids.push(list_of_related_users[i].id)
@@ -953,18 +1124,18 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     let is_a_group_chat=(req.params.is_a_group_chat=='true')?true:false;
     const Op = Sequelize.Op;
 
-      list_of_chat_sections.findAll({
-        where:{
-          is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
-          chat_section_name:{[Op.iLike]:'%'+ text + '%' },
-          [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
-        },
-        order: [
-          ['chat_section_name', 'ASC']
-        ],
-      }).then(sections=>{
-          res.status(200).send([sections])
-      })
+    list_of_chat_sections.findAll({
+      where:{
+        is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+        chat_section_name:{[Op.iLike]:'%'+ text + '%' },
+        [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
+      },
+      order: [
+        ['chat_section_name', 'ASC']
+      ],
+    }).then(sections=>{
+        res.status(200).send([sections])
+    })
     
     
   });
@@ -1143,18 +1314,35 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_type=req.params.friend_type;
       const Op = Sequelize.Op;
       console.log("get_size_of_files")
-      list_of_messages.findAll({
+      if(friend_type=='group'){
+        list_of_messages.findAll({
           attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
           where:{
-            [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+            id_receiver:id_friend,
             attachment_type:"file_attachment",
             id_chat_section:id_chat_section,
-            is_a_group_chat:(friend_type=='group')?true:{[Op.not]: true},
+            is_a_group_chat:true,
           }
          })
          .then(files =>  {
              res.status(200).send([files])
          }); 
+      }
+      else{
+        list_of_messages.findAll({
+          attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
+          where:{
+            [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+            attachment_type:"file_attachment",
+            id_chat_section:id_chat_section,
+            is_a_group_chat:{[Op.not]: true},
+          }
+         })
+         .then(files =>  {
+             res.status(200).send([files])
+         }); 
+      }
+      
    });
 
    router.get('/get_size_of_pictures/:friend_id/:id_chat_section/:friend_type', function (req, res) {
@@ -1163,18 +1351,35 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     let id_chat_section = parseInt(req.params.id_chat_section);
     let friend_type=req.params.friend_type;
     const Op = Sequelize.Op;
-    list_of_messages.findAll({
+    if(friend_type=='group'){
+      list_of_messages.findAll({
         attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
         where:{
-          [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+          id_receiver:id_friend,
           attachment_type:"picture_attachment",
           id_chat_section:id_chat_section,
-          is_a_group_chat:(friend_type=='group')?true:{[Op.not]: true},
+          is_a_group_chat:true,
         }
        })
        .then(files =>  {
            res.status(200).send([files])
        }); 
+    }
+    else{
+      list_of_messages.findAll({
+        attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
+        where:{
+          [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+          attachment_type:"picture_attachment",
+          id_chat_section:id_chat_section,
+          is_a_group_chat:{[Op.not]: true},
+        }
+       })
+       .then(files =>  {
+           res.status(200).send([files])
+       }); 
+    }
+    
  });
 
 
@@ -1182,60 +1387,117 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend = parseInt(req.params.friend_id);
       let id_chat_section = parseInt(req.params.id_chat_section);
-      let date=req.params.date;
+      let date_entry=req.params.date;
       let friend_type=req.params.friend_type;
-      if(date=="now"){
-        date= new Date();
-      }
       const Op = Sequelize.Op;
-      list_of_messages.findAll({
-           where: {
-              is_a_group_chat:(friend_type=='group')?true:{[Op.not]: true},
-              createdAt: {[Op.lt]: date},
-              id_chat_section:id_chat_section,
-              is_an_attachment:true,
-              attachment_type:"file_attachment",
-              [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
-             
-           },
-           order: [
-               ['createdAt', 'DESC']
-             ],
-          limit:15,
-         })
-         .then(files =>  {
-             res.status(200).send([files])
-         }); 
+      let date =new Date();
+      if(date_entry!="now"){
+        date_entry.substring(0,date_entry.length - 5);
+        date_entry = date_entry.replace("T",' ');
+        date_entry = date_entry.replace("-",'/').replace("-",'/');
+        date= new Date(date_entry + ' GMT');
+      }
+      if(friend_type=='group'){
+        const Op = Sequelize.Op;
+        list_of_messages.findAll({
+             where: {
+                is_a_group_chat:true,
+                createdAt: {[Op.lt]: date},
+                id_chat_section:id_chat_section,
+                is_an_attachment:true,
+                attachment_type:"file_attachment",
+                id_receiver:id_friend,
+               
+             },
+             order: [
+                 ['createdAt', 'DESC']
+               ],
+            limit:15,
+           })
+           .then(files =>  {
+               res.status(200).send([files])
+           }); 
+      }
+      else{
+        const Op = Sequelize.Op;
+        list_of_messages.findAll({
+             where: {
+                is_a_group_chat:{[Op.not]: true},
+                createdAt: {[Op.lt]: date},
+                id_chat_section:id_chat_section,
+                is_an_attachment:true,
+                attachment_type:"file_attachment",
+                [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+               
+             },
+             order: [
+                 ['createdAt', 'DESC']
+               ],
+            limit:15,
+           })
+           .then(files =>  {
+               res.status(200).send([files])
+           }); 
+      }
+      
    });
 
    router.get('/get_all_pictures/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = parseInt(req.params.friend_id);
     let id_chat_section = parseInt(req.params.id_chat_section);
-    let date=req.params.date;
+    let date_entry=req.params.date;
     let friend_type=req.params.friend_type;
-      if(date=="now"){
-        date= new Date();
-      }
     const Op = Sequelize.Op;
-    list_of_messages.findAll({
-         where: {
-            is_a_group_chat:(friend_type=='group')?true:{[Op.not]: true},
-            createdAt: {[Op.lt]: date},
-            id_chat_section:id_chat_section,
-            is_an_attachment:true,
-            attachment_type:"picture_attachment",
-            [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
-           
-         },
-         order: [
-             ['createdAt', 'DESC']
-           ],
-        limit:15,
-       })
-       .then(files =>  {
-           res.status(200).send([files])
-       }); 
+    let date =new Date();
+    if(date_entry!="now"){
+      date_entry.substring(0,date_entry.length - 5);
+      date_entry = date_entry.replace("T",' ');
+      date_entry = date_entry.replace("-",'/').replace("-",'/');
+      date= new Date(date_entry + ' GMT');
+    }
+    if(friend_type=='group'){
+      list_of_messages.findAll({
+        where: {
+           is_a_group_chat:true,
+           createdAt: {[Op.lt]: date},
+           id_chat_section:id_chat_section,
+           is_an_attachment:true,
+           attachment_type:"picture_attachment",
+           id_receiver:id_friend,    
+          
+        },
+        order: [
+            ['createdAt', 'DESC']
+          ],
+       limit:15,
+      })
+      .then(files =>  {
+          res.status(200).send([files])
+      }); 
+    }
+    else{
+      list_of_messages.findAll({
+        where: {
+           is_a_group_chat:{[Op.not]: true},
+           createdAt: {[Op.lt]: date},
+           id_chat_section:id_chat_section,
+           is_an_attachment:true,
+           attachment_type:"picture_attachment",
+           [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],      
+          
+        },
+        order: [
+            ['createdAt', 'DESC']
+          ],
+       limit:15,
+      })
+      .then(files =>  {
+          res.status(200).send([files])
+      }); 
+    }
+    
+    
  });
 
 
@@ -2609,22 +2871,28 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       }
     }).then(group=>{
       list_of_receivers_ids=group.list_of_receivers_ids;
-      list_of_receivers_ids=list_of_receivers_ids.concat(list_of_friends);
-      group.update({
-        "list_of_receivers_ids":list_of_receivers_ids
-      }).then(l=>{
-        list_of_messages.update({
-          "list_of_users_in_the_group":list_of_receivers_ids,
-          where:{
-            id_receiver:friend_id,
-            is_a_group_chat:true,
-          }
-        }).then(m=>{
+      if(list_of_receivers_ids.length+list_of_friends.length>10){
+        res.status(200).send([{"warning":"too_much_friends"}])
+      }
+      else{
+        list_of_receivers_ids=list_of_receivers_ids.concat(list_of_friends);
+        group.update({
+          "list_of_receivers_ids":list_of_receivers_ids
+        }).then(l=>{
+          list_of_messages.update({
+            "list_of_users_in_the_group":list_of_receivers_ids,
+            where:{
+              id_receiver:friend_id,
+              is_a_group_chat:true,
+            }
+          }).then(m=>{
+            
+            res.status(200).send([group])
+          })
           
-          res.status(200).send([group])
         })
-        
-      })
+      }
+      
     })
 });
 
