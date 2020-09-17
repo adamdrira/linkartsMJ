@@ -1,5 +1,8 @@
 const category = require('../../comics_one_shot_and_cover/controllers/controller');
 const fetch = require("node-fetch");
+var {spawn} = require("child_process")
+var path = require('path');
+var {PythonShell} = require('python-shell');
 const usercontroller = require('../../authentication/user.controller');
 var Request = require('request');
 const fs = require("fs");
@@ -35,7 +38,7 @@ pool.connect((err, client, release) => {
 const get_view_table_by_user = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 40);
+  last_week.setDate(last_week.getDate() - 150);
 
 
 
@@ -60,10 +63,41 @@ const get_view_table_by_user = (request, response) => {
       console.log(e)
     })
     .on("finish", function() {
-        console.log("csv successfully uploaded!");
+        console.log("csv successfully uploaded for python");
+        console.log(jsonData)
         if(jsonData.length>=1){
-          let formdata = {csvfile: fs.createReadStream(__dirname + '/csvfiles_for_python/classement_python.csv')}
-          Request.post('http://localhost:777/list_of_views', {formData: formdata, headers:{'user_id':user}},  (err, resp, body) => {
+          console.log("calling python prog")
+          //let formdata = {csvfile: fs.createReadStream(__dirname + '/csvfiles_for_python/classement_python.csv')};
+         
+
+          //console.log(formdata)
+          //.spawn('echo', ['$(python --3.7)'], {shell: true, stdio: 'inherit'});
+          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+          //console.log(pythonProcess)
+          pythonProcess.stderr.pipe(process.stderr);
+          pythonProcess.stdout.on('data', (data) => {
+            console.log("python res")
+            //sconsole.log(data.toString())
+          });
+          pythonProcess.stdout.on("end", (data) => {
+            console.log("end received data python: ");
+            fs.access(__dirname + '/csvfiles_for_python/classement_python.csv', fs.F_OK, (err) => {
+              if(err){
+                console.log('suppression already done');
+                return response.status(200).send([{"length":(jsonData.length).toString()}]); 
+              }  
+              fs.unlink(__dirname + '/csvfiles_for_python/classement_python.csv',function (err) {
+                if (err) {
+                  throw err;
+                } 
+              });
+              response.status(200).send([{"length":(jsonData.length).toString()}]);    
+            })   
+          });
+
+         
+
+          /*Request.post('http://localhost:777/list_of_views', {formData: formdata, headers:{'user_id':user}},  (err, resp, body) => {
             if (err) {
               console.log('Error!');
             } 
@@ -81,7 +115,7 @@ const get_view_table_by_user = (request, response) => {
                     response.status(200).send([{"length":(jsonData.length).toString()}]);    
                   })    
             }
-          });
+          });*/
         }
         else{
           let PATH = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
@@ -540,7 +574,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 40);
+  last_week.setDate(last_week.getDate() - 150);
 
 
   let list_to_send=[];
@@ -698,7 +732,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
     var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 40);
+  last_week.setDate(last_week.getDate() - 150);
   
     let list_to_send=[];
    
@@ -778,7 +812,7 @@ function complete_recommendation_bd(user,style,format,callback){
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 40);
+  last_week.setDate(last_week.getDate() - 150);
 
 
   let list_to_send=[];
@@ -852,7 +886,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 40);
+  last_week.setDate(last_week.getDate() - 150);
 
   let list_to_send=[];
  
@@ -907,7 +941,7 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 40);
+    last_week.setDate(last_week.getDate() - 150);
   
   
     let list_to_send=[];

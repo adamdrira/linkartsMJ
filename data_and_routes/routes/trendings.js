@@ -1,5 +1,6 @@
 const category = require('../../comics_one_shot_and_cover/controllers/controller');
 const fetch = require("node-fetch");
+var {spawn} = require("child_process")
 const usercontroller = require('../../authentication/user.controller');
 var Request = require('request');
 const fs = require("fs");
@@ -36,7 +37,7 @@ pool.connect((err, client, release) => {
     
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 14);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 70);
   
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
@@ -121,7 +122,41 @@ pool.connect((err, client, release) => {
                               console.log(e)
                             })
                             .on("finish", function() {
-                              let data = {csv_likes_file:fs.createReadStream(__dirname + Path2),csv_loves_file:fs.createReadStream(__dirname + Path3),csv_view_file:fs.createReadStream(__dirname + Path1)};
+
+                              const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                              //console.log(pythonProcess)
+                              pythonProcess.stderr.pipe(process.stderr);
+                              pythonProcess.stdout.on('data', (data) => {
+                                console.log("python res")
+                                console.log(data.toString())
+                              });
+                              pythonProcess.stdout.on("end", (data) => {
+                                console.log("end received data python: ");
+                                let files = [__dirname + Path1,__dirname + Path2,__dirname + Path3];
+                                for (let i=0;i<files.length;i++){
+                                  fs.access(files[i], fs.F_OK, (err) => {
+                                    if(err){
+                                      console.log('suppression already done for first path'); 
+                                      if(i==files.length -1){
+                                        response.status(200).send([{"data":"sent"}]); 
+                                      } 
+                                    }  
+                                    else{
+                                      fs.unlink(files[i],function (err) {
+                                        if (err) {
+                                          throw err;
+                                        } 
+                                        if(i==files.length -1){
+                                          response.status(200).send([{"data":"sent"}]); 
+                                        } 
+                                      });
+                                      
+                                    }     
+                                  })
+                                }   
+                              });
+
+                              /*let data = {csv_likes_file:fs.createReadStream(__dirname + Path2),csv_loves_file:fs.createReadStream(__dirname + Path3),csv_view_file:fs.createReadStream(__dirname + Path1)};
                               Request.post('http://localhost:777/rankings', {formData: data, headers:{'date':date}},  (err, resp, body) => {
                                   if (err) {
                                   console.log('Error!');
@@ -150,9 +185,11 @@ pool.connect((err, client, release) => {
                                       })
                                     }                             
                                   }
-                                  })
-                              });
-                              }
+                                })*/
+
+
+                            });
+                            }
                           })                           
                     });
                       }
