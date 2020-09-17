@@ -125,13 +125,22 @@ export class AdPageComponent implements OnInit {
   /******************************************************* */
   /******************** AFTER VIEW CHECKED *************** */
   /******************************************************* */
+  screen_width:number;
   ngAfterViewChecked() {
+    this.screen_width = window.innerWidth;
     this.initialize_heights();
   }
   initialize_heights() {
     //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      if( this.screen_width <= 1100 ) {
+        $('#left-container').css("height", "unset");
+        $('#right-container').css("height", "unset");
+        return;
+      }
+      else {
+        $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+        $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      }
     //}
   }
 

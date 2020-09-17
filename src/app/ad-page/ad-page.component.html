@@ -280,45 +280,43 @@
             </div>
 
 
-
-            <div style="display:flex;justify-content: center;" *ngIf="see_responses==0">
-                <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
-                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">account_circle</mat-icon>
-                    <span>Annonces du même auteur</span>
-                </div>
-                <div class="title" [ngClass]="{'opened': left_container_category_index==1 }" (click)="open_left_container_category(1);">
-                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">burst_mode</mat-icon>
-                    <span>Annonces similaires</span>
-                </div>
-            </div>
-
-
-
-            <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved && see_responses==0" >
-                 <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_author_ads">
-                    <div *ngFor="let item of list_of_author_ads; let i=index" style="padding-left:20px;padding-right:20px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
+            <div [hidden]="!(screen_width>1100)">
+                <div style="display:flex;justify-content: center;" *ngIf="see_responses==0">
+                    <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
+                        <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">account_circle</mat-icon>
+                        <span>Annonces du même auteur</span>
                     </div>
-                    <div style="    display: flex;
-                    justify-content: center;
-                    margin: auto;" *ngIf="list_of_author_ads.length==0">
-                        Aucune recommendation n'est actuellement disponible pour cette annonce
+                    <div class="title" [ngClass]="{'opened': left_container_category_index==1 }" (click)="open_left_container_category(1);">
+                        <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">burst_mode</mat-icon>
+                        <span>Annonces similaires</span>
                     </div>
                 </div>
-                <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_other_ads">
-                    <div *ngFor="let item of list_of_other_ads; let i=index">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
+                <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved && see_responses==0" >
+                    <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_author_ads">
+                        <div *ngFor="let item of list_of_author_ads; let i=index" style="padding-left:20px;padding-right:20px;">
+                            <app-thumbnail-ad 
+                            [item]=item
+                            now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-ad>
+                        </div>
+                        <div style="    display: flex;
+                        justify-content: center;
+                        margin: auto;" *ngIf="list_of_author_ads.length==0">
+                            Aucune recommendation n'est actuellement disponible pour cette annonce
+                        </div>
                     </div>
-                    <div style="    display: flex;
-                    justify-content: center;
-                    margin: auto;" *ngIf="list_of_other_ads.length==0">
-                        Aucune recommendation n'est actuellement disponible pour cette annonce
+                    <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_other_ads">
+                        <div *ngFor="let item of list_of_other_ads; let i=index">
+                            <app-thumbnail-ad 
+                            [item]=item
+                            now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-ad>
+                        </div>
+                        <div style="    display: flex;
+                        justify-content: center;
+                        margin: auto;" *ngIf="list_of_other_ads.length==0">
+                            Aucune recommendation n'est actuellement disponible pour cette annonce
+                        </div>
                     </div>
                 </div>
             </div>
@@ -452,6 +450,46 @@
         </div>
 
 
+        <div [hidden]="!(1100>=screen_width)" style="background:#182338;padding-bottom: 30px;">
+            <div style="display:flex;justify-content: center;" *ngIf="see_responses==0">
+                <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
+                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;color:white;">account_circle</mat-icon>
+                    <span>Annonces du même auteur</span>
+                </div>
+                <div class="title" [ngClass]="{'opened': left_container_category_index==1 }" (click)="open_left_container_category(1);">
+                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;color:white;">burst_mode</mat-icon>
+                    <span>Annonces similaires</span>
+                </div>
+            </div>
+            <div class="recommendations" *ngIf="list_of_author_ads_retrieved && list_of_author_ads_retrieved && see_responses==0" >
+                <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_author_ads">
+                    <div *ngFor="let item of list_of_author_ads; let i=index" style="padding-left:20px;padding-right:20px;">
+                        <app-thumbnail-ad
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div style="    display: flex;
+                    justify-content: center;
+                    margin: auto;" *ngIf="list_of_author_ads.length==0">
+                        Aucune recommendation n'est actuellement disponible pour cette annonce
+                    </div>
+                </div>
+                <div style="display:block;min-height: 550px;" class="container-comics"  *ngIf="display_other_ads">
+                    <div *ngFor="let item of list_of_other_ads; let i=index">
+                        <app-thumbnail-ad 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-ad>
+                    </div>
+                    <div style="    display: flex;
+                    justify-content: center;
+                    margin: auto;" *ngIf="list_of_other_ads.length==0">
+                        Aucune recommendation n'est actuellement disponible pour cette annonce
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
