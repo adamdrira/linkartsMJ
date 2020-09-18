@@ -99,7 +99,7 @@ exports.create = (req, res) => {
 					"attachment_name":null,
 					"size":null,
 					"is_a_response":false,
-					"id_message_responding":false,
+					"id_message_responding":null,
 					"message_responding_to":null,
 					"id_chat_section":1,
 					"is_an_attachment":false,
