@@ -297,6 +297,7 @@ export class NavbarLinkartsComponent implements OnInit {
   
 
   retrieve_profile(){
+    console.log("retrieve profile")
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id=r[0].id;
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
@@ -307,7 +308,13 @@ export class NavbarLinkartsComponent implements OnInit {
         this.profile_picture = SafeURL;
         this.chatService.get_number_of_unseen_messages().subscribe(a=>{
           console.log(a);
-          this.number_of_unseen_messages=a[0].number_of_unseen_messages;
+          if(a[0]){
+            this.number_of_unseen_messages=a[0].number_of_unseen_messages;
+          }
+          else{
+            this.number_of_unseen_messages=0
+          }
+          
           this.NotificationsService.get_list_of_notifications().subscribe(r=>{
             console.log(r[0])
             if(r[0].length>0){
@@ -322,6 +329,7 @@ export class NavbarLinkartsComponent implements OnInit {
             }
             else{
               this.data_retrieved=true;
+              this.number_of_unchecked_notifications=0;
               this.sort_friends_list();
             }
           });
@@ -1087,6 +1095,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.AuthenticationService.logout();
     
     //this.type_of_profile="visitor";
+    this.location.go('/')
     location.reload();
   }
 
@@ -1108,6 +1117,7 @@ export class NavbarLinkartsComponent implements OnInit {
     
     if( this.navbar.visible ) {
       console.log("navbar visible set margin top")
+     
       if( $(".fixed-top").css("position") == "fixed" ) {
         $(".navbar-margin").css("height", $(".fixed-top").height() + "px" );
       }
@@ -1116,12 +1126,14 @@ export class NavbarLinkartsComponent implements OnInit {
       }
 
       this.margin_is_not_set=false;
+      console.log($(".navbar-margin").css("height"))
     }
     
   }
 
   setHeight() {
     this.navbar.setHeight( $(".fixed-top").height() );
+    
   }
   
   

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
@@ -52,6 +52,16 @@ export class SubscribingsComponent implements OnInit {
 
   now_in_seconds:number;
   last_timestamp:string;
+
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll() {
+    let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+    let max = document.documentElement.scrollHeight;
+    let sup=max*0.1;
+    if(pos>= max - sup )   {
+      this.show_more=true;
+    }
+  }
 
   ngOnInit() {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
@@ -282,8 +292,5 @@ export class SubscribingsComponent implements OnInit {
  
 
 
-  see_more(){
-    this.show_more=true;
-  }
-
+ 
 }

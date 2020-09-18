@@ -1,3 +1,10 @@
+
+<div class="storiesbar">
+    <app-stories></app-stories>
+</div>
+
+
+
 <ng-container *ngIf=" list_of_new_contents_sorted">
     <div *ngFor="let item of list_of_new_contents; let i = index">
         new
@@ -175,7 +182,6 @@
 
 
 <ng-container *ngIf=" list_of_contents_sorted">
-    <button *ngIf="!show_more" (click)="see_more()">see more contents</button>
     <ng-container *ngIf=" show_more">
         <app-subscribings-see-more
             [list_of_users]=list_of_users

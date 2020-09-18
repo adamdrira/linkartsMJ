@@ -6,6 +6,7 @@
   
   @media (max-width: 850px) {
     .fixed-top {
+      height: 76px;
       position: relative;
      
     }
@@ -39,6 +40,7 @@
 
   @media (min-width: 851px) and (max-width: 1100px) {
     .fixed-top {
+      height: 76px;
       position:fixed;
     }
     .navbar-l1-linkarts-logo-container {
@@ -64,6 +66,7 @@
   
   @media (min-width: 1101px) {
     .fixed-top {
+      height: 76px;
       position:fixed;
     }
     .navbar .navbar-l1-linkarts-logo-container {
@@ -114,7 +117,7 @@
   }
 
   .fixed-top {
-    
+    height: 76px;
     box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
     background-color:#f9f9f9;
     z-index: 30;
@@ -153,7 +156,7 @@
   }
 
   .navbar .navbar-l1-linkarts-logo-container .navbar-l1-linkarts-logo .logo{
-    height: 49px;
+    height: 42px;
     margin-right: 5px;
   }
 
@@ -243,6 +246,10 @@
     position: relative;
     box-sizing: border-box;
     border-radius: 50%;
+  }
+
+  .delete-background{
+    background: none !important;
   }
 
   .profile-picture img{
@@ -437,6 +444,7 @@
     background-color:rgb(32,56,100) !important;
   }
 
+
   .navbar2 .category {
     //height:33px;
     color: #203864;
@@ -467,6 +475,47 @@
     padding-right: 15px;
   }
 
+  .connexion-container{
+    color:#203864;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size:15px;
+  }
+
+  .connexion{
+    cursor:pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    color: #203864;
+    text-shadow: -0.04ex 0 #203864, 0.04ex 0 #203864;
+    padding-left: 15px;
+    background: white;
+    height: 42px;
+    padding-right: 15px;
+  }
+
+ .connexion:hover{
+  color: white !important;
+  text-shadow: -0.04ex 0 white, 0.04ex 0 white !important;
+  background: #203864 !important;
+ } 
+
+ .connexion:hover .connexion-icon{
+  color:white !important;
+ } 
+
+
+ .connexion-icon{
+   color: #203864;
+ }
+
+ .connexion-icon:hover{
+  color:white !important;
+ }
   .navbar2 .category:hover {
     color:#203864;
     text-shadow: -0.03ex 0 #203864, 0.03ex 0 #203864;
@@ -495,21 +544,36 @@
   
   /* Category selector : */
 
-  ::ng-deep .SumoSelect {
+  ::placeholder {
+    color:#53627d;
+    font-size: 15px;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:#53627d;
+    font-size: 15px;
+   }
+   
+   ::-ms-input-placeholder { /* Microsoft Edge */
+    color:#53627d;
+    font-size: 15px;
+   }
+
+  ::ng-deep .left-container .SumoSelect {
     font-size:15px;
   }
 
-  ::ng-deep .SumoSelect:hover > .CaptionCont, ::ng-deep .SumoSelect.open > .CaptionCont {
+  ::ng-deep .left-container .SumoSelect:hover > .CaptionCont, ::ng-deep .SumoSelect.open > .CaptionCont {
     box-shadow: none;
   }
 
-  ::ng-deep .SumoSelect > .optWrapper > .options li.opt {
+  ::ng-deep .left-container .SumoSelect > .optWrapper > .options li.opt {
     background-color:rgb(250, 252, 255);
     text-align:left;
   }
 
-  ::ng-deep .SumoSelect > .CaptionCont > span {
+  ::ng-deep .left-container .SumoSelect > .CaptionCont > span {
     padding-right:60px;
+    color:#53627d;
   }
 
   .signup{

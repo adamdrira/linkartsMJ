@@ -66,18 +66,20 @@ export class TrendingsComponent implements OnInit {
   ngOnInit() {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
-      console.log(info);
       if (info == 'get_comics_trendings'){
         this.Trending_service.get_comics_trendings().subscribe(information=>{
-          console.log(information);
           this.load_comics_trendings(information);
         });
       }
       else{
-        console.log(info);
         this.load_comics_trendings(info);
       }
-     
+      this.Trending_service.get_drawings_trendings().subscribe(info=>{
+        this.load_drawing_trendings(info);
+      })
+      this.Trending_service.get_writings_trendings().subscribe(info=>{
+        this.load_writing_trendings(info);      
+      })
     });
   }
 
@@ -91,16 +93,9 @@ export class TrendingsComponent implements OnInit {
       this.subcategory=i;
     }
     else if(i==1){
-      this.Trending_service.get_drawings_trendings().subscribe(info=>{
-        this.load_drawing_trendings(info);
-        
-      })
       this.subcategory=i;  
     }
     else if(i==2){
-      this.Trending_service.get_writings_trendings().subscribe(info=>{
-        this.load_writing_trendings(info);      
-      })
       this.subcategory=i;
     }
     return;
@@ -123,39 +118,69 @@ export class TrendingsComponent implements OnInit {
     if(this.comics_trendings_length>0){
       for(let i=0; i < Object.keys(info[0].comics_trendings.format).length;i++){
         if(info[0].comics_trendings.format[i] =="one-shot"){
+          
           this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
-            if(r[0].status=="public"){
-              this.comics_trendings_sorted[i]=r[0];
-              compteur=compteur+1;
-              if(compteur == this.comics_trendings_length ){
-                this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+            if(r[0]){
+              if(r[0].status=="public"){
+                this.comics_trendings_sorted[i]=r[0];
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length ){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                }
+              }
+              else{
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length ){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                 
+                }
               }
             }
             else{
-              compteur=compteur+1;
-              if(compteur == this.comics_trendings_length ){
-                this.delete_empty_elements(this.comics_trendings_sorted,"comics");
-               
+              if(r[0].status=="public"){
+                this.comics_trendings_sorted[i]=r[0];
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length ){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                }
+              }
+              else{
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length ){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                 
+                }
               }
             }
+            
             
           })
         }
         if(info[0].comics_trendings.format[i] =="serie"){
           this.BdSerieService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
-            if(r[0].status=="public"){
-              this.comics_trendings_sorted[i]=r[0];
-              compteur=compteur+1;
-              if(compteur == this.comics_trendings_length ){
-                this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+            if(r[0]){
+              if(r[0].status=="public"){
+                this.comics_trendings_sorted[i]=r[0];
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length ){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                }
+              }
+              else{
+                compteur=compteur+1;
+                if(compteur == this.comics_trendings_length){
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                }
               }
             }
             else{
               compteur=compteur+1;
               if(compteur == this.comics_trendings_length){
+
                 this.delete_empty_elements(this.comics_trendings_sorted,"comics");
               }
             }
+            
           })
         }     
       };
@@ -168,42 +193,58 @@ export class TrendingsComponent implements OnInit {
 
   load_drawing_trendings(info){
     this.drawings_trendings_length= Object.keys(info[0].drawings_trendings.format).length;
-        console.log(info[0]);
         let compteur=0;
         if(this.drawings_trendings_length>0){
           for(let i=0; i < Object.keys(info[0].drawings_trendings.format).length;i++){
             if(info[0].drawings_trendings.format[i] =="one-shot"){
               this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
-                if(r[0].status=="public"){
-                  this.drawings_trendings_sorted[i]=r[0];
-                  compteur = compteur +1;
-                  if(compteur == this.drawings_trendings_length){
-                    this.delete_empty_elements(this.comics_trendings_sorted,"drawings");
+                if(r[0]){
+                  if(r[0].status=="public"){
+                    this.drawings_trendings_sorted[i]=r[0];
+                    compteur = compteur +1;
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
+                  }
+                  else{
+                    compteur=compteur+1;
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
                   }
                 }
                 else{
                   compteur=compteur+1;
-                  if(compteur == this.drawings_trendings_length){
-                    this.delete_empty_elements(this.comics_trendings_sorted,"drawings");
-                  }
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
                 }
               })
             }
             if(info[0].drawings_trendings.format[i] =="artbook"){
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
-                if(r[0].status=="public"){
-                  this.drawings_trendings_sorted[i]=r[0];
-                  compteur = compteur +1;
-                  if(compteur == this.drawings_trendings_length){
-                    this.delete_empty_elements(this.comics_trendings_sorted,"drawings");
+                if(r[0]){
+                  if(r[0].status=="public"){
+                    this.drawings_trendings_sorted[i]=r[0];
+                    compteur = compteur +1;
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
+                  }
+                  else{
+                    compteur=compteur+1;
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
                   }
                 }
                 else{
                   compteur=compteur+1;
-                  if(compteur == this.drawings_trendings_length){
-                    this.delete_empty_elements(this.comics_trendings_sorted,"drawings");
-                  }
+                    if(compteur == this.drawings_trendings_length){
+                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                    }
                 }
+                
               })
             }
           }
@@ -215,23 +256,30 @@ export class TrendingsComponent implements OnInit {
 
   load_writing_trendings(info){
     this.writings_trendings_length= Object.keys(info[0].writings_trendings.format).length;
-    console.log(info[0]);
     let compteur=0;
     if(this.writings_trendings_length>0){
       for(let i=0; i < Object.keys(info[0].writings_trendings.format).length;i++){
         this.Writing_Upload_Service.retrieve_writing_information_by_id(info[0].writings_trendings.publication_id[i]).subscribe(r=>{
-          if(r[0].status=="public"){
-            this.writings_trendings_sorted[i]=r[0];
-            compteur = compteur +1;
-            if(compteur == this.writings_trendings_length){
-              this.delete_empty_elements(this.comics_trendings_sorted,"writings");
+          if(r[0]){
+            if(r[0].status=="public"){
+              this.writings_trendings_sorted[i]=r[0];
+              compteur = compteur +1;
+              if(compteur == this.writings_trendings_length){
+                this.delete_empty_elements(this.writings_trendings_sorted,"writings");
+              }
+            }
+            else{
+              compteur=compteur+1;
+              if(compteur == this.writings_trendings_length ){
+                this.delete_empty_elements(this.writings_trendings_sorted,"writings");
+              }
             }
           }
           else{
             compteur=compteur+1;
-            if(compteur == this.writings_trendings_length ){
-              this.delete_empty_elements(this.comics_trendings_sorted,"writings");
-            }
+              if(compteur == this.writings_trendings_length ){
+                this.delete_empty_elements(this.writings_trendings_sorted,"writings");
+              }
           }
         }) 
       }
@@ -247,32 +295,34 @@ export class TrendingsComponent implements OnInit {
 
   delete_empty_elements(list,type:string){
     let length1=list.length;
+    
+    console.log(type);
+    console.log(list);
     if(list.length>0){
-      for(let i=0;i<list.length;i++){
-        if(!list[i]){
-            list.pop(i);
+      for(let i=0;i<length1;i++){
+        console.log(i)
+        console.log(length1)
+        if(!list[length1-1-i]){
+          list.splice(length1-1-i,1)
         }
         if(i==length1-1){
           let length2=list.length
-          for(let j=0;j<list.length;j++){
-            if(j>14){
-              list.pop(j)
+          if(length2>=15){
+            for(let j=15;j<length2;j++){
+              list.splice(list.length-1,1)
             }
-            if(j==length2-1){
-              if(type=="comics"){
-                this.comics_trendings_sorted_confirmation=true;
-                console.log(this.comics_trendings_sorted);
-              }
-              if(type=="drawings"){
-                this.drawings_trendings_sorted_confirmation=true;
-                console.log(this.drawings_trendings_sorted);
-              }
-              if(type=="writings"){
-                this.writings_trendings_sorted_confirmation=true;
-                console.log(this.writings_trendings_sorted);
-              }
-              
-            }
+          }
+          if(type=="comics"){
+            this.comics_trendings_sorted_confirmation=true;
+            console.log(this.comics_trendings_sorted);
+          }
+          if(type=="drawings"){
+            this.drawings_trendings_sorted_confirmation=true;
+            console.log(this.drawings_trendings_sorted);
+          }
+          if(type=="writings"){
+            this.writings_trendings_sorted_confirmation=true;
+            console.log(this.writings_trendings_sorted);
           }
           
         }

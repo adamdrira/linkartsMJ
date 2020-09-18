@@ -13,7 +13,7 @@
       <div #navbarLogo class="navbar-l1-linkarts-logo-container">
         <div class="navbar-l1-linkarts-logo">
           <div style="width:54px">
-            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/logo_la-2.svg'>
+            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA2.svg'>
           </div>
          
           <!--<div class="icon-container3">
@@ -1321,7 +1321,7 @@
 
           <a href="/account/{{pseudo}}/{{user_id}}" >
             <div class="profile-container"  >
-              <div class="profile-picture" >
+              <div class="profile-picture" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}" >
                 <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}" >
               </div>
               <!--<div class="title">Moi</div>-->
@@ -1346,16 +1346,26 @@
             
             
             
-            <div [ngClass]="{'account_opened': type_of_profile=='account' }" >
-                <button *ngIf="type_of_profile=='account'" mat-raised-button  style="height: 42px; background-color: #0099FF !important; border-radius: 30px;" tabIndex="-1" class="position style1"
+            <div class="connexion-container" [ngClass]="{'account_opened': type_of_profile=='account' }" >
+                <!--<button *ngIf="type_of_profile=='account'" mat-raised-button  style="height: 42px; background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1"
                     (click)="logout()">
                   <mat-icon class="item-icon" style=" color:white;transform: rotate(180deg);">login</mat-icon> 
                   <span style="margin-left: 5px; color:white;font-weight: 700;" >Se déconnecter</span>
-                </button>
-                <button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="height: 42px;  background-color: #0099FF !important; border-radius: 30px;" tabIndex="-1" class="position style1">
+                </button>-->
+
+                <div class="connexion" *ngIf="type_of_profile=='account'" (click)="logout()">
+                   <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);" >login</mat-icon> 
+                   <span style="margin-left: 5px; font-weight: 600;" >Se déconnecter</span>
+                </div>
+                <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
+                  <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);" >login</mat-icon> 
+                  <span style="margin-left: 5px; font-weight: 600;" >Se connecter</span>
+               </div>
+
+                <!--<button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="height: 42px;  background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1">
                   <mat-icon class="item-icon" style=" color:white">login</mat-icon> 
                   <span style="margin-left: 5px;color: white; font-weight: 700;" >Se connecter</span>
-                </button>
+                </button>-->
                 
             </div>
             <div class="options">
@@ -1387,44 +1397,6 @@
     </nav>
   </div>
 
-
-  
-  <!--Navbar : ligne 2 : choix de la section
-  <div class="blue-background">
-    <div class="navbar-container">
-      <nav class="navbar2 flex-md-nowrap p-0">
-        <div class="category" [ngClass]="{'opened': navbar.active_section==0 }">
-          <div style="margin-right: 10px;">
-              <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
-              height: 20px;
-              width: 20px;">
-              </div>
-          </div>
-          <a href="/" style="color:unset">COMMUNAUTÉ</a>
-        </div>
-        <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">
-          <div style="margin-right: 10px;">
-            <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
-            height: 20px;
-            width: 20px;">
-            </div>
-          </div>
-          <a href="/linkcollab" style="color:unset">COLLABORATIONS</a>
-        </div>
-        <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
-          <div style="margin-right: 10px;">
-            <div class="icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
-            height: 20px;
-            width: 20px;">
-            </div>
-          </div>
-          <div>LIBRAIRIE</div>
-        </div>
-        
-        
-      </nav>
-    </div>
-  </div>-->
 
 
 
