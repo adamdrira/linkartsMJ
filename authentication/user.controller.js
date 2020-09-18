@@ -8,7 +8,8 @@ const Sequelize = require('sequelize');
 const { ok } = require('assert');
 list_of_invited_mails=["adam.drira","mokhtar.meghaichi"]
 list_of_invited_passwords=["Adam_@d@m_4d4m_1996","Mokhtar_m°kht@r_m0kht4r_1996"]
-
+const chat_seq = require('../chat/model/sequelize');
+const albums_seq = require('../albums_edition/model/sequelize');
 
 // Post a User
 exports.create = (req, res) => {
@@ -48,8 +49,8 @@ exports.create = (req, res) => {
 			console.log(err);	
 			res.status(500).json({msg: "error registering the user", details: err});		
 		}).then( r=>{
-			const albums_seq = require('../albums_edition/model/sequelize');
-			const chat_seq = require('../chat/model/sequelize');
+			
+			
 			albums_seq.list_of_albums.create({
 				"id_user": r.id,
 				"album_name":"one-shot",
@@ -87,15 +88,15 @@ exports.create = (req, res) => {
 					"id_receiver":1,
 					"date":now,
 				})
-			})})
-			.then(friend=>{
+			})
+			.then(()=>{
 				chat_seq.list_of_messages.create({
 					"id_user_name":"Linkarts",
 					"id_receiver": r.id,
 					"id_user":1,
 					"message":"Bienvenue sur Linkarts",
 					"is_from_server":false,
-					"attachment_name":false,
+					"attachment_name":null,
 					"size":null,
 					"is_a_response":false,
 					"id_message_responding":false,
@@ -110,6 +111,7 @@ exports.create = (req, res) => {
 			.then(()=>{
 				res.status(200).json([{msg: "creation ok",id_user:r.id}])
 			})
+		})
 	});
 	
 
