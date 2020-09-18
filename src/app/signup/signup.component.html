@@ -1,31 +1,5 @@
 
 
-<!--<form>
-
-    <div class="container">
-        <input type="firstName" placeholder="Prénom" required>
-        <input type="lastName" placeholder="Nom" required>
-
-        <div class="container2">
-            <label>Genre :</label>
-            <select type="gender" required>
-                <option value="">Sélection</option>
-                <option value="woman">Femme</option>
-                <option value="man">Homme</option>
-            </select>
-        </div>
-        
-        <input type="nickname" placeholder="Identifiant (@)" required>
-        <input type="location" placeholder="Ville ou région" required>
-        <input type="email" placeholder="Adresse mail" required>
-        <input type="password" placeholder="Mot de passe" required>
-
-        <button type="submit">S'inscrire</button>
-        
-
-    </div>
-
-</form>-->
 
 <div class="status step0" [ngStyle]="{'width': step>=0 ? '25%' : '0%' }"></div>
 <div class="status step1" [ngStyle]="{'width': step>=1 ? '25%' : '0%' }"></div>
@@ -62,19 +36,27 @@
 
             
             <div class="form-item">
-                <mat-form-field>
+                <mat-form-field style="position:relative">
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" type="password" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
                     <mat-error *ngIf="registerForm1.controls['password'].invalid">Veuillez saisir au moins 8 caractères, dont une majuscule, un caractère spécial et un nombre
                     </mat-error>
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
+                        <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
+                    </div>
                 </mat-form-field>
+                
             </div>
             
             <div class="form-item">
-                <mat-form-field>
+                <mat-form-field style="position:relative">
                     <mat-label>Confirmation du mot de passe</mat-label>
-                    <input matInput formControlName="confirmPassword" type="password" autocomplete="off">
+                    <input matInput formControlName="confirmPassword"[type]="hide ? 'password' : 'text'"  autocomplete="off">
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
+                        <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
+                    </div>
                 </mat-form-field>
+                
             </div>
 
 
@@ -190,9 +172,11 @@
             <div class="form-item">
                 <mat-form-field>
                     <mat-label>Pseudonyme</mat-label>
-                    <input matInput formControlName="nickname" maxLength="20" autocomplete="off">
+                    <input matInput formControlName="nickname" maxLength="20" autocomplete="off" (keyup)="check_pseudo()">
                     <mat-error *ngIf="registerForm3.controls['nickname'].invalid">Veuillez saisir un pseudonyme valide
                     </mat-error>
+                    <div class="pseudo-found" *ngIf="!registerForm3.controls['nickname'].invalid && display_pseudo_found_1">Pseudonyme déjà existant
+                    </div>
                     <div class="length-indicator">{{registerForm3.controls['nickname'].value?.length || 0}}/20</div>
                 </mat-form-field>
             </div>
@@ -295,17 +279,6 @@
                 </div>
             </div>
 
-            <!--<div class="form-item">
-                <mat-form-field>
-                    <mat-label>Localisation</mat-label>
-                    <input matInput
-                        matGoogleMapsAutocomplete
-                        [country]="fr"
-                        (onAutocompleteSelected)="onAutocompleteSelected($event)"
-                        (onLocationSelected)="onLocationSelected($event)">
-                </mat-form-field>
-            </div>-->
-
 
 
             <div class="step-name">
@@ -358,10 +331,13 @@
             
         </div>
 
-        <div class="step-validation">
+        <div class="step-validation" style=" margin-bottom: 15px;position: relative;">
+            
             <button mat-raised-button class="submit-button style0" (click)="register();">
                 <span>M'inscrire</span>
             </button>
+            <div class="pseudo-found2" *ngIf="display_pseudo_found_2">Oups! Votre pseudonyme vient d'être validé par quelqu'un d'autre. Veuillez en choisir un nouveau.
+            </div>
         </div>
 
     </div>
@@ -372,187 +348,3 @@
 </div>
 
 
-<!--<div class="main-container">
-        
-        <div [formGroup]="registerForm" class="form-container">
-            <div class="title-container">
-                <span class="title">
-                    Informations principales
-                </span>
-            </div>
-            <div >
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="email">Adresse mail*</label>
-                        <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
-                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                            <div *ngIf="f.email.errors.required">Webmail address is required</div>
-                        </div>
-                    </div>
-
-                </div>
-                <div style="display:flex;align-items: center;" >
-                    <div class="form-group">
-                        <label for="nickname">Pseudo*</label>
-                        <input type="text" formControlName="nickname" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.nickname.errors }" />
-                        <div *ngIf="submitted && f.nickname.errors" class="invalid-feedback">
-                            <div *ngIf="f.nickname.errors.required">Nickname is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="password">Mot de passe*</label>
-                        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                            <div *ngIf="f.password.errors.required">Password is required</div>
-                            <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="firstName">Prénom*</label>
-                        <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
-                        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-                            <div *ngIf="f.firstName.errors.required">First Name is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="lastName">Nom*</label>
-                        <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-                        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-                            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="birthday">Date de naissance</label>
-                        <input type="text" formControlName="birthday" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.gender.errors }" />
-                        <div *ngIf="submitted && f.birthday.errors" class="invalid-feedback">
-                            <div *ngIf="f.birthday.errors.required">birthdayis required</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="gender">Genre</label>
-                        <input type="text" formControlName="gender" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.gender.errors }" />
-                        <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
-                            <div >Gender blablaba</div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        <div [formGroup]="registerForm" class="form-container">
-            <div class="title-container">
-                <span class="title">
-                    Informations complémentaires visibles en première page de votre compte
-                </span>
-            </div>
-            <div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="primary_description">Description principale courte*</label>
-                        <input type="text" formControlName="primary_description" class="form-control" 
-                        [ngClass]="{ 'is-invalid': submitted && f.primary_description.errors }" 
-                        placeholder="Courte présentation de votre profil"/>
-                        <div *ngIf="submitted && f.primary_description.errors" class="invalid-feedback">
-                            <div *ngIf="f.primary_description.errors.required">primary_description is required</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="primary_description_extended">Description principale longue</label>
-                        <input type="text" formControlName="primary_description_extended" class="form-control" 
-                        [ngClass]="{ 'is-invalid': submitted && f.primary_description_extended.errors }" 
-                        placeholder="Présentation étendue de votre profil pour vos abonnés"/>
-                        <div *ngIf="submitted && f.primary_description_extended.errors" class="invalid-feedback">
-                            <div >primary_description_extended blablabla</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="location">Localisation préférentielle</label>
-                        <input type="text" formControlName="location" class="form-control" 
-                        [ngClass]="{ 'is-invalid': submitted && f.location.errors }" 
-                        placeholder="Ville,Pays"/>
-                        <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
-                            <div>Location blablabla</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;align-items: center;">
-                    <div class="form-group">
-                        <label for="training">Formations ou études</label>
-                        <input type="text" formControlName="training" class="form-control" 
-                        [ngClass]="{ 'is-invalid': submitted && f.training.errors }" />
-                        <div *ngIf="submitted && f.training.errors" class="invalid-feedback">
-                            <div >training blablaba</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div [formGroup]="LinksGroup" class="form-container">
-            <div class="title-container">
-                <span class="title">
-                    Liens vers des sites ou réseaux sociaux
-                </span>
-            </div>
-            <div style="display:flex;align-items: center;">
-                <div style="display:flex;" >
-                    <div class="form-group">
-                        <label for="link_title">Titre du lien</label>
-                        <input type="text" formControlName="link_title" class="form-control" 
-                        [ngClass]="{ 'is-invalid': links_submitted && g.link_title.errors }" />
-                        <div *ngIf="links_submitted && g.link_title.errors" class="invalid-feedback">
-                            <div>blabla 1</div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:flex;">
-                    <div class="form-group">
-                        <label for="link">lien</label>
-                        <input type="text" formControlName="link" class="form-control" 
-                        [ngClass]="{ 'is-invalid': links_submitted && g.link.errors }"
-                        placeholder="exemple: http/linkarts.fr/account/pierre/2..." />
-                        <div *ngIf="links_submitted && g.link.errors" class="invalid-feedback">
-                            <div >blabla</div>
-                        </div>
-                    </div>
-                </div>
-                <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_link()"> 	
-                    <mat-icon class="item-icon">library_add</mat-icon>
-                </button>
-            </div>
-            <div style="display:block">
-                <div style="display:flex" *ngFor="let item of links_titles;let i=index">
-                    <span>
-                        {{item}} : {{links[i]}}
-                    </span>
-                    <span>
-                        <button mat-button class="mat-icon-button" tabIndex="-1" (click)="remove_link(i)"> 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-        
-        
-        <div class="form-group">
-            <button [disabled]="loading" class="btn btn-primary" (click)="register()">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                Register
-            </button>
-            <a routerLink="/" class="btn btn-link">Cancel</a>
-        </div>
-</div>-->

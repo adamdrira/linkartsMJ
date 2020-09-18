@@ -52,6 +52,7 @@ export class SignupComponent implements OnInit {
   user = new User();
   links_titles:any[]=[];
   links:any[]=[];
+  hide=true; // password
 
   constructor(
       private router: Router,
@@ -60,7 +61,7 @@ export class SignupComponent implements OnInit {
       private cd: ChangeDetectorRef,
       private authenticationService: AuthenticationService,
       private userService: UserService,
-      public dialogRef: MatDialogRef<SignupComponent>,
+      public dialogRef: MatDialogRef<SignupComponent,any>,
       private _adapter: DateAdapter<any>
   ) {
     // redirect to home if already logged in
@@ -253,6 +254,24 @@ export class SignupComponent implements OnInit {
     console.log(event)
   }*/
 
+  display_pseudo_found_1=false;
+  display_pseudo_found_2=false;
+  index_check=0
+  check_pseudo(){
+    this.index_check++;
+    this.userService.check_pseudo(this.registerForm3.value.nickname, this.index_check).subscribe(r=>{
+      console.log(r)
+      if(r[0][0].msg=="found"){
+        console.log("display found")
+        this.display_pseudo_found_1=true;
+      }
+      else{
+        this.display_pseudo_found_1=false;
+        this.display_pseudo_found_2=false;
+      }
+    })
+  }
+
   register() {
       
     
@@ -288,29 +307,37 @@ export class SignupComponent implements OnInit {
     this.user.location = this.capitalizeFirstLetter( this.registerForm4.value.city.toLowerCase() ) + ", " + this.capitalizeFirstLetter( this.registerForm4.value.country.toLowerCase() );
 
 
+    this.userService.check_pseudo(this.user.nickname,0).subscribe(r=>{
+      console.log(r)
+      if(r[0][0].msg=="found"){
+        this.display_pseudo_found_2=true;
+      }
+      else{
+        this.display_pseudo_found_2=true;
+        this.userService.addUser( this.user ).subscribe(r=>{
+          console.log(r[0]);
     
-    this.userService.addUser( this.user ).subscribe(r=>{
-      console.log(r[0]);
-
-      if( this.links.length > 0 ) {
-        let compt=0;
-        for(let i=0;i<this.links.length;i++){
-          this.userService.add_link(r[0].id_user,this.links_titles[i],this.links[i]).subscribe(l=>{
-            compt+=1;
-            if(this.links.length==compt){
-              console.log("c'est bon");
-              this.router.navigate(['/']).then(()=>{
-                this.cd.detectChanges();
-              });
+          if( this.links.length > 0 ) {
+            let compt=0;
+            for(let i=0;i<this.links.length;i++){
+              this.userService.add_link(r[0].id_user,this.links_titles[i],this.links[i]).subscribe(l=>{
+                compt+=1;
+                if(this.links.length==compt){
+                  console.log("c'est bon");
+                  location.reload();
+                }
+              })
             }
-          })
-        }
+          }
+          else {
+            location.reload();
+          }
+          
+        });
       }
-      else {
-        this.router.navigate['/'];
-      }
-      
-    });
+    })
+
+   
 
       
   }
@@ -338,7 +365,7 @@ export class SignupComponent implements OnInit {
   step : number = 0;
   validate_step() {
     if( (this.step == 0 && this.registerForm1.valid) || (this.step == 1 && this.registerForm2.valid)
-    || (this.step == 2 && this.registerForm3.valid) ) {
+    || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1) ) {
       this.step ++;
       this.cd.detectChanges();
     }
@@ -363,6 +390,9 @@ export class SignupComponent implements OnInit {
     }
   }
 
+  change_password_type(){
+    this.hide=!this.hide;
+  }
   
 
 }

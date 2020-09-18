@@ -127,13 +127,6 @@
 }
 
 
-/*::ng-deep .form-item.datepicker .mat-form-field .mat-form-field-flex * {
-  cursor:pointer !important;
-}
-
-::ng-deep .form-item .mat-datepicker-toggle button {
-  outline:none !important;
-}*/
 
 
 ::ng-deep .form-item .mat-form-field textarea {
@@ -143,7 +136,7 @@
 
 .form-item .length-indicator {
   position: absolute;
-  right: 15px;
+  right: 22px;
   color: grey;    
   font-size: 15px;
   top: 5px;
@@ -204,78 +197,20 @@
   justify-content: center;
 }
 
-/*
-.main-container {
-  display:flex;
-  flex-direction: column;
-  background:#e9ecef;
-  width:100vw;
-  height:100vh;
-  overflow-y:auto;
+.pseudo-found{
+  position: absolute;
+    bottom: -20px;
+    left: -10px;
+    color: #f44336;
+    font-size: 12px;
 }
 
-.main-container > div {
-  width:100%;
-  height:100%;
-  padding-top:20%;
-  padding-bottom:20%;
+.pseudo-found2{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  bottom: -25px;
+  color: #f44336;
+  font-size: 12px;
 }
-
-
-.form-container{
-  display:flex;
-  flex-direction: column;
-  margin-left:auto;
-  margin-right:auto;
-  width:80%;
-  max-width:600px;
-
-}
-
-
-  .main-title{
-    margin:auto;
-    font-size: 20px;
-  }
-
-  .title{
-    margin:auto;
-    font-size: 18px;
-  }
-
-  .title-container{
-    display: flex;
-  }
-
-  .container > input {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  button {
-    background-color: #203864;
-    color: white;
-    //padding: 14px 20px;
-    margin: 5px;
-    border: none;
-    cursor: pointer;
-    //width: 100%;
-  }
-
-  button:hover {
-    opacity: 0.9;
-  }
-
-  .container2 {
-    display:flex;
-    margin:8px;
-  }
-
-  .container2 > label {
-    margin:8px;
-  }
-  */

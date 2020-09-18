@@ -76,16 +76,15 @@
                 <mat-form-field>
                     <mat-label>Pseudonyme ou e-mail</mat-label>
                     <input matInput formControlName="username" autocomplete="off">
-                    <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un pseudonyme ou une adresse mail</mat-error>
                 </mat-form-field>
             </div>
             
             <div class="form-item">
                 <mat-form-field style="position:relative">
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" type="password" autocomplete="off">
-                    <mat-error *ngIf="loginForm.controls['password'].invalid">Veuillez saisir un mot de passe valide
-                    </mat-error>
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <div class="error" *ngIf="display_wrong_data">Le mot de passe ou le pseudonyme/e-mail sont incorrectes
+                    </div>
                     <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
                         <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
                     </div>
