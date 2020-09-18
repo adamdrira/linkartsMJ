@@ -23,7 +23,7 @@ export class NavbarService {
     }
 
     setActiveSection(i: number) { this.active_section = i; }
-    setHeight(i: number) { this.height=i; }
+    setHeight(i: number) { this.height=i;}
     set_component_visible(){this.component_visible=true;}
     get_component_visibility(){return this.component_visible}
     getHeight() { return this.height; }
@@ -193,6 +193,14 @@ export class NavbarService {
       return [information,compteur];
     }));
   }
+
+
+  
+  get_number_of_clicked(publication_category,format,target_id){
+    return this.httpClient.post(`routes/get_number_of_clicked`,{publication_category:publication_category,format:format,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+    }));
+}
  
 
 }

@@ -25,7 +25,7 @@ export class ChatService {
 
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-        if(l[0].status && l[0].status!="visitor"){
+        if(l[0] && l[0].status && l[0].status!="visitor"){
           this.messages=<Subject<Message>>this.wsService
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
