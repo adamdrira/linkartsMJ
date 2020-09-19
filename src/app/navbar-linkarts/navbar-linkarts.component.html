@@ -23,23 +23,21 @@
           
           <span style="margin-left: 10px; font-weight: bold; color:#203864;">LinkArts</span>-->
           <div class="navbar2 flex-md-nowrap p-0">
-            <div class="category" [ngClass]="{'opened': navbar.active_section==0 }">
+            <div class="category" [ngClass]="{'opened': navbar.active_section==0 }" onclick="location.href='/'">
               <div style="margin-right: 10px;">
                   <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
                   height: 20px;
                   width: 20px;">
                   </div>
-              </div>
-              <a href="/" style="color:unset">ACCUEIL</a>
+              </div>ACCUEIL
             </div>
-            <div class="category" [ngClass]="{'opened': navbar.active_section==1 }">
+            <div class="category" [ngClass]="{'opened': navbar.active_section==1 }" onclick="location.href='/linkcollab'">
               <div style="margin-right: 10px;">
                 <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
                 height: 20px;
                 width: 20px;">
                 </div>
-              </div>
-              <a href="/linkcollab" style="color:unset">COLLABORATIONS</a>
+              </div>COLLABORATIONS
             </div>
             <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
               <div style="margin-right: 10px;">
@@ -47,8 +45,7 @@
                 height: 20px;
                 width: 20px;">
                 </div>
-              </div>
-              <div>LIBRAIRIE</div>
+              </div>LIBRAIRIE
             </div>
             <!--<div class="category" [ngClass]="{'opened': navbar.active_section==4 }">POSTERS</div>-->
             
@@ -68,7 +65,7 @@
               <!--Barre de recherche-->
 
 
-        <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor' }">
+        <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor'}">
           <div class="left-container" [ngClass]="{'invisible': !show_selector }">
               <select name="somename" class="NavbarSelectBox" style="height: 100%;">
                 <option value="All">Tout</option>
@@ -81,38 +78,46 @@
           </div>
           
           <div class="right-container">
-              <div #propositions class="researches-propositions"  *ngIf="show_researches_propositions" [ngClass]="{'researches-propositions-extended': type_of_profile=='visitor' }">
+              <div #propositions class="researches-propositions" *ngIf="show_researches_propositions">
+
+
+
                 <div class="first-block"  *ngIf="display_style_and_tag_research">
                   <div class="title-proposition">
                     Rechercher par style et par genre
                   </div>
-                  <div class="first-block-container-2" >
-                    <div class="string-proposition-container" *ngFor="let item of first_filters[indice_title_selected];let i=index">
-                      <span class="string-proposition"  > 
+                  <div class="first-block-container-2">
+                    <ng-container *ngFor="let item of first_filters[indice_title_selected];let i=index">
+                      <div class="string-proposition-container" *ngIf="item!=''">
                         <a href="/main-research-style-and-tag/1/{{list_of_real_categories[indice_title_selected]}}/{{item}}/all" style="color:white">
-                          {{item}} 
+                          <span class="string-proposition">
+                              {{item}} 
+                          </span>
                         </a>
-                      </span>
-                    </div>
+                      </div>
+                    </ng-container>
                   </div>
                 </div>
                 
-                <div class="first-block"  *ngIf="show_most_researched_propositions">
+                <div class="first-block"  *ngIf="show_most_researched_propositions && most_researched_propositions.length">
                   <div class="title-proposition">
                     Tendances
                   </div>
-                  <div class="first-block-container" >
-                    <div class="string-proposition-container" *ngFor="let item of most_researched_propositions;let i=index" (click)="click_on_trending_message(i)">
-                      <span class="string-proposition"  > 
+                  <div class="first-block-container">
+                    <ng-container *ngFor="let item of most_researched_propositions;let i=index">
+                      <div class="string-proposition-container" *ngIf="item.research_string!=''" (click)="click_on_trending_message(i)">
                         <a href="/main-research/1/{{item.research_string}}/All" style="color:white">
-                          {{item.research_string}} 
+                          <span class="string-proposition"  > 
+                              {{item.research_string}} 
+                          </span>
                         </a>
-                      </span>
-                    </div>
+                      </div>
+                    </ng-container>
                   </div>
                 </div>
 
-                <!-- SHOW  PROPOSITIONS AFTER RESEARCH-->
+
+                <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
                 <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
                 <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
 
@@ -134,24 +139,44 @@
                         <!--Artist -->
 
                         <div class="item-row" *ngIf="item.publication_category=='Artist'">
-                          <div class="author-container">
-                            <div class="author-left-container">
+
+                          <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
                                 <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions[i].nickname}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span>Artiste</span>
+                              </div>
                             </div>
-                            <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}">
-                                <div class="author-right-container">
-                                    <span class="author-name">{{list_of_last_propositions[i].nickname}} </span>
-                                </div>
-                            </a>
-                            <span class="item-title">Artiste</span>
-                          </div>
+                          </a>
+
+
                         </div>
   
                         <!--AD -->
                         <!--AD -->
 
                         <div class="item-row" *ngIf="item.publication_category=='Ad'">
-                          <div class="author-container">
+                          
+                          <a href="/ad-page/{{list_of_last_propositions[i].title}}/{{list_of_last_propositions[i].id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
+                                <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions[i].title}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span>Annonce</span>
+                              </div>
+                            </div>
+                          </a>
+
+                          <!--<div class="author-container">
                             <div class="author-left-container">
                                 <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
@@ -164,14 +189,31 @@
                             <span class="item-title">{{list_of_last_propositions[i].type_of_project}} </span>
                             <span class="item-title">{{list_of_last_propositions[i].target_one}} </span>
                             <span class="item-title" *ngIf="list_of_last_propositions[i].target_two">{{list_of_last_propositions[i].target_two}} </span>
-                          </div>
+                          </div>-->
                         </div>
 
                          <!--ARTPIECEES -->
                         <!--ARTPIECEES -->
 
                         <div class="item-row" *ngIf="item.publication_category=='Comic' || item.publication_category=='Drawing' || item.publication_category=='Writing'">
-                          <div class="author-container">
+                          
+                          <a href="/artwork-{{item.publication_category.toLowerCase()}}/{{item.format}}/{{list_of_last_propositions[i].title}}/{{item.target_id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
+                                <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions[i].title}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
+                                <span *ngIf="item.publication_category=='Drawing'">Dessin</span>
+                                <span *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                              </div>
+                            </div>
+                          </a>
+
+                          <!--<div class="author-container">
                             <div class="author-left-container">
                                 <img [src]="list_of_thumbnails[i]" (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
                             </div>
@@ -198,7 +240,7 @@
                             <span class="item-title" *ngIf="list_of_last_propositions[i].firsttag">{{list_of_last_propositions[i].firsttag}} </span>
                             <span class="item-title" *ngIf="list_of_last_propositions[i].secondtag">{{list_of_last_propositions[i].secondtag}} </span>
                             <span class="item-title" *ngIf="list_of_last_propositions[i].thirdtag">{{list_of_last_propositions[i].thirdtag}} </span>
-                          </div>
+                          </div>-->
                         </div>
                         
                       </div>
@@ -207,7 +249,7 @@
                   
                 </div>
 
-                <!-- SHOW FIRST  PROPOSITIONS -->
+                <!-- SHOW FIRST PROPOSITIONS -->
                 <!-- SHOW FIRST PROPOSITIONS -->
                 <!-- SHOW FIRST PROPOSITIONS -->
 
@@ -235,7 +277,25 @@
                         <!-- ARTIST -->
 
                         <div class="item-row" *ngIf="item.publication_category=='Artist'">
-                          <div class="author-container" (click)="add_clicked_after_research_recent(i)">
+
+                          <a href="/account/{{list_of_last_propositions_history[i].nickname}}/{{list_of_last_propositions_history[i].id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
+                                <img [src]="list_of_thumbnails_history[i]"  (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions_history[i].nickname}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span>Artiste</span>
+                              </div>
+                            </div>
+                          </a>
+                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                              <mat-icon class="close-icon">close</mat-icon>
+                          </button>
+
+                          <!--<div class="author-container" (click)="add_clicked_after_research_recent(i)">
                             <div class="author-left-container">
                                 <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
@@ -248,7 +308,7 @@
                           </div>
                           <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="item-icon" >close</mat-icon>
-                          </button>
+                          </button>-->
                         </div>
 
                         <!-- AD -->
@@ -256,7 +316,25 @@
                         <!-- AD -->
 
                         <div class="item-row" *ngIf="item.publication_category=='Ad'">
-                          <div class="author-container" (click)="add_clicked_after_research_recent(i)">
+                          
+                          <a href="/ad-page/{{list_of_last_propositions_history[i].title}}/{{list_of_last_propositions_history[i].id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
+                                <img [src]="list_of_thumbnails_history[i]"  (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions_history[i].title}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span>Annonce</span>
+                              </div>
+                            </div>
+                          </a>
+                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                              <mat-icon class="close-icon">close</mat-icon>
+                          </button>
+
+                          <!--<div class="author-container" (click)="add_clicked_after_research_recent(i)">
                             <div class="author-left-container">
                                 <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
@@ -273,7 +351,7 @@
                           </div>
                           <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="item-icon" >close</mat-icon>
-                          </button>
+                          </button>-->
                         </div>
 
                         <!-- Comic writing drawing -->
@@ -281,7 +359,27 @@
                         <!-- Comic writing drawing -->
 
                         <div  class="item-row" *ngIf="item.publication_category=='Comic' || item.publication_category=='Drawing' || item.publication_category=='Writing'">
-                          <div class="author-container">
+                          
+                          
+                          <a href="/artwork-{{item.publication_category.toLowerCase()}}/{{item.format}}/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}" style="display:contents;">
+                            <div class="result-container">
+                              <div class="image-container">
+                                <img [src]="list_of_thumbnails_history[i]"  (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
+                              </div>
+                              <div class="name-container">
+                                <span>{{list_of_last_propositions_history[i].title}}</span>
+                              </div>
+                              <div class="type-container">
+                                <span *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
+                                <span *ngIf="item.publication_category=='Drawing'">Dessin</span>
+                                <span *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                              </div>
+                            </div>
+                          </a>
+                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                              <mat-icon class="close-icon">close</mat-icon>
+                          </button>
+                          <!--<div class="author-container">
                             <div class="author-left-container">
                                 <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
                             </div>
@@ -309,8 +407,8 @@
                             <span class="item-title" *ngIf="list_of_last_propositions_history[i].thirdtag">{{list_of_last_propositions_history[i].thirdtag}} </span>
                           </div>
                           <button mat-button tabIndex="-1" class="mat-icon-button" (click)="delete_from_history(i)" *ngIf="!first_option">
-                            <mat-icon class="item-icon" >close</mat-icon>
-                          </button>
+                            <mat-icon class="item-icon">close</mat-icon>
+                          </button>-->
                         </div>
                         
                       </div>
@@ -328,7 +426,7 @@
               (keydown)="keydown_researches_propositions($event);"
               onblur="this.placeholder = 'Rechercher'"
               class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-              <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;margin-left: 10px;cursor:pointer;">search</mat-icon> 
+              <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;width:30px;cursor:pointer;">search</mat-icon> 
           </div>
 
           
