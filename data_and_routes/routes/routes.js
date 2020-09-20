@@ -91,7 +91,7 @@ controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_B
 controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,authentification.users);
 controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook,authentification.users);
 controller_writings(router,writings_seq.Liste_Writings,authentification.users);
-profile_edition(router, authentification.users,authentification.user_links);
+profile_edition(router, authentification.users,authentification.user_links, authentification.user_blocked);
 profile_notation(
    router, 
    profile_notation_seq.List_of_likes,
@@ -127,7 +127,8 @@ controller_chat(router,chat_seq.list_of_messages,
   subscribings_seq.list_of_subscribings,
   authentification.users,
   chat_seq.list_of_chat_groups,
-  chat_seq.list_of_chat_groups_reactions);
+  chat_seq.list_of_chat_groups_reactions
+  );
 controller_notifications(router,
   notifications_seq.list_of_notifications,
   notifications_seq.list_of_notifications_spams,
@@ -154,7 +155,7 @@ controller_notifications(router,
   ads_seq.list_of_ads,
   ads_seq.list_of_ads_responses,
   );
-controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users)
+controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users,ads_seq.list_of_ads)
 
 router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
   console.log('l\'artiste');
