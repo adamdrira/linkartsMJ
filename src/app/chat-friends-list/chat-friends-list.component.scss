@@ -337,3 +337,27 @@
     justify-content: center;
     margin-top: 25%;
 }
+
+
+.number-of-notifs-container{
+    height: 18px;
+    position: absolute;
+    right: -16px;
+    top: -9px;
+    background: #203864;
+    text-align: center;
+    border-radius: 50%;
+    width: 18px;
+    display: flex;
+  }
+  
+
+  .number-of-notifs{
+    display: flex;
+    color: white;
+    margin: auto;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  

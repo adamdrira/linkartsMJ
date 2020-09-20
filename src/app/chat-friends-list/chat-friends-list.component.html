@@ -1,7 +1,7 @@
 
 <div  class="main-chat-container" >
 
-    <div class="chat-friends-container">
+    <div class="chat-friends-container" [ngClass]="{'invisible':!list_of_friends_retrieved || !list_of_spams_retrieved || !list_of_users_blocked_retrieved}">
 
         <div class="selector">
             <div class="author-container">
@@ -20,10 +20,21 @@
             <div class="formdata-container">
                 <form [formGroup]="formData" style="align-self:center;padding:0 10px; margin: auto;">
                     <mat-radio-group formControlName="IsActive"
-                     (change)="radioChange($event)">
+                     (change)="radioChange($event)" style="position: relative">
                         <mat-radio-button value="Mes contacts"  >Mes contacts</mat-radio-button>
-                        <mat-radio-button value="Autres"  >Autres</mat-radio-button> 
+                        <mat-radio-button value="Autres"  >
+                            Autres
+                        </mat-radio-button> 
+                        <div class="number-of-notifs-container" *ngIf="number_of_unseen_messages>0 && 100>number_of_unseen_messages"  >
+                            <span *ngIf="10>number_of_unseen_messages" class="number-of-notifs">
+                              {{number_of_unseen_messages}}
+                            </span>
+                            <span *ngIf="number_of_unseen_messages>9" class="number-of-notifs-more">
+                              +{{number_of_unseen_messages}}
+                            </span>
+                        </div>
                     </mat-radio-group>
+                    
                 </form>
             </div>
 
@@ -256,10 +267,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                                     <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                        {{list_of_friends_last_message[i].message}} 
+                                                        moi : {{list_of_friends_last_message[i].message}} 
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
+                                                        <b> moi : {{list_of_friends_last_message[i].message}}</b>
                                                     </div>
                                                 </div>
 
@@ -280,10 +291,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                                        {{list_of_friends_last_message[i].message}} 
+                                                        moi : {{list_of_friends_last_message[i].message}} 
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length==1">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
+                                                        <b>moi : {{list_of_friends_last_message[i].message}}</b>
                                                     </div>
                                                 </div>
                                             </ng-container>
@@ -768,10 +779,11 @@
     
     
     
-    <div  *ngIf="list_of_friends_retrieved && active_section==1"  class="chat-container">
+    <div  *ngIf="list_of_friends_retrieved && active_section==1 && list_of_users_blocked_retrieved"  class="chat-container">
         <app-chat
         [id_chat_section]="id_chat_section"
         [spam]="spam"
+        [list_of_users_blocked]="list_of_users_blocked"
         [user_present]="user_present"
         [current_user_id]="current_user" 
         [current_user_pseudo]="current_user_pseudo"
@@ -790,12 +802,13 @@
         (add_spam_to_contacts)="add_spam_to_contacts( $event );"
         (add_group_to_contacts)="add_group_to_contacts( $event );"
         (change_message_status)="change_message_status( $event );"
+        (blocking_managment)="blocking_managment($event)"
         (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
         (display_exit)="display_exit($event)"></app-chat>
     </div>
 
 
-    <div  *ngIf="list_of_friends_retrieved && (active_section==2 || active_section==3) "  class="chat-container">
+    <div  *ngIf="list_of_friends_retrieved && (active_section==2 || active_section==3) && list_of_users_blocked_retrieved "  class="chat-container">
 
         <div class="loading-page" *ngIf="!active_section_done ">
             <mat-spinner diameter="40"></mat-spinner>
@@ -804,6 +817,7 @@
         <app-chat *ngIf="active_section_done"
         [id_chat_section]="id_chat_section"
         [spam]="spam"
+        [list_of_users_blocked]="list_of_users_blocked"
         [user_present]="user_present"
         [current_user_id]="current_user" 
         [current_user_pseudo]="current_user_pseudo"
@@ -823,6 +837,7 @@
         (add_group_to_contacts)="add_group_to_contacts( $event );"
         (change_message_status)="change_message_status( $event );"
         (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
+        (blocking_managment)="blocking_managment($event)"
         (display_exit)="display_exit($event)"></app-chat>
     </div>
 

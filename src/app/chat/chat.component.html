@@ -152,7 +152,7 @@
             <!-- --------------------------------OPTIONS--------------------------------- -->
 
             <!-- --------------------------------POUR LES UTILISATEURS--------------------------------- -->
-            <ng-container *ngIf="friend_type=='user'">
+            <ng-container *ngIf="friend_type=='user' && friend_id!=current_user_id">
                 <button  mat-icon-button tabIndex="-1" class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
                     <mat-icon class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
                 </button>
@@ -161,7 +161,7 @@
                         <mat-icon class="item-icon">edit</mat-icon>
                         <span>Mettre en sourdine</span>
                     </button>
-                    <button class="mat-menu-item" mat-menu-item > 	
+                    <button class="mat-menu-item" mat-menu-item (click)="block_user()"> 	
                         <mat-icon class="item-icon">view_carousel</mat-icon>
                         <span>Bloquer l'utilisateur</span>
                     </button>
@@ -427,7 +427,6 @@
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                                    <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
                                                     <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
@@ -582,7 +581,7 @@
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
                                                         <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                                        <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                       
                                                     </div> 
                                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
                                                         <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
@@ -853,7 +852,7 @@
                                         </div> 
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                            <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                           
                                         </div> 
                                         <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
                                             <a [href]="list_of_messages_files[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
@@ -1038,7 +1037,7 @@
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
-                                                    <a [href]="list_of_messages_pictures[list_of_messages.length -1 - i]" [download]="list_of_messages[list_of_messages.length -1 - i].attachment_name">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
+                                                    
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
                                                     <a [href]="list_of_messages_files[list_of_messages.length -1 - i]">{{list_of_messages[list_of_messages.length -1 - i].attachment_name}}</a>
@@ -1142,16 +1141,25 @@
                     FIN DES MESSAGES
                 -->
     
-                <div *ngIf="spam!='false' && response_exist && response_exist_retrieved" class="add-to_contact">
+                <div *ngIf="spam!='false' && !block_chat && response_exist && response_exist_retrieved" class="add-to_contact">
                     {{friend_name}} ne fait pas parti de vos contacts. Voulez-vous l'ajouter à vos contacts ?<br />
                     <button (click)="add_to_contacts()">Oui</button>
                 </div>
     
-                <div *ngIf="spam!='false' && !response_exist && response_exist_retrieved" class="add-to_contact">
+                <div *ngIf="spam!='false' && !block_chat && !response_exist && response_exist_retrieved" class="add-to_contact">
                     {{friend_name}} ne fait pas parti de vos contacts. Vous devrez attendre qu'il vous ajoute à ses contacts si vous lui envoyez un message<br />
                 </div>
+
+                <div *ngIf="spam!='false' && block_chat" class="add-to_contact">
+                    <div *ngIf="who_blocked=='user'">
+                        vous avez été bloqué par l'utilisateur
+                    </div>
+                    <div *ngIf="who_blocked!='user'">
+                        vous avez bloqué l'utilisateur
+                    </div>
+                </div>
     
-                <div  [formGroup]="message_group" novalidate class="bottom-container" id="messages-bottom-container">
+                <div *ngIf="!block_chat" [formGroup]="message_group" novalidate class="bottom-container" id="messages-bottom-container">
 
                     <div *ngIf="display_writing" class="writing">
                         En train d'écrire dans {{section_where_is_writing}}&nbsp; <span>.</span><span>.</span><span>.</span>

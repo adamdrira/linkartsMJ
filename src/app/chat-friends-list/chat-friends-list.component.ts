@@ -102,6 +102,7 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_spams_last_message:any[]=[];
   list_of_spams_retrieved=false;
   number_of_spams_to_show=15;
+  number_of_unseen_messages:number;
 
   //list of groups propositions
   list_of_contacts_groups_pictures:any[]=[];
@@ -144,6 +145,10 @@ export class ChatFriendsListComponent implements OnInit {
   active_section_done=false;
   active_section_user_id:number;
 
+  //blocked_users
+  list_of_users_blocked=[];
+  list_of_users_blocked_retrieved=false;
+
   @HostListener('window:focus', ['$event'])
   onFocus(event: any): void {
     console.log("change focus")
@@ -168,15 +173,7 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
-    this.AuthenticationService.currentUserType.subscribe(r=>{
-      console.log(r)
-      if(r!="account"){
-        
-        //alert("not account")
-        
-        //location.reload();
-      }
-    })
+    
     this.active_section = this.route.snapshot.data['section'];
     
     if(this.active_section==2){
@@ -211,7 +208,13 @@ export class ChatFriendsListComponent implements OnInit {
       console.log(this.active_section_user_id)
     }
     
-
+    this.Profile_Edition_Service.get_list_of_users_blocked().subscribe(r=>{
+      if(!r[0].nothing){
+        this.list_of_users_blocked=r[0];
+      }
+      this.list_of_users_blocked_retrieved=true;
+      console.log(r[0])
+    })
     this.createFormControlsAds();
     this.createFormAd();
     
@@ -406,6 +409,7 @@ export class ChatFriendsListComponent implements OnInit {
     this.chatService.get_my_list_of_groups().subscribe(l=>{
       let list_of_names=[]
       console.log(l[0]);
+      console.log(l[0].length);
       if(l[0].length>0){
         for(let k=0;k<l[0].length;k++){
           
@@ -495,6 +499,7 @@ export class ChatFriendsListComponent implements OnInit {
         this.friend_type='user';
         this.get_connections_status();
         this.list_of_friends_retrieved=true;
+        this.active_section_managment();
       }
       
       
@@ -519,92 +524,96 @@ export class ChatFriendsListComponent implements OnInit {
         if(i==length-1 && j==length-2){
           this.get_connections_status();
           this.list_of_friends_retrieved=true;
+          this.active_section_managment();
           
-          if(this.active_section==2 || this.active_section==3){
-            this.waiting_friend_type=this.friend_type
-            this.waiting_friend_id=this.friend_id;
-            this.waiting_friend_name=this.friend_name;
-            this.waiting_friend_picture=this.friend_picture;
-            this.waiting_friend_pseudo=this.friend_pseudo;
-            this.waiting_id_chat_section=this.id_chat_section;
-            this.waiting_chat_friend_id=this.chat_friend_id;
-            this.id_chat_section=1;
-            (this.active_section==2)?this.friend_type='user':this.friend_type='group';
-            this.friend_id=this.active_section_user_id;
-            console.log(this.friend_type)
-            this.chatService.get_chat_friend(this.active_section_user_id,(this.active_section==2)?false:true).subscribe(m=>{
-              console.log(m[0])
-              
-              if(m[0].nothing){
-                this.chat_friend_id=0;
-              }
-              else{
-                this.chat_friend_id=m[0].id;
-              }
-
-              if(this.active_section==2){
-                this.Profile_Edition_Service.retrieve_profile_data(this.active_section_user_id).subscribe(s=>{
-                  if(s[0]){
-                    this.friend_pseudo=s[0].nickname;
-                    this.friend_name=s[0].firstname + ' ' + s[0].lastname;
-                    this.Profile_Edition_Service.retrieve_profile_picture(this.active_section_user_id).subscribe(t=> {
-                      let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                      this.friend_picture[i] = SafeURL;
-                      
-                      console.log(this.friend_id)
-                      console.log(this.friend_pseudo)
-                      console.log(this.spam)
-                      this.chatService.check_if_is_related(this.active_section_user_id).subscribe(r=>{
-                        if(!r[0].value){
-                          this.spam='true';
-                          this.selectedRadio="Autres";
-                          this.formData.reset(
-                            this.createFormAd()
-                          )
-                          this.get_friends=false;
-                          this.get_spams=true;
-                          this.section="Autres";
-                        }
-                        this.active_section_done=true;
-                      })
-                    })
-                  }
-                })
-              }
-              else{
-                this.chatService.retrieve_chat_profile_picture(m[0].chat_profile_pic_name,m[0].profile_pic_origin).subscribe(t=> {
-                  console.log(t);
-                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  this.friend_picture=SafeURL;
-                  this.chatService.get_group_chat_information(this.active_section_user_id).subscribe(s=>{
-                    console.log(s[0])
-                    this.friend_pseudo=s[0].name;
-                    this.friend_name=s[0].name;
-                    console.log(this.friend_name);
-                    console.log(this.friend_pseudo);
-                    console.log(this.friend_id);
-                    this.active_section_done=true;
-                  })
-                })
-              }
-            })
-            
-          }
-          else{
-            if(this.friend_type=='group'){
-              this.location.go(`/chat/group/${this.friend_pseudo}/${this.friend_id}`);
-            }
-            else{
-              this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
-            }
-          }
         }
       }
     }
   }
 
+
+  active_section_managment(){
+    if(this.active_section==2 || this.active_section==3){
+      this.waiting_friend_type=this.friend_type
+      this.waiting_friend_id=this.friend_id;
+      this.waiting_friend_name=this.friend_name;
+      this.waiting_friend_picture=this.friend_picture;
+      this.waiting_friend_pseudo=this.friend_pseudo;
+      this.waiting_id_chat_section=this.id_chat_section;
+      this.waiting_chat_friend_id=this.chat_friend_id;
+      this.id_chat_section=1;
+      (this.active_section==2)?this.friend_type='user':this.friend_type='group';
+      this.friend_id=this.active_section_user_id;
+      console.log(this.friend_type)
+      this.chatService.get_chat_friend(this.active_section_user_id,(this.active_section==2)?false:true).subscribe(m=>{
+        console.log(m[0])
+        
+        if(m[0].nothing){
+          this.chat_friend_id=0;
+        }
+        else{
+          this.chat_friend_id=m[0].id;
+        }
+
+        if(this.active_section==2){
+          this.Profile_Edition_Service.retrieve_profile_data(this.active_section_user_id).subscribe(s=>{
+            if(s[0]){
+              this.friend_pseudo=s[0].nickname;
+              this.friend_name=s[0].firstname + ' ' + s[0].lastname;
+              this.Profile_Edition_Service.retrieve_profile_picture(this.active_section_user_id).subscribe(t=> {
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.friend_picture=SafeURL;
+                console.log(this.friend_id)
+                console.log(this.friend_pseudo)
+                console.log(this.spam)
+                this.chatService.check_if_is_related(this.active_section_user_id).subscribe(r=>{
+                  if(!r[0].value){
+                    this.spam='true';
+                    this.selectedRadio="Autres";
+                    this.formData.reset(
+                      this.createFormAd()
+                    )
+                    this.get_friends=false;
+                    this.get_spams=true;
+                    this.section="Autres";
+                  }
+                  this.active_section_done=true;
+                })
+              })
+            }
+          })
+        }
+        else{
+          this.chatService.retrieve_chat_profile_picture(m[0].chat_profile_pic_name,m[0].profile_pic_origin).subscribe(t=> {
+            console.log(t);
+            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.friend_picture=SafeURL;
+            
+            this.chatService.get_group_chat_information(this.active_section_user_id).subscribe(s=>{
+              console.log(s[0])
+              this.friend_pseudo=s[0].name;
+              this.friend_name=s[0].name;
+              console.log(this.friend_name);
+              console.log(this.friend_pseudo);
+              console.log(this.friend_id);
+              this.active_section_done=true;
+            })
+          })
+        }
+      })
+      
+    }
+    else{
+      if(this.friend_type=='group'){
+        this.location.go(`/chat/group/${this.friend_pseudo}/${this.friend_id}`);
+      }
+      else{
+        this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
+      }
+    }
+  }
   /*****************************************GESTION DES SPAMS *********************************/
   /*****************************************GESTION DES SPAMS *********************************/
   /*****************************************GESTION DES SPAMS *********************************/
@@ -612,6 +621,14 @@ export class ChatFriendsListComponent implements OnInit {
 
   sort_spams_list() {
     console.log("emetteur sort spams list")
+    this.chatService.get_number_of_unseen_messages_spams().subscribe(m=>{
+      console.log(m);
+      if(m[0].number_of_unseen_messages){
+        this.number_of_unseen_messages=m[0].number_of_unseen_messages;
+      }
+      console.log( this.number_of_unseen_messages)
+      
+    })
     this.chatService.get_list_of_spams().subscribe(r=>{
       if(r[0].length>0){
         let compt=0;
@@ -757,6 +774,51 @@ export class ChatFriendsListComponent implements OnInit {
 /*****************************************************emit managment ********************** */
 /*****************************************************emit managment ********************** */
 
+//utilisateur vous a bloqué
+
+blocking_managment(event){
+  console.log(event)
+  console.log(this.list_of_friends_types)
+  console.log(this.list_of_friends_ids)
+  let index=-1;
+  for(let i=0;i<this.list_of_friends_ids.length;i++){
+    if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]=='user'){
+      index=i;
+    }
+  }
+  console.log(index)
+  if(index>=0){
+    this.list_of_friends_types.splice(index,1);
+    this.list_of_friends_ids.splice(index,1);
+    this.list_of_friends_last_message.splice(index,1);
+    this.list_of_friends_names.splice(index,1);
+    this.list_of_chat_friends_ids.splice(index,1);
+    this.list_of_friends_profile_pictures.splice(index,1);
+    this.list_of_friends_pseudos.splice(index,1);
+    this.cd.detectChanges()
+  }
+  else{
+    let index=-1;
+    for(let i=0;i<this.list_of_spams_ids.length;i++){
+      if(this.list_of_spams_ids[i]==event.friend_id ){
+        index=i;
+      }
+    }
+    console.log(index)
+    if(index>=0){
+      this.list_of_spams_ids.splice(index,1);
+      this.list_of_spams_last_message.splice(index,1);
+      this.list_of_spams_names.splice(index,1);
+      this.list_of_spams_profile_pictures.splice(index,1);
+      this.list_of_spams_pseudos.splice(index,1);
+      this.cd.detectChanges()
+    }
+  }
+  this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(r=>{
+    let date=new Date();
+    this.list_of_users_blocked.push({id_user:event.friend_id,id_user_blocked:this.current_user,date:date});
+  })
+}
 
 //un utilisateur a quitté le groupe
 display_exit(event){
@@ -2332,49 +2394,71 @@ get_group_chat_name(id,message,value){
 
 
 get_connections_status(){
+  console.log("gtting connexion stats")
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
-    r[0].list_of_users_connected;
-    let compt=0
-    for(let i=0;i<this.list_of_friends_types.length;i++){
+    let compt=0;
+    if(this.list_of_groups_ids.length>0){
+      for(let i=0;i<this.list_of_friends_types.length;i++){
       
-      if(this.list_of_friends_types[i]=='user'){
-        let id=this.list_of_friends_ids[i]
-        let index=this.list_of_friends_users_only.indexOf(id);
-        this.list_of_friends_connected[i]=r[0].list_of_users_connected[index];
-        if(r[0].date_of_webSockets_last_connection[id]){
-          let now=Math.trunc( new Date().getTime()/1000);
-          let date=r[0].date_of_webSockets_last_connection[id];
-          date = date.replace("T",' ');
-          date = date.replace("-",'/').replace("-",'/');
-          let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
-          this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
-        }
-        compt++;
-        if(compt==this.list_of_groups_ids.length){
-          this.connections_status_retrieved=true;
-          this.cd.detectChanges()
-        }
-      }
-      else{
-        this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
-          let list=l[0].list_of_receivers_ids;
-          let value=false;
-          for(let j=0;j<list.length;j++){
-            if(list[j]!=this.current_user){
-              let index=this.list_of_friends_users_only.indexOf(list[j])
-              if(r[0].list_of_users_connected[index]){
-                value=true;
-              }
-            }
+        if(this.list_of_friends_types[i]=='user'){
+          let id=this.list_of_friends_ids[i]
+          let index=this.list_of_friends_users_only.indexOf(id);
+          this.list_of_friends_connected[i]=r[0].list_of_users_connected[index];
+          if(r[0].date_of_webSockets_last_connection[id]){
+            let now=Math.trunc( new Date().getTime()/1000);
+            let date=r[0].date_of_webSockets_last_connection[id];
+            date = date.replace("T",' ');
+            date = date.replace("-",'/').replace("-",'/');
+            let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+            this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
           }
-          this.list_of_friends_connected[i]=value;
           compt++;
           if(compt==this.list_of_groups_ids.length){
             this.connections_status_retrieved=true;
             this.cd.detectChanges()
           }
-        })
+        }
+        else{
+          this.chatService.get_group_chat_information(this.list_of_friends_ids[i]).subscribe(l=>{
+            let list=l[0].list_of_receivers_ids;
+            let value=false;
+            for(let j=0;j<list.length;j++){
+              if(list[j]!=this.current_user){
+                let index=this.list_of_friends_users_only.indexOf(list[j])
+                if(r[0].list_of_users_connected[index]){
+                  value=true;
+                }
+              }
+            }
+            this.list_of_friends_connected[i]=value;
+            compt++;
+            if(compt==this.list_of_groups_ids.length){
+              this.connections_status_retrieved=true;
+              this.cd.detectChanges()
+            }
+          })
+        }
       }
+    }
+    else{
+      for(let i=0;i<this.list_of_friends_ids.length;i++){
+          let id=this.list_of_friends_ids[i]
+          let index=this.list_of_friends_users_only.indexOf(id);
+          this.list_of_friends_connected[i]=r[0].list_of_users_connected[index];
+          if(r[0].date_of_webSockets_last_connection[id]){
+            let now=Math.trunc( new Date().getTime()/1000);
+            let date=r[0].date_of_webSockets_last_connection[id];
+            date = date.replace("T",' ');
+            date = date.replace("-",'/').replace("-",'/');
+            let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+            this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
+          }
+          compt++;
+          if(compt==this.list_of_friends_ids.length){
+            this.connections_status_retrieved=true;
+            this.cd.detectChanges()
+          }
+        }
     }
   })
 }

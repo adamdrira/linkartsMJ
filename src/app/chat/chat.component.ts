@@ -10,6 +10,7 @@ import { NavbarService } from '../services/navbar.service';
 import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component'
 import { MatDialog } from '@angular/material/dialog';
 import { FileUploader, FileItem } from 'ng2-file-upload';
+import { Location } from '@angular/common';
 import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popup-chat-group-members.component';
@@ -27,6 +28,7 @@ export class ChatComponent implements OnInit  {
 
   constructor (
     private elRef: ElementRef,
+    private location:Location,
     private chatService:ChatService,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
@@ -124,6 +126,7 @@ export class ChatComponent implements OnInit  {
   @Output() change_message_status = new EventEmitter<object>();
   @Output() add_a_friend_to_the_group = new EventEmitter<object>();
   @Output() display_exit = new EventEmitter<object>();
+  @Output() blocking_managment = new EventEmitter<object>();
   
   
   
@@ -146,6 +149,9 @@ export class ChatComponent implements OnInit  {
   message: FormControl;
   //spam
   @Input() spam: string;
+  @Input() list_of_users_blocked:any;
+  block_chat=false;
+  who_blocked:string;
   //current_user
   @Input() current_user_id: number;
   @Input() current_user_pseudo: string;
@@ -304,7 +310,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_users_names_retrieved=false;
     this.today_triggered=false;
     this.display_writing=false;
-    this.compteur_chat_section=0;
+    
     this.top_sumo_loaded=false;
     this.function_done=false;
     this.trigger_no_more=false;
@@ -317,9 +323,17 @@ export class ChatComponent implements OnInit  {
     this.first_turn_loaded=false;
     this.current_friend_id=this.friend_id;
     this.current_friend_type=this.friend_type;
+
     this.list_of_chat_sections_notifications=[];
     this.list_of_chat_sections_id=[1];
+    this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
+    this.top_pp_loaded=false;
+    if($('.chat-section')[0]){
+      $('.chat-section')[0].sumo.unload();
+    }
+    
+
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,false);
     this.change_number=0;
@@ -371,7 +385,6 @@ export class ChatComponent implements OnInit  {
     this.today_triggered=false;
     this.can_get_other_messages=false;
     this.top_sumo_loaded=false;
-    this.compteur_chat_section=0;
     this.display_writing=false;
     this.list_of_chat_sections_found=[];
     this.list_of_chat_sections_found_id=[];
@@ -381,9 +394,13 @@ export class ChatComponent implements OnInit  {
     this.first_turn_loaded=false;
     this.current_friend_id=this.friend_id;
     this.current_friend_type=this.friend_type;
+    
     this.list_of_chat_sections_notifications=[];
     this.list_of_chat_sections_id=[1];
+    this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
+    this.top_pp_loaded=false;
+    $('.chat-section')[0].sumo.unload();
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,true);
     this.change_number=0;
@@ -447,6 +464,7 @@ export class ChatComponent implements OnInit  {
   /*******************************************ON INIT ************************** */
 
   ngOnInit() {
+    
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     console.log(this.id_chat_section);
     if(this.friend_type=='group'){
@@ -691,6 +709,19 @@ export class ChatComponent implements OnInit  {
       this.put_messages_visible=false;
       this.index_of_show_pp_right=-1;
       this.list_of_show_pp_left=[];
+      for(let i=0;i<this.list_of_users_blocked.length;i++){
+        console.log(this.list_of_users_blocked[i])
+        if(this.friend_id==this.list_of_users_blocked[i].id_user && this.friend_type=='user'){
+          this.block_chat=true;
+          this.who_blocked="user"
+        }
+        if(this.current_user_id==this.list_of_users_blocked[i].id_user && this.friend_type=='user'){
+          this.block_chat=true;
+          this.who_blocked="me"
+        }
+      }
+      console.log(this.block_chat)
+      console.log( this.who_blocked)
     }
     
     this.list_of_messages_pictures=[];
@@ -3451,7 +3482,7 @@ chat_service_managment_function(msg){
           index=i;
         }
       }
-      if(index>0){
+      if(index>=0){
         console.log(index)
         if(this.friend_id==msg[0].id_user && this.friend_type=='group'){
           console.log('cur tak')
@@ -3505,12 +3536,19 @@ chat_service_managment_function(msg){
       else if(msg[0].group_chat_id && this.friend_id==msg[0].group_chat_id && this.current_user_id!=msg[0].id_user_writing){
         this.display_writing=false;
         let index=this.list_of_users_writing.indexOf(msg[0].id_user_writing);
-        if(index>0){
+        if(index>=0){
           this.list_of_users_writing.splice(index,1)
         }
         console.log(this.list_of_users_writing)
         this.cd.detectChanges();
       }
+    }
+    else if(msg[0].server_message=="block" ){
+      console.log("block")
+      if(this.friend_type=='user' && this.friend_id==msg[0].id_user_blocking){
+        location.reload();
+      }
+      this.blocking_managment.emit({friend_id:msg[0].id_user_blocking})
     }
     else if(msg[0].server_message=="emoji" ){
       console.log(" emoji change message")
@@ -3571,6 +3609,59 @@ chat_service_managment_function(msg){
     
     
   }
+}
+
+
+
+/*************************************************** BLOCK AND OTHER OPTIONS  *******************/
+/*************************************************** BLOCK AND OTHER OPTIONS  *******************/
+/*************************************************** BLOCK AND OTHER OPTIONS  *******************/
+/*************************************************** BLOCK AND OTHER OPTIONS  *******************/
+
+
+block_user(){
+  console.log(this.friend_name);
+  console.log(this.friend_id);
+  if(this.friend_id>1){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+          this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).subscribe(s=>{
+            console.log(s)
+            this.chatService.remove_friend(this.friend_id).subscribe(m=>{
+              console.log(m);
+              this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).subscribe(r=>{
+                console.log(r);
+                let message_to_send ={
+                  id_user_name:this.current_user_name,
+                  id_user:this.current_user_id,   
+                  id_receiver:this.friend_id, 
+                  message:"block",
+                  is_from_server:true,
+                  status:'block',
+                  id_chat_section:this.id_chat_section,
+                  attachment_name:"none",
+                  is_an_attachment:false,
+                  attachment_type:"none",
+                  is_a_group_chat:false,
+                  is_a_response:false,
+                }
+                console.log("send usr blocked")
+                this.chatService.messages.next(message_to_send);
+                this.location.go('/chat');
+                location.reload();
+              })
+            })
+          });
+
+        
+      }
+    })
+  }
+ 
 }
 
 
