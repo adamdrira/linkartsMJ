@@ -494,6 +494,16 @@ export class NavbarLinkartsComponent implements OnInit {
   /******************************************** SEARCHBAR******************************* */
   /******************************************** SEARCHBAR******************************* */
 
+  list_of_first_propositions:any[]=[];
+  list_of_last_propositions:any[]=[];
+  list_of_thumbnails:SafeUrl[]=[];
+  show_other_propositions=false;
+  show_first_propositions=false;
+  compteur_other_propositions=0;
+  compteur_research=0;
+  pp_thumb_is_loaded:any[]=[];
+  loading_other=false;
+
   publication_category="All";
   format="unknown"
   target_id=0;
@@ -591,20 +601,12 @@ export class NavbarLinkartsComponent implements OnInit {
     this.input.nativeElement.value='';
   }
 
-  list_of_first_propositions:any[]=[];
-  list_of_last_propositions:any[]=[];
-  list_of_thumbnails:SafeUrl[]=[];
-  show_other_propositions=false;
-  show_first_propositions=false;
-  compteur_other_propositions=0;
-  compteur_research=0;
-  pp_thumb_is_loaded:any[]=[];
-  loading_other=false;
+  
   researches_propositions(event){
     console.log(this.input.nativeElement.value);
     this.compteur_research+=1;
     this.compteur_recent+=1;
-    this.show_other_propositions=false;
+    //this.show_other_propositions=false;
     this.show_first_propositions=false;
     this.list_of_first_propositions=[];
     this.list_of_last_propositions=[];
@@ -614,7 +616,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_other=true;
     this.loading_recent=false;
     //vérifier que ca ne commence pas par un espace aussi
-
+    this.cd.detectChanges();
     if(this.input.nativeElement.value!=''){
       if(this.input.nativeElement.value.replace(/\s/g, '').length>0){
         this.show_most_researched_propositions=false;
@@ -665,6 +667,7 @@ export class NavbarLinkartsComponent implements OnInit {
                         else{
                           this.loading_other=false;
                           this.show_other_propositions=true;
+                          this.cd.detectChanges();
                         }
                       }
                     })
@@ -722,6 +725,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 console.log(this.list_of_last_propositions_history)
                 this.show_first_propositions=true;
                 this.loading_recent=false;
+                this.cd.detectChanges();
               }
             }
            
@@ -746,6 +750,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 console.log(this.list_of_last_propositions_history)
                 this.show_first_propositions=true;
                 this.loading_recent=false;
+                this.cd.detectChanges();
               }
             }
           })
@@ -770,6 +775,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
+                    this.cd.detectChanges();
                   }
                 }
                 
@@ -792,6 +798,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -816,6 +823,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -837,6 +845,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -861,6 +870,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   console.log(this.list_of_last_propositions_history);
                   this.show_first_propositions=true;
                   this.loading_recent=false;
+                  this.cd.detectChanges();
                 }
               }
               
@@ -889,6 +899,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 console.log(this.list_of_last_propositions)
                 this.show_other_propositions=true;
                 this.loading_other=false;
+                this.cd.detectChanges();
               }
             }
            
@@ -915,6 +926,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 console.log(this.list_of_last_propositions)
                 this.show_other_propositions=true;
                 this.loading_other=false;
+                this.cd.detectChanges();
               }
             }
            
@@ -940,6 +952,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions);
                     this.show_other_propositions=true;
                     this.loading_other=false;
+                    this.cd.detectChanges();
                   }
                 }
                 
@@ -963,6 +976,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_thumbnails);
                     this.show_other_propositions=true;
                     this.loading_other=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -987,6 +1001,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_last_propositions);
                     this.show_other_propositions=true;
                     this.loading_other=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -1009,6 +1024,7 @@ export class NavbarLinkartsComponent implements OnInit {
                     console.log(this.list_of_thumbnails);
                     this.show_other_propositions=true;
                     this.loading_other=false;
+                    this.cd.detectChanges();
                   }
                 }
             })
@@ -1033,6 +1049,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   console.log(this.list_of_last_propositions);
                   this.show_other_propositions=true;
                   this.loading_other=false;
+                  this.cd.detectChanges();
                 }
               }
               
@@ -1665,6 +1682,26 @@ change_message_status(event){
     }
    
   }
+
+  blocking_managment(event){
+    let index=-1;
+    for(let i=0;i<this.list_of_friends_ids.length;i++){
+      if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]=='user'){
+        index=i;
+      }
+    }
+    console.log(index)
+    if(index>=0){
+      this.list_of_friends_types.splice(index,1);
+      this.list_of_friends_ids.splice(index,1);
+      this.list_of_friends_last_message.splice(index,1);
+      this.list_of_friends_names.splice(index,1);
+      this.list_of_chat_friends_ids.splice(index,1);
+      this.list_of_friends_profile_pictures.splice(index,1);
+      this.list_of_friends_pseudos.splice(index,1);
+      this.cd.detectChanges()
+    }
+  }
   
   /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
   /*********************************************  CHAT CONSTRUCTOR FUNCTION ******************************/
@@ -1724,6 +1761,10 @@ change_message_status(event){
           this.number_of_unseen_messages+=1;
         }
         this.cd.detectChanges;
+      }
+      else if(msg[0].server_message=="block" ){
+        console.log("block")
+        this.blocking_managment({friend_id:msg[0].id_user_blocking})
       }
       //a message from the server to tell that the message has been sent
       else if(msg[0].message=="New"){

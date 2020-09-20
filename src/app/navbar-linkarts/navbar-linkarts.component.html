@@ -13,7 +13,7 @@
       <div #navbarLogo class="navbar-l1-linkarts-logo-container">
         <div class="navbar-l1-linkarts-logo">
           <div style="width:54px">
-            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA2.svg'>
+            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
           </div>
          
           <!--<div class="icon-container3">
@@ -122,14 +122,24 @@
                 <!-- SHOW PROPOSITIONS AFTER RESEARCH-->
 
                 <div class="second-block" >
-                  <div *ngIf="loading_other" class="loading-page">
-                    <mat-spinner diameter="30" ></mat-spinner>
+
+                  <div class="title-proposition" *ngIf="!show_other_propositions &&  !show_first_propositions && !loading_recent" style="height:37px;position:relative; justify-content: center;align-items: center;display: flex;">
+                      <mat-spinner diameter="20" ></mat-spinner>
                   </div>
+
                   <ng-container *ngIf="show_other_propositions">
-                    <div class="title-proposition" *ngIf="list_of_first_propositions.length>0">
-                      Meilleures propositions
+
+                    <div class="title-proposition" *ngIf="loading_other" style=" height: 37px;display: flex;" >
+                      Meilleures propositions 
+                        &nbsp; <span>.</span><span>.</span><span>.</span>
                     </div>
-                    <div class="title-proposition" *ngIf="0>=list_of_first_propositions.length">
+
+                    <div class="title-proposition" *ngIf="list_of_first_propositions.length>0 && !loading_other">
+                      Meilleures propositions 
+                    </div>
+                    
+                    
+                    <div class="title-proposition" *ngIf="0>=list_of_first_propositions.length && !loading_other">
                       Aucun résultat
                     </div>
                     <div style="display:block" *ngIf="!loading_other">
@@ -254,9 +264,13 @@
                 <!-- SHOW FIRST PROPOSITIONS -->
 
                 <div class="second-block" >
-                  <div *ngIf="loading_recent" class="loading-page">
-                    <mat-spinner diameter="30" ></mat-spinner>
-                  </div>
+                  
+                  <ng-container *ngIf="!show_first_propositions && loading_recent && !show_other_propositions">
+                    <div class="title-proposition"  style="height:37px;position:relative; justify-content: center;align-items: center;display: flex;">
+                        <mat-spinner diameter="20" ></mat-spinner>
+                    </div>
+                  </ng-container>
+
                   <ng-container *ngIf="show_first_propositions">
                     <div class="title-proposition" *ngIf="first_option" >
                       Récents
@@ -291,7 +305,7 @@
                               </div>
                             </div>
                           </a>
-                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                          <button mat-button tabIndex="-1" *ngIf="first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="close-icon">close</mat-icon>
                           </button>
 
@@ -330,7 +344,7 @@
                               </div>
                             </div>
                           </a>
-                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                          <button mat-button tabIndex="-1" *ngIf="first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="close-icon">close</mat-icon>
                           </button>
 
@@ -376,7 +390,7 @@
                               </div>
                             </div>
                           </a>
-                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
+                          <button mat-button tabIndex="-1" *ngIf="first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="close-icon">close</mat-icon>
                           </button>
                           <!--<div class="author-container">
@@ -444,7 +458,10 @@
 
 
 
-
+        <div class="icon-messenger-invisible">
+        </div>
+        <div class="icon-bell-invisible">
+        </div>
         <!--icon part-->
         <div class="navbar-l1-icons-container" style="margin: auto;" *ngIf="type_of_profile=='account'" >
 

@@ -70,13 +70,13 @@
       //width: 230px;
     }
     .navbar .navbar-l1-searchbar-container {
-      height: 38px;
-      width: calc(100% - 240px - 775px);
+      height: 42px;
+      width: calc(100% - 240px - 650px);
       border-radius: 30px;
       //border: 2px solid rgb(32,56,100);
       background: white;
-      border: 1px solid #bbbbbb;
-      box-shadow: 0px 0px 2px 0px #bdbdbd;
+      //border: 1px solid #bbbbbb;
+      box-shadow: 0px 0px 5px #afafaf;
       display: flex;
       padding-bottom: 5px 5px 5px 5px;
       margin: auto ;
@@ -112,7 +112,7 @@
   .fixed-top {
     box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
     background-color:#f9f9f9;
-    z-index: 30;
+    z-index: 1002;
   }
 
   .navbarBoxShadow {
@@ -148,6 +148,7 @@
   .navbar .navbar-l1-linkarts-logo-container .navbar-l1-linkarts-logo .logo{
     height: 42px;
     margin-right: 5px;
+    margin-left: 5px;
   }
 
 
@@ -179,7 +180,7 @@
     opacity: 1;
     position: absolute;
     background: #f9f9f9;
-    top: 37px;
+    top: 44px;
     left: 0px;
     right: unset;
     width: calc(100% - 10px);
@@ -227,6 +228,15 @@
     top:50%;
     left:50%;
   }
+
+  .loading-page2{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+  }
+
+
+
   //other container
   .author-container {
     display: flex;
@@ -323,14 +333,14 @@
   
   .item-row .mat-icon-button {
     width: 24px;
-    border: 1px solid #c9c9c9;
+    //border: 1px solid #c9c9c9;
     height: 24px;
     color: #c9c9c9;
     margin: auto 10px auto 0px;
     transition: all 200ms;
   }
   .item-row .mat-icon-button:hover {
-    border:1px solid grey;
+    //border:1px solid #c9c9c9;
     color:grey;
   }
   .item-row .mat-icon {
@@ -344,6 +354,7 @@
 
 
   .navbar .navbar-l1-searchbar-container .left-container {
+    width: 175px;
     display: flex;
     padding-left: 7px;
     background: white;
@@ -383,6 +394,7 @@
     // Icones
    .navbar .navbar-l1-icons-container {
      font-size:14px;
+     margin: auto 0px auto auto;
    }
 
 
@@ -448,17 +460,31 @@
     mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
   }
    
-   .icon-messenger {
-    background-color: #53627d;
-    -webkit-mask:  url("../../assets/img/svg/send.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/send.svg") no-repeat 50% 50%;
+  .icon-messenger {
+    background-color: rgb(32,56,100) ;
+    -webkit-mask:  url("../../assets/img/svg/send1.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/send1.svg") no-repeat 50% 50%;
   }
 
   .icon-bell {
-    background-color:#53627d;
-    -webkit-mask:  url("../../assets/img/svg/bell2.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/bell2.svg") no-repeat 50% 50%;
+    background-color:rgb(32,56,100);
+    -webkit-mask:  url("../../assets/img/svg/bell3.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/bell3.svg") no-repeat 50% 50%;
   }
+
+  .icon-messenger-invisible{
+    visibility:hidden;
+    background-color:  rgb(32,56,100);
+    -webkit-mask:  url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
+   }
+
+   .icon-bell-invisible{
+    visibility:hidden;
+    background-color:  rgb(32,56,100);
+    -webkit-mask:  url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
+   }
 
   .icon-edit {
     background-color: #53627d;
@@ -545,15 +571,15 @@
    }
 
    .navbar .icon-container:hover .icon-bell {
-    background-color: rgb(32,56,100);
-    -webkit-mask:  url("../../assets/img/svg/bell2.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/bell2.svg") no-repeat 50% 50%;
+    background-color:  rgb(32,56,100);
+    -webkit-mask:  url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
    }
 
    .navbar .icon-container:hover .icon-messenger {
-    background-color: rgb(32,56,100);
-    -webkit-mask:  url("../../assets/img/svg/send.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/send.svg") no-repeat 50% 50%;
+    background-color:  rgb(32,56,100);
+    -webkit-mask:  url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
+    mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
    }
 
    .profile-container:hover .title {
@@ -607,6 +633,7 @@
     //margin-left: 240px;
     //margin-right: 240px;
     font-size:12px;
+    margin-left: 10px;
   }
 
   .blue-background {
@@ -625,12 +652,13 @@
     transition: border 300ms;
     cursor:pointer;
     text-align: center;
-    margin-left:10px;
-    margin-right:10px;
+    //margin-left:10px;
+    margin-right:5px;
     transition: all 200ms;
   }
   
   .navbar2 .opened {
+    height: 42px;
     border-radius: 30px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     color: #203864;
@@ -646,6 +674,7 @@
   }
 
   .connexion{
+    height: 42px;
     cursor:pointer;
     display: flex;
     justify-content: center;
@@ -726,6 +755,7 @@
 
   ::ng-deep .left-container .SumoSelect {
     font-size:15px;
+    width:175px;
   }
 
   ::ng-deep .left-container .SumoSelect:hover > .CaptionCont, ::ng-deep .SumoSelect.open > .CaptionCont {
@@ -749,7 +779,7 @@
   ::ng-deep .fixed-top .SumoSelect.open > .optWrapper {
     visibility: visible;
     opacity:1;
-    top: 37px;
+    top: 44px;
     right: 0px;
     left: unset;
     width: calc(100% - 3px);
@@ -770,7 +800,7 @@
     border-bottom: 1px solid rgb(240, 240, 240);
     font-size: 14px;
     transition:all 150ms;
-    color:rgb(32,56,100);
+    color:#53627d;
   }
 
   ::ng-deep .left-container .SumoSelect > .optWrapper > .options li.opt:hover {
@@ -781,8 +811,9 @@
   ::ng-deep .left-container .SumoSelect > .CaptionCont > span {
     padding-right:60px;
     font-size: 14px;
-    color: rgb(32,56,100);
-    font-weight: bold;
+    color:#53627d;
+    padding-left: 5px;
+    //font-weight: bold;
   }
 
   .signup{
@@ -1046,4 +1077,34 @@ display:flex;
   align-items: center;
   background: #dcebf7;
   color: white;
+}
+
+
+.title-proposition span {
+  font-size: 35px;
+  margin: -25px 0px 0px 0px;
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.title-proposition span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.title-proposition span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: .2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .2;
+  }
 }
