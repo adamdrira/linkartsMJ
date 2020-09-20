@@ -486,8 +486,8 @@ export class CommentElementComponent implements OnInit {
                     likesnumber:l[0].number_of_likes,
                     date:this.responses_list[i].date,
                   });
-                    this.resize_textareas();
-                    this.cd.detectChanges();
+                this.resize_textareas();
+                this.cd.detectChanges();
           });
           
         }
@@ -522,7 +522,7 @@ export class CommentElementComponent implements OnInit {
                 this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s=> {
                   this.pseudo_list.splice(0, 0,s[0].nickname);
                   this.author_name_list.splice(0, 0,s[0].firstname + ' ' + s[0].lastname);
-
+                  this.visitor_mode_list.splice(0,0,false)
                   this.liked_list.splice(0,0,false);
                   this.responses_list.splice(0, 0,
                     {

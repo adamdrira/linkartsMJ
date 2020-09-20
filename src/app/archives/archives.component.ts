@@ -75,6 +75,7 @@ export class ArchivesComponent implements OnInit {
 
   list_of_ads:any[]=[];
   list_of_ads_added=false;
+  number_of_ads_to_show=5;
 
   private_list_of_comics:any[]=[];
   private_list_of_comics_sorted=false;
@@ -111,9 +112,11 @@ export class ArchivesComponent implements OnInit {
       if(this.opened_album==3){
         this.see_more_stories();
       }
-      /*if(this.opened_album==4){
-        this.see_more_ads(this.opened_category)
-      }*/
+      if(this.opened_album==4){
+        if(this.number_of_ads_to_show<this.list_of_ads.length){
+          this.number_of_ads_to_show+=5;
+        }
+      }
     }
   }
 

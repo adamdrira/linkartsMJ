@@ -156,6 +156,9 @@
                 <button mat-raised-button class="submit-button style1" (click)="validate_form_ads();">
                     <span>Valider </span>
                 </button>
+                <div style="justify-content: center;display: flex;" *ngIf="display_loading">
+                    <mat-spinner diameter="20" ></mat-spinner>
+                </div>
 
             </form>
             

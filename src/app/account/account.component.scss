@@ -225,6 +225,8 @@
     overflow: unset;
     text-overflow: unset;
     line-height:25px;
+    display:flex;
+    align-items:center;
   }
   .account-container .profile .profile-information > div {
     color:white;
@@ -343,6 +345,7 @@
   .panel-controller {
     /* border-bottom: 1px solid #dadada; 
     background-color: #f1f9fe;*/
+    background: #f9f9f9;
     padding: 5px;
     width: 100%;
     border-top: 4px solid #203864;

@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList } from '@
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
+import { ChatService } from '../services/chat.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -39,6 +40,7 @@ declare var masonry:any;
 export class AccountComponent implements OnInit {
   
   constructor(private rd: Renderer2, 
+    private chatService:ChatService,
     private authenticationService: AuthenticationService,
     private router: Router,
     public route: ActivatedRoute, 
@@ -78,6 +80,7 @@ export class AccountComponent implements OnInit {
   }
 
   new_contents_loading=false;
+  number_of_ads_to_show=5;
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
@@ -94,6 +97,9 @@ export class AccountComponent implements OnInit {
       }
       if(this.opened_category==2 && this.opened_album>0 && this.opened_section==1){
         this.see_more_writings(this.opened_album,this.opened_album)
+      }
+      if(this.list_of_ads_added && this.opened_section==2 && this.number_of_ads_to_show<this.list_of_ads.length){
+        this.number_of_ads_to_show+=5;
       }
     }
   }
@@ -144,6 +150,8 @@ export class AccountComponent implements OnInit {
   profile_picture:SafeUrl;
   cover_picture:SafeUrl;
 
+  visitor_id:number;
+  visitor_name:string;
   mode_visiteur:boolean=true;
   mode_visiteur_added:boolean=false;
   pseudo:string;
@@ -253,6 +261,10 @@ export class AccountComponent implements OnInit {
   number_of_drawings_visitor=0;
   number_of_writings_visitor=0;
 
+  user_blocked=false;
+  user_who_blocked:string;
+  user_blocked_retrieved=false;
+
   update_new_contents() {
 
     let width = $(".bd-container").width();
@@ -331,7 +343,7 @@ export class AccountComponent implements OnInit {
         return
       }
       else{
-
+        
         this.number_of_comics=r[0].number_of_comics;
         this.number_of_drawings=r[0].number_of_drawings;
         this.number_of_writings=r[0].number_of_writings;
@@ -410,11 +422,31 @@ export class AccountComponent implements OnInit {
         });
         
         this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+          this.visitor_id=l[0].id
+          this.visitor_name=l[0].firstname + ' ' + l[0].lastname;
           if (this.pseudo == l[0].nickname){
             this.mode_visiteur = false;
             this.mode_visiteur_added = true;
+            this.user_blocked=false;
+            this.user_blocked_retrieved=true;
           }
           else{
+            this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r=>{
+              console.log(r)
+              if(r[0].nothing){
+                this.user_blocked=false;
+              }
+              else{
+                if(r[0].id_user==this.user_id){
+                  this.user_who_blocked="user";
+                }
+                else{
+                  this.user_who_blocked="me";
+                }
+                this.user_blocked=true;
+              }
+              this.user_blocked_retrieved=true;
+            })
             this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
               if(information[0].value){
                 this.already_subscribed=true;
@@ -2074,6 +2106,73 @@ see_more_writings(album_number,album_section_number){
   }
   
 }
+
+
+block_user(){
+  console.log(this.user_id);
+  if(this.user_id>1){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+          this.Subscribing_service.remove_all_subscribtions_both_sides(this.user_id).subscribe(s=>{
+            console.log(s)
+            this.chatService.remove_friend(this.user_id).subscribe(m=>{
+              console.log(m);
+              console.log(m[0].date)
+              this.Profile_Edition_Service.block_user(this.user_id,(m[0].date)?(m[0].date):null).subscribe(r=>{
+                console.log(r);
+                let message_to_send ={
+                  id_user_name:this.visitor_name,
+                  id_user:this.visitor_id,   
+                  id_receiver:this.user_id, 
+                  message:"block",
+                  is_from_server:true,
+                  status:'block',
+                  id_chat_section:1,
+                  attachment_name:"none",
+                  is_an_attachment:false,
+                  attachment_type:"none",
+                  is_a_group_chat:false,
+                  is_a_response:false,
+                }
+                console.log("send usr blocked")
+                this.chatService.messages.next(message_to_send);
+                this.user_blocked=true;
+                this.user_who_blocked="me";
+              })
+            })
+          });
+
+        
+      }
+    })
+  }
+ 
+}
+
+unblock_user(){
+  this.Profile_Edition_Service.unblock_user(this.user_id).subscribe(r=>{
+    console.log(r[0]);
+    if(r[0].date){
+      console.log(r[0].date)
+      this.chatService.add_chat_friend(this.user_id,r[0].date).subscribe(r=>{
+        console.log(r[0])
+        this.user_blocked=false;
+      })
+    }
+    else{
+      this.user_blocked=false;
+    }
+    
+    
+  })
+}
+
+
+
 }
 
 

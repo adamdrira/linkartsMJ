@@ -68,6 +68,10 @@ export class CommentsComponent implements OnInit {
   visitor_id:number;
   visitor_name:string;
 
+  user_blocked=false;
+  user_who_blocked:string;
+  user_blocked_retrieved=false;
+
   comment_changed() {
     this.editable_comment = -1;
   }
@@ -87,6 +91,22 @@ export class CommentsComponent implements OnInit {
         this.visitor_mode=false;
       }
       this.visitor_mode_retrieved=true;
+      this.Profile_Edition_Service.check_if_user_blocked(this.authorid).subscribe(r=>{
+        console.log(r)
+        if(r[0].nothing){
+          this.user_blocked=false;
+        }
+        else{
+          if(r[0].id_user==this.authorid){
+            this.user_who_blocked="user";
+          }
+          else{
+            this.user_who_blocked="me";
+          }
+          this.user_blocked=true;
+        }
+        this.user_blocked_retrieved=true;
+      })
 
       this.Profile_Edition_Service.retrieve_profile_picture( r[0].id).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);

@@ -1,6 +1,6 @@
 
 <div class="container-fluid" [ngClass]="{'invisible': !(list_writings_added && list_drawings_artbook_added
-&& list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added)}">
+&& list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved)}">
     <main role="main">
         
         <div class="account-container">
@@ -39,7 +39,29 @@
 
                 <div *ngIf="mode_visiteur_added" class="profile-information">
                     <div class="profile-name">
-                        <span>{{author_name}}</span>
+                        <span style="width:85%;margin-right:5px">{{author_name}}</span>
+                        <button *ngIf="user_blocked_retrieved" mat-icon-button  tabIndex="-1" [matMenuTriggerFor]="options">
+                            <mat-icon class="optionsButton" style="color: white;width: 30p;font-size: 24px;margin: auto;">more_vert</mat-icon>
+                        </button>
+                        <mat-menu  #options="matMenu">
+                            <button *ngIf="!user_blocked && !mode_visiteur"  class="mat-menu-item" (click)="change_profile_bio();">
+                                <mat-icon class="item-icon">edit</mat-icon>
+                                <span>Editer mon profil</span>
+                            </button>
+
+                            <button *ngIf="!user_blocked && mode_visiteur" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)=block_user()> 	
+                                <mat-icon class="item-icon">report</mat-icon>
+                                <span>Bloquer</span>
+                            </button>
+                            <button *ngIf="user_blocked && user_who_blocked=='me' && mode_visiteur" class="mat-menu-item" tabIndex="-1" mat-menu-item  (click)="unblock_user()"> 	
+                                <mat-icon class="item-icon">report_off</mat-icon>
+                                <span>Débloquer</span>
+                            </button>
+                            <button *ngIf="mode_visiteur && !user_blocked" class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                                <mat-icon class="item-icon">report_problem</mat-icon>
+                                <span>Signaler</span>
+                            </button>
+                        </mat-menu>
                     </div>
 
                     <div class="profile-description">
@@ -87,18 +109,15 @@
 
 
 
-                <button mat-raised-button *ngIf="!mode_visiteur && showEditBio" class="change-profile-info style0" (click)="change_profile_bio();">
-                    <span>Editer mon profil</span>
-                    <div class="change-profile-icon"></div>
-                </button>
+                
 
                 
             </div>
         </div>
         
 
-        <div class="panel-controller">
-            <div  class="middle-container">
+        <div class="panel-controller" >
+            <div  class="middle-container" *ngIf="!user_blocked && user_blocked_retrieved">
 
                 <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">home</mat-icon>
@@ -141,11 +160,19 @@
                 </a>
 
             </div>
+            <div  class="middle-container" *ngIf="user_blocked && user_blocked_retrieved">
+                <div *ngIf="user_who_blocked=='me'">
+                    Vous avez bloqué cet utilisateur et ne pouvez donc plus avoir accès à sa page de profile
+                </div>
+                <div *ngIf="user_who_blocked!='me'">
+                    Vous avez été bloqué par cet utilisateur et ne pouvez donc plus avoir accès à sa page de profile
+                </div>
+            </div>
         </div>
 
 
         <div *ngIf="opened_section==0 && list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
+            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added  && !user_blocked && user_blocked_retrieved">
         
             <ng-container *ngIf="emphasized_artwork_added" >
                 <div class="title">
@@ -281,7 +308,7 @@
         </ng-container>-->
             
         <ng-container *ngIf="opened_section==1 && list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved">
             
             <div class="logos-container">
                 <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
@@ -1201,13 +1228,13 @@
             
         </ng-container>
 
-        <ng-container *ngIf="(list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added)">
+        <ng-container *ngIf="list_writings_added && list_drawings_artbook_added
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved">
 
             <ng-container *ngIf="opened_section==2 && list_of_ads_added">
                 
                 
-                <app-thumbnail-ad *ngFor="let item of list_of_ads; let i = index"
+                <app-thumbnail-ad *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index"
                 style="margin-top:20px"
                 [item]=item
                 now_in_seconds={{now_in_seconds}}

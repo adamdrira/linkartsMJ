@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-
+import { Location } from '@angular/common';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private location:Location,
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):Promise<boolean> {
@@ -33,7 +34,6 @@ export class AuthGuard implements CanActivate {
             })
         }
         else{
-            this.router.navigate(['/login'])
             return new Promise(resolve=>{resolve(false)})
           
         }

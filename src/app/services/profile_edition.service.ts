@@ -92,5 +92,29 @@ export class Profile_Edition_Service {
   }
 
 
+  block_user(id_user_blocked,date){
+    console.log(date)
+    return this.httpClient.post('routes/block_user',{id_user_blocked:id_user_blocked,date:date},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  get_list_of_users_blocked(){
+    return this.httpClient.post('routes/get_list_of_users_blocked',{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  check_if_user_blocked(id_user){
+    return this.httpClient.post('routes/check_if_user_blocked',{id_user:id_user},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  unblock_user(id_user){
+    return this.httpClient.post('routes/unblock_user',{id_user:id_user},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
 }

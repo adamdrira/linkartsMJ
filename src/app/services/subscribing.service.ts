@@ -168,7 +168,11 @@ export class Subscribing_service {
       }));
   };
   
- 
+  remove_all_subscribtions_both_sides(id_friend){
+    return this.httpClient.post('routes/remove_all_subscribtions_both_sides', {id_friend: id_friend}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  }
 
 
 

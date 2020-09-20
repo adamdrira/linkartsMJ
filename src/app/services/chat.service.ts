@@ -477,5 +477,18 @@ get_number_of_unseen_messages_spams(){
     }));
 }
 
+remove_friend(id_friend){
+  return this.httpClient.post('routes/remove_friend',{id_friend:id_friend},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+add_chat_friend(id_friend,date){
+  return this.httpClient.post('routes/add_chat_friend',{id_friend:id_friend,date:date},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+
 
 }

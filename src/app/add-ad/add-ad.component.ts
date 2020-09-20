@@ -1,14 +1,12 @@
 import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, HostListener, ViewChild } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
-import { UploadService } from '../services/upload.service';
+
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Ads_service} from '../services/ads.service';
-import { Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-import { CookieService } from 'ngx-cookie-service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { UploaderPicturesAdComponent } from '../uploader-pictures-ad/uploader-pictures-ad.component';
+import {Subscribing_service}from '../services/subscribing.service';
 import { SafeUrl } from '@angular/platform-browser';
 
 import {NotificationsService}from '../services/notifications.service';
@@ -45,6 +43,7 @@ export class AddAdComponent implements OnInit {
     private Ads_service:Ads_service,
     private router:Router,
     public dialog: MatDialog,
+    private Subscribing_service:Subscribing_service,
   ) { 
     
     this.CURRENT_step = 0;
@@ -65,7 +64,7 @@ export class AddAdComponent implements OnInit {
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
-
+  display_loading=false;
   dropdowns = this._constants.filters.categories[0].dropdowns;
   CURRENT_step: number;
 
@@ -147,6 +146,7 @@ export class AddAdComponent implements OnInit {
         comment_id:0,
       }
       this.chatService.messages.next(message_to_send);
+      this.display_loading=false;
       this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
       
     }) 
@@ -191,8 +191,14 @@ export class AddAdComponent implements OnInit {
             this.ad_id=val[0].id;
             this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
               this.id_ad=l[0].id;
-              this.status_pictures=true;
-              console.log(l);
+              this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(m=>{
+                this.status_pictures=true;
+                this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(n=>{
+                  this.status_pictures=true;
+                  this.display_loading=true;
+                  console.log(n);
+                })
+              })
             })           
           });
     }

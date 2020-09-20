@@ -1,5 +1,12 @@
-
-<div class="comments-container">
+<div  *ngIf="user_blocked_retrieved && user_blocked">
+    <div *ngIf="user_who_blocked=='me'">
+        Vous avez bloqué cet utilisateur et ne pouvez donc pas commenter ses contenus
+    </div>
+    <div *ngIf="user_who_blocked!='me'">
+        Vous avez été bloqué par cet utilisateur et ne pouvez donc pas commenter ses contenus
+    </div>
+</div>
+<div class="comments-container" *ngIf="user_blocked_retrieved && !user_blocked">
     <div *ngIf='display_my_comments'>
         <div *ngFor="let item of my_comments_list; let i = index" class="comments">
 
