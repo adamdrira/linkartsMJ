@@ -1,12 +1,13 @@
 const multer = require('multer');
 const fs = require('fs');
 var path = require('path');
+const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_users,Liste_users_links) => {
+module.exports = (router, users,users_links,users_blocked) => {
 
 
 
@@ -54,7 +55,7 @@ router.post('/add_profile_pic', function (req, res) {
             req.files.forEach(function(item) {
                 console.log("item uploaded");
             });
-            User = await Liste_users.findOne({
+            User = await users.findOne({
                 where: {
                   id: current_user,
                 }
@@ -105,7 +106,7 @@ router.post('/add_cover_pic', function (req, res) {
             req.files.forEach(function(item) {
                 console.log("item uploaded");
             });
-            User = await Liste_users.findOne({
+            User = await users.findOne({
                 where: {
                   id: current_user,
                 }
@@ -127,7 +128,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 
     const user_id = parseInt(req.params.user_id);
 
-    User = await Liste_users.findOne({
+    User = await users.findOne({
       where: {
         id: user_id,
       }
@@ -151,7 +152,7 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
     const user_id = req.params.user_id;
 
-    User = await Liste_users.findOne({
+    User = await users.findOne({
       where: {
         id: user_id,
       }
@@ -174,7 +175,7 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
   (async () => {
 
     const user_id = req.params.user_id;
-    Liste_users.findOne({
+    users.findOne({
       where: {
         id: user_id,
       }
@@ -190,7 +191,7 @@ router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
   (async () => {
 
     const id_user = req.params.id_user;
-    Liste_users_links.findAll({
+    users_links.findAll({
       where: {
         id_user: id_user,
       },
@@ -209,7 +210,7 @@ router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
   (async () => {
 
     const pseudo = req.params.pseudo;
-    User = await Liste_users.findOne({
+    User = await users.findOne({
       where: {
         nickname: pseudo,
       }
@@ -225,7 +226,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   (async () => {
 
     const user_id = parseInt(req.params.user_id);
-    User = await Liste_users.findOne({
+    User = await users.findOne({
       where: {
         id: user_id,
       }
@@ -246,13 +247,13 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/modify_bio', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
 
-    (async () => {
+   
     const bio= req.body.bio;
     const training = req.body.training;
     const job = req.body.job;
     const location = req.body.location;
     
-    User = await Liste_users.findOne({
+    users.findOne({
       where: {
         id: current_user,
       }
@@ -266,12 +267,102 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }).then(res.status(200).send([User]))
     }); 
 
-    })();
-    });
+   
+  });
 
 
+  router.post('/block_user', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    console.log("block_user");
+    var date = req.body.date;
+    console.log(date)
+    const id_user_blocked= req.body.id_user_blocked;
+    let final_date=new Date();
+    if(date){
+      date.substring(0,date.length - 5);
+      date = date.replace("T",' ');
+      date = date.replace("-",'/').replace("-",'/');
+      final_date= new Date(date + ' GMT');
+    }
+    console.log(final_date);
+    
+    users_blocked.create({
+      "id_user":current_user,
+      "id_user_blocked":id_user_blocked,
+      "date":date?final_date:null,
+    }).then(user=>{
+      res.status(200).send([user])
+    })
+  });
 
 
+  router.post('/get_list_of_users_blocked', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    const Op = Sequelize.Op;
+    users_blocked.findAll({
+      where:{
+        [Op.or]:[{id_user: current_user},{id_user_blocked:current_user}],
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    }).then(users=>{
+      if(users.length>0){
+        res.status(200).send([users])
+      }
+      else{
+        res.status(200).send([{nothing:"nothing"}])
+      }
+      
+    })
+  });
+
+
+  
+  router.post('/check_if_user_blocked', function (req, res) {
+    console.log("check_if_user_blocked")
+    let current_user = get_current_user(req.cookies.currentUser);
+    const id_user=req.body.id_user;
+    const Op = Sequelize.Op;
+    users_blocked.findOne({
+      where:{
+        [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
+      }
+    }).then(user=>{
+      if(user){
+        res.status(200).send([user])
+      }
+      else{
+        res.status(200).send([{nothing:"nothing"}])
+      }
+      
+    })
+  });
+
+
+  
+  router.post('/unblock_user', function (req, res) {
+    console.log("unblock user")
+    let current_user = get_current_user(req.cookies.currentUser);
+    const id_user=req.body.id_user;
+    const Op = Sequelize.Op;
+    users_blocked.findOne({
+      where:{
+        [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
+      }
+    }).then(user=>{
+      let date=user.date;
+      console.log(date)
+      user.destroy({
+        truncate: false
+      })
+      res.status(200).send([{date:date}])
+      
+      
+    })
+  });
+
+  
 
 
 }

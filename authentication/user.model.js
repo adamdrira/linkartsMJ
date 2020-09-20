@@ -39,11 +39,21 @@ module.exports = (sequelize, Sequelize) => {
 		id_user: {type: Sequelize.INTEGER},
 		link_title: {type: Sequelize.STRING},
 		link: {type: Sequelize.STRING},
-	},
-	{
-		freezeTableName: true, // Model tableName will be the same as the model name,
-		//timestamps: false,
+		},
+		{
+			freezeTableName: true, // Model tableName will be the same as the model name,
+			//timestamps: false,
 	});
 
-	return {User,User_links};
+	const User_blocked = sequelize.define('users_blocked', {
+		id_user: {type: Sequelize.INTEGER},
+		id_user_blocked: {type: Sequelize.INTEGER},
+		date:{type: Sequelize.DATE},
+		},
+		{
+			freezeTableName: true, // Model tableName will be the same as the model name,
+			//timestamps: false,
+	});
+
+	return {User,User_links,User_blocked};
 }

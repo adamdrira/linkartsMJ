@@ -16,7 +16,7 @@ const pool = new Pool({
 
 
 
-module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_of_users) => {
+module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_of_users,list_of_ads) => {
 
     function get_current_user(token){
         var user = 0
@@ -379,6 +379,31 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });*/
 
     //after research
+
+    router.post('/get_number_of_clicked',function(req,res){
+        let publication_category=req.body.publication_category;
+        let target_id=req.body.target_id;
+        let format=req.body.format;
+        const Op = Sequelize.Op;
+        list_of_ads.findOne({
+            where:{
+                id:target_id
+            }
+        }).then(ad=>{
+            let id_user=ad.id_user;
+            list_of_navbar_researches.findAll({
+                where:{
+                    status:"clicked",
+                    id_user:{[Op.ne]: id_user},
+                    publication_category:publication_category,
+                    format:format,
+                }
+            }).then(ads=>{
+                res.status(200).send([{number:ads.length}])
+            })
+        })
+
+    })
 
     router.get('/get_number_of_results_for_categories/:text', function (req, res) {
         let id_user = get_current_user(req.cookies.currentUser);

@@ -143,6 +143,14 @@ wss.on('connection', (ws, req)=>{
           }
         }
       }
+      else if(messageArray.status=='block'){
+        if (toUserWebSocket && toUserWebSocket.length>0) {
+          console.log("sending writing");
+          for(let i=0;i<toUserWebSocket.length;i++){
+            toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'block',message:messageArray.chat_section_name,id_user_blocking:id_user}]));
+          }
+        }
+      }
       else if(messageArray.status=='emoji'){
         console.log("messageArray.status=='emoji 1'")
         if (toUserWebSocket && toUserWebSocket.length>0) {
@@ -152,7 +160,7 @@ wss.on('connection', (ws, req)=>{
           }
         }
       }
-      else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' ){
+      else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' && messageArray.status!='block'){
 
         /*****************************************TO A FRIEND *************************/
     /*****************************************TO A FRIEND *************************/

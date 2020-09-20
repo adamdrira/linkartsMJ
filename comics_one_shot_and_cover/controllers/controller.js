@@ -217,24 +217,21 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
       let current_user = get_current_user(req.cookies.currentUser);
       let bd_id=req.body.bd_id;
       let status=req.body.status;
-      (async () => {
-
-          bd_os = await Liste_bd_os.findOne({
-              where: {
-                  authorid:current_user,
-                  bd_id:bd_id,
-              },
-          })
-          .then(bd_os => {
-              bd_os.update({
-                    "status":status
-              }).then(bd_os => {
-                  res.status(200).send(bd_os)
-              }
-              )
-              
-          }); 
-      })();     
+      Liste_bd_os.findOne({
+          where: {
+              authorid:current_user,
+              bd_id:bd_id,
+          },
+      })
+      .then(bd_os => {
+          bd_os.update({
+                "status":status
+          }).then(bd_os => {
+              res.status(200).send(bd_os)
+          }
+          )
+          
+      });   
   });
 
 
