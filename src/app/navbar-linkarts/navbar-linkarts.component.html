@@ -624,10 +624,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_friends_last_message[i].id_user==user_id && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                                     <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                        {{list_of_friends_last_message[i].message}} 
+                                                        moi : {{list_of_friends_last_message[i].message}} 
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
+                                                        <b>moi : {{list_of_friends_last_message[i].message}}</b>
                                                     </div>
                                                 </div>
     
@@ -648,10 +648,10 @@
                                                 </div>
                                                 <div *ngIf="list_of_friends_last_message[i].id_user==user_id && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                                        {{list_of_friends_last_message[i].message}} 
+                                                        moi : {{list_of_friends_last_message[i].message}} 
                                                     </div>
                                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length==1">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
+                                                        <b>moi : {{list_of_friends_last_message[i].message}}</b>
                                                     </div>
                                                 </div>
                                             </ng-container>
