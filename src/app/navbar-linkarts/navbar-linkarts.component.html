@@ -466,22 +466,35 @@
         <div class="navbar-l1-icons-container" style="margin: auto;" *ngIf="type_of_profile=='account'" >
 
           
-          <div #chat class="icon-container"  (click)="open_messages()" >
-            <div class="icon icon-messenger">
+          <div #chat class="icon-container">
+            <div class="icon icon-messenger" (click)="open_messages()">
             </div>
-            <div class="number-of-notifs-container" *ngIf="number_of_unseen_messages>0 && 100>number_of_unseen_messages" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
-              <span *ngIf="10>number_of_unseen_messages" class="number-of-notifs">
-                {{number_of_unseen_messages}}
-              </span>
-              <span *ngIf="number_of_unseen_messages>9 && 100>number_of_unseen_messages" class="number-of-notifs-more">
-                {{number_of_unseen_messages}}
-              </span>
+            <ng-container *ngIf="number_of_unseen_messages>0">
+              <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
+                                'notif-size-1':10>number_of_unseen_messages,
+                                'notif-size-2':100>number_of_unseen_messages && number_of_unseen_messages>=10,
+                                'notif-size-3':number_of_unseen_messages>=100}">
+                <div class="number-of-notifs">
+                  <ng-container *ngIf="number_of_unseen_messages>=100">
+                    +99
+                  </ng-container>
+                  <ng-container *ngIf="100>number_of_unseen_messages">
+                    {{number_of_unseen_messages}}
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+            
+            <!--<div class="number-of-notifs-container" *ngIf="number_of_unseen_messages>0 && 100>number_of_unseen_messages" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
+                <div class="number-of-notifs">
+                  {{number_of_unseen_messages}}
+                </div>
             </div>
             <div class="number-of-notifs-container-more" *ngIf="number_of_unseen_messages>0 && number_of_unseen_messages>99" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
               <span *ngIf="number_of_unseen_messages>99 " class="number-of-notifs">
                 +99
               </span>
-            </div>
+            </div>-->
             <!--<div class="title">Messagerie</div>-->
 
             <div class="notifications-chat-container "  [ngClass]="{'invisible':!show_chat_messages || !data_retrieved || !using_chat_retrieved}">
@@ -509,7 +522,7 @@
                             <div class="right-container">
                                 <span class="author-name">{{list_of_friends_names[i]}} </span>
                                 <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
-                                    <div class="last-message" >
+                                    <div class="last-message">
     
                                         <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
                                         <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
@@ -734,10 +747,10 @@
                                            
                                             </div>
                                         </div>
-                                        <div *ngIf="!list_of_friends_last_message[i].date">
+                                        <div *ngIf="!list_of_friends_last_message[i].date" class="date-container">
                                             - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
                                         </div>
-                                        <div *ngIf="list_of_friends_last_message[i].date">
+                                        <div *ngIf="list_of_friends_last_message[i].date" class="date-container">
                                             - {{list_of_friends_last_message[i].date}}
                                         </div>
                                     </div>
@@ -749,10 +762,8 @@
                     </div>
                 </div >
                 
-                <div class="open-chat">
-                  <a href="/chat" *ngIf="list_of_friends_retrieved">
-                    <span style="    color: #203864;font-weight: 600;"> Consulter la messagerie</span>
-                  </a>
+                <div class="open-chat" onclick="location.href='/chat'" *ngIf="list_of_friends_retrieved">
+                    <span> Consulter la messagerie</span>
                 </div>
             </div>
           </div>
@@ -763,8 +774,26 @@
             <!-- ---------------------------NOTIFICATIONS----------------------------------->
              <!-- ---------------------------NOTIFICATIONS----------------------------------->
 
+            <div #notifications class="icon-container">
+            <div class="icon icon-bell" (click)="open_notifications()">
+            </div>
+            <ng-container *ngIf="number_of_unchecked_notifications>0">
+              <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
+                                'notif-size-1':10>number_of_unchecked_notifications,
+                                'notif-size-2':100>number_of_unchecked_notifications && number_of_unchecked_notifications>=10,
+                                'notif-size-3':number_of_unchecked_notifications>=100}">
+                <div class="number-of-notifs">
+                  <ng-container *ngIf="number_of_unchecked_notifications>=100">
+                    +99
+                  </ng-container>
+                  <ng-container *ngIf="100>number_of_unchecked_notifications">
+                    {{number_of_unchecked_notifications}}
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
 
-          <div #notifications class="icon-container" (click)="open_notifications()" >
+          <!--<div #notifications class="icon-container" (click)="open_notifications()" >
             <div class="icon icon-bell">
             </div>
             <div class="number-of-notifs-container" *ngIf="number_of_unchecked_notifications>0 && 100>number_of_unchecked_notifications" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
@@ -779,652 +808,800 @@
               <span *ngIf="number_of_unchecked_notifications>99 " class="number-of-notifs">
                 +99
               </span>
-            </div>
+            </div>-->
 
-            
 
-            <!--<div class="title">Notifications</div>-->
-            <div #myScrollContainer class="notifications-container" style="top: 58px;box-shadow: 0px 2px 5px #666464; left: -177px; z-index: 35; position: absolute;" [ngClass]="{'invisible':!show_notifications || !data_retrieved}">
-              <div style="display:block;margin-bottom: 5px;" *ngFor="let notif of final_list_of_notifications_to_show.slice(0,index_of_notifications_to_show),let i=index" [ngClass]="{'not-seen':list_of_notifications[i].status!='checked','seen':list_of_notifications[i].status=='checked'}" >
-              
-                 <!-- ---------------------------Publication add----------------------------------->
-                 <!-- ---------------------------Publication add----------------------------------->
-                 <ng-container *ngIf="notif">
-                    <div  *ngIf="notif.type=='add_publication'" >
 
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                            <span >{{notif.id_user_name}} a publiée une bande dessinée : {{notif.publication_name}}</span>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a *ngIf="notif.format=='one-shot'" style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <span >{{notif.id_user_name}} a publié un dessin : {{notif.publication_name}}</span>
-                        </a>
-                        <a *ngIf="notif.format!='one-shot'"  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <span >{{notif.id_user_name}} a publié un artbook : {{notif.publication_name}}</span>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <span>{{notif.id_user_name}} a publié un écrit : {{notif.publication_name}}</span>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='ad'">
-                        <a  style="color:black" href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <span>{{notif.id_user_name}} a publié une annonce : {{notif.publication_name}}</span>
-                        </a>
-                      </ng-container>
-                      
-                    </div>
-    
-                    <!-- ---------------------------extend publication----------------------------------->
-                    <!-- ---------------------------extend publication----------------------------------->
-    
-                    <div  *ngIf="notif.type=='extend_publication'" >
-    
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <span >{{notif.id_user_name}} a ajouté un chapitre à l'oeuvre : {{notif.publication_name}}</span>
-                        </a>
-                      </ng-container>
-                      
-                    </div>
-    
-                    <!-- ---------------------------Publciation like----------------------------------->
-                    <!-- ---------------------------Publciation like----------------------------------->
-                    
-                    <div  *ngIf="notif.type=='publication_like'" >
-    
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                         
-                        </a>
-                        <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-                      
-                    </div>
-    
-                    <!-- ---------------------------Publciation love----------------------------------->
-                    <!-- ---------------------------Publciation love----------------------------------->
-    
-                    <div *ngIf="notif.type=='publication_love'" >
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                        </a>
-                        <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a adoré votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-                    </div>
-    
-                    <!-- ---------------------------Comment----------------------------------->
-                    <!-- ---------------------------Comment----------------------------------->
-    
-                    <div *ngIf="notif.type=='comment'" >
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a commenté votre oeuvre : {{notif.publication_name}}, chapitre {{notif.chapter_number}}</span>
-                          </ng-container>
-                        </a>
-                        <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a commenté votre oeuvre : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='ad'">
-                        <a  style="color:black" href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont commenté votre annonce : {{notif.publication_name}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre oeuvre : {{notif.publication_name}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a commenté votre annonce : {{notif.publication_name}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-                    </div>
-    
-                    <!-- ---------------------------Comment answer----------------------------------->
-                    <!-- ---------------------------Comment answer ----------------------------------->
-    
-                    <div *ngIf="notif.type=='comment_answer'" >
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                        <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='ad'">
-                        <a  style="color:black" href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a répondu à votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-                    </div>
-    
-                    <!-- ---------------------------Comment like and comment_answer like----------------------------------->
-                    <!-- ----------------------------Comment like and comment_answer like ----------------------------------->
-    
-                    <div *ngIf="notif.type=='comment_like' || notif.type=='comment_answer_like'" >
-                      <ng-container *ngIf="notif.publication_category=='comic'">
-                        <a *ngIf="notif.format=='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                        <a *ngIf="notif.format!='serie'" style="color:black" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='drawing'">
-                        <a  style="color:black" href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='writing'">
-                        <a  style="color:black" href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-    
-                      <ng-container *ngIf="notif.publication_category=='ad'">
-                        <a  style="color:black" href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
-                            <span >{{notif.id_user_name}} et {{dictionnary_of_similar_notifications[i][0].id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et {{item.id_user_name}} ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
-                            <span >{{notif.id_user_name}}</span>
-                            <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, {{item.id_user_name}} </span>
-                              <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">,{{item.id_user_name}} et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
-                            </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
-                            <span >{{notif.id_user_name}} a aimé votre commentaire : {{notif.information}}</span>
-                          </ng-container>
-                        </a>
-                      </ng-container>
-                    </div>
-                    <mat-divider></mat-divider>
-                 </ng-container>
+
+            <div class="notifications-chat-container" [ngClass]="{'invisible':!show_notifications || !data_retrieved}">
+              <div #myScrollContainer class="notifications-container notifications-model" style="position:relative;">
 
                 
+                <div *ngFor="let notif of final_list_of_notifications_to_show.slice(0,index_of_notifications_to_show),let i=index" class="subscriber-card" 
+                [ngClass]="{'not-seen':list_of_notifications[i].status!='checked','seen':list_of_notifications[i].status=='checked'}">
+
+                  <div class="author-container" style="height:100%;" *ngIf="notif">
+                    <!-- ---------------------------Publication add----------------------------------->
+                    <!-- ---------------------------Publication add----------------------------------->
+                      <ng-container *ngIf="notif.type=='add_publication'">
+
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+                          <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                                  <span><b>{{notif.id_user_name}}</b> a publiée une bande dessinée : <b>{{notif.publication_name}}</b></span>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <ng-container *ngIf="notif.format=='one-shot'">
+                            <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                              <div class="left-container">
+                                  <img [src]="list_of_friends_profile_pictures[0]">
+                              </div>
+                              <div class="right-container">
+                                    <span><b>{{notif.id_user_name}}</b> a publié un artbook : <b>{{notif.publication_name}}</b></span>
+                              </div>
+                            </a>
+                          </ng-container>
+                          <ng-container *ngIf="notif.format!='one-shot'">
+                            <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                              <div class="left-container">
+                                  <img [src]="list_of_friends_profile_pictures[0]">
+                              </div>
+                              <div class="right-container">
+                                    <span><b>{{notif.id_user_name}}</b> a publié un artbook : <b>{{notif.publication_name}}</b></span>
+                              </div>
+                            </a>
+                          </ng-container>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                                  <span><b>{{notif.id_user_name}}</b> a publié un écrit : <b>{{notif.publication_name}}</b></span>
+                            </div>
+                          </a>
+                        </ng-container>
+
+                        <ng-container *ngIf="notif.publication_category=='ad'">
+                          <a  href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <span><b>{{notif.id_user_name}}</b> a publié une annonce : <b>{{notif.publication_name}}</b></span>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------extend publication----------------------------------->
+                      <!-- ---------------------------extend publication----------------------------------->
+      
+                      <ng-container  *ngIf="notif.type=='extend_publication'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+                          <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                                  <span><b>{{notif.id_user_name}}</b> a ajouté un chapitre à l'œuvre : <b>{{notif.publication_name}}</b></span>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------Publciation like----------------------------------->
+                      <!-- ---------------------------Publciation like----------------------------------->
+                      
+                      <ng-container  *ngIf="notif.type=='publication_like'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+
+                          <ng-container *ngIf="notif.format=='serie'">
+                            <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                              <div class="left-container">
+                                  <img [src]="list_of_friends_profile_pictures[0]">
+                              </div>
+                              <div class="right-container">
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                  <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                  <span ><b>{{notif.id_user_name}}</b></span>
+                                  <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                  </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                  <span ><b>{{notif.id_user_name}}</b></span>
+                                  <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                  </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                  <span ><b>{{notif.id_user_name}}</b> a aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                              </div>
+                            </a>
+                          </ng-container>
+                          <ng-container *ngIf="notif.format!='serie'">
+                            <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                              <div class="left-container">
+                                  <img [src]="list_of_friends_profile_pictures[0]">
+                              </div>
+                              <div class="right-container">
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                  <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                  <span ><b>{{notif.id_user_name}}</b></span>
+                                  <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                  </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                  <span ><b>{{notif.id_user_name}}</b></span>
+                                  <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                    <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                  </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                  <span ><b>{{notif.id_user_name}}</b> a aimé votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                              </div>
+                            </a>
+                          </ng-container>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------Publciation love----------------------------------->
+                      <!-- ---------------------------Publciation love----------------------------------->
+      
+                      <ng-container *ngIf="notif.type=='publication_love'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+
+                          <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container"><ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                              <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                              <span ><b>{{notif.id_user_name}}</b></span>
+                              <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                              </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                              <span ><b>{{notif.id_user_name}}</b></span>
+                              <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                              </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                              <span><b>{{notif.id_user_name}}</b> a adoré votre œuvre : <b>{{notif.publication_name}}, chapitre {{notif.chapter_number}}</b></span>
+                            </ng-container>
+                            </div>
+                          </a>
+                          <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span><b>{{notif.id_user_name}}</b> a adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span><b>{{notif.id_user_name}}</b> a adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span><b>{{notif.id_user_name}}</b> a adoré votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------Comment----------------------------------->
+                      <!-- ---------------------------Comment----------------------------------->
+      
+                      <ng-container *ngIf="notif.type=='comment'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+                          
+                          <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a commenté votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                          
+                          <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='ad'">
+                          <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont commenté votre annonce : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont commenté votre œuvre : <b>{{notif.publication_name}}</b></span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a commenté votre annonce : <b>{{notif.publication_name}}</b></span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------Comment answer----------------------------------->
+                      <!-- ---------------------------Comment answer ----------------------------------->
+      
+                      <ng-container *ngIf="notif.type=='comment_answer'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+                          <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                          <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='ad'">
+                          <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont répondu à votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a répondu à votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+      
+                      <!-- ---------------------------Comment like and comment_answer like----------------------------------->
+                      <!-- ----------------------------Comment like and comment_answer like ----------------------------------->
+      
+                      <ng-container *ngIf="notif.type=='comment_like' || notif.type=='comment_answer_like'" >
+                        <ng-container *ngIf="notif.publication_category=='comic'">
+                          <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                          <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='drawing'">
+                          <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='writing'">
+                          <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+      
+                        <ng-container *ngIf="notif.publication_category=='ad'">
+                          <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
+                            <div class="left-container">
+                                <img [src]="list_of_friends_profile_pictures[0]">
+                            </div>
+                            <div class="right-container">                               
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
+                                <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>1 && 4>dictionnary_of_similar_notifications[i].length">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">&nbsp; et <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>3 ">
+                                <span ><b>{{notif.id_user_name}}</b></span>
+                                <ng-container *ngFor="let item of dictionnary_of_similar_notifications[i].slice(0,3);let j=index">
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length>j+1">, <b>{{item.id_user_name}}</b> </span>
+                                  <span *ngIf="dictionnary_of_similar_notifications[i].length==j+1">, <b>{{item.id_user_name}}</b> et {{dictionnary_of_similar_notifications[i].length-3}} autres utilisateurs ont aimé votre commentaire : {{notif.information}}</span>
+                                </ng-container>
+                              </ng-container>
+                              <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==0">
+                                <span ><b>{{notif.id_user_name}}</b> a aimé votre commentaire : {{notif.information}}</span>
+                              </ng-container>
+                            </div>
+                          </a>
+                        </ng-container>
+                      </ng-container>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

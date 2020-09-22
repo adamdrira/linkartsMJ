@@ -168,10 +168,14 @@ export class NavbarLinkartsComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   @ViewChild('myScrollContainer_chat') private myScrollContainer_chat: ElementRef;
 
+  
+    
   ngOnInit() {
     window.addEventListener('scroll', this.scroll, true);
-    this.setHeight();
-    this.define_margin_top();
+    
+    //this.setHeight();
+    //this.define_margin_top();
+
     this.AuthenticationService.tokenCheck().subscribe(r=>{
       if(r=="account"){
         this.type_of_profile="account";
@@ -190,14 +194,15 @@ export class NavbarLinkartsComponent implements OnInit {
     });
 
     
+
     //resize interval
     let interval = setInterval( () => {
-
+      /*
       if( this.margin_is_not_set ) {
         this.setHeight();
         this.define_margin_top();
-      }
-      else {
+      }*/
+      if( this.navbar.visible ) {
         if(this.type_of_profile_retrieved){
           console.log("in else")
           this.initialize_selectors();
@@ -234,6 +239,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.sort_notifications(msg);
       }
     })  
+
 
 
     //scroll managment interval
@@ -391,10 +397,9 @@ export class NavbarLinkartsComponent implements OnInit {
     else{
       this.show_notifications=true;
     }
-    
-    
   }
 
+  
   change_notifications_status_to_checked(){
     console.log("change_notifications_status_to_checked")
     let modify=false;
@@ -1129,29 +1134,23 @@ export class NavbarLinkartsComponent implements OnInit {
 /***************************************Style  **********************************/
 /***************************************Style  **********************************/
 
-  define_margin_top() {
-    
-    
+  /*define_margin_top() {
     if( this.navbar.visible ) {
       console.log("navbar visible set margin top")
-     
       if( $(".fixed-top").css("position") == "fixed" ) {
         $(".navbar-margin").css("height", $(".fixed-top").height() + "px" );
       }
       else {
         $(".navbar-margin").css("height", "10px" );
       }
-
       this.margin_is_not_set=false;
       console.log($(".navbar-margin").css("height"))
     }
-    
   }
 
   setHeight() {
     this.navbar.setHeight( $(".fixed-top").height() );
-    
-  }
+  }*/
   
   
   delay(ms: number) {
