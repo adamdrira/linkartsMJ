@@ -20,5 +20,6 @@ db.sequelize = sequelize;
 db.users = require('./user.model.js')(sequelize, Sequelize).User;
 db.user_links = require('./user.model.js')(sequelize, Sequelize).User_links;
 db.user_blocked = require('./user.model.js')(sequelize, Sequelize).User_blocked;
+db.reports = require('./user.model.js')(sequelize, Sequelize).reports;
 
 module.exports = db;

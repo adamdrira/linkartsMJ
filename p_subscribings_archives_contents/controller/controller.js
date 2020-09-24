@@ -284,29 +284,27 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var today = new Date();
         today.setDate(today.getDate() - 1);
-        var ss = String(today.getSeconds()).padStart(2, '0');
+        /*var ss = String(today.getSeconds()).padStart(2, '0');
         var mi = String(today.getMinutes()).padStart(2, '0');
         var hh = String(today.getHours()).padStart(2, '0');
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth()+1).padStart(2, '0'); 
         var yyyy = String(today.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';
-        (async () => {
+        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z';*/
+
 
             list_of_subscribings.findAll({
                 where: {
                     id_user:id_user,
-                    createdAt: {[Op.gte]: yesterday_timestamp,}
+                    createdAt: {[Op.gte]: today}
                 },
                 order: [
                     ['createdAt', 'DESC']
-                ],
-                limit: 20,
+                ]
             })
             .then(users_subscribed_to =>  {
                 res.status(200).send([users_subscribed_to])
-            }); 
-        })();     
+            });   
     });
 
 
@@ -316,29 +314,26 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         //let last_timestamp =  '2020-04-28T06:40:24.000Z';
         var today = new Date();
         today.setDate(today.getDate() - 1);
-        var ss = String(today.getSeconds()).padStart(2, '0');
+        /*var ss = String(today.getSeconds()).padStart(2, '0');
         var mi = String(today.getMinutes()).padStart(2, '0');
         var hh = String(today.getHours()).padStart(2, '0');
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); 
         var yyyy = String(today.getFullYear());
-        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z' ;
-        (async () => {
+        let yesterday_timestamp =  yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mi + ':' + ss+ '.000Z' ;*/
 
-            users_subscribed_to = await list_of_subscribings.findAll({
+           list_of_subscribings.findAll({
                 where: {
                     id_user:id_user,
-                    createdAt: {[Op.lt]: yesterday_timestamp,}
+                    createdAt: {[Op.lt]: today}
                 },
                 order: [
                     ['createdAt', 'DESC']
-                ],
-                limit: 20,
+                ]
             })
             .then(users_subscribed_to =>  {
                 res.status(200).send([users_subscribed_to])
             }); 
-        })();     
     });
 
     router.get('/get_all_subscribed_users/:id_user', function (req, res) {
@@ -351,8 +346,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 },
                 order: [
                     ['createdAt', 'DESC']
-                ],
-                limit: 20,
+                ]
             })
             .then(users_subscribed_to =>  {
                 res.status(200).send([users_subscribed_to])
@@ -362,45 +356,46 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
     router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
 
+            console.log("check_if_visitor_susbcribed")
             const id_user_to_check = req.params.id_user_to_check;
-            
+            console.log(current_user)
+            console.log(id_user_to_check)
 
-            subscribtion = await list_of_subscribings.findOne({
+            list_of_subscribings.findOne({
                 where: {
                     id_user:current_user,
                     id_user_subscribed_to:id_user_to_check
                 },
+            }).then(subscribtion=>{
+                if(subscribtion){
+                    res.status(200).send([{"value":true}])
+                }
+                else{
+                    res.status(200).send([{"value":false}])
+                }
             })
-            if(subscribtion!=null){
-                res.status(200).send([{"value":true}])
-            }
-            else{
-                res.status(200).send([{"value":false}])
-            }
-        })();     
+            
+    
     });
     
     router.post('/add_content', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {    
+
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
         const chapter_number = req.body.chapter_number;
+        list_of_contents.create({
+            "id_user": current_user,
+            "publication_category":category,
+            "format": format,
+            "publication_id": publication_id,
+            "chapter_number": chapter_number,
+        
+        })
+        .then(contents => {res.status(200).send([contents])})
 
-            list_of_contents.create({
-                "id_user": current_user,
-                "publication_category":category,
-                "format": format,
-                "publication_id": publication_id,
-                "chapter_number": chapter_number,
-            
-            })
-            .then(contents => {res.status(200).send([contents])})
-            
-        })();
         
     });
 
@@ -420,9 +415,22 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 chapter_number: chapter_number
             },
         }).then(content=>{
-            content.update({
-                "status":"ok"
-            }).then(content => {res.status(200).send([content])})
+            if(content){
+                content.update({
+                    "status":"ok"
+                }).then(content => {res.status(200).send([content])})
+            }
+            else{
+                list_of_contents.create({
+                    "id_user": current_user,
+                    "publication_category":category,
+                    "format": format,
+                    "publication_id": publication_id,
+                    "chapter_number": chapter_number,
+                    "status":"ok",
+                }).then(content => {res.status(200).send([content])})
+            }
+            
         })
         
     });
@@ -531,7 +539,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 order: [
                     ['createdAt', 'DESC']
                 ],
-                limit: 3,
+                limit: 5,
             })
             .then(contents =>  {
                 res.status(200).send([contents])
@@ -551,7 +559,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 order: [
                     ['createdAt', 'DESC']
                 ],
-                limit: 3,
+                limit: 5,
             })
             .then(contents =>  {
                 res.status(200).send([contents])
@@ -579,7 +587,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 order: [
                     ['createdAt', 'DESC']
                 ],
-                limit: 3,
+                limit: 5,
             })
             .then(contents =>  {
                 res.status(200).send([contents])
@@ -710,7 +718,109 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 limit: 5,
             }).then(content => {res.status(200).send([content])})
             })();
-        });
+    });
+
+
+    
+
+    router.post('/remove_all_subscribtions_both_sides', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);
+        const id_friend = req.body.id_friend;
+    
+        list_of_subscribings.findOne({
+            where: {
+                id_user:current_user,
+                id_user_subscribed_to:id_friend
+            },
+        })
+        .then(subscribings=>{
+            if(subscribings){
+                subscribings.destroy({
+                    truncate: false
+                    }).then(subscribings=>{
+                    list_of_users.findOne({
+                        where:{
+                            id:id_friend,
+                        }
+                    }).then(user=>{
+                        let number=user.subscribers_number -1;
+                        user.update({
+                            'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), current_user),
+                            'subscribers_number':number,
+                        }).then(user=>{
+                            list_of_users.findOne({
+                                where:{
+                                    id:current_user,
+                                }
+                            }).then(user1=>{
+                                let number1=user1.subscribings_number -1;
+                                user1.update( {
+                                    'subscribings': Sequelize.fn('array_remove', Sequelize.col('subscribings'), id_user_subscribed_to),
+                                    'subscribings_number':number1,
+                                }).then(m=>{
+                                        delete_other_subscribtion()
+                                })
+                            })
+                        })
+                    })
+                })  
+            }
+            else{
+                delete_other_subscribtion()
+            }
+                    
+        })
+
+        function delete_other_subscribtion(){
+            list_of_subscribings.findOne({
+                where: {
+                    id_user:id_friend,
+                    id_user_subscribed_to:current_user
+                },
+            })
+            .then(subscribings=>{
+                if(subscribings){
+                    subscribings.destroy({
+                        truncate: false
+                        }).then(subscribings=>{
+                        list_of_users.findOne({
+                            where:{
+                                id:current_user,
+                            }
+                        }).then(user=>{
+                            let number=user.subscribers_number -1;
+                            user.update({
+                                'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), id_friend),
+                                'subscribers_number':number,
+                            }).then(user=>{
+                                list_of_users.findOne({
+                                    where:{
+                                        id:id_friend,
+                                    }
+                                }).then(user1=>{
+                                    let number1=user1.subscribings_number -1;
+                                    user1.update( {
+                                        'subscribings': Sequelize.fn('array_remove', Sequelize.col('subscribings'), current_user),
+                                        'subscribings_number':number1,
+                                    }).then(m=>{
+                                        res.status(200).send([subscribings])
+                                    })
+                                })
+                            })
+                        })
+                    }) 
+                }
+                else{
+                    res.status(200).send([{nothing:"nothing"}])
+                }
+                         
+            })
+        }
+
+        
+
+
+    })
 
     
 

@@ -19,7 +19,8 @@ module.exports = (router,
     List_of_comments,
     List_of_comments_answers,
     List_of_comments_likes,
-    List_of_comments_answers_likes
+    List_of_comments_answers_likes,
+    list_of_ads
     ) => {
 
     function get_current_user(token){
@@ -780,12 +781,15 @@ module.exports = (router,
     router.post('/add_commentary', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => { 
+            console.log("adding comment")
             const category = req.body.category;
             const format = req.body.format;
             const style = req.body.style;
             const publication_id = req.body.publication_id;
             const chapter_number = req.body.chapter_number;
             const commentary = req.body.commentary;
+            console.log(category)
+            console.log(publication_id)
             if (category === "comic" ) {
                 if(format === "one-shot"){
                     bd = await Liste_Bd_Oneshot.findOne({
@@ -884,15 +888,24 @@ module.exports = (router,
                 }
 
                 else if(category=="ad"){
+                    console.log("looking for ad")
                     list_of_ads.findOne({
                         where: {
                             id: publication_id,
                         }
                     })
                     .then(ad =>  {
-                        const number = ad.commentarynumbers + 1;
+                        console.log(ad)
+                        let number=0;
+                        if(!ad.commentariesnumber){
+                            number=1;
+                        }
+                        else{
+                            number = ad.commentariesnumber + 1;
+                        }
+                        console.log(number);
                         ad.update({
-                        "commentarynumbers":number,
+                        "commentariesnumber":number,
                         })
                     });
                 }
@@ -1373,9 +1386,9 @@ module.exports = (router,
                     }
                 })
                 .then(ad =>  {
-                    const number = ad.commentarynumbers - 1;
+                    const number = ad.commentariesnumber - 1;
                     ad.update({
-                    "commentarynumbers":number,
+                    "commentariesnumber":number,
                     })
                 });
             };

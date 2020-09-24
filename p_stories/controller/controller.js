@@ -166,8 +166,8 @@ module.exports = (router, list_of_stories,list_of_views) => {
             const current_user = get_current_user(req.cookies.currentUser);
             const Op = Sequelize.Op;
             //let last_timestamp =  '2020-04-28T06:40:24.000Z';
-            var last_week = new Date();
-            last_week.setDate(before_yesterday.getDate() - 2);
+            var before_yesterday = new Date();
+            before_yesterday.setDate(before_yesterday.getDate() - 2);
             /*var ss = String(before_yesterday.getSeconds()).padStart(2, '0');
             var mi = String(before_yesterday.getMinutes()).padStart(2, '0');
             var hh = String(before_yesterday.getHours()).padStart(2, '0');
@@ -194,7 +194,7 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     where: {
                       authorid: authorid,
                       id_user_who_looks: current_user,
-                      [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
+                      [Op.and]: [{ createdAt:{[Op.gte]: before_yesterday} }, { createdAt:{[Op.lte]: today} }],
                           
                     },
                   }).then(number=>{console.log(number);

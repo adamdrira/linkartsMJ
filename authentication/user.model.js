@@ -55,5 +55,26 @@ module.exports = (sequelize, Sequelize) => {
 			//timestamps: false,
 	});
 
-	return {User,User_links,User_blocked};
+	const reports = sequelize.define('reports', {
+		id_user: {type: Sequelize.INTEGER},
+		id_receiver: {type: Sequelize.INTEGER},
+		type_of_report: {type: Sequelize.STRING},
+		publication_category: {type: Sequelize.STRING},
+		publication_id: {type: Sequelize.INTEGER},
+		format: {type: Sequelize.STRING},
+		message: {type: Sequelize.STRING(2000)},
+		chapter_number: {type: Sequelize.INTEGER},
+        attachment_name_one:{type: Sequelize.STRING},
+        attachment_name_two:{type: Sequelize.STRING},
+        attachment_name_three:{type: Sequelize.STRING},
+        attachment_name_four:{type: Sequelize.STRING},
+        attachment_name_five:{type: Sequelize.STRING},
+		},
+		{
+			freezeTableName: true, // Model tableName will be the same as the model name,
+			//timestamps: false,
+	});
+
+
+	return {User,User_links,User_blocked,reports};
 }

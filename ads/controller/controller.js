@@ -50,6 +50,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "price_value":price_value,
                   "status":"public",
                   "refreshment_number":0,
+                  "commentariesnumber":0,
                   "date":today,
         
               })
@@ -593,7 +594,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         })();
     });
 
-    router.delete('/delete_attachment/:id', function (req, res) {
+    router.delete('/delete_ad/:id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser); 
           const id = parseInt(req.params.id);
           list_of_ads.findOne({
