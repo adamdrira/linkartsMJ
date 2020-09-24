@@ -30,6 +30,11 @@ input, button, select, textarea {
     background-color:rgb(66, 134, 244);
 }
 
+.custom-dialog-container .mat-dialog-container {
+  margin-top: 66px !important;
+  padding-top: 15px !important;
+  padding-bottom: 80px !important;
+}
 
 @import '~@angular/material/theming';
 $custom-typography: mat-typography-config(
