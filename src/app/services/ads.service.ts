@@ -112,8 +112,8 @@ export class Ads_service {
 
     // interactions avec les annonces
 
-    delete_attachment(id) {
-      return this.httpClient.delete(`routes/delete_attachment/${id}`, {withCredentials:true}).pipe(map(information=>{
+    delete_ad(id) {
+      return this.httpClient.delete(`routes/delete_ad/${id}`, {withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
     }

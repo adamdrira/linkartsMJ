@@ -33,8 +33,8 @@ export class BdOneShotService {
         this.CookieService.delete('current_bd_oneshot_id','/');
         this.CookieService.delete('current_bd_serie_id','/');
         this.CookieService.set('current_bd_oneshot_id', information[0].bd_id, undefined, '/','localhost',undefined,'Lax');
-        this.Subscribing_service.add_content('comics', 'one-shot', information[0].bd_id,0).subscribe(r=>{})
-        return information[0].bd_id;
+      
+        return information;
     }));
   }
 

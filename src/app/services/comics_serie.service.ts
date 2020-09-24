@@ -31,7 +31,7 @@ export class BdSerieService {
         this.CookieService.delete('current_bd_oneshot_id','/');
         this.CookieService.delete('current_bd_serie_id','/');
         this.CookieService.set('current_bd_serie_id', information[0].bd_id, undefined, '/','localhost',undefined,'Lax');
-        return this.CookieService.get('current_bd_serie_id')
+        return information
     }));
   }
 
@@ -151,9 +151,7 @@ export class BdSerieService {
     return this.httpClient.post('routes/validation_bd_upload_bd_serie/',{bd_id:bd_id, number_of_chapters:number_of_chapters}, {withCredentials:true}).pipe(map(information=>{
       this.CookieService.delete('current_bd_serie_id','/');
       this.CookieService.delete('name_cover_bd','/');
-      return this.Subscribing_service.validate_content("comics","serie",bd_id,number_of_chapters).subscribe(l=>{
-        return l
-      });    
+      return [bd_id,number_of_chapters]   
      }));
   }
 

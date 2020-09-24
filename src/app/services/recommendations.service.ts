@@ -55,6 +55,7 @@ export class Community_recommendation {
   }
 
   sorted_category_list(){
+    console.log("sorted_category_list")
    return this.httpClient.get('python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
         return information;
      }));
