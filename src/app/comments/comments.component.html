@@ -7,6 +7,68 @@
     </div>
 </div>
 <div class="comments-container" *ngIf="user_blocked_retrieved && !user_blocked">
+
+    <div class="add-comment" *ngIf="type_of_account=='account'">
+
+        <div class="left-container" [ngClass]="{'invisible':!pp_is_loaded}">
+
+            <div class="image-container">
+                <img [src]="profile_picture" (load)="load_pp()" >
+            </div>
+
+        </div>
+
+        <div [formGroup]="comment_container" class="right-container">
+
+            <textarea 
+            formControlName="comment"
+            type="text"
+            (keydown)="check_commentary($event)"
+             class="textarea-add-comment" 
+             style="resize:none;" 
+             autocomplete="off" 
+             placeholder="Ajouter un commentaire ..."></textarea>
+                                    
+        </div>
+
+    </div>
+
+    <div class="add-comment" *ngIf="type_of_account=='visitor'">
+        Crééer un compte pour pouvoir commenter
+        <span style="margin-left:5px"><a href="/signup">S'inscrire</a></span>
+    </div>
+
+    <div *ngIf='display_comments && visitor_mode_retrieved'>
+        <div class="comments">
+            <app-comment-element style="width:calc(100% - 28px);"
+                [visitor_id]="visitor_id"
+                [visitor_name]="visitor_name"
+                [title]="title"
+                [visitor_profile_picture]="profile_picture"
+                (changed)="comment_changed();"
+                [comment_id]=0
+                [editable_comment]=editable_comment
+                [now_in_seconds]=now_in_seconds
+                [comment_information]=comments_list[0]>
+            </app-comment-element>
+            <button  mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
+                <mat-icon class="optionsButton">more_vert</mat-icon>
+            </button>
+            <mat-menu  #commentOptions="matMenu">
+                <button class="mat-menu-item" mat-menu-item > 	
+                    <mat-icon class="item-icon">edit</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                <button *ngIf="!visitor_mode && category!='ad'" class="mat-menu-item" (click)="remove_other_comment(0)" mat-menu-item > 	
+                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                    <span>Supprimer</span>
+                </button>
+
+            </mat-menu>
+
+        </div>
+    </div>
+
     <div *ngIf='display_my_comments'>
         <div *ngFor="let item of my_comments_list; let i = index" class="comments">
 
@@ -39,7 +101,7 @@
     </div>
 
     <div *ngIf='display_comments && visitor_mode_retrieved'>
-        <div *ngFor="let item of comments_list; let i = index" class="comments">
+        <div *ngFor="let item of comments_list.slice(1,number_of_comments_to_show); let i = index" class="comments">
 
             <app-comment-element style="width:calc(100% - 28px);"
                 [visitor_id]="visitor_id"
@@ -60,7 +122,7 @@
                     <mat-icon class="item-icon">edit</mat-icon>
                     <span>Signaler</span>
                 </button>
-                <button *ngIf="!visitor_mode" class="mat-menu-item" (click)="remove_other_comment(i)" mat-menu-item > 	
+                <button *ngIf="!visitor_mode && category!='ad'" class="mat-menu-item" (click)="remove_other_comment(i)" mat-menu-item > 	
                     <mat-icon class="item-icon">view_carousel</mat-icon>
                     <span>Supprimer</span>
                 </button>
@@ -70,34 +132,6 @@
         </div>
     </div>
 
-    <div class="add-comment" *ngIf="type_of_account=='account'">
-
-        <div class="left-container" [ngClass]="{'invisible':!pp_is_loaded}">
-
-            <div class="image-container">
-                <img [src]="profile_picture" (load)="load_pp()" >
-            </div>
-
-        </div>
-
-        <div [formGroup]="comment_container" class="right-container">
-
-            <textarea 
-            formControlName="comment"
-            type="text"
-            (keydown)="check_commentary($event)"
-             class="textarea-add-comment" 
-             style="resize:none;" 
-             autocomplete="off" 
-             placeholder="Ajouter un commentaire ..."></textarea>
-                                    
-        </div>
-
-    </div>
-
-    <div class="add-comment" *ngIf="type_of_account=='visitor'">
-        Crééer un compte pour pouvoir commenter
-        <span style="margin-left:5px"><a href="/signup">S'inscrire</a></span>
-    </div>
+    
 
 </div>

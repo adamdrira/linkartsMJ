@@ -6,7 +6,7 @@ import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@ang
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
-
+import {Subscribing_service}from '../services/subscribing.service';
 import { async } from '@angular/core/testing';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -46,6 +46,7 @@ value:string="add";
   }
 
   constructor (
+    private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
     private cd: ChangeDetectorRef,
@@ -472,25 +473,28 @@ value:string="add";
       else {
         this.bdSerieService.validate_bd_serie(this.componentRef.length).subscribe(r=>{
           console.log(r);
+           this.Subscribing_service.validate_content("comics","serie",r[0],r[1]).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"add_publication",
+                id_user_name:this.visitor_name,
+                id_user:this.user_id, 
+                publication_category:'comic',
+                publication_name:this.bdtitle,
+                format:'serie',
+                publication_id:this.bd_id,
+                chapter_number:this.componentRef.length,
+                information:"add",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.chatService.messages.next(message_to_send);
+              this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          }); 
           
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:"add_publication",
-              id_user_name:this.visitor_name,
-              id_user:this.user_id, 
-              publication_category:'comic',
-              publication_name:this.bdtitle,
-              format:'serie',
-              publication_id:this.bd_id,
-              chapter_number:this.componentRef.length,
-              information:"add",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-            this.chatService.messages.next(message_to_send);
-            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+          
             
           }) 
           

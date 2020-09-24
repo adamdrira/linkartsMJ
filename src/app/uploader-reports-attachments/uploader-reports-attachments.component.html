@@ -1,0 +1,40 @@
+<div class="button-container">
+
+
+    
+    <label>
+        <div class="upload-picture">
+            <div class="add-logo"></div>
+            <span>Ajouter une pièce jointe</span>
+            <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+        </div>
+    </label>
+
+
+</div>
+
+
+
+<div class="attachments">
+    <div *ngFor="let item of uploader.queue; let i=index" class="attachment-container">
+        
+
+        <div class="left-container">
+            <span>{{ uploader.queue[i]?.file?.name }}</span>
+        </div>
+
+        
+        <div *ngIf="list_of_contents_type[i]" class="attachment-picture">
+            <img [src]="list_of_pictures[i]">
+        </div>
+
+        <div>
+            <button mat-raised-button class="button style0"
+                (click)="remove_beforeupload(uploader.queue[i],i);">
+                <span class="">Supprimer</span> 
+            </button>
+        </div>
+
+
+    </div>
+</div>

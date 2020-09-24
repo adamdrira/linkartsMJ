@@ -12,6 +12,11 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popup-ad-write-responses.component';
 
+
+import {get_date_to_show} from '../helpers/dates';
+import {get_date_to_show_for_ad} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
+
 declare var $: any
 declare var Swiper: any
 
@@ -79,6 +84,10 @@ export class ThumbnailAdComponent implements OnInit {
   response_list_of_attachments_name=[];
   response_list_of_attachments_type=[];
   response_attachments_retrieved=false;
+  list_of_pictures_name=[];
+
+  thumbnail_is_loaded=false;
+  pp_is_loaded=false;
 
   ngOnInit() {
 
@@ -103,11 +112,10 @@ export class ThumbnailAdComponent implements OnInit {
     });
 
 
-    this.date_to_show = this.get_date_to_show( this.date_in_seconds(this.item) );
+    this.date_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,this.item.createdAt) );
     this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      console.log(SafeURL);
       this.thumbnail_picture = SafeURL;
     });
 
@@ -115,124 +123,9 @@ export class ThumbnailAdComponent implements OnInit {
     
   }
 
-  date_in_seconds(item){
+  
 
-    var uploaded_date = item.createdAt.substring(0,item.createdAt.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-   // alert( now_in_seconds - uploaded_date_in_second );
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
-  get_date_to_show2(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Envoyée il y a 1 minute";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Envoyée il y a 1 heure";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Envoyée il y a 1 jour";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Envoyée il y a 1 semaine";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Envoyée il y a 1 mois";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Envoyée il y a 1 an";
-      }
-      else {
-        return "Envoyée il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
+ 
 
 
 
@@ -270,51 +163,7 @@ export class ThumbnailAdComponent implements OnInit {
 
   
 
-  respond(){
-    console.log("tentative de reponse")
-    const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
-      data: {item:this.item},
-    });
-  }
-
-  
-
-  responses(){
-    this.see_responses=1;
-    this.Ads_service.get_all_responses(this.item.id).subscribe(r=>{
-      this.list_of_responses=r[0]
-      if (r[0]!=null){
-        let compt=0
-        for (let i=0;i<r[0].length;i++){
-          this.list_of_dates[i]= this.get_date_to_show2( this.date_in_seconds(r[0][i]) );
-          this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user).subscribe(p=> {
-            let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_profile_pictures[i] = SafeURL;
-            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
-              this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
-              this.list_of_ids[i]=q[0].id; 
-              this.list_of_pseudos[i]=q[0].nickname; 
-              this.list_of_primary_descriptions[i]=q[0].primary_description;
-              compt++;
-              if(compt==r[0].length){
-                this.answers_retrieved=true;
-              }
-            });
-          });
-      
-          
-        }
-      }
-    })
-  }
-
-  see_response(i){
-    this.response_to_read=this.list_of_responses[i];
-    this.get_response_contents(this.response_to_read);
-    this.see_responses=2;
-    this.category_index=0;
-  }
+ 
 
   read_pictures(i:number){
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
@@ -344,12 +193,6 @@ export class ThumbnailAdComponent implements OnInit {
     //fonction pour mettre à jour une annonce, possible que chaque semaine, gratuit au début
   }
 
-  delete(){
-    this.Ads_service.delete_attachment(this.item.id).subscribe(l=>{
-      console.log(l);
-      location.reload();
-    })
-  };
 
   archive(){
     this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
@@ -357,282 +200,39 @@ export class ThumbnailAdComponent implements OnInit {
     });
   }
 
-  get_response_contents(item){
-    let u=0;
-    var re = /(?:\.([^.]+))?$/;
-    this.response_list_of_pictures=[];
-    this.response_list_of_attachments_name=[];
-    this.response_list_of_attachments=[];
-    this.response_list_of_attachments_type=[];
-    console.log(item);
-    for(let i=0;i<item.number_of_attachments;i++){
-      if(i==0){
-        console.log(re.exec(item.attachment_name_one)[1]);
-        if(re.exec(item.attachment_name_one)[1]!="pdf"){
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_one;
-          this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.response_list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-              
-            }
-          });
-        }
-        else{
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_one;
-          this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
-            this.response_list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-              
-            }
-          });
-        }
-        
-      }
-      if(i==1){
-        console.log(re.exec(item.attachment_name_two)[1]);
-        if(re.exec(item.attachment_name_two)[1]!="pdf"){
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_two;
-          this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.response_list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          });
-        }
-        else{
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_two;
-          this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
-            this.response_list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          });
-        }
-        
-      }
-      if(i==2){
-        console.log(re.exec(item.attachment_name_three)[1]);
-        if(re.exec(item.attachment_name_three)[1]!="pdf"){
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_three;
-          this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.response_list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          });
-        }
-        else{
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_three;
-          this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
-            this.response_list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          });
-        }
-        
-      };
-      if(i==3){
-        if(re.exec(item.attachment_real_name_four)[1]!="pdf"){
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_four;
-          this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.response_list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          })
-        }
-        else{
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_four;
-          this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
-            this.response_list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          })
-        }
-        
-      };
-      if(i==4){
-        if(re.exec(item.attachment_real_name_five)[1]!="pdf"){
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_five;
-          this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-            let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.response_list_of_pictures[l[1]] = SafeURL;
-            u++
-            if(u==item.number_of_attachments){
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          })
-        }
-        else{
-          this.response_list_of_attachments_name[i] = item.attachment_real_name_five;
-          this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
-            this.response_list_of_attachments[l[1]] = l[0];
-            u++
-            if(u==item.number_of_attachments){
+ 
 
-              for(let j=0;j<this.response_list_of_pictures.length;j++){
-                if(!this.response_list_of_pictures[j]){
-                  this.response_list_of_pictures.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              for(let j=0;j<this.response_list_of_attachments.length;j++){
-                if(!this.response_list_of_attachments[j]){
-                  this.response_list_of_attachments.splice(j,1);
-                }
-              }
-              this.response_attachments_retrieved=true;;
-            }
-          })
-        }
-        
-      };
-    }
-  }
-
+  
   get_ad_contents(item){
     let u=0;
     var re = /(?:\.([^.]+))?$/;
-    console.log(item);
     if(item.number_of_attachments>0){
       for(let i=0;i<item.number_of_attachments;i++){
+        console.log(i)
         if(i==0){
-          console.log(re.exec(item.attachment_name_one)[1]);
           if(re.exec(item.attachment_name_one)[1]!="pdf"){
-            this.list_of_attachments_name[i] = item.attachment_real_name_one;
+            this.list_of_pictures_name[i] = item.attachment_real_name_one;
             this.Ads_service.retrieve_attachment(item.attachment_name_one,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
-                
+                this.attachments_retrieved=true;
               }
             });
           }
@@ -642,18 +242,21 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
-                
+                this.attachments_retrieved=true;
               }
             });
           }
@@ -662,24 +265,28 @@ export class ThumbnailAdComponent implements OnInit {
         if(i==1){
           console.log(re.exec(item.attachment_name_two)[1]);
           if(re.exec(item.attachment_name_two)[1]!="pdf"){
-            this.list_of_attachments_name[i] = item.attachment_real_name_two;
+            this.list_of_pictures_name[i] = item.attachment_real_name_two;
             this.Ads_service.retrieve_attachment(item.attachment_name_two,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             });
           }
@@ -689,43 +296,50 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             });
           }
           
         }
         if(i==2){
-          console.log(re.exec(item.attachment_name_three)[1]);
           if(re.exec(item.attachment_name_three)[1]!="pdf"){
-            this.list_of_attachments_name[i] = item.attachment_real_name_three;
+            this.list_of_pictures_name[i] = item.attachment_real_name_three;
             this.Ads_service.retrieve_attachment(item.attachment_name_three,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             });
           }
@@ -735,43 +349,50 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             });
           }
           
         };
         if(i==3){
-          console.log(re.exec(item.attachment_name_four)[1]);
           if(re.exec(item.attachment_name_four)[1]!="pdf"){
-            this.list_of_attachments_name[i] = item.attachment_real_name_four;
+            this.list_of_pictures_name[i] = item.attachment_real_name_four;
             this.Ads_service.retrieve_attachment(item.attachment_name_four,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             })
           }
@@ -781,50 +402,50 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-                console.log(3)
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
-                  }
-                }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             })
           }
           
         };
         if(i==4){
-          console.log(re.exec(item.attachment_name_five)[1]);
           if(re.exec(item.attachment_name_five)[1]!="pdf"){
-            this.list_of_attachments_name[i] = item.attachment_real_name_five;
+            this.list_of_pictures_name[i] = item.attachment_real_name_five;
             this.Ads_service.retrieve_attachment(item.attachment_name_five,i).subscribe(l=>{
               let url = (window.URL) ? window.URL.createObjectURL(l[0]) : (window as any).webkitURL.createObjectURL(l[0]);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_pictures[l[1]] = SafeURL;
               u++
               if(u==item.number_of_attachments){
-                console.log(4)
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             })
           }
@@ -834,36 +455,42 @@ export class ThumbnailAdComponent implements OnInit {
               this.list_of_attachments[l[1]] = l[0];
               u++
               if(u==item.number_of_attachments){
-  
-                for(let j=0;j<this.list_of_pictures.length;j++){
-                  if(!this.list_of_pictures[j]){
-                    this.list_of_pictures.splice(j,1);
+                let length1=this.list_of_pictures.length;
+                for(let j=0;j<length1;j++){
+                  if(!this.list_of_pictures[length1-1-j]){
+                    this.list_of_pictures.splice(length1-1-j,1);
+                    this.list_of_pictures_name.splice(length1-1-j,1);
                   }
                 }
-                for(let j=0;j<this.list_of_attachments.length;j++){
-                  if(!this.list_of_attachments[j]){
-                    this.list_of_attachments.splice(j,1);
+                let length2=this.list_of_attachments.length;
+                for(let j=0;j<length2;j++){
+                  if(!this.list_of_attachments[length2-j-1]){
+                    this.list_of_attachments.splice(length2-j-1,1);
+                    this.list_of_attachments_name.splice(length2-j-1,1);
                   }
                 }
-                this.attachments_retrieved=true;;
+                this.attachments_retrieved=true;
               }
             })
           }
           
-        };
+        }
       }
     }
     else{
       this.attachments_retrieved=true;
     }
-    
   }
 
-  return_to_ad(i){
-    this.see_responses=i;
-  }
 
   
+  load_thumbnail(){
+    this.thumbnail_is_loaded=true;
+  }
+
+  load_pp(){
+    this.pp_is_loaded=true;
+  }
 
 
 }

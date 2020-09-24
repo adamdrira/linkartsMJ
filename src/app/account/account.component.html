@@ -57,7 +57,7 @@
                                 <mat-icon class="item-icon">report_off</mat-icon>
                                 <span>Débloquer</span>
                             </button>
-                            <button *ngIf="mode_visiteur && !user_blocked" class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                            <button *ngIf="mode_visiteur && !user_blocked" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
                                 <mat-icon class="item-icon">report_problem</mat-icon>
                                 <span>Signaler</span>
                             </button>
@@ -389,7 +389,7 @@
                                     </ng-container>
 
 
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="content-action text-center" 
+                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_bd[i-3] && list_albums_bd[i-3].length>0) ) && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="content-action text-center" 
                                     (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
                                         <div >{{element}}</div>
                                     </button>
@@ -442,7 +442,7 @@
                                         </mat-menu>
                                     </ng-container>
 
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="content-action text-center" 
+                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_drawings[i-3] && list_albums_drawings[i-3].length>0) ) && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="content-action text-center" 
                                     (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
                                         <div>{{element}}</div>
                                     </button>
@@ -477,7 +477,7 @@
                                     </mat-menu>
                                 </ng-container>
 
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="content-action text-center" 
+                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (1>i || (list_albums_writings[i-1] && list_albums_writings[i-1].length>0) ) && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="content-action text-center" 
                                 (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
                                     <div>{{element}}</div>
                                 </button>
@@ -574,7 +574,7 @@
 
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title" >
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                                 </div>
                                             <div class="bd-thumbnails-container container-comics" #container_comics  >
@@ -594,7 +594,7 @@
                                             </div>
                                         </div>
                                         <div *ngIf="mode_visiteur && list_bd_albums_status[list_titles_albums_bd_added.length-i+1]=='public'">
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title" *ngIf="list_albums_bd[list_titles_albums_bd_added.length-i-1].length>0">
                                                 {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
                                             </div>
                                             <div class="bd-thumbnails-container container-comics" #container_comics  >
@@ -757,7 +757,7 @@
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur" >
                                             <div class="bd-container"  #container_drawings>
-                                                <div class="artwork-type-title">
+                                                <div class="artwork-type-title" >
                                                     {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
@@ -797,7 +797,7 @@
 
                                         <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
                                             <div class="bd-container" #container_drawings>
-                                                <div class="artwork-type-title">
+                                                <div class="artwork-type-title" *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>0" >
                                                     {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
@@ -1093,7 +1093,7 @@
 
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title" *ngIf="list_albums_writings[list_titles_albums_writings_added.length-i-1].length>0">
                                                 {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
                                             </div>
 
@@ -1235,7 +1235,6 @@
                 
                 
                 <app-thumbnail-ad *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index"
-                style="margin-top:20px"
                 [item]=item
                 now_in_seconds={{now_in_seconds}}
                 ></app-thumbnail-ad>

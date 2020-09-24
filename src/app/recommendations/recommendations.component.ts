@@ -78,7 +78,7 @@ export class RecommendationsComponent implements OnInit {
   now_in_seconds:number;
   subcategory: number = 0;
  // dropdowns = this._constants.filters;
-
+ sorted_category_retrieved=false;
   
 
   ngOnInit() {
@@ -90,6 +90,7 @@ export class RecommendationsComponent implements OnInit {
       if (r>=1){
         this.Community_recommendation.sorted_category_list().subscribe(information=>{
           console.log(information);
+         
           this.index_bd= information[0].bd;
           this.index_drawing= information[0].drawing;
           this.index_writing= information[0].writing;
@@ -148,12 +149,16 @@ export class RecommendationsComponent implements OnInit {
         if(this.subcategory==2){
           this.load_writing_recommendations();
         }
+        this.sorted_category_retrieved=true;
         });
       }
       else{
-        this.Community_recommendation.delete_recommendations_artpieces().subscribe(l=>{
+        
+        this.load_bd_recommendations();
+        this.sorted_category_retrieved=true;
+        /*this.Community_recommendation.delete_recommendations_artpieces().subscribe(l=>{
           this.load_bd_recommendations();
-        })
+        })*/
       }
     })
 
@@ -512,48 +517,50 @@ export class RecommendationsComponent implements OnInit {
   }
 
   load_writing_recommendations(){
-    this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_bd,this.index_drawing,this.index_writing)
-          .subscribe(information=>{
+    this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_bd,this.index_drawing,this.index_writing).subscribe(information=>{
+      console.log(information)
             var list_writings_to_send= information[0].list_writings_to_send;
-            this.compare_to_compteur_writing = this.compare_to_compteur_writing + list_writings_to_send.length;
+            this.compare_to_compteur_writing+= list_writings_to_send.length;
             if(list_writings_to_send.length>0){
               for (let i=0;i<list_writings_to_send.length;i++){
-                if (list_writings_to_send[0].length>0){
-                  if(list_writings_to_send[0][0].category =="Illustrated novel"){
+                console.log(list_writings_to_send[i][0])
+                if (list_writings_to_send[i].length>0){
+                  
+                  if(list_writings_to_send[i][0].category =="Illustrated novel"){
                     if( this.sorted_artpieces_illustrated_novel.length<5 && list_writings_to_send[i][0].status=='public'){
-                      this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[0][0]);
+                      this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;
                     }
                   }
-                  if(list_writings_to_send[0][0].category =="Roman"){
+                  if(list_writings_to_send[i][0].category =="Roman"){
                     if( this.sorted_artpieces_roman.length<5 && list_writings_to_send[i][0].status=='public'){
-                      this.sorted_artpieces_roman.push(list_writings_to_send[0][0]);
+                      this.sorted_artpieces_roman.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;
                     }
                   }
-                  if(list_writings_to_send[0][0].category =="Scenario"){
+                  if(list_writings_to_send[i][0].category =="Scenario"){
                     if( this.sorted_artpieces_scenario.length<5 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_scenario.push(list_writings_to_send[0][0]);
+                       this.sorted_artpieces_scenario.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;
                     }
                   }
-                  if(list_writings_to_send[0][0].category =="Article"){
+                  if(list_writings_to_send[i][0].category =="Article"){
                     if( this.sorted_artpieces_article.length<5 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_article.push(list_writings_to_send[0][0]);
+                       this.sorted_artpieces_article.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;
                     }
                   }
-                  if(list_writings_to_send[0][0].category =="Poetry"){
+                  if(list_writings_to_send[i][0].category =="Poetry"){
                     if( this.sorted_artpieces_poetry.length<5 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_poetry.push(list_writings_to_send[0][0]);
+                       this.sorted_artpieces_poetry.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
                       this.writing_is_loaded=true;

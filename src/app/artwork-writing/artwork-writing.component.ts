@@ -5,6 +5,7 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
+import { Reports_service } from '../services/reports.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { NotationService } from '../services/notation.service';
@@ -15,7 +16,7 @@ import { PopupFormWritingComponent } from '../popup-form-writing/popup-form-writ
 import { PopupEditCoverWritingComponent } from '../popup-edit-cover-writing/popup-edit-cover-writing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
-
+import { PopupReportComponent } from '../popup-report/popup-report.component';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
@@ -41,6 +42,7 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   constructor(
+    private Reports_service:Reports_service,
     public navbar: NavbarService,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
@@ -188,14 +190,24 @@ export class ArtworkWritingComponent implements OnInit {
 
 
 
-
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  number_of_comments_to_show:number=10;
 
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
 
-    
+    setInterval(() => {
+
+      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        if(this.number_of_comments_to_show<this.commentariesnumber){
+          this.number_of_comments_to_show+=10;
+          console.log(this.number_of_comments_to_show)
+        }
+      }
+    },3000)
+
     this.writing_id  = parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
     if(!(this.writing_id>0)){
       this.router.navigateByUrl('/page_not_found');
@@ -794,6 +806,7 @@ export class ArtworkWritingComponent implements OnInit {
   
   new_comment() {
     this.commentariesnumber ++;
+    this.cd.detectChanges();
   }
 
   removed_comment() {
@@ -847,6 +860,23 @@ export class ArtworkWritingComponent implements OnInit {
     this.Subscribing_service.unarchive("writings","unknown",this.writing_id).subscribe(r=>{
       this.content_archived=false;
     });
+  }
+
+  report(){
+    this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).subscribe(r=>{
+      console.log(r[0])
+      if(r[0].nothing){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupReportComponent, {
+          data: {from_account:false,id_receiver:this.authorid,publication_category:'writing',publication_id:this.writing_id,format:"unknown",chapter_number:0},
+        });
+      }
+    })
+    
   }
 
   emphasize(){

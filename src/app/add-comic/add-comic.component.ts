@@ -6,7 +6,7 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { first } from 'rxjs/operators';
 import { Bd_CoverService } from '../services/comics_cover.service';
-
+import { Subscribing_service } from '../services/subscribing.service';
 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
@@ -41,6 +41,7 @@ export class AddComicComponent implements OnInit {
   }
 
   constructor(
+    private Subscribing_service:Subscribing_service,
     private rd: Renderer2, 
     private el: ElementRef,
     private _upload: UploadService,
@@ -176,13 +177,17 @@ export class AddComicComponent implements OnInit {
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+      });
    }else{
     this.monetised = false;
    }
   }
+
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:'Le plagiat ainsi que les fanarts sont rigoureusement interdits.'},
+      data: {showChoice:false, text:"Condition en cours d'écriture"},
     });
   }
 
@@ -254,13 +259,15 @@ export class AddComicComponent implements OnInit {
         else {
           this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
-            this._upload.f00_validation();
-            this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
-            this.CURRENT_step++;
-            this.REAL_step++;
-
-            this.cd.detectChanges();
-            window.scroll(0,0);
+            this.Subscribing_service.validate_content('comics', 'one-shot', val[0].bd_id,0).subscribe(r=>{
+              this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
+              this.CURRENT_step++;
+              this.REAL_step++;
+  
+              this.cd.detectChanges();
+              window.scroll(0,0);
+            })
+           
             });
         }
     }
@@ -286,7 +293,6 @@ export class AddComicComponent implements OnInit {
         else {
           this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
-            this._upload.f00_validation();
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.bdSerieService.add_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;

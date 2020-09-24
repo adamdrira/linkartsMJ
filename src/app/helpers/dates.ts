@@ -158,13 +158,20 @@ export function get_date_to_show_for_ad(s: number) {
 }
 
 export function date_in_seconds(now: number, date_upload:string){
-
+  if(date_upload){
     var uploaded_date = date_upload.substring(0,date_upload.length - 5);
     uploaded_date = uploaded_date.replace("T",' ');
     uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
     const uploaded_date_in_second = Math.trunc(new Date(uploaded_date + ' GMT').getTime()/1000);
 
     return ( now - uploaded_date_in_second );
+  }
+  else{
+    const uploaded_date_in_second = Math.trunc(new Date().getTime()/1000);
+
+    return ( now - uploaded_date_in_second );
+  }
+    
 }
 
 

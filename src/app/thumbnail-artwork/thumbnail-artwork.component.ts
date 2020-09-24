@@ -42,7 +42,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   title: string;
   style: string;
   highlight: string;
-
+  content_id:number;
   firsttag: string;
   secondtag: string;
   thirdtag: string;
@@ -58,12 +58,13 @@ export class ThumbnailArtworkComponent implements OnInit {
   thumbnail_picture:SafeUrl;
   thumbnail_picture_received=false;
 
-
+  thumbnail_is_loaded=false;
+  pp_is_loaded=false;
 
 
   ngOnInit(): void {
     if(!(typeof(this.subscribing_category)=='string')){
-      console.log("dans le if");
+      console.log("dans le if pour emphasized");
       console.log(this.subscribing_category);
       this.category=this.item.publication_category;
       this.format=this.item.format;
@@ -230,7 +231,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       console.log(this.subscribing_category);
       this.category=this.subscribing_category;
       this.format=this.subscribing_format;
-
+      console.log(this.subscribing_format)
       this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -245,6 +246,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
       if(this.category=="comics"){
         if(this.format=="one-shot"){
+          this.content_id=this.item.bd_id;
             this.file_name = this.item.name_coverpage
             this.title = this.item.title
             this.style = this.item.category
@@ -269,6 +271,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             });
         }
         else{
+          this.content_id=this.item.bd_id;
             this.file_name = this.item.name_coverpage
             this.title = this.item.title
             this.style = this.item.category
@@ -298,6 +301,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
       if(this.category=="drawing"){
         if(this.format=="one-shot"){
+            this.content_id=this.item.drawing_id;
             this.file_name = this.item.name_coverpage
             this.title = this.item.title
             this.style = this.item.category
@@ -322,7 +326,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             });
         }
         else{
-          
+          this.content_id=this.item.drawing_id;
             this.file_name = this.item.name_coverpage
             this.title = this.item.title
             this.style = this.item.category
@@ -351,7 +355,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       }
 
       if(this.category=="writing"){
-          
+            this.content_id=this.item.writing_id;
             this.file_name = this.item.name_coverpage
             this.title = this.item.title
             this.style = this.item.category
@@ -456,6 +460,15 @@ export class ThumbnailArtworkComponent implements OnInit {
       }
     }
 
+  }
+
+
+  load_thumbnail(){
+    this.thumbnail_is_loaded=true;
+  }
+
+  load_pp(){
+    this.pp_is_loaded=true;
   }
 
 }

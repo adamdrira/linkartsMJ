@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -44,6 +44,8 @@ export class CommentsComponent implements OnInit {
   @Input() style:string;
   @Input() publication_id:number;
   @Input() chapter_number:number;
+  @Input() number_of_comments_to_show:number;
+  
   pp_is_loaded=false;
   
   @Output() new_comment = new EventEmitter<any>();
@@ -52,14 +54,13 @@ export class CommentsComponent implements OnInit {
   @ViewChild('commentary') commentary:ElementRef;
   comment: FormControl;
   comment_container: FormGroup;
-  
   profile_picture:SafeUrl;
   comments_list:any = [];
   display_comments=false;
   now_in_seconds:number;
   visitor_mode=true;
   visitor_mode_retrieved=false;
-  my_comments_list:any=[];
+  my_comments_list:any[]=[];
   display_my_comments=false;
 
   
@@ -74,6 +75,12 @@ export class CommentsComponent implements OnInit {
 
   comment_changed() {
     this.editable_comment = -1;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.number_of_comments_to_show){
+      this.cd.detectChanges();
+    }
   }
 
   ngOnInit(): void {
@@ -172,6 +179,7 @@ export class CommentsComponent implements OnInit {
     
   number_of_shift=0;
   check_commentary(event){
+    console.log(event)
     if(event.key=="Shift"){
       this.number_of_shift=1;
     }
@@ -180,7 +188,8 @@ export class CommentsComponent implements OnInit {
     }
     else if(event.key=="Enter"){
       if(this.number_of_shift==0){
-        if(this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
+        console.log(this.comment_container.value.comment)
+        if(this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
 
           this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment).subscribe(r=>{
             console.log(r[0])
@@ -204,9 +213,11 @@ export class CommentsComponent implements OnInit {
                 }
                 this.chatService.messages.next(message_to_send);
                 this.my_comments_list.splice(0, 0, r[0]);
+                this.display_my_comments=true;
+
                 this.new_comment.emit();
-                
                 this.comment.reset();
+                this.cd.detectChanges();
                 var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
                 $('textarea.textarea-add-comment').height(totalHeight + 10);
                 })

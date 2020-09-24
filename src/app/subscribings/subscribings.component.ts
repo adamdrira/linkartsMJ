@@ -1,16 +1,12 @@
 import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
-import { SimpleChanges } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
-
+import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
@@ -25,9 +21,7 @@ declare var $: any
 export class SubscribingsComponent implements OnInit {
 
   constructor(
-    private rd: Renderer2,
-    private _constants: ConstantsService,
-    private Community_recommendation:Community_recommendation,
+    private Ads_service:Ads_service,
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -59,6 +53,11 @@ export class SubscribingsComponent implements OnInit {
     let max = document.documentElement.scrollHeight;
     let sup=max*0.1;
     if(pos>= max - sup )   {
+      if(this.list_of_users.length==0){
+        this.list_of_users=this.list_of_new_users;
+        this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
+        this.list_of_contents_sorted=true;
+      }
       this.show_more=true;
     }
   }
@@ -124,65 +123,108 @@ export class SubscribingsComponent implements OnInit {
         for (let i=0; i< info[0].length;i++){         
           THIS.list_of_users.push(info[0][i].id_user_subscribed_to);         
           if(i==info[0].length-1){
-            THIS.Subscribing_service.get_all_subscribings_contents(THIS.list_of_users).subscribe(r=>{          
-              for (let j=0; j< r[0].length;j++){
-                if(r[0][j].publication_category=="comics"){
-                  if(r[0][j].format=="one-shot"){
-                    THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        if(THIS.list_of_contents.length == r[0].length){
+            THIS.Subscribing_service.get_all_subscribings_contents(THIS.list_of_users).subscribe(r=>{  
+              console.log(r[0])
+              let compt=0; 
+              if(r[0].length>0){
+                for (let j=0; j< r[0].length;j++){
+                  if(r[0][j].publication_category=="comics"){
+                    if(r[0][j].format=="one-shot"){
+                      THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          THIS.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt == r[0].length){
                           THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                         }
-                      }
-                    })
-                  }
-                  if(r[0][j].format=="serie"){
-                    THIS.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        if(THIS.list_of_contents.length == r[0].length){
+                      })
+                    }
+                    if(r[0][j].format=="serie"){
+                      THIS.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          THIS.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++;
+                        }
+                        if(compt== r[0].length){
                           THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                         }
-                      }
-                    })
+                      })
+                    }
                   }
-                }
-
-                if(r[0][j].publication_category=="drawing"){
-                  if(r[0][j].format=="one-shot"){
-                    THIS.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        if(THIS.list_of_contents.length == r[0].length){
+  
+                  if(r[0][j].publication_category=="drawing"){
+                    if(r[0][j].format=="one-shot"){
+                      THIS.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          THIS.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt== r[0].length){
                           THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                         }
-                      }
-                    })
-                  }
-                  if(r[0][j].format=="artbook"){
-                    THIS.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        if(THIS.list_of_contents.length == r[0].length){
+                      })
+                    }
+                    if(r[0][j].format=="artbook"){
+                      THIS.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          THIS.list_of_contents.push(info[0]);
+                          compt++
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt== r[0].length){
                           THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                         }
-                      }
-                    })
+                      })
+                    }
                   }
-                }
-
-                if(r[0][j].publication_category=="writing"){
-                  THIS.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                    if(info[0].status="public"){
-                      THIS.list_of_contents.push(info[0]);
-                      if(THIS.list_of_contents.length == r[0].length){
+  
+                  if(r[0][j].publication_category=="writing"){
+                    THIS.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        compt++
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
                         THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
                       }
-                  }
                     })
-                }           
-              }
+                  }    
+                  
+                  if(r[0][j].publication_category=="ad"){
+                    THIS.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        THIS.list_of_contents.push(info[0]);
+                        compt++
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
+                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
+                      }
+                    })
+                  }   
+                }
+              } 
+              else{
+                console.log("no contents")
+              }      
+              
 
             });
           }
@@ -196,82 +238,166 @@ export class SubscribingsComponent implements OnInit {
   }
 
   get_all_users_subscribed_to_today(callback){
+    console.log("get_all_users_subscribed_to_today")
     this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
       console.log(info)
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
           this.list_of_new_users.push(info[0][i].id_user_subscribed_to);        
           if(i==info[0].length-1){
+            let compteur_user=0;
             for (let k=0;k<this.list_of_new_users.length;k++){
-              this.Subscribing_service.get_last_contents_of_a_subscribing(this.list_of_new_users[k])
-                .subscribe(r=>{
+              this.Subscribing_service.get_last_contents_of_a_subscribing(this.list_of_new_users[k]).subscribe(r=>{
                   console.log(r);
                   let new_contents=[];
                   if(r[0].length>0){
-                    for (let j=0; j< r[0].length;j++){                  
-                      if(r[0][j].publication_category=="comics"){
-                        if(r[0][j].format=="one-shot"){
-                          this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                            new_contents.push(info[0]);
-                            if(new_contents.length == r[0].length){
-                              this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
-                              if(k==this.list_of_new_users.length-1){
+                    let compt=0;
+                    if(r[0].length>0){
+                      for (let j=0; j< r[0].length;j++){                  
+                        if(r[0][j].publication_category=="comics"){
+                          if(r[0][j].format=="one-shot"){
+                            this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                              if(info[0].status=="public"){
+                                new_contents.push(info[0]);
+                                compt++;
+                              }
+                              else{
+                                compt++;
+                              }
+                              if(compt == r[0].length){
+                                compteur_user++;
+                                if(new_contents.length>0){
+                                  this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                                }
+                                if(compteur_user==this.list_of_new_users.length){
+                                  console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                }
+                              }
+  
+                            })
+                          }
+                          if(r[0][j].format=="serie"){
+                            this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                              if(info[0].status=="public"){
+                                new_contents.push(info[0]);
+                                compt++;
+                              }
+                              else{
+                                compt++;
+                              }
+                              if(compt == r[0].length){
+                                compteur_user++;
+                                if(new_contents.length>0){
+                                  this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                                }
+                                if(compteur_user==this.list_of_new_users.length){
+                                  console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                }
+                              }
+                            })
+                          }
+                        }
+        
+                        if(r[0][j].publication_category=="drawing"){
+                          if(r[0][j].format=="one-shot"){
+                            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                              if(info[0].status=="public"){
+                                new_contents.push(info[0]);
+                                compt++;
+                              }
+                              else{
+                                compt++;
+                              }
+                              if(compt == r[0].length){
+                                compteur_user++;
+                                if(new_contents.length>0){
+                                  this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                                }
+                                if(compteur_user==this.list_of_new_users.length){
+                                  console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                }
+                              }
+                            })
+                          }
+                          if(r[0][j].format=="artbook"){
+                            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+                              if(info[0].status=="public"){
+                                new_contents.push(info[0]);
+                                compt++;
+                              }
+                              else{
+                                compt++;
+                              }
+                              if(compt == r[0].length){
+                                compteur_user++;
+                                if(new_contents.length>0){
+                                  this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                                }
+                                if(compteur_user==this.list_of_new_users.length){
+                                  console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                }
+                              }
+                            })
+                          }
+                        }
+        
+                        if(r[0][j].publication_category=="writing"){
+                            this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                              if(info[0].status=="public"){
+                                new_contents.push(info[0]);
+                                compt++;
+                              }
+                              else{
+                                compt++;
+                              }
+                              if(compt == r[0].length){
+                                compteur_user++;
+                                if(new_contents.length>0){
+                                  this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                                }
+                                if(compteur_user==this.list_of_new_users.length){
+                                  console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                }
+                              }
+                            })
+                        }  
+                        
+                        if(r[0][j].publication_category=="ad"){
+                          this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+                            if(info[0].status=="public"){
+                              new_contents.push(info[0]);
+                              compt++;
+                            }
+                            else{
+                              compt++;
+                            }
+                            if(compt == r[0].length){
+                              compteur_user++;
+                              if(new_contents.length>0){
+                                this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
+                              }
+                              if(compteur_user==this.list_of_new_users.length){
                                 console.log(this.list_of_new_contents);
                                 this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
                               }
                             }
                           })
-                        }
-                        if(r[0][j].format=="serie"){
-                          this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                            new_contents.push(info[0]);                         
-                            if(new_contents.length  == r[0].length){
-                              this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
-                              if(k==this.list_of_new_users.length-1){
-                                this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
-                              }
-                            }
-                          })
-                        }
+                        }   
                       }
-      
-                      if(r[0][j].publication_category=="drawing"){
-                        if(r[0][j].format=="one-shot"){
-                          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                            new_contents.push(info[0]);
-                            if(new_contents.length  == r[0].length){
-                              this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
-                              if(k==this.list_of_new_users.length-1){
-                                this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
-                              }
-                            }
-                          })
-                        }
-                        if(r[0][j].format=="artbook"){
-                          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
-                            new_contents.push(info[0]);
-                            if(new_contents.length  == r[0].length){
-                              this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
-                              if(k==this.list_of_new_users.length-1){
-                                this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
-                              }
-                            }
-                          })
-                        }
-                      }
-      
-                      if(r[0][j].publication_category=="writing"){
-                          this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                            new_contents.push(info[0]);
-                            if(new_contents.length == r[0].length){
-                              this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
-                              if(k==this.list_of_new_users.length-1){
-                                this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
-                              }
-                            }
-                          })
-                      }           
                     }
+                    else{
+                      compteur_user++;
+                      if(compteur_user==this.list_of_new_users.length){
+                        console.log(this.list_of_new_contents);
+                        this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                      }
+                    }
+                    
                   }
                   else{
                     callback(this);

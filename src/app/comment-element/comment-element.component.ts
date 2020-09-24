@@ -446,7 +446,7 @@ export class CommentElementComponent implements OnInit {
     //edit a commentary
 
     if (event.key == "Enter" && this.edit_comment) {
-      if(this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
+      if(this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
         this.set_not_editable();
 
         this.changed.emit();
@@ -474,7 +474,7 @@ export class CommentElementComponent implements OnInit {
     }
     else if(event.key=="Enter" && this.editable_response == i){
       if(this.number_of_shift==0){
-        if(this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
+        if(this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
           this.set_not_editable_response();
           this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value,this.responses_list[i].id).subscribe(l=>{
                 console.log(l[0].commentary);
@@ -508,7 +508,7 @@ export class CommentElementComponent implements OnInit {
     }
     else if(event.key=="Enter" ){
       if(this.number_of_shift==0){
-        if(this.textareaRESPONSEtoCOMMENT.nativeElement.value!='' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length>0){
+        if(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value!='' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length>0){
           event.preventDefault();
 
         this.NotationService.add_answer_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.textareaRESPONSEtoCOMMENT.nativeElement.value,this.id)

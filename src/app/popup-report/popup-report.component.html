@@ -1,0 +1,122 @@
+
+
+
+
+<div class="popup-container">
+
+    
+    <!------------------------------------------------------------------------------->
+    <!-----------------------STEP 0---------------------------------->
+    <!------------------------------------------------------------------------------->
+    <div class="popup-step" *ngIf="step==0">
+
+        <div class="back-and-logo">
+            <div class="logo" [ngClass]="{'invisible':!logo_is_loaded}">
+                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
+            </div>
+        </div>
+        <div class="step-name">
+            <span>Quel est votre motif de signalement ?</span>
+        </div>
+        <div class="step-form">
+
+            <mat-list>
+                <mat-list-item  (click)="validate_step(0);">
+                    <div style=" margin: 0px auto 0px 0px;" *ngIf="!from_account">
+                        Contenu indésirable
+                    </div>
+                    <div style=" margin: 0px auto 0px 0px;" *ngIf="from_account">
+                        Contenus indésirables
+                    </div>
+                    <div style=" margin: 0px  0px 0px auto;">
+                        <button mat-button tabIndex="-1" class="mat-icon-button"> 	
+                            <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_arrow_right</mat-icon>
+                        </button>
+                    </div>
+                </mat-list-item>
+
+                <mat-divider></mat-divider>
+
+                <mat-list-item (click)="validate_step(1);">
+                    <div style=" margin: 0px auto 0px 0px;">
+                        Plagiat
+                    </div>
+                    <div style=" margin: 0px  0px 0px auto;">
+                        <button mat-button tabIndex="-1" class="mat-icon-button" > 	
+                            <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_arrow_right</mat-icon>
+                        </button>
+                    </div>
+                </mat-list-item>
+              </mat-list>
+        </div>
+    </div>
+
+
+    
+    <div class="popup-step" *ngIf="step==1">
+
+        <div class="back-and-logo">
+            <div class="back-button">
+                <button mat-raised-button class="style0" (click)="step_back();">
+                    <span>Retour</span>
+                </button>
+            </div>
+            <div class="logo">
+                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
+            </div>
+        </div>
+
+       
+
+        <div *ngIf="!open_plagiarism" [formGroup]="registerForm">
+           
+            <div class="step-name">
+                <span>Un message à ajouter ?</span>
+            </div>
+            <div class="form-item" style="height:unset !important;">
+                <mat-form-field>
+                    <textarea matInput cdkTextareaAutosize formControlName="message_for_content" maxLength="2000" autocomplete="off"></textarea>
+                    <mat-error *ngIf="registerForm1.controls['message_for_content'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        
+        <div *ngIf="open_plagiarism" [formGroup]="registerForm1">
+            <div class="step-name">
+                <span>Quelles sont vos preuves du plagiat ?</span>
+            </div>
+            <div >
+                <app-uploader-reports-attachments
+                [status]="begin_download_attachments" 
+                [id_report]="id_report"
+                (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-reports-attachments>
+            </div>
+            <div class="form-item" style="height:unset !important;">
+                <mat-form-field>
+                    <textarea matInput cdkTextareaAutosize formControlName="message_for_plagiarism" maxLength="2000" autocomplete="off"></textarea>
+                    <mat-error *ngIf="registerForm1.controls['message_for_plagiarism'].invalid">La saisie n'est pas valide</mat-error>
+                </mat-form-field>
+            </div>
+            
+            
+        </div>
+
+            
+
+        <div class="step-validation">
+            <button mat-raised-button class="submit-button style0" (click)="validate_all();">
+                <span>Envoyer</span>
+            </button>
+        </div>
+        <div style="justify-content: center;display: flex;" *ngIf="display_loading">
+            <mat-spinner diameter="20" ></mat-spinner>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+

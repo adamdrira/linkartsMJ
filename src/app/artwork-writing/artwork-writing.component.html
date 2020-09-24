@@ -208,7 +208,7 @@
         <!---------------RIGHT CONTAINER -------------------------------------------------->
         <!--------------------------------------------------------------------------------->
         <!--------------------------------------------------------------------------------->
-        <div id="right-container">
+        <div #myScrollContainer id="right-container">
             
 
 
@@ -257,9 +257,9 @@
                 <mat-icon class="optionsButton">more_vert</mat-icon>
             </button>
             <mat-menu  #artworkOptions2="matMenu">
-                <button class="mat-menu-item" mat-menu-item> 	
-                    <mat-icon class="item-icon">report</mat-icon>
-                    <span>Signaler l'oeuvre</span>
+                <button class="mat-menu-item" mat-menu-item (click)="report()"> 	
+                    <mat-icon class="item-icon">report_problem</mat-icon>
+                    <span>Signaler</span>
                 </button>
                 <button (click)="archive()" class="mat-menu-item" mat-menu-item *ngIf="!content_archived"> 	
                     <mat-icon class="item-icon">save_alt</mat-icon>
@@ -441,6 +441,7 @@
                     [publication_id]=writing_id
                     chapter_number=0
                     [authorid]=authorid
+                    [number_of_comments_to_show]=number_of_comments_to_show
                     (new_comment)="new_comment();"
                     (removed_comment)="removed_comment();"
 

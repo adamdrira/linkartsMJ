@@ -1,7 +1,7 @@
 <div *ngIf="thumbnail_picture_received" class="global-container">
 
     <div class="left-container" [ngClass]="{'drawing': category=='drawing' }">
-        <img [src]="thumbnail_picture">
+        <img [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
         
         <!--********************-->
         <!--Data container-->
@@ -32,22 +32,20 @@
             <span>{{title}}</span>
             <div class="buttons-container">
 
-                <button mat-icon-button>
-                    <div class="button0"></div>
-                </button>
-                <button mat-icon-button>
-                    <div class="button1"></div>
-                </button>
-                <button mat-icon-button [matMenuTriggerFor]="artworkOptions">
-                    <mat-icon>more_horiz</mat-icon>
-                </button>
-
-                <mat-menu  #artworkOptions="matMenu">
-                    <button class="mat-menu-item" mat-menu-item> 	
-                        <mat-icon class="item-icon">monetization_on</mat-icon>
-                        <span>Monétiser l'œuvre</span>
-                    </button>
-                </mat-menu>
+                <a *ngIf="subscribing_category=='comics'" href='/artwork-comic/{{subscribing_format}}/{{title}}/{{content_id}}'>
+                    <div>
+                        <button mat-raised-button class="ad-button style0" >
+                            <span style="font-size: 15px !important;">Consulter</span>
+                        </button>
+                    </div>
+                </a>
+                <a *ngIf="subscribing_category!='comics'" href='/artwork-{{subscribing_category}}/{{title}}/{{content_id}}'>
+                    <div>
+                        <button mat-raised-button class="ad-button style0" >
+                            <span style="font-size: 15px !important; justify-content: center;     width: 100%;">Consulter</span>
+                        </button>
+                    </div>
+                </a>
             </div>
         </div>
 
@@ -56,7 +54,7 @@
         <!--********************-->
         <div class="author-container">
             <div class="left-container">
-                <img [src]="profile_picture">
+                <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
             </div>
             <div class="right-container">
                 <span class="author-name" *ngIf="pseudo!=''">
@@ -73,8 +71,14 @@
         <!--Type container-->
         <!--********************-->
         <div class="verso-type">
+            <span *ngIf="subscribing_category=='comics'">• Bande dessinée</span>
+            <span *ngIf="subscribing_category=='drawing'">• Dessin</span>
+            <span *ngIf="subscribing_category=='writing'">• Ecrit</span>
+        </div>
+        <div *ngIf="subscribing_category!='writing'" class="verso-type">
             <span>• {{format}}</span>
         </div>
+        
         <!--********************-->
         <!--Categories container-->
         <!--********************-->

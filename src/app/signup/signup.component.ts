@@ -313,7 +313,6 @@ export class SignupComponent implements OnInit {
         this.display_pseudo_found_2=true;
       }
       else{
-        this.display_pseudo_found_2=true;
         this.userService.addUser( this.user ).subscribe(r=>{
           console.log(r[0]);
     

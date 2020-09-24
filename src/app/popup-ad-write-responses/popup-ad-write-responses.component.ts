@@ -2,6 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Ads_service} from '../services/ads.service';
+import {NotificationsService} from '../services/notifications.service';
+import {Profile_Edition_Service} from '../services/profile_edition.service';
+import {ChatService} from '../services/chat.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,6 +15,9 @@ import { Router } from '@angular/router';
 export class PopupAdWriteResponsesComponent implements OnInit {
 
   constructor(
+    private Profile_Edition_Service:Profile_Edition_Service,
+    private NotificationsService:NotificationsService,
+    private chatService:ChatService,
     public dialog: MatDialog,
     private Ads_service:Ads_service,
     private router:Router,
@@ -30,7 +36,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   attachments_uploaded=false;
   id_ad_response:number=0;
   begin_download_attachments=false;
-
+  display_loading=false;
   show_error:boolean = false;
   
   createFormControlsAds() {
@@ -42,23 +48,39 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     });
   }
 
-  /*all_pictures_uploaded( event: boolean) {
-    this.pictures_uploaded = event;
-
-    if(this.attachments_uploaded && this.pictures_uploaded){
-      console.log("tous les téléchargments sont finis/ pictures");
-      location.reload();
-    }
-
-    if(!event) {
-      alert("problème lors du télechargement");
-    }
-
-  }*/
+ 
 
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
-    location.reload();
+    this.Profile_Edition_Service.get_current_user().subscribe(s=>{
+      console.log(this.data.item.id_user);
+      console.log(this.data.item)
+      let visitor_name=s[0].firstname + ' ' + s[0].lastname;
+      this.NotificationsService.add_notification('ad_response',s[0].id,visitor_name,this.data.item.id_user,'ad',this.data.item.title,this.data.item.type_of_project,this.data.item.id,0,null,false,null).subscribe(l=>{
+        let message_to_send ={
+          for_notifications:true,
+          type:"ad_response",
+          id_user_name:visitor_name,
+          id_user:s[0].id, 
+          id_receiver:this.data.item.id_user,
+          publication_category:'ad',
+          publication_name:this.data.item.title,
+          format:this.data.item.type_of_project,
+          publication_id:this.data.item.id,
+          chapter_number:0,
+          information:null,
+          status:"unchecked",
+          is_comment_answer:false,
+          comment_id:null,
+        }
+        this.chatService.messages.next(message_to_send);
+        console.log("response sent");
+        console.log(message_to_send)
+        this.display_loading=false;
+        location.reload();
+      })
+    })
+    
 
   }
 
@@ -72,6 +94,7 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     this.Ads_service.add_ad_response(this.data.item.id,this.response_group.value.response).subscribe(r=>{
       this.id_ad_response=r[0].id
       this.begin_download_attachments=true;
+      this.display_loading=true;
     })
   }
 

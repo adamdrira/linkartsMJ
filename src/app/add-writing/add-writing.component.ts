@@ -4,6 +4,7 @@ import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Router } from '@angular/router';
+import { Subscribing_service } from '../services/subscribing.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Writing_CoverService } from '../services/writing_cover.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -36,6 +37,7 @@ export class AddWritingComponent implements OnInit {
 
 
   constructor(
+    private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
     private _constants: ConstantsService, 
@@ -102,13 +104,17 @@ export class AddWritingComponent implements OnInit {
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+      });
    }else{
     this.monetised = false;
    }
   }
+
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:'Le plagiat ainsi que les fanarts sont rigoureusement interdits.'},
+      data: {showChoice:false, text:"Condition en cours d'écriture"},
     });
   }
 
@@ -199,26 +205,30 @@ export class AddWritingComponent implements OnInit {
         .subscribe( v => {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing().subscribe(r=>{
-              this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
-                let message_to_send ={
-                  for_notifications:true,
-                  type:"add_publication",
-                  id_user_name:this.visitor_name,
-                  id_user:this.user_id, 
-                  publication_category:'writing',
-                  publication_name:this.title,
-                  format:'unknown',
-                  publication_id:v[0].writing_id,
-                  chapter_number:0,
-                  information:"add",
-                  status:"unchecked",
-                  is_comment_answer:false,
-                  comment_id:0,
-                }
-                this.chatService.messages.next(message_to_send);
-                this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
-              }) 
-              
+              console.log(r[0])
+              this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).subscribe(l=>{
+                console.log(l)
+                this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"add_publication",
+                    id_user_name:this.visitor_name,
+                    id_user:this.user_id, 
+                    publication_category:'writing',
+                    publication_name:this.title,
+                    format:'unknown',
+                    publication_id:v[0].writing_id,
+                    chapter_number:0,
+                    information:"add",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+                }) 
+              }); 
+
             })
           })
          

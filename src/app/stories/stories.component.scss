@@ -88,4 +88,14 @@
 
 .swiper-slide {
     display:flex;
+    margin-right: 10px;
+    margin-left: 10px;
+    width:unset !important;
+}
+
+
+.swiper-wrapper{
+    display:flex;
+    align-items: center;
+    justify-content: center;
 }

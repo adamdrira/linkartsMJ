@@ -4,7 +4,7 @@ import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-
+import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
@@ -28,6 +28,7 @@ export class AddDrawingComponent implements OnInit {
 
 
   constructor(
+    private Subscribing_service:Subscribing_service,
     private rd: Renderer2, 
     private el: ElementRef,
     private _constants: ConstantsService, 
@@ -97,13 +98,17 @@ export class AddDrawingComponent implements OnInit {
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+      });
    }else{
     this.monetised = false;
    }
   }
+
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:'Le plagiat ainsi que les fanarts sont rigoureusement interdits.'},
+      data: {showChoice:false, text:"Condition en cours d'écriture"},
     });
   }
 
@@ -184,13 +189,14 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
-        .subscribe((val)=> {
-          this.CURRENT_step++;
-          this.REAL_step++;
-
-          this.cd.detectChanges();
-          window.scroll(0,0);
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised).subscribe((val)=> {
+          this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
+            this.CURRENT_step++;
+            this.REAL_step++;
+  
+            this.cd.detectChanges();
+            window.scroll(0,0);
+          });
           });
       }
 
@@ -210,11 +216,14 @@ export class AddDrawingComponent implements OnInit {
         else {
           this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription, this.monetised)
           .subscribe((val)=> {
-            this.CURRENT_step++;
-            this.REAL_step++;
-
-            this.cd.detectChanges();
-            window.scroll(0,0);
+            this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).subscribe(r=>{
+              this.CURRENT_step++;
+              this.REAL_step++;
+  
+              this.cd.detectChanges();
+              window.scroll(0,0);
+            });
+            
             });
         }
 

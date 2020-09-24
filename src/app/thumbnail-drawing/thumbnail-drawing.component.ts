@@ -68,6 +68,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   drawing_id: string;
 
   @Input() item:any;
+  @Input() for_news:any;
   @Input() now_in_seconds: number;
   @Input() format: string;
  
@@ -82,7 +83,6 @@ export class ThumbnailDrawingComponent implements OnInit {
   
 
   ngOnInit(): void {
-
 
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
@@ -185,8 +185,9 @@ export class ThumbnailDrawingComponent implements OnInit {
     }
     
   }
-
+  show_picture=false;
   dosomething(){
+    this.show_picture=true;
     this.sendLoaded.emit(true);
   }
 

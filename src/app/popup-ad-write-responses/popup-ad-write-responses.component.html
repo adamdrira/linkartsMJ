@@ -3,10 +3,6 @@
     [status]="begin_download_attachments" 
     [id_ad_response]="id_ad_response"
     (uploaded1)="all_attachments_uploaded( $event );"></app-uploader-ad-response-attachments>
-    <!--<app-uploader-ad-response-pictures
-    [status]="begin_download_attachments" 
-    [id_ad_response]="id_ad_response"
-    (uploaded)="all_pictures_uploaded( $event );"></app-uploader-ad-response-pictures>-->
 </div>
 
 
@@ -27,5 +23,7 @@
         <span>Soumettre ma réponse</span> 
     </button>
 </div>
-
+<div style="justify-content: center;display: flex;" *ngIf="display_loading">
+    <mat-spinner diameter="20" ></mat-spinner>
+</div>
 

@@ -6,7 +6,7 @@ import { ChatService } from '../services/chat.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { UploadService } from '../services/upload.service';
+import { Reports_service } from '../services/reports.service';
 import { Emphasize_service } from '../services/emphasize.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -20,6 +20,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { PopupSubscribingsComponent } from '../popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
+import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -40,6 +41,7 @@ declare var masonry:any;
 export class AccountComponent implements OnInit {
   
   constructor(private rd: Renderer2, 
+    private Reports_service:Reports_service,
     private chatService:ChatService,
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -580,13 +582,13 @@ export class AccountComponent implements OnInit {
                     let album=information[i].album_content
                     let length =Object.keys(information[i].album_content).length
                       for (let j=0;j<length;j++){   
-                        if(information[i].album_content[j]){
-                          if(!this.check_if_comic_public(information[i].album_content[j])){
-                            album.splice(j,1);
+                        if(information[i].album_content[length-1-j]){
+                          if(!this.check_if_comic_public(information[i].album_content[length-1-j])){
+                            album.splice(length-1-j,1);
                           }
                         } 
                         if(j==length-1){
-                          this.list_albums_bd.push(information[i].album_content);
+                          this.list_albums_bd.push(album);
                           if(i==Object.keys(information).length -1){
                             this.list_albums_bd_added = true;
                             console.log( this.list_albums_bd)
@@ -656,17 +658,19 @@ export class AccountComponent implements OnInit {
                   for (let i=0; i <Object.keys(information).length;i++){
                       this.list_titles_albums_drawings_added.push(information[i].album_name);
                       this.list_titles_albums_drawings.push(information[i].album_name);
+                      console.log(information[i].album_name)
                       let album=information[i].album_content;
                       this.list_drawing_albums_status.push(information[i].status);
                       let length =Object.keys(information[i].album_content).length
                       for (let j=0;j<length;j++){   
-                        if(information[i].album_content[j]){
-                          if(!this.check_if_drawing_public(information[i].album_content[j])){
-                            album.splice(j,1);
+                        if(information[i].album_content[length-1-j]){
+                          if(!this.check_if_drawing_public(information[i].album_content[length-1-j])){
+                            album.splice(length-1-j,1);
                           }
                         } 
                         if(j==length-1){
-                          this.list_albums_drawings.push(information[i].album_content);
+                          console.log(album)
+                          this.list_albums_drawings.push(album);
                           if(i==Object.keys(information).length-1){
                             this.list_albums_drawings_added = true;
                           }
@@ -712,13 +716,13 @@ export class AccountComponent implements OnInit {
                 let album=information[i].album_content;
                 let length =Object.keys(information[i].album_content).length
                 for (let j=0;j<length;j++){   
-                  if(information[i].album_content[j]){
-                    if(!this.check_if_writing_public(information[i].album_content[j])){
-                      album.splice(j,1);
+                  if(information[i].album_content[length-1-j]){
+                    if(!this.check_if_writing_public(information[i].album_content[length-1-j])){
+                      album.splice(length-1-j,1);
                     }
                   } 
                   if(j==length-1){
-                    this.list_albums_writings.push(information[i].album_content);
+                    this.list_albums_writings.push(album);
                     if(i==Object.keys(information).length -1){
                       this.list_albums_writings_added = true;
                       console.log(this.list_titles_albums_writings_added)
@@ -1519,12 +1523,9 @@ export class AccountComponent implements OnInit {
   detect_new_compteur_drawings=false;
   total_for_new_compteur=0;
   sendLoaded(event){
-    console.log(!this.updating_drawings)
     if(!this.updating_drawings){
       this.compteur_drawings_thumbnails++;
       if(this.detect_new_compteur_drawings){
-        console.log(this.compteur_drawings_thumbnails)
-        console.log(this.total_for_new_compteur)
         $('.grid').masonry('reloadItems');
         this.cd.detectChanges;
         if(this.compteur_drawings_thumbnails==this.total_for_new_compteur){
@@ -2171,7 +2172,22 @@ unblock_user(){
   })
 }
 
-
+report(){
+  this.Reports_service.check_if_content_reported('account',this.user_id,"unknown",0).subscribe(r=>{
+    console.log(r[0])
+    if(r[0].nothing){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:true, text:'Vous ne pouvez pas signaler deux fois le même compte'},
+      });
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupReportComponent, {
+        data: {from_account:true,id_receiver:this.user_id,publication_category:'account',publication_id:this.user_id,format:"unknown",chapter_number:0},
+      });
+    }
+  })
+  
+}
 
 }
 

@@ -8,6 +8,7 @@ import { delay } from 'rxjs/operators';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Community_recommendation } from '../services/recommendations.service';
+import { Reports_service } from '../services/reports.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
@@ -15,6 +16,7 @@ import { NotationService } from '../services/notation.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Emphasize_service } from '../services/emphasize.service';
 import { MatDialog } from '@angular/material/dialog';
+import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
 import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -46,6 +48,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
   constructor(
+    private Reports_service:Reports_service,
     private rd: Renderer2,
     public navbar: NavbarService,
     private chatService:ChatService,
@@ -186,13 +189,24 @@ export class ArtworkDrawingComponent implements OnInit {
 
   visible:boolean = false;
 
-
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  number_of_comments_to_show:number=10;
 
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
     
+
+    setInterval(() => {
+
+      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        if(this.number_of_comments_to_show<this.commentariesnumber){
+          this.number_of_comments_to_show+=10;
+          console.log(this.number_of_comments_to_show)
+        }
+      }
+    },3000)
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     if( this.type != "one-shot" && this.type != "artbook" ) {
@@ -1232,6 +1246,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
   new_comment() {
     this.commentariesnumber ++;
+    this.cd.detectChanges();
   }
 
   removed_comment() {
@@ -1284,6 +1299,23 @@ export class ArtworkDrawingComponent implements OnInit {
     this.Subscribing_service.unarchive("drawings",this.type,this.drawing_id).subscribe(r=>{
       this.content_archived=false;
     });
+  }
+
+  report(){
+    this.Reports_service.check_if_content_reported('drawing',this.drawing_id,this.type,0).subscribe(r=>{
+      console.log(r[0])
+      if(r[0].nothing){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupReportComponent, {
+          data: {from_account:false,id_receiver:this.authorid,publication_category:'drawing',publication_id:this.drawing_id,format:this.type,chapter_number:0},
+        });
+      }
+    })
+    
   }
 
   emphasize(){

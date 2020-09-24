@@ -30,7 +30,10 @@ a {
     object-fit: unset !important;
 }
 
-
+.invisible{
+    visibility:hidden;
+}
+    
 
 .stats-container {    
     position:absolute;
@@ -129,6 +132,7 @@ a {
     font-size: 18px;
     font-weight: bold;
     height: 45px;
+    align-items: center;
 }
 
 .global-container > .right-container .name span {
@@ -147,18 +151,18 @@ a {
 .global-container > .right-container .name .buttons-container {
     display: flex;
     margin-left: auto;
+    align-items: center;
 }
 
 .global-container > .right-container .name .buttons-container button {
-    outline: none;
-    //padding: unset !important;
-    margin-left:5px;
-    box-shadow: unset !important;
-    min-width: unset;
-    width: 40px;
-    min-height: unset;
+    margin: 10px auto;
     height: 40px;
-    border-radius: 50%;
+    outline: none !important;
+    width: 170px;
+    min-width: 170px !important;
+    padding: 3px 18px;
+    border-radius: 15px !important;
+    background: #e5f0f7 !important;
 }
 
 .mat-menu-item {

@@ -1,0 +1,220 @@
+
+/**** top container ********/
+
+@import '../../material-styles.css';
+
+
+.status {
+  position:absolute;
+  height:7px;
+  box-shadow: 0px 0px 7px 1px #a7c8ea;
+  bottom:0px;
+  background:#84c7e6;
+  width:0%;
+  transition:width 200ms;
+}
+
+.step0 {
+  left:0px;
+}
+.step1 {
+  left:25%;
+}
+.step2 {
+  left:50%;
+}
+.step3 {
+  left:75%;
+}
+
+
+
+.popup-container {
+}
+
+.popup-step {
+  width:100%;
+  height:100%;
+}
+
+.popup-step .back-and-logo {
+  position: relative;
+  display:flex;
+  height:60px;
+  width:500px;
+}
+
+.popup-step .back-and-logo .back-button {
+  position:absolute;
+  left:0px;
+  top:50%;
+  transform: translateY(-50%);
+}
+
+.back-button > button {
+  height: 37px;
+  margin: auto auto;
+  width: 80px;
+  border-radius: 7px;
+  border: 1px solid #a5c2e0;
+  color: #505050;
+  display: flex;
+  font-size: 13px;
+  box-shadow: 0px 0px 5px 1px #d0d6dc !important;
+}
+
+.popup-step .back-and-logo .logo {
+  margin:auto auto;
+}
+
+.popup-step > .step-name {
+  display:flex;
+  height:40px;
+  width:500px;
+}
+
+.popup-step > .step-name span {
+  font-size: 23px;
+  font-weight: bold;
+  margin: auto auto auto 5px;
+}
+
+
+.popup-step .step-form {
+  
+  overflow-y:auto;
+  width:500px;
+  overflow-y:auto;
+}
+
+
+.popup-step .step-form .step-name {
+  display:flex;
+  height:35px;
+  width:500px;
+}
+
+.popup-step .step-form .step-name span {
+  font-size: 18px;
+  font-weight: bold;
+  margin: auto auto auto 5px;
+}
+
+
+.popup-step .step-form .form-item {
+  width:100%;
+  height:70px;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
+::ng-deep .mat-input-element {
+  padding-right: 75px !important;
+  line-height: 22px !important;
+}
+
+::ng-deep .mat-dialog-container {
+  position:relative !important;
+}
+
+::ng-deep .form-item .mat-form-field {
+  width:100%;
+}
+
+::ng-deep .form-item .mat-form-field .mat-form-field-flex {
+  background: #84c7e626 !important;
+  padding-left: 10px !important;
+}
+
+
+
+
+::ng-deep .form-item .mat-form-field textarea {
+  max-height:180px;
+}
+
+
+.form-item .length-indicator {
+  position: absolute;
+  right: 22px;
+  color: grey;    
+  font-size: 15px;
+  top: 5px;
+}
+
+
+.popup-step .step-validation {
+  display:flex;
+  height:70px;
+  width:500px;
+}
+
+.submit-button {
+  height: 47px;
+  margin: auto auto;
+  width: 170px;
+  border-radius: 7px;
+  border: 1px solid #88a5c3;
+  color: #212121;
+  display: flex;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0px 0px 7px 1px rgb(32,56,100,0.3)!important;
+}
+
+
+.step-form .links-container {
+  display:block;
+  max-height:120px;
+  overflow-y:auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.step-form .links-container .link {
+  display: flex;
+  text-overflow: ellipsis;
+  background: #ebf6fb;
+  border-radius: 3px;
+  padding-left: 9px;
+  font-size: 14px;
+}
+
+
+.step-form .links-container .link > span {
+  margin: auto auto auto 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor:default;
+}
+
+
+.step-form .links-container .link .mat-icon-button {
+  margin: auto 5px auto auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pseudo-found{
+  position: absolute;
+    bottom: -20px;
+    left: -10px;
+    color: #f44336;
+    font-size: 12px;
+}
+
+.pseudo-found2{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  bottom: -25px;
+  color: #f44336;
+  font-size: 12px;
+}
+
+.invisible{
+  visibility:hidden;
+}

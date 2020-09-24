@@ -14,9 +14,11 @@ import { Emphasize_service } from '../services/emphasize.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Community_recommendation } from '../services/recommendations.service'
 import { NotationService } from '../services/notation.service';
+import { Reports_service } from '../services/reports.service';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
+import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormComicComponent } from '../popup-form-comic/popup-form-comic.component';
 import { PopupEditCoverComicComponent } from '../popup-edit-cover-comic/popup-edit-cover-comic.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -40,6 +42,7 @@ export class ArtworkComicComponent implements OnInit {
 
 
   constructor(
+    private Reports_service:Reports_service,
     private rd: Renderer2,
     public navbar: NavbarService,
     public route :ActivatedRoute,
@@ -200,11 +203,23 @@ export class ArtworkComicComponent implements OnInit {
   chapter_name_control: FormControl;
   chapter_name_to_show:string;
   chapter_filter_bottom_to_top=true;
+  
+  @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
+  number_of_comments_to_show=10;
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
     
+    setInterval(() => {
+
+      if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
+        if(this.number_of_comments_to_show<this.commentariesnumber){
+          this.number_of_comments_to_show+=10;
+          console.log(this.number_of_comments_to_show)
+        }
+      }
+    },3000)
 
     this.type = this.activatedRoute.snapshot.paramMap.get('format');
     this.type_of_comic_retrieved=true;
@@ -1616,6 +1631,23 @@ export class ArtworkComicComponent implements OnInit {
     this.Subscribing_service.unarchive("comics",this.type,this.bd_id).subscribe(r=>{
       this.content_archived=false;
     });
+  }
+
+  report(){
+    this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).subscribe(r=>{
+      console.log(r[0])
+      if(r[0]){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupReportComponent, {
+          data: {from_account:false,id_receiver:this.authorid,publication_category:'comic',publication_id:this.bd_id,format:this.type,chapter_number:(this.type=='serie')?(this.current_chapter+1):0},
+        });
+      }
+    })
+    
   }
 
 

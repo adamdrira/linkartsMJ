@@ -255,6 +255,7 @@ export class StoriesComponent implements OnInit {
         height: '100vh',
         maxWidth: 'unset',
         maxHeight: 'unset',
+        panelClass: 'custom-dialog-container'
       });
 
       dialogRef.afterClosed().subscribe(result => {

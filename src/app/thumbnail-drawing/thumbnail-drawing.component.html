@@ -2,10 +2,10 @@
 <div class="drawing-container">
         
     
-    <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}">
+    <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}" [ngClass]="{ 'for_news':for_news=='yes'}">
         <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
-            <img [src]="thumbnail_picture" (load)="dosomething()">
+            <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'for_news':for_news=='yes'}">
             <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
                 
                 <!--********************-->
@@ -13,7 +13,11 @@
                 <!--********************-->
                 <div class="title-container">
                     <span class="title">{{title}}</span>
+                    <div class="artbook" *ngIf="pagesnumber && pagesnumber>=0">
+                        <mat-icon style="color:white">photo_library</mat-icon>
+                    </div>
                 </div>
+                
                 <!--********************-->
                 <!--Author container-->
                 <!--********************-->
