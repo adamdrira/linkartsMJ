@@ -20,6 +20,7 @@ const controller_ads= require('../../ads/controller/controller');
 const controller_chat= require('../../chat/controller/controller');
 const controller_navbar= require('../../navbar/controller/controller');
 const controller_notifications= require('../../notifications/controller/controller');
+const controller_reports =require('../../reports/reports');
 const bd_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const bd_serie_seq= require('../../comics_serie/models/sequelize');
 const drawings_one_page_seq= require('../../drawings_one_shot_and_cover/models/sequelize');
@@ -75,6 +76,8 @@ router.post('/see_more_recommendations_drawings',recommendations.see_more_recomm
 router.post('/get_first_recommendation_writings_for_user',recommendations.get_first_recommendation_writings_for_user)
 router.post('/see_more_recommendations_writings',recommendations.see_more_recommendations_writings)
 router.post('/send_rankings_and_get_trendings_comics',trendings.send_rankings_and_get_trendings_comics)
+router.post('/get_trendings_for_tomorrow',trendings.get_trendings_for_tomorrow)
+
 router.get('/get_drawings_trendings/:date',trendings.get_drawings_trendings)
 router.get('/get_writings_trendings/:date',trendings.get_writings_trendings)
 router.post('/get_comics_recommendations_by_author',recommendations_artwork.get_comics_recommendations_by_author)
@@ -92,6 +95,7 @@ controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,auth
 controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook,authentification.users);
 controller_writings(router,writings_seq.Liste_Writings,authentification.users);
 profile_edition(router, authentification.users,authentification.user_links, authentification.user_blocked);
+controller_reports(router, authentification.reports);
 profile_notation(
    router, 
    profile_notation_seq.List_of_likes,

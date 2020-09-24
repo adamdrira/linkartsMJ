@@ -27,7 +27,6 @@ pool.connect((err, client, release) => {
       if (err) {
         return console.error('Error executing query', err.stack)
       }
-      console.log(result.rows)
     })
   })
 
@@ -38,20 +37,18 @@ pool.connect((err, client, release) => {
 const get_view_table_by_user = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 150);
+  last_week.setDate(last_week.getDate() - 160);
 
 
 
   var user=0;
-  console.log("request.cookies.currentUser");
-  console.log(request.cookies.currentUser);
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
 
   let fastcsv = require("fast-csv");
-  let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python.csv`);
-  pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1 AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 20', [user,_today,last_week], (error, results) => {
+  let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python-${user}.csv`);
+  pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1 AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 300', [user,_today,last_week], (error, results) => {
     if (error) {
       throw error
     }
@@ -64,61 +61,41 @@ const get_view_table_by_user = (request, response) => {
     })
     .on("finish", function() {
         console.log("csv successfully uploaded for python");
-        console.log(jsonData)
         if(jsonData.length>=1){
           console.log("calling python prog")
           //let formdata = {csvfile: fs.createReadStream(__dirname + '/csvfiles_for_python/classement_python.csv')};
          
 
-          //console.log(formdata)
-          //.spawn('echo', ['$(python --3.7)'], {shell: true, stdio: 'inherit'});
           const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
-          //console.log(pythonProcess)
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
             console.log("python res")
-            //sconsole.log(data.toString())
+            //console.log(data.toString())
           });
           pythonProcess.stdout.on("end", (data) => {
             console.log("end received data python: ");
-            fs.access(__dirname + '/csvfiles_for_python/classement_python.csv', fs.F_OK, (err) => {
+            fs.access(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`, fs.F_OK, (err) => {
               if(err){
                 console.log('suppression already done');
                 return response.status(200).send([{"length":(jsonData.length).toString()}]); 
               }  
-              fs.unlink(__dirname + '/csvfiles_for_python/classement_python.csv',function (err) {
-                if (err) {
-                  throw err;
-                } 
-              });
-              response.status(200).send([{"length":(jsonData.length).toString()}]);    
+              else{
+                fs.unlink(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`,function (err) {
+                  if (err) {
+                    throw err;
+                  } 
+                  response.status(200).send([{"length":(jsonData.length).toString()}]); 
+                });
+                
+              }
+                
             })   
           });
 
-         
-
-          /*Request.post('http://localhost:777/list_of_views', {formData: formdata, headers:{'user_id':user}},  (err, resp, body) => {
-            if (err) {
-              console.log('Error!');
-            } 
-            else {  
-                  fs.access(__dirname + '/csvfiles_for_python/classement_python.csv', fs.F_OK, (err) => {
-                    if(err){
-                      console.log('suppression already done');
-                      return response.status(200).send([{"length":(jsonData.length).toString()}]); 
-                    }  
-                    fs.unlink(__dirname + '/csvfiles_for_python/classement_python.csv',function (err) {
-                      if (err) {
-                        throw err;
-                      } 
-                    });
-                    response.status(200).send([{"length":(jsonData.length).toString()}]);    
-                  })    
-            }
-          });*/
+          
         }
         else{
-          let PATH = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
+          let PATH = `./data_and_routes/routes/python_files/recommendations-${user}.json`;
           let PATH2 = `./data_and_routes/routes/python_files/recommendations_artpieces-${user}.json`;
           let array_to_convert_in_json={"bd":
                                           {"0":null,"1":null,"2":null},
@@ -151,7 +128,7 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=request.cookies.rec_art_home;
+  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
   get_it();
  
 
@@ -241,7 +218,7 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=request.cookies.rec_art_home;
+  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
   get_it();
 
   function get_it(){
@@ -330,7 +307,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=request.cookies.rec_art_home;
+  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
   get_it();
   function get_it(){
     if(index_drawing<0){
@@ -408,7 +385,7 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=request.cookies.rec_art_home;
+  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
   get_it();
   function get_it(){
     if(index_drawing<0){
@@ -488,7 +465,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
-  var test=request.cookies.rec_art_home;
+  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
   get_it();
 
   function get_it(){
@@ -574,7 +551,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 150);
+  last_week.setDate(last_week.getDate() - 160);
 
 
   let list_to_send=[];
@@ -732,7 +709,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
     var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 150);
+  last_week.setDate(last_week.getDate() - 160);
   
     let list_to_send=[];
    
@@ -812,7 +789,7 @@ function complete_recommendation_bd(user,style,format,callback){
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 150);
+  last_week.setDate(last_week.getDate() - 160);
 
 
   let list_to_send=[];
@@ -886,7 +863,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 150);
+  last_week.setDate(last_week.getDate() - 160);
 
   let list_to_send=[];
  
@@ -941,7 +918,7 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 150);
+    last_week.setDate(last_week.getDate() - 160);
   
   
     let list_to_send=[];

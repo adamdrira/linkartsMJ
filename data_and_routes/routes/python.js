@@ -38,7 +38,7 @@ python_router.get('/', (request, response) => {
 
 /*****************Partie recupération python files ********************/
 
-
+/*
 python_router.post('/python_recommendations', function(req, res) {
 
   const user_id = (JSON.stringify(req.headers.user_id)).substring(1,JSON.stringify(req.headers.user_id).length - 1);
@@ -55,7 +55,7 @@ python_router.post('/python_recommendations', function(req, res) {
   res.send(json);
 
   //Use the mv() method to place the file somewhere on your server 
-  /*sampleFile.mv(PATH, function(err) {
+  sampleFile.mv(PATH, function(err) {
     if (err){
       console.log(err);
       return res.status(500).send(err);
@@ -63,7 +63,7 @@ python_router.post('/python_recommendations', function(req, res) {
     }
     console.log("json received");
     res.send(json);
-  });*/
+  });
 });
 
 python_router.post('/python_artpieces', function(req, res) {
@@ -82,7 +82,7 @@ python_router.post('/python_artpieces', function(req, res) {
 });
 
 
-
+*/
 
 
 python_router.get('/sorted_category_list', function(req, res) {
@@ -96,6 +96,7 @@ python_router.get('/sorted_category_list', function(req, res) {
     var index_writing=-1;
     var index_drawing=-1;
     let json = fs.readFileSync( __dirname + `/python_files/recommendations-${user}.json`);
+    console.log(json)
     let test = JSON.parse(json);
 
     for (let step=0; step <Object.keys(test).length;step++){
@@ -126,7 +127,9 @@ python_router.get('/sorted_category_list', function(req, res) {
 
     let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`);
     console.log("reading json 2 before sending cookies")
-    fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+    res.cookie("rec_art_home",JSON.parse(json2)).send([sorted_list_category]);
+
+    /*fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
       if(err){
         console.log('suppression already done');
         res.cookie("rec_art_home",JSON.parse(json2)).send([sorted_list_category]);
@@ -144,7 +147,7 @@ python_router.get('/sorted_category_list', function(req, res) {
       }
       
       
-    }) 
+    }) */
     
 });
 
@@ -178,6 +181,7 @@ python_router.delete('/delete_recommendations_artpieces', function(req, res) {
 
 
 python_router.get('/sorted_favourite_type_list', function(req, res) {
+  console.log("sorted_category_list")
   var user=0;
   jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
     user=decoded.id;
@@ -185,8 +189,8 @@ python_router.get('/sorted_favourite_type_list', function(req, res) {
 
   let json = fs.readFileSync( __dirname + `/python_files/recommendations-${user}.json`);
   let test = JSON.parse(json);
- 
-  fs.access(__dirname + `/python_files/recommendations-${user}.json`, fs.F_OK, (err) => {
+  res.send([test]);
+  /*fs.access(__dirname + `/python_files/recommendations-${user}.json`, fs.F_OK, (err) => {
     if(err){
       console.log('suppression already done');
       res.send([test]);
@@ -203,7 +207,7 @@ python_router.get('/sorted_favourite_type_list', function(req, res) {
       
     }
     
-  }) 
+  }) */
 
   
 });
