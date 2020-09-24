@@ -82,7 +82,7 @@ def main():
     print(headers_content)
     headers={'user_id':headers_content}
     #print(file)
-    data = pd.read_csv('C:/Users/Utilisateur/Desktop/Site/linkarts/data_and_routes/routes/csvfiles_for_python/classement_python.csv')
+    data = pd.read_csv('C:/Users/Utilisateur/Desktop/Site/linkarts/data_and_routes/routes/csvfiles_for_python/classement_python-' +str(headers_content)+'.csv')
     print(data)
     list_of_views_csv = recommendation_categories_and_styles_first_page(data)
     print(list_of_views_csv)
