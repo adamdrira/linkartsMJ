@@ -63,7 +63,7 @@
         display: flex;
         flex-direction: column;
         color:white;
-        overflow-y: scroll;
+        overflow-y: auto;
         //background: linear-gradient(180deg, rgb(0, 0, 0), rgb(32, 56, 100));
         background:linear-gradient(180deg, #182338, #182338);
         height:100vh;
@@ -130,7 +130,7 @@
     }
 
     #left-container .first-div .submit-button {
-        margin: auto 0px auto auto;
+        margin: auto 10px auto auto;
         outline: none !important;
         display: flex;
         padding: 4px 25px;
@@ -618,7 +618,7 @@
     }
     
         
-    .title {
+    #left-container .title {
         display:flex;
         cursor: pointer;
         margin: 20px 20px 10px 20px;
@@ -630,58 +630,68 @@
         justify-content: center;
         transition:all 200ms;
     }
-    .title.opened {
+    
+    #left-container .title.opened {
         text-shadow: -0.02ex 0 rgb(255, 255, 255), 0.02ex 0 rgb(255, 255, 255);
         background: rgb(32, 56, 100);
         box-shadow: 0px 0px 18px 0px rgb(36, 56, 93);
         border: 1px solid rgb(20, 34, 60);
     }
-    .title:hover span {
+    
+    #left-container .title:hover span {
         color:white;
         text-shadow: -0.02ex 0 rgb(255, 255, 255), 0.02ex 0 rgb(255, 255, 255);
     }
-    .title span {
+    
+    #left-container .title span {
         font-size:20px;
         color:rgb(219, 219, 219);
         transition:all 200ms;
     }
-    .title.opened span {
+    
+    #left-container .title.opened span {
         text-shadow: -0.02ex 0 rgb(255, 255, 255), 0.02ex 0 rgb(255, 255, 255);
         color:white;
     }
-    .recommendations .cols {
-        display:flex;
-        flex-wrap:wrap;
-        justify-content: center;
-    } 
-    .recommendations .col1, 
-    .recommendations .col2, 
-    .recommendations .col3  {
-        min-width:400px;
-        margin-top: 20px;
-        display:flex;
-        flex-direction: column;
-        margin-left:20px;
-        margin-right:20px;
-        border: 1px solid #0c1b35;
-        border-radius: 20px;
-        box-shadow: 0px 0px 18px 0px #24385d;
-        background:rgb(32,56,100);
-    }
-    .genre {
-        margin:10px auto 10px auto;
-    }
-    .genre span {
-        font-size:20px;
-        font-weight: bold;
-    }
+
+    
 
 
-    ::ng-deep .recommendations .col-book,
-    ::ng-deep .recommendations .final-thumbnail,
-    ::ng-deep .recommendations .col-writing {
-        margin:30px auto 20px auto !important;
-    }
+#left-container .recommendations .cols {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+} 
+
+#left-container .recommendations .col1, 
+#left-container .recommendations .col2, 
+#left-container .recommendations .col3  {
+    min-width:400px;
+    margin-top: 20px;
+    display:flex;
+    flex-direction: column;
+    margin-left:20px;
+    margin-right:20px;
+    border: 1px solid #0c1b35;
+    border-radius: 20px;
+    box-shadow: 0px 0px 18px 0px #24385d;
+    background:rgb(32,56,100);
+}
+
+.genre {
+    margin:10px auto 10px auto;
+}
+.genre span {
+    font-size:20px;
+    font-weight: bold;
+}
+
+
+::ng-deep #left-container .recommendations .col-book,
+::ng-deep #left-container .recommendations .final-thumbnail,
+::ng-deep #left-container .recommendations .col-writing {
+    margin:30px auto 20px auto !important;
+}
 
 
 
@@ -828,11 +838,29 @@
         text-decoration: none;
     }
 
+    .invisible{
+        visibility: hidden;
+    }
+
     .other-chapter{
         display: flex;
         justify-content: center;
         margin: auto;
         padding-top: 5px;
+    }
+
+    .d5-category2 {
+        display: flex;
+        width:100%;
+        padding-top:15px;
+        justify-content: space-around;
+        border-bottom:1px solid rgb(32,56,100);
+        color:white;
+    }
+
+    .category-comments {
+        position: relative;
+        padding-bottom:15px;
     }
 
     @import '../../artwork-left-container-thumbnails-styles.css';
