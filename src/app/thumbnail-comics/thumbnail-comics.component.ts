@@ -197,8 +197,8 @@ export class ThumbnailComicsComponent implements OnInit {
   comics_per_line() {
     var width = $('.container-comics').width();
 
-    var n = Math.floor(width/310);
-    if( width < 620 ) {
+    var n = Math.floor(width/250);
+    if( width < 500 ) {
       this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }

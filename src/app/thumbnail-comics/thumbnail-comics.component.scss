@@ -15,12 +15,11 @@
 
 .col-book {
   position: relative;
-  width: 280px;
+  width: 220px;
   margin:40px auto 30px auto;
   flex-basis: 0;
   flex-grow: 1;
   max-width: 100%;
-  border-radius: 4px 40px 4px 40px;
 }
 
 /*
@@ -35,7 +34,7 @@
 }
 
 .col-book .empty {
-  width:280px !important;
+  width:220px !important;
   height:1px !important;
 }
 
