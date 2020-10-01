@@ -9,7 +9,7 @@ a {
 
 .final-thumbnail {
     position:relative;
-    width: 280px !important;
+    width: 220px !important;
     border-radius:12px;
     margin-left:auto;
     margin-right:auto;
@@ -74,7 +74,7 @@ a {
     margin: 0px 30px auto 0px;
     font-size: 20px;
     display: flex;
-    width: 100%;
+    width: calc(100% - 20px);
   }
   
    .title-container span.title {
@@ -94,114 +94,116 @@ a {
   .author-container {
     display: flex;
     width: 100%;
-  }
-  
-   .author-container .left-container {
-    width: 40px;
-    height: 40px;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    margin: 3px 5px auto 0px;
-  }
-  
-   .author-container .left-container img {
+    }
+    
+    .author-container .left-container {
+    width: 32px;
+    height: 32px;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    margin: 3px 3px auto 0px;
+    }
+    
+    .author-container .left-container img {
     width: 100%;
     height: 100%;
     border-radius: 50px;
-  }
-  
-   .author-container .right-container {
+    }
+    
+    .author-container .right-container {
     display: flex;
     flex-direction: column;
     text-align: left;
-    width: calc( 100% - 70px );
+    width: calc( 100% - 40px );
     margin: 0px 10px auto 5px;
-  }
-   .author-container .right-container span.author-name {
-    font-size: 16px;
+    }
+    .author-container .right-container span.author-name {
+    font-size: 13px;
+    line-height: 18px;
     font-weight:bold;
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
-  }
+    }
+    
+    .author-container .right-container span.author-description {
+      font-size: 13px;
+      line-height: 18px;
+      white-space: nowrap;
+      overflow: hidden !important;
+      text-overflow: ellipsis;
+    }
+    
+    .stats-container {    
+      width: 100%;
+      height: 22px;
+      color: #3b3b3b;
+      display: flex;
+      margin-top: 7px;
+      margin-bottom: 5px;
+      /*font-size: 1rem;*/
+      font-size: 13px;
+      justify-content: space-between;
+    }
+    
+    .figure-container
+    {
+      display: flex;
+      border-radius: 16px;
+      align-items: center;
+      min-width: 59px;
+      border: solid 2px #ffffff;
+      color:white;
+    }
+    
+    
+    .figure-container.views {
+      background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
+      /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+    
+    }
+    
+    .figure-container.likes {
+      background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
+       /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+    }
+    
+    .figure-container.loves {    
+      background-image: linear-gradient(to left, #8a0101, #e60000);
+       /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+    }
+    
+    .figure-container
+    {
+      margin:auto 5px auto auto;
+    }
   
-   .author-container .right-container span.author-description {
-    font-size:15px;
-    line-height: 20px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-  }
-
-  .stats-container {    
-    width: 100%;
-    height: 22px;
-    color: #3b3b3b;
-    display: flex;
-    margin-top: 7px;
-    margin-bottom: 7px;
-    /*font-size: 1rem;*/
-    font-size: 15px;
-    justify-content: space-between;
-  }
+    .figure-container > div {
+      display:flex;
+      margin:auto auto;
+    }
+    
   
-  .figure-container
-  {
-    display: flex;
-    border-radius: 16px;
-    align-items: center;
-    min-width: 65px;
-    border: solid 2px #ffffff;
-    color:white;
-  }
+    .stats-container .figure-container.views mat-icon {
+      height:unset;
+      width:unset;
+      font-size: 18px;
+      margin: 1px auto auto 5px;
+    }
+    .stats-container .figure-container.likes mat-icon {
+      height:unset;
+      width:unset;
+      font-size: 17px;
+      margin: 1px auto auto 5px;
+    }
+    .stats-container .figure-container.loves mat-icon {
+      height:unset;
+      width:unset;
+      font-size: 16px;
+      margin: 2px auto auto 4px;
+    }
   
-  
-  .figure-container.views {
-    background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);
-    /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
-  
-  }
-  
-  .figure-container.likes {
-    background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);
-     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
-  }
-  
-  .figure-container.loves {    
-    background-image: linear-gradient(to left, #8a0101, #e60000);
-     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
-  }
-  
-  .figure-container
-  {
-    margin:auto 5px auto auto;
-  }
-
-  .figure-container > div {
-    display:flex;
-    margin:auto auto;
-  }
-  
-
-  .stats-container .figure-container.views mat-icon {
-    height:unset;
-    width:unset;
-    font-size: 20px;
-    margin: 1px auto auto 5px;
-  }
-  .stats-container .figure-container.likes mat-icon {
-    height:unset;
-    width:unset;
-    font-size: 17px;
-    margin: 2px auto auto 5px;
-  }
-  .stats-container .figure-container.loves mat-icon {
-    height:unset;
-    width:unset;
-    font-size: 16px;
-    margin: 3px auto auto 4px;
-  }
-  
+    
   
 .categories-container {
   width:100%;
@@ -246,5 +248,6 @@ a {
 }
 
 .date-container span {
-  font-size:13px;
+  font-size:12px;
 }
+
