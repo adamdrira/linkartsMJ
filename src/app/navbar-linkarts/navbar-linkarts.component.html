@@ -6,53 +6,65 @@
 
   <!--Navbar : ligne 1 : logo / searchbar / icones-->
   <div class="navbar-container">
-    <nav class="navbar first-navbar" [ngClass]="{'invisible': !logo_is_loaded }">
+    <nav class="navbar first-navbar" [ngClass]="{'invisible': !logo_is_loaded, 'connected-user': type_of_profile=='account', 'disconnected-user': type_of_profile!='account'}">
       
 
       <!--Logo-->
-      <div #navbarLogo class="navbar-l1-linkarts-logo-container">
-        <div class="navbar-l1-linkarts-logo">
-          <div style="width:54px">
-            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
-          </div>
-         
-          <!--<div class="icon-container3">
-            <div class="icon3 icon-logo">
-            </div>
-          </div>
-          
-          <span style="margin-left: 10px; font-weight: bold; color:#203864;">LinkArts</span>-->
-          <div class="navbar2 flex-md-nowrap p-0">
-            <div class="category" [ngClass]="{'opened': navbar.active_section==0 }" onclick="location.href='/'">
-              <div style="margin-right: 10px;">
-                  <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
-                  height: 20px;
-                  width: 20px;">
-                  </div>
-              </div>ACCUEIL
-            </div>
-            <div class="category" [ngClass]="{'opened': navbar.active_section==1 }" onclick="location.href='/linkcollab'">
-              <div style="margin-right: 10px;">
-                <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
-                height: 20px;
-                width: 20px;">
-                </div>
-              </div>COLLABORATIONS
-            </div>
-            <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
-              <div style="margin-right: 10px;">
-                <div class="icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
-                height: 20px;
-                width: 20px;">
-                </div>
-              </div>LIBRAIRIE
-            </div>
-            <!--<div class="category" [ngClass]="{'opened': navbar.active_section==4 }">POSTERS</div>-->
-            
-            
-          </div>
+      <div class="navbar-l1-linkarts-logo logoLinkarts" *ngIf="!activated_search">
+        <div style="width:38px">
+          <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
         </div>
       </div>
+        <!--<div class="icon-container3">
+          <div class="icon3 icon-logo">
+          </div>
+        </div>
+        <span style="margin-left: 10px; font-weight: bold; color:#203864;">LinkArts</span>-->
+        
+      <div class="navbar-l1-linkarts-logo HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search">
+        <div class="navbar2 flex-md-nowrap p-0">
+          <div class="category" [ngClass]="{'opened': navbar.active_section==0 }" onclick="location.href='/'">
+            <div style="margin-right: 6px;">
+                <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
+                height: 16px;
+                width: 16px;">
+                </div>
+            </div>ACCUEIL
+          </div>
+          <div class="category" [ngClass]="{'opened': navbar.active_section==1 }" onclick="location.href='/linkcollab'">
+            <div style="margin-right: 6px;">
+              <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
+              height: 16px;
+              width: 16px;">
+              </div>
+            </div>COLLABORATIONS
+          </div>
+          <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
+            <div style="margin-right: 6px;">
+              <div class="icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
+              height: 16px;
+              width: 16px;">
+              </div>
+            </div>LIBRAIRIE
+          </div>
+          <!--<div class="category" [ngClass]="{'opened': navbar.active_section==4 }">POSTERS</div>-->
+        </div>
+      </div>
+
+      <div class="VISIBLE-ON-SMALL-SCREEN-1" hidden="activated_search">
+        <select name="somename" class="NavbarSelectBox2" style="height: 100%;">
+          <option value="0">
+            Accueil
+          </option>
+          <option value="1">
+            Collaborations
+          </option>
+          <option value="2">
+            Librairie
+          </option>
+        </select>
+      </div>
+
       
       <ng-container *ngIf="type_of_profile_retrieved">
 
@@ -65,7 +77,13 @@
               <!--Barre de recherche-->
 
 
-        <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor'}">
+        <div class="navbar-l1-searchbar-container-activator" *ngIf="!activated_search">
+          <button mat-icon-button (click)="activate_search();">
+            <mat-icon class="optionsButton" style="font-size:22px; color:#203864;margin:auto;">search</mat-icon>
+          </button>
+        </div>
+
+        <div  class="navbar-l1-searchbar-container" [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search}">
           <div class="left-container" [ngClass]="{'invisible': !show_selector }">
               <select name="somename" class="NavbarSelectBox" style="height: 100%;">
                 <option value="All">Tout</option>
@@ -99,7 +117,7 @@
                   </div>
                 </div>
                 
-                <div class="first-block"  *ngIf="show_most_researched_propositions && most_researched_propositions.length">
+                <div class="first-block"  *ngIf="show_most_researched_propositions && most_researched_propositions.length>0">
                   <div class="title-proposition">
                     Tendances
                   </div>
@@ -440,7 +458,9 @@
               (keydown)="keydown_researches_propositions($event);"
               onblur="this.placeholder = 'Rechercher'"
               class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
-              <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;width:30px;cursor:pointer;">search</mat-icon> 
+              <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;width:30px;cursor:pointer;">search</mat-icon>
+
+              
           </div>
 
           
@@ -458,12 +478,12 @@
 
 
 
-        <div class="icon-messenger-invisible">
+        <!--<div class="icon-messenger-invisible">
         </div>
         <div class="icon-bell-invisible">
-        </div>
+        </div>-->
         <!--icon part-->
-        <div class="navbar-l1-icons-container" style="margin: auto;" *ngIf="type_of_profile=='account'" >
+        <div class="navbar-l1-icons-container" style="margin: auto 10px auto auto;" *ngIf="type_of_profile=='account' && !activated_search">
 
           
           <div #chat class="icon-container">
@@ -473,7 +493,7 @@
               <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
                                 'notif-size-1':10>number_of_unseen_messages,
                                 'notif-size-2':100>number_of_unseen_messages && number_of_unseen_messages>=10,
-                                'notif-size-3':number_of_unseen_messages>=100}">
+                                'notif-size-3':number_of_unseen_messages>=100}" style="cursor:pointer;" (click)="open_messages()">
                 <div class="number-of-notifs">
                   <ng-container *ngIf="number_of_unseen_messages>=100">
                     +99
@@ -781,7 +801,7 @@
               <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
                                 'notif-size-1':10>number_of_unchecked_notifications,
                                 'notif-size-2':100>number_of_unchecked_notifications && number_of_unchecked_notifications>=10,
-                                'notif-size-3':number_of_unchecked_notifications>=100}">
+                                'notif-size-3':number_of_unchecked_notifications>=100}" style="cursor:pointer;" (click)="open_notifications()">
                 <div class="number-of-notifs">
                   <ng-container *ngIf="number_of_unchecked_notifications>=100">
                     +99
@@ -1627,58 +1647,117 @@
         <div class="navbar-l1-icons-container">
 
             
-              <div class="signup" *ngIf="type_of_profile=='visitor'" (click)="signup()">
-                <!--<mat-icon class="item-icon" >create</mat-icon> -->
-                <div class="icon-container2">
-                  <div class="icon2 icon-edit">
-                  </div>
-                </div>
-                <span style="margin-left: 5px;">S'inscrire</span>
+          <div class="signup" *ngIf="type_of_profile=='visitor' && !activated_search" (click)="signup()">
+            <!--<mat-icon class="item-icon" >create</mat-icon> -->
+            <div class="icon-container2">
+              <div class="icon2 icon-edit">
               </div>
-            
-            
-            
-            <div class="connexion-container" [ngClass]="{'account_opened': type_of_profile=='account' }" >
-                <!--<button *ngIf="type_of_profile=='account'" mat-raised-button  style="height: 42px; background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1"
-                    (click)="logout()">
-                  <mat-icon class="item-icon" style=" color:white;transform: rotate(180deg);">login</mat-icon> 
-                  <span style="margin-left: 5px; color:white;font-weight: 700;" >Se déconnecter</span>
-                </button>-->
-
-                <div class="connexion" *ngIf="type_of_profile=='account'" (click)="logout()">
-                   <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);" >login</mat-icon> 
-                   <span style="margin-left: 5px; font-weight: 600;" >Se déconnecter</span>
-                </div>
-                <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
-                  <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);" >login</mat-icon> 
-                  <span style="margin-left: 5px; font-weight: 600;" >Se connecter</span>
-               </div>
-
-                <!--<button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="height: 42px;  background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1">
-                  <mat-icon class="item-icon" style=" color:white">login</mat-icon> 
-                  <span style="margin-left: 5px;color: white; font-weight: 700;" >Se connecter</span>
-                </button>-->
-                
             </div>
-            <div class="options">
-              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
-                <mat-icon class="optionsButton" style=" color:#203864">more_vert</mat-icon>
+            <span style="margin-left: 5px;">S'inscrire</span>
+          </div>
+          
+          
+          
+          <div class="connexion-container" [ngClass]="{'account_opened': type_of_profile=='account' }" *ngIf="!activated_search" >
+              <!--<button *ngIf="type_of_profile=='account'" mat-raised-button  style="height: 42px; background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1"
+                  (click)="logout()">
+                <mat-icon class="item-icon" style=" color:white;transform: rotate(180deg);">login</mat-icon> 
+                <span style="margin-left: 5px; color:white;font-weight: 700;" >Se déconnecter</span>
+              </button>-->
+
+              <div class="connexion" *ngIf="type_of_profile=='account'" (click)="logout()">
+                  <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
+                  <span style="margin-left: 5px; font-weight: 600;" >Se déconnecter</span>
+              </div>
+              <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
+                <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
+                <span style="margin-left: 5px; font-weight: 600;" >Se connecter</span>
+              </div>
+
+              <!--<button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="height: 42px;  background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1">
+                <mat-icon class="item-icon" style=" color:white">login</mat-icon> 
+                <span style="margin-left: 5px;color: white; font-weight: 700;" >Se connecter</span>
+              </button>-->
+              
+          </div>
+
+          <div class="options LARGE-SCREEN-OPTIONS" *ngIf="!activated_search">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
+              <mat-icon class="optionsButton" style="font-size:20px; color:#203864;margin:auto;">more_vert</mat-icon>
+            </button>
+            <mat-menu  #options="matMenu">
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">edit</mat-icon>
+                  <span>Qui nous sommes</span>
               </button>
-              <mat-menu  #options="matMenu">
-                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
-                    <mat-icon class="item-icon">edit</mat-icon>
-                    <span>Qui nous sommes</span>
-                </button>
-                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
-                    <mat-icon class="item-icon">view_carousel</mat-icon>
-                    <span>Paramètres et confidentialités</span>
-                </button>
-                <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
-                    <mat-icon class="item-icon">view_carousel</mat-icon>
-                    <span>Crédits</span>
-                </button>
-              </mat-menu>
-            </div>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Paramètres et confidentialités</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Crédits</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <div class="options SMALL-SCREEN-OPTIONS" *ngIf="type_of_profile!='account' && !activated_search">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
+              <mat-icon class="optionsButton" style="font-size:20px; color:#203864;margin:auto;">more_vert</mat-icon>
+            </button>
+            <mat-menu  #options2="matMenu">
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">login</mat-icon>
+                  <span>S'inscrire</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">login</mat-icon>
+                  <span>Se connecter</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">edit</mat-icon>
+                  <span>Qui nous sommes</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Paramètres et confidentialités</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Crédits</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <div class="options SMALL-SCREEN-OPTIONS" *ngIf="type_of_profile=='account' && !activated_search">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
+              <mat-icon class="optionsButton" style="font-size:20px; color:#203864;margin:auto;">more_vert</mat-icon>
+            </button>
+            <mat-menu  #options2="matMenu">
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">login</mat-icon>
+                  <span>Se déconnecter</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">edit</mat-icon>
+                  <span>Qui nous sommes</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Paramètres et confidentialités</span>
+              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+                  <mat-icon class="item-icon">view_carousel</mat-icon>
+                  <span>Crédits</span>
+              </button>
+            </mat-menu>
+          </div>
+          
+          <div class="options" style="position:absolute;right:12px;" *ngIf="activated_search">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" (click)="cancel_search();">
+              <mat-icon class="optionsButton" style="font-size:20px; color:#203864;margin:auto;">close</mat-icon>
+            </button>
+          </div>
             
         </div>
       </ng-container>

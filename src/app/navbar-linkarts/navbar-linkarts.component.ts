@@ -67,9 +67,19 @@ export class NavbarLinkartsComponent implements OnInit {
     
     ) {
       
-    }
-
+  }
   
+
+  activated_search:boolean = false;
+  activate_search() {
+    this.activated_search = true;
+    this.cd.detectChanges();
+  }
+  cancel_search() {
+    this.activated_search = false;
+    this.cd.detectChanges();
+  }
+
   scrolled=false;
   navbarBoxShadow = false;
   profile_picture:SafeUrl;
@@ -1146,18 +1156,19 @@ export class NavbarLinkartsComponent implements OnInit {
       this.margin_is_not_set=false;
       console.log($(".navbar-margin").css("height"))
     }
-  }
+  }*/
 
+  ngAfterViewChecked() {
+    this.setHeight();
+  }
   setHeight() {
     this.navbar.setHeight( $(".fixed-top").height() );
-  }*/
+  }
   
   
   delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
-
- 
 
 
   //Scrolling managements
@@ -1185,17 +1196,32 @@ export class NavbarLinkartsComponent implements OnInit {
 display_style_and_tag_research=false;
 indice_title_selected=-1;
 initialize_selectors(){
+
   let THIS=this;
   $(document).ready(function () {
     $('.NavbarSelectBox').SumoSelect({});
-    console.log("sumo done")
+    $('.NavbarSelectBox2').SumoSelect({});
+    
+      
+    if( THIS.navbar.active_section==0 ) {
+      $(".NavbarSelectBox2")[0].sumo.selectItem('0');
+    }
+    else if( THIS.navbar.active_section==1 ) {
+      $(".NavbarSelectBox2")[0].sumo.selectItem('1');
+    }
+    else if( THIS.navbar.active_section==2 ) {
+      $(".NavbarSelectBox2")[0].sumo.selectItem('2');
+    }
+    else {
+      $(".NavbarSelectBox2")[0].sumo.selectItem('0');
+    }
+
     THIS.cd.detectChanges();
     THIS.show_selector=true;
   });
 
   $(".NavbarSelectBox").change(function(){
     console.log($(this).val())
-    
     THIS.input.nativeElement.value="";
     THIS.publication_category=$(this).val();
     if(THIS.publication_category=="Comic" || THIS.publication_category=="Drawing" || THIS.publication_category=="Writing"){
@@ -1208,6 +1234,19 @@ initialize_selectors(){
       THIS.indice_title_selected=-1
     }
   })
+
+  $(".NavbarSelectBox2").change(function(){
+    if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
+      location.href='/';
+    }
+    else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='1' ) {
+      location.href='/linkcollab';
+    }
+    else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='2' ) {
+      location.href='/';
+    }
+  })
+
 }
 
 
