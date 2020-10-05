@@ -37,7 +37,7 @@ pool.connect((err, client, release) => {
 const get_view_table_by_user = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 160);
+  last_week.setDate(last_week.getDate() - 170);
 
 
 
@@ -48,7 +48,7 @@ const get_view_table_by_user = (request, response) => {
 
   let fastcsv = require("fast-csv");
   let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python-${user}.csv`);
-  pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1 AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 300', [user,_today,last_week], (error, results) => {
+  pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 100', [user,_today,last_week], (error, results) => {
     if (error) {
       throw error
     }
@@ -551,12 +551,12 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 160);
+  last_week.setDate(last_week.getDate() - 170);
 
 
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 5', [user,style,_today,last_week,format], (error, results1) => {
+  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1  AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 10', [user,style,_today,last_week,format], (error, results1) => {
       if (error) {
         throw error
       }
@@ -639,7 +639,7 @@ function complete_recommendation_bd(user,style,format,callback){
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'bd'], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'bd'], (error, results1) => {
         if (error) {
           throw error
         }
@@ -709,11 +709,11 @@ function complete_recommendation_bd(user,style,format,callback){
 
     var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 160);
+  last_week.setDate(last_week.getDate() - 170);
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 5', [user,style,_today,last_week,format], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 10', [user,style,_today,last_week,format], (error, results1) => {
         if (error) {
           throw error
         }
@@ -789,12 +789,12 @@ function complete_recommendation_bd(user,style,format,callback){
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 160);
+  last_week.setDate(last_week.getDate() - 170);
 
 
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'drawing'], (error, results1) => {
+  pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'drawing'], (error, results1) => {
       if (error) {
         throw error
       }
@@ -863,11 +863,11 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 160);
+  last_week.setDate(last_week.getDate() - 170);
 
   let list_to_send=[];
  
-  pool.query('SELECT * FROM (SELECT DISTINCT publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) limit 5', [user,style,_today,last_week], (error, results1) => {
+  pool.query('SELECT * FROM (SELECT DISTINCT publication_category, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category, t.style, t.publication_id ORDER BY Count(*) limit 10', [user,style,_today,last_week], (error, results1) => {
       if (error) {
         throw error
       }
@@ -918,12 +918,12 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 160);
+    last_week.setDate(last_week.getDate() - 170);
   
   
     let list_to_send=[];
    
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'bd'], (error, results1) => {
+    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND publication_category=$5 AND style=$2 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,'bd'], (error, results1) => {
         if (error) {
           throw error
         }

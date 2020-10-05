@@ -43,7 +43,7 @@ pool.connect((err, client, release) => {
 
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 79);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 89);
 
     var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() +1);
@@ -127,7 +127,7 @@ pool.connect((err, client, release) => {
     
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 80);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 90);
   
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
@@ -175,7 +175,7 @@ pool.connect((err, client, release) => {
 
 
         
-        pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null ', [today,_before_before_yesterday], (error, results) => {
+        pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
           if (error) {
             throw error
           }
@@ -187,7 +187,7 @@ pool.connect((err, client, release) => {
               console.log(e)
             })
             .on("finish", function() {
-              pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  ', [today,_before_before_yesterday], (error, results) => {
+              pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
                   if (error) {
                     throw error
                   }
@@ -201,7 +201,7 @@ pool.connect((err, client, release) => {
                     })
                     .on("finish", function() {
                   
-                      pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  ', [today,_before_before_yesterday], (error, results) => {
+                      pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
                           if (error) {
                             throw error
                           }

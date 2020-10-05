@@ -261,14 +261,14 @@ const get_drawings_recommendations_by_author = (request, response) => {
     var list_to_send=[];
     console.log("frmt");
     console.log(format);
-    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND format=$7 AND firsttag=$3  AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit,publication_category,format,publication_id], (error, results) => {
+    pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$7 AND firsttag=$3  AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit,publication_category,format,publication_id], (error, results) => {
       if (error) {
         throw error
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
           
-            pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND style=$2 AND format=$7 AND firsttag!=$3 AND (secondtag=$3 OR thirdtag=$3) AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit2,publication_category,format,publication_id], (error, results1) => {
+            pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$7 AND firsttag!=$3 AND (secondtag=$3 OR thirdtag=$3) AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit2,publication_category,format,publication_id], (error, results1) => {
                 if (error) {
                   throw error
                 }
