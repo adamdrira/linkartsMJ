@@ -22,7 +22,7 @@ wss.on('connection', (ws, req)=>{
   
   ws.isAlive = true;
   ws.on('pong', () => {
-    console.log("pong");
+    //console.log("pong");
       ws.isAlive = true;
   });
   console.log("user is connected")
@@ -52,7 +52,6 @@ wss.on('connection', (ws, req)=>{
     console.log('received from ' + userID + ': ' + message)
     var messageArray = JSON.parse(message);
     console.log("messageArray")
-    console.log(messageArray)
 
     if(messageArray.for_notifications){
 
@@ -127,6 +126,7 @@ wss.on('connection', (ws, req)=>{
       const id_user=messageArray.id_user;
       const id_friend=messageArray.id_receiver;
       if(messageArray.status=="writing" ){
+        console.log("send writing");
         if (toUserWebSocket && toUserWebSocket.length>0) {
           console.log("sending writing");
           for(let i=0;i<toUserWebSocket.length;i++){
@@ -196,11 +196,15 @@ wss.on('connection', (ws, req)=>{
                 [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],       
               }
             }).then(friend=>{
+              console.log("friend found");
+              
               var now = new Date();
               if(friend){
+                console.log(friend.date)
                 friend.update({
                   "date":now,
                 }).then(s=>{
+                  console.log(s.data)
                   if(messageArray.id_user!=messageArray.id_receiver){
                     if (toUserWebSocket && toUserWebSocket.length>0) {
                       console.log("sending message to websocket open");
@@ -465,9 +469,12 @@ wss.on('connection', (ws, req)=>{
           send_message_to_friend();
         } 
         else{
+          console.log("check friends");
+          console.log(id_friend);
+          console.log(id_user)
           chat_seq.list_of_chat_friends.findOne({
             where: {
-              is_a_group_chat:false,
+              is_a_group_chat:{[Op.not]: true},
               [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],           
             }
           }).then( friend=>{
@@ -822,7 +829,7 @@ wss.on('connection', (ws, req)=>{
         } 
         ws.isAlive = false;
         ws.ping(null, false, true);
-        console.log("ping");
+        //console.log("ping");
     });
   }, 10000);
 

@@ -20,6 +20,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
         chapter_number: DataTypes.INTEGER,
         thirdtag: DataTypes.STRING,
         author_id_liked: DataTypes.INTEGER,
+        monetization:DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -42,6 +43,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
         publication_id: DataTypes.INTEGER,
         chapter_number: DataTypes.INTEGER,
         author_id_loved: DataTypes.INTEGER,
+        monetization:DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -65,6 +67,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
       chapter_number: DataTypes.INTEGER,
       view_time:DataTypes.INTEGER,
       author_id_viewed: DataTypes.INTEGER,
+      monetization:DataTypes.STRING,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name

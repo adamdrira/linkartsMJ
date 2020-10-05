@@ -29,13 +29,17 @@ module.exports = (router,
             user=decoded.id;
         });
         return user;
-        };
+    };
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
 
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_like/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_liked', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {
+    
             const category = req.params.category;
             const format = req.params.format;
             const style = req.params.style;
@@ -48,7 +52,7 @@ module.exports = (router,
             console.log(firsttag);
             if (category === "bd" ) {
                 if(format === "one-shot"){
-                    bd = await Liste_Bd_Oneshot.findOne({
+                    Liste_Bd_Oneshot.findOne({
                         where: {
                         bd_id: publication_id,
                         }
@@ -58,13 +62,13 @@ module.exports = (router,
                         bd.update({
                         "likesnumber":likes,
                         })
-                        .then(res.status(200).send([bd]))
+                        .then(create(bd))
                     }); 
                     
                 }
                 else if (format === "serie"){
 
-                    chapter = await Chapters_Bd_Serie.findOne({
+                    Chapters_Bd_Serie.findOne({
                         where: {
                         bd_id: publication_id,
                         chapter_number:chapter_number,
@@ -87,7 +91,7 @@ module.exports = (router,
                                     "likesnumber":likes,
                                     })
                                 })                   
-                                .then(res.status(200).send([chapter]))
+                                .then(create(bd_serie))
                             })
                     })                 
 
@@ -97,7 +101,7 @@ module.exports = (router,
 
             else  if (category === "drawing" ) {
                 if(format === "one-shot"){
-                    drawing = await Drawings_one_page.findOne({
+                    Drawings_one_page.findOne({
                         where: {
                             drawing_id: publication_id,
                         }
@@ -107,12 +111,12 @@ module.exports = (router,
                         drawing.update({
                         "likesnumber":likes,
                         })
-                        .then(res.status(200).send([drawing]))
+                        .then(create(drawing))
                     }); 
                 }
 
                 else if(format === "artbook"){
-                    drawing = await Liste_Drawings_Artbook.findOne({
+                    Liste_Drawings_Artbook.findOne({
                         where: {
                         drawing_id: publication_id,
                         }
@@ -122,13 +126,13 @@ module.exports = (router,
                         drawing.update({
                         "likesnumber":likes,
                         })
-                        .then(res.status(200).send([drawing]))
+                        .then(create(drawing))
                     }); 
                 }
             }
 
             else  if (category === "writing" ) {
-                writing = await Liste_Writings.findOne({
+                Liste_Writings.findOne({
                     where: {
                         writing_id: publication_id,
                     }
@@ -138,11 +142,12 @@ module.exports = (router,
                     writing.update({
                     "likesnumber":likes,
                     })
-                    .then(res.status(200).send([writing]))
+                    .then(create(writing))
                 }); 
                 
             }
-                { 
+            
+            function create(content){
                 console.log('ajout de like ok');
                 Liste_of_likes.create({
                         "author_id_who_likes": current_user,
@@ -154,15 +159,16 @@ module.exports = (router,
                         "thirdtag":thirdtag,
                         "publication_id": publication_id,
                         "chapter_number": chapter_number,
-                        "author_id_liked":author_id_liked
-                    })        
+                        "author_id_liked":author_id_liked,
+                        "monetization":content.monetization,
+                }).then(res.status(200).send([content]))
             }
-    })();
+                  
+            
     });
 
     router.delete('/remove_like/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
             const category = req.params.category;
             const format = req.params.format;
             const style = req.params.style;
@@ -172,7 +178,7 @@ module.exports = (router,
         
             if (category === "bd" ) {
                 if(format === "one-shot"){
-                    bd = await Liste_Bd_Oneshot.findOne({
+                    Liste_Bd_Oneshot.findOne({
                         where: {
                         bd_id: publication_id,
                         }
@@ -188,7 +194,7 @@ module.exports = (router,
                 }
                 else if (format === "serie"){
         
-                    chapter = await Chapters_Bd_Serie.findOne({
+                    Chapters_Bd_Serie.findOne({
                         where: {
                         bd_id: publication_id,
                         chapter_number:chapter_number,
@@ -201,9 +207,7 @@ module.exports = (router,
                         "likesnumber":likes,
                         })
                         .then(chapter =>  {  
-                        (async () => {
-                        
-                            bd_serie = await Liste_Bd_Serie.findOne({
+                            Liste_Bd_Serie.findOne({
                                 where: {
                                 bd_id: chapter.bd_id,
                                 }
@@ -215,7 +219,6 @@ module.exports = (router,
                                 })
                             })                   
                             .then(res.status(200).send([chapter]))
-                        })();
                         
                         })
                     })
@@ -226,7 +229,7 @@ module.exports = (router,
         
             else  if (category === "drawing" ) {
                 if(format === "one-shot"){
-                    drawing = await Drawings_one_page.findOne({
+                    Drawings_one_page.findOne({
                         where: {
                             drawing_id: publication_id,
                         }
@@ -241,7 +244,7 @@ module.exports = (router,
                 }
         
                 else if(format === "artbook"){
-                    drawing = await Liste_Drawings_Artbook.findOne({
+                    Liste_Drawings_Artbook.findOne({
                         where: {
                         drawing_id: publication_id,
                         }
@@ -257,7 +260,7 @@ module.exports = (router,
             }
         
             else  if (category === "writing" ) {
-                writing = await Liste_Writings.findOne({
+                 Liste_Writings.findOne({
                     where: {
                         writing_id: publication_id,
                     }
@@ -271,7 +274,7 @@ module.exports = (router,
                 }); 
                 
             }
-                { 
+                
                 console.log('suppression de like ok');
                 Liste_of_likes.destroy({
                     where: {
@@ -285,14 +288,12 @@ module.exports = (router,
                     truncate: false
                 })
                 
-            }
-        })();
     });
         
 
     router.post('/add_love/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_loved', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => { 
+        
             const category = req.params.category;
             const format = req.params.format;
             const style = req.params.style;
@@ -304,7 +305,7 @@ module.exports = (router,
             const author_id_loved=parseInt(req.params.author_id_loved);
             if (category === "bd" ) {
                 if(format === "one-shot"){
-                    bd = await Liste_Bd_Oneshot.findOne({
+                    Liste_Bd_Oneshot.findOne({
                         where: {
                             bd_id: publication_id,
                         }
@@ -314,13 +315,13 @@ module.exports = (router,
                         bd.update({
                             "lovesnumber":loves,
                         })
-                        .then(res.status(200).send([bd]))
+                        .then(create(bd))
                         }); 
                     
                 }
                 else if (format === "serie"){
 
-                    chapter = await Chapters_Bd_Serie.findOne({
+                    Chapters_Bd_Serie.findOne({
                         where: {
                             bd_id: publication_id,
                             chapter_number:chapter_number,
@@ -332,9 +333,8 @@ module.exports = (router,
                             "lovesnumber":loves,
                         })
                         .then(chapter =>  { 
-                            (async () => { 
                         
-                                bd_serie = await Liste_Bd_Serie.findOne({
+                              Liste_Bd_Serie.findOne({
                                     where: {
                                     bd_id: chapter.bd_id,
                                     }
@@ -345,8 +345,7 @@ module.exports = (router,
                                     "lovesnumber":loves,
                                     })
                                 })                   
-                                .then(res.status(200).send([chapter]))
-                            })();
+                                .then(create(bd_serie))
                             
                             })
                         })
@@ -356,7 +355,7 @@ module.exports = (router,
              }
                 else  if (category === "drawing" ) {
                 if(format === "one-shot"){
-                    drawing = await Drawings_one_page.findOne({
+                    Drawings_one_page.findOne({
                         where: {
                             drawing_id: publication_id,
                         }
@@ -366,12 +365,12 @@ module.exports = (router,
                         drawing.update({
                         "lovesnumber":loves,
                         })
-                        .then(res.status(200).send([drawing]))
+                        .then(create(drawing))
                     }); 
                 }
 
                 else if(format === "artbook"){
-                    drawing = await Liste_Drawings_Artbook.findOne({
+                    Liste_Drawings_Artbook.findOne({
                         where: {
                         drawing_id: publication_id,
                         }
@@ -381,13 +380,13 @@ module.exports = (router,
                         drawing.update({
                         "lovesnumber":loves,
                         })
-                        .then(res.status(200).send([drawing]))
+                        .then(create(drawing))
                     }); 
                 }
                 }
 
                 else  if (category === "writing" ) {
-                writing = await Liste_Writings.findOne({
+                Liste_Writings.findOne({
                     where: {
                         writing_id: publication_id,
                     }
@@ -397,25 +396,30 @@ module.exports = (router,
                     writing.update({
                     "lovesnumber":loves,
                     })
-                    .then(res.status(200).send([writing]))
+                    .then(create(writing))
                 }); 
                 
                 }
-                console.log('ajout de love ok');
-                Liste_of_loves.create({
-                        "author_id_who_loves": current_user,
-                        "publication_category":category,
-                        "format": format,
-                        "style":style,
-                        "firsttag":firsttag,
-                        "secondtag":secondtag,
-                        "thirdtag":thirdtag,
-                        "publication_id": publication_id,
-                        "chapter_number": chapter_number,
-                        "author_id_loved":author_id_loved
-                    })
+
+                function create(content){
+                    console.log('ajout de love ok');
+                    Liste_of_loves.create({
+                            "author_id_who_loves": current_user,
+                            "publication_category":category,
+                            "format": format,
+                            "style":style,
+                            "firsttag":firsttag,
+                            "secondtag":secondtag,
+                            "thirdtag":thirdtag,
+                            "publication_id": publication_id,
+                            "chapter_number": chapter_number,
+                            "author_id_loved":author_id_loved,
+                            "monetization":content.monetization,
+                        }) .then(res.status(200).send([content]))
+                }
+               
                 
-            })();
+            
     });
 
     router.delete('/remove_love/:category/:format/:style/:publication_id/:chapter_number', function (req, res) {
@@ -550,7 +554,7 @@ module.exports = (router,
 
     router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-   
+        console.log(" adding view")
         const category = req.params.category;
         const format = req.params.format;
         const style = req.params.style;
@@ -585,7 +589,7 @@ module.exports = (router,
         });
 
     router.post('/add_view_time', function (req, res) {
-        
+        console.log(" adding add_view_time")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
@@ -601,11 +605,9 @@ module.exports = (router,
                     id:id_view_created,
                 }
             })
-            .then(list_of_view =>  {
-                list_of_view.update({
-                    "view_time":view_time,
-                }).then(view=>{
-                    if(view_time>3){
+            .then(view =>  {
+                if(view){
+                    if(view_time>5){
                         if (view.publication_category=== "bd" ) {
                             if(view.format === "one-shot"){
                                 Liste_Bd_Oneshot.findOne({
@@ -618,6 +620,31 @@ module.exports = (router,
                                         bd.update({
                                             "viewnumber":views,
                                         })
+                                        if(bd.firsttag=='Romantique' || bd.firsttag=='Shojo' || bd.firsttag=='Yuri' || bd.firsttag=='Yaoi' || bd.firsttag=='Josei' 
+                                        || bd.secondtag=='Romantique' || bd.secondtag=='Shojo' || bd.secondtag=='Yuri' || bd.secondtag=='Yaoi' || bd.secondtag=='Josei' 
+                                        || bd.thirdtag=='Romantique' || bd.thirdtag=='Shojo' || bd.thirdtag=='Yuri' || bd.thirdtag=='Yaoi' || bd.thirdtag=='Josei'){
+                                            if(getRandomInt(5)==0){
+                                                
+                                                view.update({
+                                                    "view_time":view_time,
+                                                    "monetization":bd.monetization,
+                                                }).then(view=>{
+                                                    res.status(200).send([view])
+                                                })
+                                            }
+                                            else{
+                                                res.status(200).send([view])
+                                                
+                                            } 
+                                        }
+                                        else{
+                                            view.update({
+                                                "view_time":view_time,
+                                                "monetization":bd.monetization,
+                                            })
+                                            res.status(200).send([view])
+                                        }
+                                        
                                     }); 
                                 
                             }
@@ -630,24 +657,48 @@ module.exports = (router,
                                     }
                                     })
                                     .then(chapter =>  {
-                                    const views = chapter.viewnumber + 1;
-                                    chapter.update({
-                                        "viewnumber":views,
-                                    })
-                                    .then(chapter =>  {  
-                                        console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
+                                        const views = chapter.viewnumber + 1;
+                                        chapter.update({
+                                            "viewnumber":views,
+                                        })
+                                        .then(chapter =>  {  
+                                            console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
                                     
                                             Liste_Bd_Serie.findOne({
                                                 where: {
                                                 bd_id: chapter.bd_id,
                                                 }
                                             })
-                                            .then(bd_serie =>  {
+                                            .then(bd =>  {
                                                 console.log(bd_serie.viewnumber);
-                                                const viewnumber = bd_serie.viewnumber + 1;
-                                                bd_serie.update({
-                                                "viewnumber":viewnumber,
+                                                const viewnumber = bd.viewnumber + 1;
+                                                bd.update({
+                                                    "viewnumber":viewnumber,
+                                                    
                                                 })
+                                                if(bd.firsttag=='Romantique' || bd.firsttag=='Shojo' || bd.firsttag=='Yuri' || bd.firsttag=='Yaoi' || bd.firsttag=='Josei' 
+                                                || bd.secondtag=='Romantique' || bd.secondtag=='Shojo' || bd.secondtag=='Yuri' || bd.secondtag=='Yaoi' || bd.secondtag=='Josei' 
+                                                || bd.thirdtag=='Romantique' || bd.thirdtag=='Shojo' || bd.thirdtag=='Yuri' || bd.thirdtag=='Yaoi' || bd.thirdtag=='Josei'){
+                                                    if(getRandomInt(5)==0){
+                                                        view.update({
+                                                            "view_time":view_time,
+                                                            "monetization":bd.monetization,
+                                                        })
+                                                        res.status(200).send([view])
+                                                        
+                                                    }
+                                                    else{
+                                                        res.status(200).send([view])
+                                                    } 
+                                                }
+                                                else{
+                                                    
+                                                    view.update({
+                                                        "view_time":view_time,
+                                                        "monetization":bd.monetization,
+                                                    })
+                                                    res.status(200).send([view])
+                                                }
                                             })  
                                         
                                         })
@@ -666,8 +717,32 @@ module.exports = (router,
                                 .then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
                                     drawing.update({
-                                    "viewnumber":views,
+                                        "viewnumber":views,
                                     })
+                                    if(drawing.firsttag=='Romantique' || drawing.firsttag=='Shojo' || drawing.firsttag=='Yuri' || drawing.firsttag=='Yaoi' || drawing.firsttag=='Josei' 
+                                    || drawing.secondtag=='Romantique' || drawing.secondtag=='Shojo' || drawing.secondtag=='Yuri' || drawing.secondtag=='Yaoi' || drawing.secondtag=='Josei' 
+                                    || drawing.thirdtag=='Romantique' || drawing.thirdtag=='Shojo' || drawing.thirdtag=='Yuri' || drawing.thirdtag=='Yaoi' || drawing.thirdtag=='Josei'){
+                                        if(getRandomInt(5)==0){
+                                            console.log("pass")
+                                            view.update({
+                                                "view_time":view_time,
+                                                "monetization":drawing.monetization,
+                                            })
+                                            res.status(200).send([view])
+                                            
+                                        }
+                                        else{
+                                            res.status(200).send([view])
+                                        } 
+                                    }
+                                    else{
+                                        console.log("no pass")
+                                        view.update({
+                                            "view_time":view_time,
+                                            "monetization":drawing.monetization,
+                                        })
+                                        res.status(200).send([view])
+                                    }
                                 }); 
                             }
                 
@@ -680,8 +755,31 @@ module.exports = (router,
                                 .then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
                                     drawing.update({
-                                    "viewnumber":views,
+                                        "viewnumber":views,
                                     })
+                                    if(drawing.firsttag=='Romantique' || drawing.firsttag=='Shojo' || drawing.firsttag=='Yuri' || drawing.firsttag=='Yaoi' || drawing.firsttag=='Josei' 
+                                    || drawing.secondtag=='Romantique' || drawing.secondtag=='Shojo' || drawing.secondtag=='Yuri' || drawing.secondtag=='Yaoi' || drawing.secondtag=='Josei' 
+                                    || drawing.thirdtag=='Romantique' || drawing.thirdtag=='Shojo' || drawing.thirdtag=='Yuri' || drawing.thirdtag=='Yaoi' || drawing.thirdtag=='Josei'){
+                                        if(getRandomInt(5)==0){
+                                            view.update({
+                                                "view_time":view_time,
+                                                "monetization":drawing.monetization,
+                                            })
+                                            res.status(200).send([view])
+                                            
+                                        }
+                                        else{
+                                            res.status(200).send([view])
+                                        } 
+                                    }
+                                    else{
+                                       
+                                        view.update({
+                                            "view_time":view_time,
+                                            "monetization":drawing.monetization,
+                                        })
+                                        res.status(200).send([view])
+                                    }
                                 }); 
                             }
                         }
@@ -693,17 +791,45 @@ module.exports = (router,
                                 }
                             })
                             .then(writing =>  {
+                                
                                 const views = writing.viewnumber + 1;
                                 writing.update({
-                                "viewnumber":views,
+                                    "viewnumber":views,
                                 })
+                                console.log(writing)
+                                if(writing.firsttag=='Romantique' || writing.firsttag=='Shojo' || writing.firsttag=='Yuri' || writing.firsttag=='Yaoi' || writing.firsttag=='Josei' 
+                                || writing.secondtag=='Romantique' || writing.secondtag=='Shojo' || writing.secondtag=='Yuri' || writing.secondtag=='Yaoi' || writing.secondtag=='Josei' 
+                                || writing.thirdtag=='Romantique' || writing.thirdtag=='Shojo' || writing.thirdtag=='Yuri' || writing.thirdtag=='Yaoi' || writing.thirdtag=='Josei'){
+                                    if(getRandomInt(5)==0){
+                                        
+                                        view.update({
+                                            "view_time":view_time,
+                                            "monetization":writing.monetization,
+                                        })
+                                        res.status(200).send([view])
+                                        
+                                    }
+                                    else{
+                                        res.status(200).send([view])
+                                    } 
+                                }
+                                else{
+                                    view.update({
+                                        "view_time":view_time,
+                                        "monetization":writing.monetization,
+                                    })
+                                    res.status(200).send([view])
+                                }
                             }); 
                             
                         }
                     }
-                        
+                }
+                else{
+                    res.status(200).send([{nothing:"nothing"}])
+                }
                     
-                }).then(res.status(200).send([list_of_view]))
+                        
             });  
         }
            

@@ -4,6 +4,9 @@ module.exports = (sequelize, Sequelize) => {
 
 	const User = sequelize.define('users', {
 		//account_type: {type: Sequelize.INTEGER}, à ajouter
+		type_of_account:{type: Sequelize.STRING},
+		type_of_account_checked:{type: Sequelize.BOOLEAN},
+		certified_account:{type: Sequelize.BOOLEAN},
 		email: {type: Sequelize.STRING},
 		nickname: {type: Sequelize.STRING},
 		firstname: {type: Sequelize.STRING},
@@ -18,6 +21,8 @@ module.exports = (sequelize, Sequelize) => {
 		job:{type: Sequelize.STRING},
 		training:{type: Sequelize.STRING}, 
 		birthday:{type: Sequelize.STRING}, 
+		id_admin:  {type: Sequelize.INTEGER},
+		list_of_members:Sequelize.ARRAY(Sequelize.INTEGER),
 		number_of_comics: {type: Sequelize.INTEGER},
 		number_of_drawings: {type: Sequelize.INTEGER},
 		number_of_writings: {type: Sequelize.INTEGER}, // à supprimer

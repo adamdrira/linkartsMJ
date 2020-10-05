@@ -86,31 +86,32 @@ exports.create = (req, res) => {
 				chat_seq.list_of_chat_friends.create({
 					"id_user":r.id,
 					"id_receiver":1,
+					"is_a_group_chat":false,
 					"date":now,
+				}).then(()=>{
+					chat_seq.list_of_messages.create({
+						"id_user_name":"Linkarts",
+						"id_receiver": r.id,
+						"id_user":1,
+						"message":"Bienvenue sur Linkarts",
+						"is_from_server":false,
+						"attachment_name":null,
+						"size":null,
+						"is_a_response":false,
+						"id_message_responding":null,
+						"message_responding_to":null,
+						"id_chat_section":1,
+						"is_an_attachment":false,
+						"attachment_type":null,
+						"is_a_group_chat":false,
+						"status":'received',
+					  })
+				})
+				.then(()=>{
+					res.status(200).json([{msg: "creation ok",id_user:r.id}])
 				})
 			})
-			.then(()=>{
-				chat_seq.list_of_messages.create({
-					"id_user_name":"Linkarts",
-					"id_receiver": r.id,
-					"id_user":1,
-					"message":"Bienvenue sur Linkarts",
-					"is_from_server":false,
-					"attachment_name":null,
-					"size":null,
-					"is_a_response":false,
-					"id_message_responding":null,
-					"message_responding_to":null,
-					"id_chat_section":1,
-					"is_an_attachment":false,
-					"attachment_type":null,
-					"is_a_group_chat":false,
-					"status":'received',
-				  })
-			})
-			.then(()=>{
-				res.status(200).json([{msg: "creation ok",id_user:r.id}])
-			})
+			
 		})
 	});
 	
@@ -121,22 +122,38 @@ exports.create = (req, res) => {
 // Post a User
 exports.add_link = (req, res) => {
 	// Save to PostgreSQL database
-	var passwordhash;
 
-	bcrypt.hash(req.body.password,10,function(err,hash){
-		passwordhash = hash;
 		User_links.create({
 			"id_user": req.body.id_user,
 			"link_title": req.body.link_title,
 			"link": req.body.link, 
 		}).catch(err => {
 			console.log(err);	
-			res.status(500).json({msg: "error registering the user", details: err});		
+			res.status(200).json({msg: "error registering the user", details: err});		
 		}).then(res.status(200).json([{msg: "creation ok"}])
 				
 			
 		);
-	});
+	
+
+};
+
+
+exports.get_password = (req, res) => {
+	// Save to PostgreSQL database
+	id=req.body.id;
+	User.findOne({
+		where:{
+			id:id
+		}
+	}).then(user=>{
+		if(user){
+
+		}
+		else{
+			res.status(200).send([{nothing:"nothing"}])
+		}
+	})
 	
 
 };

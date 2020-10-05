@@ -364,5 +364,44 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
 
+  
+
+  router.post('/get_pseudos_who_match', function (req, res) {
+    console.log("get_pseudos_who_match")
+    let pseudo = (req.body.pseudo).toLowerCase();
+    const Op = Sequelize.Op;
+    users.findOne({
+      where: {
+        nickname:{[Op.iLike]: pseudo },
+      }
+    })
+    .then(User =>  {
+      console.log("result one")
+      console.log(User)
+      if(User){
+        res.status(200).send([User])
+      }
+      else{
+        users.findOne({
+          where: {
+            nickname:{[Op.iLike]:'%'+ pseudo + '%'},
+          }
+        }).then(User=>{
+          console.log("result two")
+          console.log(User)
+          if(User){
+            res.status(200).send([User])
+          }
+          else{
+            res.status(200).send([{"nothing":"nothing"}])
+          }
+        })
+       
+      }
+     
+    }); 
+
+   
+  });
 
 }
