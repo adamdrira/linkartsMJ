@@ -523,31 +523,37 @@ export class ArtworkComicComponent implements OnInit {
             let list_of_loves= r[0];
             this.list_of_users_ids_loves[0]=[]
             if (list_of_loves.length != 0){
-            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-              for (let i=0;i<list_of_loves.length;i++){
-                this.list_of_users_ids_loves[0].push(list_of_loves[i].author_id_who_loves);
-                if (list_of_loves[i].author_id_who_loves == l[0].id){
-                  this.loved = true;
+              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+                for (let i=0;i<list_of_loves.length;i++){
+                  this.list_of_users_ids_loves[0].push(list_of_loves[i].author_id_who_loves);
+                  if (list_of_loves[i].author_id_who_loves == l[0].id){
+                    this.loved = true;
+                  }
                 }
-              }
+                this.list_of_users_ids_loves_retrieved=true;
+              });
+            }
+            else{
               this.list_of_users_ids_loves_retrieved=true;
-            });
-          }
+            }
           });
           this.NotationService.get_likes('bd', 'one-shot', r[0].category, this.bd_id,0).subscribe(r=>{
             let list_of_likes= r[0];
             this.list_of_users_ids_likes[0]=[]
             if (list_of_likes.length != 0){
-            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-              for (let i=0;i<list_of_likes.length;i++){
-                this.list_of_users_ids_likes[0].push(list_of_likes[i].author_id_who_likes);
-                if (list_of_likes[i].author_id_who_likes == l[0].id){
-                  this.liked = true;
+              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+                for (let i=0;i<list_of_likes.length;i++){
+                  this.list_of_users_ids_likes[0].push(list_of_likes[i].author_id_who_likes);
+                  if (list_of_likes[i].author_id_who_likes == l[0].id){
+                    this.liked = true;
+                  }
                 }
-              }
+                this.list_of_users_ids_likes_retrieved=true;
+              });
+            }
+            else{
               this.list_of_users_ids_likes_retrieved=true;
-            });
-          }
+            }
           });
           
 
@@ -962,16 +968,19 @@ export class ArtworkComicComponent implements OnInit {
         let list_of_loves= r[0];
         this.list_of_users_ids_loves[chapter_number-1]=[];
         if (list_of_loves.length != 0){
-        this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-          for (let i=0;i<list_of_loves.length;i++){
-            this.list_of_users_ids_loves[chapter_number-1].push(list_of_loves[i].author_id_who_loves);
-            if (list_of_loves[i].author_id_who_loves == l[0].id){
-              this.loved = true;
+          this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+            for (let i=0;i<list_of_loves.length;i++){
+              this.list_of_users_ids_loves[chapter_number-1].push(list_of_loves[i].author_id_who_loves);
+              if (list_of_loves[i].author_id_who_loves == l[0].id){
+                this.loved = true;
+              }
             }
-          }
+            this.list_of_users_ids_loves_retrieved=true;
+          });
+        }
+        else{
           this.list_of_users_ids_loves_retrieved=true;
-        });
-      }
+        }
       });
       this.NotationService.get_likes('bd', 'serie', this.style, this.bd_id,chapter_number).subscribe(r=>{
         let list_of_likes= r[0];
@@ -987,6 +996,9 @@ export class ArtworkComicComponent implements OnInit {
             this.list_of_users_ids_likes_retrieved=true;
             console.log(this.list_of_users_ids_likes)
           });
+        }
+        else{
+          this.list_of_users_ids_likes_retrieved=true;
         }
       });
 
@@ -1230,10 +1242,14 @@ export class ArtworkComicComponent implements OnInit {
   /******************************************************* */
   
   click_like() {
+    console.log("click like")
     if(this.type_of_account=="account"){
+      console.log("account")
       if(this.list_of_users_ids_likes_retrieved){
+        console.log("list_of_users_ids_likes_retrieved")
         this.like_in_progress=true;
-        if(this.liked) {     
+        if(this.liked) {    
+          console.log("liked") 
           if(this.type=='one-shot'){
             this.NotationService.remove_like('bd', 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
   
@@ -1306,6 +1322,7 @@ export class ArtworkComicComponent implements OnInit {
           }
         }
         else {
+          console.log("not liked") 
           if(this.type=='one-shot'){  
             this.NotationService.add_like('bd', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
   

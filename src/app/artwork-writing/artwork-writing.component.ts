@@ -175,6 +175,9 @@ export class ArtworkWritingComponent implements OnInit {
 
   now_in_seconds= Math.trunc( new Date().getTime()/1000);
 
+  list_of_users_ids_loves_retrieved=false;
+  list_of_users_ids_likes_retrieved=false;
+
   arrayOne(n: number): any[] {
     return Array(n);
   }
@@ -330,28 +333,36 @@ export class ArtworkWritingComponent implements OnInit {
           this.NotationService.get_loves('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
             let list_of_loves= r[0];
             if (list_of_loves.length != 0){
-            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-              for (let i=0;i<list_of_loves.length;i++){
-                this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
-                if (list_of_loves[i].author_id_who_loves == l[0].id){
-                  this.loved = true;
+              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+                for (let i=0;i<list_of_loves.length;i++){
+                  this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
+                  if (list_of_loves[i].author_id_who_loves == l[0].id){
+                    this.loved = true;
+                  }
                 }
-              }
-            });
-          }
+                this.list_of_users_ids_loves_retrieved=true;
+              });
+            }
+            else{
+              this.list_of_users_ids_loves_retrieved=true;
+            }
           });
           this.NotationService.get_likes('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
             let list_of_likes= r[0];
             if (list_of_likes.length != 0){
-            this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-              for (let i=0;i<list_of_likes.length;i++){
-                this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
-                if (list_of_likes[i].author_id_who_likes == l[0].id){
-                  this.liked = true;
+              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+                for (let i=0;i<list_of_likes.length;i++){
+                  this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
+                  if (list_of_likes[i].author_id_who_likes == l[0].id){
+                    this.liked = true;
+                  }
                 }
-              }
-            });
-          }
+                this.list_of_users_ids_likes_retrieved=true;
+              });
+            }
+            else{
+              this.list_of_users_ids_likes_retrieved=true;
+            }
           });
           
     
@@ -634,78 +645,81 @@ export class ArtworkWritingComponent implements OnInit {
  
   click_like() {
     if(this.type_of_account=="account"){
-      this.like_in_progress=true;
-      if(this.liked) {        
-          this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
-              
-            this.likesnumber=r[0].likesnumber;
-            if(this.authorid==this.visitor_id){
-              this.liked=false;
-              this.like_in_progress=false;
-              this.cd.detectChanges();
-            }
-            else{
-              this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
-                let message_to_send ={
-                  for_notifications:true,
-                  type:"publication_like",
-                  id_user_name:this.visitor_name,
-                  id_user:this.visitor_id, 
-                  id_receiver:this.authorid, 
-                  publication_category:'writing',
-                  format:'unknown',
-                  publication_id:this.writing_id,
-                  chapter_number:0,
-                  information:"remove",
-                  status:"unchecked",
-                  is_comment_answer:false,
-                  comment_id:0,
-                }
-                this.chatService.messages.next(message_to_send);
+      if(this.list_of_users_ids_likes_retrieved){
+        this.like_in_progress=true;
+        if(this.liked) {        
+            this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
+                
+              this.likesnumber=r[0].likesnumber;
+              if(this.authorid==this.visitor_id){
                 this.liked=false;
                 this.like_in_progress=false;
                 this.cd.detectChanges();
-              })
-            }
+              }
+              else{
+                this.NotificationsService.remove_notification('publication_like','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"publication_like",
+                    id_user_name:this.visitor_name,
+                    id_user:this.visitor_id, 
+                    id_receiver:this.authorid, 
+                    publication_category:'writing',
+                    format:'unknown',
+                    publication_id:this.writing_id,
+                    chapter_number:0,
+                    information:"remove",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.liked=false;
+                  this.like_in_progress=false;
+                  this.cd.detectChanges();
+                })
+              }
+            
+            });
+        }
+        else {
           
-          });
-      }
-      else {
-        
-          this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              
-            this.likesnumber=r[0].likesnumber;
-            if(this.authorid==this.visitor_id){
-              this.liked=true;
-              this.like_in_progress=false;
-              this.cd.detectChanges();
-            }
-            else{
-              this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
-                let message_to_send ={
-                  for_notifications:true,
-                  type:"publication_like",
-                  id_user_name:this.visitor_name,
-                  id_user:this.visitor_id, 
-                  id_receiver:this.authorid,
-                  publication_category:'writing',
-                  publication_name:this.title,
-                  format:'unknown',
-                  publication_id:this.writing_id,
-                  chapter_number:0,
-                  information:"add",
-                  status:"unchecked",
-                  is_comment_answer:false,
-                  comment_id:0,
-                }
-                this.chatService.messages.next(message_to_send);
+            this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+                
+              this.likesnumber=r[0].likesnumber;
+              if(this.authorid==this.visitor_id){
                 this.liked=true;
                 this.like_in_progress=false;
                 this.cd.detectChanges();
-              })
-            } 
-          });
+              }
+              else{
+                this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"publication_like",
+                    id_user_name:this.visitor_name,
+                    id_user:this.visitor_id, 
+                    id_receiver:this.authorid,
+                    publication_category:'writing',
+                    publication_name:this.title,
+                    format:'unknown',
+                    publication_id:this.writing_id,
+                    chapter_number:0,
+                    information:"add",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.liked=true;
+                  this.like_in_progress=false;
+                  this.cd.detectChanges();
+                })
+              } 
+            });
+        }
       }
+      
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -716,79 +730,82 @@ export class ArtworkWritingComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
-      this.love_in_progress=true;
-      if(this.loved) {      
-          this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
-            
+      if(this.list_of_users_ids_loves_retrieved){
+        this.love_in_progress=true;
+        if(this.loved) {      
+            this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
+              
 
-            this.lovesnumber=r[0].lovesnumber;
-            if(this.authorid==this.visitor_id){
-              this.loved=false;
-              this.love_in_progress=false;
-              this.cd.detectChanges();
-            }
-            else{
-              this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
-                let message_to_send ={
-                  for_notifications:true,
-                  type:"publication_love",
-                  id_user_name:this.visitor_name,
-                  id_user:this.visitor_id, 
-                  id_receiver:this.authorid, 
-                  publication_category:'writing',
-                  format:'unknown',
-                  publication_id:this.writing_id,
-                  chapter_number:0,
-                  information:"remove",
-                  status:"unchecked",
-                  is_comment_answer:false,
-                  comment_id:0,
-                }
-                this.chatService.messages.next(message_to_send);
+              this.lovesnumber=r[0].lovesnumber;
+              if(this.authorid==this.visitor_id){
                 this.loved=false;
                 this.love_in_progress=false;
                 this.cd.detectChanges();
-              })
-            }
+              }
+              else{
+                this.NotificationsService.remove_notification('publication_love','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"publication_love",
+                    id_user_name:this.visitor_name,
+                    id_user:this.visitor_id, 
+                    id_receiver:this.authorid, 
+                    publication_category:'writing',
+                    format:'unknown',
+                    publication_id:this.writing_id,
+                    chapter_number:0,
+                    information:"remove",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.loved=false;
+                  this.love_in_progress=false;
+                  this.cd.detectChanges();
+                })
+              }
+            
+            });
           
-          });
-        
-      }
-      else {      
-          this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-            this.lovesnumber=r[0].lovesnumber;
-                           
-            if(this.authorid==this.visitor_id){
-              this.loved=true;
-              this.love_in_progress=false; 
-              this.cd.detectChanges();
-            }
-            else{
-              this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
-                let message_to_send ={
-                  for_notifications:true,
-                  type:"publication_love",
-                  id_user_name:this.visitor_name,
-                  id_user:this.visitor_id, 
-                  id_receiver:this.authorid,
-                  publication_category:'writing',
-                  publication_name:this.title,
-                  format:'unknown',
-                  publication_id:this.writing_id,
-                  chapter_number:0,
-                  information:"add",
-                  status:"unchecked",
-                  is_comment_answer:false,
-                  comment_id:0,
-                }
-                this.chatService.messages.next(message_to_send);
+        }
+        else {      
+            this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+              this.lovesnumber=r[0].lovesnumber;
+                            
+              if(this.authorid==this.visitor_id){
                 this.loved=true;
                 this.love_in_progress=false; 
                 this.cd.detectChanges();
-              }) 
-            }   
-          });
+              }
+              else{
+                this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'writing',this.title,'unknown',this.writing_id,0,"add",false,0).subscribe(l=>{
+                  let message_to_send ={
+                    for_notifications:true,
+                    type:"publication_love",
+                    id_user_name:this.visitor_name,
+                    id_user:this.visitor_id, 
+                    id_receiver:this.authorid,
+                    publication_category:'writing',
+                    publication_name:this.title,
+                    format:'unknown',
+                    publication_id:this.writing_id,
+                    chapter_number:0,
+                    information:"add",
+                    status:"unchecked",
+                    is_comment_answer:false,
+                    comment_id:0,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.loved=true;
+                  this.love_in_progress=false; 
+                  this.cd.detectChanges();
+                }) 
+              }   
+            });
+        }
       }
+      
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
