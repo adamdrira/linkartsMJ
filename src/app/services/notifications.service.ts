@@ -30,8 +30,15 @@ export class NotificationsService {
     }
 
     add_notification(type,id_user,id_user_name,id_receiver,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
-      console.log(publication_name)
+
       return this.httpClient.post('routes/add_notification',{is_comment_answer:is_comment_answer,comment_id:comment_id,publication_name:publication_name,id_user:id_user,id_user_name:id_user_name,id_receiver:id_receiver,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number,information:information}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    add_notification_for_group_creation(type,id_user,id_user_name,id_receiver,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
+
+      return this.httpClient.post('routes/add_notification_for_group_creation',{is_comment_answer:is_comment_answer,comment_id:comment_id,publication_name:publication_name,id_user:id_user,id_user_name:id_user_name,id_receiver:id_receiver,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number,information:information}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }

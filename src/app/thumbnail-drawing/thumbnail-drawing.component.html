@@ -6,7 +6,7 @@
         <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
             <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'for_news':for_news=='yes'}">
-            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
+            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails,'invisible':!marks_retrieved}">
                 
                 <!--********************-->
                 <!--Title container-->

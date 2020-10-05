@@ -335,7 +335,7 @@ export class AccountComponent implements OnInit {
     }
     
     this.Profile_Edition_Service.retrieve_profile_data( this.user_id ).subscribe( r => {
-      if( !r[0] || r[0].status=="visitor") {
+      if( !r[0] || r[0].status!="account") {
         this.router.navigateByUrl('/page_not_found');
         return
       }
@@ -846,6 +846,7 @@ export class AccountComponent implements OnInit {
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
     else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
     else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
+    else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
   }
 
 
@@ -1460,12 +1461,7 @@ export class AccountComponent implements OnInit {
     if(this.got_number_of_drawings_to_show){
       let width =$('.bd-container').width();
       let variable =Math.floor(width/300);
-      console.log(variable)
-      console.log(this.number_of_drawings_variable)
       if(variable!=this.number_of_drawings_variable && variable>0){
-        console.log(this.number_of_drawings_variable)
-        console.log(variable);
-        console.log(this.number_of_private_contents_drawings);
         for(let i=0;i<this.list_titles_albums_drawings.length-1;i++){
          
           this.number_of_drawings_to_show_by_album[i]/=this.number_of_drawings_variable;
@@ -1474,8 +1470,6 @@ export class AccountComponent implements OnInit {
          
           if(i==this.list_titles_albums_drawings.length-2){
             this.number_of_drawings_variable=variable;
-            console.log( this.number_of_drawings_to_show_by_album)
-            console.log( this.number_of_private_contents_drawings)
             this.cd.detectChanges();
             $('.grid').masonry('reloadItems');
             this.reload_masonry();

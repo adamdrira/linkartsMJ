@@ -313,6 +313,7 @@ export class ChatFriendsListComponent implements OnInit {
               this.list_of_friends_types[i]='user';
               this.list_of_friends_users_only[i]=r[0][i].id_receiver;
               this.list_of_friends_ids[i]=r[0][i].id_receiver;
+              
               this.list_of_friends_date[i]=new Date(r[0][i].date).getTime()/1000;
               this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_receiver).subscribe(s=>{
                 this.list_of_friends_pseudos[i]=s[0].nickname;
@@ -511,6 +512,12 @@ export class ChatFriendsListComponent implements OnInit {
     let length=this.list_of_friends_ids.length
     for(let i=1;i<length;i++){
       for(let j=0;j<i;j++){
+        if(i==1){
+          console.log(this.list_of_friends_ids[1])
+          console.log(this.list_of_friends_ids[0])
+          console.log(this.list_of_friends_date[i])
+          console.log(this.list_of_friends_date[j])
+        }
         if(this.list_of_friends_date[i]>this.list_of_friends_date[j]){
           this.list_of_chat_friends_ids.splice(j,0,this.list_of_chat_friends_ids.splice(i,1)[0]);
           this.list_of_friends_last_message.splice(j,0,this.list_of_friends_last_message.splice(i,1)[0]);
@@ -2174,7 +2181,7 @@ change_message_status(event){
       if(day=="Fri"){
         return"Ven";
       }
-      if(day=='Thu'){
+      if(day=='Sat'){
         return"Sam";
       }
       if(day=='Thu'){
@@ -2394,7 +2401,7 @@ get_group_chat_name(id,message,value){
 
 
 get_connections_status(){
-  console.log("gtting connexion stats")
+  //console.log("gtting connexion stats")
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
     let compt=0;
     if(this.list_of_groups_ids.length>0){

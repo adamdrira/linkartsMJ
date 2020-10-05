@@ -77,7 +77,7 @@ export class ThumbnailWritingComponent implements OnInit {
  
 
 
- 
+  marks_retrieved=false;
 
   ngOnInit() {
     this.user_id = this.item.authorid;
@@ -88,14 +88,18 @@ export class ThumbnailWritingComponent implements OnInit {
     this.firsttag = this.item.firsttag;
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;
-    this.viewnumber = number_in_k_or_m(this.item.viewnumber)
-    this.likesnumber = number_in_k_or_m(this.item.likesnumber)
-    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber)
+   
     this.date_upload = this.item.createdAt;
     this.writing_id = this.item.writing_id;
-    this.thumbnail_color = this.item.thumbnail_color;
-    this.thumbnail_police = this.item.thumbnail_police;
-    this.format = this.item.format;
+    
+    this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.writing_id).subscribe(r=> {
+      this.viewnumber = number_in_k_or_m(r[0].viewnumber)
+      this.likesnumber = number_in_k_or_m(r[0].likesnumber)
+      this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+      this.marks_retrieved=true;
+    }); 
+
+
     this.Writing_Upload_Service.retrieve_thumbnail_picture(this.item.name_coverpage).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);

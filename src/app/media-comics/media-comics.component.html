@@ -2,10 +2,13 @@
 
     <div *ngFor="let item of sorted_style_list; index as i1">
 
-        <div class="category">
-            <span>{{item}}</span>
+        
+        <a href="/main-research-style-and-tag/1/Comic/{{item}}/all">
+            <div class="category">
+                <span>{{item}}</span>
+            </div>
             
-        </div>
+        </a>
     
         <div class="container-homepage container-comics d-flex flex-wrap">
     
@@ -59,7 +62,7 @@
         
     
             <ng-container >
-                <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && get_number_of_thumbnails(item)>=5" class="see-more" (click)="see_more(item)">
+                <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && get_number_of_thumbnails(item)>=6" class="see-more" (click)="see_more(item)">
                     <div class="icon">
                     </div>
                 </div>

@@ -152,6 +152,10 @@
                     <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
                     Archives 
                 </button>
+                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
+                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
+                    Mon compte 
+                </button>
                 <a href="/add-artwork">
                     <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category">
                         <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
@@ -1251,7 +1255,12 @@
             </ng-container>
 
             <ng-container *ngIf="opened_section==5">
-                <app-account-about></app-account-about>
+                
+                <app-account-about
+                category_to_open=0
+                pseudo={{pseudo}}
+                user_id={{user_id}}
+                ></app-account-about>
             </ng-container>
 
         </ng-container>

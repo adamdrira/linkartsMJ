@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, tap, map, delay } from 'rxjs/operators';
+import { catchError, tap, map, delay, retryWhen, delayWhen } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
-import {Subject,Observable, Observer} from 'rxjs';
-
-
+import {Subject,Observable, Observer,EMPTY, timer} from 'rxjs';
+import { webSocket,WebSocketSubject } from 'rxjs/webSocket';
+import { AnonymousSubject } from 'rxjs/internal/Subject';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
@@ -18,10 +18,11 @@ const httpOptions = {
 export class WebSocketService {
 
 
-  constructor(private httpClient: HttpClient, private CookieService: CookieService, ) {
+  constructor(private httpClient: HttpClient, private CookieService: CookieService) {
   }
 
   subject:Subject<MessageEvent>;
+  
   public ws: any;
 
   public close() {
@@ -35,7 +36,9 @@ public check_state(){
   //console.log(this.ws.readyState);
 }
 
-  
+
+
+
 
   connect(url):Subject<MessageEvent>{
       if(!this.subject){
@@ -46,15 +49,40 @@ public check_state(){
 
   }
 
+  
+  
   create(url):Subject<MessageEvent>{
+      let THIS=this;
+      
       this.ws = new WebSocket(url);
       console.log(this.ws );
-      let observable = Observable.create(
+      let observable = new Observable(
           (obs:Observer<MessageEvent>)=>{
              this.ws.onmessage=obs.next.bind(obs);
              this.ws.onerror=obs.error.bind(obs);
+             
              this.ws.onclose=function(e) {  
+              console.log(e);
               console.log('socket closed try again'); 
+               if(!e.wasClean){
+                 console.log("not cleen");
+                 //THIS.ChatService.reconnect();
+                 let retry= setInterval(() => {
+                    console.log(THIS.ws.readyState);
+                    if(THIS.ws.readyState==2 || THIS.ws.readyState==3){
+                      THIS.subject = null;
+                      return THIS.connect(url)
+                    }
+                    else{
+                      clearInterval(retry)
+                      THIS.subject = null;
+                      return THIS.connect(url)
+                    }
+                   
+                    },5000);
+               }
+               
+              
             }
               return ;
           }
@@ -66,13 +94,17 @@ public check_state(){
                this.ws.send(JSON.stringify(data));
               }
           },
+          error: (err: any) => {console.log(err)},
+          complete: () => { this.ws.complete();
+            this.subject = null;},
           
       }
 
-      return Subject.create(observer,observable)
+      return new AnonymousSubject<any>(observer,observable)
   }
 
-  
+
+
 }
   
 

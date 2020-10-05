@@ -1166,6 +1166,7 @@ export class ChatComponent implements OnInit  {
   
   //envoie de message
   send_message(){
+
     console.log("sending messages")
     if(this.attachments.length>0){
       for(let i=0;i<this.attachments.length;i++){
@@ -1186,7 +1187,7 @@ export class ChatComponent implements OnInit  {
       id_receiver:this.friend_id,  
       message:this.message_group.value.message,
       list_of_users_who_saw:[this.current_user_id],
-      list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+      list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
       is_from_server:false,
       is_an_attachment:false,
       id_chat_section:this.id_chat_section,
@@ -1239,7 +1240,7 @@ export class ChatComponent implements OnInit  {
       attachment_name:file_name,
       attachment_type:"picture_message",
       list_of_users_who_saw:[this.current_user_id],
-      list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+      list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
       is_an_attachment:true,
       is_from_server:false,
       id_chat_section:this.id_chat_section,
@@ -1306,7 +1307,7 @@ export class ChatComponent implements OnInit  {
             attachment_name:r[0].value,
             attachment_type:"picture_attachment",
             list_of_users_who_saw:[this.current_user_id],
-            list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+            list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
             is_an_attachment:true,
             is_from_server:false,
             size:this.attachments_size[i],
@@ -1332,7 +1333,7 @@ export class ChatComponent implements OnInit  {
             attachment_name:r[0].value,
             attachment_type:"picture_attachment",
             list_of_users_who_saw:[this.current_user_id],
-            list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+             list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
             is_an_attachment:true,
             is_from_server:false,
             size:this.attachments_size[i],
@@ -1367,7 +1368,7 @@ export class ChatComponent implements OnInit  {
              attachment_name:r[0].value,
              attachment_type:"file_attachment",
              list_of_users_who_saw:[this.current_user_id],
-             list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+              list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
              is_an_attachment:true,
              size:this.attachments_size[i],
              is_a_response:false,
@@ -1396,7 +1397,7 @@ export class ChatComponent implements OnInit  {
              attachment_name:r[0].value,
              attachment_type:"file_attachment",
              list_of_users_who_saw:[this.current_user_id],
-             list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+              list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
              is_an_attachment:true,
              is_from_server:false,
              size:this.attachments_size[i],
@@ -1447,7 +1448,7 @@ export class ChatComponent implements OnInit  {
           id_user:this.current_user_id,   
           id_receiver:this.friend_id,  
           list_of_users_who_saw:[this.current_user_id],
-          list_of_users_in_the_group:this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group,
+           list_of_users_in_the_group:(this.list_of_messages[this.list_of_messages.length-1])?this.list_of_messages[this.list_of_messages.length-1].list_of_users_in_the_group:[],
           message:"New",
           is_from_server:true,
           status:"sent",
@@ -1923,6 +1924,7 @@ list_of_chat_sections:any[]=["Discussion principale"];
 list_of_chat_sections_id:any[]=[1];
 list_of_chat_sections_notifications:any[]=[];
 show_notification_message=false;
+number_of_sections_unseen=0;
 top_pp_loaded=false;
 put_top_visible=false;
 top_sumo_loaded=false;
@@ -1964,9 +1966,11 @@ initialize_selectors(){
         if(i==THIS.list_of_chat_sections_notifications.length-1){
           if(compt>0){
             THIS.show_notification_message=true;
+            THIS.number_of_sections_unseen=compt;
           }
           else{
             THIS.show_notification_message=false;
+            THIS.number_of_sections_unseen=0;
           }
         }
       }
@@ -1986,9 +1990,11 @@ initialize_selectors(){
         if(i==THIS.list_of_chat_sections_notifications.length-1){
           if(compt>0){
             THIS.show_notification_message=true;
+            THIS.number_of_sections_unseen=compt;
           }
           else{
             THIS.show_notification_message=false;
+            THIS.number_of_sections_unseen=0;
           }
         }
       }
@@ -2016,6 +2022,7 @@ initialize_selectors(){
         if(idx>0){
           if(THIS.list_of_chat_sections_notifications[idx-1]){
             $(this).empty().prepend('<label>'+THIS.list_of_chat_sections[idx-1]+'</label>');
+            /*$(this).prepend('<div style="background-color: #ff0000;width:15px;height:15px;border-radius: 20px;"></div>');*/
             $(this).prepend('<img style="height:15px; margin: auto 5px auto auto;" '+
             'src="../../assets/img/bell_blue_black2.png">');
             $(this).find('label').css('display', 'inline');
@@ -2139,11 +2146,29 @@ get_chat_sections(){
             this.chat_section_to_open="Discussion principale"
             console.log( this.chat_section_to_open)
           }
+          let compt_sections=0;
           for(let j=0;j<this.list_of_chat_sections.length;j++){
             this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
               this.list_of_chat_sections_notifications[j]=r[0].value;
-              if(j==this.list_of_chat_sections.length-1){
+              compt_sections++;
+              if(compt_sections==this.list_of_chat_sections.length){
                 console.log(this.compteur_chat_section)
+                let compt_unseen=0;
+                for(let k=0;k<this.list_of_chat_sections_notifications.length;k++){
+                  if(this.list_of_chat_sections_notifications[k]){
+                    compt_unseen+=1;
+                  }
+                  if(k==this.list_of_chat_sections_notifications.length-1){
+                    if(compt_unseen>0){
+                      this.show_notification_message=true;
+                      this.number_of_sections_unseen=compt_unseen;
+                    }
+                    else{
+                      this.show_notification_message=false;
+                      this.number_of_sections_unseen=0;
+                    }
+                  }
+                }
                 if(this.compteur_chat_section>0){
                   this.activate_research_chat_section=false;
                   this.activate_add_chat_section=false;
@@ -2264,9 +2289,11 @@ open_section_found(i){
     if(i==this.list_of_chat_sections_notifications.length-1){
       if(compt>0){
         this.show_notification_message=true;
+        this.number_of_sections_unseen=compt;
       }
       else{
         this.show_notification_message=false;
+        this.number_of_sections_unseen=0;
       }
      
       this.cd.detectChanges();
@@ -2336,12 +2363,18 @@ on_keydown_research(event){
           for(let i=0;i<l[0].length;i++){
             let match=false;
             for(let j=0;j<this.list_of_messages.length;j++){
+              console.log(j)
+              console.log("for loop")
               if(l[0][i].message==this.list_of_messages[j].message && l[0][i].createdAt==this.list_of_messages[j].createdAt ){
                 console.log("first if")
                 this.list_of_messages_found.push(true);
                 this.index_of_messages_found.push(j);
                 match=true;
                 second_compt+=1;
+                console.log(second_compt)
+                console.log(l[0].length)
+                console.log(j)
+                console.log(this.list_of_messages.length-1)
                 if(second_compt==l[0].length && j==this.list_of_messages.length-1){
                   this.show_research_results=true;
                   if(this.list_of_messages_found[0]){
@@ -3258,6 +3291,7 @@ chat_service_managment_function(msg){
           else if(msg[0].id_user!=msg[0].id_receiver && msg[0].id_chat_section!=this.id_chat_section){
             this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],id_chat_section:this.id_chat_section,friend_type:'user'});
             this.show_notification_message=true;
+            this.number_of_sections_unseen+=1;
             let ind=this.list_of_chat_sections_id.indexOf(msg[0].id_chat_section);
             this.list_of_chat_sections_notifications[ind]=true;
             this.cd.detectChanges();

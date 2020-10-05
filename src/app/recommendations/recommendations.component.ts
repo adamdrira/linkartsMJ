@@ -229,7 +229,7 @@ export class RecommendationsComponent implements OnInit {
               for (let i=0; i<list_bd_os.length;i++){
                 if(list_bd_os[i][0]){
                   if(list_bd_os[i][0].category =="Manga"){
-                    if( this.sorted_artpieces_manga.length<5 && list_bd_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_manga.length<6 && list_bd_os[i][0].status=='public'){
                       this.sorted_artpieces_manga.push(list_bd_os[i][0]);
                       this.sorted_artpieces_manga_format.push("one-shot");
                     }                 
@@ -241,7 +241,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_bd_os[i][0].category =="Comics" ){
-                    if( this.sorted_artpieces_comics.length<5 && list_bd_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_comics.length<6 && list_bd_os[i][0].status=='public'){
                       this.sorted_artpieces_comics.push(list_bd_os[i][0]);
                       this.sorted_artpieces_comics_format.push("one-shot");
                     }
@@ -253,7 +253,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_bd_os[i][0].category =="Webtoon" ){
-                    if( this.sorted_artpieces_webtoon.length<5 && list_bd_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_webtoon.length<6 && list_bd_os[i][0].status=='public'){
                       this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
                       this.sorted_artpieces_webtoon_format.push("one-shot");
                     }
@@ -266,7 +266,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_bd_os[i][0].category =="BD" ){
-                    if( this.sorted_artpieces_bd.length<5 && list_bd_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_bd.length<6 && list_bd_os[i][0].status=='public'){
                       this.sorted_artpieces_bd.push(list_bd_os[i][0]);
                       this.sorted_artpieces_bd_format.push("one-shot");
                     }
@@ -307,7 +307,7 @@ export class RecommendationsComponent implements OnInit {
                 if (list_bd_serie[i].length>0){
                   if(list_bd_serie[i][0]){
                     if(list_bd_serie[i][0].category =="Comics"){
-                      if( this.sorted_artpieces_comics.length<5 && list_bd_serie[i][0].status=='public'){
+                      if( this.sorted_artpieces_comics.length<6 && list_bd_serie[i][0].status=='public'){
                         this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
                         this.sorted_artpieces_comics_format.push("serie");
                       }
@@ -320,7 +320,7 @@ export class RecommendationsComponent implements OnInit {
                       
                     }
                     if(list_bd_serie[i][0].category =="Manga"){
-                      if( this.sorted_artpieces_manga.length<5 && list_bd_serie[i][0].status=='public'){
+                      if( this.sorted_artpieces_manga.length<6 && list_bd_serie[i][0].status=='public'){
                         this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
                         this.sorted_artpieces_manga_format.push("serie");
                       }
@@ -332,7 +332,7 @@ export class RecommendationsComponent implements OnInit {
                       }
                     }
                     if(list_bd_serie[i][0].category =="Webtoon"){
-                      if( this.sorted_artpieces_webtoon.length<5 && list_bd_serie[i][0].status=='public'){
+                      if( this.sorted_artpieces_webtoon.length<6 && list_bd_serie[i][0].status=='public'){
                         this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
                         this.sorted_artpieces_webtoon_format.push("serie");
                       }
@@ -344,7 +344,7 @@ export class RecommendationsComponent implements OnInit {
                       }
                     }
                     if(list_bd_serie[i][0].category =="BD"){
-                      if( this.sorted_artpieces_bd.length<5 && list_bd_serie[i][0].status=='public'){
+                      if( this.sorted_artpieces_bd.length<6 && list_bd_serie[i][0].status=='public'){
                         this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
                         this.sorted_artpieces_bd_format.push("serie");
                       }
@@ -392,7 +392,7 @@ export class RecommendationsComponent implements OnInit {
                 console.log(list_artbook[i].length);
                 if (list_artbook[i].length>0){
                   if(list_artbook[i][0].category =="Traditionnel"){
-                    if( this.sorted_artpieces_traditional.length<5 && list_artbook[i][0].status=='public'){
+                    if( this.sorted_artpieces_traditional.length<6 && list_artbook[i][0].status=='public'){
                       this.sorted_artpieces_traditional.push(list_artbook[i][0]);
                       this.sorted_artpieces_traditional_format.push("artbook");
                     }
@@ -407,7 +407,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_artbook[i][0].category =="Digital"){
-                    if( this.sorted_artpieces_digital.length<5 && list_artbook[i][0].status=='public'){
+                    if( this.sorted_artpieces_digital.length<6 && list_artbook[i][0].status=='public'){
                       this.sorted_artpieces_digital.push(list_artbook[i][0]);
                       this.sorted_artpieces_digital_format.push("artbook");
                     }
@@ -460,7 +460,7 @@ export class RecommendationsComponent implements OnInit {
                 console.log(list_drawing_os[i][0]);
                 if (list_drawing_os[i].length>0){
                   if(list_drawing_os[i][0].category =="Traditionnel"){
-                    if( this.sorted_artpieces_traditional.length<5 && list_drawing_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_traditional.length<6 && list_drawing_os[i][0].status=='public'){
                       this.sorted_artpieces_traditional.push(list_drawing_os[i][0]);
                       this.sorted_artpieces_traditional_format.push("one-shot");
                     }
@@ -475,7 +475,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_drawing_os[i][0].category =="Digital"){
-                    if( this.sorted_artpieces_digital.length<5 && list_drawing_os[i][0].status=='public'){
+                    if( this.sorted_artpieces_digital.length<6 && list_drawing_os[i][0].status=='public'){
                       this.sorted_artpieces_digital.push(list_drawing_os[i][0]);
                       this.sorted_artpieces_digital_format.push("one-shot");
                     }
@@ -527,7 +527,7 @@ export class RecommendationsComponent implements OnInit {
                 if (list_writings_to_send[i].length>0){
                   
                   if(list_writings_to_send[i][0].category =="Illustrated novel"){
-                    if( this.sorted_artpieces_illustrated_novel.length<5 && list_writings_to_send[i][0].status=='public'){
+                    if( this.sorted_artpieces_illustrated_novel.length<6 && list_writings_to_send[i][0].status=='public'){
                       this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
@@ -535,7 +535,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_writings_to_send[i][0].category =="Roman"){
-                    if( this.sorted_artpieces_roman.length<5 && list_writings_to_send[i][0].status=='public'){
+                    if( this.sorted_artpieces_roman.length<6 && list_writings_to_send[i][0].status=='public'){
                       this.sorted_artpieces_roman.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
@@ -543,7 +543,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_writings_to_send[i][0].category =="Scenario"){
-                    if( this.sorted_artpieces_scenario.length<5 && list_writings_to_send[i][0].status=='public'){
+                    if( this.sorted_artpieces_scenario.length<6 && list_writings_to_send[i][0].status=='public'){
                        this.sorted_artpieces_scenario.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
@@ -551,7 +551,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_writings_to_send[i][0].category =="Article"){
-                    if( this.sorted_artpieces_article.length<5 && list_writings_to_send[i][0].status=='public'){
+                    if( this.sorted_artpieces_article.length<6 && list_writings_to_send[i][0].status=='public'){
                        this.sorted_artpieces_article.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){
@@ -559,7 +559,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                   }
                   if(list_writings_to_send[i][0].category =="Poetry"){
-                    if( this.sorted_artpieces_poetry.length<5 && list_writings_to_send[i][0].status=='public'){
+                    if( this.sorted_artpieces_poetry.length<6 && list_writings_to_send[i][0].status=='public'){
                        this.sorted_artpieces_poetry.push(list_writings_to_send[i][0]);
                     }
                     if(i==list_writings_to_send.length-1){

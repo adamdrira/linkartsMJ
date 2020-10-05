@@ -29,6 +29,8 @@ import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.
 import { AdPageComponent } from './ad-page/ad-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
+import { PopupReportComponent } from './popup-report/popup-report.component';
+import { AccountAboutComponent } from './account-about/account-about.component';
 
 const routes: Routes = [
 
@@ -49,6 +51,7 @@ const routes: Routes = [
   {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2},canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5},canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/archives', component:AccountComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 6}},
+  {path:'account/:pseudo/:id/my_account', component:AccountComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 7}},
 
   //main-searchbar-results
   {path:'main-research/:page/:text/:category', component:MainSearchbarResultsComponent, data: {section: 0},canActivate: [TempAuthGuard]},
@@ -82,10 +85,10 @@ const routes: Routes = [
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard,TempAuthGuard]},
   {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard,TempAuthGuard]},
 
-  {path:'login_invited_user', component:LoginInvitedUserComponent},
   
+  //signalement
+  {path:'report', component:PopupReportComponent, canActivate: [AuthGuard,TempAuthGuard]},
   
-
   //Contenu
   {path:'artwork', component:ArtworkComponent,canActivate: [TempAuthGuard]},
   {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent,canActivate: [TempAuthGuard]},
@@ -104,7 +107,7 @@ const routes: Routes = [
   {path:'login', component:LoginComponent,canActivate: [TempAuthGuard]},
   {path:'signup', component:SignupComponent,canActivate: [TempAuthGuard]},
   {path:'password_reset', component:PasswordResetComponent,canActivate: [TempAuthGuard]},
-  
+  {path:'login_invited_user', component:LoginInvitedUserComponent},
 
   //page not found
   {path:'page_not_found', component:PageNotFoundComponent},

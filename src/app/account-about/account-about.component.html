@@ -1,1 +1,18 @@
-<p>account-about works!</p>
+
+<div *ngIf="opened_category>=0 && visitor_mode_retrieved" class="albums-filter" >
+    <div >
+        <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_category== 0 }" (click)="open_catgory(0);">
+            <div>Présentation</div>
+        </button>
+    </div>
+    <div>
+        <button mat-raised-button   class="content-action text-center" [ngClass]="{ 'opened' : opened_category == 1 }" (click)="open_catgory(1);">
+            <div>Statistiques</div>
+        </button>
+    </div>
+</div>
+
+
+<div *ngIf="opened_category== 0">
+
+</div>

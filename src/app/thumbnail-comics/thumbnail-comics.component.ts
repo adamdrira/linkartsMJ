@@ -80,10 +80,11 @@ export class ThumbnailComicsComponent implements OnInit {
   date_upload_to_show: string;
   
 
-
+  marks_retrieved=false;
 
 
   ngOnInit() {
+    console.log(this.format)
     this.user_id = this.item.authorid
     this.file_name = this.item.name_coverpage
     this.title = this.item.title
@@ -93,14 +94,12 @@ export class ThumbnailComicsComponent implements OnInit {
     this.secondtag = this.item.secondtag
     this.thirdtag = this.item.thirdtag
     this.pagesnumber = this.item.pagesnumber
-    this.viewnumber = number_in_k_or_m(this.item.viewnumber)
-    this.likesnumber = number_in_k_or_m(this.item.likesnumber)
-    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber)
     this.chaptersnumber = this.item.chaptersnumber
     this.date_upload = this.item.createdAt
     this.bd_id = this.item.bd_id
-  
+    console.log(this.file_name)
 
+    
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -115,6 +114,13 @@ export class ThumbnailComicsComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
       });  
+
+      this.BdOneShotService.retrieve_bd_by_id(this.item.bd_id).subscribe(r=> {
+        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
+        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
+        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+        this.marks_retrieved=true;
+      }); 
     };
 
     if(this.format=="serie"){
@@ -122,7 +128,15 @@ export class ThumbnailComicsComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
+        
       });  
+
+      this.BdSerieService.retrieve_bd_by_id(this.item.bd_id).subscribe(r=> {
+        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
+        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
+        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+        this.marks_retrieved=true;
+      }); 
     };
 
     
@@ -212,6 +226,7 @@ export class ThumbnailComicsComponent implements OnInit {
   
   imageloaded=false;
   loaded(){
+    console.log("thumb laoded")
     this.imageloaded=true;
     this.send_loaded.emit(true);
   }

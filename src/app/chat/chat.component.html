@@ -104,7 +104,7 @@
                     </div>
                     <div class="show-notification-message" *ngIf="show_notification_message">
                         <div class="notification-container">
-                            <img style="height:18px" src="../../assets/img/bell_blue_black2.png">
+                            {{number_of_sections_unseen}}
                         </div>
                     </div>
                 </div>
@@ -291,6 +291,7 @@
                                     <div *ngIf="get_time_of_date(list_of_messages[list_of_messages.length- i].createdAt)!=get_time_of_date(list_of_messages[list_of_messages.length -1 - i].createdAt)
                                     && (list_of_messages[list_of_messages.length -1 - i].createdAt || !today_triggered)">
                                         {{show_date_of_timestamp(list_of_messages.length -1 - i)}}
+                                        
                                     </div>
                                 </div>
                                 
@@ -319,6 +320,9 @@
                                             
                                             <div class="date-option">
                                                 <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                                <span *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='seen'">
+                                                    , vu
+                                                </span>
                                             </div>
 
                                             <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
@@ -596,6 +600,9 @@
                                             
                                             <div class="date-option">
                                                 <span>{{list_of_messages_date[list_of_messages.length -1 - i]}}</span>
+                                                <span *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='seen'">
+                                                    , vu
+                                                </span>
                                             </div>
 
                                             <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">

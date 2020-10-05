@@ -117,4 +117,11 @@ export class Profile_Edition_Service {
     }));
   }
 
+
+  get_pseudos_who_match(pseudo,compteur){
+    return this.httpClient.post('routes/get_pseudos_who_match',{pseudo:pseudo},{withCredentials:true} ).pipe(map((information)=>{
+      return [information,compteur];
+    }));
+  }
+
 }

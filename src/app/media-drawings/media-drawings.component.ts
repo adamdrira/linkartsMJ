@@ -74,7 +74,7 @@ export class MediaDrawingsComponent implements OnInit {
 
 
   get_artbook_size() {
-
+    
     return $('.container-homepage').width()/this.artbooks_per_line;
 
   }
@@ -83,20 +83,12 @@ export class MediaDrawingsComponent implements OnInit {
   get_artbooks_per_line() {
     var width = window.innerWidth;
 
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200) {
-      return 4;
-    }
-    else if( width > 1000) {
-      return 3;
-    }
-    else if( width > 700) {
-      return 2;
+    var n = Math.round(width/300);
+    if( width < 660 ) {
+      return 1;
     }
     else {
-      return 1;
+      return n;
     }
   }
 

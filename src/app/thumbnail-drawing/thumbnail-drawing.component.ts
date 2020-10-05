@@ -79,7 +79,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   tagsSplit: string;
   showDrawingDetails:boolean = false;
   
-
+  marks_retrieved=false;
   
 
   ngOnInit(): void {
@@ -93,13 +93,11 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;
     this.pagesnumber = this.item.pagesnumber;
-    this.viewnumber = number_in_k_or_m(this.item.viewnumber)
-    this.likesnumber = number_in_k_or_m(this.item.likesnumber)
-    this.lovesnumber = number_in_k_or_m(this.item.lovesnumber)
     this.date_upload = this.item.createdAt;
     this.drawing_id = this.item.drawing_id;
     this.thumbnail_color = this.item.thumbnail_color;
  
+
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -114,14 +112,28 @@ export class ThumbnailDrawingComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
       });  
+
+      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.drawing_id).subscribe(r=> {
+        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
+        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
+        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+        this.marks_retrieved=true;
+      }); 
     };
 
     if(this.format=="artbook"){
-      this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+      this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
       });  
+
+      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.drawing_id).subscribe(r=> {
+        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
+        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
+        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+        this.marks_retrieved=true;
+      }); 
     };
 
     this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
@@ -176,7 +188,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   drawings_per_line() {
     var width = $('.container-drawings').width();
 
-    var n = Math.round(width/330);
+    var n = Math.round(width/300);
     if( width < 660 ) {
       return 1;
     }

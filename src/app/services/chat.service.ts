@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap, map, delay } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
-import {Subject,Observable, Observer, BehaviorSubject} from 'rxjs';
 import {WebSocketService} from './websocket.service';
 import {Profile_Edition_Service} from './profile_edition.service';
-
+import {Subject,Observable, Observer,EMPTY,BehaviorSubject} from 'rxjs';
+import { webSocket,WebSocketSubject } from 'rxjs/webSocket';
 
 
 export interface Message{
@@ -17,9 +17,15 @@ export interface Message{
 
 
 export class ChatService {
+
+  private messagesSubject$ = new Subject();
+  private socket$: WebSocketSubject<any>;
+
  public messages:Subject<Message>;
  private chatLisnerSubject: BehaviorSubject<any>;
  public chatLisner: Observable<any>;
+
+ id:number;
 
   constructor(private wsService: WebSocketService,private httpClient: HttpClient,private Profile_Edition_Service:Profile_Edition_Service) {
 
@@ -30,9 +36,20 @@ export class ChatService {
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               //this.wsService.check_state();
+              console.log(response)
               let data = JSON.parse(response.data);
               return data
           }))
+
+
+
+          /*this.messages=<WebSocketSubject<Message>>this.connect(`ws://localhost:4600/path?id=${l[0].id}`)
+          .pipe(map((response:MessageEvent):Message=>{
+              //this.wsService.check_state();
+              console.log(response.data)
+              let data = JSON.parse(response.data);
+              return data
+          }))*/
         }
         
       });
@@ -42,6 +59,46 @@ export class ChatService {
   public close() {
     this.wsService.close();
   }
+
+ reconnect(){
+    setInterval(() => {
+      this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+        if(l[0] && l[0].status && l[0].status!="visitor"){
+          this.messages=<Subject<Message>>this.wsService
+          .connect(`ws://localhost:4600/path?id=${l[0].id}`)
+          .pipe(map((response:MessageEvent):Message=>{
+              //this.wsService.check_state();
+              //console.log(response)
+              let data = JSON.parse(response.data);
+              return data
+          }))
+        }
+        
+      });
+      },5000);
+  }
+
+  /*public connect(url) {
+ 
+    if (!this.socket$ || this.socket$.closed) {
+      this.socket$ = this.getNewWebSocket(url);
+      console.log("connected 2 to " + url);
+      const messages = this.socket$.pipe(
+        tap({
+          error: error => console.log(error),
+        }), catchError(_ => EMPTY));
+      this.messagesSubject$.next(messages);
+    }
+    return this.socket$;
+  }
+  
+  private getNewWebSocket(url) {
+    return webSocket(url);
+  }
+  sendMessage(msg: any) {
+    this.socket$.next(msg);
+  }*/
+    
 
 
 public get chatLisnerValue(): any {

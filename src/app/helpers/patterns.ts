@@ -7,11 +7,11 @@ let special_characters = "\\\\,\;\:\!\?\.\/\§\%\^\$\£\*\&\~\#\{\}\'\"\(\)\\[\\
 export function pattern(type: string) {
     
     if( type == "mail" ) {
-        return "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
+        return "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
     }
     //Minimum : une minuscule, une majuscule, un chiffre et un caractère spécial.
     if( type == "password" ) {
-        return "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&_])[A-Za-z\d$@$!%*?&_].{7,}";
+        return "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z\d$@$!%*?&_].{7,}";
     }
     //Doit commencer par une lettre (avec accents), doit finir par une lettre.
     //Peut contenir au milieu un espace ou un tiret (max 1).
@@ -28,9 +28,15 @@ export function pattern(type: string) {
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace + PAS D'ESPACES
     if( type == "text_without_spaces" ) {
-        return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+(?<![ ])$";
+        return "^[http]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
     }
 
+    if( type == "siret" ) {
+        return "^[0-9]{14}$";
+    }
+    if(type == "share") {
+        return "^[0-9](\.[0-9]+)?$";
+    }
     //localisation
     //Commence par lettre ou accent
     // Au milieu ", -" sont autorisés

@@ -101,23 +101,27 @@ export class MediaComicsComponent implements OnInit {
   update_lists(number){
     
     if( number== 1 ) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
       //$(".thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","none");
     }
     else if( number== 2) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","none");
+      $(".thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
     }
     else if( number== 3) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","none");
+      $(".thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
     }
     else if( number== 4 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(5)").css("display","none");
+      $(".thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
     }
     else if( number== 5) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
+      $(".thumbnail-component-container:nth-of-type(6)").css("display","none");
+    }
+    else if( number== 6) {
+      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.list_of_contents_sorted=true;
   }
