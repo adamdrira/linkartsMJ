@@ -854,7 +854,7 @@
     //font-weight: bold;
   }
   ::ng-deep .VISIBLE-ON-SMALL-SCREEN-1 .SumoSelect > .CaptionCont > span {
-    padding-right:50px;
+    padding-right:35px;
     font-size: 13px;
     color:#53627d;
     padding-left: 5px;
@@ -1169,7 +1169,7 @@ display:flex;
         margin-right: 10px;      
       }
       .navbar-l1-searchbar-container {
-        width: calc(100% - 560px);
+        width: calc(100% - 600px);
       }
       .navbar-l1-searchbar-container .left-container {
         width:140px !important;
@@ -1287,6 +1287,7 @@ display:flex;
     .navbar-l1-icons-container .options {
       margin-left:0px !important;
     }
+
     
     ::ng-deep .connected-user {
       .profile-container {
@@ -1324,7 +1325,16 @@ display:flex;
         width: 100vw;
         border-radius:0px !important;
       }
-
+    }
+    .researches-propositions {
+      position: fixed !important;
+      top: 61px !important;
+      left: 0px !important;
+      width: 100vw !important;
+      right: unset !important;
+      border-left: unset !important;
+      border-right: unset !important;
+      border-radius: 0px !important;
     }
   }
 
@@ -1334,3 +1344,38 @@ display:flex;
     }
   }
   
+
+  //DROPDOWN STYLE
+  ::ng-deep {
+    .SumoSelect > .optWrapper.isFloating {
+      position:absolute !important;
+      bottom:unset !important;
+      height:unset !important;
+    }
+    .mat-menu-panel {
+      margin-top:3px !important;
+      border-radius: 12px 10px 12px 12px !important;
+      .mat-menu-content {
+        padding-top:unset !important;
+        padding-bottom:unset !important;
+      }
+      button.mat-menu-item {
+        display: flex !important;
+        font-size:12px !important;
+        line-height: 38px !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        padding: 0px 10px 0 10px !important;
+        color: rgb(32,56,100) !important;
+        transition: all 200ms !important;
+        outline:none !important;
+      }
+      button.mat-menu-item mat-icon {
+        margin: auto 10px auto 0px !important;
+        width:unset !important;
+        height:unset !important;
+        font-size:21px !important;
+        color:rgb(32,56,100) !important;
+      }
+    }
+  }
