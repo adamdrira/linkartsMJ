@@ -228,7 +228,6 @@ export class AddWritingComponent implements OnInit {
                   this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
                 }) 
               }); 
-
             })
           })
          
