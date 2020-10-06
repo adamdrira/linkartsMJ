@@ -21,7 +21,7 @@
         </div>
         <span style="margin-left: 10px; font-weight: bold; color:#203864;">LinkArts</span>-->
         
-      <div class="navbar-l1-linkarts-logo HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search">
+      <div class="navbar-l1-linkarts-logo HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search" [ngClass]="{'invisible': !show_selector }">
         <div class="navbar2 flex-md-nowrap p-0">
           <div class="category" [ngClass]="{'opened': navbar.active_section==0 }" onclick="location.href='/'">
             <div style="margin-right: 6px;">
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="VISIBLE-ON-SMALL-SCREEN-1" hidden="activated_search">
+      <div class="VISIBLE-ON-SMALL-SCREEN-1" hidden="activated_search" [ngClass]="{'invisible': !show_selector }">
         <select name="somename" class="NavbarSelectBox2" style="height: 100%;">
           <option value="0">
             Accueil
@@ -478,15 +478,15 @@
 
 
 
-        <!--<div class="icon-messenger-invisible">
+        <div class="icon-messenger-invisible">
         </div>
         <div class="icon-bell-invisible">
-        </div>-->
+        </div>
         <!--icon part-->
         <div class="navbar-l1-icons-container" style="margin: auto 10px auto auto;" *ngIf="type_of_profile=='account' && !activated_search">
 
           
-          <div #chat class="icon-container">
+          <div #chat class="icon-container" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}">
             <div class="icon icon-messenger" (click)="open_messages()">
             </div>
             <ng-container *ngIf="number_of_unseen_messages>0">
@@ -794,7 +794,7 @@
             <!-- ---------------------------NOTIFICATIONS----------------------------------->
              <!-- ---------------------------NOTIFICATIONS----------------------------------->
 
-            <div #notifications class="icon-container">
+          <div #notifications class="icon-container" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}">
             <div class="icon icon-bell" (click)="open_notifications()">
             </div>
             <ng-container *ngIf="number_of_unchecked_notifications>0">
@@ -838,9 +838,25 @@
 
                 
                 <div *ngFor="let notif of final_list_of_notifications_to_show.slice(0,index_of_notifications_to_show),let i=index" class="subscriber-card" 
-                [ngClass]="{'not-seen':list_of_notifications[i].status!='checked','seen':list_of_notifications[i].status=='checked'}">
+                [ngClass]="{'really-invisible':!final_list_of_notifications_to_show[i],'not-seen':list_of_notifications[i].status!='checked','seen':list_of_notifications[i].status=='checked'}">
+                
 
                   <div class="author-container" style="height:100%;" *ngIf="notif">
+                    <!-- ---------------------------group_creation----------------------------------->
+                    <!-- ---------------------------group_creation----------------------------------->
+                      <ng-container *ngIf="notif.type=='group_creation'">
+                        
+                        <a  href='/account/{{pseudo}}/{{user_id}}/my_account'>
+                          
+                          <div class="left-container">
+                            <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
+                          </div>
+                          <div class="right-container">
+                            <span *ngIf="user_id!=notif.id_user"><b>{{notif.id_user_name}}</b> a créé le groupe <b>{{notif.publication_name}}</b> et attend votre confirmation</span>
+                            <span *ngIf="user_id==notif.id_user">Vous avez une demande de confirmation en attente concernant le groupe <b>{{notif.publication_name}}</b></span>
+                          </div>
+                        </a>
+                      </ng-container>
                     <!-- ---------------------------Publication add----------------------------------->
                     <!-- ---------------------------Publication add----------------------------------->
                       <ng-container *ngIf="notif.type=='add_publication'">
@@ -848,7 +864,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                                   <span><b>{{notif.id_user_name}}</b> a publiée une bande dessinée : <b>{{notif.publication_name}}</b></span>
@@ -860,7 +876,7 @@
                           <ng-container *ngIf="notif.format=='one-shot'">
                             <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                               <div class="left-container">
-                                  <img [src]="list_of_friends_profile_pictures[0]">
+                                  <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                               </div>
                               <div class="right-container">
                                     <span><b>{{notif.id_user_name}}</b> a publié un artbook : <b>{{notif.publication_name}}</b></span>
@@ -870,7 +886,7 @@
                           <ng-container *ngIf="notif.format!='one-shot'">
                             <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                               <div class="left-container">
-                                  <img [src]="list_of_friends_profile_pictures[0]">
+                                  <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                               </div>
                               <div class="right-container">
                                     <span><b>{{notif.id_user_name}}</b> a publié un artbook : <b>{{notif.publication_name}}</b></span>
@@ -882,7 +898,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                                   <span><b>{{notif.id_user_name}}</b> a publié un écrit : <b>{{notif.publication_name}}</b></span>
@@ -892,7 +908,12 @@
 
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a  href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
-                            <span><b>{{notif.id_user_name}}</b> a publié une annonce : <b>{{notif.publication_name}}</b></span>
+                            <div class="left-container">
+                              <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
+                            </div>
+                            <div class="right-container">
+                              <span><b>{{notif.id_user_name}}</b> a publié une annonce : <b>{{notif.publication_name}}</b></span>
+                            </div>
                           </a>
                         </ng-container>
                       </ng-container>
@@ -904,7 +925,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                                   <span><b>{{notif.id_user_name}}</b> a ajouté un chapitre à l'œuvre : <b>{{notif.publication_name}}</b></span>
@@ -922,7 +943,7 @@
                           <ng-container *ngIf="notif.format=='serie'">
                             <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
                               <div class="left-container">
-                                  <img [src]="list_of_friends_profile_pictures[0]">
+                                  <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                               </div>
                               <div class="right-container">
                                 <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -951,7 +972,7 @@
                           <ng-container *ngIf="notif.format!='serie'">
                             <a href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                               <div class="left-container">
-                                  <img [src]="list_of_friends_profile_pictures[0]">
+                                  <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                               </div>
                               <div class="right-container">
                                 <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -982,7 +1003,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1012,7 +1033,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1048,7 +1069,7 @@
 
                           <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container"><ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
                               <span ><b>{{notif.id_user_name}}</b> et <b>{{dictionnary_of_similar_notifications[i][0].id_user_name}}</b> ont adoré votre œuvre : <b>{{notif.publication_name}}</b>, chapitre {{notif.chapter_number}}</span>
@@ -1074,7 +1095,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1104,7 +1125,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1134,7 +1155,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1170,7 +1191,7 @@
                           
                           <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1198,7 +1219,7 @@
                           
                           <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1228,7 +1249,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1258,7 +1279,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1288,7 +1309,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1323,7 +1344,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1350,7 +1371,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1380,7 +1401,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1410,7 +1431,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1440,7 +1461,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1475,7 +1496,7 @@
                         <ng-container *ngIf="notif.publication_category=='comic'">
                           <a *ngIf="notif.format=='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}/{{notif.chapter_number}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1502,7 +1523,7 @@
                           </a>
                           <a *ngIf="notif.format!='serie'" href='/artwork-comic/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1532,7 +1553,7 @@
                         <ng-container *ngIf="notif.publication_category=='drawing'">
                           <a href='/artwork-drawing/{{notif.format}}/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1562,7 +1583,7 @@
                         <ng-container *ngIf="notif.publication_category=='writing'">
                           <a href='/artwork-writing/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">
@@ -1592,7 +1613,7 @@
                         <ng-container *ngIf="notif.publication_category=='ad'">
                           <a href='/ad-page/{{notif.publication_name}}/{{notif.publication_id}}'>
                             <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[0]">
+                                <img [src]="list_of_notifications_profile_pictures[i]"  (load)="load_notification_pp(i)" [ngClass]="{'invisible':!notification_loaded[i]}">
                             </div>
                             <div class="right-container">                               
                               <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==1">

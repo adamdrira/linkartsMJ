@@ -9,19 +9,22 @@
   .VISIBLE-ON-SMALL-SCREEN-1 {
     visibility:hidden;
     display: none;
+    margin-left: 10px;
+    background: white;
+    border-radius: 30px;
   }
   .navbar-l1-searchbar-container-activator {
     display:none;
     margin:auto auto auto 0px;
-    border: 1px solid #cbcbcb;
+    //border: 1px solid #cbcbcb;
     border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+    //background: #ffffff;
+    //box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
   }
   .navbar-l1-searchbar-container-activator button {
-    width: 30px;
-    height: 30px;
-    outline: none;
+    width: 33px;
+    height: 33px;
+    //outline: none;
   }
   .SMALL-SCREEN-OPTIONS {
     display:none;
@@ -112,7 +115,7 @@
     background:white;
     display:flex;
     margin: auto;
-    border: 1px solid #cbcbcb;
+    //border: 1px solid #cbcbcb;
     box-shadow: 0px 2px 0px -2px rgba(0, 0, 0, 0.2), 0px 0px 2px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px 0px rgba(0, 0, 0, 0.12);
     display: flex;
   }
@@ -416,7 +419,8 @@
 
   .profile-picture {
     margin: auto;
-    background: #53627d;
+    background: rgb(32,56,100);
+    border-radius: 50%;
     position: relative;
     display: flex;
     width:100%;
@@ -425,8 +429,8 @@
     align-items: center;
     position: relative;
     box-sizing: border-box;
-    border-radius: 50%;
-    border:2px solid rgb(32,56,100);
+    
+    //border:2px solid rgb(32,56,100);
   }
 
   .delete-background{
@@ -519,6 +523,8 @@
 
 
    .navbar .icon-container {
+    background: rgb(32,56,100);
+    border-radius: 50%;
     position: relative;
     display: flex;
     margin-left: 10px;
@@ -684,10 +690,10 @@
 
  .navbar-l1-icons-container .options {
     margin-left: 10px;
-    border: 1px solid #cbcbcb;
+    //border: 1px solid #cbcbcb;
     border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+    //background: #ffffff;
+    //box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
  }
 
  .optionsMenu {
@@ -750,7 +756,7 @@
     width:unset !important;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     border-radius: 50px;
-    margin-left: 10px;
+    //margin-left: 10px;
     font-weight: bold;
   }
   ::ng-deep .VISIBLE-ON-SMALL-SCREEN-1 .SumoSelect * {
@@ -886,7 +892,10 @@
 
   .invisible{
     visibility:hidden;
-    display:none;
+  }
+
+  .really-invisible{
+    display:none !important;
   }
 
 
@@ -1004,7 +1013,6 @@
   border-radius:8px;
   overflow:hidden;
   margin: 12px 5px;
-  transition: all 200ms;
 }
 
 .category-research{

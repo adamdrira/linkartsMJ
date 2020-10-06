@@ -96,6 +96,8 @@ export class NavbarLinkartsComponent implements OnInit {
   using_chat_retrieved=false;
   check_chat_service=false;
   check_notifications_from_service=false;
+  list_of_notifications_profile_pictures=[];
+  notifications_pictures_retrieved=false;
   list_of_notifications=[];
   list_of_messages=[];
   number_of_unseen_messages:number;
@@ -360,6 +362,10 @@ export class NavbarLinkartsComponent implements OnInit {
   pp_loaded(){
     this.pp_is_loaded=true;
   }
+
+  load_notification_pp(i){
+    this.notification_loaded[i]=true;
+  }
  
   sort_notifications(msg){
     console.log("sorting notif")
@@ -435,16 +441,34 @@ export class NavbarLinkartsComponent implements OnInit {
     this.dictionnary_of_similar_notifications[0]=[];
     this.final_list_of_notifications_to_show[0]=this.list_of_notifications[0];
     let number_of_empties=0;
-    for(let i=1;i<this.list_of_notifications.length;i++){
-      this.dictionnary_of_similar_notifications[i]=[];
-      let similar_found=false;
-      for(let j=0;j<i;j++){
-        if(this.list_of_notifications[i].type=='comment_like' || this.list_of_notifications[i].type=='comment_answer_like' || this.list_of_notifications[i].type=='comment_answer'){
-          if(this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
+    if(this.list_of_notifications.length>1){
+      for(let i=1;i<this.list_of_notifications.length;i++){
+        this.dictionnary_of_similar_notifications[i]=[];
+        let similar_found=false;
+        for(let j=0;j<i;j++){
+          if(this.list_of_notifications[i].type=='comment_like' || this.list_of_notifications[i].type=='comment_answer_like' || this.list_of_notifications[i].type=='comment_answer'){
+            if(this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
+              this.list_of_notifications[i].publication_id==this.list_of_notifications[j].publication_id && 
+              this.list_of_notifications[i].type==this.list_of_notifications[j].type && 
+              this.list_of_notifications[i].is_comment_answer==this.list_of_notifications[j].is_comment_answer && 
+              this.list_of_notifications[i].comment_id==this.list_of_notifications[j].comment_id && 
+              this.list_of_notifications[i].format==this.list_of_notifications[j].format && 
+              this.list_of_notifications[i].chapter_number==this.list_of_notifications[j].chapter_number){
+                if(!similar_found && this.list_of_notifications[i].id_user!=this.list_of_notifications[j].id_user){
+                  this.dictionnary_of_similar_notifications[j].push(this.list_of_notifications[i]);
+                  similar_found=true;
+                }
+                if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
+                  //console.log("similar user notif " + i + ' et ' + j)
+                  similar_found=true;
+                }
+                
+              }
+          }
+          else if( 
+            this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
             this.list_of_notifications[i].publication_id==this.list_of_notifications[j].publication_id && 
             this.list_of_notifications[i].type==this.list_of_notifications[j].type && 
-            this.list_of_notifications[i].is_comment_answer==this.list_of_notifications[j].is_comment_answer && 
-            this.list_of_notifications[i].comment_id==this.list_of_notifications[j].comment_id && 
             this.list_of_notifications[i].format==this.list_of_notifications[j].format && 
             this.list_of_notifications[i].chapter_number==this.list_of_notifications[j].chapter_number){
               if(!similar_found && this.list_of_notifications[i].id_user!=this.list_of_notifications[j].id_user){
@@ -452,38 +476,41 @@ export class NavbarLinkartsComponent implements OnInit {
                 similar_found=true;
               }
               if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
-                console.log("similar user notif " + i + ' et ' + j)
+                //console.log("similar user notif " + i + ' et ' + j)
                 similar_found=true;
               }
-              
-            }
+          }
         }
-        else if( 
-          this.list_of_notifications[i].publication_category==this.list_of_notifications[j].publication_category && 
-          this.list_of_notifications[i].publication_id==this.list_of_notifications[j].publication_id && 
-          this.list_of_notifications[i].type==this.list_of_notifications[j].type && 
-          this.list_of_notifications[i].format==this.list_of_notifications[j].format && 
-          this.list_of_notifications[i].chapter_number==this.list_of_notifications[j].chapter_number){
-            if(!similar_found && this.list_of_notifications[i].id_user!=this.list_of_notifications[j].id_user){
-              this.dictionnary_of_similar_notifications[j].push(this.list_of_notifications[i]);
-              similar_found=true;
-            }
-            if(!similar_found && this.list_of_notifications[i].id_user==this.list_of_notifications[j].id_user){
-              console.log("similar user notif " + i + ' et ' + j)
-              similar_found=true;
-            }
+        if(!similar_found ){
+            this.final_list_of_notifications_to_show[i]=this.list_of_notifications[i];
         }
-      }
-      if(!similar_found ){
-          this.final_list_of_notifications_to_show[i]=this.list_of_notifications[i];
-      }
-      else if(i<20){
-        number_of_empties+=1
+        else if(i<20){
+          number_of_empties+=1
+        }
       }
     }
     this.index_of_notifications_to_show=15+number_of_empties;
     this.data_retrieved=true;
     this.display_number_of_unchecked_notifications();
+    let compteur_pp=0;
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_notifications[i].id_user).subscribe(t=> {
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_notifications_profile_pictures[i] = SafeURL;
+          compteur_pp++;
+          if(compteur_pp==this.list_of_notifications.length){
+            this.index_of_notifications_to_show=15+number_of_empties;
+            this.notifications_pictures_retrieved=true;
+            this.display_number_of_unchecked_notifications();
+          }
+        
+      })
+    }
+    
+    
+    
+    
     console.log(this.final_list_of_notifications_to_show)
     console.log(this.dictionnary_of_similar_notifications)
     console.log(this.list_of_notifications)
@@ -523,6 +550,7 @@ export class NavbarLinkartsComponent implements OnInit {
   format="unknown"
   target_id=0;
   pp_is_loaded=false;
+  notification_loaded=[];
   most_researched_propositions:any[]=[];
   list_of_first_propositions_history:any[]=[];
   list_of_last_propositions_history:any[]=[];
@@ -1861,7 +1889,7 @@ change_message_status(event){
   }
 
 
-
+ 
 
 
   
