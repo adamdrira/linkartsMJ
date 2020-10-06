@@ -15,7 +15,7 @@
 
 .col-book {
   position: relative;
-  width: 220px;
+  width: 200px;
   margin:40px auto 30px auto;
   flex-basis: 0;
   flex-grow: 1;
@@ -32,9 +32,12 @@
 .swiper-slide {
   //backface-visibility: visible;
 }
+.swiper-wrapper {
+  height:267px !important;
+}
 
 .col-book .empty {
-  width:220px !important;
+  width:200px !important;
   height:1px !important;
 }
 
