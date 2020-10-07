@@ -80,7 +80,7 @@ a {
    .title-container span.title {
     font-weight: bold;
     line-height: 22px;
-    font-size: 16px;
+    font-size: 14px;
     -webkit-box-orient: vertical;
     overflow: hidden;
     display: -webkit-box;
@@ -118,7 +118,8 @@ a {
     margin: 0px 10px auto 5px;
     }
     .author-container .right-container span.author-name {
-    font-size: 13px;
+      font-size: 12px;
+      font-weight: 700;
     line-height: 18px;
     font-weight:bold;
     white-space: nowrap;
@@ -127,7 +128,8 @@ a {
     }
     
     .author-container .right-container span.author-description {
-      font-size: 13px;
+      font-size: 11px;
+    font-weight: 700;
       line-height: 18px;
       white-space: nowrap;
       overflow: hidden !important;
@@ -141,10 +143,10 @@ a {
     height: 22px;
     color: #3b3b3b;
     display: flex;
-    margin-top: 10px;
-    margin-bottom: 7px;
+    margin-top: 5px;
+    margin-bottom: 0px;
     /*font-size: 1rem;*/
-    font-size: 13px;
+    font-size: 12px;
     justify-content: space-between;
   }
   
@@ -154,7 +156,7 @@ a {
     border-radius: 16px;
     align-items: center;
     min-width: 52px;
-    border: solid 2px #ffffff;
+    border: solid 1px #ffffff;
     color:white;
   }
   
@@ -189,19 +191,19 @@ a {
   .stats-container .figure-container.views mat-icon {
     height:unset;
     width:unset;
-    font-size: 16px;
+    font-size: 14px;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.likes mat-icon {
     height:unset;
     width:unset;
-    font-size: 15px;
+    font-size: 14px;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.loves mat-icon {
     height:unset;
     width:unset;
-    font-size: 15px;
+    font-size: 14px;
     margin: 2px auto auto 4px;
   }
   
@@ -227,7 +229,7 @@ a {
 }
 
 .tag-container{
-  border: solid 2px white;
+  border: solid 1px white;
   border-radius: 20px;
   padding: 0px 10px 2px 10px;
   display: flex;
@@ -250,7 +252,7 @@ a {
 }
 
 .date-container span {
-  font-size:11px;
+  font-size:10px;
 }
 
 .artbook {
