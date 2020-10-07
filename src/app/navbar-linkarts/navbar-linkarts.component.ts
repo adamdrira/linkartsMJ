@@ -233,15 +233,6 @@ export class NavbarLinkartsComponent implements OnInit {
         clearInterval(chatinterval);
         this.cd.detectChanges();
       }
-      /*else if(this.chatService.messages && this.navbar.get_using_chat()){
-        console.log("else if using chat")
-        this.using_chat_retrieved=true;
-        this.using_chat=true;
-        this.check_notifications_from_service=true;
-        this.check_notifications_from_service_func();
-        clearInterval(chatinterval);
-        this.cd.detectChanges();
-      }*/
     },50)
 
     console.log("check_notifications_from_service_func");
@@ -1889,7 +1880,7 @@ change_message_status(event){
   }
 
 
- 
+  
 
 
   

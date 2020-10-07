@@ -121,7 +121,6 @@ export class HomeLinkartsComponent implements OnInit {
   
   display_selector(){
     let width = $(".container-fluid").width();
-    console.log(width);
     
 
     if( width <= 825) {

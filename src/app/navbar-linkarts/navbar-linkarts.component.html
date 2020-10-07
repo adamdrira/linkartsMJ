@@ -26,24 +26,24 @@
           <div class="category" [ngClass]="{'opened': navbar.active_section==0 }" onclick="location.href='/'">
             <div style="margin-right: 6px;">
                 <div class=" icon-home"  [ngClass]="{'icon-clicked': navbar.active_section==0 }" style=" margin: auto auto;
-                height: 16px;
-                width: 16px;">
+                height: 14px;
+                width: 14px;">
                 </div>
             </div>ACCUEIL
           </div>
           <div class="category" [ngClass]="{'opened': navbar.active_section==1 }" onclick="location.href='/linkcollab'">
             <div style="margin-right: 6px;">
               <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }" style=" margin: auto auto;
-              height: 16px;
-              width: 16px;">
+              height: 14px;
+              width: 14px;">
               </div>
             </div>COLLABORATIONS
           </div>
           <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
             <div style="margin-right: 6px;">
               <div class="icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
-              height: 16px;
-              width: 16px;">
+              height: 14px;
+              width: 14px;">
               </div>
             </div>LIBRAIRIE
           </div>
@@ -51,8 +51,8 @@
         </div>
       </div>
 
-      <div class="VISIBLE-ON-SMALL-SCREEN-1" hidden="activated_search" [ngClass]="{'invisible': !show_selector }">
-        <select name="somename" class="NavbarSelectBox2" style="height: 100%;">
+      <div class="VISIBLE-ON-SMALL-SCREEN-1"  [ngClass]="{'invisible': activated_search }">
+        <select name="somename" class="NavbarSelectBox2" style="height: 100%;" [ngClass]="{'really-invisible': !show_selector }">
           <option value="0">
             Accueil
           </option>
@@ -525,7 +525,7 @@
                    </div>
                   <div *ngIf="list_of_friends_retrieved">
 
-                    <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'invisible':!show_chat_messages}">
+                    <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index"  class="subscriber-card" [ngClass]="{'invisible':!show_chat_messages}">
                         <a href="/chat/{{get_chat_url(i)}}" style="width:100%;height:100%;">
                         <div class="author-container"  style="height:100%;">
                             <div class="left-container">
@@ -1674,7 +1674,7 @@
               <div class="icon2 icon-edit">
               </div>
             </div>
-            <span style="margin-left: 5px;">S'inscrire</span>
+            <span style="margin-left: 5px;    font-size: 12px;    font-weight: 500;">S'inscrire</span>
           </div>
           
           
@@ -1688,11 +1688,11 @@
 
               <div class="connexion" *ngIf="type_of_profile=='account'" (click)="logout()">
                   <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
-                  <span style="margin-left: 5px; font-weight: 600;" >Se déconnecter</span>
+                  <span style="margin-left: 5px; font-weight: 500;font-size: 12px;" >Se déconnecter</span>
               </div>
               <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
                 <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
-                <span style="margin-left: 5px; font-weight: 600;" >Se connecter</span>
+                <span style="margin-left: 5px; font-weight: 500;font-size: 12px;" >Se connecter</span>
               </div>
 
               <!--<button (click)="login()" *ngIf="type_of_profile=='visitor'"  mat-raised-button  style="height: 42px;  background-color: #203865 !important; border-radius: 30px;" tabIndex="-1" class="position style1">
