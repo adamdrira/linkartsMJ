@@ -107,6 +107,7 @@ export class NavbarLinkartsComponent implements OnInit {
   show_chat_messages=false;
 
   @ViewChild('input') input:ElementRef;
+  @ViewChild('searchicon') searchicon:ElementRef;
   @ViewChild('notifications') notifications:ElementRef;
   @ViewChild('chat') chat:ElementRef;
   @ViewChild('propositions') propositions:ElementRef;
@@ -152,7 +153,7 @@ export class NavbarLinkartsComponent implements OnInit {
       this.sort_friends_list();
     }
     if(this.focus_activated){
-      if(!this.input.nativeElement.contains(event.target) && !this.propositions.nativeElement.contains(event.target) ) {
+      if(!this.input.nativeElement.contains(event.target) && !this.searchicon.nativeElement.contains(event.target) && !this.propositions.nativeElement.contains(event.target) ) {
         this.focus_activated=false;
         this.show_researches_propositions=false;
         this.cancel_research();
@@ -1094,20 +1095,100 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
 
+
+  go_to_section(i:number) {
+    if(i==0) {
+      this.router.navigate(["/"]);
+    }
+    else if(i==1) {
+      this.router.navigate(["/linkcollab"]);
+    }
+    else {
+      this.router.navigate(["/"]);
+    }
+  }
+
+  go_to_page(s:string) {
+    this.router.navigate([s]);
+  }
+
+  open_research_style_and_tags(i: number) {
+    this.router.navigate([`/main-research-style-and-tag/1/${this.list_of_real_categories[i]}/item/all`]);
+  }
+  open_main_research(s: string) {
+    this.router.navigate([`/main-research/1/${s}/All`]);
+  }
+  open_account(i: number) {
+    this.router.navigate([`/account/${this.list_of_last_propositions[i].nickname}/${this.list_of_last_propositions[i].id}`]);
+  }
+  open_history_account(i: number) {
+    this.router.navigate([`/account/${this.list_of_last_propositions_history[i].nickname}/${this.list_of_last_propositions_history[i].id}`]);
+  }
+  open_ad_last_propositions(i: number) {
+    this.router.navigate([`/ad-page/${this.list_of_last_propositions[i].title}/${this.list_of_last_propositions[i].id}`]);
+  }
+  open_ad_last_propositions_history(i: number) {
+    this.router.navigate([`/ad-page/${this.list_of_last_propositions_history[i].title}/${this.list_of_last_propositions_history[i].id}`]);
+  }
+  open_artwork_last_proposition(s:any, i:number) {
+    if(s.publication_category.toLowerCase()=="writing") {
+      this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions[i].title}/${s.target_id}`]);
+    }
+    else {
+      this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${this.list_of_last_propositions[i].title}/${s.target_id}`]);
+    }
+  }
+  open_artwork_last_proposition_history(s:any, i:number) {
+    if(s.publication_category.toLowerCase()=="writing") {
+      this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions_history[i].title}/${s.target_id}`]);
+    }
+    else {
+      this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${s.format}/${this.list_of_last_propositions_history[i].title}/${s.target_id}`]);
+    }
+  }
+  open_chat_2(i:number) {
+    this.router.navigate([`/chat/${this.get_chat_url(i)}`]);
+  }
+  open_chat_main() {
+    this.router.navigate([`/chat`]);
+  }
+  open_my_profile() {
+    this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+  }
+  open_my_account() {
+    this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
+  }
+  open_comic(notif:any) {
+    this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  open_comic_chapter(notif:any) {
+    this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}/${notif.chapter_number}`]);
+  }
+  open_drawing(notif:any) {
+    this.router.navigate([`/artwork-drawing/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  open_writing(notif:any) {
+    this.router.navigate([`/artwork-writing/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  open_ad(notif:any) {
+    this.router.navigate([`/ad-page/${notif.publication_name}/${notif.publication_id}`]);
+  }
+
+
   keydown_researches_propositions(event){
-    if(event.key=="Enter"){
+    if(event.key=="Enter") {
       this.click_on_research();
-      this.input.nativeElement.blur();
       //get_more_propositions (add to history)
-      
     }
   }
 
   click_on_research(){
+    this.input.nativeElement.blur();
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,"researched",0,0,0,"unknown","unknown","unknown","unknown").subscribe(r=>{
       console.log(r);
-      this.location.go(`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`);
-      location.reload();
+      //this.location.go(`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`);
+      //location.reload();
+      this.router.navigate([`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`]);
       return;
     })
   }
@@ -1256,13 +1337,13 @@ initialize_selectors(){
 
   $(".NavbarSelectBox2").change(function(){
     if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
-      location.href='/';
+      THIS.go_to_section(0);
     }
     else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='1' ) {
-      location.href='/linkcollab';
+      THIS.go_to_section(1);
     }
     else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='2' ) {
-      location.href='/';
+      THIS.go_to_section(2);
     }
   })
 

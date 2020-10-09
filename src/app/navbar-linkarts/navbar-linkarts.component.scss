@@ -162,6 +162,7 @@
     flex-wrap: wrap;
   }
   .string-proposition-container{
+    cursor:pointer;
     display: flex;
     border-radius: 15px;
     font-size: 12px;
@@ -198,7 +199,7 @@
   .author-container {
     display: flex;
     width:100%;
-    padding: 12px;
+    padding: 10px 10px 12px 10px;
     cursor:pointer;
     transition:background-color 200ms;
   }
@@ -220,7 +221,7 @@
   }
 .author-container .left-container {
   position: relative;
-  margin: 2px 10px auto 0px;
+  margin: 2px 8px auto 0px;
   /*width: 30px;
   height: 30px;
   min-width: 30px !important;
@@ -228,21 +229,21 @@
   margin: 13px 10px auto 10px;*/
 }
 .author-container .left-container img {
-  width:30px;
-  height:30px;
+  width:35px;
+  height:35px;
   border-radius: 50%;
-  box-shadow: 0px 0px 1px 2px rgb(104, 113, 130);
 }
 .author-container .right-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
-  width: calc(100% - 54px);
+  width: -webkit-fill-available;
 }
 .notifications-model .author-container .right-container {
   display: flex;
   line-height: 15px;
+  padding-top: 2px;
   font-size:12px;
   flex-direction: column;
   justify-content: space-between;
@@ -280,6 +281,7 @@
   .item-row{
     display:flex;
     align-items: center;
+    cursor:pointer;
   }
   .item-title{
     margin:auto;
@@ -314,10 +316,9 @@
     width: 34px;
     height: 34px;
     min-width: 34px;
-    margin: auto 0px auto 0px;
+    margin: 5px 0px 5px 0px;
     border-radius: 50%;
     overflow: hidden;
-    border:1px solid rgb(32 56 100);
   }
   .navbar-l1-searchbar-container .result-container .image-container img {
     width:100%;
@@ -424,8 +425,8 @@
     display: flex;
     margin-left:10px;
     margin-right:10px;
-    width: 34px;
-    height: 34px;
+    width: 33px;
+    height: 33px;
     align-items: center;
     border-radius: 50%;
   }
@@ -436,8 +437,8 @@
     border-radius: 50%;
     position: relative;
     display: flex;
-    width: calc(100% - 1px);
-    height: calc(100% - 1px);
+    width: 100%;
+    height:100%;
     overflow: hidden;
     object-fit: cover;
     align-items: center;
@@ -451,10 +452,8 @@
   }
 
   .profile-picture img{
-    height: calc(100% + 2px);
-    width: calc(100% + 2px);
-    margin-top: -0.5px;
-    margin-left: -0.5px;
+    width: 100%;
+    height:100%;
     object-fit: cover;
     border-radius: 50%;
   }
@@ -773,6 +772,7 @@
     font-size:12px;
     width:unset !important;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    border: 1px solid #ffffff;
     border-radius: 50px;
     //margin-left: 10px;
     font-weight: bold;
@@ -940,13 +940,13 @@
     position: absolute;
     overflow: hidden;
     background: #f9f9f9;
-    top: 44px;
     left: 50%;
     transform: translate(-50%, 0);
     width: 350px;
     border-left: 1px solid #bbbbbb;
     border-right: 1px solid #bbbbbb;
-    border-top: unset;
+    border-top: 1px solid #cacaca;
+    top: 43px;
     box-shadow: 0px 2px 5px 0px #969696;
     border-radius: 0px 0px 10px 10px;
     font-size: 12px;
@@ -1345,7 +1345,7 @@ display:flex;
       }
       .notifications-chat-container {
         position: fixed;
-        top: 54px;
+        top: 53px;
         left: 50%;
         transform: translate(-50%, 0);
         width: 100vw;
@@ -1407,4 +1407,63 @@ display:flex;
         color:rgb(32,56,100) !important;
       }
     }
+  }
+
+  .notification-icon {
+    position: absolute;
+    bottom: -4px;
+    height: 22px;
+    width: 22px;
+    right: -4px;
+    border-radius: 50px;
+    display: flex;
+  }
+
+  .notification-icon.favorite {
+    background-image: linear-gradient(to right,rgb(255 79 79), rgb(255 193 193)) !important;
+  }
+  .notification-icon.like {
+    background-image: linear-gradient(90deg,#0088fd 0,#b9f1ff 100%) !important;
+  }
+  .notification-icon.comment {
+    background-image: linear-gradient(90deg, #35bf25 0, #9af792 100%) !important;
+  }
+  .notification-icon.group {
+    background-image: linear-gradient(90deg, #364adc 0, #bfd6ff 100%) !important;
+  }
+  .notification-icon.publication {
+    background-image: linear-gradient(90deg, #d06900 0, #ffd8ae 100%) !important;
+  }
+
+  .notification-icon mat-icon {
+    margin: auto auto;
+    height: unset;
+    width: unset;
+    font-size: 14px;
+    color: white;
+  }
+  .notification-icon.group mat-icon {
+    font-size: 18px;
+  }
+  .notification-icon.publication mat-icon {
+    font-size: 17px;
+  }
+
+  .notification-date {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgb(32 56 101);
+  }
+
+  .no-notification {
+    width:100%;
+    height:105px;
+    display:flex;
+    cursor:default;
+  }
+
+  .no-notification span {
+    margin:auto;
+    color:rgb(32,56,100);
+    font-weight:bold;
   }
