@@ -14,7 +14,7 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
@@ -1183,6 +1183,9 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   click_on_research(){
+    if( this.input.nativeElement.value.trim().length == 0 ) {
+      return;
+    }
     this.input.nativeElement.blur();
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,"researched",0,0,0,"unknown","unknown","unknown","unknown").subscribe(r=>{
       console.log(r);
