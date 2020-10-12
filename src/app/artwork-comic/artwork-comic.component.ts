@@ -745,7 +745,6 @@ export class ArtworkComicComponent implements OnInit {
       }
       console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
-      THIS.swiper.slideTo(0,false,false);
     }
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
   }
@@ -825,7 +824,6 @@ export class ArtworkComicComponent implements OnInit {
       }
       console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
-      THIS.swiper.slideTo(0,false,false);
     }
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
   }
@@ -906,7 +904,6 @@ export class ArtworkComicComponent implements OnInit {
           }
         }
         THIS.initialize_thumbnails();
-        THIS.swiper.slideTo(0,false,false);
       }
      
       THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
@@ -928,7 +925,6 @@ export class ArtworkComicComponent implements OnInit {
 
     //this.open_recommendations(0);
 
-    this.initialize_swiper();
 
   }
 
@@ -1010,7 +1006,6 @@ export class ArtworkComicComponent implements OnInit {
             this.list_of_pages_by_chapter[chapter_number-1][r[1]]=(SafeURL);
             if(k==total_pages-1){
               this.initialize_thumbnails();
-              this.swiper.slideTo(0,false,false);
               this.show_pages[chapter_number-1]=true;
             }
           });
@@ -1044,7 +1039,7 @@ export class ArtworkComicComponent implements OnInit {
 
     var THIS = this;
     
-    this.swiper = new Swiper('.swiper-container', {
+    this.swiper = new Swiper('.swiper-container.swiper-artwork-comic', {
       speed: 500,
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -1083,8 +1078,12 @@ export class ArtworkComicComponent implements OnInit {
 
 
   refresh_swiper_pagination() {
-    $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-    $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+    if( this.swiper ) {
+      if( this.swiper.slides ) {
+        $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
+        $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+      }
+    }
   }
 
 
@@ -1755,6 +1754,8 @@ export class ArtworkComicComponent implements OnInit {
           compt+=1;
         }
         if(compt==this.list_of_pages_by_chapter[this.current_chapter].length){
+          this.initialize_swiper();
+          this.swiper.slideTo(0,false,false);
           this.display_pages=true;
         }
       }
@@ -1765,6 +1766,8 @@ export class ArtworkComicComponent implements OnInit {
           compt+=1;
         }
         if(compt==this.list_bd_pages.length){
+          this.initialize_swiper();
+          this.swiper.slideTo(0,false,false);
           this.display_pages=true;
         }
       }

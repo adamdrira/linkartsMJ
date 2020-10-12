@@ -678,7 +678,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
     this.open_recommendations(0);
     this.open_category(0);
-    this.initialize_swiper();
 
   }
 
@@ -735,7 +734,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       var THIS = this;
       
-      this.swiper = new Swiper('.swiper-container', {
+      this.swiper = new Swiper('.swiper-container.swiper-artwork-drawing', {
         speed: 500,
         scrollbar: {
           el: '.swiper-scrollbar',
@@ -764,6 +763,7 @@ export class ArtworkDrawingComponent implements OnInit {
       });
       
       this.refresh_swiper_pagination();
+
       $(".top-container .pages-controller-container input").keydown(function (e){
         if(e.keyCode == 13){
           THIS.setSlide( $(".top-container .pages-controller-container input").val() );
@@ -776,9 +776,12 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
   refresh_swiper_pagination() {
-    
-      $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-      $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+    if( this.swiper ) {
+      if( this.swiper.slides ) {
+        $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
+        $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+      }
+    }
   }
 
 
@@ -1413,6 +1416,7 @@ export class ArtworkDrawingComponent implements OnInit {
           compt+=1;
         }
         if(compt==this.list_drawing_pages.length){
+          this.initialize_swiper();
           this.display_pages=true;
         }
       }

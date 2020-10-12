@@ -520,7 +520,7 @@ export class ArtworkWritingComponent implements OnInit {
     
     let THIS = this;
 
-    this.swiper = new Swiper('.swiper-container.artwork', {
+    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
       speed: 500,
       scrollbar: {
         el: '.swiper-scrollbar',
