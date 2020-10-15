@@ -1,0 +1,91 @@
+
+@import '../../material-styles.css';
+
+//ng-deeps
+::ng-deep .form-control {
+    height:45px;
+    font-size:unset;
+    color:unset;
+}
+
+::ng-deep .form-container .SumoSelect {
+    display:block;
+    width:unset;
+    height:45px;
+    background:white;
+    border:1px solid rgb(204,204,204);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    border-radius:4px;
+}
+
+::ng-deep .form-container .optWrapper .options .opt.disabled {
+    display:none;
+}
+
+::ng-deep .bootstrap-tagsinput {
+    display:flex;
+    height:45px;
+    line-height: unset;
+}
+
+::ng-deep .bootstrap-tagsinput .label-info {
+    border-radius:5px;
+    padding-left:10px;
+    padding-right:10px;
+    height: 80%;
+    margin-top: auto;
+    margin-bottom: auto;
+    background-color:rgb(114, 203, 221);
+    color:rgb(50, 50, 50);
+}
+
+
+::ng-deep .modal {
+    height:unset !important;
+    overflow:visible !important;
+}
+
+::ng-deep .blocker {
+    z-index:100000;
+}
+
+
+::ng-deep {
+    @import "../../assets/fastselect/fastselect.scss";
+    .fstResults{
+        z-index:20 !important;
+    }  
+    
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: rgb(32,56,100) !important;
+        color: rgb(32,56,100) !important;
+    }
+    .mat-slide-toggle-bar {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+    }
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: rgb(180, 200, 238) !important;
+        color: rgb(180, 200, 238) !important;
+    }
+    .mat-slide-toggle.mat-checked .mat-ripple-element {
+        background-color: rgb(32,56,100) !important;
+    }
+}
+
+
+
+.monetisation-container {
+    display:flex;
+    flex-wrap: wrap;
+    margin-top:10px;
+}
+
+.read_conditions {
+    cursor:pointer;
+    color:grey;
+}
+.read_conditions:hover {
+    text-decoration: underline;
+    color:rgb(78, 78, 78);
+}
+

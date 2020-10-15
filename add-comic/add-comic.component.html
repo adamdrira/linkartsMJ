@@ -1,0 +1,279 @@
+
+        <!--*****************************************************************************-->
+        <!--*****************************************************************************-->
+        <!--***************f00 : CATEGORY 0 : CARTOON STRIP - STEP 0*********************-->
+        <!--*****************************************************************************-->
+        <!--*****************************************************************************-->
+        <div *ngIf="REAL_step>=0 || CURRENT_step==0" [hidden]="CURRENT_step!=0">
+
+
+            <button mat-raised-button class="step-back-button" (click)="back_home();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+
+            
+
+            <!--Forms : adding cartoon strip-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+            
+            
+            <form [formGroup]="f00" novalidate>
+                <div class="form-container">
+                    <div class="form-container-name">
+                        <span>Présentation du projet</span>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Titre</mat-label>
+                            <input matInput formControlName="f00Title" maxLength="30" autocomplete="off">
+                            <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Format</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="f00Format" (selectionChange)="onFormatChange($event)">
+                                <mat-option  *ngFor="let obj of listOfFormats" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="f00.controls['f00Format'].invalid">Veuillez sélectionner un format</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item" *ngIf="f00Format.value == 'Série'">
+                        <mat-form-field>
+                            <mat-label>Titre du premier chapitre</mat-label>
+                            <input matInput formControlName="f00SerieFirstChapter" maxLength="30" (keyup)="update_view();" autocomplete="off">
+                            <mat-error *ngIf="f00.controls['f00SerieFirstChapter'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{f00.controls['f00SerieFirstChapter'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-label>Style</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="f00Category">
+                                <mat-option  *ngFor="let obj of listOfStyles" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style</mat-error>
+                            <mat-hint *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</mat-hint>
+                        </mat-form-field>
+                    </div>
+
+                    
+                    <div class="form-item">
+                        <mat-form-field>
+                            <mat-chip-list #chipList formControlName="f00Tags" aria-label="Genre selection">
+                              <mat-chip
+                                *ngFor="let genre of genres"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="remove(genre)">
+                                {{genre}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                              </mat-chip>
+                              <input
+                                placeholder="Genres (maximum : 3)"
+                                #genreInput
+                                [formControl]="genreCtrl"
+                                [matAutocomplete]="auto"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                              <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                                {{genre}}
+                              </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+
+            
+                    <!--******************************************************-->
+                    <!--Description-->
+                    <!--******************************************************-->
+
+                                    
+                    <div class="form-item" style="height:unset !important;">
+                        <mat-form-field>
+                            <mat-label>Description</mat-label>
+                        
+                            <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="500" autocomplete="off"></textarea>
+                            <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide
+                            </mat-error>
+                            <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/500</div>
+                        </mat-form-field>
+                    </div>
+                    <!--<div class="form-group">
+                        <label for="artworkDescription">Description</label>
+                        <textarea type="text" formControlName="f00Description" maxlength="500" style="height: 100px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
+                        </textarea>
+                        <p *ngIf="!f00Description.valid && f00DisplayErrors">Veuillez saisir une description valide</p>
+                    </div>-->
+
+
+                    <div class="form-item">
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
+                                Monétiser mon œuvre et autoriser l'apparition en tendances
+                            </mat-slide-toggle>
+                            &nbsp; 
+                            &nbsp; 
+                            <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                        </div>
+
+                        <div *ngIf="monetised" style="color: #f44336;">
+                            Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement
+                        </div>
+                    </div>
+
+                </div>
+                
+
+                <div class="form-container">
+                    <div class="form-container-name">
+                        <span>Edition de la miniature</span>
+                    </div>
+                    <div class="form-container-data">
+
+
+                        <!--******************************************************-->
+                        <!--Miniature-->
+                        <!--******************************************************-->
+
+                        <div class="form-group" style="text-align:center;">
+
+                            <app-uploader-bd-cover
+
+                                author_name={{author_name}}
+                                pseudo={{pseudo}}
+                                primary_description={{primary_description}}
+                                [profile_picture]=profile_picture
+
+                                firsttag={{f00.value.f00Tags[0]}}
+                                secondtag={{f00.value.f00Tags[1]}}
+                                thirdtag={{f00.value.f00Tags[2]}}
+
+                                name={{f00.value.f00Title}} 
+                                description={{f00.value.f00Description}}
+                                category={{f00.value.f00Category}}
+                                format={{f00.value.f00Format}}
+                            ></app-uploader-bd-cover>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                
+                <button mat-raised-button class="submit-button style1" (click)="validateForm00();">
+                    <span>Valider</span>
+                </button>
+
+            </form>
+
+            
+        </div>
+
+        
+
+
+        <!--*****************************************************************************-->
+        <!--***********f01 : CATEGORY 0 : CARTOON STRIP - STEP 1 - One-shot**************-->
+        <!--*****************************************************************************-->
+        <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='One-shot' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='One-shot'">
+            
+            <button mat-raised-button class="step-back-button" (click)="step_back();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+
+            
+            <!--Forms : adding cartoon strip-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+
+            <app-swiper-upload-oneshot [bdtitle]="f00.value.f00Title" [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
+
+
+        </div>
+
+
+        <!--*****************************************************************************-->
+        <!--***********f01 : CATEGORY 0 : CARTOON STRIP - STEP 1 - Série**************-->
+        <!--*****************************************************************************-->
+        <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='Série' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='Série'">
+            
+            <button mat-raised-button class="step-back-button" (click)="step_back();">
+                <div class="back-icon"></div>
+                <span>Retour</span>
+            </button>
+            
+            
+            <!--Forms : adding cartoon strip-->
+            <div class="steps">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                    <div class="step">
+                        <span>1</span>
+                    </div>
+                    <span>Présentation du projet</span>
+                </div>
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                    <div class="step">
+                        <span>2</span>
+                    </div>
+                    <span>Téléchargement</span>
+                </div>
+            </div>
+            
+            <app-form-serie 
+            form_number=0
+            [bdtitle]="f00.value.f00Title"
+            [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
+
+
+        </div>
+
+
+

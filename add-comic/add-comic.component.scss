@@ -1,0 +1,91 @@
+
+@import '../../material-styles.css';
+
+
+/******************************************************************************-->
+<!--*****************************************************************************-->
+<!--******************************* f00 form ************************************-->
+<!--*****************************************************************************-->
+<!--******************************************************************************/
+
+
+
+
+.swiper-container2 {
+    height:200px;
+}
+
+
+/******************************************************************************-->
+<!--*****************************************************************************-->
+<!--******************************* f01 form ************************************-->
+<!--*****************************************************************************-->
+<!--******************************************************************************/
+
+
+
+//ng-deeps
+/*
+::ng-deep .form-control {
+    height:45px;
+    font-size:unset;
+    color:unset;
+}*/
+
+::ng-deep .form-container .optWrapper .options .opt.disabled {
+    display:none;
+}
+
+::ng-deep .form-container .SumoSelect {
+    display:block;
+    width:unset;
+    height:45px;
+    background:white;
+    border:1px solid rgb(204,204,204);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    border-radius:4px;
+}
+
+::ng-deep {
+    .fstResults{
+        z-index:20 !important;
+    }  
+    
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+        background-color: rgb(32,56,100) !important;
+        color: rgb(32,56,100) !important;
+    }
+    .mat-slide-toggle-bar {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+    }
+    .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+        background-color: rgb(180, 200, 238) !important;
+        color: rgb(180, 200, 238) !important;
+    }
+    .mat-slide-toggle.mat-checked .mat-ripple-element {
+        background-color: rgb(32,56,100) !important;
+    }
+
+    .mat-form-field-wrapper {
+        height:100%;
+    }
+}
+
+
+.monetisation-container {
+    display:flex;
+    flex-wrap: wrap;
+    margin-top:10px;
+}
+
+.read_conditions {
+    cursor:pointer;
+    color:grey;
+}
+.read_conditions:hover {
+    text-decoration: underline;
+    color:rgb(78, 78, 78);
+}
+
+
+
