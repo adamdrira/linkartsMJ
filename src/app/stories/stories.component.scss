@@ -1,49 +1,60 @@
 
 .stories-bar {
-    position:relative;
+    position: relative;
+    padding: 10px 40px;
     display: inline-block;
-    width:100%;
-    background-color:white;
-    padding-left: 10px;
-    padding-right: 10px;
-    //margin-top: 15px;
+    width: 100%;
+    background-color: white;
+    overflow: hidden;
+    border: 1px solid white;
+    border-radius: 20px;
+    //box-shadow: 0px 0px 3px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.14), 0px 2px 7px 0px rgba(0, 0, 0, 0.12);
+}
+
+.story-swiper-container {
+    height: min-content;
 }
 
 .story {
     cursor: pointer;
     margin: auto auto;
     display: flex;
-    height: 95px;
-    width: 250px;
-    border-radius: 10px;
-    background: rgba(4, 20, 49, 0.82);
+    height: 86px;
+    width: 200px;
+    border-radius: 20px;
+    background: rgb(32 56 100);
+    box-shadow: 0px 3px 1px -2px #969696, 0px 2px 2px 0px #949494, 0px 1px 5px 0px #8a8a8a;
     overflow: hidden;
     position: relative;
 }
 
 .img-container {
-    /*margin:auto 10px auto 10px;
-    width: 70px;
-    min-width: 70px;
-    height: 70px;
-    position: relative;*/
 
-    margin: auto 10px auto 10px;
-    width: 80px;
-    height: 80px;
+    margin: auto 6px auto 10px;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
     position: relative;
     display: flex;
     align-items: center;
     position: relative;
     box-sizing: border-box;
     border-radius: 50%;
+    display:flex;
+}
 
- 
+.img {
+    display: flex;
+    height: 54px;
+    width: 54px;
+    border-radius: 50%;
+    margin:auto auto;
 }
 
 .author {
     margin:13px 10px auto 0px;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: bold;
     color:white;
     z-index: 10;
@@ -52,16 +63,6 @@
     text-overflow: ellipsis;
 }
 
-.img {
-    position: absolute;
-    align-items: center;
-    display: flex;
-    height: 72px;
-    width: 72px;
-    top: 4px;
-    left: 4px;
-    border-radius: 50%;
-}
 
 .new {
     background: linear-gradient(to right, #0014ff, #00feff);
@@ -86,16 +87,122 @@
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
-.swiper-slide {
-    display:flex;
-    margin-right: 10px;
-    margin-left: 10px;
-    width:unset !important;
+.stories-container {
+ 
+    .swiper-slide {
+        display:flex;
+    }
+
+    .swiper-button-next {
+        position: absolute;
+        right: 0px;
+        width: 40px;
+        height: 40px;
+        padding-left: 5px;
+        color: #53627db8;
+        background: white;
+        border-radius: 50px;
+        border: 2px solid #53627d9c;
+        outline:none;
+        opacity:unset !important;
+        transition:color 200ms;
+    }
+    .swiper-button-prev {
+        position: absolute;
+        left: 0px;
+        width: 40px;
+        height: 40px;
+        padding-right: 5px;
+        color: #53627db8;
+        background: white;
+        border-radius: 50px;
+        border: 2px solid #53627d9c;
+        outline:none;
+        opacity:unset !important;
+        transition:color 200ms;
+    }
+
+    .swiper-button-next:hover,.swiper-button-prev:hover {
+        color: #53627dcf;
+    }
+    .swiper-button-prev:after, .swiper-button-next:after {
+        font-size: 30px !important;
+    }
+    .swiper-button-prev.swiper-button-disabled, .swiper-button-next.swiper-button-disabled {
+        color: #eeeeee !important;
+        border: 2px solid #53627d26;
+    }
 }
 
 
-.swiper-wrapper{
-    display:flex;
-    align-items: center;
+//no swiper
+
+.stories-bar-no-swiper {
+    position: relative;
+    padding: 10px 30px;
     justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    background-color: white;
+    overflow: hidden;
+    border: 1px solid white;
+    border-radius: 20px;
+}
+.swiper-slide-no-swiper {
+    display:flex;
+    margin: 0px 15px;
+}
+
+.skeletons-container {
+    display:flex;
+    flex-wrap: wrap;
+}
+.skeletons-container .skeleton-story {
+    width:200px;
+    height:86px;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:15px;
+    display:none;
+        
+    background-color: rgb(204,204,204);
+    background-image: linear-gradient(
+        to right,
+        transparent 33%,
+        rgba(255,255,255,0.3) 50%,
+        transparent 66%
+    );
+    background-size:300% 100%;
+    animation: shine 2s infinite;
+}
+
+.skeleton-story:nth-of-type(1) {
+    display:block !important;
+}
+@media (min-width: 650px) {
+    .skeleton-story:nth-of-type(2) {
+        display:block !important;
+    }
+}
+@media (min-width: 900px) {
+    .skeleton-story:nth-of-type(3) {
+        display:block !important;
+    }
+}
+@media (max-width: 800px) {
+    .stories-bar-no-swiper {
+        flex-direction: column;
+    }
+}
+
+
+@keyframes shine {
+    0% {
+        background-position: right;    
+    }
+    /*100% {
+        background-position: left; it's the default value, no need to define it
+    }*/
 }

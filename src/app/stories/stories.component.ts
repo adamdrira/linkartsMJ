@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, EventEmitter, Output } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Story_service } from '../services/story.service';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { MatDialog } from '@angular/material/dialog';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $: any
@@ -17,7 +18,17 @@ declare var Swiper:any;
 @Component({
   selector: 'app-stories',
   templateUrl: './stories.component.html',
-  styleUrls: ['./stories.component.scss']
+  styleUrls: ['./stories.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class StoriesComponent implements OnInit {
 
@@ -41,13 +52,15 @@ export class StoriesComponent implements OnInit {
 
   swiper:any;
 
-
+  
+  @Output() send_loaded = new EventEmitter<any>();
+  
   final_list_of_users:any[]=[];
   list_of_users:any[]=[];
   list_of_profile_pictures:any[]=[];
   list_of_cover_pictures:any[]=[];
   list_of_author_names:any[]=[];
-  users_retrieved=false
+  users_retrieved=false;
   now_in_seconds:number;
   user_id:number;
 
@@ -80,8 +93,22 @@ export class StoriesComponent implements OnInit {
 
   
   initialize_swiper() {
-    this.swiper = new Swiper('.swiper-container', {
+    
+    this.swiper = new Swiper('.story-swiper-container', {
       speed: 500,
+      slidesPerView: 1,
+      breakpoints: {
+        650: {
+          slidesPerView: 2,
+          slidesPerGroup: 2,
+          spaceBetween: 20,
+        },
+        900: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+      },
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
@@ -208,6 +235,7 @@ export class StoriesComponent implements OnInit {
                   i++;
                   if(i==this.list_of_users.length){
                     this.users_retrieved=true;
+                    this.send_loaded.emit();
                     this.cd.detectChanges();
                     //this.sort_list_of_users(this.final_list_of_users);
                     this.separate_users_in_two(this.final_list_of_users);
@@ -481,18 +509,20 @@ export class StoriesComponent implements OnInit {
           console.log(THIS.list_of_author_names);
           console.log(THIS.list_of_state);
           THIS.users_retrieved=true;
-          THIS.initialize_swiper();
+          this.send_loaded.emit();
           THIS.cd.detectChanges();
+          THIS.initialize_swiper();
         }
       }
     }
     else{
       console.log(THIS.final_list_of_users);
-        console.log(THIS.list_of_author_names);
-        console.log(THIS.list_of_state);
-        THIS.users_retrieved=true;
-        THIS.initialize_swiper();
-        THIS.cd.detectChanges();
+      console.log(THIS.list_of_author_names);
+      console.log(THIS.list_of_state);
+      THIS.users_retrieved=true;
+      this.send_loaded.emit();
+      THIS.cd.detectChanges();
+      THIS.initialize_swiper();
     }
   }
 
@@ -512,6 +542,7 @@ export class StoriesComponent implements OnInit {
     }*/
 
   }
+
 
 
   
