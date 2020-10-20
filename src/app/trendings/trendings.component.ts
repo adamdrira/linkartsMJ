@@ -4,17 +4,19 @@ import {QueryList} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
+import { ChatService } from '../services/chat.service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
-
+import { NotificationsService } from '../services/notifications.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
 import { Trending_service } from '../services/trending.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -30,12 +32,14 @@ export class TrendingsComponent implements OnInit {
 
   constructor(
     private rd: Renderer2,
+    public route: ActivatedRoute, 
     private _constants: ConstantsService,
+    private NotificationsService:NotificationsService,
     private Community_recommendation:Community_recommendation,
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
     private Profile_Edition_Service:Profile_Edition_Service,
-    private Subscribing_service:Subscribing_service,
+    private ChatService:ChatService,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -60,20 +64,19 @@ export class TrendingsComponent implements OnInit {
   writings_trendings_length:number=0;
   writings_trendings_sorted_confirmation:boolean=false;
 
-
+  active_section=1;
   now_in_seconds:number;
-
+  section_chosen=false;
   ngOnInit() {
+
+    console.log(this.route.snapshot.data['section'])
+    this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
+    this.section_chosen=true;
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
-      if (info == 'get_comics_trendings'){
-        this.Trending_service.get_comics_trendings().subscribe(information=>{
-          this.load_comics_trendings(information);
-        });
-      }
-      else{
-        this.load_comics_trendings(info);
-      }
+
+      this.load_comics_trendings(info);
+      
       this.Trending_service.get_drawings_trendings().subscribe(info=>{
         this.load_drawing_trendings(info);
       })
@@ -109,10 +112,63 @@ export class TrendingsComponent implements OnInit {
     let number = new Date(uploaded_date + ' GMT').getTime()/1000;
     return number;
   }
+
+  send_notification(category,item,rank){
+    let id=0;
+    let format='';
+    if(category=='comic'){
+      id=item.bd_id
+      format=(item.chaptersnumber>0)?'serie':'one-shot'
+    }
+    if(category=='drawing'){
+      console.log("drawing")
+      id=item.drawing_id;
+      format=(item.pagesnumber>0)?'artbook':'one-shot'
+    }
+    if(category=='writing'){
+      id=item.writing_id
+    }
+    var today = new Date();
+  
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth()+1).padStart(2, '0'); 
+    var yyyy = today.getFullYear();
+  
+    let date = yyyy.toString() + '-' +  mm  + '-' + dd;
+
+    this.NotificationsService.add_notification_trendings('trendings',1,'Linkarts',item.authorid,category,item.title,format,id,rank,date,false,0).subscribe(l=>{
+      if(!l[0].found){
+        let message_to_send ={
+          for_notifications:true,
+          type:"trendings",
+          id_user_name:'Linkarts',
+          id_user:1, 
+          id_receiver:item.authorid,
+          publication_category:category,
+          publication_name:item.title,
+          format:format,
+          publication_id:id,
+          chapter_number:rank,
+          information:date,
+          status:"unchecked",
+          is_comment_answer:false,
+          comment_id:0,
+        }
+        if(item.authorid==1){
+          //console.log(" Az s trending " + category + ' ' + format + ' ' + id)
+        }
+       
+            this.ChatService.messages.next(message_to_send);
+       
+      }
+      
+    })
+  }
  
 
  
   load_comics_trendings(info){
+    console.log(info)
     let compteur=0;
     this.comics_trendings_length= Object.keys(info[0].comics_trendings.format).length;
     if(this.comics_trendings_length>0){
@@ -122,6 +178,7 @@ export class TrendingsComponent implements OnInit {
           this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
             if(r[0]){
               if(r[0].status=="public"){
+                
                 this.comics_trendings_sorted[i]=r[0];
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
@@ -295,13 +352,8 @@ export class TrendingsComponent implements OnInit {
 
   delete_empty_elements(list,type:string){
     let length1=list.length;
-    
-    console.log(type);
-    console.log(list);
     if(list.length>0){
       for(let i=0;i<length1;i++){
-        console.log(i)
-        console.log(length1)
         if(!list[length1-1-i]){
           list.splice(length1-1-i,1)
         }
@@ -314,14 +366,23 @@ export class TrendingsComponent implements OnInit {
           }
           if(type=="comics"){
             this.comics_trendings_sorted_confirmation=true;
+            /*for(let j=0;j<list.length;j++){
+              this.send_notification("comic",list[j],j+1)
+            }*/
             console.log(this.comics_trendings_sorted);
           }
           if(type=="drawings"){
             this.drawings_trendings_sorted_confirmation=true;
+            /*for(let j=0;j<list.length;j++){
+              this.send_notification("drawing",list[j],j+1)
+            }*/
             console.log(this.drawings_trendings_sorted);
           }
           if(type=="writings"){
             this.writings_trendings_sorted_confirmation=true;
+            /*for(let j=0;j<list.length;j++){
+              this.send_notification("writing",list[j],j+1)
+            }*/
             console.log(this.writings_trendings_sorted);
           }
           

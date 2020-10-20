@@ -1,5 +1,8 @@
 
 
+<div style="display: flex;justify-content: center;" *ngIf="!list_of_contents_sorted">
+    <mat-spinner diameter="30" ></mat-spinner>
+</div>
 <ng-container *ngIf=" list_of_contents_sorted">
     <div *ngFor="let item of list_of_contents; let i = index">
         <div *ngIf="item.drawing_id == null && item.writing_id == null">
@@ -89,7 +92,6 @@
 
 
 <ng-container *ngIf=" list_of_contents_sorted">
-    <button *ngIf="!show_more" (click)="see_more()">see_more_contents</button>
     <ng-container *ngIf=" show_more">
         <app-subscribings-see-more
             [list_of_users]=list_of_users

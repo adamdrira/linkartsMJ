@@ -1,16 +1,12 @@
-import { Component, OnInit, Input, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
-import { SimpleChanges } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
-
+import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
@@ -25,9 +21,7 @@ declare var $: any
 export class SubscribingsSeeMoreComponent implements OnInit {
 
   constructor(
-    private rd: Renderer2,
-    private _constants: ConstantsService,
-    private Community_recommendation:Community_recommendation,
+    private Ads_service:Ads_service,
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -49,7 +43,19 @@ export class SubscribingsSeeMoreComponent implements OnInit {
   @Input() now_in_seconds:number;
   @Input()last_timestamp:string;
 
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll() {
+    let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+    let max = document.documentElement.scrollHeight;
+    let sup=max*0.1;
+    if(pos>= max - sup )   {
+      this.show_more=true;
+    }
+  }
+
   ngOnInit() {
+    console.log(this.list_of_users)
+    console.log(this.last_timestamp)
     this.see_more_contents();
 
   }
@@ -93,15 +99,21 @@ export class SubscribingsSeeMoreComponent implements OnInit {
   see_more_contents(){
     this.Subscribing_service.see_more_contents(this.list_of_users,this.last_timestamp).subscribe(r=>{
       if(r[0].length>0){
+        let compt=0;
         for (let j=0; j< r[0].length;j++){
           if(r[0][j].publication_category=="comics"){
             if(r[0][j].format=="one-shot"){
               this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
-                  if(this.list_of_contents.length == r[0].length){
-                    this.sort_more_list_of_contents( this.list_of_contents);
-                  }
+                  compt++
+                }
+                else{
+                  compt++
+                }
+
+                if(compt == r[0].length){
+                  this.sort_more_list_of_contents( this.list_of_contents);
                 }
               })
             }
@@ -109,9 +121,14 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
-                  if( this.list_of_contents.length == r[0].length){
-                    this.sort_more_list_of_contents( this.list_of_contents);
-                  }
+                  compt++
+                }
+                else{
+                  compt++
+                }
+
+                if(compt == r[0].length){
+                  this.sort_more_list_of_contents( this.list_of_contents);
                 }
               })
             }
@@ -122,9 +139,14 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
-                  if( this.list_of_contents.length == r[0].length){
-                    this.sort_more_list_of_contents( this.list_of_contents);
-                  }
+                  compt++
+                }
+                else{
+                  compt++
+                }
+
+                if(compt == r[0].length){
+                  this.sort_more_list_of_contents( this.list_of_contents);
                 }
               })
             }
@@ -132,9 +154,14 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
-                  if( this.list_of_contents.length == r[0].length){
-                    this.sort_more_list_of_contents( this.list_of_contents);
-                  }
+                  compt++
+                }
+                else{
+                  compt++
+                }
+
+                if(compt == r[0].length){
+                  this.sort_more_list_of_contents( this.list_of_contents);
                 }
               })
             }
@@ -144,12 +171,32 @@ export class SubscribingsSeeMoreComponent implements OnInit {
               this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){
                   this.list_of_contents.push(info[0]);
-                  if( this.list_of_contents.length == r[0].length){
-                    this.sort_more_list_of_contents( this.list_of_contents);
-                  }
+                  compt++
+                }
+                else{
+                  compt++
+                }
+
+                if(compt == r[0].length){
+                  this.sort_more_list_of_contents( this.list_of_contents);
                 }
               })
           }
+
+          if(r[0][j].publication_category=="ad"){
+            this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+              if(info[0].status="public"){
+                this.list_of_contents.push(info[0]);
+                compt++
+              }
+              else{
+                compt++
+              }
+              if(compt== r[0].length){
+                this.sort_more_list_of_contents( this.list_of_contents);
+              }
+            })
+          }  
 
           
         }

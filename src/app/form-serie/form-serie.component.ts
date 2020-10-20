@@ -113,7 +113,7 @@ value:string="add";
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
-      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
+      this.visitor_name=r[0].nickname;
     })
     
  
