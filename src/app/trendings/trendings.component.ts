@@ -85,13 +85,15 @@ export class TrendingsComponent implements OnInit {
     this.section_chosen=true;
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
-
+    
       this.load_comics_trendings(info);
       
       this.Trending_service.get_drawings_trendings().subscribe(info=>{
+      
         this.load_drawing_trendings(info);
       })
       this.Trending_service.get_writings_trendings().subscribe(info=>{
+       
         this.load_writing_trendings(info);      
       })
     });
@@ -124,8 +126,8 @@ export class TrendingsComponent implements OnInit {
     return number;
   }
 
-  /*
-  send_notification(category,item,rank){
+  
+  /*send_notification(category,item,rank){
     let id=0;
     let format='';
     if(category=='comic'){
@@ -133,48 +135,43 @@ export class TrendingsComponent implements OnInit {
       format=(item.chaptersnumber>0)?'serie':'one-shot'
     }
     if(category=='drawing'){
-      console.log("drawing")
       id=item.drawing_id;
       format=(item.pagesnumber>0)?'artbook':'one-shot'
     }
     if(category=='writing'){
       id=item.writing_id
     }
-    var today = new Date();
-  
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth()+1).padStart(2, '0'); 
-    var yyyy = today.getFullYear();
-  
-    let date = yyyy.toString() + '-' +  mm  + '-' + dd;
+    
+    this.Trending_service.get_date_of_trendings().subscribe(d=>{
 
-    this.NotificationsService.add_notification_trendings('trendings',1,'Linkarts',item.authorid,category,item.title,format,id,rank,date,false,0).subscribe(l=>{
-      if(!l[0].found){
-        let message_to_send ={
-          for_notifications:true,
-          type:"trendings",
-          id_user_name:'Linkarts',
-          id_user:1, 
-          id_receiver:item.authorid,
-          publication_category:category,
-          publication_name:item.title,
-          format:format,
-          publication_id:id,
-          chapter_number:rank,
-          information:date,
-          status:"unchecked",
-          is_comment_answer:false,
-          comment_id:0,
+      let date = d[0].date;
+      this.NotificationsService.add_notification_trendings('trendings',1,'Linkarts',item.authorid,category,item.title,format,id,rank,date,false,0).subscribe(l=>{
+    
+        if(!l[0].found){
+          let message_to_send ={
+            for_notifications:true,
+            type:"trendings",
+            id_user_name:'Linkarts',
+            id_user:1, 
+            id_receiver:item.authorid,
+            publication_category:category,
+            publication_name:item.title,
+            format:format,
+            publication_id:id,
+            chapter_number:rank,
+            information:date,
+            status:"unchecked",
+            is_comment_answer:false,
+            comment_id:0,
+          }
+          this.ChatService.messages.next(message_to_send);
+         
         }
-        if(item.authorid==1){
-          //console.log(" Az s trending " + category + ' ' + format + ' ' + id)
-        }
-       
-            this.ChatService.messages.next(message_to_send);
-       
-      }
-      
+        
+      })
     })
+
+    
   }*/
  
 
@@ -188,6 +185,7 @@ export class TrendingsComponent implements OnInit {
         if(info[0].comics_trendings.format[i] =="one-shot"){
           
           this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
+         
             if(r[0]){
               if(r[0].status=="public"){
                 
@@ -227,6 +225,7 @@ export class TrendingsComponent implements OnInit {
         }
         if(info[0].comics_trendings.format[i] =="serie"){
           this.BdSerieService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
+     
             if(r[0]){
               if(r[0].status=="public"){
                 this.comics_trendings_sorted[i]=r[0];
@@ -267,6 +266,7 @@ export class TrendingsComponent implements OnInit {
           for(let i=0; i < Object.keys(info[0].drawings_trendings.format).length;i++){
             if(info[0].drawings_trendings.format[i] =="one-shot"){
               this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+        
                 if(r[0]){
                   if(r[0].status=="public"){
                     this.drawings_trendings_sorted[i]=r[0];
@@ -292,6 +292,7 @@ export class TrendingsComponent implements OnInit {
             }
             if(info[0].drawings_trendings.format[i] =="artbook"){
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+               
                 if(r[0]){
                   if(r[0].status=="public"){
                     this.drawings_trendings_sorted[i]=r[0];
@@ -329,6 +330,7 @@ export class TrendingsComponent implements OnInit {
     if(this.writings_trendings_length>0){
       for(let i=0; i < Object.keys(info[0].writings_trendings.format).length;i++){
         this.Writing_Upload_Service.retrieve_writing_information_by_id(info[0].writings_trendings.publication_id[i]).subscribe(r=>{
+          
           if(r[0]){
             if(r[0].status=="public"){
               this.writings_trendings_sorted[i]=r[0];

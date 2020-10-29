@@ -30,13 +30,7 @@
         <ng-container *ngFor="let item of comics_trendings_sorted; let i = index">
             <div *ngIf="comics_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
 
-                <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
-                    <div class="shining-box">
-                        <div class="laurel-icon">
-                        </div>
-                        <div class="ranking-number">{{i+1}}</div>
-                    </div>
-                </div>-->
+
                 <div *ngIf="item.chaptersnumber > 0 " [@enterAnimation]>
                     <app-thumbnail-artwork 
                         [item]=item
@@ -67,13 +61,6 @@
         <div *ngFor="let item of drawings_trendings_sorted; let i = index">
             <div *ngIf="drawings_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
 
-                <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
-                    <div class="shining-box">
-                        <div class="laurel-icon">
-                        </div>
-                        <div class="ranking-number">{{i+1}}</div>
-                    </div>
-                </div>-->
 
                 <div *ngIf="item.pagesnumber > 0 " [@enterAnimation]>
                     <app-thumbnail-artwork 
@@ -101,14 +88,7 @@
 
     <ng-container *ngIf=" writings_trendings_sorted_confirmation && subcategory==2">
         <div *ngFor="let item of writings_trendings_sorted; let i = index" class="ranked-thumbnail-container" [@enterAnimation]>
-            
-            <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
-                <div class="shining-box">
-                    <div class="laurel-icon">
-                    </div>
-                    <div class="ranking-number">{{i+1}}</div>
-                </div>
-            </div>-->
+
 
             <div *ngIf="writings_trendings_length > i" [@enterAnimation]>
                 <app-thumbnail-artwork 

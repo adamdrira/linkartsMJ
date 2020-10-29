@@ -127,8 +127,6 @@ export class ThumbnailArtworkComponent implements OnInit {
   ngOnInit(): void {
 
     if(!(typeof(this.subscribing_category)=='string')){
-      console.log("dans le if pour emphasized");
-      console.log(this.subscribing_category);
       this.category=this.item.publication_category;
       this.format=this.item.format;
 
@@ -321,11 +319,8 @@ export class ThumbnailArtworkComponent implements OnInit {
       }
     }
     else{
-      console.log("dans le else");
-      console.log(this.subscribing_category);
       this.category=this.subscribing_category;
       this.format=this.subscribing_format;
-      console.log(this.subscribing_format)
       this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -557,10 +552,10 @@ export class ThumbnailArtworkComponent implements OnInit {
     //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   }
   get_link() {
-    return "/main-research-style-and-tag/1/Comic/"+this.subscribing_category+"/all";
+    return "/main-research-style-and-tag/1/Comic/"+this.style+"/all";
   }
-  get_link_tags(s:any) {
-    return "/main-research-style-and-tag/1/Comic/"+this.subscribing_category+"/all";
+  get_link_tags(s) {
+    return "/main-research-style-and-tag/1/Comic/"+this.style+"/" + s ;
   }
 
   see_more_clicked = false;
