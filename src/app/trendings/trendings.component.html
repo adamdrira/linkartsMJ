@@ -1,85 +1,128 @@
-<div class="panel-controller" *ngIf="section_chosen">
-    <div class="left-container">
-        <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-            Bandes dessinées
-        </div>
-        <div class="controller-category" [ngClass]="{'open' : subcategory==1 }" (click)="open_subcategory(1);">
-            Dessins
-        </div>
-        <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
-            Écrits
-        </div>
-    </div>
+
+<div class="laurel-invisible-icon">
+</div>
+
+<div class="loading-page" *ngIf="!comics_trendings_sorted_confirmation && !drawings_trendings_sorted_confirmation && !writings_trendings_sorted_confirmation">
+    <mat-spinner diameter="50" ></mat-spinner>
 </div>
 
 
-<div style="display: flex;justify-content: center;" *ngIf="!comics_trendings_sorted_confirmation && subcategory==0">
-    <mat-spinner diameter="30" ></mat-spinner>
+<div class="panel-controller" *ngIf="comics_trendings_sorted_confirmation || drawings_trendings_sorted_confirmation || writings_trendings_sorted_confirmation" [@enterAnimation]>
+    <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
+        <div class="comic-bubble-icon"></div>
+        <span>Bandes dessinées</span>
+    </div>
+    <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
+        <div class="pencil-icon"></div>
+        <span>Dessins</span>
+    </div>
+    <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
+        <div class="writing2-icon"></div>
+        <span>Écrits</span>
+    </div>
 </div>
-<div style="display: flex;justify-content: center;" *ngIf="subcategory==1 && !drawings_trendings_sorted_confirmation ">
-    <mat-spinner diameter="30" ></mat-spinner>
-</div>
-<div style="display: flex;justify-content: center;" *ngIf="subcategory==2 && !writings_trendings_sorted_confirmation">
-    <mat-spinner diameter="30" ></mat-spinner>
-</div>
-<ng-container *ngIf=" comics_trendings_sorted_confirmation && subcategory==0">
-    <div *ngFor="let item of comics_trendings_sorted; let i = index">
-        Top {{i+1}}
-        <div *ngIf="comics_trendings_length > i">
-            <div *ngIf="item.chaptersnumber > 0 ">
-                <app-thumbnail-comics 
-                    [item]=item
-                    format='serie'
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+
+<div class="trendings-global-container">
+        
+
+
+    <ng-container *ngIf=" comics_trendings_sorted_confirmation && subcategory==0">
+        <ng-container *ngFor="let item of comics_trendings_sorted; let i = index">
+            <div *ngIf="comics_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
+
+                <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
+                    <div class="shining-box">
+                        <div class="laurel-icon">
+                        </div>
+                        <div class="ranking-number">{{i+1}}</div>
+                    </div>
+                </div>-->
+                <div *ngIf="item.chaptersnumber > 0 " [@enterAnimation]>
+                    <app-thumbnail-artwork 
+                        [item]=item
+                        page='trendings'
+                        [rank]=i+1
+                        subscribing_category='comics'
+                        subscribing_format='serie'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-artwork> 
+                </div>
+                <div *ngIf="item.chaptersnumber == null" [@enterAnimation]>
+                    <app-thumbnail-artwork 
+                        [item]=item
+                        page='trendings'
+                        [rank]=i+1
+                        subscribing_category='comics'
+                        subscribing_format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-artwork> 
+                </div>
+
             </div>
-            <div *ngIf="item.chaptersnumber == null">
-                <app-thumbnail-comics 
-                    [item]=item
-                    format='one-shot'
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-comics> 
+        </ng-container>
+    </ng-container>
+
+
+    <ng-container *ngIf=" drawings_trendings_sorted_confirmation && subcategory==1">
+        <div *ngFor="let item of drawings_trendings_sorted; let i = index">
+            <div *ngIf="drawings_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
+
+                <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
+                    <div class="shining-box">
+                        <div class="laurel-icon">
+                        </div>
+                        <div class="ranking-number">{{i+1}}</div>
+                    </div>
+                </div>-->
+
+                <div *ngIf="item.pagesnumber > 0 " [@enterAnimation]>
+                    <app-thumbnail-artwork 
+                        [item]=item
+                        page='trendings'
+                        [rank]=i+1
+                        subscribing_category='drawing'
+                        subscribing_format='artbook'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-artwork> 
+                </div>
+                <div *ngIf="item.pagesnumber == null" [@enterAnimation]>
+                    <app-thumbnail-artwork 
+                        [item]=item
+                        page='trendings'
+                        [rank]=i+1
+                        subscribing_category='drawing'
+                        subscribing_format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-artwork> 
+                </div>
             </div>
         </div>
-    </div>
-</ng-container>
+    </ng-container>
 
+    <ng-container *ngIf=" writings_trendings_sorted_confirmation && subcategory==2">
+        <div *ngFor="let item of writings_trendings_sorted; let i = index" class="ranked-thumbnail-container" [@enterAnimation]>
+            
+            <!--<div class="ranking" [ngClass]="{'gold' : i==0, 'silver': i==1, 'bronze': i==2, 'other': i>2}">
+                <div class="shining-box">
+                    <div class="laurel-icon">
+                    </div>
+                    <div class="ranking-number">{{i+1}}</div>
+                </div>
+            </div>-->
 
-<ng-container *ngIf=" drawings_trendings_sorted_confirmation && subcategory==1">
-    <div *ngFor="let item of drawings_trendings_sorted; let i = index">
-        Top {{i+1}}
-        <div *ngIf="drawings_trendings_length > i">
-            <div *ngIf="item.pagesnumber > 0 ">
-                <app-thumbnail-drawing
+            <div *ngIf="writings_trendings_length > i" [@enterAnimation]>
+                <app-thumbnail-artwork 
                     [item]=item
-                    format='artbook'
+                    page='trendings'
+                    [rank]=i+1
+                    subscribing_category='writing'
                     now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
-            </div>
-            <div *ngIf="item.pagesnumber == null">
-                <app-thumbnail-drawing 
-                    [item]=item
-                    format='one-shot'
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing> 
+                ></app-thumbnail-artwork>  
             </div>
         </div>
-    </div>
-</ng-container>
+    </ng-container>
 
-<ng-container *ngIf=" writings_trendings_sorted_confirmation && subcategory==2">
-    <div *ngFor="let item of writings_trendings_sorted; let i = index">
-        Top {{i+1}}
-        <div *ngIf="writings_trendings_length > i">
-            <app-thumbnail-writing
-                [item]=item
-                now_in_seconds={{now_in_seconds}}
-            ></app-thumbnail-writing>  
-        </div>
-    </div>
-</ng-container>
-
-
+</div>
 
 
 

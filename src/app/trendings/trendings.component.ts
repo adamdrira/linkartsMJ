@@ -17,6 +17,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
 import { Trending_service } from '../services/trending.service';
 import { ActivatedRoute } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 
@@ -26,7 +27,17 @@ declare var $: any
   selector: 'app-trendings',
   templateUrl: './trendings.component.html',
   styleUrls: ['./trendings.component.scss'],
-  providers: [Trending_service]
+  providers: [Trending_service],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class TrendingsComponent implements OnInit {
 
@@ -113,6 +124,7 @@ export class TrendingsComponent implements OnInit {
     return number;
   }
 
+  /*
   send_notification(category,item,rank){
     let id=0;
     let format='';
@@ -163,7 +175,7 @@ export class TrendingsComponent implements OnInit {
       }
       
     })
-  }
+  }*/
  
 
  
