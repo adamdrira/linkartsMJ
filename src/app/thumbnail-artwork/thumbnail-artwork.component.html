@@ -1,111 +1,231 @@
-<div *ngIf="thumbnail_picture_received" class="global-container">
+<div class="thumbnail-artwork">
+    
+    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings'}" [@enterAnimation]>
 
-    <div class="left-container" [ngClass]="{'drawing': category=='drawing' }">
-        <img [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
+
+        <div class="left-container" 
+        [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comics', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
+            
+            <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            
         
-        <!--********************-->
-        <!--Data container-->
-        <!--********************-->
-        <div class="stats-container">
-            <div class="figure-container-views">
-                <span>{{viewnumber}}</span>
-                <div class="view-logo">
-                </div>
-            </div>
-            <div class="figure-container-likes">
-                <span>{{likesnumber}}</span>
-                <div class="like-logo">
-                </div>
-            </div>
-            <div class="figure-container-loves">
-                <span>{{lovesnumber}}</span>
-                <div class="love-logo">
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="right-container">
-
-        <div class="name">
-            <span>{{title}}</span>
-            <div class="buttons-container">
-
-                <a *ngIf="subscribing_category=='comics'" href='/artwork-comic/{{subscribing_format}}/{{title}}/{{content_id}}'>
-                    <div>
-                        <button mat-raised-button class="ad-button style0" >
-                            <span style="font-size: 15px !important;">Consulter</span>
-                        </button>
+            <div #swiperThumbnails class="swiper-thumbnails" (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
                     </div>
-                </a>
-                <a *ngIf="subscribing_category!='comics'" href='/artwork-{{subscribing_category}}/{{title}}/{{content_id}}'>
-                    <div>
-                        <button mat-raised-button class="ad-button style0" >
-                            <span style="font-size: 15px !important; justify-content: center;     width: 100%;">Consulter</span>
-                        </button>
+                    <div class="swiper-slide">
+                        <img src="../../assets/img/profilz.jpg">
                     </div>
+                    <div class="swiper-slide">
+                        <img src="../../assets/img/pub-manga.jpg">
+                    </div>
+                </div>
+            </div>
+
+            <!--********************-->
+            <!--Data container-->
+            <!--********************-->
+            <div class="stats-container">
+                <div class="figure-container views">
+                    <div>
+                        <span>{{viewnumber}}</span>
+                        <mat-icon>visibility</mat-icon>
+                        <!--<div class="view-logo"></div>-->
+                    </div>
+                </div>
+                <div class="figure-container likes">
+                    <div>
+                        <span>{{likesnumber}}</span>
+                        <mat-icon>thumb_up</mat-icon>
+                    </div>
+                </div>
+                <div class="figure-container loves">
+                    <div>
+                        <span>{{lovesnumber}}</span>
+                        <mat-icon>favorite</mat-icon>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+
+        <div class="absolute-small-screen-selector">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
+            <mat-icon class="optionsButton" style="
+            font-size:23px; 
+            color:rgb(32,56,100);
+            margin:auto;">more_vert</mat-icon>
+            </button>
+            <mat-menu  #options="matMenu" xPosition="before">
+            <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+                <mat-icon class="item-icon">flag</mat-icon>
+                <span>Signaler</span>
+            </button>
+            </mat-menu>
+        </div>
+
+
+        <div class="right-container">
+
+            
+            <div class="absolute-selector">
+                <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
+                <mat-icon class="optionsButton" style="
+                font-size:23px; 
+                color:rgb(32,56,100);
+                margin:auto;">more_vert</mat-icon>
+                </button>
+                <mat-menu  #options="matMenu" xPosition="before">
+                <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                </mat-menu>
+            </div>
+
+            <div class="rank-small-screen" *ngIf="page=='trendings' && rank">
+                <div class="absolute-shiny"></div>
+                <span>{{rank}}</span>
+            </div>
+            
+            <div class="name">
+                <span>{{title}}</span>
+            </div>
+
+            <!--********************-->
+            <!--Description container-->
+            <!--********************-->
+            <!--Large screen-->
+            <div class="verso-description show-on-large-screen">
+                <span>{{highlight}}</span>
+            </div>
+
+            <!--Small screen-->
+            <div class="verso-description show-on-small-screen" *ngIf="71 >= highlight.length">
+                <span>{{highlight}}</span>
+            </div>
+            <div class="verso-description show-on-small-screen" *ngIf="highlight.length > 71 && !see_more_clicked">
+                <span>{{short_highlight}} <a (click)="see_more_description($event);">... voir plus</a></span>
+            </div>
+            <div class="verso-description show-on-small-screen" *ngIf="highlight.length > 71 && see_more_clicked">
+                <span>{{highlight}}</span>
+            </div>
+
+            <!--********************-->
+            <!--Type container-->
+            <!--********************-->
+            <div class="verso-type">
+                <!--******************************************************-->
+                <!--************************COMICS************************-->
+                <!--******************************************************-->
+                <a class="type-container" *ngIf="subscribing_category=='comics'" [routerLink]=get_link() (click)="stop($event)"><span>Bande dessinée</span></a>
+                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='one-shot'"><span>One-shot</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='serie'"><span>Série</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='one-shot'">
+                    <span>{{pagesnumber}}</span>
+                    <mat-icon>insert_drive_file</mat-icon>
+                </div>
+                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='serie'">
+                    <span>{{chaptersnumber}}</span>
+                    <mat-icon>import_contacts</mat-icon>
+                    <span>&nbsp; {{pagesnumber}}</span>
+                    <mat-icon>insert_drive_file</mat-icon>
+                </div>
+
+                <!--******************************************************-->
+                <!--************************DRAWING***********************-->
+                <!--******************************************************-->
+                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link() (click)="stop($event)"><span>Dessin</span></a>
+                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='one-shot'"><span>One-shot</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'"><span>Artbook</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
+                    <span>{{pagesnumber}}</span>
+                    <mat-icon>insert_drive_file</mat-icon>
+                </div>
+
+                <!--******************************************************-->
+                <!--************************WRITING***********************-->
+                <!--******************************************************-->
+                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>Ecrit</span></a>
+                <!--<div class="type-container" *ngIf="subscribing_category=='writing'">
+                    <span>{{pagesnumber}}</span>
+                    <mat-icon>insert_drive_file</mat-icon>
+                </div>-->
+            </div>
+
+            <div class="verso-type">
+                <a class="tag-container" [routerLink]=get_link_tags(firsttag) (click)="stop($event)"><span>{{firsttag}}</span></a>
+                <a class="tag-container" *ngIf="secondtag!=null" [routerLink]=get_link_tags(secondtag) (click)="stop($event)"><span>{{secondtag}}</span></a>
+                <a class="tag-container" *ngIf="thirdtag!=null" [routerLink]=get_link_tags(thirdtag) (click)="stop($event)"><span>{{thirdtag}}</span></a>
+            </div>
+
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="author-container">
+                <a [routerLink]=open_account() (click)="stop($event)" class="left-container">
+                    <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
                 </a>
+                <div class="right-container">
+                    <span class="author-name" *ngIf="pseudo!=''">
+                        <a [routerLink]=open_account() (click)="stop($event)">
+                            {{author_name}}
+                        </a>
+                    </span>
+                    <span class="author-description">{{primary_description}}</span>
+                </div>
+            </div>
+            
+            <!--********************-->
+            <!--Date container-->
+            <!--********************-->
+            <div class="date-container">
+                <span>{{date_upload_to_show}}</span>
+            </div>
+
+
+        </div>
+
+        <div class="preview" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper();" (mouseleave)="stop_swiper();">
+            <div class="hover-to-preview fade-on-hover">
+                <span>Voir les premières pages</span>
+            </div>
+            <div #swiperArtworkPreview>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="../../assets/img/pokemon.jpg">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../../assets/img/pokemon.jpg">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../../assets/img/pokemon.jpg">
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!--********************-->
-        <!--Author container-->
-        <!--********************-->
-        <div class="author-container">
-            <div class="left-container">
-                <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+        <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing'" (mouseleave)="close_pdf();">
+            <div class="hover-to-preview" *ngIf="show_absolute_cover" [@leaveAnimation] (mouseenter)="load_pdf();">
+                <span>Voir les premières pages</span>
             </div>
-            <div class="right-container">
-                <span class="author-name" *ngIf="pseudo!=''">
-                    <a href="/account/{{pseudo}}/{{item.id_user}}">
-                        {{author_name}}
-                    </a>
-                </span>
-                <span class="author-description">{{primary_description}}</span>
-            </div>
+            <pdf-viewer
+                class="pdf-document"
+                [src]="pdfSrc"
+                [autoresize]="true"
+                [show-all]="true"
+                [original-size]='true'
+                [fit-to-page]='true'
+                [render-text]='false'
+            ></pdf-viewer>
         </div>
 
-
-        <!--********************-->
-        <!--Type container-->
-        <!--********************-->
-        <div class="verso-type">
-            <span *ngIf="subscribing_category=='comics'">• Bande dessinée</span>
-            <span *ngIf="subscribing_category=='drawing'">• Dessin</span>
-            <span *ngIf="subscribing_category=='writing'">• Ecrit</span>
-        </div>
-        <div *ngIf="subscribing_category!='writing'" class="verso-type">
-            <span>• {{format}}</span>
-        </div>
-        
-        <!--********************-->
-        <!--Categories container-->
-        <!--********************-->
-        <div class="categories-container">  
-            <span class="categories">• category :</span>
-            <span > &nbsp; {{firsttag}}</span>
-            <span *ngIf="secondtag!=null">,&nbsp;{{secondtag}}</span>
-            <span *ngIf="thirdtag!=null">,&nbsp; {{thirdtag}}</span>
+        <div class="rank" *ngIf="page=='trendings' && rank" [ngClass]="{'gold':rank==1, 'silver':rank==2, 'bronze':rank==3,'other':rank>3}">
+            <div class="absolute-shiny"></div>
+            <span>{{rank}}</span>
         </div>
 
-        
-        <!--********************-->
-        <!--Description container-->
-        <!--********************-->
-        <div class="verso-description">
-            <span>{{highlight}}</span>
-        </div>
-
-
-        <!--********************-->
-        <!--Date container-->
-        <!--********************-->
-        <div class="date-container">
-            <span>{{date_upload_to_show}}</span>
-        </div>
-
-    </div>
-
-
+    </a>
 </div>
