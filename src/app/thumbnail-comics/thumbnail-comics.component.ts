@@ -8,6 +8,10 @@ import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
+
+import { Router  } from '@angular/router';
+
+
 declare var Swiper: any;
 declare var $:any;
 
@@ -26,6 +30,7 @@ export class ThumbnailComicsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
     private rd:Renderer2,
+    private router:Router,
     
 
   ) { }
@@ -236,6 +241,11 @@ export class ThumbnailComicsComponent implements OnInit {
     this.pp_is_loaded=true;
   }
   
+  
+  get_artwork() {
+    return "/artwork-comic/"+this.format+"/"+this.title+"/"+this.bd_id;
+    //this.router.navigate([`/artwork-comic/${this.format}/${this.title}/${this.bd_id}`]);
+  }
 
   mouseEnterBook() {
     let v0 = this.cancelled;

@@ -5,7 +5,7 @@
 
         <div class="col-book text-center">
             
-            <a href='/artwork-comic/{{format}}/{{title}}/{{bd_id}}'>
+            <a [routerLink]=get_artwork()>
             
                 <div #thumbnail class="swiper-container artbook-thumbnail">
                     
@@ -93,15 +93,6 @@
                                             <span>{{highlight}}</span>
                                         </div>
                                         <!--********************-->
-                                        <!--Categories container-->
-                                        <!--********************-->
-                                        <div class="categories-container">  
-                                            <!--&bull;-->
-                                            <div class="tag-container"><span  class="categories" >{{firsttag}}</span></div>
-                                            <div  *ngIf="secondtag!=null" class="tag-container"><span  class="categories" >{{secondtag}}</span></div>
-                                            <div  *ngIf="thirdtag!=null" class="tag-container"><span  class="categories" >{{thirdtag}}</span></div>
-                                        </div>
-                                        <!--********************-->
                                         <!--Type container-->
                                         <!--********************-->
                                         <div class="verso-type">
@@ -113,8 +104,6 @@
                                                     <mat-icon>insert_drive_file</mat-icon>
                                                 </div>
                                             </ng-container>
-
-
                                             <ng-container *ngIf="format!='one-shot'">
                                                 <div class="tag-container"><span>Série</span></div>
                                                 <div class="tag-container">
@@ -124,6 +113,9 @@
                                                     <mat-icon>insert_drive_file</mat-icon>
                                                 </div>
                                             </ng-container>
+                                            <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>
+                                            <div  *ngIf="secondtag!=null" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                                            <div  *ngIf="thirdtag!=null" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
                                             
                                         </div>
                                         <!--********************-->

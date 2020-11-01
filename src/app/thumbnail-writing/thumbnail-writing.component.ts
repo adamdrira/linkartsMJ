@@ -9,6 +9,8 @@ import {date_in_seconds} from '../helpers/dates';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
+import { Router  } from '@angular/router';
+
 declare var Swiper: any;
 declare var $:any;
 
@@ -24,6 +26,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private sanitizer :DomSanitizer,
     private Writing_Upload_Service:Writing_Upload_Service,
     private rd:Renderer2,
+    private router:Router,
 
     ) { }
 
@@ -41,7 +44,8 @@ export class ThumbnailWritingComponent implements OnInit {
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
 
   
-  @Output() sendLoaded = new EventEmitter<boolean>();
+  @Output() send_number_of_thumbnails = new EventEmitter<object>();
+  @Output() send_loaded = new EventEmitter<boolean>();
   
   author_name:string;
   primary_description:string;
@@ -200,9 +204,11 @@ export class ThumbnailWritingComponent implements OnInit {
 
     var n = Math.floor(width/250);
     if( width < 500 ) {
+      this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }
     else {
+      this.send_number_of_thumbnails.emit({number:n});
       return n;
     }
 
@@ -234,7 +240,7 @@ export class ThumbnailWritingComponent implements OnInit {
   imageloaded=false;
   loaded(){
     this.imageloaded=true;
-    this.sendLoaded.emit(true);
+    this.send_loaded.emit(true);
   }
   
   pp_is_loaded=false;
@@ -242,6 +248,10 @@ export class ThumbnailWritingComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
+  get_artwork() {
+    return "/artwork-writing/"+this.title+"/"+this.writing_id;
+    //this.router.navigate([`/artwork-writing/${this.title}/${this.writing_id}`]);
+  }
 
 
 }
