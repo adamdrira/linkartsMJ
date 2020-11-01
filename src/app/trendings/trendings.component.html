@@ -1,13 +1,10 @@
 
-<div class="laurel-invisible-icon">
-</div>
-
-<div class="loading-page" *ngIf="!comics_trendings_sorted_confirmation && !drawings_trendings_sorted_confirmation && !writings_trendings_sorted_confirmation">
+<!--<div class="loading-page" *ngIf="!comics_trendings_sorted_confirmation && !drawings_trendings_sorted_confirmation && !writings_trendings_sorted_confirmation">
     <mat-spinner diameter="50" ></mat-spinner>
-</div>
+</div>-->
 
 
-<div class="panel-controller" *ngIf="comics_trendings_sorted_confirmation || drawings_trendings_sorted_confirmation || writings_trendings_sorted_confirmation" [@enterAnimation]>
+<div class="panel-controller" [@enterAnimation]>
     <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
         <div class="comic-bubble-icon"></div>
         <span>Bandes dessinées</span>
@@ -25,6 +22,12 @@
 <div class="trendings-global-container">
         
 
+    <ng-container *ngIf=" !comics_trendings_sorted_confirmation && subcategory==0">
+        <ng-container *ngFor="let item of skeleton_array; let i = index">
+            <div class="skeleton" [@enterAnimation]>
+            </div>
+        </ng-container>
+    </ng-container>
 
     <ng-container *ngIf=" comics_trendings_sorted_confirmation && subcategory==0">
         <ng-container *ngFor="let item of comics_trendings_sorted; let i = index">

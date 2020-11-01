@@ -61,6 +61,7 @@ export class TrendingsComponent implements OnInit {
   subcategory: number = 0; 
   user_id:number=0;
 
+  skeleton_array = Array(15);
 
   comics_trendings_sorted:any[]=[];
   list_of_comics_rankings:any[]=[];
