@@ -198,14 +198,11 @@ export class MediaSeeMoreComicsComponent implements OnInit {
       console.log("updating_list")
       this.update_lists(this.number_of_comics_to_show);
     }
-   
   }
 
   update_lists(number){
-    console.log(number);
     if( number== 1 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-      //$(".thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","none");
     }
     else if( number== 2) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");

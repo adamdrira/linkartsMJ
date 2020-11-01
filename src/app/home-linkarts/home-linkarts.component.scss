@@ -7,25 +7,6 @@
    $box-shadow-color: 0 0 20px rgba(143,170,220, 1); //adam
    
    
-    
-  @media (max-width:700px) {
-    .content-action span {
-     
-    font-size:1.1rem;
-    }
-  }    
-  @media (min-width:701px) and (max-width: 1000px) {
-    .content-action span {
-      font-size:1.1rem;
-    }
-  }
-
-  @media (min-width: 1700px) {
-    [role="main"] {
-      width:1670px;
-      margin:auto auto;
-    }
-  }
 
   .main {
     display:block;
@@ -34,6 +15,7 @@
 
    .container-fluid {
      background-color:rgb(255, 255, 255);
+     min-height: 100vh;
    }
  
  
@@ -100,9 +82,9 @@
  
    .category-filter .content-action {
      position:relative;
+     outline:none !important;
      display:flex;
-     padding-top:7px;
-     padding-bottom:7px;
+     padding:7px 20px 7px 20px;
      border-radius:15px;
    }
 
@@ -117,6 +99,7 @@
 
    .title{
     display:flex; 
+    font-size: 15px;
     align-items:center;
     color: #53627d;
     margin:auto auto;
@@ -142,6 +125,7 @@
     width:100%;
     position:relative;
     display:flex;
+    flex-wrap: wrap;
     justify-content:center;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -179,7 +163,6 @@
 
   .content-action {
      cursor:pointer;
-     padding:20px;
      margin-left:10px;
      margin-right:10px;
      padding-bottom:5px;
@@ -190,7 +173,7 @@
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background-color: hsl(219, 52%, 26%);
     color: white !important;
-    text-shadow: -0.04ex 0 white, 0.04ex 0 !important;
+    text-shadow: -0.02ex 0 white, 0.02ex 0 !important;
   }
 
   .title-opened{
@@ -207,7 +190,7 @@
   .categories-container .content-action:hover {
     color: rgb(32,56,100) ;
     transition:text-shadow 200ms;
-    text-shadow: -0.06ex 0 rgb(32,56,100), 0.06ex 0 rgb(32,56,100);
+    text-shadow: -0.02ex 0 rgb(32,56,100), 0.02ex 0 rgb(32,56,100);
   }
 
   .categories-container .content-action:hover .bottom-border {
@@ -295,12 +278,6 @@
 }
 
 
-
-::ng-deep .SumoSelect > .CaptionCont > span {
-  padding-right:30px;
-}
-
-
 .icon-container {
   position: relative;
   cursor: pointer;
@@ -336,4 +313,56 @@
   background-color: #53627d;
   -webkit-mask:  url("../../assets/img/svg/fire.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/fire.svg") no-repeat 50% 50%;
+}
+
+
+    
+@media (max-width:650px) {
+  .content-action {
+    margin-left:unset !important;
+    margin-right:unset !important;
+    padding: 5px 13px 6px 13px !important;
+
+  }
+  .content-action .title {
+    font-size:13px;
+  }
+  .content-action .title .icon-container {
+    width:15px;
+  }
+}  
+
+@media (max-width:450px) {
+  .content-action {
+    margin-left:unset !important;
+    margin-right:unset !important;
+    padding: 3px 8px 3px 8px !important;
+
+  }
+  .content-action .title {
+    font-size:11px;
+  }
+  .content-action .title .icon-container {
+    width:13px;
+  }
+}     
+
+@media (max-width:700px) {
+  .content-action span {
+   
+  font-size:1.1rem;
+  }
+}    
+
+@media (min-width:701px) and (max-width: 1000px) {
+  .content-action span {
+    font-size:1.1rem;
+  }
+}
+
+@media (min-width: 1700px) {
+  [role="main"] {
+    width:1670px;
+    margin:auto auto;
+  }
 }

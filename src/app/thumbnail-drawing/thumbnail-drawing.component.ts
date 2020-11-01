@@ -12,12 +12,26 @@ import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 
+import { Router  } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
+
+
 declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-drawing',
   templateUrl: './thumbnail-drawing.component.html',
-  styleUrls: ['./thumbnail-drawing.component.scss']
+  styleUrls: ['./thumbnail-drawing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class ThumbnailDrawingComponent implements OnInit {
 
@@ -28,6 +42,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     private cd:ChangeDetectorRef,
+    private router:Router,
     ) {
   }
 
@@ -73,11 +88,9 @@ export class ThumbnailDrawingComponent implements OnInit {
   @Input() format: string;
  
 
-  @ViewChild("thumbnail", {static:true}) thumbnail: ElementRef;
     
 
   tagsSplit: string;
-  showDrawingDetails:boolean = false;
   
   marks_retrieved=false;
   
@@ -148,25 +161,15 @@ export class ThumbnailDrawingComponent implements OnInit {
   ngAfterViewInit() {
     
     this.resize_drawing();
-    this.set_color();
   }
 
 
 
-  set_color() {
 
-    if( this.thumbnail ) {
-      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.thumbnail_color ));
-    }
-
-  }
-
-
-
+  showDrawingDetails:boolean = false;
   showDetails() {
     this.showDrawingDetails=true;
   }
-
   hideDetails() {
     this.showDrawingDetails=false;
   }
@@ -188,8 +191,8 @@ export class ThumbnailDrawingComponent implements OnInit {
   drawings_per_line() {
     var width = $('.container-drawings').width();
 
-    var n = Math.round(width/300);
-    if( width < 660 ) {
+    var n = Math.floor(width/250);
+    if( width < 500 ) {
       return 1;
     }
     else {
@@ -208,5 +211,10 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
+  
+  get_artwork() {
+    return "/artwork-drawing/"+this.format+"/"+this.title+"/"+this.drawing_id;
+    //this.router.navigate([`/artwork-drawing/${this.format}/${this.title}/${this.drawing_id}`]);
+  }
 
 }

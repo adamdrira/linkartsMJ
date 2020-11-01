@@ -1,17 +1,28 @@
-<div [ngClass]="{'mediaVisible': list_of_contents_sorted, 'main-media-menu':!list_of_contents_sorted }">
 
-    <div *ngFor="let item of sorted_style_list; index as i1">
 
-        
-        <a href="/main-research-style-and-tag/1/Comic/{{item}}/all">
-            <div class="category">
+<div *ngFor="let item of sorted_style_list; index as i1">
+
+    <ng-container *ngIf="(item==='BD' && sorted_artpieces_bd.length>0)||(item==='Manga' && sorted_artpieces_manga.length>0)
+        ||(item==='Comics' && sorted_artpieces_comics.length>0)||(item==='Webtoon' && sorted_artpieces_webtoon.length>0)">
+
+        <div class="category">
+            <a  [routerLink]=open_research(item)>
+                <mat-icon>dehaze</mat-icon>
                 <span>{{item}}</span>
-            </div>
-            
-        </a>
-    
-        <div class="container-homepage container-comics d-flex flex-wrap">
-    
+            </a>
+        </div>
+        
+
+        <div class="container-skeletons d-flex flex-wrap skeleton" *ngIf="!list_of_more_contents_sorted" [@enterAnimation]>
+            <ng-container *ngFor="let item of skeleton_array; let i = index">
+                <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i && !list_of_contents_sorted"
+                    (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                ></app-thumbnail-skeleton>
+            </ng-container>
+        </div>
+        
+        <div class="container-homepage container-comics d-flex flex-wrap" style="transition:opacity 1s;" [ngClass]="{'invisible_without_height': !list_of_contents_sorted}">
+
             <ng-container *ngIf="item==='BD'">
                 <ng-container *ngFor="let item of sorted_artpieces_bd; let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
@@ -23,7 +34,7 @@
                     ></app-thumbnail-comics>
                 </ng-container>
             </ng-container>
-    
+
             <ng-container *ngIf="item==='Manga'">
                 <ng-container *ngFor="let item of sorted_artpieces_manga; let i = index">
                     <app-thumbnail-comics class="thumbnail-component-container" 
@@ -34,11 +45,11 @@
                         (send_loaded)="send_loaded( $event );"
                     ></app-thumbnail-comics>
                 </ng-container>
-             </ng-container>
+                </ng-container>
         
-             <ng-container *ngIf="item==='Comics'">
+                <ng-container *ngIf="item==='Comics'">
                 <ng-container *ngFor="let item of sorted_artpieces_comics; let i = index">
-                    <app-thumbnail-comics  class="thumbnail-component-container" *ngIf="item.status=='public'"
+                    <app-thumbnail-comics  class="thumbnail-component-container" 
                         [item]=item
                         [format]=sorted_artpieces_comics_format[i]
                         now_in_seconds={{now_in_seconds}}
@@ -47,10 +58,10 @@
                     ></app-thumbnail-comics>
                 </ng-container>
             </ng-container>
-    
+
             <ng-container *ngIf="item==='Webtoon'">
                 <ng-container *ngFor="let item of sorted_artpieces_webtoon; let i = index">
-                    <app-thumbnail-comics class="thumbnail-component-container" *ngIf="item.status=='public'"
+                    <app-thumbnail-comics class="thumbnail-component-container" 
                         [item]=item
                         [format]=sorted_artpieces_webtoon_format[i]
                         now_in_seconds={{now_in_seconds}}
@@ -60,14 +71,24 @@
                 </ng-container>
             </ng-container>
         
-    
+
             <ng-container >
                 <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && get_number_of_thumbnails(item)>=6" class="see-more" (click)="see_more(item)">
                     <div class="icon">
                     </div>
                 </div>
+
                 <div *ngIf="show_more[sorted_style_list.indexOf(item)]" >
-                    <div [ngClass]="{'invisible': !list_of_more_contents_sorted}">
+                                
+                    <div *ngIf="!list_of_more_contents_sorted" [@enterAnimation] class="container-homepage container-comics d-flex flex-wrap">
+                        <ng-container *ngFor="let item of skeleton_array; let i = index">
+                            <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
+                                (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            ></app-thumbnail-skeleton>
+                        </ng-container>
+                    </div>
+
+                    <div [ngClass]="{'invisible_without_height': !list_of_more_contents_sorted}" style="transition:opacity 1s;">
                         <app-media-see-more-comics
                         [style]=item
                         [sorted_artpieces_bd]=sorted_artpieces_bd
@@ -81,11 +102,9 @@
                     </div>
                 </div>        
             </ng-container>                
-    
-        </div>
-    
-    
-    </div>
-    
-</div>
 
+        </div>
+
+    </ng-container>
+
+</div>

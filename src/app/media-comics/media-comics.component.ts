@@ -5,12 +5,25 @@ import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 
+import { Router } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
+
 declare var $: any
 
 @Component({
   selector: 'app-media-comics',
   templateUrl: './media-comics.component.html',
-  styleUrls: ['./media-comics.component.scss']
+  styleUrls: ['./media-comics.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 
 
@@ -21,6 +34,7 @@ export class MediaComicsComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Community_recommendation:Community_recommendation,
     private BdOneShotService:BdOneShotService,
+    private router:Router,
     private BdSerieService:BdSerieService) { 
 
     this.cancelled = 0;
@@ -28,11 +42,12 @@ export class MediaComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    //this.update_lists(this.number_of_comics_to_show);
+    
 
   }
 
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
+
 
   cancelled: number;
 
@@ -96,13 +111,17 @@ export class MediaComicsComponent implements OnInit {
     this.list_of_more_contents_sorted=true;
   }
 
-  
+  skeleton_array = Array(20);
+  number_of_skeletons_per_line = 1;
+  send_number_of_skeletons(object) {
+    this.number_of_skeletons_per_line=object.number;
+    this.cd.detectChanges();
+  }
 
   update_lists(number){
     
     if( number== 1 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-      //$(".thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","none");
     }
     else if( number== 2) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");
@@ -124,11 +143,11 @@ export class MediaComicsComponent implements OnInit {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.list_of_contents_sorted=true;
+    this.cd.detectChanges();
   }
 
   //Other
   see_more(item) {
-    //this.list_of_contents_sorted=false;
     let index = this.sorted_style_list.indexOf(item);
     this.show_more[index]=true;
   }
@@ -150,6 +169,10 @@ export class MediaComicsComponent implements OnInit {
     }
     
     
+  }
+
+  open_research(item:any) {
+    return "/main-research-style-and-tag/1/Comic/"+item+"/all";
   }
 
 

@@ -1,0 +1,45 @@
+
+
+@import '../../thumbnail-comic-styles.css';
+
+ 
+
+
+.comic-container {
+  overflow:hidden;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+// CODE POUR CONTENU BD
+
+.col-book {
+  display:flex;
+  margin:30px auto 30px auto;
+  width: 200px;
+  height:267px;
+  border-radius: 4px 30px 4px 30px;
+
+
+  background-color: rgb(220, 220, 220);
+  background-image: linear-gradient(
+    to right,
+    transparent 33%,
+    rgba(255,255,255,0.3) 50%,
+    transparent 66%
+  );
+  background-size:300% 100%;
+  animation: shine 2s infinite;
+}
+
+
+
+
+@keyframes shine {
+  0% {
+    background-position: right;    
+  }
+  /*100% {
+    background-position: left; it's the default value, no need to define it
+  }*/
+}

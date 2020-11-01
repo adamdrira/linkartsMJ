@@ -2,11 +2,11 @@
 <div class="drawing-container">
         
     
-    <a href="/artwork-drawing/{{format}}/{{title}}/{{drawing_id}}" [ngClass]="{ 'for_news':for_news=='yes'}">
+    <a [routerLink]=get_artwork() [ngClass]="{ 'for_news':for_news=='yes'}">
         <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
             <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'for_news':for_news=='yes'}">
-            <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails,'invisible':!marks_retrieved}">
+            <div class="display-on-hover" [ngClass]="{'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>
                 
                 <!--********************-->
                 <!--Title container-->

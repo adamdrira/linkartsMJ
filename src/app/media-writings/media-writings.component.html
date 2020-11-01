@@ -1,71 +1,115 @@
+
 <div *ngFor="let style of sorted_style_list; index as i1">
 
-    <div class="category"><span>{{style}}</span></div>
-    <div class="container-writings d-flex flex-wrap">
+    <ng-container *ngIf="(style==='Roman illustré' && sorted_artpieces_illustrated_novel.length>0)||(style==='Poésie' && sorted_artpieces_poetry.length>0)
+        ||(style==='Roman' && sorted_artpieces_roman.length>0)||(style==='Scénario' && sorted_artpieces_scenario.length>0)||(style==='Article' && sorted_artpieces_article.length>0)">
 
-        <ng-container *ngIf="style==='Roman illustré'">
-            <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel; let i = index">
-                <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
+        <div class="category">
+            <a [routerLink]=open_research(style)>
+                <mat-icon>dehaze</mat-icon>
+                <span>{{style}}</span>
+            </a>
+        </div>
+        
+
+        <div class="container-homepage container-skeletons d-flex flex-wrap skeleton" *ngIf="!list_of_more_contents_sorted" [@enterAnimation]>
+            <ng-container *ngFor="let item of skeleton_array; let i = index">
+                <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i && !list_of_contents_sorted"
+                    (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                ></app-thumbnail-skeleton>
             </ng-container>
-        </ng-container>
+        </div>
 
-        <ng-container *ngIf="style==='Poésie'">
-            <ng-container *ngFor="let item of sorted_artpieces_poetry; let i = index">
-                <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
+        <div class="container-homepage container-writings d-flex flex-wrap" style="transition:opacity 1s;" [ngClass]="{'invisible_without_height': !list_of_contents_sorted}">
+
+            <ng-container *ngIf="style==='Roman illustré'">
+                <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-writing>
+                </ng-container>
             </ng-container>
-        </ng-container>
 
-        <ng-container *ngIf="style==='Roman'">
-            <ng-container *ngFor="let item of sorted_artpieces_roman; let i = index">
-                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public'"
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
+            <ng-container *ngIf="style==='Poésie'">
+                <ng-container *ngFor="let item of sorted_artpieces_poetry; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-writing>
+                </ng-container>
             </ng-container>
-        </ng-container>
 
-
-        <ng-container *ngIf="style==='Scénario'">
-            <ng-container *ngFor="let item of sorted_artpieces_scenario; let i = index">
-                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public' "
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
+            <ng-container *ngIf="style==='Roman'">
+                <ng-container *ngFor="let item of sorted_artpieces_roman; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-writing>
+                </ng-container>
             </ng-container>
-        </ng-container>
 
-        <ng-container *ngIf="style==='Article'">
-            <ng-container *ngFor="let item of sorted_artpieces_article; let i = index">
-                <app-thumbnail-writing class="writing-component-container" *ngIf="item.status=='public' "
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
+
+            <ng-container *ngIf="style==='Scénario'">
+                <ng-container *ngFor="let item of sorted_artpieces_scenario; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-writing>
+                </ng-container>
             </ng-container>
-        </ng-container>
+
+            <ng-container *ngIf="style==='Article'">
+                <ng-container *ngFor="let item of sorted_artpieces_article; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        now_in_seconds={{now_in_seconds}}
+                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
+                        (send_loaded)="send_loaded( $event );"
+                    ></app-thumbnail-writing>
+                </ng-container>
+            </ng-container>
 
 
-        <ng-container *ngIf=" list_of_contents_sorted">
-            <div *ngIf="!show_more[sorted_style_list.indexOf(style)]" class="see-more" (click)="see_more(style)">
-                <div class="icon">
+            <ng-container>
+                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && get_number_of_thumbnails(style)>=6" class="see-more" (click)="see_more(style)">
+                    <div class="icon">
+                    </div>
                 </div>
-            </div>
-            <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
-                <app-media-see-more-writings
-                    [style]=style
-                    [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
-                    [sorted_artpieces_roman]=sorted_artpieces_roman
-                    [sorted_artpieces_scenario]=sorted_artpieces_scenario
-                    [sorted_artpieces_article]=sorted_artpieces_article
-                    now_in_seconds={{now_in_seconds}}
-                ></app-media-see-more-writings>
-            </ng-container>        
-        </ng-container>                
+                <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
+                    
+                    <div *ngIf="!list_of_more_contents_sorted" [@enterAnimation] class="container-homepage container-writings d-flex flex-wrap">
+                        <ng-container *ngFor="let item of skeleton_array; let i = index">
+                            <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
+                                (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            ></app-thumbnail-skeleton>
+                        </ng-container>
+                    </div>
 
-    </div>
+                    <div [ngClass]="{'invisible_without_height': !list_of_more_contents_sorted}" style="transition:opacity 1s;">
+                        <app-media-see-more-writings
+                            [style]=style
+                            [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
+                            [sorted_artpieces_roman]=sorted_artpieces_roman
+                            [sorted_artpieces_scenario]=sorted_artpieces_scenario
+                            [sorted_artpieces_article]=sorted_artpieces_article
+                            now_in_seconds={{now_in_seconds}}
+                            (send_put_more_visible)="send_put_more_visible( $event );"
+                        ></app-media-see-more-writings>
+                    </div>
+                </ng-container>        
+            </ng-container>                
+
+        </div>
+        
+    </ng-container>
+
 </div>

@@ -1,5 +1,7 @@
 import { Component, OnInit, Renderer2, HostListener, ViewChildren, QueryList, ElementRef, Input } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 declare var $: any
 
 @Component({
@@ -18,7 +20,9 @@ export class MediaDrawingsComponent implements OnInit {
   cancelled: number;
   artbooks_per_line: number;
 
-  constructor() { 
+  constructor(
+    private router:Router,
+    ) { 
     
   }
 
@@ -74,7 +78,7 @@ export class MediaDrawingsComponent implements OnInit {
 
 
   get_artbook_size() {
-    
+
     return $('.container-homepage').width()/this.artbooks_per_line;
 
   }
@@ -83,17 +87,26 @@ export class MediaDrawingsComponent implements OnInit {
   get_artbooks_per_line() {
     var width = window.innerWidth;
 
-    var n = Math.round(width/300);
-    if( width < 660 ) {
-      return 1;
+    if( width > 1600 ) {
+      return 5;
+    }
+    else if( width > 1200) {
+      return 4;
+    }
+    else if( width > 1000) {
+      return 3;
+    }
+    else if( width > 700) {
+      return 2;
     }
     else {
-      return n;
+      return 1;
     }
   }
 
-
-  
+  open_research(item:any) {
+    return "/main-research-style-and-tag/1/Drawing/"+item+"/all";
+  }
 
 
 

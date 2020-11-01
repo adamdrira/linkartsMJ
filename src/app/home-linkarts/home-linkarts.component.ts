@@ -3,7 +3,7 @@ import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 
@@ -23,6 +23,7 @@ export class HomeLinkartsComponent implements OnInit {
     public navbar: NavbarService, 
     private location: Location,
     private cd:ChangeDetectorRef,
+    private router: Router
     
     ) {
 
@@ -56,24 +57,17 @@ export class HomeLinkartsComponent implements OnInit {
     //}
   }
 
-
-  open_category(i : number) {
-    this.category_index=i;
-    
+  
+  get_category(i : number) {
     if( i==0 ) {
-      this.location.go("recommendations");
+      return '/recommendations';
     }
     else if( i==1 ) {
-      this.location.go("trendings");
+      return '/trendings';
     }
     else if( i==2 ) {
-      this.location.go("subscribings");
+      return '/subscribings';
     }
-    /*else if( i==3 ) {
-      this.location.go("/decouverte");
-    }*/
-    
-
   }
 
   change_profile_number=0;
@@ -88,7 +82,7 @@ export class HomeLinkartsComponent implements OnInit {
         this.initializeselector();
         this.display_selector();
         this.initialize_heights();
-        this.open_category( this.route.snapshot.data['category'] );
+        this.category_index = this.route.snapshot.data['category'];
       }
     })
     this.display_selector();
@@ -99,7 +93,7 @@ export class HomeLinkartsComponent implements OnInit {
   little_screen=false;
   initializeselector(){
     let THIS=this;
-    $(document).ready(function () {
+    /*$(document).ready(function () {
       $('.f00select1').SumoSelect({});
     });
   
@@ -115,7 +109,7 @@ export class HomeLinkartsComponent implements OnInit {
         THIS.open_category(0);
       }
       THIS.cd.detectChanges();
-    })
+    })*/
   }
   
   

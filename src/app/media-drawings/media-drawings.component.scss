@@ -9,24 +9,43 @@
     overflow:hidden;
   }
   
+  a{
+    color: unset;
+    text-decoration: none;
+    background-color: none;
+    cursor:pointer;
+  }
+  
   //CODE COMMUN
   .category {
-    cursor:default;
     margin-top:30px;
     color:#203864;
+    font-weight:bold;
+    text-align: center;
+  }
+  .category a {
+    display: inline-flex;
+    align-items: center;
   }
 
-  .category > span {
-    font-size:1.5rem;
+  .category span {
+    font-size: 17px;
     font-weight: bold;
   }
+
+  .category mat-icon {
+    height:unset !important;
+    width:unset !important;
+    margin-right: 7px;
+  }
+
 
     
   .see-more {
   display:flex;
   width:100%;
   height:40px;
-  border-bottom:4px solid rgb(77, 105, 158);
+  border-bottom:3px solid rgb(77, 105, 158);
   text-align:center;
   margin:10px 0px 10px 0px;
   cursor:pointer;
@@ -34,7 +53,7 @@
   }
 
   .see-more:hover {
-    border-bottom:4px solid rgb(56, 81, 129);
+    border-bottom:3px solid rgb(56, 81, 129);
     background-color:rgb(235, 235, 235);
   }
 
@@ -61,6 +80,7 @@
   //CODE POUR LA PAGE D'ACCUEIL
   .container-homepage {
     padding:0px;
+    justify-content: center;
   }
 
   .container-drawings {
