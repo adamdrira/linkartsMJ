@@ -7,6 +7,7 @@ import { first } from 'rxjs/operators';
 import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $: any;
@@ -15,7 +16,17 @@ declare var Cropper;
 @Component({
   selector: 'app-swiper-upload-dessin-unique',
   templateUrl: './swiper-upload-dessin-unique.component.html',
-  styleUrls: ['./swiper-upload-dessin-unique.component.scss']
+  styleUrls: ['./swiper-upload-dessin-unique.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class SwiperUploadDessinUniqueComponent implements OnInit{
 
@@ -51,10 +62,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   @Input() tags: any;
 
 
-  
-  listOfColors = ["Bleu","Noir","Vert","Jaune","Rouge","Violet","Marron","Orange","Gris"];
-
-
   image_src: SafeUrl;
   image_uploaded: boolean = false;
   upload:boolean = false;
@@ -71,7 +78,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   showDrawingDetails:boolean = false;
 
-  color:string;
   displayErrors: boolean = false;
   imageSource: SafeUrl = "";
   imageDestination: string = '';
@@ -98,22 +104,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.showDrawingDetails=false;
   }
 
-  onColorChange(e:any) {
-    
-    this.color = e.value;
-    this.Drawings_Onepage_Service.update_filter(this.color).subscribe();
-    this.set_color();
-  }
-
-  set_color() {
-
-    this.thumbnail_background = get_color_code( this.color );
-    if( this.thumbnail ) {
-      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.color ));
-    }
-
-    
-  }
 
   initialize_cropper(content: ElementRef) {
     
@@ -124,7 +114,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
         autoCropArea:1,
         center:true,
         restore:false,
-        zoomOnWheel:false
+        zoomOnWheel:false,
+        fillColor: '#FFFFFF'
 
       });
       this.cropperInitialized = true;
@@ -165,8 +156,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.imageDestination = canvas.toDataURL("image/png");
 
     this.cd.detectChanges();
-    this.set_color();
-    this.cd.detectChanges();
     
     let el = document.getElementById("target3");
     var topOfElement = el.offsetTop - 200;
@@ -181,7 +170,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     this.Drawings_CoverService.remove_cover_from_folder().subscribe();
     this.imageDestination='';
-    this.color='';
     this.confirmation = false;
   }
 
@@ -189,8 +177,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   uploaded_image( event1: boolean) {
     this.image_uploaded = event1;
-
-    this.set_color();
 
     if(event1 == false) {
       this.cropperInitialized = false;
@@ -224,12 +210,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     else if( !this.imageDestination ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg2},
-      });
-      this.displayErrors = true;
-    }
-    else if( !this.color ) {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:errorMsg3},
       });
       this.displayErrors = true;
     }

@@ -8,6 +8,7 @@
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">
         <div class="form-container-name">
+            <mat-icon>insert_drive_file</mat-icon>
             <span>Édition de la miniature</span>
         </div>
         <div class="form-container-data">
@@ -18,13 +19,13 @@
                         <img #image [src]="imageSource" crossorigin>
                     </div>
                     <div class="buttons-container">
-                        <button mat-raised-button class="style0" (click)="cancel_crop();">
-                            <mat-icon>close</mat-icon>
-                            <span>Annuler</span>
+                        <button mat-raised-button class="restart-crop-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
+                            <mat-icon>refresh</mat-icon>
+                            <span>Recommencer</span>
                         </button>
-                        <button mat-raised-button class="style1" (click)="set_crop();">
+                        <button mat-raised-button class="validate-crop-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
                             <mat-icon>crop_free</mat-icon>
-                            <span>Valider</span>
+                            <span>Rogner</span>
                         </button>
                     </div>
                 </div>
@@ -33,7 +34,7 @@
 
             <div class="crop" *ngIf="imageDestination != ''" id="target3">
                 
-                <div class="img-preview" >
+                <div class="img-preview">
 
                     <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
 
@@ -82,8 +83,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                           
                             <!--********************-->
                             <!--Date container-->
                             <!--********************-->
@@ -96,20 +95,6 @@
                 </div>
 
                 
-                
-                
-                <div class="form-item" style="margin-top:40px;">
-                    <mat-form-field>
-                        <mat-label>Couleur du filtre</mat-label>
-                        <mat-select disableOptionCentering (selectionChange)="onColorChange($event)">
-                            <mat-option *ngFor="let obj of listOfColors" [value]="obj">
-                                {{ obj }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-
 
             </div>
 
@@ -122,6 +107,7 @@
 </div>
 
 
-<button mat-raised-button *ngIf="imageDestination != ''" class="submit-button style1" (click)="validateAll();">
+<button mat-raised-button *ngIf="imageDestination != ''" class="submit-button-with-done-all style1" (click)="validateAll();">
+    <mat-icon>done_all</mat-icon>
     <span>Valider</span>
 </button>

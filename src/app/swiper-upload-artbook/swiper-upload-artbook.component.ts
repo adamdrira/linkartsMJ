@@ -8,10 +8,9 @@ import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { first } from 'rxjs/operators';
 
-
-import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $:any;
@@ -22,7 +21,17 @@ declare var Cropper;
   selector: 'app-swiper-upload-artbook',
   templateUrl: './swiper-upload-artbook.component.html',
   styleUrls: ['./swiper-upload-artbook.component.scss'],
-  entryComponents: [UploaderArtbookComponent]
+  entryComponents: [UploaderArtbookComponent],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class SwiperUploadArtbookComponent implements OnInit {
 
@@ -58,10 +67,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
   @Input() format: string;
   @Input() tags: string[];
 
-
-  listOfColors = ["Bleu","Noir","Vert","Jaune","Rouge","Violet","Marron","Orange","Gris"];
-
-
+  
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
   @ViewChild('swiperController', { static : false }) swiperController: ElementRef;
 
@@ -87,7 +93,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
   showDrawingDetails:boolean = false;
 
-  color:string;
+  
   displayErrors: boolean = false;
   image_uploaded: boolean = false;
   imageSource: SafeUrl = "";
@@ -131,18 +137,23 @@ export class SwiperUploadArtbookComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
+          spaceBetween: 10
         },
         700: {
             slidesPerView: 2,
+            spaceBetween: 10
         },
         900: {
             slidesPerView: 3,
+            spaceBetween: 10
         },
         1400: {
             slidesPerView: 4,
+            spaceBetween: 10
         },
         1700: {
             slidesPerView: 5,
+            spaceBetween: 10
         }
       }
     });
@@ -361,23 +372,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
 
 
-  onColorChange(e:any) {
-    
-    this.color = e.value;
-    this.Drawings_Artbook_Service.update_filter(this.color).subscribe();
-    this.set_color();
-  }
-  
-  
-  set_color() {
-    if( this.thumbnail ) {
-      this.rd.setStyle( this.thumbnail.nativeElement, "background", get_color_code( this.color ));
-    }
-  }
-
-
-
-
   initialize_cropper(content: ElementRef) {
     
     if( !this.cropperInitialized ) {
@@ -422,7 +416,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
 
     this.cd.detectChanges();
-    this.set_color();
     this.cd.detectChanges();
     
     let el = document.getElementById("target3");
@@ -470,12 +463,6 @@ export class SwiperUploadArtbookComponent implements OnInit {
       this.displayErrors = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
-      });
-    }
-    else if( !this.color ) {
-      this.displayErrors = true;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:"La couleur du filtre n'a pas été sélectionnée"},
       });
     }
     

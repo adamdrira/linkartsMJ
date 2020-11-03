@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
@@ -27,6 +27,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private rd:Renderer2,
     private router:Router,
+    private cd:ChangeDetectorRef,
 
     ) { }
 
@@ -96,6 +97,15 @@ export class ThumbnailWritingComponent implements OnInit {
     this.date_upload = this.item.createdAt;
     this.writing_id = this.item.writing_id;
     
+
+    
+
+    if( this.thirdtag != null ) {
+      this.cd.detectChanges();
+      this.initialize_swiper();
+    }
+    
+
     this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.writing_id).subscribe(r=> {
       this.viewnumber = number_in_k_or_m(r[0].viewnumber)
       this.likesnumber = number_in_k_or_m(r[0].likesnumber)
@@ -128,6 +138,20 @@ export class ThumbnailWritingComponent implements OnInit {
 
   }
 
+  
+
+  @ViewChild("swiperCategories") swiperCategories:ElementRef;
+  initialize_swiper() {
+    this.swiper = new Swiper( this.swiperCategories.nativeElement, {
+      speed: 300,
+      initialSlide:0,
+      spaceBetween:100,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    })
+  }
   
 
   ngAfterViewInit() {
@@ -251,6 +275,11 @@ export class ThumbnailWritingComponent implements OnInit {
   get_artwork() {
     return "/artwork-writing/"+this.title+"/"+this.writing_id;
     //this.router.navigate([`/artwork-writing/${this.title}/${this.writing_id}`]);
+  }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 
 

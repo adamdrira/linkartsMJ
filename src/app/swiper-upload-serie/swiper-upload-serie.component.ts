@@ -110,18 +110,23 @@ export class SwiperUploadSerieComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
+          spaceBetween: 10
         },
         700: {
             slidesPerView: 2,
+            spaceBetween: 10
         },
         900: {
             slidesPerView: 3,
+            spaceBetween: 10
         },
         1400: {
             slidesPerView: 4,
+            spaceBetween: 10
         },
         1700: {
             slidesPerView: 5,
+            spaceBetween: 10
         }
       }
     });

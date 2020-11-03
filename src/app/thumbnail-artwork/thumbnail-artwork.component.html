@@ -9,7 +9,7 @@
             <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
             
         
-            <div #swiperThumbnails class="swiper-thumbnails" (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
+            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
                         <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
@@ -21,6 +21,27 @@
                         <img src="../../assets/img/pub-manga.jpg">
                     </div>
                 </div>
+            </div>
+
+            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category=='writing'">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
+                    </div>
+                    <div class="swiper-slide">
+                        <pdf-viewer
+                        class="pdf-document"
+                        [src]="pdfSrc"
+                        [autoresize]="true"
+                        [show-all]="true"
+                        [original-size]='true'
+                        [fit-to-page]='true'
+                        [render-text]='false'
+                    ></pdf-viewer>
+                    </div>
+                </div>
+                <div class="swiper-button-prev" (click)="stop($event)"></div>
+                <div class="swiper-button-next" (click)="stop($event)"></div>
             </div>
 
             <!--********************-->

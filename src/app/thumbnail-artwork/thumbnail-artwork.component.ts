@@ -53,6 +53,7 @@ export class ThumbnailArtworkComponent implements OnInit {
 
       let width2 = this.image2.nativeElement.width;
       let height2 = this.image2.nativeElement.height;
+      
 
       if( window.innerWidth<=700 && this.category!="drawing" ) {
         this.rd.setStyle(this.swiperThumbnails.nativeElement, 'height', width2*(32/24)+'px');
@@ -580,6 +581,9 @@ export class ThumbnailArtworkComponent implements OnInit {
   @ViewChild("swiperThumbnails") swiperThumbnails:ElementRef;
 
   initialize_swiper() {
+
+    let THIS = this;
+    
     this.cd.detectChanges();
     if( this.subscribing_category!='writing' && this.swiperArtworkPreview ) {
       this.swiper = new Swiper( this.swiperArtworkPreview.nativeElement, {
@@ -593,6 +597,23 @@ export class ThumbnailArtworkComponent implements OnInit {
         speed: 500,
         initialSlide:0,
         slidesPerView:1,
+      })
+    }
+
+    if( this.subscribing_category=='writing' && this.swiperThumbnails ) {
+      this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
+        speed: 500,
+        initialSlide:0,
+        slidesPerView:1,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        on: {
+          slideChange: function () {
+            THIS.load_pdf();
+          },
+        },
       })
     }
   }
@@ -620,6 +641,10 @@ export class ThumbnailArtworkComponent implements OnInit {
   timeout2 = interval(1500);
   subscription2: Subscription;
   launch_swiper_2() {
+
+    if( this.subscribing_category=='writing' ) {
+      return;
+    }
     this.swiper2.slideTo(0);
     let THIS = this;
     this.subscription2 = this.timeout2.subscribe( val => {
@@ -632,6 +657,9 @@ export class ThumbnailArtworkComponent implements OnInit {
     });
   }
   stop_swiper_2() {
+    if( this.subscribing_category=='writing' ) {
+      return;
+    }
     this.subscription2.unsubscribe();
     //this.swiper2.slideTo(0);
   }

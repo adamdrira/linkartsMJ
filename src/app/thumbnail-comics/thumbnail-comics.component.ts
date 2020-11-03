@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -31,7 +31,7 @@ export class ThumbnailComicsComponent implements OnInit {
     private BdSerieService: BdSerieService,
     private rd:Renderer2,
     private router:Router,
-    
+    private cd:ChangeDetectorRef,
 
   ) { }
 
@@ -104,6 +104,11 @@ export class ThumbnailComicsComponent implements OnInit {
     this.bd_id = this.item.bd_id
     console.log(this.file_name)
 
+
+    if( this.thirdtag != null ) {
+      this.cd.detectChanges();
+      this.initialize_swiper();
+    }
     
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
@@ -158,7 +163,18 @@ export class ThumbnailComicsComponent implements OnInit {
   }
 
   
-  
+  @ViewChild("swiperCategories") swiperCategories:ElementRef;
+  initialize_swiper() {
+    this.swiper = new Swiper( this.swiperCategories.nativeElement, {
+      speed: 300,
+      initialSlide:0,
+      spaceBetween:100,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    })
+  }
 
   ngAfterViewInit() {
 
@@ -267,6 +283,12 @@ export class ThumbnailComicsComponent implements OnInit {
     this.cancelled++;
     this.swiper.slideTo(0);
   }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
 
   
   
