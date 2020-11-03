@@ -1,15 +1,18 @@
+<ng-container *ngIf="!list_of_contents_sorted">
+    <!--<button *ngIf="!show_more" >see_more_contents</button>-->
+    <div class="thumbnail-artwork-skeleton">
+    </div>
 
+</ng-container>
 
-<div style="display: flex;justify-content: center;" *ngIf="!list_of_contents_sorted">
-    <mat-spinner diameter="30" ></mat-spinner>
-</div>
-<ng-container *ngIf=" list_of_contents_sorted">
+<ng-container *ngIf="list_of_contents_sorted">
     <div *ngFor="let item of list_of_contents; let i = index">
         <div *ngIf="item.drawing_id == null && item.writing_id == null">
             <div *ngIf="item.chaptersnumber > 0 ">
                 <div class="highlighted_artwork">
                     <app-thumbnail-artwork 
                     [item]=item
+                    page='subscribings'
                     now_in_seconds={{now_in_seconds}}
                     subscribing_category='comics'
                     subscribing_format='serie'
@@ -25,6 +28,7 @@
                 <div class="highlighted_artwork">
                     <app-thumbnail-artwork 
                     [item]=item
+                    page='subscribings'
                     now_in_seconds={{now_in_seconds}}
                     subscribing_category='comics'
                     subscribing_format='one-shot'
@@ -42,6 +46,7 @@
             <div class="highlighted_artwork">
                 <app-thumbnail-artwork 
                 [item]=item
+                page='subscribings'
                 now_in_seconds={{now_in_seconds}}
                 subscribing_category='writing'
                 ></app-thumbnail-artwork>
@@ -57,6 +62,7 @@
                 <div class="highlighted_artwork">
                     <app-thumbnail-artwork 
                     [item]=item
+                    page='subscribings'
                     now_in_seconds={{now_in_seconds}}
                     subscribing_category='drawing'
                     subscribing_format="artbook"
@@ -72,6 +78,7 @@
                 <div class="highlighted_artwork">
                     <app-thumbnail-artwork 
                     [item]=item
+                    page='subscribings'
                     now_in_seconds={{now_in_seconds}}
                     subscribing_category='drawing'
                     subscribing_format="one-shot"
@@ -92,7 +99,15 @@
 
 
 <ng-container *ngIf=" list_of_contents_sorted">
-    <ng-container *ngIf=" show_more">
+
+    <!--<button *ngIf="!show_more" >see_more_contents</button>
+    <div class="see-more-container" *ngIf="!show_more" (click)="see_more()" [@enterAnimation]>
+        <mat-icon>add</mat-icon>
+        <div class="see-more-text">Voir plus ...</div>
+    </div>-->
+
+
+    <ng-container *ngIf="show_more">
         <app-subscribings-see-more
             [list_of_users]=list_of_users
             [now_in_seconds]=now_in_seconds

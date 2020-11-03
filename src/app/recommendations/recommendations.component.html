@@ -1,18 +1,26 @@
 
 
-    <div class="panel-controller" [ngClass]="{'invisible':little_screen || !sorted_category_retrieved }">
-        <div class="left-container">
-            <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-                Bandes dessinées
-            </div>
-            <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
-                Dessins
-            </div>
-            <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
-                Écrits
-            </div>
+
+    <div class="panel-controller" [@enterAnimation]>
+        <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
+            <div class="comic-bubble-icon"></div>
+            <span>Bandes dessinées</span>
+        </div>
+        <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
+            <div class="pencil-icon"></div>
+            <span>Dessins</span>
+        </div>
+        <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
+            <div class="writing2-icon"></div>
+            <span>Écrits</span>
         </div>
 
+    </div>
+
+
+    <div class="loading-page" *ngIf="!sorted_category_retrieved">
+        <mat-spinner diameter="50" ></mat-spinner>
+    </div>
 
         <!--<div class="right-container">
 
@@ -77,20 +85,6 @@
 
 
         </div>-->
-
-
-
-    </div>
-    <div class="panel-controller" [ngClass]="{'invisible':!little_screen || !sorted_category_retrieved }">
-        <div class="left-container" >
-            <select class="f00select1" style="height: 100%; font-size: 1.1rem;color: white !important;
-            text-shadow: -0.04ex 0 white, 0.04ex 0 white;">
-                <option selected value="defaultValue" >Bandes dessinées</option>
-                <option label="1">Dessins</option>
-                <option label="2">Ecrits</option>
-            </select>
-        </div>
-    </div>
     
 
     <div class="media-container" *ngIf="bd_is_loaded && subcategory==0" [ngClass]="{'invisible':!sorted_category_retrieved }">

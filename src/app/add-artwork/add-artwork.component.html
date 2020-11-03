@@ -2,24 +2,58 @@
 
 <div class="container-fluid">
 
+    <div class="fake-navbar">
+
+        <div class="navbar-container" [ngClass]="{'category0':(opened_category$ | async)==0, 'category1':(opened_category$ | async)==1, 'category2':(opened_category$ | async)==2, 'category3':(opened_category$ | async)==3}">
+            <a href="/" class="logo-container">
+                <img class="logo" src='../../assets/img/svg/Logo-LA3.svg'>
+            </a>
+    
+            <ng-container *ngIf="(opened_category$ | async)!=0 && (opened_category$ | async)!=1 && (opened_category$ | async)!=2 && (opened_category$ | async)!=3">
+                <span>Publication</span>
+            </ng-container>
+            <ng-container *ngIf="(opened_category$ | async)==0">
+                <span>Publier une bande dessinée</span>
+            </ng-container>
+            <ng-container *ngIf="(opened_category$ | async)==1">
+                <span>Publier un dessin ou un artbook</span>
+            </ng-container>
+            <ng-container *ngIf="(opened_category$ | async)==2">
+                <span>Publier un écrit</span>
+            </ng-container>
+            <ng-container *ngIf="(opened_category$ | async)==3">
+                <span>Publier une annonce</span>
+            </ng-container>
+    
+            <a class="profile-picture-container" href="/account/{{pseudo}}/{{user_id}}">
+                <img class="profile-picture" [src]="profile_picture" *ngIf="profile_picture">
+            </a>
+        </div>
+        
+    </div>
 
     <ng-container *ngIf="(opened_category$ | async)==-1">
         
         <div class="categories-container">
 
+
             <span class="title">Que désirez-vous publier ?</span>
 
-            <button mat-raised-button class="category-choice style0" (click)="open_category(0);">
-                <span>Publier une bande dessinée</span>
+            <button mat-raised-button class="category-choice" (click)="open_category(0);">
+                <div class="comic-bubble-icon"></div>
+                <span>Une bande dessinée</span>
             </button>
-            <button mat-raised-button class="category-choice style0" (click)="open_category(1);">
-                <span>Publier un dessin</span>
+            <button mat-raised-button class="category-choice" (click)="open_category(1);">
+                <div class="pencil-icon"></div>
+                <span>Un dessin ou un artbook</span>
             </button>
-            <button mat-raised-button class="category-choice style0" (click)="open_category(2);">
-                <span>Publier un écrit</span>
+            <button mat-raised-button class="category-choice" (click)="open_category(2);">
+                <div class="writing2-icon"></div>
+                <span>Un écrit</span>
             </button>
-            <button mat-raised-button class="category-choice style0" (click)="open_category(3);">
-                <span>Publier une annonce</span>
+            <button mat-raised-button class="category-choice" (click)="open_category(3);">
+                <mat-icon>announcement</mat-icon>
+                <span>Une annonce</span>
             </button>
 
         </div>

@@ -60,6 +60,14 @@
     </ng-container>
 
 
+
+    <ng-container *ngIf=" !drawings_trendings_sorted_confirmation && subcategory==1">
+        <ng-container *ngFor="let item of skeleton_array; let i = index">
+            <div class="skeleton" [@enterAnimation]>
+            </div>
+        </ng-container>
+    </ng-container>
+
     <ng-container *ngIf=" drawings_trendings_sorted_confirmation && subcategory==1">
         <div *ngFor="let item of drawings_trendings_sorted; let i = index">
             <div *ngIf="drawings_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
@@ -87,6 +95,14 @@
                 </div>
             </div>
         </div>
+    </ng-container>
+
+
+    <ng-container *ngIf=" !writings_trendings_sorted_confirmation && subcategory==2">
+        <ng-container *ngFor="let item of skeleton_array; let i = index">
+            <div class="skeleton" [@enterAnimation]>
+            </div>
+        </ng-container>
     </ng-container>
 
     <ng-container *ngIf=" writings_trendings_sorted_confirmation && subcategory==2">

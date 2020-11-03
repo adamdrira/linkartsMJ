@@ -19,7 +19,9 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { pattern } from '../helpers/patterns';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
+import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
+declare var Swiper:any;
 declare var $: any;
 
 @Component({
@@ -49,6 +51,9 @@ export class AddWritingComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service
   ) { 
 
+    this.REAL_step = 0;
+    this.CURRENT_step = 0;
+
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
       map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
@@ -67,6 +72,11 @@ export class AddWritingComponent implements OnInit {
 
 
   @Output() cancelled = new EventEmitter<any>();
+
+
+  REAL_step: number;
+  CURRENT_step: number;
+  pdfSrc:SafeUrl;
 
   
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
@@ -87,12 +97,7 @@ export class AddWritingComponent implements OnInit {
 
   }
 
-  ngAfterContentInit() {
-
-    this.initialize_selectors();
-    this.initialize_taginputs_fw();
-    this.cd.detectChanges();
-  }
+  
 
   ngAfterViewInit() {
 
@@ -105,7 +110,7 @@ export class AddWritingComponent implements OnInit {
     if(e.checked){
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
       });
    }else{
     this.monetised = false;
@@ -114,50 +119,10 @@ export class AddWritingComponent implements OnInit {
 
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Condition en cours d'écriture"},
+      data: {showChoice:false, text:"Conditions en cours d'écriture"},
     });
   }
 
-  
-  initialize_selectors() {
-
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.fwselect0').SumoSelect({});
-    });
-    $(document).ready(function () {
-      $('.fwselect1').SumoSelect({});
-    });
-    $(document).ready(function () {
-      $('.fwselect3').SumoSelect({});
-    });
-
-    this.cd.detectChanges();
-
-    
-    $(".fwselect0").change(function(){
-      THIS.fw.controls['fwFormat'].setValue( $(this).val() );
-      THIS.cd.detectChanges();
-    });
-    
-    $(".fwselect1").change(function(){
-      THIS.fw.controls['fwCategory'].setValue( $(this).val() );
-      THIS.cd.detectChanges();
-    });
-
-  }
-
-
-  initialize_taginputs_fw() {
-
-    $('.multipleSelectfw').fastselect({
-      maxItems: 3
-    });
-    
-    this.cd.detectChanges();
-
-  }
 
   
   fw: FormGroup;
@@ -172,7 +137,7 @@ export class AddWritingComponent implements OnInit {
   
   createFormControlsWritings() {
     this.fwTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
+    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(290), Validators.pattern( pattern("text") ) ]);
     this.fwCategory = new FormControl('', [Validators.required]);
     this.fwTags = new FormControl( this.genres , [Validators.required]);
     //this.fwFormat = new FormControl('', Validators.required);
@@ -190,9 +155,32 @@ export class AddWritingComponent implements OnInit {
 
 
 
+  step_back() {
+
+    this.CURRENT_step = this.REAL_step - 1;
+    this.cd.detectChanges();
+  }
+
+  validateForm00() {
+    if ( this.fw.valid  && /*this.Writing_Upload_Service.get_confirmation() &&*/ this.Writing_CoverService.get_confirmation() ) {
+      if( this.CURRENT_step < (this.REAL_step) ) {
+        this.CURRENT_step++;
+
+        this.cd.detectChanges();
+        window.scroll(0, 0);
+      }
+      else {
+        this.CURRENT_step++;
+        this.REAL_step++;
+
+        this.cd.detectChanges();
+        window.scroll(0, 0);
+      }
+    }
+  }
+
   validate_form_writing() {
 
-    
     if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() ) {
 
       
@@ -225,7 +213,7 @@ export class AddWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+                  window.location.href = `/account/${this.pseudo}/${this.user_id}`;
                 }) 
               }); 
             })
@@ -353,6 +341,53 @@ export class AddWritingComponent implements OnInit {
     return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
   }
 
+  
+  /*swiper:any;
+  total_pages:number;
+  arrayOne(n: number): any[] {
+    return Array(n);
+  }
 
+  @ViewChild('pdfDocument')
+  pdfDocumentRef: ElementRef;
+
+  initialize_swiper() {
+    let THIS = this;
+    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
+      speed: 500,
+      spaceBetween:100,
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      keyboard: {
+        enabled: true,
+      },
+      on: {
+        slideChange: function () {
+          THIS.cd.detectChanges();
+          THIS.pdfDocumentRef.nativeElement.scrollIntoView({behavior: 'smooth'});
+        },
+      },
+    });
+  }
+  
+  afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
+    this.total_pages = pdf.numPages;
+    this.cd.detectChanges();
+    if( (i+1) == this.total_pages ) {
+      this.initialize_swiper();
+      //this.refresh_controls_pagination();
+      //this.display_writing=true;
+      //this.display_pages=true;
+    };
+  }*/
   
 }

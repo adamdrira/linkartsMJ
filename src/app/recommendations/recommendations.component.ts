@@ -9,6 +9,7 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 
 import { ConstantsService } from '../services/constants.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Swiper: any
 declare var $: any
@@ -17,7 +18,17 @@ declare var $: any
 @Component({
   selector: 'app-recommendations',
   templateUrl: './recommendations.component.html',
-  styleUrls: ['./recommendations.component.scss']
+  styleUrls: ['./recommendations.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 
 
@@ -65,12 +76,13 @@ export class RecommendationsComponent implements OnInit {
   drawing_is_loaded:boolean=false;
 
   index_writing=0;
-  sorted_style_list_writing:any[]=["Illustrated novel","Roman","Scenario","Article","Poetry"];
+  sorted_style_list_writing:any[]=["Roman illustré","Poésie","Roman","Scénario","Article"];
   sorted_artpieces_illustrated_novel:any[]=[];
   sorted_artpieces_roman:any[]=[];
   sorted_artpieces_scenario:any[]=[];
   sorted_artpieces_article:any[]=[];
   sorted_artpieces_poetry:any[]=[];
+
   compteur_writing_is_loaded=0;
   compare_to_compteur_writing=0;
   writing_is_loaded:boolean=false;

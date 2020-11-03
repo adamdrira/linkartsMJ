@@ -17,7 +17,7 @@ import { ThemePalette } from '@angular/material/core';
 
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
@@ -108,58 +108,31 @@ export class AddComicComponent implements OnInit {
   f00SerieFirstChapter: FormControl;
   monetised:boolean = false;
 
+
+  format_change_alert() {
+    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
+      });
+      this.modal_displayed = true;
+    }
+  }
   
   onFormatChange(e:any) {
-
-
-    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
-      
-      //show modal
-      //Attention, changer le format annulera toute la sélection de l'étape 2.
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:true, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if( result ) {
-          if( this.f00.controls['f00Format'].value == "Série" ) {
-            this.AddValidator();
-          }
-          else {
-            this.RemoveValidator();
-          }
-          this.REAL_step--;
-          this.modal_displayed = true;
-          this.cd.detectChanges();
-        }
-        else {
-          if( this.f00.controls['f00Format'].value == "Série" ) {
-            this.f00.controls['f00Format'].setValue("One-shot");
-          }
-          else {
-            this.f00.controls['f00Format'].setValue("Série");
-          }
-          this.cd.detectChanges();
-        }
-      });
-
-    }
-
-    else {
+    if( (this.REAL_step != this.CURRENT_step) ) {
       if( this.f00.controls['f00Format'].value == "Série" ) {
         this.AddValidator();
       }
       else {
         this.RemoveValidator();
       }
+      this.REAL_step--;
+      this.modal_displayed = true;
+      this.cd.detectChanges();
     }
-
-    this.cd.detectChanges();
-
-
   }
 
-
+  
   back_home() {
     this.cancelled.emit();
   }
@@ -178,7 +151,7 @@ export class AddComicComponent implements OnInit {
     if(e.checked){
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
       });
    }else{
     this.monetised = false;
@@ -187,7 +160,7 @@ export class AddComicComponent implements OnInit {
 
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Condition en cours d'écriture"},
+      data: {showChoice:false, text:"Conditions en cours d'écriture"},
     });
   }
 
@@ -196,7 +169,7 @@ export class AddComicComponent implements OnInit {
   
   createFormControls00() {
     this.f00Title = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
+    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(290), Validators.pattern( pattern("text") ) ]);
     this.f00Category = new FormControl('', Validators.required);
     this.f00Tags = new FormControl( this.genres, [Validators.required]);
     this.f00Format = new FormControl('', [Validators.required]);
@@ -336,6 +309,7 @@ export class AddComicComponent implements OnInit {
   //GENRES
   @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  
   visible = true;
   selectable = true;
   removable = true;
@@ -390,8 +364,9 @@ export class AddComicComponent implements OnInit {
     this.f00Tags.updateValueAndValidity();
   }
   selected(event: MatAutocompleteSelectedEvent): void {
-
     
+    
+
     if( this.genres.length >= 3 ) {
       this.genreInput.nativeElement.value = '';
       this.genreCtrl.setValue(null);  
@@ -408,6 +383,10 @@ export class AddComicComponent implements OnInit {
     this.genreInput.nativeElement.value = '';
     this.genreCtrl.setValue(null);
     this.f00Tags.updateValueAndValidity();
+
+    if( this.genres.length < 3) {
+      
+    }
   }
   _filter(value: string): string[] {
     const filterValue = value.toLowerCase();

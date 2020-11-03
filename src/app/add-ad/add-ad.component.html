@@ -19,15 +19,16 @@
                 <div class="form-container">
 
                     <div class="form-container-name">
+                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Informations de base</span>
                     </div>
 
 
                     <div class="form-item">
-                        <mat-form-field>
+                        <mat-form-field floatLabel='never'>
                             <mat-label>Titre</mat-label>
                             <input matInput formControlName="fdTitle" maxLength="30" autocomplete="off">
-                            <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide
+                            <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{fd.controls['fdTitle'].value?.length || 0}}/30</div>
                         </mat-form-field>
@@ -35,10 +36,10 @@
 
 
                     <div class="form-item">
-                        <mat-form-field>
+                        <mat-form-field floatLabel='never'>
                             <mat-label>Localisation préférentielle</mat-label>
                             <input matInput formControlName="fdPreferential_location" maxLength="30" autocomplete="off">
-                            <mat-error *ngIf="fd.controls['fdPreferential_location'].invalid">Veuillez faire une saisie valide
+                            <mat-error *ngIf="fd.controls['fdPreferential_location'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{fd.controls['fdPreferential_location'].value?.length || 0}}/30</div>
                         </mat-form-field>
@@ -47,7 +48,7 @@
 
                     
                     <div class="form-item">
-                        <mat-form-field>
+                        <mat-form-field floatLabel='never'>
                             <mat-label>Type de projet</mat-label>
                             <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdProject_type">
                                 <mat-option  *ngFor="let obj of listOfTypes" [value]="obj">
@@ -60,7 +61,7 @@
 
                     
                     <div class="form-item">
-                        <mat-form-field>
+                        <mat-form-field floatLabel='never'>
                             <mat-label>Description personnelle (comment vous décriveriez-vous)</mat-label>
                             <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdMydescription">
                                 <mat-option  *ngFor="let obj of listOfDescriptions" [value]="obj">
@@ -73,7 +74,7 @@
 
                     
                     <div class="form-item">
-                        <mat-form-field>
+                        <mat-form-field floatLabel='never'>
                             <mat-chip-list #chipList formControlName="fdTargets" aria-label="Genre selection">
                               <mat-chip
                                 *ngFor="let genre of genres"
@@ -88,11 +89,12 @@
                                 #genreInput
                                 [formControl]="genreCtrl"
                                 [matAutocomplete]="auto"
+                                matAutocompletePosition="below"
                                 [matChipInputFor]="chipList"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                 (matChipInputTokenEnd)="add($event)">
                             </mat-chip-list>
-                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                            <mat-autocomplete #auto="matAutocomplete" class="custom-scroll" (optionSelected)="selected($event)">
                               <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
                                 {{genre}}
                               </mat-option>
@@ -109,21 +111,23 @@
                         </div>
                     </div>
 
-                    <div class="form-item" *ngIf="remuneration" >
-                        <mat-form-field>
-                            <mat-label>Montant en €(optionnel)</mat-label>
+                    <div class="form-item" *ngIf="remuneration" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>Montant en € (optionnel)</mat-label>
                             <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                            </mat-error>
                             <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
                         </mat-form-field>
                     </div>
 
                         
-                    <div class="form-item" style="height:unset !important;">
-                        <mat-form-field>
+                    <div class="form-item input-multiple-lines" style="height:unset !important;">
+                        <mat-form-field floatLabel='never'>
                             <mat-label>Description</mat-label>
                         
                             <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="2000" autocomplete="off"></textarea>
-                            <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide
+                            <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/2000</div>
                         </mat-form-field>
@@ -135,6 +139,7 @@
                 
                 <div class="form-container">
                     <div class="form-container-name">
+                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Edition de la miniature</span>
                     </div>
                     <app-uploader-thumbnail-ad></app-uploader-thumbnail-ad>
@@ -143,6 +148,7 @@
                 
                 <div class="form-container">
                     <div class="form-container-name">
+                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Documents complémentaires</span>
                     </div>
 
@@ -153,7 +159,8 @@
                 </div>
 
                 
-                <button mat-raised-button class="submit-button style1" (click)="validate_form_ads();">
+                <button mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_ads();">
+                    <mat-icon>done_all</mat-icon>
                     <span>Valider </span>
                 </button>
                 <div style="justify-content: center;display: flex;" *ngIf="display_loading">

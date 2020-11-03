@@ -2,12 +2,7 @@
 @import '../../material-styles.css';
 
 //ng-deeps
-::ng-deep .form-control {
-    height:45px;
-    font-size:unset;
-    color:unset;
-}
-
+/*
 ::ng-deep .form-container .SumoSelect {
     display:block;
     width:unset;
@@ -47,15 +42,10 @@
 
 ::ng-deep .blocker {
     z-index:100000;
-}
+}*/
 
 
 ::ng-deep {
-    @import "../../assets/fastselect/fastselect.scss";
-    .fstResults{
-        z-index:20 !important;
-    }  
-    
     .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
         background-color: rgb(32,56,100) !important;
         color: rgb(32,56,100) !important;

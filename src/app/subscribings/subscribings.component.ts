@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, HostListener, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
@@ -10,13 +10,24 @@ import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any
 
 @Component({
   selector: 'app-subscribings',
   templateUrl: './subscribings.component.html',
-  styleUrls: ['./subscribings.component.scss']
+  styleUrls: ['./subscribings.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class SubscribingsComponent implements OnInit {
 
@@ -29,8 +40,11 @@ export class SubscribingsComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
+    private cd:ChangeDetectorRef,
 
     ) { }
+
+  skeleton_array = Array(15);
 
   subcategory: number = 0; 
   user_id:number=0;
@@ -86,6 +100,7 @@ export class SubscribingsComponent implements OnInit {
           }
           if(j==list.length -2 && period=='new'){
             this.list_of_new_contents_sorted=true;
+            this.cd.detectChanges();
             callback(this);
           }
         }
@@ -98,6 +113,7 @@ export class SubscribingsComponent implements OnInit {
       }
       if(period=='new'){
         this.list_of_new_contents_sorted=true;
+        this.cd.detectChanges();
         callback(this);
       }
 
@@ -416,7 +432,11 @@ export class SubscribingsComponent implements OnInit {
     })
   }
  
-
+  stories_are_loaded:boolean = false;
+  stories_loaded() {
+    this.stories_are_loaded=true;
+    this.cd.detectChanges();
+  }
 
  
 }

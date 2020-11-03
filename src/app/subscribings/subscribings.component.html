@@ -1,164 +1,182 @@
 
-<div class="storiesbar">
-    <app-stories></app-stories>
-</div>
 
+<div class="subscribings-global-container">
 
-
-<ng-container *ngIf=" list_of_new_contents_sorted">
-    <div *ngFor="let item of list_of_new_contents; let i = index">
-        
-        <div *ngIf="item.bd_id">
-            <div *ngIf="item.chaptersnumber > 0 ">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='comics'
-                    subscribing_format='serie'
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-            <div *ngIf="item.chaptersnumber == null">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='comics'
-                    subscribing_format='one-shot'
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-        </div>
-
-        <div *ngIf="item.writing_id">
-            <div class="highlighted_artwork">
-                <app-thumbnail-artwork 
-                [item]=item
-                now_in_seconds={{now_in_seconds}}
-                subscribing_category='writing'
-                ></app-thumbnail-artwork>
-           </div>  
-        </div>
-
-        <div *ngIf="item.type_of_project">
-            <div class="highlighted_artwork">
-                <app-thumbnail-ad
-                [item]=item
-                now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-ad>
-           </div>   
-        </div>
-
-        <div *ngIf="item.drawing_id">
-            <div *ngIf="item.pagesnumber > 0 ">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='drawing'
-                    subscribing_format="artbook"
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-            <div *ngIf="item.pagesnumber == null">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='drawing'
-                    subscribing_format="one-shot"
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-        </div>
-
+    <div class="storiesbar">
+        <app-stories (send_loaded)="stories_loaded();"></app-stories>
     </div>
+    
 
-
-</ng-container>
-
-<ng-container *ngIf=" list_of_contents_sorted">
-    <div *ngFor="let item of list_of_contents; let i = index">
-        <div *ngIf="item.bd_id">
-            <div *ngIf="item.chaptersnumber > 0 ">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='comics'
-                    subscribing_format='serie'
-                    ></app-thumbnail-artwork>
-               </div>
+    <ng-container *ngIf="!list_of_new_contents_sorted && !list_of_contents_sorted && !show_more">
+        <ng-container *ngFor="let item of skeleton_array; let i = index">
+            <div class="skeleton" [@enterAnimation]>
             </div>
-            <div *ngIf="item.chaptersnumber == null">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='comics'
-                    subscribing_format='one-shot'
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-        </div>
-
-        <div *ngIf="item.writing_id">
-            <div class="highlighted_artwork">
-                <app-thumbnail-artwork 
-                [item]=item
-                now_in_seconds={{now_in_seconds}}
-                subscribing_category='writing'
-                ></app-thumbnail-artwork>
-           </div>   
-        </div>
-
-        <div *ngIf="item.type_of_project">
-            <div class="highlighted_artwork">
-                <app-thumbnail-ad
-                [item]=item
-                now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-ad>
-           </div>   
-        </div>
-
-        <div *ngIf="item.drawng_id">
-            <div *ngIf="item.pagesnumber > 0 ">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='drawing'
-                    subscribing_format="artbook"
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-            <div *ngIf="item.pagesnumber == null">
-                <div class="highlighted_artwork">
-                    <app-thumbnail-artwork 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    subscribing_category='drawing'
-                    subscribing_format="one-shot"
-                    ></app-thumbnail-artwork>
-               </div>
-            </div>
-        </div>
-
-    </div>
-
-
-</ng-container>
-
-
-<ng-container *ngIf=" list_of_contents_sorted">
-    <ng-container *ngIf=" show_more">
-        <app-subscribings-see-more
-            [list_of_users]=list_of_users
-            [now_in_seconds]=now_in_seconds
-            [last_timestamp]=last_timestamp
-            ></app-subscribings-see-more>
+        </ng-container>
     </ng-container>
-</ng-container>
- 
 
+    <ng-container *ngIf="list_of_new_contents_sorted" [@enterAnimation]>
+        <div *ngFor="let item of list_of_new_contents; let i = index">
+            <div *ngIf="item.bd_id">
+                <div *ngIf="item.chaptersnumber > 0 ">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='comics'
+                        subscribing_format='serie'
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+                <div *ngIf="item.chaptersnumber == null">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='comics'
+                        subscribing_format='one-shot'
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+            </div>
+    
+            <div *ngIf="item.writing_id">
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    page='subscribings'
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='writing'
+                    ></app-thumbnail-artwork>
+               </div>  
+            </div>
+    
+            <div *ngIf="item.type_of_project">
+                <div class="highlighted_artwork">
+                    <app-thumbnail-ad
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-ad>
+               </div>   
+            </div>
+    
+            <div *ngIf="item.drawing_id">
+                <div *ngIf="item.pagesnumber > 0 ">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='drawing'
+                        subscribing_format="artbook"
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+                <div *ngIf="item.pagesnumber == null">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='drawing'
+                        subscribing_format="one-shot"
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+            </div>
+    
+        </div>
+    
+    
+    </ng-container>
+    
+    <ng-container *ngIf=" list_of_contents_sorted" [@enterAnimation]>
+        <div *ngFor="let item of list_of_contents; let i = index">
+            <div *ngIf="item.bd_id">
+                <div *ngIf="item.chaptersnumber > 0 ">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='comics'
+                        subscribing_format='serie'
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+                <div *ngIf="item.chaptersnumber == null">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='comics'
+                        subscribing_format='one-shot'
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+            </div>
+    
+            <div *ngIf="item.writing_id">
+                <div class="highlighted_artwork">
+                    <app-thumbnail-artwork 
+                    [item]=item
+                    page='subscribings'
+                    now_in_seconds={{now_in_seconds}}
+                    subscribing_category='writing'
+                    ></app-thumbnail-artwork>
+               </div>   
+            </div>
+    
+            <div *ngIf="item.type_of_project">
+                <div class="highlighted_artwork">
+                    <app-thumbnail-ad
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-ad>
+               </div>   
+            </div>
+    
+            <div *ngIf="item.drawng_id">
+                <div *ngIf="item.pagesnumber > 0 ">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='drawing'
+                        subscribing_format="artbook"
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+                <div *ngIf="item.pagesnumber == null">
+                    <div class="highlighted_artwork">
+                        <app-thumbnail-artwork 
+                        [item]=item
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='drawing'
+                        subscribing_format="one-shot"
+                        ></app-thumbnail-artwork>
+                   </div>
+                </div>
+            </div>
+    
+        </div>
+    
+    
+    </ng-container>
+    
+    
+    <ng-container *ngIf="list_of_contents_sorted">
+        <ng-container *ngIf="show_more">
+            <app-subscribings-see-more
+                [list_of_users]=list_of_users
+                [now_in_seconds]=now_in_seconds
+                [last_timestamp]=last_timestamp
+                ></app-subscribings-see-more>
+        </ng-container>
+    </ng-container>
+
+</div>

@@ -15,6 +15,7 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { startWith, map } from 'rxjs/operators';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $: any;
@@ -22,7 +23,17 @@ declare var $: any;
 @Component({
   selector: 'app-add-drawing',
   templateUrl: './add-drawing.component.html',
-  styleUrls: ['./add-drawing.component.scss']
+  styleUrls: ['./add-drawing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AddDrawingComponent implements OnInit {
 
@@ -99,7 +110,7 @@ export class AddDrawingComponent implements OnInit {
     if(e.checked){
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les oeuvres plagiées, les fanarts et les oeuvres aux contenux inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judicière et à des frais de remboursement'},
+        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
       });
    }else{
     this.monetised = false;
@@ -108,37 +119,26 @@ export class AddDrawingComponent implements OnInit {
 
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Condition en cours d'écriture"},
+      data: {showChoice:false, text:"Conditions en cours d'écriture"},
     });
   }
 
 
+  format_change_alert() {
+    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
+      });
+      this.modal_displayed = true;
+    }
+  }
+
   onFormatChange(e:any) {
 
-
-    if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
-
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
-      });
-    
-      dialogRef.afterClosed().subscribe(result => {
-        if( result ) {
-          this.REAL_step--;
-          this.modal_displayed = true;
-          this.cd.detectChanges();
-        }
-        else {
-          if( this.fd.controls['fdFormat'].value == "Œuvre unique" ) {
-            this.fd.controls['fdFormat'].setValue("Artbook");
-          }
-          else {
-            this.fd.controls['fdFormat'].setValue("Œuvre unique");
-          }
-          this.cd.detectChanges();
-        }
-      });
-
+    if( (this.REAL_step != this.CURRENT_step) ) {
+      this.REAL_step--;
+      this.modal_displayed = true;
+      this.cd.detectChanges();
     }
 
   }
@@ -156,7 +156,7 @@ export class AddDrawingComponent implements OnInit {
   
   createFormControlsDrawings() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(500), Validators.pattern( pattern("text") ) ]);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(290), Validators.pattern( pattern("text") ) ]);
     this.fdCategory = new FormControl('', [Validators.required]);
     this.fdTags = new FormControl( this.genres , [Validators.required]);
     this.fdFormat = new FormControl('', Validators.required);
@@ -180,7 +180,7 @@ export class AddDrawingComponent implements OnInit {
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
         .subscribe(inf=>{
           this.CURRENT_step++;
 
@@ -189,7 +189,7 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised).subscribe((val)=> {
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false).subscribe((val)=> {
           this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
             this.CURRENT_step++;
             this.REAL_step++;

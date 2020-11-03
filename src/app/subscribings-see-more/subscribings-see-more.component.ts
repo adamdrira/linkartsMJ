@@ -10,13 +10,24 @@ import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { ConstantsService } from '../services/constants.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any
 
 @Component({
   selector: 'app-subscribings-see-more',
   templateUrl: './subscribings-see-more.component.html',
-  styleUrls: ['./subscribings-see-more.component.scss']
+  styleUrls: ['./subscribings-see-more.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('500ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class SubscribingsSeeMoreComponent implements OnInit {
 

@@ -17,6 +17,7 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $: any;
@@ -25,6 +26,16 @@ declare var $: any;
   selector: 'app-add-ad',
   templateUrl: './add-ad.component.html',
   styleUrls: ['./add-ad.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AddAdComponent implements OnInit {
 
@@ -147,7 +158,7 @@ export class AddAdComponent implements OnInit {
       }
       this.chatService.messages.next(message_to_send);
       this.display_loading=false;
-      this.router.navigate( [ `/account/${this.pseudo}/${this.id}` ] );
+      window.location.href = `/account/${this.pseudo}/${this.id}`;
       
     }) 
     
