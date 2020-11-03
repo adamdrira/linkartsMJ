@@ -142,8 +142,7 @@
     height: 22px;
     color: #3b3b3b;
     display: flex;
-    margin-top: 1px;
-    margin-bottom: 5px;
+    margin-top: 5px;
     /*font-size: 1rem;*/
     font-size: 12px;
     justify-content: space-between;

@@ -335,7 +335,38 @@
 
 
 
+.swiper-categories {
+  position:relative;
+  height: 25px;
+  width: 100%;
+  margin-top: 2px;
+  padding:0px 25px 0px 25px;
+}
 
 
-
+.swiper-categories .swiper-wrapper {
+  height: 100% !important;
+  width: 100% !important;
+}
+.swiper-categories .swiper-button-next, .swiper-button-prev {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  color: #ffffff;
+  background: #203864;
+  border-radius: 50px;
+  height: 20px;
+  width: 20px;
+  margin-top: unset !important;
+  outline: none !important;
+}
+.swiper-categories .swiper-button-next {
+  right:0;
+}
+.swiper-categories .swiper-button-prev {
+  left:0;
+}
+.swiper-categories .swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 11px !important;
+}
 
