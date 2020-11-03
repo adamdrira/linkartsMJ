@@ -1,44 +1,122 @@
-<div class="button-container" *ngIf="!afficherpreview">
-    <label>
-        <div class="select-button">
-            <mat-icon>picture_as_pdf</mat-icon>
-            <span>Télécharger l'écrit en pdf</span>
-        </div>
-        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-    </label>
 
+<div class="upload-container" [ngClass]="{'height-unset': afficherpreview}">
+    <div *ngIf="!afficherpreview" class="uploader-container">
+        <div class="dropzone-container">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+                <div class="icon-container">
+                    <div class="upload-icon"></div>
+                    <span><b>Sélectionnez un fichier PDF </b> ou glissez le ici</span>
+                </div>
+                <div class="button-container">
+                    <label>
+                        <div class="select-button">
+                            Sélectionner un fichier
+                        </div>
+                        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-container  *ngIf="afficherpreview">
+        <div class="element-container writing">
+            
+            <div #swiperContainer class="swiper-container swiper-artwork-writing" >
+                <div #swiperWrapper class="swiper-wrapper">
+                    <div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
+                        <div class="slide-container" #pdfDocument>
+                            <pdf-viewer
+                            class="pdf-document"
+                            [src]="pdfSafeUrl"
+                            [render-text]="false"
+    
+                            [autoresize]="true"
+                            [original-size]='true'
+                            [fit-to-page]='true'
+    
+                            [show-all]="false"
+                            [page]="(i+1)"
+                            (after-load-complete)="afterLoadComplete($event, i)"
+                            ></pdf-viewer>
+    
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-scrollbar"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+
+            <div class="name-container">
+                <span>{{ uploader.queue[0]?.file?.name }}</span>
+            </div>
+        </div>
+
+        <div class="buttons-container">
+            <ng-container *ngIf="!uploader.queue[0].isSuccess">
+                <button  type="button" class="btn btn-danger btn-xs"
+                        (click)="remove_beforeupload(uploader.queue[0]);" >
+                    <span class="glyphicon glyphicon-trash">Recommencer</span> 
+                </button>
+                <button type="button" class="btn btn-success btn-xs"
+                    (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                    <span class="glyphicon glyphicon-trash">Valider le PDF</span> 
+                </button>
+            </ng-container>
+            <ng-container *ngIf="uploader.queue[0].isSuccess">
+                <button type="button" class="btn btn-danger btn-xs"
+                        (click)="remove_afterupload(uploader.queue[0]);" >
+                    <span class="glyphicon glyphicon-trash">Recommencer</span> 
+                </button>
+            </ng-container>
+        </div>
+    </ng-container>
     
 </div>
 
 
-<div class="name-container" *ngIf="afficherpreview">
-    <span><b>Fichier sélectionné : </b> <i style="color:rgb(100,100,100);">{{ uploader.queue[0]?.file?.name }}</i></span>
+<!--
+    <div class="button-container" *ngIf="!afficherpreview">
+        <label>
+            <div class="select-button">
+                <mat-icon>picture_as_pdf</mat-icon>
+                <span>Télécharger l'écrit en pdf</span>
+            </div>
+            <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+        </label>
 
-    <div *ngIf="!uploader.queue[0].isSuccess">
-
-        <button mat-raised-button class="button style1"
-            (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || confirmation_for_extension">
-            <mat-icon>check</mat-icon>
-            <span>Valider</span> 
-        </button>
-
-        <button mat-raised-button class="button style0"
-            (click)="remove_beforeupload(uploader.queue[0]);">
-            <mat-icon>refresh</mat-icon>
-            <span class="">Recommencer</span> 
-        </button>
+        
     </div>
 
-    <ng-container *ngIf="uploader.queue[0].isSuccess">
-        <button mat-raised-button class="button style0"
-            (click)="remove_afterupload(uploader.queue[0]);">
-            <mat-icon>refresh</mat-icon>
-            <span class="">Recommencer</span> 
-        </button>
-    </ng-container>
 
-</div>
+    <div class="name-container" *ngIf="afficherpreview">
+        <span>Fichier sélectionné : <b>{{ uploader.queue[0]?.file?.name }}</b></span>
 
-<div *ngIf="confirmation_for_extension">Veuillez sélectionner un fichier sous format pdf</div>
+        <ng-container *ngIf="!uploader.queue[0].isSuccess" [@enterAnimation]>
 
 
+            <button mat-raised-button class="button"
+                (click)="remove_beforeupload(uploader.queue[0]);">
+                <mat-icon>refresh</mat-icon>
+                <span class="">Recommencer</span> 
+            </button>
+            <button mat-raised-button class="button style1" style="border:unset !important;"
+                (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || confirmation_for_extension">
+                <mat-icon>check</mat-icon>
+                <span>Valider le pdf</span> 
+            </button>
+
+        </ng-container>
+
+        <ng-container *ngIf="uploader.queue[0].isSuccess">
+            <button mat-raised-button class="button"
+                (click)="remove_afterupload(uploader.queue[0]);">
+                <mat-icon>refresh</mat-icon>
+                <span class="">Recommencer</span> 
+            </button>
+        </ng-container>
+
+    </div>
+
+-->

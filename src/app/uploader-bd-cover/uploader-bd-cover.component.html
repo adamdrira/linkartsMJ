@@ -135,8 +135,24 @@
                     </span>
                 </div>
                 <!--********************-->
-                <!--Categories container-->
+                <!--Type container-->
                 <!--********************-->
+                <div class="verso-type">
+                    <!--&bull;-->
+                    <ng-container *ngIf="format=='One-shot'">
+                        <div class="tag-container"><span>One shot</span></div>
+                    </ng-container>
+                    <ng-container *ngIf="format=='Série'">
+                        <div class="tag-container"><span>Série</span></div>
+                    </ng-container>
+                    <div class="tag-container type" *ngIf="firsttag"><span  class="categories" >{{firsttag}}</span></div>
+                    <div  *ngIf="secondtag" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                    <div  *ngIf="thirdtag" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
+                    
+                </div>
+                <!--********************-->
+                <!--Categories container-->
+                <!--********************
                 <div class="categories-container">
                     <div *ngIf="firsttag" class="tag-container"><span  class="categories" >{{firsttag}}</span></div>
                     <div  *ngIf="secondtag" class="tag-container"><span  class="categories" >{{secondtag}}</span></div>
@@ -144,10 +160,10 @@
                 </div>
                 <div class="categories-container" *ngIf="!firsttag">  
                     <div class="tag-container"><span class="categories">Genres</span></div>
-                </div>
+                </div>-->
                 <!--********************-->
                 <!--Type container-->
-                <!--********************-->
+                <!--********************
                 <div class="verso-type" *ngIf="format">
                     <ng-container *ngIf="format=='One-shot'">
                         <div class="tag-container"><span>One shot</span></div>
@@ -159,7 +175,7 @@
                 </div>
                 <div class="verso-type" *ngIf="!format">
                     <div class="tag-container"><span>Format</span></div>
-                </div>
+                </div>-->
                 <!--********************-->
                 <!--Date container-->
                 <!--********************-->

@@ -1,4 +1,78 @@
 
+@import '../uploader-styles.scss';
+
+
+.upload-container {
+    height:calc( 100vh - 100px ) !important;
+    min-height: 800px !important;
+    background:#182338;
+    margin-top: 30px;
+    border-radius: 35px;
+    overflow: hidden;
+}
+
+.height-unset {
+    height:unset !important;
+}
+
+::ng-deep .element-container.writing {
+
+    .pdf-document {
+        width:calc(100%);
+        height:100%;
+        justify-content: center;
+    }
+
+    .ng2-pdf-viewer-container::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .swiper-container {
+        padding:30px;
+        margin:auto 0px auto auto;
+        width:100%;
+        //transition:width 200ms;
+        height:100%;
+    }
+    .swiper-wrapper {
+        position:relative;
+    }
+    .swiper-slide {
+        width:100%;
+        height:100%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+    .swiper-slide .slide-container {
+        width: 100%;
+        height: 100%;
+        display:flex;
+        justify-content: center;
+        //Without zoom
+        overflow-y:unset;
+    }
+    .slide-container::-webkit-scrollbar {
+        display: none !important;
+    }
+    .swiper-slide .slide-container .slide-container-img {
+        margin:auto auto;
+        object-fit:contain;
+        //Without zoom
+        max-width:100%;
+        max-height:100%;
+    }
+    .swiper-button-prev, ::ng-deep .swiper-button-next  {
+        outline:none !important;
+        color:white !important;
+    }
+    .swiper-scrollbar-drag {
+        background:white !important;
+    }
+    
+}
+
+
+/*
 @import '../../material-styles.css';
 
 
@@ -14,7 +88,7 @@
     height:50px;
 }
 
-.select-button {
+.select-button {    
     cursor: pointer;
     display: flex;
     font-size: 18px;
@@ -22,14 +96,15 @@
     padding: 4px 10px 4px 10px;
     width: 100%;
     height: 100%;
-    background: #edf7fb;
     font-weight: bold;
     color: #203864;
-    border-bottom: 1px solid #8a8f92;
+    border-radius: 30px;
+    border: 1px solid #d2e0e6;
+    transition:background-color 200ms;
 }
 
 .select-button:hover {
-    background: #e4f0f5;
+    background:rgb(250,250,250);
 }
 
 .select-button mat-icon {
@@ -47,10 +122,10 @@
 
 .name-container {    
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     padding: 10px;
-    background: #edf7fb;
 }
 
 .name-container > span {
@@ -69,12 +144,19 @@
 }
 
 .name-container .button {
-    font-size: 15px;
+    font-size: 16px;
     display: flex;
-    margin-left: 15px;
+    padding: 9px;
+    margin-top: 10px;
+    border-radius: 30px;
+    border: 1px solid #d2e0e6;
+    outline: none !important;
+    margin-bottom: 10px;
+    box-shadow: unset;
 }
 
 .name-container .button mat-icon {
-    margin: auto 5px auto auto;
+    margin: auto 10px auto auto;
+    font-size: 27px;
 }
-
+*/

@@ -22,6 +22,7 @@
   max-width: 100%;
   border-radius: 4px 40px 4px 40px;
   justify-content: center;
+  cursor:default;
 }
 
 /*
@@ -58,7 +59,7 @@
 }
 
 .uploader-container .dropzone .icon-container {
-  margin:auto auto;
+  margin: 65px auto auto auto;
   display:block
 }
 
@@ -97,13 +98,12 @@
 
 .buttons-container {
   position: absolute;
-  bottom: 158px;
+  bottom: 115px;
   display: flex;
-  left: 50%;
+  flex-direction: column;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 5px;
-  height: 60px;
   border: 2px solid rgb(104, 122, 156);
   background: #707f9cbf;
   justify-content: center;
@@ -120,9 +120,9 @@
   border: 1px solid grey;
   font-size: 1rem;
   margin-left: 10px;
-  margin-top: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
   margin-right: 10px;
-  margin-bottom: auto;
 }
 
 

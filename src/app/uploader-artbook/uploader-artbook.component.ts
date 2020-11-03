@@ -179,7 +179,7 @@ export class UploaderArtbookComponent implements OnInit {
               comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
-            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+            window.location.href = `/account/${this.pseudo}/${this.user_id}`;
           }) 
           
         })

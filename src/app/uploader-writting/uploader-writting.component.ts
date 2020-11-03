@@ -1,17 +1,32 @@
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {Writing_Upload_Service} from  '../services/writing.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
+
+declare var Swiper:any;
 
 const URL ='http://localhost:4600/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',
   templateUrl: './uploader-writting.component.html',
-  styleUrls: ['./uploader-writting.component.scss']
+  styleUrls: ['./uploader-writting.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class UploaderWrittingComponent implements OnInit {
 
@@ -20,12 +35,13 @@ export class UploaderWrittingComponent implements OnInit {
   hasAnotherDropZoneOver:boolean;
   afficherpreview:boolean =false;
   confirmation:boolean=false;
-  confirmation_for_extension:boolean=false;
- 
+  
+
   constructor (
     private Writing_Upload_Service:Writing_Upload_Service,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
+    private sanitizer:DomSanitizer
     
     ){
     this.uploader = new FileUploader({
@@ -47,6 +63,7 @@ export class UploaderWrittingComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
+  pdfSafeUrl:SafeUrl;
 
   ngOnInit(): void {
 
@@ -75,7 +92,12 @@ export class UploaderWrittingComponent implements OnInit {
         }
         else{
           file.withCredentials = true; 
+          
+          this.pdfSafeUrl = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.cd.detectChanges();
+
           this.afficherpreview = true;
+
         }
         //this.uploader.setOptions({ headers: [{name:'type',value:re.exec(file._file.name)[1]}]});
       }
@@ -86,34 +108,84 @@ export class UploaderWrittingComponent implements OnInit {
       this.confirmation = true; 
       this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
       this.Writing_Upload_Service.get_writing_name().subscribe();
+
     }
-
-   
-
 
   };
 
   remove_beforeupload(item:FileItem){
+    
     this.confirmation = false;
     this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
     item.remove();
     this.afficherpreview = false;
 
-    this.confirmation_for_extension = false;
+    
   };
  
- //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
- remove_afterupload(item){
-     //On supprime le fichier en base de donnée
-     this.confirmation = false;
-     this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
-     this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
-     item.remove();
-     this.afficherpreview = false;
- };
+  //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
+  remove_afterupload(item){
+      //On supprime le fichier en base de donnée
+      this.confirmation = false;
+      this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
+      this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
+      item.remove();
+      this.afficherpreview = false;
+  };
 
- onFileClick(event) {
-  event.target.value = '';
-}
+  onFileClick(event) {
+    event.target.value = '';
+  }
+
+
+  
+  swiper:any;
+  total_pages:number;
+  arrayOne(n: number): any[] {
+    return Array(n);
+  }
+
+  @ViewChild('pdfDocument')
+  pdfDocumentRef: ElementRef;
+
+  initialize_swiper() {
+    let THIS = this;
+    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
+      speed: 500,
+      spaceBetween:100,
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      keyboard: {
+        enabled: true,
+      },
+      on: {
+        slideChange: function () {
+          THIS.cd.detectChanges();
+          THIS.pdfDocumentRef.nativeElement.scrollIntoView({behavior: 'smooth'});
+        },
+      },
+    });
+  }
+  
+  afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
+    this.total_pages = pdf.numPages;
+    this.cd.detectChanges();
+    if( (i+1) == this.total_pages ) {
+      this.initialize_swiper();
+      //this.refresh_controls_pagination();
+      //this.display_writing=true;
+      //this.display_pages=true;
+    };
+  }
+
 
 }
