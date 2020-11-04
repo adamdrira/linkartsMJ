@@ -473,7 +473,7 @@ value:string="add";
       else {
         this.bdSerieService.validate_bd_serie(this.componentRef.length).subscribe(r=>{
           console.log(r);
-           this.Subscribing_service.validate_content("comics","serie",r[0],r[1]).subscribe(l=>{
+           this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).subscribe(l=>{
             this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,this.componentRef.length,"add",false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,

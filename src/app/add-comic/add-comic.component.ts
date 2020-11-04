@@ -232,7 +232,7 @@ export class AddComicComponent implements OnInit {
         else {
           this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
-            this.Subscribing_service.validate_content('comics', 'one-shot', val[0].bd_id,0).subscribe(r=>{
+            this.Subscribing_service.validate_content('comic', 'one-shot', val[0].bd_id,0).subscribe(r=>{
               this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
               this.CURRENT_step++;
               this.REAL_step++;
