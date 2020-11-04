@@ -60,16 +60,20 @@
             <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions;let i=index" >
 
                 <div class="item-row" *ngIf="item.publication_category=='Artist'">
-                <div class="author-container">
-                    <div class="author-left-container">
-                        <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
-                    </div>
-                    <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}">
-                        <div class="author-right-container">
-                            <span class="author-name">{{list_of_last_propositions[i].nickname}} </span>
+
+                    <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}" style="display:contents;">
+                        <div class="result-container">
+                          <div class="image-container">
+                            <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
+                          </div>
+                          <div class="name-container">
+                            <span>{{list_of_last_propositions[i].nickname}}</span>
+                          </div>
+                          <div class="type-container">
+                            <span>Artiste</span>
+                          </div>
                         </div>
-                    </a>
-                </div>
+                      </a>
                 </div>
 
                 <div  *ngIf="item.publication_category=='Comic' " [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
@@ -98,7 +102,7 @@
                 </div>
                 
             </div>
-            <div style="display:flex;margin:auto">
+            <div style="display:flex;margin:auto;    justify-content: center;">
                 <span>page {{current_page}}/{{number_of_pages}}</span>
             </div>
             

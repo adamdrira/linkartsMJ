@@ -100,17 +100,21 @@ export class MainSearchbarResultsComponent implements OnInit {
   display_title_style_and_tags=false;
   category_to_show:string;
   ngOnInit(): void {
+    
     this.opened_section = this.route.snapshot.data['section'];
     console.log( this.opened_section )
+    console.log(parseInt(this.route.snapshot.paramMap.get('page')))
+    //alert("Debut")
     if(this.opened_section<2){
       console.log(this.route.snapshot.paramMap.get('text'));
       this.current_page=parseInt(this.route.snapshot.paramMap.get('page'));
       this.research_string=this.route.snapshot.paramMap.get('text');
       this.category=this.route.snapshot.paramMap.get('category');
+      //alert("debut 2")
       if(this.list_of_real_categories.indexOf(this.category)<0 && this.category!='All'){
         alert("pb 1")
-        this.location.go('/');
-        location.reload();
+        //this.location.go('/');
+        //location.reload();
         return;
       }
       this.first_filter=(this.route.snapshot.paramMap.get('first_filter'))?this.route.snapshot.paramMap.get('first_filter'):"all";
@@ -131,20 +135,24 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter=this.route.snapshot.paramMap.get('second_filter');
       this.indice_title_selected=this.list_of_real_categories.indexOf(this.category);
       this.category_to_show = this.list_of_categories[this.indice_title_selected];
-
+      console.log(this.indice_title_selected)
+      console.log(this.category)
+      console.log(this.first_filter)
+      console.log(this.second_filter)
+      console.log(  this.category_to_show)
       let index1=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
       if(index1<0){
         alert("pb 2")
-        this.location.go('/');
-        location.reload();
+        //this.location.go('/');
+        //location.reload();
         return;
       }
       this.first_filter_selected=index1;
       let index2=this.second_filters[this.indice_title_selected].indexOf(this.second_filter);
       if(index1<0 &&  this.second_filter!="all"){
         alert("pb 3")
-        this.location.go('/');
-        location.reload();
+        //this.location.go('/');
+        //location.reload();
         return;
       }
       this.second_filter_selected=index2;
@@ -169,7 +177,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.first_filter="all";
     this.second_filter="all";
     this.category=this.list_of_real_categories[i];
-    this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+    //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
     this.opened_section=0;
     this.manage_sections();
   }
@@ -181,7 +189,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.first_filter_selected==i){
       this.first_filter_selected=-1;
       this.first_filter="all";
-      this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/all/${this.second_filter}`);
+      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/all/${this.second_filter}`);
       if(this.second_filter_selected<0){
         this.opened_section=0;
       }
@@ -191,7 +199,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter_selected=i;
       this.opened_section=1;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections();
     }
     
@@ -202,7 +210,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.second_filter_selected==i){
       this.second_filter_selected=-1;
       this.second_filter="all";
-      this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/all`);
+      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/all`);
       if(this.first_filter_selected<0){
         this.opened_section=0;
       }
@@ -212,7 +220,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter_selected=i;
       this.opened_section=1;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections();
     }
   }
@@ -290,8 +298,8 @@ export class MainSearchbarResultsComponent implements OnInit {
         console.log(this.first_filters[this.indice_title_selected])
         if(indice<0){
           alert("pas ok")
-          this.location.go('/');
-          location.reload();
+          //this.location.go('/');
+          //location.reload();
         }
         this.first_filter_selected=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
       }
@@ -305,8 +313,8 @@ export class MainSearchbarResultsComponent implements OnInit {
         console.log(this.second_filters[this.indice_title_selected])
         if(indice<0){
           alert("pas ok")
-          this.location.go('/');
-          location.reload();
+          //this.location.go('/');
+          //location.reload();
         }
         this.second_filter_selected=this.second_filters[this.indice_title_selected].indexOf(this.second_filter)
       }
@@ -352,8 +360,9 @@ export class MainSearchbarResultsComponent implements OnInit {
         console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
-          this.location.go('/');
-          location.reload();
+          alert("pg12")
+          //this.location.go('/');
+          //location.reload();
         }
         this.get_research_propositions(r[1],0);
       })
@@ -376,8 +385,9 @@ export class MainSearchbarResultsComponent implements OnInit {
         console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
-          this.location.go('/');
-          location.reload();
+          alert("pg 13")
+          //this.location.go('/');
+          //location.reload();
         }
         this.get_research_propositions(r[1],1);
       })
@@ -400,8 +410,9 @@ export class MainSearchbarResultsComponent implements OnInit {
         console.log(this.number_of_pages);
         this.number_of_page_retrieved=true;
         if(this.current_page>this.number_of_pages){
-          this.location.go('/');
-          location.reload();
+          alert("pg 14")
+          //this.location.go('/');
+          //location.reload();
         }
         this.get_research_propositions(r[1],2);
       })
@@ -431,8 +442,8 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             alert("pb pages")
-            this.location.go('/');
-            location.reload();
+            //this.location.go('/');
+            //location.reload();
           }
           this.get_research_propositions(r[1],3);
         }
@@ -635,7 +646,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     else{
       this.first_filter_selected=i;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections_sg();
     }
     
@@ -646,12 +657,12 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.second_filter_selected==i){
       this.second_filter_selected=-1;
       this.second_filter="all";
-      this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/all`);
+      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/all`);
     }
     else{
       this.second_filter_selected=i;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
-      this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
     }
     this.manage_sections_sg();
   }
@@ -686,8 +697,8 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             alert("pb pages")
-            this.location.go('/');
-            location.reload();
+            //this.location.go('/');
+            //location.reload();
           }
           this.get_research_propositions_sg(r[1],0);
         }
@@ -720,8 +731,8 @@ export class MainSearchbarResultsComponent implements OnInit {
           this.number_of_page_retrieved=true;
           if(this.current_page>this.number_of_pages){
             alert("pb pages")
-            this.location.go('/');
-            location.reload();
+            //this.location.go('/');
+            //location.reload();
           }
           this.get_research_propositions_sg(r[1],1);
         }
