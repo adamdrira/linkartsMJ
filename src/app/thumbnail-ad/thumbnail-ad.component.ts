@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -16,6 +16,7 @@ import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popu
 import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any
 declare var Swiper: any
@@ -23,7 +24,25 @@ declare var Swiper: any
 @Component({
   selector: 'app-thumbnail-ad',
   templateUrl: './thumbnail-ad.component.html',
-  styleUrls: ['./thumbnail-ad.component.scss']
+  styleUrls: ['./thumbnail-ad.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class ThumbnailAdComponent implements OnInit {
 
@@ -44,8 +63,23 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
   @ViewChildren('category') categories:QueryList<ElementRef>;
+  @ViewChild('image') image:ElementRef;
   
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( this.image ) {
+      let width = this.image.nativeElement.width;
+      if( window.innerWidth<=700 ) {
+        this.rd.setStyle(this.image.nativeElement, 'height', width*(32/24)+'px');
+      }
+      else if( window.innerWidth>700 ) {
+        this.rd.setStyle(this.image.nativeElement, 'height', '266.66px');
+      }
+    }
+  }
+
+  
   status1:String;
   status2:String;
   status3:String;
@@ -86,6 +120,7 @@ export class ThumbnailAdComponent implements OnInit {
   response_attachments_retrieved=false;
   list_of_pictures_name=[];
 
+  thumbnail_picture_received=false;
   thumbnail_is_loaded=false;
   pp_is_loaded=false;
 
@@ -113,9 +148,11 @@ export class ThumbnailAdComponent implements OnInit {
 
 
     this.date_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,this.item.createdAt) );
+
     this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.thumbnail_picture_received=true;
       this.thumbnail_picture = SafeURL;
     });
 
@@ -123,19 +160,15 @@ export class ThumbnailAdComponent implements OnInit {
     
   }
 
-  
 
- 
-
-
-
-  
   open_category(i : number) {
     this.category_index=i;
     this.cd.detectChanges();
   }
-
-
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 
 
   
@@ -233,6 +266,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -257,6 +292,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -287,6 +324,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -311,6 +350,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -340,6 +381,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -364,6 +407,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             });
           }
@@ -393,6 +438,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             })
           }
@@ -417,6 +464,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             })
           }
@@ -446,6 +495,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             })
           }
@@ -470,6 +521,8 @@ export class ThumbnailAdComponent implements OnInit {
                   }
                 }
                 this.attachments_retrieved=true;
+                this.cd.detectChanges();
+                this.initialize_swiper();
               }
             })
           }
@@ -479,6 +532,8 @@ export class ThumbnailAdComponent implements OnInit {
     }
     else{
       this.attachments_retrieved=true;
+      this.cd.detectChanges();
+      this.initialize_swiper();
     }
   }
 
@@ -490,6 +545,60 @@ export class ThumbnailAdComponent implements OnInit {
 
   load_pp(){
     this.pp_is_loaded=true;
+  }
+
+
+  get_artwork() {
+    return "/ad-page/" + this.item.title + "/" + this.item.id;
+  }
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.item.id_user;
+  }
+
+  @ViewChild("swiperAttachments") swiperAttachments:ElementRef;
+  swiper:any;
+  initialize_swiper() {
+    this.swiper = new Swiper( this.swiperAttachments.nativeElement, {
+      speed: 300,
+      initialSlide:0,
+      spaceBetween:100,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          spaceBetween: 50
+        },
+        300: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 50
+        },
+        500: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 30
+        },
+        600: {
+          slidesPerView: 5,
+          slidesPerGroup: 5,
+          spaceBetween: 30
+        },
+        700: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 30
+        },
+        750: {
+          slidesPerView: 5,
+          slidesPerGroup: 5,
+          spaceBetween: 30
+        },
+      }
+    })
   }
 
 

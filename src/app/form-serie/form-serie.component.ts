@@ -63,6 +63,9 @@ value:string="add";
 
   }
 
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
+
   subscription: Subscription;
 
   
@@ -449,6 +452,8 @@ value:string="add";
 
   validateAll() {
 
+    this.validateButton.nativeElement.disabled = true;
+
     let errorMsg : string = "Le ou les chapitres suivants n'ont pas été validés : "
     let valid = true;
       
@@ -463,6 +468,7 @@ value:string="add";
   
       if(!valid) {
   
+        this.validateButton.nativeElement.disabled = false;
         errorMsg = errorMsg + "merci de les valider ou de supprimer ces chapitres.";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -471,6 +477,8 @@ value:string="add";
   
       }
       else {
+        
+        this.display_loading=true;
         this.bdSerieService.validate_bd_serie(this.componentRef.length).subscribe(r=>{
           console.log(r);
            this.Subscribing_service.validate_content("comic","serie",r[0],r[1]).subscribe(l=>{
@@ -510,6 +518,7 @@ value:string="add";
       }
       if(!valid) {
   
+        this.validateButton.nativeElement.disabled = false;
         errorMsg = errorMsg + "merci de valider ou de supprimer ces chapitres.";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -518,6 +527,7 @@ value:string="add";
   
       }
       else {
+        this.display_loading=true;
         let type="extend_publication";
         let compt=0;
         for(let i=0;i<this.list_of_new_chapters.length;i++){

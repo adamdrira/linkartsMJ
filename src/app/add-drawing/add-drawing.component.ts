@@ -63,6 +63,8 @@ export class AddDrawingComponent implements OnInit {
   }
 
   
+  @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -176,6 +178,7 @@ export class AddDrawingComponent implements OnInit {
 
   validate_form_drawings() {
 
+    this.nextButton.nativeElement.disabled = true;
 
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
@@ -183,6 +186,8 @@ export class AddDrawingComponent implements OnInit {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
         .subscribe(inf=>{
           this.CURRENT_step++;
+
+          this.nextButton.nativeElement.disabled = false;
 
           this.cd.detectChanges();
           window.scroll(0,0);
@@ -194,6 +199,8 @@ export class AddDrawingComponent implements OnInit {
             this.CURRENT_step++;
             this.REAL_step++;
   
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -209,6 +216,8 @@ export class AddDrawingComponent implements OnInit {
           .subscribe(inf=>{
             this.CURRENT_step++;
 
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -220,6 +229,8 @@ export class AddDrawingComponent implements OnInit {
               this.CURRENT_step++;
               this.REAL_step++;
   
+              this.nextButton.nativeElement.disabled = false;
+
               this.cd.detectChanges();
               window.scroll(0,0);
             });
@@ -231,6 +242,8 @@ export class AddDrawingComponent implements OnInit {
     }
 
     else {
+      this.nextButton.nativeElement.disabled = false;
+      
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
       });

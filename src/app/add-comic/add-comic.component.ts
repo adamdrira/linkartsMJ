@@ -66,6 +66,9 @@ export class AddComicComponent implements OnInit {
   }
 
   
+  @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
+
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -204,6 +207,8 @@ export class AddComicComponent implements OnInit {
   validateForm00() {
     
 
+    this.nextButton.nativeElement.disabled = true;
+
     if( this.f00.value.f00Format == "One-shot" ) {
       this.RemoveValidator();
     }
@@ -224,6 +229,8 @@ export class AddComicComponent implements OnInit {
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.CURRENT_step++;
             
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -237,6 +244,8 @@ export class AddComicComponent implements OnInit {
               this.CURRENT_step++;
               this.REAL_step++;
   
+              this.nextButton.nativeElement.disabled = false;
+
               this.cd.detectChanges();
               window.scroll(0,0);
             })
@@ -258,6 +267,8 @@ export class AddComicComponent implements OnInit {
             this.bdSerieService.modify_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;
 
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -271,6 +282,8 @@ export class AddComicComponent implements OnInit {
             this.CURRENT_step++;
             this.REAL_step++;
 
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
             });
@@ -279,6 +292,7 @@ export class AddComicComponent implements OnInit {
     }
 
     else {
+      this.nextButton.nativeElement.disabled = false;
       if( !this.f00.valid ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},

@@ -61,6 +61,12 @@ export class AddWritingComponent implements OnInit {
   }
 
 
+  
+  @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
+
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('profile_picture') profile_picture:SafeUrl;
@@ -162,10 +168,14 @@ export class AddWritingComponent implements OnInit {
   }
 
   validateForm00() {
+
+    this.nextButton.nativeElement.disabled = true;
+
     if ( this.fw.valid  && /*this.Writing_Upload_Service.get_confirmation() &&*/ this.Writing_CoverService.get_confirmation() ) {
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.CURRENT_step++;
 
+        this.nextButton.nativeElement.disabled = false;
         this.cd.detectChanges();
         window.scroll(0, 0);
       }
@@ -173,17 +183,29 @@ export class AddWritingComponent implements OnInit {
         this.CURRENT_step++;
         this.REAL_step++;
 
+        this.nextButton.nativeElement.disabled = false;
         this.cd.detectChanges();
         window.scroll(0, 0);
       }
+    }
+    else {
+      this.nextButton.nativeElement.disabled = false;
+      
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+      });
     }
   }
 
   validate_form_writing() {
 
+    this.validateButton.nativeElement.disabled = true;
+    
     if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() ) {
 
       
+       this.display_loading=true;
+
        this.Writing_Upload_Service.CreateWriting(
           this.fw.value.fwTitle,
           this.fw.value.fwCategory, 
@@ -229,16 +251,19 @@ export class AddWritingComponent implements OnInit {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
         });
+        this.validateButton.nativeElement.disabled = false;
       }
       else if ( !this.Writing_Upload_Service.get_confirmation() ){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez télécharger l\'écrit en PDF, puis le valider.'},
         });
+        this.validateButton.nativeElement.disabled = false;
       }
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
         });
+        this.validateButton.nativeElement.disabled = false;
       }
     }
   }    

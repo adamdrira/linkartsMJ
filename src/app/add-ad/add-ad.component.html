@@ -120,6 +120,17 @@
                             <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
                         </mat-form-field>
                     </div>
+                    <div class="form-item" *ngIf="remuneration" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>Type de rémunération (optionnel)</mat-label>
+                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdPrice_type">
+                                <mat-option  *ngFor="let obj of listOfPriceTypes" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdPrice_type'].invalid">Veuillez sélectionner un type de rémunération</mat-error>
+                        </mat-form-field>
+                    </div>
 
                         
                     <div class="form-item input-multiple-lines" style="height:unset !important;">
@@ -159,13 +170,15 @@
                 </div>
 
                 
-                <button mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_ads();">
-                    <mat-icon>done_all</mat-icon>
-                    <span>Valider </span>
+                <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_ads();">
+                    <ng-container *ngIf="!display_loading">
+                        <mat-icon>done_all</mat-icon>
+                        <span>Valider </span>
+                    </ng-container>
+                    <ng-container *ngIf="display_loading">
+                        <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+                    </ng-container>
                 </button>
-                <div style="justify-content: center;display: flex;" *ngIf="display_loading">
-                    <mat-spinner diameter="20" ></mat-spinner>
-                </div>
 
             </form>
             

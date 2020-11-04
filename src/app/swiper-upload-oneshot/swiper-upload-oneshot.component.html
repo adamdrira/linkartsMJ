@@ -71,8 +71,13 @@
 
 
 
-<button mat-raised-button class="submit-button-with-done-all style1" (click)="validateAll();">
-    <mat-icon>done_all</mat-icon>
-    <span>Valider</span>
+<button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validateAll();">
+    <ng-container *ngIf="!display_loading">
+        <mat-icon>done_all</mat-icon>
+        <span>Valider </span>
+    </ng-container>
+    <ng-container *ngIf="display_loading">
+        <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+    </ng-container>
 </button>
   

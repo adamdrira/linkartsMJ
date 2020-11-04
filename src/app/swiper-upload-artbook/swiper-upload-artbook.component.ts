@@ -56,6 +56,9 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
   }
 
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -439,6 +442,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
   validateAll() {
     
 
+    this.validateButton.nativeElement.disabled = true;
 
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
     let valid : boolean = true;
@@ -456,6 +460,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
       });
+      this.validateButton.nativeElement.disabled = false;
 
     }
     else if( !this.confirmation ) {
@@ -464,9 +469,11 @@ export class SwiperUploadArtbookComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
       });
+      this.validateButton.nativeElement.disabled = false;
     }
     
     else {
+      this.display_loading=true;
       this.Drawings_CoverService.add_covername_to_sql(this.format).subscribe();
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;

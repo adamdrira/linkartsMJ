@@ -66,6 +66,10 @@ export class AddAdComponent implements OnInit {
   }
 
   
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
+
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('profile_picture') profile_picture:SafeUrl;
@@ -75,7 +79,6 @@ export class AddAdComponent implements OnInit {
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
-  display_loading=false;
   dropdowns = this._constants.filters.categories[0].dropdowns;
   CURRENT_step: number;
 
@@ -110,6 +113,7 @@ export class AddAdComponent implements OnInit {
   fdMydescription: FormControl;
   fdTargets: FormControl;
   fdProject_type: FormControl;
+  fdPrice_type: FormControl;
   fdPreferential_location: FormControl;
   remuneration:boolean = false;
   
@@ -118,6 +122,7 @@ export class AddAdComponent implements OnInit {
     this.fdMydescription = new FormControl('', Validators.required);
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
     this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("integer") ) ]);
+    this.fdPrice_type = new FormControl('');
     this.fdTargets = new FormControl( this.genres, [Validators.required]);
     this.fdProject_type = new FormControl('', [Validators.required]);
     this.fdPreferential_location = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("location") ) ]);
@@ -131,6 +136,7 @@ export class AddAdComponent implements OnInit {
       fdProject_type: this.fdProject_type,
       fdPreferential_location:this.fdPreferential_location,
       fdPrice: this.fdPrice,
+      fdPrice_type: this.fdPrice_type,
       fdDescription:  this.fdDescription,
     });
   }
@@ -157,7 +163,8 @@ export class AddAdComponent implements OnInit {
         comment_id:0,
       }
       this.chatService.messages.next(message_to_send);
-      this.display_loading=false;
+      //this.display_loading=false;
+      this.can_delete = false;
       window.location.href = `/account/${this.pseudo}/${this.id}`;
       
     }) 
@@ -179,6 +186,8 @@ export class AddAdComponent implements OnInit {
   validate_form_ads() {
 
     
+    this.validateButton.nativeElement.disabled = true;
+
     if(this.remuneration && !this.fd.valid){
       if(this.fd.value.fdPrice.length==0){
         this.price_value ="0";
@@ -197,6 +206,9 @@ export class AddAdComponent implements OnInit {
         console.log(this.price_value);
         console.log("ok");
         console.log(this.fd.value.fdDescription);
+
+        this.display_loading=true;
+
         this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value)
           .subscribe((val)=> {
             this.ad_id=val[0].id;
@@ -206,7 +218,6 @@ export class AddAdComponent implements OnInit {
                 this.status_pictures=true;
                 this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(n=>{
                   this.status_pictures=true;
-                  this.display_loading=true;
                   console.log(n);
                 })
               })
@@ -219,24 +230,31 @@ export class AddAdComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
       });
+      this.validateButton.nativeElement.disabled = false;
     }
     else {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
       });
+      this.validateButton.nativeElement.disabled = false;
     }
 
   }
 
+  can_delete=true;
   cancel_all(){ 
+    if(this.can_delete){
       this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
+    }
   }
 
 
 
   //Ajouté par Mokhtar
   listOfTypes = ["Bandes dessinées en tout genre","BD européennes","Comics","Manga","Webtoon","Dessin en tout genre","Dessin digital",
-"Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
+  "Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
+
+  listOfPriceTypes = ["Par mission","Mensuelle","Annuelle"];
 
   listOfDescriptions = ["Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
   

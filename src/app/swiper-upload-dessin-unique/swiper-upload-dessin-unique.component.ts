@@ -48,6 +48,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.image_uploaded = false;
   }
 
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
 
   
   @Input('author_name') author_name:string;
@@ -197,6 +199,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   validateAll() {
 
+    this.validateButton.nativeElement.disabled = true;
+
     let errorMsg1 : string = "Le dessin n'a pas été téléchargé";
     let errorMsg2 : string = "La vignette n'a pas été éditée";
     let errorMsg3 : string = "La couleur du filtre n'a pas été sélectionnée";
@@ -205,15 +209,18 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg1},
       });
+      this.validateButton.nativeElement.disabled = false;
       this.displayErrors = true;
     }
     else if( !this.imageDestination ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg2},
       });
+      this.validateButton.nativeElement.disabled = false;
       this.displayErrors = true;
     }
     else {
+      this.display_loading=true;
       this.upload=true;
       this.Drawings_CoverService.add_covername_to_sql(this.format).subscribe(res=>{
       });

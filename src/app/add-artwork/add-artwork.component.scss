@@ -131,7 +131,11 @@
 
 
 ::ng-deep {
-        
+    
+    .mat-spinner circle {
+        stroke: #ffffff;
+    }
+
     .cdk-global-scrollblock {
         overflow-y:unset !important;
     }
