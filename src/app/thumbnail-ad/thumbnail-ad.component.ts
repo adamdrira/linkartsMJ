@@ -99,6 +99,7 @@ export class ThumbnailAdComponent implements OnInit {
   list_of_attachments:any[]=[];
   attachments_retrieved=false;
   visitor_mode=true;
+  visitor_mode_retrieved=false;
 
 
   //responses
@@ -132,6 +133,7 @@ export class ThumbnailAdComponent implements OnInit {
       if(r[0].id==this.item.id_user){
         this.visitor_mode=false;
       }
+      this.visitor_mode_retrieved=true;
     });
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
@@ -600,6 +602,8 @@ export class ThumbnailAdComponent implements OnInit {
       }
     })
   }
+
+
 
 
 }

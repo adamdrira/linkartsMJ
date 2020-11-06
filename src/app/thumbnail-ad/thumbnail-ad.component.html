@@ -4,7 +4,7 @@
     <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
 
         
-        <div class="absolute-selector">
+        <div class="absolute-selector" [ngClass]="{'invisible':visitor_mode_retrieved}">
             <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
             <mat-icon class="optionsButton" style="
             font-size:23px; 
@@ -12,10 +12,14 @@
             margin:auto;">more_vert</mat-icon>
             </button>
             <mat-menu  #options="matMenu" xPosition="before">
-            <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+            <button  *ngIf="visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
                 <mat-icon class="item-icon">flag</mat-icon>
                 <span>Signaler</span>
             </button>
+            <!--<button *ngIf="!visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
+                <mat-icon class="item-icon">flag</mat-icon>
+                <span>Editer la miniature</span>
+            </button>-->
             </mat-menu>
         </div>
 
