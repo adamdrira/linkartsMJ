@@ -595,6 +595,26 @@
     padding-left:unset !important;
     padding-right:unset !important;
 
+    .top-container-2 {
+      flex-direction: column !important;
+      padding:10px !important;
+      .author-container {
+        width:100% !important;
+      }
+      .cible-container {
+        padding-left:5px !important;
+        margin-left:unset !important;
+        margin-right:auto;
+        text-align:left !important;
+      }
+      span.author-description {
+        font-size:14px !important;
+      }
+      span.cible-description {
+        font-size:14px !important;
+      }
+    }
+
     .global-container {
         flex-direction: column;
         padding:0px !important;
