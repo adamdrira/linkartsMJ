@@ -1,0 +1,115 @@
+
+<a class="thumbnail-user" *ngIf="display_thumbnail" [routerLink]=open_account() [@enterAnimation]>
+
+    <div class="left-container">
+        
+        
+        <div class="cover-picture">
+            <img src="../../assets/img/account.jpg">
+        </div>
+
+        <div class="profile-picture">
+            <img src="../../assets/img/cvfranck.jpg">
+        </div>
+
+        <div class="profile-name">
+            <span>{{author_name}}</span>
+        </div>
+
+        <div class="profile-text">
+            <mat-icon>alternate_email</mat-icon>
+            <span>{{pseudo}}</span>
+        </div>
+
+        <div class="profile-text">
+            <mat-icon>work_outline</mat-icon>
+            <span>{{occupation}}</span>
+        </div>
+        
+
+        <div class="profile-text" *ngIf="subscribers_number == 0">
+            <mat-icon>group</mat-icon>
+            <span>Aucun abonné</span>
+        </div>
+        <div class="profile-text" *ngIf="subscribers_number == 1">
+            <mat-icon>group</mat-icon>
+            <span>1 abonné</span>
+        </div>
+        <div class="profile-text" *ngIf="subscribers_number > 1">
+            <mat-icon>group</mat-icon>
+            <span>{{subscribers_number}} abonnés</span>
+        </div>
+
+
+        <button class="subscribe-button" (click)="stop($event)" *ngIf="!subscribed_to_user">
+            <span>S'abonner</span>
+        </button>
+
+    </div>
+
+    <div class="right-container">
+
+        <div class="descriptions">
+            <div class="author-description">
+                <span>{{primary_description}}</span>
+            </div>
+            <div class="author-extended-description">
+                <span>{{extended_description}}</span>
+            </div>
+        </div>
+        <div class="preview">
+            <div class="preview-container">
+                <div class="container-title">
+                    <mat-icon>image</mat-icon>
+                    <span>Publications</span>
+                </div>
+                
+
+                <div class="data-container">
+                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
+                    matTooltip="Voir les bandes dessinées" 
+                    matTooltipClass='tooltip-thumbnail-user' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="icon icon-comic"></div>
+                        <span>{{number_of_comics}}</span>
+                    </a>
+
+                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
+                    matTooltip="Voir les dessins" 
+                    matTooltipClass='tooltip-thumbnail-user' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="icon icon-drawing"></div>
+                        <span>{{number_of_drawings}}</span>
+                    </a>
+                </div>
+
+                <div class="data-container">
+                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
+                    matTooltip="Voir les écrits" 
+                    matTooltipClass='tooltip-thumbnail-user' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="icon icon-writing"></div>
+                        <span>{{number_of_writings}}</span>
+                    </a>
+
+                    <a class="data" [routerLink]=open_announcements() (click)="stop($event)" 
+                    matTooltip="Voir les annonces" 
+                    matTooltipClass='tooltip-thumbnail-user' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <mat-icon>announcement</mat-icon>
+                        <span>{{number_of_ads}}</span>
+                    </a>
+                </div>
+            
+            </div>
+            
+
+        </div>
+    </div>
+
+
+</a>

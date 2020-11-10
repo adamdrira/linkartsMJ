@@ -4,6 +4,22 @@
     <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
 
         
+        <div class="absolute-selector">
+            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
+            <mat-icon class="optionsButton" style="
+            font-size:23px; 
+            color:rgb(32,56,100);
+            margin:auto;">more_vert</mat-icon>
+            </button>
+            <mat-menu  #options="matMenu" xPosition="before">
+            <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+                <mat-icon class="item-icon">flag</mat-icon>
+                <span>Signaler</span>
+            </button>
+            </mat-menu>
+        </div>
+        
+        
         <div class="absolute-selector" [ngClass]="{'invisible':visitor_mode_retrieved}">
             <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
             <mat-icon class="optionsButton" style="
@@ -62,36 +78,29 @@
                 <div class="cible-container" *ngIf="item.target_two == null">
                     <span>Cible</span>
                     <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 5px 0px -2px;">person</mat-icon>
+                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                 </div>
                 <div class="cible-container" *ngIf="item.target_two != null">
                     <span>Cibles</span>
                     <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 5px 0px -2px;">person</mat-icon>
+                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                     <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 5px 0px -2px;">person</mat-icon>
+                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
                         <span class="cible-description">{{item.target_two}}</span>
                     </div>
                 </div>
             </div>
 
-            
-            <div class="section-container">
-                <div class="verso-type">
-                    <div class="type-container"><span>{{item.type_of_project}}</span></div>
-                    <div class="tag-container" *ngIf="item.remuneration && item.price_value!='0'"><span>Rémunumation : {{item.price_value}}€</span></div>
-                </div>
-            </div>
-            
+
             <div class="middle-container">
                 <ng-container *ngIf="see_responses==0 && attachments_retrieved">
                     
                     
-                    <div #swiperAttachments class="swiper-attachments" *ngIf="list_of_pictures.length || list_of_attachments.length">
+                    <!--<div #swiperAttachments class="swiper-attachments" *ngIf="list_of_pictures.length || list_of_attachments.length">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" *ngFor="let picture of list_of_pictures, let i=index">
                                 <div (click)="read_pictures(i);stop($event);" class="image-container">
@@ -108,34 +117,59 @@
                         </div>
                         <div class="swiper-button-prev" (click)="stop($event)"></div>
                         <div class="swiper-button-next" (click)="stop($event)"></div>
-                    </div>
+                    </div>-->
 
-                    <!--<div class="categories">
+                    <div class="categories">
                         <div class="category" [ngClass]="{'opened': category_index == 0 }" (click)="open_category(0);stop($event);">
+                            <mat-icon>description</mat-icon>
+                            <span>Description</span>
+                        </div>
+                        <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);stop($event);">
                             <mat-icon>image</mat-icon>
                             <span>Images ({{list_of_pictures.length}})</span>
                         </div>
-                        <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);stop($event);">
+                        <div class="category" [ngClass]="{'opened': category_index == 2 }" (click)="open_category(2);stop($event);">
                             <mat-icon>picture_as_pdf</mat-icon>
                             <span>Fichiers ({{list_of_attachments.length}})</span>
                         </div>
+
+                        <div class="absolute-border-bottom" [ngClass]="{'c0': category_index == 0,'c1': category_index == 1,'c2': category_index == 2 }"></div>
                     </div>
 
-                    <div *ngIf="category_index==0" class="section-container" style="display:flex;flex-wrap: wrap;">
+                    
+                    <div *ngIf="category_index==0" class="section-container" [@enterAnimation]>
+
+                        <span *ngIf="!item.remuneration">{{item.type_of_project}}</span>
+                        <span *ngIf="item.remuneration && item.price_value>0">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€</span>
+                        <span *ngIf="item.remuneration && !(item.price_value>0)">{{item.type_of_project}} • Rémunéré</span>
+
+                        <!--<div class="verso-type">
+                            <div class="type-container"><span>{{item.type_of_project}}</span></div>
+                            <div class="tag-container" *ngIf="item.remuneration && item.price_value!='0'"><span>Rémunumation : {{item.price_value}}€</span></div>
+                        </div>-->
+                        <div class="item-description">
+                            <span>
+                                {{item.description}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="category_index==1" class="attachments-container" [@enterAnimation]>
                         <div *ngFor="let picture of list_of_pictures, let i=index" (click)="read_pictures(i);stop($event);" class="image-container">
                             <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                         </div>
                     </div>
-                    <div *ngIf="category_index==1" class="section-container">
+                    <div *ngIf="category_index==2" class="attachments-container" [@enterAnimation]>
                         <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
-                            <div *ngIf="list_of_attachments[i]"class="attachments-container">
-                                <div (click)="read_attachment(i);stop($event);" class="attachment-item">
+                            <div *ngIf="list_of_attachments[i]"class="attachment" (click)="read_attachment(i);stop($event);" >
+                                <div class="attachment-logo">
                                     <mat-icon>picture_as_pdf</mat-icon>
                                 </div>
                                 <span><i>{{list_of_attachments_name[i]}}</i></span>
                             </div>
                         </ng-container>
-                    </div>-->
+                    </div>
+
                 </ng-container>
             </div>
             

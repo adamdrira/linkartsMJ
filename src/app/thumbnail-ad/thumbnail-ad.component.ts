@@ -19,7 +19,6 @@ import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any
-declare var Swiper: any
 
 @Component({
   selector: 'app-thumbnail-ad',
@@ -179,21 +178,6 @@ export class ThumbnailAdComponent implements OnInit {
 
     this.open_category(0);
 
-    var swiper = new Swiper('.swiper-container', {
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-        renderBullet: function (index, className) {
-          return '<span class="' + className + '">' + (index + 1) + '</span>';
-        },
-      },
-    });
-    
-
   }
 
   
@@ -269,7 +253,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -295,7 +278,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -327,7 +309,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -353,7 +334,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -384,7 +364,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -410,7 +389,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             });
           }
@@ -441,7 +419,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             })
           }
@@ -467,7 +444,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             })
           }
@@ -498,7 +474,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             })
           }
@@ -524,7 +499,6 @@ export class ThumbnailAdComponent implements OnInit {
                 }
                 this.attachments_retrieved=true;
                 this.cd.detectChanges();
-                this.initialize_swiper();
               }
             })
           }
@@ -535,7 +509,6 @@ export class ThumbnailAdComponent implements OnInit {
     else{
       this.attachments_retrieved=true;
       this.cd.detectChanges();
-      this.initialize_swiper();
     }
   }
 
@@ -556,53 +529,6 @@ export class ThumbnailAdComponent implements OnInit {
   open_account() {
     return "/account/"+this.pseudo+"/"+this.item.id_user;
   }
-
-  @ViewChild("swiperAttachments") swiperAttachments:ElementRef;
-  swiper:any;
-  initialize_swiper() {
-    this.swiper = new Swiper( this.swiperAttachments.nativeElement, {
-      speed: 300,
-      initialSlide:0,
-      spaceBetween:100,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 1,
-          slidesPerGroup: 1,
-          spaceBetween: 50
-        },
-        300: {
-          slidesPerView: 3,
-          slidesPerGroup: 3,
-          spaceBetween: 50
-        },
-        500: {
-          slidesPerView: 4,
-          slidesPerGroup: 4,
-          spaceBetween: 30
-        },
-        600: {
-          slidesPerView: 5,
-          slidesPerGroup: 5,
-          spaceBetween: 30
-        },
-        700: {
-          slidesPerView: 4,
-          slidesPerGroup: 4,
-          spaceBetween: 30
-        },
-        750: {
-          slidesPerView: 5,
-          slidesPerGroup: 5,
-          spaceBetween: 30
-        },
-      }
-    })
-  }
-
 
 
 
