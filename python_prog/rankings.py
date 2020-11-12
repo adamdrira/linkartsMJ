@@ -15,13 +15,15 @@ import pandas as pd
 
 
 def rankings_bd(data1, data2, data3):  
-    
+    #print("ranking bd")
     #pour les bd uniquement pour le moment
-    data_filtered = data1[data1['publication_category'] == 'bd']
-    
+    data_filtered = data1[data1['publication_category'] == 'comic']
+    #print(data_filtered)
     #ajouts de points pour les vues (coef 1)
     dups = data_filtered.pivot_table(index=["format","publication_id"], aggfunc='size')
+    #print(dups)
     dups_list=list(zip(dups.index,dups))
+    #print(dups_list)
     list_to_convert_in_csv=[]
     for item in dups_list:
         labels={}
@@ -29,15 +31,15 @@ def rankings_bd(data1, data2, data3):
         labels["publication_id"]=list(list(item)[0])[1]
         labels["points"]=list(item)[1]
         list_to_convert_in_csv.append(labels)    
-    
+    #print(list_to_convert_in_csv)
     #ajout de points pour le temps des vues (coef 1 et divise par 20  :3 vues valent 1 minute de vue pour les bd)
     for index, row in data_filtered.iterrows():
         for item in list_to_convert_in_csv:
-            if (item['format']==row[3]) and (item['publication_id']==row[5]):               
+            if (item['format']==row[3]) and (item['publication_id']==row[8]):               
                 item['points']+=(row[9]/20) 
     
     #on passe aux likes pour les bd seulements
-    data_filtered_2 = data2[data2['publication_category'] == 'bd']
+    data_filtered_2 = data2[data2['publication_category'] == 'comic']
     
     # ajout de points pour les likes (coef 2)
     dups_2 = data_filtered_2.pivot_table(index=["format","publication_id"], aggfunc='size')
@@ -48,7 +50,7 @@ def rankings_bd(data1, data2, data3):
                 item_2['points']+=2    
                 
     #on passe aux loves pour les bd seulements
-    data_filtered_3 = data3[data3['publication_category'] == 'bd']
+    data_filtered_3 = data3[data3['publication_category'] == 'comic']
     
     # ajout de points pour les loves (coef 3)
     dups_3 = data_filtered_3.pivot_table(index=["format","publication_id"], aggfunc='size')
