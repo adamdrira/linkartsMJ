@@ -43,7 +43,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
     this.hasAnotherDropZoneOver = false;
 
   }
-
+  @Output() sendValidated = new EventEmitter<object>();
 
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
@@ -144,7 +144,9 @@ export class UploaderDessinUniqueComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
         this.Drawings_Onepage_Service.validate_drawing().subscribe(r=>{
+          console.log(r[0])
           this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
+            console.log(l[0])
             let message_to_send ={
               for_notifications:true,
               type:"add_publication",
@@ -161,7 +163,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
               comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
-            window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
           }) 
         })
         

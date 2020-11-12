@@ -54,8 +54,8 @@ export class Writing_CoverService {
 
    //remove the page file from the folder associated
    remove_cover_from_folder() {
-    this.CookieService.delete('name_cover_bd_oneshot'); 
-    return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${this.covername}`).pipe(map(information=>{
+    this.CookieService.delete('name_cover_writing'); 
+    return this.httpClient.delete(`routes/remove_writing_from_folder/${this.covername}`).pipe(map(information=>{
       return information;
     }));
    };

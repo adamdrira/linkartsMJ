@@ -82,9 +82,7 @@ export class AuthenticationService {
 
     reset_password(mail){
         // check if mail exists and return error if no, send mail if yes
-        return this.http.post<any>('/users/login', { mail_or_username: mail})
-            .pipe(map(res => {
-                console.log(res);
+        return this.http.post<any>('api/users/reset_password', { email: mail}).pipe(map(res => {
                 return res;
             }));
     }

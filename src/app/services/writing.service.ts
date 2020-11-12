@@ -18,6 +18,7 @@ const httpOptions = {
 export class Writing_Upload_Service {
 
  confirmation:Boolean = false;
+ total_pages:number;
  writing_id:number;
  name_writing:string ='';
 
@@ -28,12 +29,11 @@ export class Writing_Upload_Service {
     httpClient.options
   }
 
-  CreateWriting(Title, Category, Tags:String[], highlight,monetization ){
-    return this.httpClient.post('routes/add_writing', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, writing_name: this.name_writing, monetization:monetization},{withCredentials:true}).pipe(map((information)=>{
+  CreateWriting(Title, Category, Tags:String[], highlight,monetization,total_pages ){
+    return this.httpClient.post('routes/add_writing', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, writing_name: this.name_writing, monetization:monetization,total_pages:total_pages},{withCredentials:true}).pipe(map((information)=>{
         console.log(information[0].writing_id) ;
         this.writing_id = information[0].writing_id;
         this.CookieService.delete('name_writing','/');
-        this.Subscribing_service.add_content('writing', 'writing', information[0].writing_id,0).subscribe(r=>{});
         return information
     }));
   }
@@ -79,12 +79,13 @@ export class Writing_Upload_Service {
  };
   
  
-  send_confirmation_for_addwriting(confirmation:boolean){
-      this.confirmation = confirmation
+  send_confirmation_for_addwriting(confirmation:boolean,total_pages){
+      this.confirmation = confirmation;
+      this.total_pages=total_pages;
   };//prévient component add-artwork si il peut passer à la prochaine étape ou non
 
   get_confirmation(){
-      return this.confirmation
+      return [this.confirmation,this.total_pages]
   }
 
   retrieve_thumbnail_picture(file_name:string) {
@@ -132,5 +133,15 @@ export class Writing_Upload_Service {
     }));
   }
 
-  
+  get_number_of_writings(id_user,date_format,compteur){
+    return this.httpClient.post('routes/get_number_of_writings',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map(information=>{
+    return [information,compteur]
+   }));
+  }
+
+  add_total_pages_for_writing(writing_id,total_pages){
+    return this.httpClient.post('routes/add_total_pages_for_writing',{writing_id:writing_id,total_pages:total_pages}, {withCredentials:true}).pipe(map(information=>{
+    return information
+   }));
+  }
 }

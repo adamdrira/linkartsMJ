@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
@@ -47,7 +47,7 @@ export class Uploader_bd_oneshot implements OnInit{
     this.hasAnotherDropZoneOver = false;
 
   }
-
+  @Output() sendValidated = new EventEmitter<object>();
 
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
@@ -171,8 +171,8 @@ get upload(): boolean {
             comment_id:0,
           }
           this.chatService.messages.next(message_to_send);
-          
-          window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+          this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
+         
         }) 
       })
     }

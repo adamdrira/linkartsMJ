@@ -51,24 +51,25 @@ export class ThumbnailUserComponent implements OnInit {
 
 
   //variables à récupérer
-  occupation:string ="Artiste professionnel";
-  subscribers_number:number = 123;
-  extended_description:string = "Ma description longue. Ma description longue. Ma description longue. Ma description longue.";
-  number_of_comics:number = 12;
-  number_of_drawings:number = 12;
-  number_of_writings:number = 12;
-  number_of_ads:number = 12;
+  type_of_account:string;
+  occupation:string;
+  subscribers_number:number;
+  extended_description:string;
+  number_of_comics:number;
+  number_of_drawings:number ;
+  number_of_writings:number ;
+  number_of_ads:number;
+  number_of_contents_retrieved=false;
   //déjà abonné ou pas
   subscribed_to_user:boolean = false;
 
   display_thumbnail=false;
-  
+  date_retrieved=false;
   ngOnInit(): void {
 
     console.log(this.item);
     this.user_id = this.item.id;
     
-
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -77,10 +78,29 @@ export class ThumbnailUserComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.pseudo=r[0].nickname;
+      this.occupation=r[0].job;
+      this.type_of_account=r[0].type_of_account;
       this.primary_description=r[0].primary_description;
-
-      this.display_thumbnail = true;
+      this.extended_description=r[0].primary_description_extended;
+      this.subscribers_number=r[0].subscribers_number;
+      this.date_retrieved=true;
+      if(this.date_retrieved && this.number_of_contents_retrieved){
+        this.display_thumbnail = true;
+      }
+     
     });
+
+    this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+      console.log(r[0]);
+      this.number_of_comics=r[0].number_of_comics;
+      this.number_of_drawings=r[0].number_of_drawings;
+      this.number_of_writings=r[0].number_of_writings;
+      this.number_of_ads=r[0].number_of_ads;
+      this.number_of_contents_retrieved=true;
+      if(this.date_retrieved && this.number_of_contents_retrieved){
+        this.display_thumbnail = true;
+      }
+    })
 
   }
 

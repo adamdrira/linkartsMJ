@@ -4,7 +4,7 @@
     <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
 
         
-        <div class="absolute-selector">
+        <div *ngIf="type_of_profile=='account' " class="absolute-selector" [ngClass]="{'invisible':!archive_retrieved}">
             <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
             <mat-icon class="optionsButton" style="
             font-size:23px; 
@@ -12,32 +12,31 @@
             margin:auto;">more_vert</mat-icon>
             </button>
             <mat-menu  #options="matMenu" xPosition="before">
-            <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+            <button mat-menu-item (click)="archive()" *ngIf="!ad_archived && visitor_mode">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Archiver</span>
+            </button>
+            <button mat-menu-item (click)="unarchive()" *ngIf="ad_archived && visitor_mode">
+                <mat-icon>cloud_download</mat-icon>
+                <span>Désarchiver</span>
+            </button>
+            <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
                 <mat-icon class="item-icon">flag</mat-icon>
                 <span>Signaler</span>
             </button>
-            </mat-menu>
-        </div>
-        
-        
-        <div class="absolute-selector" [ngClass]="{'invisible':visitor_mode_retrieved}">
-            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
-            <mat-icon class="optionsButton" style="
-            font-size:23px; 
-            color:rgb(32,56,100);
-            margin:auto;">more_vert</mat-icon>
-            </button>
-            <mat-menu  #options="matMenu" xPosition="before">
-            <button  *ngIf="visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
+            <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
                 <mat-icon class="item-icon">flag</mat-icon>
-                <span>Signaler</span>
+                <span>Annuler le signalement</span>
             </button>
-            <!--<button *ngIf="!visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
-                <mat-icon class="item-icon">flag</mat-icon>
+            <button  *ngIf="!visitor_mode" mat-menu-item (click)="edit_thumbnail()" >
+                <mat-icon>cloud_download</mat-icon>
                 <span>Editer la miniature</span>
-            </button>-->
+            </button>
             </mat-menu>
         </div>
+        
+        
+        
 
         <div class="left-container no-border-style">
             <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">

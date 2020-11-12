@@ -59,7 +59,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="figure-container loves">
-                                                    <div>
+                                                    <div >
                                                         <span>{{lovesnumber}}</span>
                                                         <mat-icon>favorite</mat-icon>
                                                     </div>
@@ -95,16 +95,16 @@
                                         <!--********************-->
                                         <!--Type container-->
                                         <!--********************-->
-                                        <div class="verso-type">
+                                        <div class="verso-type" style="display:block">
                                             <!--&bull;-->
-                                            <ng-container *ngIf="format=='one-shot'">
+                                            <div style="display:flex" *ngIf="format=='one-shot'">
                                                 <div class="tag-container"><span>One shot</span></div>
                                                 <div class="tag-container">
                                                     <span>{{pagesnumber}}</span>
                                                     <mat-icon>insert_drive_file</mat-icon>
                                                 </div>
-                                            </ng-container>
-                                            <ng-container *ngIf="format!='one-shot'">
+                                            </div>
+                                            <div style="display:flex" *ngIf="format!='one-shot'">
                                                 <div class="tag-container"><span>Série</span></div>
                                                 <div class="tag-container">
                                                     <span>{{chaptersnumber}}</span>
@@ -112,38 +112,39 @@
                                                     <span>&nbsp; {{pagesnumber}}</span>
                                                     <mat-icon>insert_drive_file</mat-icon>
                                                 </div>
-                                            </ng-container>
+                                            </div >
                                             
                                             
-                                            <ng-container *ngIf="thirdtag==null">
+                                            <div style="display:flex" *ngIf="thirdtag==null">
                                                 <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>
                                                 <div  *ngIf="secondtag!=null" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
-                                            </ng-container>
+                                            </div>
 
-                                            <ng-container *ngIf="thirdtag!=null">
+                                            <div style="display:flex" *ngIf="thirdtag!=null">
                                                 <div #swiperCategories class="swiper-categories">
                                                     <div class="swiper-wrapper">
                                                         <div class="swiper-slide">
-                                                            <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>
+                                                            <div class="tag-container type" style="width: fit-content; margin: auto;" ><span  class="categories" >{{firsttag}}</span></div>
                                                         </div>
                                                         <div class="swiper-slide">
-                                                            <div  *ngIf="secondtag!=null" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                                                            <div  *ngIf="secondtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{secondtag}}</span></div>
                                                         </div>
                                                         <div class="swiper-slide">
-                                                            <div  *ngIf="thirdtag!=null" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
+                                                            <div  *ngIf="thirdtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{thirdtag}}</span></div>
                                                         </div>
                                                     </div>
                                                     <div class="swiper-button-prev" (click)="stop($event)"></div>
                                                     <div class="swiper-button-next" (click)="stop($event)"></div>
                                                 </div>
-                                            </ng-container>
+                                            </div>
                                             
                                         </div>
                                         <!--********************-->
                                         <!--Date container-->
                                         <!--********************-->
-                                        <div class="date-container">
+                                        <div class="date-container" [ngClass]="{'invisible':!recent_chapter_retrieved && format=='serie'}">
                                             <span>{{date_upload_to_show}}</span>
+                                            <span *ngIf="recent_chapter"> &nbsp; Nouveau chapitre !</span>
                                         </div>
 
                                     

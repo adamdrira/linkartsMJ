@@ -137,7 +137,7 @@
                 <!--********************-->
                 <!--Type container-->
                 <!--********************-->
-                <div class="verso-type">
+                <div class="verso-type" style="display:block">
                     <!--&bull;-->
                     <ng-container *ngIf="format=='One-shot'">
                         <div class="tag-container"><span>One shot</span></div>
@@ -145,9 +145,12 @@
                     <ng-container *ngIf="format=='Série'">
                         <div class="tag-container"><span>Série</span></div>
                     </ng-container>
-                    <div class="tag-container type" *ngIf="firsttag"><span  class="categories" >{{firsttag}}</span></div>
-                    <div  *ngIf="secondtag" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
-                    <div  *ngIf="thirdtag" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
+                    <div  style="display:flex" >
+                        <div *ngIf="firsttag" class="tag-container type" ><span  class="categories" >{{firsttag}}</span></div>
+                        <div  *ngIf="secondtag" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                        <div  *ngIf="thirdtag" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
+                    </div>
+                   
                     
                 </div>
                 <!--********************-->

@@ -54,8 +54,11 @@ export class BdSerieService {
 
   }
   add_chapter_bd_serie2(bd_id,chapter_number: number, Title:string){
+    console.log("add_chapter_bd_serie2")
+    console.log(bd_id)
     this.CookieService.set('current_bd_serie_id', bd_id, undefined, '/','localhost',undefined,'Lax');
-    this.Subscribing_service.add_content('comics', 'serie', bd_id,chapter_number).subscribe(r=>{});
+    let bd = this.CookieService.get('current_bd_serie_id')
+    console.log(bd)
     return this.httpClient.post('routes/add_chapter_bd_serie', {Title: Title, chapter_number:chapter_number, bd_id:bd_id}, {withCredentials:true}).pipe(map((information)=>{
       return information
     }));
@@ -141,6 +144,7 @@ export class BdSerieService {
 
    validate_bd_chapter(number_of_pages, chapter_number){
     let bd_id = this.CookieService.get('current_bd_serie_id')
+    console.log(bd_id)
     return this.httpClient.post('routes/validation_chapter_upload_bd_serie/',{bd_id:bd_id, number_of_pages:number_of_pages, chapter_number:chapter_number}, {withCredentials:true}).pipe(map(information=>{
        return information;   
      }));
@@ -199,6 +203,10 @@ export class BdSerieService {
 
   
 
-
+  get_number_of_bd_series(id_user,date_format,compteur){
+    return this.httpClient.post('routes/get_number_of_bd_series',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map(information=>{
+    return [information,compteur]
+   }));
+  }
   
 }

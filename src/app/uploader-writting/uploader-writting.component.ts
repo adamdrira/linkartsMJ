@@ -35,7 +35,7 @@ export class UploaderWrittingComponent implements OnInit {
   hasAnotherDropZoneOver:boolean;
   afficherpreview:boolean =false;
   confirmation:boolean=false;
-  
+  can_operate=false; // afficher les boutons pour valider ou recommencer
 
   constructor (
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -64,10 +64,11 @@ export class UploaderWrittingComponent implements OnInit {
   }
 
   pdfSafeUrl:SafeUrl;
+  total_pages:number;
 
   ngOnInit(): void {
 
-    this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation); 
+    this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0); 
    
     this.uploader.onAfterAddingFile = async (file) => {
 
@@ -106,7 +107,7 @@ export class UploaderWrittingComponent implements OnInit {
 
      this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
-      this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
+      this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation,this.total_pages);
       this.Writing_Upload_Service.get_writing_name().subscribe();
 
     }
@@ -116,10 +117,10 @@ export class UploaderWrittingComponent implements OnInit {
   remove_beforeupload(item:FileItem){
     
     this.confirmation = false;
-    this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
+    this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0);
     item.remove();
     this.afficherpreview = false;
-
+    this.can_operate=false;
     
   };
  
@@ -127,10 +128,11 @@ export class UploaderWrittingComponent implements OnInit {
   remove_afterupload(item){
       //On supprime le fichier en base de donnée
       this.confirmation = false;
-      this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation);
+      this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0);
       this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
       item.remove();
       this.afficherpreview = false;
+      this.can_operate=false;
   };
 
   onFileClick(event) {
@@ -140,7 +142,6 @@ export class UploaderWrittingComponent implements OnInit {
 
   
   swiper:any;
-  total_pages:number;
   arrayOne(n: number): any[] {
     return Array(n);
   }
@@ -174,6 +175,7 @@ export class UploaderWrittingComponent implements OnInit {
         },
       },
     });
+    this.can_operate=true;
   }
   
   afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
@@ -187,5 +189,10 @@ export class UploaderWrittingComponent implements OnInit {
     };
   }
 
+
+  validate_pdf(){
+    this.uploader.queue[0].upload();
+    console.log(this.total_pages)
+  }
 
 }

@@ -4,6 +4,7 @@ import { catchError, tap, map, delay, retryWhen, delayWhen } from 'rxjs/operator
 import { CookieService } from 'ngx-cookie-service';
 import {Subject,Observable, Observer,EMPTY, timer} from 'rxjs';
 import { webSocket,WebSocketSubject } from 'rxjs/webSocket';
+import { NavbarService } from './navbar.service';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -18,7 +19,7 @@ const httpOptions = {
 export class WebSocketService {
 
 
-  constructor(private httpClient: HttpClient, private CookieService: CookieService) {
+  constructor(private httpClient: HttpClient, private CookieService: CookieService,private NavbarService:NavbarService) {
   }
 
   subject:Subject<MessageEvent>;
@@ -71,11 +72,13 @@ public check_state(){
                     console.log(THIS.ws.readyState);
                     if(THIS.ws.readyState==2 || THIS.ws.readyState==3){
                       THIS.subject = null;
+                      THIS.NavbarService.send_connextion_status(false)
                       return THIS.connect(url)
                     }
                     else{
                       clearInterval(retry)
                       THIS.subject = null;
+                      THIS.NavbarService.send_connextion_status(true)
                       return THIS.connect(url)
                     }
                    

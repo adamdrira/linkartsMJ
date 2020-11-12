@@ -65,7 +65,11 @@ export class UploaderCoverWritingComponent implements OnInit {
   @Input('secondtag') secondtag: string;
   @Input('thirdtag') thirdtag: string;
  
-
+  @Input('for_edition') for_edition: boolean;
+  @Input('writing_id') writing_id: number;
+  @Input('thumbnail_picture') thumbnail_picture: string;
+  
+  
   ngOnChanges(changes: SimpleChanges) {
     
 
@@ -119,7 +123,6 @@ export class UploaderCoverWritingComponent implements OnInit {
   
 
   ngAfterViewInit() {
-    
 
   }
 
@@ -160,8 +163,24 @@ export class UploaderCoverWritingComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
-      this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-      this.Writing_CoverService.get_cover_name().subscribe();
+      if(this.for_edition){
+        this.Writing_CoverService.get_cover_name().subscribe(r=>{
+          this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
+            this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+              location.reload();
+              
+            });
+          });
+        });
+          
+      }
+      else{
+        this.Writing_CoverService.get_cover_name().subscribe(r=>{
+          this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
+        });
+      }
+      
+     
     }
 
     $('.ColorChoice').SumoSelect({});

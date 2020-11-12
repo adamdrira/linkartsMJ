@@ -3,7 +3,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
-
+import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
@@ -30,6 +30,7 @@ export class ThumbnailComicsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private BdSerieService: BdSerieService,
     private rd:Renderer2,
+    private NotationService:NotationService,
     private router:Router,
     private cd:ChangeDetectorRef,
 
@@ -81,6 +82,8 @@ export class ThumbnailComicsComponent implements OnInit {
   lovesnumber: string;
   thumbnail_picture:SafeUrl;
   chaptersnumber: number;
+  recent_chapter=false;
+  recent_chapter_retrieved=false;
   date_upload: string;
   date_upload_to_show: string;
   
@@ -89,7 +92,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log(this.format)
+    //console.log(this.format)
     this.user_id = this.item.authorid
     this.file_name = this.item.name_coverpage
     this.title = this.item.title
@@ -102,7 +105,7 @@ export class ThumbnailComicsComponent implements OnInit {
     this.chaptersnumber = this.item.chaptersnumber
     this.date_upload = this.item.createdAt
     this.bd_id = this.item.bd_id
-    console.log(this.file_name)
+    //console.log(this.file_name)
 
 
     if( this.thirdtag != null ) {
@@ -125,12 +128,13 @@ export class ThumbnailComicsComponent implements OnInit {
         this.thumbnail_picture = SafeURL;
       });  
 
-      this.BdOneShotService.retrieve_bd_by_id(this.item.bd_id).subscribe(r=> {
-        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
-        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
-        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+      this.NotationService.get_content_marks("comic", 'one-shot', this.bd_id,0).subscribe(r=>{
+        //marks
+        this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+        this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+        this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
         this.marks_retrieved=true;
-      }); 
+      })
     };
 
     if(this.format=="serie"){
@@ -139,14 +143,28 @@ export class ThumbnailComicsComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
         
-      });  
+      });
+      
+      this.BdSerieService.retrieve_chapters_by_id(this.item.bd_id).subscribe(s => {
+        console.log(s[0]);
+        let last_week=new Date();
+        last_week.setDate(last_week.getDate() - 7);
+        let num_last_week= Math.trunc( last_week.getTime()/1000);
+        let timestamp=s[0][s[0].length-1].createdAt;
+        let num_chapter= this.convert_timestamp_to_number(timestamp);
+        if(num_chapter-num_last_week>0){
+          this.recent_chapter=true;
+        }
+        this.recent_chapter_retrieved=true;
+      })
 
-      this.BdSerieService.retrieve_bd_by_id(this.item.bd_id).subscribe(r=> {
-        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
-        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
-        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+      this.NotationService.get_content_marks("comic", 'serie', this.bd_id,0).subscribe(r=>{
+        //marks
+        this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+        this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+        this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
         this.marks_retrieved=true;
-      }); 
+      })
     };
 
     
@@ -221,6 +239,8 @@ export class ThumbnailComicsComponent implements OnInit {
   resize_comic() {
 
     if( $('.container-comics') ) {
+      //console.log("resize comics")
+      //console.log(this.get_comic_size() +'px')
       $('.comic-container').css({'width': this.get_comic_size() +'px'});
     }
   }
@@ -231,13 +251,12 @@ export class ThumbnailComicsComponent implements OnInit {
 
   comics_per_line() {
     var width = $('.container-comics').width();
-
     var n = Math.floor(width/250);
     if( width < 500 ) {
       this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }
-    else {
+    else if(width>0){
       this.send_number_of_thumbnails.emit({number:n});
       return n;
     }
@@ -247,7 +266,7 @@ export class ThumbnailComicsComponent implements OnInit {
   
   imageloaded=false;
   loaded(){
-    console.log("thumb laoded")
+    //console.log("thumb laoded")
     this.imageloaded=true;
     this.send_loaded.emit(true);
   }
@@ -290,7 +309,14 @@ export class ThumbnailComicsComponent implements OnInit {
   }
 
 
-  
+  convert_timestamp_to_number(timestamp){
+    
+    var uploaded_date = timestamp.substring(0,timestamp.length- 5);
+    uploaded_date=uploaded_date.replace("T",' ');
+    uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
+    let number = new Date(uploaded_date + ' GMT').getTime()/1000;
+    return number
+  }
   
 
 

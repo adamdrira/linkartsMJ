@@ -53,14 +53,14 @@
             </div>
         </div>
 
-        <div class="buttons-container">
+        <div class="buttons-container" *ngIf="can_operate">
             <ng-container *ngIf="!uploader.queue[0].isSuccess">
                 <button  type="button" class="btn btn-danger btn-xs"
                         (click)="remove_beforeupload(uploader.queue[0]);" >
                     <span class="glyphicon glyphicon-trash">Recommencer</span> 
                 </button>
                 <button type="button" class="btn btn-success btn-xs"
-                    (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                    (click)="validate_pdf()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
                     <span class="glyphicon glyphicon-trash">Valider le PDF</span> 
                 </button>
             </ng-container>

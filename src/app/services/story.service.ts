@@ -23,8 +23,7 @@ export class Story_service {
   
 
   get_stories_by_user_id(id_user){
-    return this.httpClient.get(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true
-      }).pipe(map(information=>{
+    return this.httpClient.get(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true}).pipe(map(information=>{
           return information
       }));
   };
@@ -94,6 +93,12 @@ upload_story(story:Blob){
 }
 
 
+get_list_of_viewers_for_story(id_story){
+  return this.httpClient.post(`routes/get_list_of_viewers_for_story`,{id_story:id_story}, {withCredentials:true}).pipe(map(information=>{
+        return information
+    }));
+}
+  
 
   
 }

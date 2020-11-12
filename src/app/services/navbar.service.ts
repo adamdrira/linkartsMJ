@@ -13,13 +13,22 @@ export class NavbarService {
     component_visible=false;
     using_chat=false;
 
+    connexion_status=true;
+
     private notificationSubject: BehaviorSubject<object>;
     public notification: Observable<object>;
+
+    private connexionSubject: BehaviorSubject<boolean>;
+    public connexion: Observable<boolean>;
+
     constructor(
         private httpClient: HttpClient,
     ) {
         this.notificationSubject = new BehaviorSubject<object>(null);
         this.notification = this.notificationSubject.asObservable();
+
+        this.connexionSubject = new BehaviorSubject<boolean>(true);
+        this.connexion = this.connexionSubject.asObservable();
     }
 
     setActiveSection(i: number) { this.active_section = i; }
@@ -36,7 +45,10 @@ export class NavbarService {
     set_using_chat(){this.using_chat=true}
     get_using_chat(){ return this.using_chat}
 
-
+    send_connextion_status(status){
+      this.connexion_status=status;
+      this.connexionSubject.next(status);
+    }
 
      /********************************************* NOTIFICATIONS **************************************/
     /********************************************* NOTIFICATIONS **************************************/
@@ -93,12 +105,18 @@ export class NavbarService {
     }
 
     //gestion
-    add_main_research_to_history(publication_category,format,target_id,research_string,status,number_of_comics,numbar_of_drawings, number_of_writings,style, firsttag,secondtag,thirdtag){
-        return this.httpClient.post(`routes/add_main_research_to_history`,{publication_category:publication_category,format:format,target_id:target_id,research_string:research_string,status:status,number_of_comics:number_of_comics, numbar_of_drawings:numbar_of_drawings, number_of_writings:number_of_writings,firsttag:firsttag,secondtag:secondtag,thirdtag:thirdtag,style:style}, {withCredentials:true}).pipe(map((information)=>{
+    add_main_research_to_history(publication_category,format,target_id,research_string,research_string1,status,number_of_comics,numbar_of_drawings, number_of_writings,style, firsttag,secondtag,thirdtag,user_status){
+        return this.httpClient.post(`routes/add_main_research_to_history`,{research_string1:research_string1,publication_category:publication_category,format:format,target_id:target_id,research_string:research_string,status:status,number_of_comics:number_of_comics, numbar_of_drawings:numbar_of_drawings, number_of_writings:number_of_writings,firsttag:firsttag,secondtag:secondtag,thirdtag:thirdtag,style:style,user_status:user_status}, {withCredentials:true}).pipe(map((information)=>{
             return information;
         }));
     }
 
+    delete_research_from_navbar(publication_category,format,target_id){
+        return this.httpClient.post(`routes/delete_research_from_navbar`,{publication_category:publication_category,format:format,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
+          return information;
+      }));
+    }
+    
     check_if_research_exists(publication_category,format,target_id,research_string,status){
       return this.httpClient.post(`routes/check_if_research_exists`,{publication_category:publication_category,format:format,target_id:target_id,research_string:research_string,status:status}, {withCredentials:true}).pipe(map((information)=>{
           return information;
@@ -200,7 +218,37 @@ export class NavbarService {
     return this.httpClient.post(`routes/get_number_of_clicked`,{publication_category:publication_category,format:format,target_id:target_id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
     }));
-}
- 
+  }
 
+
+
+  get_number_of_clicked_on_ads(list_of_ads_ids,id_user){
+    return this.httpClient.post(`routes/get_number_of_clicked_on_ads`,{list_of_ads_ids:list_of_ads_ids,id_user:id_user}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+    }));
+  }
+ 
+  get_number_of_viewers_by_profile(id_user,date_format,compteur){
+    return this.httpClient.post('routes/get_number_of_viewers_by_profile',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map((information)=>{
+      return [information,compteur];
+    }));
+  }
+
+  get_number_of_viewers_by_ad(target_id,id_user,date_format,compteur){
+    return this.httpClient.post('routes/get_number_of_viewers_by_ad',{target_id:target_id,id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map((information)=>{
+      return [information,compteur];
+    }));
+  }
+
+  get_last_100_viewers(id_user){
+    return this.httpClient.post('routes/get_last_100_viewers',{id_user:id_user}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  get_last_100_account_viewers(id_user):Observable<any>{
+    return this.httpClient.post('routes/get_last_100_account_viewers',{id_user:id_user}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
 }

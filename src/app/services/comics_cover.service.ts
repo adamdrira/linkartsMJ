@@ -78,6 +78,7 @@ export class Bd_CoverService {
 
    //remove the page file from the folder associated
    remove_cover_from_folder() {
+     alert("remove cover from folder")
     this.CookieService.delete('name_cover_bd','/'); 
     if(this.covername != ''){
       return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${this.covername}`, {withCredentials:true}).pipe(map(information=>{
@@ -85,8 +86,17 @@ export class Bd_CoverService {
         return information;
       }));
     }
-    return new Observable<true>();
+    else{
+      return new Observable<true>();
+    }
+    
    };
+
+   remove_last_cover_from_folder(name){
+    return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }))
+  };
 
 
   

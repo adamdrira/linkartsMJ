@@ -34,6 +34,10 @@ export class Ads_service {
 
    //thumbnail
 
+   send_thumbnail_name(name){
+       this.name_thumbnail_ad = name;
+  };
+
    get_thumbnail_name(){
     console.log("get_thumbnail_name")
     return this.httpClient.get('routes/get_cookies_thumbnail_ad', {withCredentials:true
@@ -44,8 +48,11 @@ export class Ads_service {
   };
 
   send_confirmation_for_add_ad(confirmation:boolean){
+    this.CookieService.delete('name_thumbnail_ad','/');
       this.thumbnail_confirmation = confirmation
   };
+
+
 
   get_thumbnail_confirmation(){
       return this.thumbnail_confirmation
@@ -57,6 +64,7 @@ export class Ads_service {
       }));
   };
 
+
    remove_thumbnail_ad_from_folder() {
     this.CookieService.delete('name_thumbnail_ad','/');
     if(this.name_thumbnail_ad!=''){
@@ -64,7 +72,18 @@ export class Ads_service {
             return information;
           }));
     }
-    return new Observable<true>();
+    else{
+      return new Observable<true>();
+    }
+    
+   };
+
+   remove_thumbnail_ad_from_folder2(name):Observable<any> {
+     console.log(name)
+        return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
+            return information;
+          }));
+    
    };
 
    //récupération des ads
@@ -131,4 +150,9 @@ export class Ads_service {
     }
 
   
+    get_number_of_ads_and_responses(id_user,date_format,compteur){
+      return this.httpClient.post('routes/get_number_of_ads_and_responses', {id_user: id_user,date_format}, {withCredentials:true}).pipe(map((information)=>{
+        return [information,compteur];
+      }));
+    }
 }

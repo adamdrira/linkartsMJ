@@ -29,3 +29,61 @@
 }
 
 
+
+
+  
+
+  
+ .step-name {
+    display:flex;
+    height:35px;
+    width:400px;
+  }
+  
+  .step-name span {
+    font-size: 18px;
+    font-weight: bold;
+    margin: auto auto auto 5px;
+  }
+  
+  
+   .form-item {
+    width:100%;
+    height:70px;
+    margin-top:15px;
+    margin-bottom:15px;
+  }
+  
+  ::ng-deep .mat-input-element {
+    padding-right: 75px !important;
+    line-height: 22px !important;
+  }
+  
+  ::ng-deep .mat-dialog-container {
+    position:relative !important;
+  }
+  
+  ::ng-deep .form-item .mat-form-field {
+    width:100%;
+  }
+  
+  ::ng-deep .form-item .mat-form-field .mat-form-field-flex {
+    background: #84c7e626 !important;
+    padding-left: 10px !important;
+  }
+  
+  
+  
+  
+  ::ng-deep .form-item .mat-form-field textarea {
+    max-height:180px;
+  }
+  
+  
+  .form-item .length-indicator {
+    position: absolute;
+    right: 22px;
+    color: grey;    
+    font-size: 15px;
+    top: 5px;
+  }

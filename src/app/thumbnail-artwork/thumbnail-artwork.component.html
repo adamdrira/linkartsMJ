@@ -1,26 +1,32 @@
 <div class="thumbnail-artwork">
+
+    <div class="hide-because-reported"  *ngIf="thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" [ngClass]="{'really-invisible':display_evenif_reported}">
+        <div style="  margin-right: 10px;"> Contenu masqué car signalé</div>
+        <div style=" cursor:pointer;"  (click)="see_reported_content()"> Cliquer pour tout de même voir</div>
+    </div>
     
-    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings'}" [@enterAnimation]>
+    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings','avoid-clicks':!display_evenif_reported && thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)}" [@enterAnimation]>
 
 
         <div class="left-container" 
-        [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comics', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
+        [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
             
             <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
             
         
-            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
+            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing' && list_of_images_to_show_retrieved"   (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
+                    <div class="swiper-wrapper" >
+                        <div class="swiper-slide" >
+                            <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
+                        </div>
+                        <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
+                            <img 
+                                (load)="load_image(i)"
+                                [src]="item"
+                                [ngClass]="{'invisible':!loaded_images[i]}">
+                        </div>
                     </div>
-                    <div class="swiper-slide">
-                        <img src="../../assets/img/profilz.jpg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../../assets/img/pub-manga.jpg">
-                    </div>
-                </div>
+                
             </div>
 
             <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category=='writing'">
@@ -37,6 +43,7 @@
                         [original-size]='true'
                         [fit-to-page]='true'
                         [render-text]='false'
+                        (after-load-complete)="afterLoadComplete($event)"
                     ></pdf-viewer>
                     </div>
                 </div>
@@ -47,22 +54,22 @@
             <!--********************-->
             <!--Data container-->
             <!--********************-->
-            <div class="stats-container">
+            <div class="stats-container"  [ngClass]="{ 'invisible':!marks_retrieved}">
                 <div class="figure-container views">
-                    <div>
+                    <div >
                         <span>{{viewnumber}}</span>
                         <mat-icon>visibility</mat-icon>
                         <!--<div class="view-logo"></div>-->
                     </div>
                 </div>
                 <div class="figure-container likes">
-                    <div>
+                    <div >
                         <span>{{likesnumber}}</span>
                         <mat-icon>thumb_up</mat-icon>
                     </div>
                 </div>
                 <div class="figure-container loves">
-                    <div>
+                    <div >
                         <span>{{lovesnumber}}</span>
                         <mat-icon>favorite</mat-icon>
                     </div>
@@ -73,7 +80,7 @@
 
 
 
-        <div class="absolute-small-screen-selector">
+        <div *ngIf="type_of_profile=='account'" class="absolute-small-screen-selector"  [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved }">
             <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
             <mat-icon class="optionsButton" style="
             font-size:23px; 
@@ -81,10 +88,27 @@
             margin:auto;">more_vert</mat-icon>
             </button>
             <mat-menu  #options="matMenu" xPosition="before">
-            <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
-                <mat-icon class="item-icon">flag</mat-icon>
-                <span>Signaler</span>
-            </button>
+                <button (click)="archive()" class="mat-menu-item" mat-menu-item *ngIf="visitor_mode && !content_archived"> 	
+                    <mat-icon class="item-icon">save_alt</mat-icon>
+                    <span>Archiver</span>
+                </button>
+                <button (click)="unarchive()" class="mat-menu-item" mat-menu-item *ngIf="visitor_mode && content_archived"> 	
+                    <mat-icon class="item-icon">unarchive</mat-icon>
+                    <span>Désarchiver</span>
+                </button>
+                <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Annuler le signalement</span>
+                </button>
+                <button  *ngIf="!visitor_mode && category!='drawing'" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Editer la miniature</span>
+                </button>
+                
             </mat-menu>
         </div>
 
@@ -92,7 +116,7 @@
         <div class="right-container">
 
             
-            <div class="absolute-selector">
+            <div *ngIf="type_of_profile=='account'" class="absolute-selector" [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved}">
                 <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
                 <mat-icon class="optionsButton" style="
                 font-size:23px; 
@@ -100,10 +124,18 @@
                 margin:auto;">more_vert</mat-icon>
                 </button>
                 <mat-menu  #options="matMenu" xPosition="before">
-                <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="stop($event)"> 	
-                    <mat-icon class="item-icon">flag</mat-icon>
-                    <span>Signaler</span>
-                </button>
+                    <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                        <mat-icon class="item-icon">flag</mat-icon>
+                        <span>Signaler</span>
+                    </button>
+                    <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                        <mat-icon class="item-icon">flag</mat-icon>
+                        <span>Annuler le signalement</span>
+                    </button>
+                    <button  *ngIf="!visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
+                        <mat-icon class="item-icon">flag</mat-icon>
+                        <span>Modifier la miniature</span>
+                    </button>
                 </mat-menu>
             </div>
 
@@ -142,14 +174,14 @@
                 <!--******************************************************-->
                 <!--************************COMICS************************-->
                 <!--******************************************************-->
-                <a class="type-container" *ngIf="subscribing_category=='comics'" [routerLink]=get_link() (click)="stop($event)"><span>Bande dessinée</span></a>
-                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='one-shot'"><span>One-shot</span></div>
-                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='serie'"><span>Série</span></div>
-                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='one-shot'">
+                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link() (click)="stop($event)"><span>Bande dessinée</span></a>
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'"><span>One-shot</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'"><span>Série</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
                 </div>
-                <div class="type-container" *ngIf="subscribing_category=='comics' && format=='serie'">
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'">
                     <span>{{chaptersnumber}}</span>
                     <mat-icon>import_contacts</mat-icon>
                     <span>&nbsp; {{pagesnumber}}</span>
@@ -171,10 +203,10 @@
                 <!--************************WRITING***********************-->
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>Ecrit</span></a>
-                <!--<div class="type-container" *ngIf="subscribing_category=='writing'">
-                    <span>{{pagesnumber}}</span>
+                <div class="type-container" *ngIf="subscribing_category=='writing'">
+                    <span>{{total_pages_for_writing}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
-                </div>-->
+                </div>
             </div>
 
             <div class="verso-type">
@@ -205,6 +237,7 @@
             <!--********************-->
             <div class="date-container">
                 <span>{{date_upload_to_show}}</span>
+                <span *ngIf="recent_chapter"> &nbsp; Nouveau chapitre !</span>
             </div>
 
 
@@ -214,18 +247,19 @@
             <div class="hover-to-preview fade-on-hover">
                 <span>Voir les premières pages</span>
             </div>
-            <div #swiperArtworkPreview>
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="../../assets/img/pokemon.jpg">
+            <div class="loading-page"  *ngIf="!list_of_images_to_show_retrieved">
+                <mat-spinner diameter="20"></mat-spinner>
+            </div>
+            <div #swiperArtworkPreview style="height:100%;width:100%" *ngIf="list_of_images_to_show_retrieved">
+                    <div class="swiper-wrapper" >
+                        <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
+                            <img 
+                                (load)="load_image(i)"
+                                [src]="item"
+                                [ngClass]="{'invisible':!loaded_images[i]}">
+                        </div>
                     </div>
-                    <div class="swiper-slide">
-                        <img src="../../assets/img/pokemon.jpg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="../../assets/img/pokemon.jpg">
-                    </div>
-                </div>
+                
             </div>
         </div>
         <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing'" (mouseleave)="close_pdf();">
@@ -240,6 +274,7 @@
                 [original-size]='true'
                 [fit-to-page]='true'
                 [render-text]='false'
+                (after-load-complete)="afterLoadComplete($event)"
             ></pdf-viewer>
         </div>
 

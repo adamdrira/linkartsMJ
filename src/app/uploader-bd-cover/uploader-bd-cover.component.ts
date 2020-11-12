@@ -62,7 +62,9 @@ export class UploaderBdCoverComponent implements OnInit {
   @Input('thirdtag') thirdtag: string;
 
 
-
+  @Input('for_edition') for_edition: boolean;
+  @Input('bd_id') bd_id: boolean;
+  @Input('thumbnail_picture') thumbnail_picture: string;
   ngOnChanges(changes: SimpleChanges) {
 
     if( changes.category && this.category ) {
@@ -111,7 +113,7 @@ export class UploaderBdCoverComponent implements OnInit {
   
 
   ngAfterViewInit() {
-    
+ 
 
   }
 
@@ -151,8 +153,32 @@ export class UploaderBdCoverComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
-      this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
-      this.Bd_CoverService.get_cover_name().subscribe();
+      if(this.for_edition){
+        this.Bd_CoverService.get_cover_name().subscribe(r=>{
+          if ( this.format == "one-shot" ) {
+            this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).subscribe(r=>{
+              this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+               location.reload();
+              });
+            });
+          }
+      
+          else if (this.format == "serie" ) {
+            this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).subscribe(r=>{
+              this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                location.reload();
+              });
+            });
+          }
+        });
+       
+      }
+      else{
+        this.Bd_CoverService.get_cover_name().subscribe(r=>{
+          this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
+        });
+      }
+     
     }
 
     $('.ColorChoice').SumoSelect({});

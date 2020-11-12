@@ -6,25 +6,70 @@
         <!--******************************************************-->
         <!--Titre-->
         <!--******************************************************-->
-        <div class="form-group">
-            <label>Description principale</label>
-            <input type="text" formControlName="principal_description" class="form-control" placeholder="Description principale" autocomplete="off" required/>
-            <p *ngIf="(principal_description.value.length >30 || principal_description.value.length =='') && display_errors">Veuillez saisir une description (30 caractères max)</p>
+        <div class="form-item"  >
+            <mat-form-field>
+                <mat-label *ngIf="data.gender!='Groupe'">Prénom</mat-label>
+                <mat-label *ngIf="data.gender=='Groupe'">Nom du groupe</mat-label>
+                <input matInput formControlName="firstName" maxLength="20" autocomplete="off">
+                <mat-error *ngIf="profile_bio.controls['firstName'].invalid">Veuillez saisir un prénom valide
+                </mat-error>
+                <div class="length-indicator">{{profile_bio.controls['firstName'].value?.length || 0}}/20</div>
+            </mat-form-field>
         </div>
-        <div class="form-group">
-            <label>Métier (optionnel)</label>
-            <input type="text" formControlName="occupation" class="form-control" placeholder="Métier" autocomplete="off"/>
-            <p *ngIf="occupation.value.length >30 && display_errors">Maximum : 30 caractères</p>
+
+        <div class="form-item"  *ngIf="data.gender!='Groupe'">
+            <mat-form-field>
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="lastName" maxLength="20" autocomplete="off">
+                <mat-error *ngIf="profile_bio.controls['lastName'].invalid">Veuillez saisir un nom valide ou laisser le champ vide
+                </mat-error>
+                <div class="length-indicator">{{profile_bio.controls['lastName'].value?.length || 0}}/20</div>
+            </mat-form-field>
         </div>
-        <div class="form-group">
-            <label>Formation (optionnel)</label>
-            <input type="text" formControlName="education" class="form-control" placeholder="Formation" autocomplete="off"/>
-            <p *ngIf="education.value.length >30 && display_errors">Maximum : 30 caractères</p>
+
+        <div class="form-item">
+            <mat-form-field>
+                <mat-label>Bio</mat-label>
+                <input matInput formControlName="primary_description" maxLength="100" autocomplete="off">
+                <mat-error *ngIf="profile_bio.controls['primary_description'].invalid">Veuillez saisir une bio valide
+                </mat-error>
+                <div class="length-indicator">{{profile_bio.controls['primary_description'].value?.length || 0}}/100</div>
+            </mat-form-field>
         </div>
-        <div class="form-group">
-            <label>Localisation (optionnel)</label>
-            <input type="text" formControlName="location" class="form-control" placeholder="Localisation" autocomplete="off"/>
-            <p *ngIf="location.value.length >30 && display_errors">Maximum : 30 caractères</p>
+
+        <div style="display:flex;align-items: center;">
+            <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
+                <mat-form-field>
+                    <mat-label>Ville</mat-label>
+                    <input (input)=adding_city() matInput formControlName="city" maxLength="30" autocomplete="off">
+                    <mat-error *ngIf="profile_bio.controls['city'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{profile_bio.controls['city'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>
+            <!--<div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
+                <mat-form-field>
+                    <mat-label>Pays</mat-label>
+                    <input (input)=adding_country() matInput formControlName="country" maxLength="30" autocomplete="off">
+                    <mat-error *ngIf="profile_bio.controls['country'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{profile_bio.controls['country'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>-->
+            <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
+                <mat-form-field>
+                    <mat-label>Pays</mat-label>
+                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country">
+                        <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="profile_bio.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div *ngIf="display_errors">
+            La saisie n'est pas valide.
         </div>
 
         

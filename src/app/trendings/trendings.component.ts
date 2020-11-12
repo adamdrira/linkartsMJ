@@ -77,14 +77,13 @@ export class TrendingsComponent implements OnInit {
   writings_trendings_sorted_confirmation:boolean=false;
 
   active_section=1;
-  now_in_seconds:number;
+  now_in_seconds:number= Math.trunc( new Date().getTime()/1000);
   section_chosen=false;
   ngOnInit() {
 
     console.log(this.route.snapshot.data['section'])
     this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
     this.section_chosen=true;
-    this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Trending_service.send_rankings_and_get_trendings_comics().subscribe(info=>{
     
       this.load_comics_trendings(info);
@@ -193,13 +192,13 @@ export class TrendingsComponent implements OnInit {
                 this.comics_trendings_sorted[i]=r[0];
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                 }
               }
               else{
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                  
                 }
               }
@@ -209,13 +208,13 @@ export class TrendingsComponent implements OnInit {
                 this.comics_trendings_sorted[i]=r[0];
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                 }
               }
               else{
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                  
                 }
               }
@@ -232,13 +231,13 @@ export class TrendingsComponent implements OnInit {
                 this.comics_trendings_sorted[i]=r[0];
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                 }
               }
               else{
                 compteur=compteur+1;
                 if(compteur == this.comics_trendings_length){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
                 }
               }
             }
@@ -246,7 +245,7 @@ export class TrendingsComponent implements OnInit {
               compteur=compteur+1;
               if(compteur == this.comics_trendings_length){
 
-                this.delete_empty_elements(this.comics_trendings_sorted,"comics");
+                this.delete_empty_elements(this.comics_trendings_sorted,"comic");
               }
             }
             
@@ -379,7 +378,7 @@ export class TrendingsComponent implements OnInit {
               list.splice(list.length-1,1)
             }
           }
-          if(type=="comics"){
+          if(type=="comic"){
             this.comics_trendings_sorted_confirmation=true;
             /*for(let j=0;j<list.length;j++){
               this.send_notification("comic",list[j],j+1)

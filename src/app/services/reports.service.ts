@@ -38,6 +38,11 @@ export class Reports_service {
        }));
    }
 
+   cancel_report(publication_category,publication_id,format){
+    return this.httpClient.post('routes/cancel_report', {publication_category: publication_category,publication_id:publication_id,format:format}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+   }
 
 
 

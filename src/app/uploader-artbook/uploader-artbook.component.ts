@@ -46,7 +46,7 @@ export class UploaderArtbookComponent implements OnInit {
   }
 
 
-
+  @Output() sendValidated = new EventEmitter<object>();
   @Output() sendPicture = new EventEmitter<object>();
   
   uploader:FileUploader;
@@ -179,7 +179,7 @@ export class UploaderArtbookComponent implements OnInit {
               comment_id:0,
             }
             this.chatService.messages.next(message_to_send);
-            window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
           }) 
           
         })

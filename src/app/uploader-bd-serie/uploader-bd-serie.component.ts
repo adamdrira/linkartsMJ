@@ -52,7 +52,6 @@ export class UploaderBdSerieComponent implements OnInit{
   //pour cacher l'uploader dans certains cas
   afficherpreview :boolean;
   afficheruploader:boolean;
-  //@Input() bd_id:number;
   @Input()  bd_id:number;
   
   _page: number;
@@ -152,7 +151,12 @@ export class UploaderBdSerieComponent implements OnInit{
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        this.BdSerieService.validate_bd_chapter(this.total_pages, this.chapter).subscribe(r=>{this.sendValidated.emit(true);})
+        console.log("validate bd chapter ")
+        console.log(this.total_pages)
+        console.log(this.chapter)
+        this.BdSerieService.validate_bd_chapter(this.total_pages, this.chapter).subscribe(r=>{
+          this.sendValidated.emit(true);
+        })
       }
   
     }

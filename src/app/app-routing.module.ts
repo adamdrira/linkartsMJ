@@ -31,6 +31,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
 import { PopupReportComponent } from './popup-report/popup-report.component';
 import { AccountAboutComponent } from './account-about/account-about.component';
+import { FavoritesComponent } from './favorites/favorites.component';
 
 const routes: Routes = [
 
@@ -72,8 +73,12 @@ const routes: Routes = [
 
   
   {path:'recommendations', component:HomeLinkartsComponent,  data: {category: 0}, canActivate: [TempAuthGuard]},
-  {path:'trendings', component:HomeLinkartsComponent,  data: {category: 1},canActivate: [TempAuthGuard]},
+  {path:'trendings', component:HomeLinkartsComponent,  data: {category: 1,section:0},canActivate: [TempAuthGuard]},
+  {path:'trendings/comics', component:HomeLinkartsComponent,  data: {category: 1,section:0},canActivate: [TempAuthGuard]},
+  {path:'trendings/drawings', component:HomeLinkartsComponent,  data: {category: 1,section:1},canActivate: [TempAuthGuard]},
+  {path:'trendings/writings', component:HomeLinkartsComponent,  data: {category: 1,section:2},canActivate: [TempAuthGuard]},
   {path:'subscribings', component:HomeLinkartsComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {category: 2}},
+  {path:'favorites', component:HomeLinkartsComponent,  data: {category: 3},canActivate: [TempAuthGuard]},
   //{path:'decouverte', component:HomeLinkartsComponent,  data: {category: 3}},
 
   //messagerie

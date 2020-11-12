@@ -11,12 +11,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popup-ad-write-responses.component';
-
+import { Reports_service } from '../services/reports.service';
 
 import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupReportComponent } from '../popup-report/popup-report.component';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 
 declare var $: any
 
@@ -53,7 +56,7 @@ export class ThumbnailAdComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
-
+    private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
     ) { 
     
@@ -99,7 +102,7 @@ export class ThumbnailAdComponent implements OnInit {
   attachments_retrieved=false;
   visitor_mode=true;
   visitor_mode_retrieved=false;
-
+  type_of_profile:string;
 
   //responses
   list_of_responses:any[]=[];
@@ -124,15 +127,23 @@ export class ThumbnailAdComponent implements OnInit {
   thumbnail_is_loaded=false;
   pp_is_loaded=false;
 
+  author_id:number;
+  id_user:number;
+  list_of_reporters:any[]=[];
   ngOnInit() {
 
     console.log(this.item);
-
+    this.list_of_reporters=this.item.list_of_reporters;
+    this.author_id=this.item.id_user;
+    
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.id_user=r[0].id;
       if(r[0].id==this.item.id_user){
         this.visitor_mode=false;
       }
+      this.type_of_profile=r[0].status;
       this.visitor_mode_retrieved=true;
+      this.check_archive()
     });
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
@@ -213,11 +224,6 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
 
-  archive(){
-    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
-      console.log(r[0]);
-    });
-  }
 
  
 
@@ -531,5 +537,73 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
 
+  /******************************************* OPTIONS  *************************************/
+  /******************************************* OPTIONS  *************************************/
+  /******************************************* OPTIONS  *************************************/
+  /******************************************* OPTIONS  *************************************/
+
+  ad_archived=false;
+  archive_retrieved=false;
+
+  edit_thumbnail(){
+    const dialogRef = this.dialog.open(PopupEditCoverComponent, {
+      data: {item:this.item,category:"ad"},
+    });
+  }
+
+  check_archive(){
+    this.Subscribing_service.check_if_publication_archived("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+      console.log(r[0]);
+      if(r[0].value){
+        this.ad_archived=true;
+      }
+      this.archive_retrieved=true;
+    })
+  }
+
+  archive(){
+    this.Subscribing_service.archive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+      this.ad_archived=true;
+    });
+  }
+
+  unarchive(){
+    this.Subscribing_service.unarchive("ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+      this.ad_archived=false;
+    });
+  }
+
+
+  report(){
+
+      this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
+        console.log(r[0])
+        if(r[0].nothing){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+          });
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupReportComponent, {
+            data: {from_account:false,id_receiver:this.author_id,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
+          });
+        }
+      })
+    
+    
+  }
+
+  cancel_report(){
+
+
+    this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).subscribe(r=>{
+      console.log(r)
+      if(this.list_of_reporters && this.list_of_reporters.indexOf(this.id_user)>=0){
+        let i=this.list_of_reporters.indexOf(this.id_user)
+        this.list_of_reporters.splice(i,1)
+        this.cd.detectChanges()
+      }
+    })
+  }
 
 }

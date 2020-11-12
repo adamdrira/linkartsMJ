@@ -104,7 +104,7 @@ export class BdOneShotService {
     return this.httpClient.post('routes/validation_upload_bd_oneshot/',{bd_id:bd_id, page_number:page_number},{withCredentials:true}).pipe(map(information=>{
       this.CookieService.delete('current_bd_oneshot_id','/');
       this.CookieService.delete('name_cover_bd','/');
-      return this.Subscribing_service.validate_content("comics","one-shot",bd_id,0).subscribe(l=>{
+      return this.Subscribing_service.validate_content("comic","one-shot",bd_id,0).subscribe(l=>{
         return l
       }); 
      }));
@@ -136,5 +136,9 @@ export class BdOneShotService {
       }));
     }
 
-  
+    get_number_of_bd_oneshot(id_user,date_format,compteur){
+      return this.httpClient.post('routes/get_number_of_bd_oneshot',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map(information=>{
+      return [information,compteur]
+     }));
+    }
 }

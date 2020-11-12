@@ -3,7 +3,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
-
+import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 
@@ -26,6 +26,7 @@ export class ThumbnailWritingComponent implements OnInit {
     private sanitizer :DomSanitizer,
     private Writing_Upload_Service:Writing_Upload_Service,
     private rd:Renderer2,
+    private NotationService:NotationService,
     private router:Router,
     private cd:ChangeDetectorRef,
 
@@ -46,7 +47,7 @@ export class ThumbnailWritingComponent implements OnInit {
 
   
   @Output() send_number_of_thumbnails = new EventEmitter<object>();
-  @Output() send_loaded = new EventEmitter<boolean>();
+  @Output() sendLoaded = new EventEmitter<boolean>();
   
   author_name:string;
   primary_description:string;
@@ -75,6 +76,7 @@ export class ThumbnailWritingComponent implements OnInit {
   date_upload_to_show: string;
   writing_id: string;
   format:string;
+  total_pages:number;
   thumbnail_picture:SafeUrl;
 
   @Input() item:any;
@@ -85,8 +87,10 @@ export class ThumbnailWritingComponent implements OnInit {
   marks_retrieved=false;
 
   ngOnInit() {
+    //console.log(this.item)
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
+    this.total_pages=this.item.total_pages;
     this.title = this.item.title;
     this.category = this.item.category;
     this.highlight = this.item.highlight;
@@ -106,12 +110,13 @@ export class ThumbnailWritingComponent implements OnInit {
     }
     
 
-    this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.writing_id).subscribe(r=> {
-      this.viewnumber = number_in_k_or_m(r[0].viewnumber)
-      this.likesnumber = number_in_k_or_m(r[0].likesnumber)
-      this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+    this.NotationService.get_content_marks("writing", 'unknown', this.writing_id,0).subscribe(r=>{
+      //marks
+      this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+      this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+      this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
       this.marks_retrieved=true;
-    }); 
+    }) 
 
 
     this.Writing_Upload_Service.retrieve_thumbnail_picture(this.item.name_coverpage).subscribe(r=> {
@@ -231,7 +236,7 @@ export class ThumbnailWritingComponent implements OnInit {
       this.send_number_of_thumbnails.emit({number:1});
       return 1;
     }
-    else {
+    else if(width>0){
       this.send_number_of_thumbnails.emit({number:n});
       return n;
     }
@@ -263,8 +268,9 @@ export class ThumbnailWritingComponent implements OnInit {
 
   imageloaded=false;
   loaded(){
+    //console.log("loaded writing")
     this.imageloaded=true;
-    this.send_loaded.emit(true);
+    this.sendLoaded.emit(true);
   }
   
   pp_is_loaded=false;

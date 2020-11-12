@@ -174,7 +174,11 @@ export class Subscribing_service {
       }));
   }
 
-
+  extend_serie_and_update_content(bd_id,number_of_chapters){
+    return this.httpClient.post('routes/extend_serie_and_update_content', {bd_id:bd_id,number_of_chapters:number_of_chapters}, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  }
 
   
 

@@ -34,6 +34,6 @@ export class UserService {
     return this.http.post<any>(this.usersUrl+'/users/check_pseudo', { pseudo: pseudo}).pipe(map(res => {
         return [res,index];
     }));
-}
+  }
 
 }

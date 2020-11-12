@@ -23,11 +23,6 @@ export class NotificationsService {
       }));
     }
 
-    get_notifications_information(type,id_user,id_user_name,id_receiver,publication_category,format,publication_id,chapter_number){
-      return this.httpClient.post('routes/get_notifications_information',{id_user:id_user,id_user_name:id_user_name,id_receiver:id_receiver,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number}, {withCredentials:true}).pipe(map((information)=>{
-        return information;
-      }));
-    }
 
     add_notification(type,id_user,id_user_name,id_receiver,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
 
@@ -36,9 +31,16 @@ export class NotificationsService {
       }));
     }
 
-    add_notification_for_group_creation(type,id_user,id_user_name,id_receiver,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
+    add_notification_trendings(type,id_user,id_user_name,id_receiver,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
 
-      return this.httpClient.post('routes/add_notification_for_group_creation',{is_comment_answer:is_comment_answer,comment_id:comment_id,publication_name:publication_name,id_user:id_user,id_user_name:id_user_name,id_receiver:id_receiver,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number,information:information}, {withCredentials:true}).pipe(map((information)=>{
+      return this.httpClient.post('routes/add_notification_trendings',{is_comment_answer:is_comment_answer,comment_id:comment_id,publication_name:publication_name,id_user:id_user,id_user_name:id_user_name,id_receiver:id_receiver,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number,information:information}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    add_notification_for_group_creation(type,id_user,id_user_name,list_of_receivers,publication_category,publication_name,format,publication_id,chapter_number,information,is_comment_answer,comment_id){
+
+      return this.httpClient.post('routes/add_notification_for_group_creation',{is_comment_answer:is_comment_answer,comment_id:comment_id,publication_name:publication_name,id_user:id_user,id_user_name:id_user_name,list_of_receivers:list_of_receivers,type:type,publication_category:publication_category,format:format,publication_id:publication_id,chapter_number:chapter_number,information:information}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }

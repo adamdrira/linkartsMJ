@@ -32,14 +32,14 @@ export class NotationService {
     }
 
     
-    get_commentaries(category, format, style, publication_id,chapter_number){
-      return this.httpClient.get(`routes/get_commentaries/${category}/${format}/${style}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
+    get_commentaries(category, format, publication_id,chapter_number){
+      return this.httpClient.get(`routes/get_commentaries/${category}/${format}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
 
-    get_my_commentaries(category, format, style, publication_id,chapter_number){
-      return this.httpClient.get(`routes/get_my_commentaries/${category}/${format}/${style}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
+    get_my_commentaries(category, format, publication_id,chapter_number){
+      return this.httpClient.get(`routes/get_my_commentaries/${category}/${format}/${publication_id}/${chapter_number}`, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
     }
@@ -169,5 +169,37 @@ export class NotationService {
       }));
     }
 
+    get_content_marks(category, format, publication_id,chapter_number){
+      
+      return this.httpClient.post(`routes/get_content_marks`, {category:category,format:format,publication_id:publication_id,chapter_number:chapter_number},{withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
 
+
+    get_number_of_ads_comments(list_of_ads_ids){
+      return this.httpClient.post('routes/get_number_of_ads_comments',{list_of_ads_ids:list_of_ads_ids}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+    get_number_of_notations(list_of_ids,publication_category,format){
+      return this.httpClient.post('routes/get_number_of_notations',{list_of_ids:list_of_ids,publication_category:publication_category,format:format}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
+
+
+    get_notations_for_a_content(publication_id,publication_category,format,date_format,compteur){
+      return this.httpClient.post('routes/get_notations_for_a_content',{publication_id:publication_id,publication_category:publication_category,format:format,date_format:date_format}, {withCredentials:true}).pipe(map((information)=>{
+        return [information,compteur];
+      }));
+    }
+    
+
+    update_marks(id){
+      return this.httpClient.post('routes/update_marks',{id:id}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
 }

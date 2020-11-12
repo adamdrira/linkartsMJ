@@ -3,7 +3,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
-
+import {NotationService} from '../services/notation.service';
 import { get_color_code } from '../helpers/drawings-colors';
 
 import {get_date_to_show} from '../helpers/dates';
@@ -41,6 +41,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
+    private NotationService:NotationService,
     private cd:ChangeDetectorRef,
     private router:Router,
     ) {
@@ -126,12 +127,13 @@ export class ThumbnailDrawingComponent implements OnInit {
         this.thumbnail_picture = SafeURL;
       });  
 
-      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.drawing_id).subscribe(r=> {
-        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
-        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
-        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+      this.NotationService.get_content_marks("drawing", 'one-shot', this.drawing_id,0).subscribe(r=>{
+        //marks
+        this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+        this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+        this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
         this.marks_retrieved=true;
-      }); 
+      }) 
     };
 
     if(this.format=="artbook"){
@@ -141,12 +143,13 @@ export class ThumbnailDrawingComponent implements OnInit {
         this.thumbnail_picture = SafeURL;
       });  
 
-      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.drawing_id).subscribe(r=> {
-        this.viewnumber = number_in_k_or_m(r[0].viewnumber)
-        this.likesnumber = number_in_k_or_m(r[0].likesnumber)
-        this.lovesnumber = number_in_k_or_m(r[0].lovesnumber)
+      this.NotationService.get_content_marks("drawing", 'artbook', this.drawing_id,0).subscribe(r=>{
+        //marks
+        this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+        this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+        this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
         this.marks_retrieved=true;
-      }); 
+      }) 
     };
 
     this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
@@ -195,7 +198,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     if( width < 500 ) {
       return 1;
     }
-    else {
+    else if(width>0) {
       return n;
     }
     
