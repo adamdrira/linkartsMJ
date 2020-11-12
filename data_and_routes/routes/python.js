@@ -251,9 +251,15 @@ python_router.post('/receive_comics_trendings', function(req, res) {
 
 
 
-python_router.get('/get_comics_trendings/:date', function(req, res) {
+python_router.get('/get_comics_trendings', function(req, res) {
   
-  let date = req.params.date;
+
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  let yyyy= today.getFullYear();
+  let date = yyyy.toString() + '-' +  mm + '-' + dd;
+
   let json = fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`);
   let comics_trendings = JSON.parse(json);
   res.status(200).send([{"comics_trendings":comics_trendings}]);

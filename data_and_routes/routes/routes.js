@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const recommendations = require('./recommendations.js');
 const recommendations_artwork = require('./recommendations_artwork');
+const favorites = require('./favorites.js');
 const trendings = require('./trendings.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser'); 
@@ -20,6 +21,8 @@ const controller_ads= require('../../ads/controller/controller');
 const controller_chat= require('../../chat/controller/controller');
 const controller_navbar= require('../../navbar/controller/controller');
 const controller_notifications= require('../../notifications/controller/controller');
+const controller_trendings= require('../../p_trendings/controller/controller');
+const controller_favorites =require('../../favorites/controller/controller');
 const controller_reports =require('../../reports/reports');
 const bd_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const bd_serie_seq= require('../../comics_serie/models/sequelize');
@@ -35,6 +38,7 @@ const navbar_seq = require('../../navbar/model/sequelize');
 const albums_seq = require('../../albums_edition/model/sequelize');
 const notifications_seq = require('../../notifications/model/sequelize');
 const trendings_seq = require('../../p_trendings/model/sequelize');
+const favorites_seq = require('../../favorites/model/sequelize');
 const authentification = require('../../authentication/db.config');
 
 
@@ -77,9 +81,10 @@ router.post('/get_first_recommendation_writings_for_user',recommendations.get_fi
 router.post('/see_more_recommendations_writings',recommendations.see_more_recommendations_writings)
 router.post('/send_rankings_and_get_trendings_comics',trendings.send_rankings_and_get_trendings_comics)
 router.post('/get_trendings_for_tomorrow',trendings.get_trendings_for_tomorrow)
+router.post('/generate_or_get_favorites',favorites.generate_or_get_favorites)
+router.get('/get_drawings_trendings',trendings.get_drawings_trendings)
+router.get('/get_writings_trendings',trendings.get_writings_trendings)
 
-router.get('/get_drawings_trendings/:date',trendings.get_drawings_trendings)
-router.get('/get_writings_trendings/:date',trendings.get_writings_trendings)
 router.post('/get_comics_recommendations_by_author',recommendations_artwork.get_comics_recommendations_by_author)
 router.post('/get_drawings_recommendations_by_author',recommendations_artwork.get_drawings_recommendations_by_author)
 router.post('/get_writings_recommendations_by_author',recommendations_artwork.get_writings_recommendations_by_author)
@@ -89,13 +94,50 @@ router.post('/get_artwork_recommendations_by_tag',recommendations_artwork.get_ar
 
 
 //mise en relation des requetes tables sql et des fichiers js
-controller_bd_oneshot(router,bd_oneshot_seq.list_comics_one_shot,  bd_oneshot_seq.list_pages_comics_one_shot,authentification.users);
-controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie,authentification.users);
-controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,authentification.users);
-controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook,authentification.users);
-controller_writings(router,writings_seq.Liste_Writings,authentification.users);
-profile_edition(router, authentification.users,authentification.user_links, authentification.user_blocked);
-controller_reports(router, authentification.reports);
+controller_bd_oneshot(router,bd_oneshot_seq.list_comics_one_shot,  bd_oneshot_seq.list_pages_comics_one_shot,authentification.users,trendings_seq.trendings_contents);
+controller_bd_serie(router, bd_serie_seq.Liste_Bd_Serie, bd_serie_seq.Chapters_Bd_Serie, bd_serie_seq.Pages_Bd_Serie,authentification.users,trendings_seq.trendings_contents);
+controller_drawings_one_page(router,drawings_one_page_seq.Drawings_one_page,authentification.users,trendings_seq.trendings_contents);
+controller_drawings_artbook(router,drawings_artbook_seq.Liste_Drawings_Artbook,drawings_artbook_seq.Pages_Artbook,authentification.users,trendings_seq.trendings_contents);
+controller_writings(router,writings_seq.Liste_Writings,authentification.users,trendings_seq.trendings_contents);
+profile_edition(router, 
+  authentification.users,
+  authentification.user_links, 
+  authentification.user_blocked,
+  authentification.users_information_privacy,
+  authentification.user_groups_managment,
+  authentification.users_mailing,
+  profile_notation_seq.List_of_views,
+  profile_notation_seq.List_of_likes,
+  profile_notation_seq.List_of_loves,
+  profile_notation_seq.List_of_comments,
+  profile_notation_seq.List_of_comments_answers,
+  profile_notation_seq.List_of_comments_likes,
+  profile_notation_seq.List_of_comments_answers_likes,
+  ads_seq.list_of_ads,
+  ads_seq.list_of_ads_responses,
+  subscribings_seq.list_of_subscribings, 
+  subscribings_seq.list_of_contents, 
+  stories_seq.list_of_stories, 
+  stories_seq.list_of_views,
+  bd_serie_seq.Liste_Bd_Serie, 
+  bd_serie_seq.Chapters_Bd_Serie,
+  bd_oneshot_seq.list_comics_one_shot,
+  drawings_artbook_seq.Liste_Drawings_Artbook,
+  drawings_one_page_seq.Drawings_one_page,
+  writings_seq.Liste_Writings,
+  notifications_seq.list_of_notifications,
+  );
+controller_reports(router, 
+  authentification.reports,
+  bd_serie_seq.Liste_Bd_Serie, 
+  bd_serie_seq.Chapters_Bd_Serie,
+  bd_oneshot_seq.list_comics_one_shot,
+  drawings_artbook_seq.Liste_Drawings_Artbook,
+  drawings_one_page_seq.Drawings_one_page,
+  writings_seq.Liste_Writings,
+  subscribings_seq.list_of_contents, 
+  ads_seq.list_of_ads,
+  );
 profile_notation(
    router, 
    profile_notation_seq.List_of_likes,
@@ -112,6 +154,8 @@ profile_notation(
    profile_notation_seq.List_of_comments_likes,
    profile_notation_seq.List_of_comments_answers_likes,
    ads_seq.list_of_ads,
+   authentification.users,
+   subscribings_seq.list_of_contents, 
    );
 controller_subscribings(router,
    subscribings_seq.list_of_subscribings, 
@@ -133,6 +177,8 @@ controller_chat(router,chat_seq.list_of_messages,
   chat_seq.list_of_chat_groups,
   chat_seq.list_of_chat_groups_reactions
   );
+controller_trendings(router,trendings_seq.trendings_comics,trendings_seq.trendings_drawings,trendings_seq.trendings_writings,trendings_seq.trendings_contents)
+controller_favorites(router,favorites_seq.favorites)
 controller_notifications(router,
   notifications_seq.list_of_notifications,
   notifications_seq.list_of_notifications_spams,

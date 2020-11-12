@@ -6,6 +6,12 @@ var Request = require('request');
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
+const authentification = require('../../authentication/db.config');
+const comics_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
+const comics_serie_seq= require('../../comics_serie/models/sequelize');
+const drawings_oneshot_seq= require('../../drawings_one_shot_and_cover/models/sequelize');
+const drawings_artbook_seq= require('../../drawings_artbook/models/sequelize');
+const writings_seq= require('../../writings/models/sequelize');
 const trendings_seq= require('../../p_trendings/model/sequelize');
 const Sequelize = require('sequelize');
 const Pool = require('pg').Pool;
@@ -67,24 +73,22 @@ pool.connect((err, client, release) => {
           console.log(e)
         })
         .on("finish", function() {
-          pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  ', [today,_before_before_yesterday], (error, results) => {
-              if (error) {
-                throw error
-              }
-              else{
-
-              let json_likes = JSON.parse(JSON.stringify(results.rows));
-              fastcsv.write(json_likes, { headers: true })
+          pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
+            if (error) {
+              throw error
+            }
+            else{
+              let json_view = JSON.parse(JSON.stringify(results.rows));
+              fastcsv.write(json_view, { headers: true })
               .pipe(ws1)
-                .on('error', function(e){
-                  console.log(e)
-                })
-                .on("finish", function() {
-              
-                  pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  ', [today,_before_before_yesterday], (error, results) => {
-                      if (error) {
-                        throw error
-                      }
+              .on('error', function(e){
+                console.log(e)
+              })
+              .on("finish", function() {
+                pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
+                    if (error) {
+                      throw error
+                    }
                       else{
                       let json_loves = JSON.parse(JSON.stringify(results.rows));
                       fastcsv.write(json_loves, { headers: true })
@@ -213,12 +217,13 @@ pool.connect((err, client, release) => {
                               console.log(e)
                             })
                             .on("finish", function() {
-
+                              
                               const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                               //console.log(pythonProcess)
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
                                 console.log("python res")
+                                //console.log(data.toString())
                               });
                               pythonProcess.stdout.on("end", (data) => {
                                 console.log("end received data python: ");
@@ -233,6 +238,7 @@ pool.connect((err, client, release) => {
                                           "trendings":json,
                                           "date":date
                                         }).then(result=>{
+                                          add_comics_trendings(json,date);
                                             return response.status(200).send([{comics_trendings:json}]); 
                                         })
                                       } 
@@ -248,6 +254,7 @@ pool.connect((err, client, release) => {
                                             "trendings":json,
                                             "date":date
                                           }).then(result=>{
+                                            add_comics_trendings(json,date);
                                               return response.status(200).send([{comics_trendings:json}]); 
                                           }) 
                                         } 
@@ -279,8 +286,14 @@ pool.connect((err, client, release) => {
 
 const get_drawings_trendings = (request, response) => {
 
-  let date = request.params.date;
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  let yyyy= today.getFullYear();
+  let date = yyyy.toString() + '-' +  mm + '-' + dd;
 
+  console.log("get_drawings_trendings")
+  console.log(date)
   trendings_seq.trendings_drawings.findOne({
     where:{
       date:date
@@ -314,6 +327,7 @@ const get_drawings_trendings = (request, response) => {
         "trendings":json,
         "date":date
       }).then(result=>{
+           add_drawings_trendings(json,date)
           return response.status(200).send([{"drawings_trendings":json}]); 
       })
       /*fs.access( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
@@ -341,7 +355,11 @@ const get_drawings_trendings = (request, response) => {
 
 const get_writings_trendings = (request, response) => {
 
-  let date = request.params.date;
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  let yyyy= today.getFullYear();
+  let date = yyyy.toString() + '-' +  mm + '-' + dd;
 
   trendings_seq.trendings_writings.findOne({
     where:{
@@ -351,24 +369,6 @@ const get_writings_trendings = (request, response) => {
     if(result){
       response.status(200).send([{"writings_trendings":result.trendings}]);
       console.log("it exists");
-      /*fs.access(__dirname + `/python_files/writings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(err){
-          console.log('suppression already done');
-          response.status(200).send([{"writings_trendings":result.trendings}]);
-        }  
-        else{
-          fs.unlink(__dirname + `/python_files/writings_rankings_for_trendings-${date}.json`,function (err) {
-            if (err) {
-              throw err;
-            } 
-            else{
-              response.status(200).send([{"writings_trendings":result.trendings}]);
-            }
-          });  
-          
-        }
-        
-      })*/
     }
     else{
       let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
@@ -376,29 +376,505 @@ const get_writings_trendings = (request, response) => {
         "trendings":json,
         "date":date
       }).then(result=>{
+          add_writings_trendings(json,date)
           return response.status(200).send([{"writings_trendings":json}]); 
       })
 
-      /*fs.access( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(err){
-          console.log("drawings trednings prob");
-          }
-          else{
-            let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/writings_rankings_for_trendings-${date}.json`));
-            trendings_seq.trendings_drawings.create({
-              "trendings":json,
-              "date":date
-            }).then(result=>{
-                return response.status(200).send([{"writings_trendings":json}]); 
-            })
-          }
-        })*/
+      
     }
   })
 
 
 }
 
+
+  function add_comics_trendings(json,date){
+    console.log("add_comics_trendings")
+    console.log(Object.keys(json.format).length)
+    let list_of_comics=[];
+    let obj=Object.keys(json.format);
+    let compt=0;
+    for(let i=0;i<obj.length;i++){
+      if(json.format[i]=='serie'){
+        comics_serie_seq.Liste_Bd_Serie.findOne({
+          where:{
+            bd_id:json.publication_id[i],
+            status:"public",
+          }
+        }).then(bd=>{
+          if(bd){
+            list_of_comics[i]=bd;
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          else{
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          
+        })
+      }
+      else{
+        comics_oneshot_seq.list_comics_one_shot.findOne({
+          where:{
+            bd_id:json.publication_id[i],
+            status:"public",
+          }
+        }).then(bd=>{
+          if(bd){
+            list_of_comics[i]=bd;
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          else{
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          
+        })
+      }
+    }
+
+    function add_to_data(){
+      console.log("add_to_data")
+      for(let i=0;i<list_of_comics.length;i++){
+        if(list_of_comics[i] && !list_of_comics[i].chaptersnumber){
+          let ranking=get_ranking(i);
+          authentification.users.findOne({
+            where:{
+              id:list_of_comics[i].authorid
+            }
+          }).then(user=>{
+            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            if(user.gender=='Groupe'){
+              finalize_add_to_data(user,i,ranking,remuneration)
+            }
+            else{
+              trendings_seq.trendings_contents.create({
+                "publication_category": "comic",
+                "id_user": list_of_comics[i].authorid,
+                "date":date,
+                "rank":ranking,
+                "title":list_of_comics[i].title,
+                "publication_id":json.publication_id[i],
+                "remuneration":remuneration,
+                "format":"one-shot"
+              })
+            }
+          })
+          
+        }
+        if(list_of_comics[i] && list_of_comics[i].chaptersnumber>=0){
+          let ranking=get_ranking(i);
+          authentification.users.findOne({
+            where:{
+              id:list_of_comics[i].authorid
+            }
+          }).then(user=>{
+            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            if(user.gender=='Groupe'){
+              finalize_add_to_data(user,i,ranking,remuneration)
+            }
+            else{
+              trendings_seq.trendings_contents.create({
+                "publication_category": "comic",
+                "id_user": list_of_comics[i].authorid,
+                "date":date,
+                "rank":ranking,
+                "title":list_of_comics[i].title,
+                "publication_id":json.publication_id[i],
+                "remuneration":remuneration,
+                "format":"serie"
+              })
+            }
+           
+          })
+          
+        }
+      }
+
+      function get_ranking(i){
+        let minus=0;
+        for(let k=0;k<i;k++){
+          if(!list_of_comics[k]){
+            minus++;
+          }
+        }
+        return i-minus+1;
+      }
+
+      function finalize_add_to_data(user,i,ranking,remuneration){
+       
+        let list_of_members=user.list_of_members;
+        let shares={}
+        if(list_of_members){
+          for(let j=0;j<list_of_members.length<0;j++){
+            shares[list_of_members[j]]=(100/list_of_members.length).toFixed(2);
+          }
+        }
+        authentification.user_groups_managment.findAll({
+          where:{
+            id_group:user.id,
+          }
+        }).then(members=>{
+          
+          if(members[0]){
+            console.log("members_found")
+            for(let j=0;j<members.length;j++){
+              shares[members[j].id_user]=members[j].share;
+            }
+            console.log(shares)
+            trendings_seq.trendings_contents.create({
+              "publication_category": "comic",
+              "id_user": list_of_comics[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "shares":[shares],
+              "title":list_of_comics[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+          else{
+            trendings_seq.trendings_contents.create({
+              "publication_category": "comic",
+              "id_user": list_of_comics[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "title":list_of_comics[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+
+          
+        })
+      }
+
+    }
+   
+  }
+
+
+  function add_drawings_trendings(json,date){
+    console.log("add_drawings_trendings")
+    console.log(Object.keys(json.format).length)
+    let list_of_drawings=[];
+    let obj=Object.keys(json.format);
+    let compt=0;
+    for(let i=0;i<obj.length;i++){
+      if(json.format[i]=='artbook'){
+        drawings_artbook_seq.Liste_Drawings_Artbook.findOne({
+          where:{
+            drawing_id:json.publication_id[i],
+            status:"public",
+          }
+        }).then(drawing=>{
+          if(drawing){
+            list_of_drawings[i]=drawing;
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          else{
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          
+        })
+      }
+      else{
+        drawings_oneshot_seq.Drawings_one_page.findOne({
+          where:{
+            drawing_id:json.publication_id[i],
+            status:"public",
+          }
+        }).then(drawing=>{
+          if(drawing){
+            list_of_drawings[i]=drawing;
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          else{
+            compt++;
+            if(compt==obj.length){
+              add_to_data()
+            }
+          }
+          
+        })
+      }
+    }
+
+    function add_to_data(){
+      console.log("add_to_data draw")
+      for(let i=0;i<list_of_drawings.length;i++){
+        if(list_of_drawings[i] && !list_of_drawings[i].pagesnumber){
+          let ranking=get_ranking(i);
+          authentification.users.findOne({
+            where:{
+              id:list_of_drawings[i].authorid
+            }
+          }).then(user=>{
+            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            trendings_seq.trendings_contents.create({
+              "publication_category": "drawing",
+              "id_user": list_of_drawings[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "title":list_of_drawings[i].title,
+              "publication_id":json.publication_id[i],
+              "remuneration":remuneration,
+              "format":"one-shot"
+            })
+          })
+          
+        }
+        if(list_of_drawings[i] && list_of_drawings[i].pagesnumber>=0){
+          let ranking=get_ranking(i);
+          authentification.users.findOne({
+            where:{
+              id:list_of_drawings[i].authorid
+            }
+          }).then(user=>{
+            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            if(user.gender=='Groupe'){
+              finalize_add_to_data(user,i,ranking,remuneration);
+            }
+            else{
+              trendings_seq.trendings_contents.create({
+                "publication_category": "drawing",
+                "id_user": list_of_drawings[i].authorid,
+                "date":date,
+                "rank":ranking,
+                "title":list_of_drawings[i].title,
+                "publication_id":json.publication_id[i],
+                "remuneration":remuneration,
+                "format":"artbook"
+              })
+            }
+            
+          })
+          
+        }
+      }
+
+      function get_ranking(i){
+        let minus=0;
+        for(let k=0;k<i;k++){
+          if(!list_of_drawings[k]){
+            minus++;
+          }
+        }
+        return i-minus+1;
+      }
+
+
+      function finalize_add_to_data(user,i,ranking,remuneration){
+        let list_of_members=user.list_of_members;
+        let shares={}
+        if(list_of_members){
+          for(let j=0;j<list_of_members.length<0;j++){
+            shares[list_of_members[j]]=(100/list_of_members.length).toFixed(2);
+          }
+        }
+        authentification.user_groups_managment.findAll({
+          where:{
+            id_group:user.id,
+          }
+        }).then(members=>{
+          
+          if(members[0]){
+            for(let j=0;j<members.length;j++){
+              shares[members[j].id_user]=members[j].share;
+            }
+            trendings_seq.trendings_contents.create({
+              "publication_category": "drawing",
+              "id_user": list_of_drawings[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "shares":[shares],
+              "title":list_of_drawings[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+          else{
+            trendings_seq.trendings_contents.create({
+              "publication_category": "drawing",
+              "id_user": list_of_drawings[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "title":list_of_drawings[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+
+          
+        })
+      }
+    }
+   
+  }
+  
+
+
+  function add_writings_trendings(json,date){
+    console.log("add_writings_trendings")
+    console.log(Object.keys(json.format).length)
+    let list_of_writings=[];
+    let obj=Object.keys(json.format);
+    let compt=0;
+    for(let i=0;i<obj.length;i++){
+      writings_seq.Liste_Writings.findOne({
+        where:{
+          writing_id:json.publication_id[i],
+          status:"public",
+        }
+      }).then(writing=>{
+        if(writing){
+          list_of_writings[i]=writing;
+          compt++;
+          if(compt==obj.length){
+            add_to_data()
+          }
+        }
+        else{
+          compt++;
+          if(compt==obj.length){
+            add_to_data()
+          }
+        }
+        
+      })
+      
+    }
+
+    function add_to_data(){
+      console.log("add_to_data writing")
+      for(let i=0;i<list_of_writings.length;i++){
+       
+        if(list_of_writings[i]){
+          let ranking=get_ranking(i);
+          authentification.users.findOne({
+            where:{
+              id:list_of_writings[i].authorid
+            }
+          }).then(user=>{
+            let remuneration= get_remuneration(user.subscribers.length,ranking)
+            if(user.gender='Groupe'){
+              finalize_add_to_data(user,i,ranking,remuneration)
+            }
+            else{
+              trendings_seq.trendings_contents.create({
+                "publication_category": "writing",
+                "id_user": list_of_writings[i].authorid,
+                "date":date,
+                "rank":ranking,
+                "title":list_of_writings[i].title,
+                "remuneration":remuneration,
+                "publication_id":json.publication_id[i],
+              })
+            }
+           
+          })
+          
+        }
+        
+      }
+
+      function get_ranking(i){
+        let minus=0;
+        for(let k=0;k<i;k++){
+          if(!list_of_writings[k]){
+            minus++;
+          }
+        }
+        return i-minus+1;
+      }
+
+      function finalize_add_to_data(user,i,ranking,remuneration){
+        let list_of_members=user.list_of_members;
+        let shares={}
+        if(list_of_members){
+          for(let j=0;j<list_of_members.length<0;j++){
+            shares[list_of_members[j]]=(100/list_of_members.length).toFixed(2);
+          }
+        }
+        
+        authentification.user_groups_managment.findAll({
+          where:{
+            id_group:user.id,
+          }
+        }).then(members=>{
+          
+          if(members[0]){
+            for(let j=0;j<members.length;j++){
+              shares[members[j].id_user]=members[j].share;
+            }
+            trendings_seq.trendings_contents.create({
+              "publication_category": "writing",
+              "id_user": list_of_writings[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "shares":[shares],
+              "title":list_of_writings[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+          else{
+            trendings_seq.trendings_contents.create({
+              "publication_category": "writing",
+              "id_user": list_of_writings[i].authorid,
+              "date":date,
+              "rank":ranking,
+              "title":list_of_writings[i].title,
+              "remuneration":remuneration,
+              "publication_id":json.publication_id[i],
+            })
+          }
+
+          
+        })
+      }
+    }
+   
+  }
+
+
+  function get_remuneration(number,ranking){
+    if(ranking>15){
+      return '0'
+    }
+    if(number<1000){
+      let num = 1/2+ (1/3)*(1/ranking)*((1/80)*number + 12.5);
+      
+      return num.toFixed(2)
+    }
+    if(number<1000){
+      let num = 2/5+ (1/3)*(1/ranking)*((3/1000)*number + 20);
+      return num.toFixed(2)
+    }
+    if(number<100000){
+      let num = 1 + (1/3)*(1/ranking)*((6/10000)*number + 40);
+      return num.toFixed(2)
+    }
+  }
 
   module.exports = {
     send_rankings_and_get_trendings_comics,

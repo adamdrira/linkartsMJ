@@ -37,15 +37,13 @@ const get_comics_recommendations_by_author = (request, response) => {
   const id_user = request.body.id_user;
   const publication_id = request.body.publication_id;
   var list_to_send=[];
- 
 
-  pool.query('SELECT * FROM list_of_contents  WHERE id_user=$1 AND status=$4 AND  publication_category=$2 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 6', [id_user,"comics",publication_id,"ok"], (error, results) => {
+  pool.query('SELECT * FROM list_of_contents  WHERE id_user=$1 AND status=$4 AND  publication_category=$2 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 6', [id_user,"comic",publication_id,"ok"], (error, results) => {
     if (error) {
       throw error
     }
     else{
         let result = JSON.parse(JSON.stringify(results.rows));
-       
         if(result.length>0){
             let j=0;
             for (let i=0; i< result.length;i++){  
@@ -280,7 +278,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
                     console.log(format);
                     if(result.length>0){
                         let j=0;
-                        if (publication_category=="comics"){ 
+                        if (publication_category=="comic"){ 
                             for (let i=0; i< result.length;i++){
                                 if (result[i].format=="one-shot"){
                                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
@@ -381,7 +379,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
                         }
                     }
                     else {
-                        if (publication_category=="comics"){ 
+                        if (publication_category=="comic"){ 
                                 if (format=="one-shot"){
                                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                     pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
