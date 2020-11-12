@@ -1,11 +1,57 @@
-<div style="display:block">
+<div class="main-results">
+
 
     <!-- ***************************RECHERCHE PAR STYLE ET GENRE *********************-->
-    <div class="main-title" *ngIf="display_title_style_and_tags">
-        Recherche par style et par genre
+    <div class="main-title" *ngIf="display_title_style_and_tags" [@enterAnimation]>
+        Recherche par : {{category_to_show}}
     </div>
 
-    <ng-container *ngIf="opened_section==2">
+    <!--<div class="thumbnails-container" *ngIf="display_title_style_and_tags">
+        <div class="swiper-container">
+            <div #swiperCategories class="swiper-item">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" (click)="change_first_filter_selected_sg(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
+                        <div class="element first-filter">
+                            <span>{{item}}</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide" (click)="change_second_filter_selected_sg(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">
+                        <div class="element second-filter">
+                            <span>{{item}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+            <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+            <div class="swiper-button-prev" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+            <div class="swiper-button-next" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+
+            
+
+            <div *ngIf="first_filter_selected!=-1 || second_filter_selected!=-1" class="filters-container">
+                <div *ngIf="first_filter_selected!=-1" class="filter">
+                    <div class="filter-item">
+                        <span><b>Genre :</b> {{first_filters[indice_title_selected][first_filter_selected]}}</span> 
+                        <div class="close-container" (click)="change_first_filter_selected(first_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="second_filter_selected!=-1" class="filter">
+                    <div class="filter-item">
+                        <span><b>Catégorie :</b> {{second_filters[indice_title_selected][second_filter_selected]}}</span> 
+                        <div class="close-container" (click)="change_second_filter_selected(second_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>-->
+
+    <!--<ng-container *ngIf="opened_section==2">
         <div class="categories-container">
             <div class="categories-titles-container title-selected-container" >
                 <span class="category-title" >{{category_to_show}}</span>
@@ -22,97 +68,194 @@
             </div>
             
         </div>
-    </ng-container>
-   
+    </ng-container>-->
+    
     
 
 
 <!-- ***************************RECHERCHE PAR MOTS *********************-->
-    <div class="main-title" *ngIf="display_title">
-        Meilleures résultats pour : {{research_string}}
+    <div class="main-title" *ngIf="display_title && !display_no_results" [@enterAnimation]>
+        <span>Meilleurs résultats pour : "{{research_string}}"</span>
     </div>
-    <ng-container *ngIf="display_no_results">
-        Aucun résultat pour la recherche demandée
-    </ng-container>
-    <ng-container *ngIf="display_results">
-        <div class="categories-container">
-            <div class="categories-titles-container" (click)="change_indice_title_selected(i)" *ngFor="let item of list_of_categories;let i=index" [ngClass]="{'title-selected-container': indice_title_selected==i }" >
-                <span class="category-title" >{{item}}</span>
-            </div>
-        </div>
-        <div class="second-categories-container">
-            <div class="second-categories-left">
-                <div class="second-categories-titles-container" (click)="change_first_filter_selected(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected-container': first_filter_selected==i }">
-                    <span class="second-category-title" >{{item}}</span>
-                </div>
-                <div class="second-categories-titles-container-tags" (click)="change_second_filter_selected(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected-container-tags': second_filter_selected==i }">
-                    <span class="second-category-title" >{{item}}</span>
-                </div>
-            </div>
-            
-        </div>
-    </ng-container>
-        <!--<div *ngIf="loading_propositions" class="loading-page">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>-->
-    <ng-container *ngIf="show_propositions">
-        <div style="display:block;min-height:500px" *ngIf="!loading_propositions ">
-            <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions;let i=index" >
+    <div class="no-results-container" *ngIf="display_no_results" [@enterAnimation]>
+        <mat-icon>find_in_page</mat-icon>
+        <span>Aucun résultat pour la recherche demandée :</span>
+        <span>"{{research_string}}"</span>
+    </div>
+    
+    <div *ngIf="display_results" [@enterAnimation]>
 
-                <div class="item-row" *ngIf="item.publication_category=='Artist'">
-
-                    <a href="/account/{{list_of_last_propositions[i].nickname}}/{{list_of_last_propositions[i].id}}" style="display:contents;">
-                        <div class="result-container">
-                          <div class="image-container">
-                            <img [src]="list_of_thumbnails[i]"  (load)="pp_thumb_load(i)" [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
-                          </div>
-                          <div class="name-container">
-                            <span>{{list_of_last_propositions[i].nickname}}</span>
-                          </div>
-                          <div class="type-container">
-                            <span>Artiste</span>
-                          </div>
+            <div class="categories-container">
+                <div class="categories">
+                    <div class="category" (click)="change_indice_title_selected(i)" *ngFor="let item of list_of_categories;let i=index" [ngClass]="{'selected': indice_title_selected==i }" >
+                        <div class="icon-container">
+                            <div class="icon icon-artist" *ngIf="item == 'Artistes'"></div>
+                            <mat-icon *ngIf="item == 'Annonces'">announcement</mat-icon>
+                            <div class="icon icon-comic" *ngIf="item == 'Bandes dessinées'"></div>
+                            <div class="icon icon-drawing" *ngIf="item == 'Dessins'"></div>
+                            <div class="icon icon-writing" *ngIf="item == 'Ecrits'"></div>
                         </div>
-                      </a>
+                        <span>{{item}}</span>
+                    </div>
                 </div>
+            </div>
 
-                <div  *ngIf="item.publication_category=='Comic' " [ngClass]="{'invisible': !pp_thumb_is_loaded[i] }">
-                <app-thumbnail-comics class="thumbnail-component-container" 
-                        [item]=list_of_last_propositions[i]
-                        [format]=item.format
-                        now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (send_loaded)="pp_thumb_load(i);"
-                    ></app-thumbnail-comics>
+    </div>
+
+
+    <div class="thumbnails-container" [@enterAnimation]>
+
+
+        <div class="swiper-container">
+            <div #swiperCategories class="swiper-item" *ngIf="display_results || display_title_style_and_tags">
+                <div class="swiper-wrapper">
+                    <ng-container *ngIf="!display_title_style_and_tags">
+                        <div class="swiper-slide" (click)="change_first_filter_selected(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
+                            <div class="element first-filter">
+                                <span>{{item}}</span>
+                            </div>
+                        </div>
+                        <div class="swiper-slide" (click)="change_second_filter_selected(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">
+                            <div class="element second-filter">
+                                <span>{{item}}</span>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="display_title_style_and_tags">
+                        <div class="swiper-slide" (click)="change_first_filter_selected_sg(i)" *ngFor="let item of first_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': first_filter_selected==i }">
+                            <div class="element first-filter">
+                                <span>{{item}}</span>
+                            </div>
+                        </div>
+                        <div class="swiper-slide" (click)="change_second_filter_selected_sg(i)" *ngFor="let item of second_filters[indice_title_selected];let i=index" [ngClass]="{'title-selected': second_filter_selected==i }">
+                            <div class="element second-filter">
+                                <span>{{item}}</span>
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
+            </div>
+            <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+            <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+            <div class="swiper-button-prev" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+            <div class="swiper-button-next" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
 
-                <div  *ngIf="item.publication_category=='Drawing' ">
-                <app-thumbnail-drawing class="thumbnail-component-container" 
-                        [item]=list_of_last_propositions[i]
-                        [format]=item.format
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-drawing>
+            
+
+            <div *ngIf="first_filter_selected!=-1 || second_filter_selected!=-1" class="filters-container">
+                
+                <div *ngIf="first_filter_selected!=-1" class="filter">
+                    <div class="filter-item">
+                        <span><b>Genre :</b> {{first_filters[indice_title_selected][first_filter_selected]}}</span> 
+                        <div class="close-container" *ngIf="display_title_style_and_tags" (click)="change_first_filter_selected_sg(first_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                        <div class="close-container" *ngIf="!display_title_style_and_tags" (click)="change_first_filter_selected(first_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                    </div>
                 </div>
-
-                <div  *ngIf="item.publication_category=='Writing' ">
-                <app-thumbnail-writing class="thumbnail-component-container" 
-                        [item]=list_of_last_propositions[i]
-                        now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-writing>
+                <div *ngIf="second_filter_selected!=-1" class="filter">
+                    <div class="filter-item">
+                        <span><b>Catégorie :</b> {{second_filters[indice_title_selected][second_filter_selected]}}</span> 
+                        <div class="close-container" *ngIf="display_title_style_and_tags" (click)="change_second_filter_selected_sg(second_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                        <div class="close-container" *ngIf="!display_title_style_and_tags" (click)="change_second_filter_selected(second_filter_selected)">
+                            <mat-icon>close</mat-icon>
+                        </div>
+                    </div>
                 </div>
                 
-            </div>
-            <div style="display:flex;margin:auto;    justify-content: center;">
-                <span>page {{current_page}}/{{number_of_pages}}</span>
+                <a *ngIf="(first_filter_selected!=-1) && display_results" [routerLink]=get_style_genre_link(first_filter_selected,second_filter_selected,indice_title_selected) [@enterAnimation]>
+                    <mat-icon>folder</mat-icon>
+                    Voir tout le contenu : 
+                    <ng-container *ngIf="first_filter_selected!=-1">{{first_filters[indice_title_selected][first_filter_selected]}}</ng-container>
+                    <ng-container *ngIf="first_filter_selected!=-1 && second_filter_selected!=-1">,&nbsp;{{second_filters[indice_title_selected][second_filter_selected]}}</ng-container>
+                </a>
+
             </div>
             
         </div>
-    </ng-container>
-    
-    <div style="display:flex;margin:auto" *ngIf="display_no_propositions">
-        Aucune proposition pour la recherche demandée
-    </div>
+
         
+        <ng-container *ngIf="(!show_propositions || loading_propositions) && !display_no_propositions">
+            <ng-container *ngFor="let item of skeleton_array; let i = index">
+                <div class="skeleton" [@enterAnimation]>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        
+        <ng-container *ngIf="show_propositions && !loading_propositions">
+            <ng-container *ngFor="let item of list_of_first_propositions;let i=index">
+
+
+                <div class="thumbnail" *ngIf="item.publication_category=='Comic'">
+                    <app-thumbnail-artwork
+                        [item]=list_of_last_propositions[i]
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='comics'
+                        [subscribing_format]=item.format>
+                    </app-thumbnail-artwork>
+                </div>
+                <div class="thumbnail" *ngIf="item.publication_category=='Drawing'">
+                    <app-thumbnail-artwork
+                        [item]=list_of_last_propositions[i]
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='drawing'
+                        [subscribing_format]=item.format>
+                    </app-thumbnail-artwork>
+                </div>
+                <div class="thumbnail" *ngIf="item.publication_category=='Writing'">
+                    <app-thumbnail-artwork 
+                        [item]=list_of_last_propositions[i]
+                        page='subscribings'
+                        now_in_seconds={{now_in_seconds}}
+                        subscribing_category='writing'>
+                    </app-thumbnail-artwork>
+                </div>
+
+                <div class="thumbnail thumbnail-user" *ngIf="item.publication_category=='Artist'">
+                    <app-thumbnail-user
+                    [item]=list_of_last_propositions[i]>
+                    </app-thumbnail-user>
+                </div>
+
+
+            </ng-container>
+
+            
+            <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
+                <button class="button-first-page" (click)="first_page();" [ngClass]="{'disabled': current_page==1 }">
+                    <mat-icon>first_page</mat-icon>
+                </button>
+                <button class="button-previous-page" (click)="previous_page();" [ngClass]="{'disabled': current_page==1 }">
+                    <mat-icon>navigate_before</mat-icon>
+                </button>
+
+                <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page>
+                <span class="total-pages"> / {{number_of_pages}}</span>
+                
+                <button class="button-next-page" (click)="next_page();" [ngClass]="{'disabled': current_page==number_of_pages }">
+                    <mat-icon>navigate_next</mat-icon>
+                </button>
+                <button class="button-last-page" (click)="last_page();" [ngClass]="{'disabled': current_page==number_of_pages }">
+                    <mat-icon>last_page</mat-icon>
+                </button>
+            </div>
+        </ng-container>
+        
+        
+    </div>
+    
+
+    <div class="no-proposition-container" *ngIf="display_no_propositions" [@enterAnimation]>
+        <mat-icon>find_in_page</mat-icon>
+        <span>Aucun résultat pour la recherche demandée</span>
+    </div>
     
     
     

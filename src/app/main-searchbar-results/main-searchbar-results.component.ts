@@ -3,7 +3,7 @@ import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {BdOneShotService} from '../services/comics_one_shot.service';
@@ -13,13 +13,27 @@ import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Route } from '@angular/compiler/src/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 
+
+declare var Swiper: any;
 declare var $: any;
 
 @Component({
   selector: 'app-main-searchbar-results',
   templateUrl: './main-searchbar-results.component.html',
-  styleUrls: ['./main-searchbar-results.component.scss']
+  styleUrls: ['./main-searchbar-results.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class MainSearchbarResultsComponent implements OnInit {
 
@@ -37,7 +51,13 @@ export class MainSearchbarResultsComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
+    private router:Router,
   ) { 
+
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
+
     this.navbar.show();
   }
 
@@ -45,7 +65,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   research_string:string;
   category:string;
   type_of_profile:string;
-  list_of_categories=["Artiste","Annonce","Bande Dessinée","Dessin","Ecrit"];
+  list_of_categories=["Artistes","Annonces","Bandes dessinées","Dessins","Ecrits"];
   list_of_real_categories=["Artist","Ad","Comic","Drawing","Writing"];
   first_filters_artists=["Auteur de B.D.", "Dessinateur", "Ecrivain"];
   first_filters_ads=["B.D.","BD euro.","Comics","Manga","Webtoon","Dessin","Dessin dig.","Dessin trad.","Ecrit","Article","Poésie","Roman","Roman il."];
@@ -63,6 +83,9 @@ export class MainSearchbarResultsComponent implements OnInit {
   second_filters=[[],[],this.comics_tags,this.drawings_tags,this.writings_tags];
 
 
+  skeleton_array = Array(15);
+  
+  swiper:any;
 
   now_in_seconds=Math.trunc( new Date().getTime()/1000);
 
@@ -142,7 +165,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       console.log(  this.category_to_show)
       let index1=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
       if(index1<0){
-        alert("pb 2")
+        alert("pb 2");
         //this.location.go('/');
         //location.reload();
         return;
@@ -150,14 +173,19 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter_selected=index1;
       let index2=this.second_filters[this.indice_title_selected].indexOf(this.second_filter);
       if(index1<0 &&  this.second_filter!="all"){
-        alert("pb 3")
+        alert("pb 3");
         //this.location.go('/');
         //location.reload();
         return;
       }
       this.second_filter_selected=index2;
       this.display_title_style_and_tags=true;
+      
       this.manage_sections_sg();
+
+      this.cd.detectChanges();
+      this.initialize_swiper();
+      
       console.log( this.category)
       console.log( this.first_filter)
       console.log( this.second_filter)
@@ -165,11 +193,58 @@ export class MainSearchbarResultsComponent implements OnInit {
     
   }
 
+  
+  
+  @ViewChild("swiperCategories") swiperCategories:ElementRef;
+  initialize_swiper() {
+
+    if( !this.swiper && this.swiperCategories ) {
+
+
+      this.swiper = new Swiper( this.swiperCategories.nativeElement, {
+        speed: 300,
+        initialSlide:0,
+
+        slidesPerView: 'auto',
+
+        breakpoints: {
+          // when window width is >= 320px
+          320: {
+            slidesPerGroup: 2,
+          },
+          // when window width is >= 480px
+          500: {
+            slidesPerGroup: 3,
+          },
+          // when window width is >= 640px
+          700: {
+            slidesPerGroup: 4,
+          },
+          // when window width is >= 640px
+          900: {
+            slidesPerGroup: 5,
+          }
+        },
+
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+
+        observer:'true',
+      })
+    }
+
+  }
+
+
+
   change_indice_title_selected(i){
     
     if(this.indice_title_selected==i){
       return;
     }
+    
     this.number_of_page_retrieved=false;
     this.indice_title_selected=i;
     this.first_filter_selected=-1;
@@ -177,7 +252,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.first_filter="all";
     this.second_filter="all";
     this.category=this.list_of_real_categories[i];
-    //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+    this.location.go(`/main-research/1/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
     this.opened_section=0;
     this.manage_sections();
   }
@@ -189,7 +264,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.first_filter_selected==i){
       this.first_filter_selected=-1;
       this.first_filter="all";
-      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/all/${this.second_filter}`);
+      this.location.go(`/main-research/1/${this.research_string}/${this.category}/all/${this.second_filter}`);
       if(this.second_filter_selected<0){
         this.opened_section=0;
       }
@@ -199,7 +274,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.first_filter_selected=i;
       this.opened_section=1;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
-      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research/1/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections();
     }
     
@@ -210,7 +285,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.second_filter_selected==i){
       this.second_filter_selected=-1;
       this.second_filter="all";
-      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/all`);
+      this.location.go(`/main-research/1/${this.research_string}/${this.category}/${this.first_filter}/all`);
       if(this.first_filter_selected<0){
         this.opened_section=0;
       }
@@ -220,7 +295,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.second_filter_selected=i;
       this.opened_section=1;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
-      //this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research/1/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections();
     }
   }
@@ -249,6 +324,10 @@ export class MainSearchbarResultsComponent implements OnInit {
                   console.log(this.list_of_real_categories);
                   if(this.category=="All"){
                     this.display_results=true;
+
+                    this.cd.detectChanges();
+                    this.initialize_swiper();
+                    
                     this.category=this.list_of_real_categories[0];
                     this.manage_sections();
                   }
@@ -260,6 +339,10 @@ export class MainSearchbarResultsComponent implements OnInit {
                     else{
                       this.indice_title_selected=this.list_of_real_categories.indexOf(this.category);
                       this.display_results=true;
+                        
+                      this.cd.detectChanges();
+                      this.initialize_swiper();
+                      
                       this.manage_sections();
                     }
                   }
@@ -271,6 +354,10 @@ export class MainSearchbarResultsComponent implements OnInit {
             else{
               console.log(this.list_of_real_categories);
               this.display_results=true;
+              
+              this.cd.detectChanges();
+              this.initialize_swiper();
+
               this.category=this.list_of_real_categories[0];
               this.manage_sections();
             }
@@ -471,6 +558,8 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.navbar.get_propositions_after_research_navbar(this.category,this.research_string,20,offset,compteur).subscribe(r=>{
         if(r[1]==this.compteur_research){
           this.list_of_first_propositions=r[0][0];
+          console.log("######################");
+          console.log( this.list_of_first_propositions );
           for(let i=0;i<this.list_of_first_propositions.length;i++){
             this.get_propositions(i,r[1]);
           }
@@ -646,7 +735,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     else{
       this.first_filter_selected=i;
       this.first_filter=this.first_filters[this.indice_title_selected][i];
-      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research-style-and-tag/1/${this.category}/${this.first_filter}/${this.second_filter}`);
       this.manage_sections_sg();
     }
     
@@ -657,12 +746,12 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.second_filter_selected==i){
       this.second_filter_selected=-1;
       this.second_filter="all";
-      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/all`);
+      this.location.go(`/main-research-style-and-tag/1/${this.category}/${this.first_filter}/all`);
     }
     else{
       this.second_filter_selected=i;
       this.second_filter=this.second_filters[this.indice_title_selected][i];
-      //this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+      this.location.go(`/main-research-style-and-tag/1/${this.category}/${this.first_filter}/${this.second_filter}`);
     }
     this.manage_sections_sg();
   }
@@ -768,6 +857,46 @@ export class MainSearchbarResultsComponent implements OnInit {
     }
    
   }
+
+  get_style_genre_link(filter1,filter2,title_selected) {
+    if(filter1 != -1 && filter2 != -1 ) {
+      return "/main-research-style-and-tag/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/"+this.second_filters[title_selected][filter2];
+    }
+    if(filter1 != -1 && filter2 == -1 ) {
+      return "/main-research-style-and-tag/1/"+this.list_of_real_categories[title_selected]+"/"+this.first_filters[title_selected][filter1]+"/all";
+    }
+    return "/";
+  }
+
+  page_clicked(e:any) {
+    if(e.keyCode === 13){
+      e.preventDefault();
+
+      if( (e.target.value >= 1) && (e.target.value <= this.number_of_pages) ) {
+        //go to page
+        
+      }
+      else {
+        //vider l'input
+      }
+    }
+  }
+
+  first_page() {
+
+  }
+  previous_page() {
+    
+  }
+  next_page() {
+    
+  }
+  last_page() {
+    
+  }
+
+
+
 
 
 }
