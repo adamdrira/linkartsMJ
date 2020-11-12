@@ -3,7 +3,9 @@
 @import '../swiper-styles.scss';
 
 
-
+.invisible{
+    visibility:hidden;
+}
 
 ::ng-deep {
 

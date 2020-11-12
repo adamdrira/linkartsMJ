@@ -16,7 +16,7 @@ export function pattern(type: string) {
     //Doit commencer par une lettre (avec accents), doit finir par une lettre.
     //Peut contenir au milieu un espace ou un tiret (max 1).
     if( type == "name" ) {
-        return "[a-zA-Z"+accents+"]\{1,}[ -]\{0,1}[a-zA-Z"+accents+"]\{1,}";
+        return "[a-zA-Z0-9"+accents+" ]\{1,}[ -]\{0,1}[a-zA-Z0-9"+accents+" ]\{1,}";
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
@@ -35,7 +35,7 @@ export function pattern(type: string) {
         return "^[0-9]{14}$";
     }
     if(type == "share") {
-        return "^[0-9](\.[0-9]+)?$";
+        return "[0-9][0-9.]*[0-9]";
     }
     //localisation
     //Commence par lettre ou accent

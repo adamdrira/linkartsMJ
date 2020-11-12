@@ -187,6 +187,7 @@ value:string="add";
       this.changeName.nativeElement.value= this.componentRef[i].name;
     }
     else{
+      this.display_swiper=false;
       if(value=="add"){
         this.changeName.nativeElement.value= "";
       }
@@ -204,6 +205,7 @@ value:string="add";
   number_of_new_chapters=0;
 
   validate_name(i: number) {
+
     this.cd.detectChanges();
     console.log("validation nom");
     console.log(this.value);
@@ -439,7 +441,6 @@ value:string="add";
       this.chapter_creation_in_progress=false;
       if(this.new_chapter_added){
         this.number_of_new_chapters-=1;
-        this.list_of_new_chapters[i]=false;
         if(this.number_of_new_chapters==0){
           this.new_chapter_added=false;
         }
@@ -499,7 +500,9 @@ value:string="add";
                 comment_id:0,
               }
               this.chatService.messages.next(message_to_send);
-              window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+              this.block_cancel=true;
+              this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+              //window.location.href = `/account/${this.pseudo}/${this.user_id}`;
           }); 
           
           
@@ -530,37 +533,43 @@ value:string="add";
         this.display_loading=true;
         let type="extend_publication";
         let compt=0;
+        console.log(this.list_of_new_chapters)
         for(let i=0;i<this.list_of_new_chapters.length;i++){
           if(this.list_of_new_chapters[i]){
             compt+=1;
           }
         }
-
+        console.log(compt)
         if(compt==0){
+          
           this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
           
         }
         else{
-          this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:type,
-              id_user_name:this.visitor_name,
-              id_user:this.user_id, 
-              publication_category:'comic',
-              publication_name:this.bdtitle,
-              format:'serie',
-              publication_id:this.bd_id,
-              chapter_number:compt,
-              information:"add",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-            this.chatService.messages.next(message_to_send);
-            this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
-            
-          }) 
+          this.Subscribing_service.extend_serie_and_update_content(this.bd_id,this.list_of_chapters.length).subscribe(u=>{
+            console.log(u);
+            this.NotificationsService.add_notification(type,this.user_id,this.visitor_name,null,'comic',this.bdtitle,'serie',this.bd_id,compt,"add",false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:type,
+                id_user_name:this.visitor_name,
+                id_user:this.user_id, 
+                publication_category:'comic',
+                publication_name:this.bdtitle,
+                format:'serie',
+                publication_id:this.bd_id,
+                chapter_number:compt,
+                information:"add",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.chatService.messages.next(message_to_send);
+              this.router.navigate( [ `/account/${this.pseudo}/${this.user_id}` ] );
+              
+            }) 
+          })
+          
         }
         
         
@@ -570,24 +579,28 @@ value:string="add";
 
   }
 
+  block_cancel=false;
   cancel_all(){
-    if(this.form_number==0){
-      for( let j = 0; j< this.componentRef.length; j++ ) {
-        this.bdSerieService.delete_chapter_bd_serie(j+1).subscribe();
-      }
-    }
-    else{
-      if(this.new_chapter_added){
-        let indice=-1;
-        for(let i=0;i<this.list_of_new_chapters.length;i++){
-          if(!this.list_of_chapters_validated[i] ||indice>0){
-            indice=i;
-            this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).subscribe();
-          }
+    if(!this.block_cancel){
+      if(this.form_number==0){
+        for( let j = 0; j< this.componentRef.length; j++ ) {
+          this.bdSerieService.delete_chapter_bd_serie(j+1).subscribe();
         }
-        
+      }
+      else{
+        if(this.new_chapter_added){
+          let indice=-1;
+          for(let i=0;i<this.list_of_new_chapters.length;i++){
+            if(!this.list_of_chapters_validated[i] ||indice>0){
+              indice=i;
+              this.bdSerieService.delete_chapter_bd_serie2(this.list_of_chapters[0].bd_id,this.list_of_chapters[i].chapter_number).subscribe();
+            }
+          }
+          
+        }
       }
     }
+   
     
   }
 

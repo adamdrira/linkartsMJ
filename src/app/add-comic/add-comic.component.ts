@@ -7,7 +7,7 @@ import { BdSerieService } from '../services/comics_serie.service';
 import { first } from 'rxjs/operators';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { Subscribing_service } from '../services/subscribing.service';
-
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { MatDialog } from '@angular/material/dialog';
@@ -48,6 +48,7 @@ export class AddComicComponent implements OnInit {
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     private viewref: ViewContainerRef,
+    private Profile_Edition_Service:Profile_Edition_Service,
     private bdOneShotService: BdOneShotService,
     private bdSerieService: BdSerieService,
     private Bd_CoverService: Bd_CoverService,
@@ -80,10 +81,14 @@ export class AddComicComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-  
+  type_of_account:string;
+  user_retrieved=false;
   ngOnInit() {
 
-    
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.type_of_account=r[0].type_of_account;
+      this.user_retrieved=true;
+    })
     this.createFormControls00();
     this.createForm00();
 
@@ -294,9 +299,24 @@ export class AddComicComponent implements OnInit {
     else {
       this.nextButton.nativeElement.disabled = false;
       if( !this.f00.valid ) {
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-        });
+   
+        if(this.f00.value.f00Format == "Série" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+          });
+        }
+        else if(this.f00.value.f00Format == "One-shot" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+          });
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          });
+        }
+
+        
       }
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {

@@ -41,14 +41,14 @@
             }
         }
         span {
-            margin:auto 10px auto auto;
-            font-size: 17px;
+            margin:auto;
+            font-size: 25px important;
             font-weight: bold;
             cursor:default;
         }
         .profile-picture-container { 
             display: flex;
-            margin:auto 0px auto 10px;
+            margin:auto 0px auto auto;
             border-radius:50px;
             overflow: hidden;
             .profile-picture {

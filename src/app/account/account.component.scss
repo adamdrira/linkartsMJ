@@ -23,9 +23,6 @@
   }
 
 
-  *{
-    font-size: 1.20rem;
-  }
   
   a {
     display:block;
@@ -65,24 +62,19 @@
 
 
   .account-container .change-cover-picture {
-    position:absolute;
-    color:black;
-    cursor:pointer;
-    bottom:20px;
-    right:20px;
+    position: absolute;
+    color: black;
+    cursor: pointer;
+    bottom: 20px;
+    right: 20px;
     padding: 10px;
-    display:flex;
-    flex-direction: column;
-    opacity:0;
+    display: flex;
+    box-shadow: unset !important;
+    opacity: 0;
     border-radius: 30px;
-    transition:opacity 200ms;
-    background:rgba(32, 56, 100, 0.9);
   }
 
-  ::ng-deep .change-cover-picture .mat-button-wrapper {
-    flex-direction: column !important;
-  }
-  
+
 
   .account-container:hover .change-cover-picture {
     opacity:1;
@@ -91,8 +83,8 @@
 
   .account-container .profile .profile-picture {
     position:relative;
-    height:150px;
-    width:150px;
+    height:130px;
+    width:130px;
     margin:auto auto auto auto;
     border-radius: 50%;
     overflow:hidden;
@@ -103,6 +95,24 @@
   .account-container .profile .profile-picture .mat-icon {
     margin:5px auto 0px auto;
     font-size: 24px;
+  }
+
+  .profile-picture2 {
+    position: relative;
+    display: flex;
+    height: 24px;
+    width: 24px;
+    margin: auto 5px auto 0px;
+    border-radius: 50%;
+    overflow: hidden;
+    /* box-shadow: 0px 0px 2px 2px #203864; */
+    border: 1px solid #182e5a;
+  }
+
+  .profile-picture2 img {
+    width:100%;
+    height:100%;
+    object-fit: cover;
   }
 
 
@@ -138,19 +148,19 @@
   
   
   .account-container .change-cover-picture .cover-picture-icon {
-    cursor:pointer;
-    height: 20px;
-    margin:auto auto 5px auto;
-    width: 20px;
+    cursor: pointer;
+    height: 15px;
+    margin: auto 5px auto auto;
+    width: 15px;
     background-color: black;
     -webkit-mask:  url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
   }
 
   .account-container .change-cover-picture span {
-    cursor:pointer;
-    margin:0px auto auto auto;
-    font-size: 15px;
+    cursor: pointer;
+    margin: 0px auto auto auto;
+    font-size: 10px;
     text-align: center;
     line-height: 20px;
   }
@@ -192,10 +202,14 @@
     flex-direction: column;
   }
 
+  ::ng-deep .mat-menu-panel {
+      min-height: unset !important;
+    }
+
   .account-container .profile .profile-picture .change-profile-picture span,
   .account-container .profile .profile-picture .change-story-picture span {
     margin: 0px auto auto auto;
-    font-size: 13px;
+    font-size: 10px;
     color:black;
     text-align: center;
     width: 80%;
@@ -205,9 +219,9 @@
 
   .account-container .profile .profile-picture .change-profile-picture .picture-icon,
   .account-container .profile .profile-picture .change-story-picture .picture-icon {    
-    height: 20px;
+    height: 15px;
     margin: auto auto 0px auto;
-    width: 20px;
+    width: 15px;
     background-color: rgb(0, 0, 0);
     -webkit-mask:  url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/camera.svg") no-repeat 50% 50%;
@@ -230,15 +244,18 @@
   }
   .account-container .profile .profile-information > div {
     color:white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    max-height: 50px;
+    max-width: 250px;
+    //white-space: nowrap;
+    //overflow: hidden;
+    //text-overflow: ellipsis;
     cursor:default;
   }
 
   .account-container .profile-information .profile-name span {
-    font-size:25px;
-    font-weight: bold;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
   }
 
   .account-container .profile-information .profile-description {
@@ -246,7 +263,9 @@
   }
   
   .account-container .profile-information .profile-description span {
-    font-size:15px;
+    color: #f9f9f9;
+    font-size: 12px;
+    font-weight: 500;
   }
 
   .account-container .profile-information .profile-text {
@@ -254,15 +273,21 @@
   }
 
   .account-container .profile-information .profile-text span {
-    font-size: 15px;
+    color: #f9f9f9;
+    font-size: 12px;
+    font-weight: 500;
     line-height: 25px;
   }
 
   .account-container .profile .profile-information .icon {
-    color:#091834;
-    margin:auto 2px auto 0px;
-    width:20px;
-    height:20px;
+    color: #f9f9f9;
+    display: flex;
+    font-size: 12px;
+    justify-content: center;
+    align-items: center;
+    margin: auto 2px auto 0px;
+    width: 20px;
+    height: 20px;
   }
   
 
@@ -317,14 +342,14 @@
   background:rgb(230,230,230,0.5);
 }
 .account-container .profile .visitor-button * {
-  font-size: 15px;
+  font-size: 12px;
 }  
 
 .account-container .profile .visitor-buttons-container .message-icon {
   cursor:pointer;
-  height: 15px;
+  height: 12px;
   margin: auto 5px auto auto;
-  width: 20px;
+  width: 12px;
   background-color: #203864;
   -webkit-mask:  url("../../assets/img/svg/message.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/message.svg") no-repeat 50% 50%;
@@ -332,9 +357,9 @@
 
 .account-container .profile .visitor-buttons-container .subscribe-icon {
   cursor:pointer;
-  height: 15px;
+  height: 12px;
   margin: auto 5px auto auto;
-  width: 20px;
+  width: 12px;
   background-color: rgb(255, 255, 255);
   -webkit-mask:  url("../../assets/img/svg/subscribe.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/subscribe.svg") no-repeat 50% 50%;
@@ -345,7 +370,7 @@
   .panel-controller {
     /* border-bottom: 1px solid #dadada; 
     background-color: #f1f9fe;*/
-    background: #f9f9f9;
+    //background: #f9f9f9;
     padding: 5px;
     width: 100%;
     box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
@@ -364,13 +389,13 @@
     margin: auto auto;
   }
 
-  .panel-controller .middle-container .controller-category {
+  .controller-category {
     color:#192c50;
     display: flex;
     height: 100%;
     padding-top:5px;
     padding-bottom:5px;
-    font-size:16px;
+    font-size: 12px;
     justify-content: center;
     align-content: center;
     text-align: center;
@@ -387,7 +412,7 @@
     text-shadow: -0.02ex 0 rgb(255, 255, 255), 0.02ex 0 rgb(255, 255, 255);
   }
 
-  .panel-controller .middle-container > .controller-category:hover {
+  .controller-category:hover {
     transition:color 200ms;
     transition:text-shadow 200ms;
     color: rgb(32,56,100);
@@ -579,7 +604,7 @@
   }
   
   .albums-filter {    
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 10px;
@@ -655,7 +680,8 @@
 
 
   .bd-container {
-    width:80%;
+    width:90%;
+    max-width: 1650px;
     margin-left:auto;
     margin-right:auto;
   }
@@ -709,7 +735,7 @@
   }
   .title span {
     color:#192c50;
-    font-size:25px;
+    font-size: 20px;
     font-weight: bold;
     margin-left:10px;
     margin-right:10px;
@@ -771,7 +797,7 @@
 }
 
 .mat-menu-item .item-icon {
-  font-size:22px !important;
+  font-size:14px !important;
   color:rgb(32,56,100) !important;
   margin:auto 10px auto 5px;
   height:unset !important;
@@ -785,12 +811,12 @@
 
 
 .artwork-type-title {
-  font-size:22px;
-  color:rgb(32,56,100);
-  font-weight:bold;
-  margin-left:40px;
-  margin-top:20px;
-  margin-bottom:15px;
+  font-size: 16px;
+  color: #203864;
+  font-weight: bold;
+  margin-left: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 
@@ -814,13 +840,13 @@ mat-spinner {
 
    
 .see-more {
-  display:flex;
-  width:100%;
-  height:40px;
-  border-bottom:4px solid rgb(77, 105, 158);
-  text-align:center;
-  margin:10px 0px 10px 0px;
-  cursor:pointer;
+  display: flex;
+  width: 90%;
+  height: 40px;
+  border-bottom: 4px solid rgb(230 230 230);
+  text-align: center;
+  margin: 10px auto 10px auto;
+  cursor: pointer;
   transition:background-color 200ms;
   }
 
@@ -835,7 +861,7 @@ mat-spinner {
   margin:auto auto;
   mask-image: url("../../assets/img/svg/see-more.svg");
   -webkit-mask-image: url("../../assets/img/svg/see-more.svg");
-  background-color: rgb(116, 116, 116);
+  background-color: #203864;
   }
 
   .see-more:hover .icon {
@@ -844,9 +870,8 @@ mat-spinner {
 
 
 .drawing-container {
+  margin:20px 0px 20px 0px;
   width:80%;
-  margin-left:auto;
-  margin-right:auto;
 }
 
 
@@ -864,9 +889,7 @@ mat-spinner {
   flex-wrap: nowrap;
 }
 
-.new-artwork {
-  width: fit-content;
-}
+
 
 .container-comics {
   display:flex;
@@ -882,8 +905,11 @@ mat-spinner {
 }
 
 ::ng-deep .newDrawings .drawing-container {
-  height:300px !important;
+  
+  height:200px !important;
 }
+
+
 
 
 /*

@@ -25,7 +25,7 @@
         </div>
 
 
-        <form [formGroup]="fw" novalidate>
+        <form [formGroup]="fw" novalidate  [ngClass]="{'invisible':!user_retrieved}">
 
             <div class="form-container">
                 <div class="form-container-name">
@@ -134,7 +134,8 @@
                 </div>
 
                 
-                <div class="form-item">
+                <div class="form-item" *ngIf="type_of_account=='Artistes' || type_of_account=='Artistes professionnels'
+                || type_of_account=='Artiste professionnelle' || type_of_account=='Artiste professionnel' || type_of_account=='Artiste'" >
                     <div class="monetisation-container">
                         <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
                             Monétiser mon œuvre et autoriser l'apparition en tendances

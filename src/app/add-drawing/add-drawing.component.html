@@ -38,7 +38,7 @@
             </div>
 
 
-            <form [formGroup]="fd" novalidate>
+            <form [formGroup]="fd" novalidate  [ngClass]="{'invisible':!user_retrieved}">
 
                 <div class="form-container">
                     <div class="form-container-name">
@@ -131,7 +131,8 @@
                         </mat-form-field>
                     </div>
                     
-                    <div class="form-item height-unset" *ngIf="fd.value.fdFormat=='Artbook'" [@enterAnimation]>
+                    <div class="form-item height-unset" *ngIf=" fd.value.fdFormat=='Artbook' && (type_of_account=='Artistes' || type_of_account=='Artistes professionnels'
+                    || type_of_account=='Artiste professionnelle' || type_of_account=='Artiste professionnel' || type_of_account=='Artiste')" [@enterAnimation]>
                         <div class="monetisation-container">
                             <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
                                 Monétiser mon œuvre et autoriser l'apparition en tendances
@@ -149,8 +150,8 @@
                 </div>
                 
 
-                <button #nextButton mat-raised-button class="submit-button style1" (click)="validate_form_drawings();">
-                    <span>Suivant</span>
+                <button mat-raised-button class="submit-button style1" (click)="validate_form_drawings();">
+                    <span>Valider</span>
                 </button>
 
             </form>

@@ -22,6 +22,7 @@ import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 
 declare var Swiper: any;
 declare var $: any;
@@ -61,6 +62,9 @@ export class ArtworkWritingComponent implements OnInit {
     private NotationService:NotationService,
     private Emphasize_service:Emphasize_service,
     ) { 
+      this.router.routeReuseStrategy.shouldReuseRoute = function() {
+        return false;
+      };
       this.AuthenticationService.currentUserType.subscribe(r=>{
         console.log(r);
         if(r!=''){
@@ -70,7 +74,6 @@ export class ArtworkWritingComponent implements OnInit {
             this.display_right_container=true;
           }
         }
-        
       })
     this.fullscreen_mode = false;
     this.navbar.setActiveSection(0);
@@ -92,6 +95,7 @@ export class ArtworkWritingComponent implements OnInit {
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
 
+  thumbnail_picture_retrieved=false;
   //display component
   display_right_container=false;
   pp_loaded=false;
@@ -138,7 +142,7 @@ export class ArtworkWritingComponent implements OnInit {
   zoom: number = 1.0;
 
   writing_id:number;
-  viewnumber:number;
+  viewsnumber:number;
   commentariesnumber:number;
   highlight:string;
   title:string;
@@ -151,8 +155,8 @@ export class ArtworkWritingComponent implements OnInit {
   user_name:string;
   primary_description:string;
   profile_picture:SafeUrl;
-  lovesnumber:string;
-  likesnumber:string;
+  lovesnumber:number;
+  likesnumber:number;
   thumbnail_picture:string;
 
   date_upload_to_show:string;
@@ -218,9 +222,12 @@ export class ArtworkWritingComponent implements OnInit {
     }
 
     this.Writing_Upload_Service.retrieve_writing_information_by_id(this.writing_id).subscribe(r => {
-      if(!r[0] || r[0].status=="deleted"){
-        this.router.navigateByUrl("/page_not_found");
-        return;
+      if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended"){
+        if(r[0] && r[0].status=="deleted"){
+          return this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
+            return this.router.navigateByUrl("/page_not_found");
+          });
+        }
       }
       else{
         let title =this.activatedRoute.snapshot.paramMap.get('title');
@@ -242,9 +249,7 @@ export class ArtworkWritingComponent implements OnInit {
               }
             }
           });
-    
-          this.viewnumber = r[0].viewnumber;
-          this.commentariesnumber = r[0].commentarynumbers;
+          this.list_of_reporters=r[0].list_of_reporters;
           this.highlight=r[0].highlight;
           this.title=r[0].title;
           this.style=r[0].category;
@@ -256,7 +261,7 @@ export class ArtworkWritingComponent implements OnInit {
           this.status=r[0].status;
           this.thumbnail_picture=r[0].name_coverpage ;
           this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
-    
+          this.thumbnail_picture_retrieved=true;
           this.Community_recommendation.get_comics_recommendations_by_author(r[0].authorid,0).subscribe(e=>{
             if(e[0].list_to_send.length>0){
               this.list_of_author_recommendations_comics=e[0].list_to_send;
@@ -299,7 +304,7 @@ export class ArtworkWritingComponent implements OnInit {
           
           this.Profile_Edition_Service.get_current_user().subscribe(l=>{
             this.visitor_id=l[0].id;
-            this.visitor_name=l[0].firstname + ' ' + l[0].lastname;
+            this.visitor_name=l[0].nickname;
             if (this.authorid == l[0].id){
               this.mode_visiteur = false;
               this.mode_visiteur_added = true;
@@ -318,20 +323,31 @@ export class ArtworkWritingComponent implements OnInit {
                 }
               });         
             }  
-            if(!this.mode_visiteur){
-              this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,title,"clicked").subscribe(p=>{
-                if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
-                }
-              })
-            }
-            else{
-              this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag).subscribe();
-            }this.check_archive();
+
+            
+              if(!this.mode_visiteur){
+                this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,title,"clicked").subscribe(p=>{
+                  if(!p[0].value){
+                    this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,null,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, l[0].status).subscribe();
+                  }
+                })
+              }
+              else{
+                this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,null,"clicked",0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, l[0].status).subscribe();
+              }
+
+            
+            
+            this.check_archive();
           });
-          
-          this.NotationService.get_loves('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
-            let list_of_loves= r[0];
+
+          this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).subscribe(r=>{
+            //views and comments
+            this.commentariesnumber=r[0].list_of_comments.length;
+            this.viewsnumber= r[0].list_of_views.length;
+            //loves
+            let list_of_loves= r[0].list_of_loves;
+            this.lovesnumber=list_of_loves.length;
             if (list_of_loves.length != 0){
               this.Profile_Edition_Service.get_current_user().subscribe(l=>{
                 for (let i=0;i<list_of_loves.length;i++){
@@ -346,9 +362,10 @@ export class ArtworkWritingComponent implements OnInit {
             else{
               this.list_of_users_ids_loves_retrieved=true;
             }
-          });
-          this.NotationService.get_likes('writing',  "unknown", r[0].category, this.writing_id,0).subscribe(r=>{
-            let list_of_likes= r[0];
+    
+            //likes
+            let list_of_likes= r[0].list_of_likes;
+            this.likesnumber=list_of_likes.length;
             if (list_of_likes.length != 0){
               this.Profile_Edition_Service.get_current_user().subscribe(l=>{
                 for (let i=0;i<list_of_likes.length;i++){
@@ -363,7 +380,7 @@ export class ArtworkWritingComponent implements OnInit {
             else{
               this.list_of_users_ids_likes_retrieved=true;
             }
-          });
+          })
           
     
           this.Writing_Upload_Service.retrieve_writing_by_name(file_name).subscribe(r=>{
@@ -451,7 +468,9 @@ export class ArtworkWritingComponent implements OnInit {
         if(list_of_first_propositions.length>0){
           for(let i=0;i<list_of_first_propositions.length;i++){
               this.Writing_Upload_Service.retrieve_writing_information_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
-                this.list_of_recommendations_by_tag[i]=comic[0];
+                if(comic[0].status=="public"){
+                  this.list_of_recommendations_by_tag.push(comic[0]);
+                }
                 compteur_propositions++;
                 if(compteur_propositions==list_of_first_propositions.length){
                   console.log(this.list_of_recommendations_by_tag);
@@ -520,7 +539,7 @@ export class ArtworkWritingComponent implements OnInit {
     
     let THIS = this;
 
-    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
+    this.swiper = new Swiper('.swiper-container.artwork', {
       speed: 500,
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -649,8 +668,9 @@ export class ArtworkWritingComponent implements OnInit {
         this.like_in_progress=true;
         if(this.liked) {        
             this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
-                
-              this.likesnumber=r[0].likesnumber;
+              let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
+              this.list_of_users_ids_likes.splice(index,1);
+              this.likesnumber-=1;
               if(this.authorid==this.visitor_id){
                 this.liked=false;
                 this.like_in_progress=false;
@@ -685,8 +705,8 @@ export class ArtworkWritingComponent implements OnInit {
         else {
           
             this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-                
-              this.likesnumber=r[0].likesnumber;
+              this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
+              this.likesnumber+=1;
               if(this.authorid==this.visitor_id){
                 this.liked=true;
                 this.like_in_progress=false;
@@ -733,10 +753,10 @@ export class ArtworkWritingComponent implements OnInit {
       if(this.list_of_users_ids_loves_retrieved){
         this.love_in_progress=true;
         if(this.loved) {      
-            this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
-              
-
-              this.lovesnumber=r[0].lovesnumber;
+            this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{        
+              let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
+              this.list_of_users_ids_loves.splice(index,1);
+              this.lovesnumber-=1;
               if(this.authorid==this.visitor_id){
                 this.loved=false;
                 this.love_in_progress=false;
@@ -771,8 +791,8 @@ export class ArtworkWritingComponent implements OnInit {
         }
         else {      
             this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              this.lovesnumber=r[0].lovesnumber;
-                            
+              this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
+              this.lovesnumber+=1;     
               if(this.authorid==this.visitor_id){
                 this.loved=true;
                 this.love_in_progress=false; 
@@ -896,6 +916,20 @@ export class ArtworkWritingComponent implements OnInit {
     
   }
 
+  list_of_reporters:any;
+  cancel_report(){
+
+    let id=this.writing_id
+    this.Reports_service.cancel_report("writing",id,this.writing_id).subscribe(r=>{
+      console.log(r)
+      if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
+        let i=this.list_of_reporters.indexOf(this.visitor_id)
+        this.list_of_reporters.splice(i,1)
+        this.cd.detectChanges()
+      }
+    })
+  }
+
   emphasize(){
     this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id,0).subscribe(r=>{
       this.content_emphasized=true;
@@ -998,6 +1032,8 @@ pdf_is_loaded(){
   //visible : true ou privé : false
  
   edit_information() {
+    
+    
     const dialogRef = this.dialog.open(PopupFormWritingComponent, {
       data: { 
       writing_id: this.writing_id, 
@@ -1015,8 +1051,9 @@ pdf_is_loaded(){
   }
 
   edit_thumbnail() {
-    const dialogRef = this.dialog.open(PopupEditCoverWritingComponent, {
-      data: {type:"edit_comic_thumbnail",
+
+    const dialogRef = this.dialog.open(PopupEditCoverComponent, {
+      data: {
       writing_id: this.writing_id,
       title: this.title,
       style:this.style, 
@@ -1024,9 +1061,11 @@ pdf_is_loaded(){
       author_name: this.user_name,
       primary_description: this.primary_description, 
       profile_picture: this.profile_picture,
-      thumbnail_picture:this.thumbnail_picture
+      thumbnail_picture:this.thumbnail_picture,
+      category:"writing"
     },
-    });
+    }); 
+
   }
 
   

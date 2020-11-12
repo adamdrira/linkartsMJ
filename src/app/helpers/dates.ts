@@ -3,50 +3,50 @@ export function get_date_to_show(s: number) {
     
     if( s < 3600 ) {
         if( Math.trunc(s/60)==1 ) {
-          return "Publié il y a 1 minute";
+          return "Il y a 1 minute";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/60) + " minutes";
+          return "Il y a " + Math.trunc(s/60) + " minutes";
         }
       }
       else if( s < 86400 ) {
         if( Math.trunc(s/3600)==1 ) {
-          return "Publié il y a 1 heure";
+          return "Il y a 1 heure";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/3600) + " heures";
+          return "Il y a " + Math.trunc(s/3600) + " heures";
         }
       }
       else if( s < 604800 ) {
         if( Math.trunc(s/86400)==1 ) {
-          return "Publié il y a 1 jour";
+          return "Il y a 1 jour";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/86400) + " jours";
+          return "Il y a " + Math.trunc(s/86400) + " jours";
         }
       }
       else if ( s < 2629746 ) {
         if( Math.trunc(s/604800)==1 ) {
-          return "Publié il y a 1 semaine";
+          return "Il y a 1 semaine";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/604800) + " semaines";
+          return "Il y a " + Math.trunc(s/604800) + " semaines";
         }
       }
       else if ( s < 31556952  ) {
         if( Math.trunc(s/2629746)==1 ) {
-          return "Publié il y a 1 mois";
+          return "Il y a 1 mois";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/2629746) + " mois";
+          return "Il y a " + Math.trunc(s/2629746) + " mois";
         }
       }
       else {
         if( Math.trunc(s/31556952)==1 ) {
-          return "Publié il y a 1 an";
+          return "Il y a 1 an";
         }
         else {
-          return "Publié il y a " + Math.trunc(s/31556952) + " ans";
+          return "Il y a " + Math.trunc(s/31556952) + " ans";
         }
       }
 
@@ -100,6 +100,59 @@ export function get_date_to_show_chat(s: number) {
       }
       else {
         return Math.trunc(s/31556952) + " ans";
+      }
+    }
+
+}
+
+export function get_date_to_show_navbar(s: number) {
+    
+  if( s < 3600 ) {
+      if( Math.trunc(s/60)==1 ) {
+        return "Il y 1 minute";
+      }
+      else {
+        return "Il y a " + Math.trunc(s/60) + " minutes";
+      }
+    }
+    else if( s < 86400 ) {
+      if( Math.trunc(s/3600)==1 ) {
+        return "Il y 1 heure";
+      }
+      else {
+        return "Il y a " +  Math.trunc(s/3600) + " heures";
+      }
+    }
+    else if( s < 604800 ) {
+      if( Math.trunc(s/86400)==1 ) {
+        return "Il y a 1 jour";
+      }
+      else {
+        return "Il y a " +  Math.trunc(s/86400) + " jours";
+      }
+    }
+    else if ( s < 2629746 ) {
+      if( Math.trunc(s/604800)==1 ) {
+        return "Il y a 1 semaine";
+      }
+      else {
+        return "Il y a " + Math.trunc(s/604800) + " semaines";
+      }
+    }
+    else if ( s < 31556952 ) {
+      if( Math.trunc(s/2629746)==1 ) {
+        return "Il y a 1 mois";
+      }
+      else {
+        return "Il y a " + Math.trunc(s/2629746) + " mois";
+      }
+    }
+    else {
+      if( Math.trunc(s/31556952)==1 ) {
+        return "Il y a 1 an";
+      }
+      else {
+        return "Il y a " + Math.trunc(s/31556952) + " ans";
       }
     }
 
@@ -172,6 +225,14 @@ export function date_in_seconds(now: number, date_upload:string){
     return ( now - uploaded_date_in_second );
   }
     
+}
+
+export function convert_timestamp_to_number(timestamp){
+  var uploaded_date = timestamp.substring(0,timestamp.length- 5);
+  uploaded_date=uploaded_date.replace("T",' ');
+  uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
+  let number = new Date(uploaded_date + ' GMT').getTime()/1000;
+  return number;
 }
 
 

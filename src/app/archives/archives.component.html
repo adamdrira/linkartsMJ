@@ -201,7 +201,7 @@
             <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" class="thumbnail-story" [ngClass]="{'invisible':!list_display_stories[i] }">
                 <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)">
                 <div class="story-bottom-container">
-                    <span>{{item.createdAt | date}}</span>
+                    <span>Le {{get_date(item.createdAt)}}</span>
                 </div>
 
 

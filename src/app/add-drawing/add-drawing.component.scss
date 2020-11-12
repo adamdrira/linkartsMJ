@@ -44,6 +44,9 @@
     z-index:100000;
 }*/
 
+.invisible{
+    visibility:hidden;
+}
 
 ::ng-deep {
     .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {

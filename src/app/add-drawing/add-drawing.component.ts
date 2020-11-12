@@ -8,7 +8,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
-
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { pattern } from '../helpers/patterns';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
@@ -47,6 +47,7 @@ export class AddDrawingComponent implements OnInit {
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     private viewref: ViewContainerRef,
+    private Profile_Edition_Service:Profile_Edition_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
@@ -63,8 +64,6 @@ export class AddDrawingComponent implements OnInit {
   }
 
   
-  @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
-
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -78,10 +77,14 @@ export class AddDrawingComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
-
-
+  type_of_account:string;
+  user_retrieved=false;
   ngOnInit() {
 
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      this.type_of_account=r[0].type_of_account;
+      this.user_retrieved=true;
+    })
     this.createFormControlsDrawings();
     this.createFormDrawings();
 
@@ -178,7 +181,6 @@ export class AddDrawingComponent implements OnInit {
 
   validate_form_drawings() {
 
-    this.nextButton.nativeElement.disabled = true;
 
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
@@ -186,8 +188,6 @@ export class AddDrawingComponent implements OnInit {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
         .subscribe(inf=>{
           this.CURRENT_step++;
-
-          this.nextButton.nativeElement.disabled = false;
 
           this.cd.detectChanges();
           window.scroll(0,0);
@@ -199,8 +199,6 @@ export class AddDrawingComponent implements OnInit {
             this.CURRENT_step++;
             this.REAL_step++;
   
-            this.nextButton.nativeElement.disabled = false;
-
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -216,8 +214,6 @@ export class AddDrawingComponent implements OnInit {
           .subscribe(inf=>{
             this.CURRENT_step++;
 
-            this.nextButton.nativeElement.disabled = false;
-
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -229,8 +225,6 @@ export class AddDrawingComponent implements OnInit {
               this.CURRENT_step++;
               this.REAL_step++;
   
-              this.nextButton.nativeElement.disabled = false;
-
               this.cd.detectChanges();
               window.scroll(0,0);
             });
@@ -242,11 +236,18 @@ export class AddDrawingComponent implements OnInit {
     }
 
     else {
-      this.nextButton.nativeElement.disabled = false;
+      if(this.fd.controls.fdTags.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdDescription.status=='VALID' && this.fd.controls.fdCategory.status=='VALID' &&  this.fd.controls.fdFormat.status=='VALID'){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        });
+      }
+
       
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-      });
     }
 
   }

@@ -11,22 +11,8 @@
         <!--Left container : TOP CONTAINER (CONTROL BAR) and CONTENT-CONTAINER (CONTENTS)-->
         <!--------------------------------------------------------------------------------->
         <!--------------------------------------------------------------------------------->
-        <div id="left-container" *ngIf="attachments_retrieved" >
+        <div id="left-container" *ngIf="attachments_retrieved">
 
-
-                
-
-                <!--
-                    ----------images
-                    ----------type de projet
-                    ----------rémunération
-                    ----------description
-                    ----------localisation
-                    ----------cibles
-                    ----------fichiers
-                    ----------ajout de réponse
-                    si propriétaire : voir les réponses
-                -->
 
 
             <div class="first-div">
@@ -36,7 +22,7 @@
                     <div class="project-title">
                         {{item.title}}
                     </div>
-                    <button mat-raised-button class="submit-button style0" *ngIf="visitor_mode" (click)="respond();">
+                    <button mat-raised-button class="submit-button style0" *ngIf="visitor_mode && type_of_account=='account'" (click)="respond();">
                         <mat-icon>post_add</mat-icon>
                         <span>Répondre à l'offre</span>
                     </button>
@@ -127,13 +113,21 @@
 
                     <div class="horizontal-line"></div>
                     <div class="project-cibles">
+                        <ng-container >
+                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
+                                <mat-icon>how_to_reg</mat-icon>
+                                Auteur
+                            </div>
+                            <div>
+                                <span>{{item.my_description}}</span>
+                            </div>
+                        </ng-container>
                         <ng-container *ngIf="item.target_two == null">
                             <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
                                 <mat-icon>how_to_reg</mat-icon>
                                 Cible
                             </div>
                             <div>
-                                <mat-icon>person</mat-icon>
                                 <span>{{item.target_one}}</span>
                             </div>
                         </ng-container>
@@ -344,7 +338,7 @@
         <!---------------RIGHT CONTAINER -------------------------------------------------->
         <!--------------------------------------------------------------------------------->
         <!--------------------------------------------------------------------------------->
-        <div #myScrollContainer id="right-container" *ngIf="attachments_retrieved" >
+        <div #myScrollContainer id="right-container" *ngIf="attachments_retrieved && archive_retrieved" >
             
 
 
@@ -354,9 +348,13 @@
                 <mat-icon class="optionsButton">more_vert</mat-icon>
             </button>
             <mat-menu #options="matMenu">
-                <button mat-menu-item (click)="report()" >
-                    <mat-icon>report_problem</mat-icon>
+                <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
                     <span>Signaler</span>
+                </button>
+                <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Annuler le signalement</span>
                 </button>
                 <button mat-menu-item (click)="archive()" *ngIf="!ad_archived">
                     <mat-icon>cloud_download</mat-icon>
@@ -366,6 +364,7 @@
                     <mat-icon>cloud_download</mat-icon>
                     <span>Désarchiver</span>
                 </button>
+                
             </mat-menu>
 
 
@@ -375,8 +374,12 @@
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="delete()">
-                <mat-icon>cloud_download</mat-icon>
-                <span>Supprimer</span>
+                    <mat-icon>cloud_download</mat-icon>
+                    <span>Supprimer</span>
+                </button>
+                <button  mat-menu-item (click)="edit_thumbnail()" >
+                    <mat-icon>cloud_download</mat-icon>
+                    <span>Editer la miniature</span>
                 </button>
             </mat-menu>
 

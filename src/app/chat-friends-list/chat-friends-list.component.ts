@@ -34,6 +34,8 @@ export class ChatFriendsListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private AuthenticationService:AuthenticationService,
     ){
+      this.navbar.set_using_chat();
+      
       this.navbar.show();
       
   }
@@ -149,6 +151,8 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_users_blocked=[];
   list_of_users_blocked_retrieved=false;
 
+
+
   @HostListener('window:focus', ['$event'])
   onFocus(event: any): void {
     console.log("change focus")
@@ -175,7 +179,6 @@ export class ChatFriendsListComponent implements OnInit {
   ngOnInit() {
     
     this.active_section = this.route.snapshot.data['section'];
-    
     if(this.active_section==2){
       let pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
       this.active_section_user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -207,7 +210,7 @@ export class ChatFriendsListComponent implements OnInit {
       console.log(name);
       console.log(this.active_section_user_id)
     }
-    
+
     this.Profile_Edition_Service.get_list_of_users_blocked().subscribe(r=>{
       if(!r[0].nothing){
         this.list_of_users_blocked=r[0];
@@ -260,15 +263,18 @@ export class ChatFriendsListComponent implements OnInit {
       if(this.list_of_friends_retrieved){
         this.get_connections_status();
       }
-    }, 10000);
+    }, 60000);
     
 
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+     
       this.current_user=l[0].id;
       this.current_user_pseudo=l[0].nickname;
       this.current_user_name=l[0].firstname + ' ' + l[0].lastname;
+      
       this.Profile_Edition_Service.retrieve_profile_picture(  this.current_user ).subscribe(r=> {
+        
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
@@ -302,7 +308,6 @@ export class ChatFriendsListComponent implements OnInit {
 
  
   sort_friends_list() {
-    console.log("first sort friends list")
     this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
       if(r[0].length>0){
         let compt=0;
@@ -630,7 +635,8 @@ export class ChatFriendsListComponent implements OnInit {
     console.log("emetteur sort spams list")
     this.chatService.get_number_of_unseen_messages_spams().subscribe(m=>{
       console.log(m);
-      if(m[0].number_of_unseen_messages){
+      console.log(m[0].number_of_unseen_messages)
+      if(m[0].number_of_unseen_messages>=0){
         this.number_of_unseen_messages=m[0].number_of_unseen_messages;
       }
       console.log( this.number_of_unseen_messages)
@@ -1102,13 +1108,14 @@ change_message_status(event){
             data: {showChoice:false, text:"Le groupe ne peut contenir plus de 10 utilisateurs."},
           });
           this.selected_list_of_new_friends_names=[];
+          
           this.selected_list_of_new_friends_ids=[];
         }
         else if(r[0]){
           let group_name=r[0].name;
           if(r[0]){
             let message_one ={
-              id_user_name:this.current_user_name,
+              id_user_name:this.current_user_pseudo,
               id_user:this.current_user,   
               id_receiver:this.id_group_where_friends_are_added,  
               message:"New_friend_in_the_group",
@@ -1261,7 +1268,7 @@ change_message_status(event){
 
   add_friend_to_group(i){
     console.log(this.list_of_new_friends_ids[i])
-    this.selected_list_of_new_friends_names.push(this.list_of_new_friends_names[i])
+    this.selected_list_of_new_friends_names.push(this.list_of_new_friends_pseudos[i])
     this.selected_list_of_new_friends_ids.push(this.list_of_new_friends_ids[i])
     console.log(this.selected_list_of_new_friends_ids)
   }
@@ -1271,6 +1278,8 @@ change_message_status(event){
     let index=this.selected_list_of_new_friends_ids.indexOf(this.list_of_new_friends_ids[i])
     this.selected_list_of_new_friends_ids.splice(index,1)
     this.selected_list_of_new_friends_names.splice(index,1)
+    this.list_of_new_friends_pseudos.splice(index,1)
+    
     console.log(this.selected_list_of_new_friends_ids)
   }
 /**************************************************SEARCHBAR ************************* */
@@ -2315,7 +2324,7 @@ group_chat_creation_done(){
     this.get_propositions=false;
     console.log(r[0]);
     let message_one ={
-      id_user_name:this.current_user_name,
+      id_user_name:this.current_user_pseudo,
       id_user:this.current_user,   
       id_receiver:r[0].id,  
       message:"New",

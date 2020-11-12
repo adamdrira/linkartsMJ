@@ -21,6 +21,7 @@ import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 declare var $: any
 declare var Swiper: any
 
@@ -46,7 +47,11 @@ export class AdPageComponent implements OnInit {
 
     private cd:ChangeDetectorRef,
     ) { 
-    
+      
+      this.router.routeReuseStrategy.shouldReuseRoute = function() {
+        return false;
+      };
+  
       this.AuthenticationService.currentUserType.subscribe(r=>{
         console.log(r);
         if(r!=''){
@@ -128,7 +133,10 @@ export class AdPageComponent implements OnInit {
 
   ad_archived=false;
   archive_retrieved=false;
-  
+  list_of_reporters=[];
+
+  type_of_profile='';
+  type_of_profile_retrieved=false;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   number_of_comments_to_show=10;
   /******************************************************* */
@@ -160,14 +168,23 @@ export class AdPageComponent implements OnInit {
     this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.activatedRoute.snapshot.paramMap.get('title');
 
+    
+
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
       console.log(m[0]);
       console.log(title)
-      if(!m[0] || title!=m[0].title || m[0].status=="deleted"){
-        this.router.navigateByUrl("/page_not_found");
+      this.item=m[0];
+      this.list_of_reporters=this.item.list_of_reporters
+      if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
+        if(m[0] && m[0].status=="deleted"){
+          return this.navbar.delete_research_from_navbar("Ad",m[0].type_of_project,this.ad_id).subscribe(r=>{
+            return this.router.navigateByUrl("/page_not_found");
+          });
+        }
+        
         
       }
-      this.item=m[0];
+      
       this.commentariesnumber=m[0].commentariesnumber;
       
       this.navbar.get_number_of_clicked("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
@@ -190,18 +207,22 @@ export class AdPageComponent implements OnInit {
           else{
             this.visitor_mode_added = true;
           }
-          if(!this.visitor_mode){
-            this.navbar.check_if_research_exists("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked").subscribe(p=>{
-              if(!p[0].value){
-                this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two).subscribe(l=>{
-                });
-              }
-            })
-          }
-          else{
-            this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two).subscribe(l=>{
-            });
-          }
+         
+            if(!this.visitor_mode){
+              this.navbar.check_if_research_exists("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked").subscribe(p=>{
+                if(!p[0].value){
+                  this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,null,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two,"account").subscribe(l=>{
+                  });
+                }
+              })
+            }
+            else{
+              
+              this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,null,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two,r[0].status).subscribe(l=>{
+              });
+            }
+            
+          
         }); 
       });
   
@@ -248,7 +269,7 @@ export class AdPageComponent implements OnInit {
 
       })
 
-      this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,"none","none","pertinence").subscribe(l=>{
+      this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
         console.log(l[0])
         if(l[0].length>0){
           for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
@@ -258,8 +279,8 @@ export class AdPageComponent implements OnInit {
           }
           this.list_of_other_ads_retrieved=true;
         }
-        if(l[0].length==0 || this.list_of_other_ads.length==0){
-          this.Ads_service.get_sorted_ads(this.item.remuneration,"none","none","none","pertinence").subscribe(l=>{
+        if(l[0].length==0 || this.list_of_other_ads.length==0) {
+          this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,"none","pertinence").subscribe(l=>{
             console.log(l[0])
             if(l[0].length>0){
               for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
@@ -269,11 +290,104 @@ export class AdPageComponent implements OnInit {
               }
               this.list_of_other_ads_retrieved=true;
             }
-            else{
-              
-              this.list_of_other_ads_retrieved=true;
-              this.display_author_ads=true;
-              this.display_other_ads=true;
+            if(l[0].length==0 || this.list_of_other_ads.length==0){
+              this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,"none",this.item.target_one,"pertinence").subscribe(l=>{
+                console.log(l[0])
+                if(l[0].length>0){
+                  for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                    if(l[0][i].id!=this.item.id){
+                      this.list_of_other_ads.push(l[0][i])
+                    }
+                  }
+                  this.list_of_other_ads_retrieved=true;
+                }
+                if(l[0].length==0 || this.list_of_other_ads.length==0){
+                  this.Ads_service.get_sorted_ads(this.item.remuneration,"none",this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
+                    console.log(l[0])
+                    if(l[0].length>0){
+                      for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                        if(l[0][i].id!=this.item.id){
+                          this.list_of_other_ads.push(l[0][i])
+                        }
+                      }
+                      this.list_of_other_ads_retrieved=true;
+                    }
+                    if((l[0].length==0 || this.list_of_other_ads.length==0)){
+                      this.Ads_service.get_sorted_ads((this.item.remuneration)?false:true,this.item.type_of_project,this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
+                        console.log(l[0])
+                        if(l[0].length>0){
+                          for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                            if(l[0][i].id!=this.item.id){
+                              this.list_of_other_ads.push(l[0][i])
+                            }
+                          }
+                          this.list_of_other_ads_retrieved=true;
+                        }
+                        if(l[0].length==0 || this.list_of_other_ads.length==0){
+                          this.Ads_service.get_sorted_ads((this.item.remuneration)?false:true,"none",this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
+                            console.log(l[0])
+                            if(l[0].length>0){
+                              for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                                if(l[0][i].id!=this.item.id){
+                                  this.list_of_other_ads.push(l[0][i])
+                                }
+                              }
+                              this.list_of_other_ads_retrieved=true;
+                            }
+                            if((l[0].length==0 || this.list_of_other_ads.length==0) && this.item.target_two){
+                              this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,this.item.target_two,"pertinence").subscribe(l=>{
+                                console.log(l[0])
+                                if(l[0].length>0){
+                                  for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                                    if(l[0][i].id!=this.item.id){
+                                      this.list_of_other_ads.push(l[0][i])
+                                    }
+                                  }
+                                  this.list_of_other_ads_retrieved=true;
+                                }
+                                if(l[0].length==0 || this.list_of_other_ads.length==0) {
+                                  this.Ads_service.get_sorted_ads(this.item.remuneration,"none",this.item.my_description,this.item.target_two,"pertinence").subscribe(l=>{
+                                    console.log(l[0])
+                                    if(l[0].length>0){
+                                      for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+                                        if(l[0][i].id!=this.item.id){
+                                          this.list_of_other_ads.push(l[0][i])
+                                        }
+                                      }
+                                      this.list_of_other_ads_retrieved=true;
+                                    }
+                                    if(l[0].length==0 || this.list_of_other_ads.length==0){
+                                      
+                                      this.list_of_other_ads_retrieved=true;
+                                      this.display_author_ads=true;
+                                      this.display_other_ads=true;
+                                    }
+                                    console.log(this.list_of_other_ads)
+                                  })
+                                }
+                                console.log(this.list_of_other_ads)
+                              })
+                            }
+                            if((l[0].length==0 || this.list_of_other_ads.length==0) && !this.item.target_two){
+                                      
+                              this.list_of_other_ads_retrieved=true;
+                              this.display_author_ads=true;
+                              this.display_other_ads=true;
+                            }
+                            console.log(this.list_of_other_ads)
+                          })
+                        }
+                        console.log(this.list_of_other_ads)
+                      })
+                    }
+
+                    
+                   
+                    
+                  })
+                }
+                console.log(this.list_of_other_ads)
+              })
             }
             console.log(this.list_of_other_ads)
           })
@@ -1083,7 +1197,14 @@ export class AdPageComponent implements OnInit {
   }
 
 
+  edit_thumbnail(){
+    const dialogRef = this.dialog.open(PopupEditCoverComponent, {
+      data: {item:this.item,category:"ad"},
+    });
+  }
+
   report(){
+
     this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
       console.log(r[0])
       if(r[0].nothing){
@@ -1097,8 +1218,22 @@ export class AdPageComponent implements OnInit {
         });
       }
     })
-    
-  }
+  
+  
+}
+
+cancel_report(){
+
+
+  this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).subscribe(r=>{
+    console.log(r)
+    if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
+      let i=this.list_of_reporters.indexOf(this.visitor_id)
+      this.list_of_reporters.splice(i,1)
+      this.cd.detectChanges()
+    }
+  })
+}
 
 
   

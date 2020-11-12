@@ -63,7 +63,7 @@
                     </div>
                     
                                     
-                    <div #swiperContainer *ngIf="type=='artbook'" class="swiper-container swiper-artwork-drawing">
+                    <div #swiperContainer *ngIf="type=='artbook'" class="swiper-container">
                         <div #swiperWrapper class="swiper-wrapper">
                             <ng-container >
                                 <div #swiperSlide *ngFor="let item of list_drawing_pages; let i = index" class="swiper-slide">
@@ -87,8 +87,8 @@
                         <!-- Add Scrollbar -->
                         <div class="swiper-scrollbar"></div>
                         <!-- Add Arrows -->
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
+                        <div *ngIf="pagesnumber>1" class="swiper-button-prev"></div>
+                        <div  *ngIf="pagesnumber>1" class="swiper-button-next"></div>
                     </div>
                     <div *ngIf="type=='one-shot'" class="swiper-container">
                         <div  class="swiper-wrapper">
@@ -200,13 +200,13 @@
                 <!--******************-->
                 <div style="display:flex;flex-wrap: wrap;min-height: 550px;" class="container-drawings" [ngClass]="{'invisible': !list_of_recommendations_by_tag_retrieved }" *ngIf="  left_container_category_index==1">
                     <div *ngFor="let item of list_of_recommendations_by_tag; let i=index"  [ngClass]="{'invisible': !display_drawings_recommendations_others }">
-                        <app-thumbnail-drawing *ngIf="type=='artbook'"
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
                                 (sendLoaded)="sendLoadedDrawingOthers( $event );"
                                 [item]=item
                                 format='artbook'
                                 now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
-                        <app-thumbnail-drawing *ngIf="type=='one-shot'"
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 (sendLoaded)="sendLoadedDrawingOthers( $event );"
                                 [item]=item
                                 format='one-shot'
@@ -246,10 +246,6 @@
                     <mat-icon class="item-icon">edit</mat-icon>
                     <span>Modifier les informations</span>
                 </button>
-                <button class="mat-menu-item" mat-menu-item (click)="edit_thumbnail();"> 	
-                    <mat-icon class="item-icon">view_carousel</mat-icon>
-                    <span>Éditer la miniature</span>
-                </button>
                 <button *ngIf="!content_emphasized" class="mat-menu-item" mat-menu-item (click)="emphasize()"> 	
                     <mat-icon class="item-icon">trending_up</mat-icon>
                     <span>Mettre l'oeuvre en avant</span>
@@ -282,9 +278,13 @@
                 <mat-icon class="optionsButton">more_vert</mat-icon>
             </button>
             <mat-menu  #artworkOptions2="matMenu">
-                <button class="mat-menu-item" mat-menu-item (click)="report()"> 	
-                    <mat-icon class="item-icon">report_problem</mat-icon>
+                <button  *ngIf="mode_visiteur && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
                     <span>Signaler</span>
+                </button>
+                <button  *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                    <mat-icon class="item-icon">flag</mat-icon>
+                    <span>Annuler le signalement</span>
                 </button>
                 <button (click)="archive()" class="mat-menu-item" mat-menu-item *ngIf="!content_archived"> 	
                     <mat-icon class="item-icon">save_alt</mat-icon>
@@ -366,17 +366,17 @@
                 <div class="line3">
                     <div class="line-3-container">
                         <mat-icon class="eye-icon">visibility</mat-icon>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewnumber == 0">Aucune vue</span>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewnumber == 1">1 vue</span>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewnumber > 1">{{viewnumber}} vues</span>
+                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber == 0">Aucune vue</span>
+                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber == 1">1 vue</span>
+                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber > 1">{{viewsnumber}} vues</span>
                     </div>
                 </div>
                 <div class="line4">
                     <div class="line-4-container">
-                        <mat-icon class="comments-icon" (click)="scroll_to_comments();">comment</mat-icon>
-                        <span (click)="scroll_to_comments();" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 0">Aucun commentaire</span>
-                        <span (click)="scroll_to_comments();" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 1">{{commentariesnumber}} commentaire</span>
-                        <span (click)="scroll_to_comments();" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber > 1">{{commentariesnumber}} commentaires</span>
+                        <mat-icon class="comments-icon"  (click)="open_category(1);">comment</mat-icon>
+                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 0">Aucun commentaire</span>
+                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 1">{{commentariesnumber}} commentaire</span>
+                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber > 1">{{commentariesnumber}} commentaires</span>
                     </div>
                 </div>
 

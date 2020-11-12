@@ -68,7 +68,7 @@ export class AddAdComponent implements OnInit {
   
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
-
+  for_edition=false;
 
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
@@ -165,7 +165,8 @@ export class AddAdComponent implements OnInit {
       this.chatService.messages.next(message_to_send);
       //this.display_loading=false;
       this.can_delete = false;
-      window.location.href = `/account/${this.pseudo}/${this.id}`;
+      this.router.navigate([`/account/${this.pseudo}/${this.id}`]);
+      //window.location.href = `/account/${this.pseudo}/${this.id}`;
       
     }) 
     
@@ -227,9 +228,17 @@ export class AddAdComponent implements OnInit {
 
 
     else if(!this.fd.valid){
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-      });
+      if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides.'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        });
+      }
+
       this.validateButton.nativeElement.disabled = false;
     }
     else {

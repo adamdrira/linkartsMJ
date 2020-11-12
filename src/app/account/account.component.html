@@ -9,7 +9,7 @@
 
             <button mat-raised-button *ngIf="!mode_visiteur && showEditCoverPic" class="change-cover-picture style0" (click)="change_cover_picture();">
                 <div class="cover-picture-icon"></div>
-                <span>Changer de photo de couverture</span>
+                <span>Changer ma photo de couverture</span>
             </button>
 
             <div #profileHovered class="profile">
@@ -18,10 +18,6 @@
 
                     <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
 
-                    <!--<div *ngIf="!mode_visiteur" class="change-profile-picture" (click)="change_profile_picture();">
-                        <div class="picture-icon"></div>
-                        <span>Changer de photo de profil</span>
-                    </div>-->
 
                     <button mat-raised-button *ngIf="!mode_visiteur" class="change-profile-picture style0" (click)="change_profile_picture();">
                         <div class="picture-icon"></div>
@@ -37,16 +33,16 @@
                
                 
 
-                <div *ngIf="mode_visiteur_added" class="profile-information">
+                <div *ngIf="mode_visiteur_added " class="profile-information">
                     <div class="profile-name">
                         <span style="width:85%;margin-right:5px">{{author_name}}</span>
-                        <button *ngIf="user_blocked_retrieved" mat-icon-button  tabIndex="-1" [matMenuTriggerFor]="options">
-                            <mat-icon class="optionsButton" style="color: white;width: 30p;font-size: 24px;margin: auto;">more_vert</mat-icon>
+                        <button *ngIf="user_blocked_retrieved && !profile_not_found && type_of_profile=='account'" mat-icon-button  tabIndex="-1" [matMenuTriggerFor]="options">
+                            <mat-icon class="optionsButton" style="color: white;width: 30p;    font-size: 18px;margin: auto;">more_vert</mat-icon>
                         </button>
-                        <mat-menu  #options="matMenu">
+                        <mat-menu  #options="matMenu" style="min-height:unset !important">
                             <button *ngIf="!user_blocked && !mode_visiteur"  class="mat-menu-item" (click)="change_profile_bio();">
                                 <mat-icon class="item-icon">edit</mat-icon>
-                                <span>Editer mon profil</span>
+                                <span>Editer</span>
                             </button>
 
                             <button *ngIf="!user_blocked && mode_visiteur" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)=block_user()> 	
@@ -73,22 +69,18 @@
                         <span> &nbsp; {{pseudo}}</span>
                     </div>
                     
-                    <div class="profile-text" *ngIf="occupation">	
-                        <mat-icon class="icon">work</mat-icon>
-                        <span> &nbsp; {{occupation}}</span>
-                    </div>
-                    
-                    <div class="profile-text" *ngIf="education">	
-                        <mat-icon class="icon">school</mat-icon>
-                        <span> &nbsp; {{education}}</span>
-                    </div>
 
                     <div class="profile-text" *ngIf="user_location">
                         <mat-icon class="icon"> location_on</mat-icon>
-                        <span> &nbsp; {{user_location}}</span>
+                        <span> &nbsp; {{user_location }}</span>
                     </div>
 
-                    <div *ngIf="mode_visiteur && type_of_profile_retrieved" class="visitor-buttons-container">
+                    <div class="profile-text" *ngIf="user_location">
+                        <mat-icon class="icon"> portrait</mat-icon>
+                        <span> &nbsp; {{type_of_account}}</span>
+                    </div>
+
+                    <div *ngIf="mode_visiteur && type_of_profile_retrieved && !profile_not_found" class="visitor-buttons-container">
                         <a href="chat/{{pseudo}}/{{user_id}}">
                             <button mat-raised-button  class="visitor-button style0">
                                 <div class="message-icon"></div>
@@ -117,66 +109,73 @@
         
 
         <div class="panel-controller" >
-            <div  class="middle-container" *ngIf="!user_blocked && user_blocked_retrieved">
+            <div  class="middle-container" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found">
 
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">home</mat-icon>
+                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">home</mat-icon>
                     Accueil
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">art_track</mat-icon>
-                    <ng-container *ngIf="!mode_visiteur">
+                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">palette</mat-icon>
                         Œuvres ({{number_of_artpieces}})
-                    </ng-container>
-                    <ng-container *ngIf="mode_visiteur">
-                        Œuvres ({{number_of_artpieces}})
-                    </ng-container>
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">announcement</mat-icon>
+                <button mat-raised-button  class="controller-category" [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">announcement</mat-icon>
                     Annonces ({{list_of_ads.length}})
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 3 }" (click)="see_subscribers();">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">group</mat-icon>
+                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 3 }" (click)="see_subscribers();">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">group</mat-icon>
                     Abonnés ({{subscribed_users_list.length}})
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribings();">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">subscriptions</mat-icon>
+                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribings();">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">subscriptions</mat-icon>
                     Abonnements ({{users_subscribed_to_list.length}})
                 </button>
-                <button mat-raised-button class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">help</mat-icon>
+                <button mat-raised-button   class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">help</mat-icon>
                     À propos
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
+                <button mat-raised-button  *ngIf="!mode_visiteur && !my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
+                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">bookmarks</mat-icon>
                     Archives 
                 </button>
                 <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
-                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">bookmarks</mat-icon>
+                    <div class="profile-picture2">
+                        <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                    </div>
                     Mon compte 
                 </button>
-                <a href="/add-artwork">
+                <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
                     <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category">
-                        <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
+                        <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">add_circle_outline</mat-icon>
                         Publier 
                     </button>
                 </a>
 
             </div>
-            <div  class="middle-container" *ngIf="user_blocked && user_blocked_retrieved">
+
+            <div   *ngIf="user_blocked && user_blocked_retrieved">
                 <div *ngIf="user_who_blocked=='me'">
                     Vous avez bloqué cet utilisateur et ne pouvez donc plus avoir accès à sa page de profile
                 </div>
                 <div *ngIf="user_who_blocked!='me'">
-                    Vous avez été bloqué par cet utilisateur et ne pouvez donc plus avoir accès à sa page de profile
+                    Compte suspendu
+                </div>
+            </div>
+
+            <div class="middle-container" *ngIf="profile_not_found">
+                <div *ngIf="profile_suspended">
+                    Compte suspendu
+                </div>
+                <div *ngIf="!profile_suspended">
+                   Compte supprimé
                 </div>
             </div>
         </div>
 
 
         <div *ngIf="opened_section==0 && list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added  && !user_blocked && user_blocked_retrieved">
+            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added  && !user_blocked && user_blocked_retrieved && !profile_not_found && !my_profile_is_suspended">
         
             <ng-container *ngIf="emphasized_artwork_added" >
                 <div class="title">
@@ -217,19 +216,19 @@
             </ng-container>
 
 
-            <ng-container *ngIf="new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added">
+            <ng-container *ngIf="(new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added)">
 
                 <div class="title"  >
                     <span>Nouveautés</span>
                 </div>
     
-                <div *ngIf="new_comic_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_comic_contents}">
+                <div *ngIf="new_comic_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_comic_contents || !(number_of_new_contents_to_show>0)}">
                     
                     <div class="artwork-type-title">
                         Bandes dessinées
                     </div>
                     <div class="container-comics newDrawings " >
-                        <div *ngFor="let item of new_comic_contents,let i=index" class="new-artwork" #getwidth>
+                        <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" class="new-artwork" #getwidth>
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber == null" 
                             (send_loaded)="new_contents_comics_thumbnails($event)"
@@ -245,13 +244,13 @@
                     </div>
                 </div>
     
-                <div *ngIf="new_drawing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents}">
+                <div *ngIf="new_drawing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents || !(number_of_new_contents_to_show>0)}">
                     
                     <div class="artwork-type-title">
                         Dessins
                     </div>
                     <div class="container-drawings newDrawings">
-                        <div *ngFor="let item of new_drawing_contents" style="height:280px; margin:40px 0px 30px 0px" class="new-artwork" #getwidth>
+                        <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)"  class="drawing-container" #getwidth>
                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 (sendLoaded)="new_contents_drawings_thumbnails($event)"
                                 [item]=item
@@ -272,13 +271,14 @@
                 </div>
     
                 
-                <div *ngIf="new_writing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_writing_contents}">
+                <div *ngIf="new_writing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_writing_contents || !(number_of_new_contents_to_show>0)}">
                     
                     <div class="artwork-type-title">
                         Écrits
                     </div>
                     <div class="container-writings newDrawings">
-                        <div *ngFor="let item of new_writing_contents" style="height:300px;" class="new-artwork" #getwidth>
+                        <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" style="height:300px;" class="new-artwork" #getwidth>
+                          
                             <app-thumbnail-writing
                             (sendLoaded)="new_contents_writings_thumbnails($event)"
                             [item]=item
@@ -291,28 +291,82 @@
             </ng-container >
             
 
+            <ng-container *ngIf="trendings_found">
+
+                <div class="title"  >
+                    <span>Parus en Tendances</span>
+                </div>
+    
+                <div *ngIf="trendings_loaded && list_of_comics_trendings && list_of_comics_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded || !(number_of_new_contents_to_show>0)}">
+                    
+                    <div class="artwork-type-title">
+                        Bandes dessinées
+                    </div>
+                    <div class="container-comics newDrawings " >
+                        <div *ngFor="let item of list_of_comics_trendings.slice(0,number_of_new_contents_to_show),let i=index" class="new-artwork" #getwidth>
+                            <app-thumbnail-comics 
+                            *ngIf="item.chaptersnumber == null" 
+                            [item]=item format='one-shot' 
+                            now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics> 
+                            <app-thumbnail-comics 
+                            *ngIf="item.chaptersnumber>=0"
+                            [item]=item format='serie' now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics>
+                        </div>
+                    </div>
+                </div>
+    
+                <div *ngIf="trendings_loaded && list_of_drawings_trendings && list_of_drawings_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded}">
+                    
+                    <div class="artwork-type-title">
+                        Dessins
+                    </div>
+                    <div class="container-drawings newDrawings">
+                        <div *ngFor="let item of list_of_drawings_trendings.slice(0,number_of_new_contents_to_show)" style="height:280px; margin:40px 0px 30px 0px" class="new-artwork" #getwidth>
+                            <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                                [item]=item
+                                for_news="yes"
+                                format='one-shot'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-drawing>
+                            <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                                [item]=item 
+                                for_news="yes"
+                                format='artbook'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-drawing>
+                        </div>
+                    </div>
+                    
+                </div>
+    
+                
+                <div *ngIf="trendings_loaded && list_of_writings_trendings && list_of_writings_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded}">
+                    
+                    <div class="artwork-type-title">
+                        Écrits
+                    </div>
+                    <div class="container-writings newDrawings">
+                        <div *ngFor="let item of list_of_writings_trendings.slice(0,number_of_new_contents_to_show)" style="height:300px;" class="new-artwork" #getwidth>
+                            
+                            <app-thumbnail-writing
+                            [item]=item
+                            now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-writing>
+                        </div>
+                    </div>
+                    
+                </div>
+            </ng-container >
+
 
         </div>
 
 
-
-
-        <!--<ng-container *ngIf="opened_section==1 && number_of_artpieces==0 && list_bd_oneshot_added && list_bd_series_added && list_writings_added && list_drawings_artbook_added && list_drawings_onepage_added">
-            <div class="highlighted_artwork" *ngIf="mode_visiteur">
-                <span>L'utilisateur n'a publié aucune œuvre</span>
-            </div>
-            <div class="highlighted_artwork" *ngIf="!mode_visiteur">
-                <br>
-                <span>Vous n'avez pas encore publié d'œuvre
-                    <br>
-                    <br>
-                    <a href="/add-artwork">Cliquez ici pour publier une œuvre</a>
-                </span>
-            </div>
-        </ng-container>-->
             
         <ng-container *ngIf="opened_section==1 && list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved && !profile_not_found && !my_profile_is_suspended">
             
             <div class="logos-container">
                 <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
@@ -780,16 +834,6 @@
                                                             now_in_seconds={{now_in_seconds}}
                                                         ></app-thumbnail-drawing>
                                                     </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
                                                 </div>
                                                 <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" 
                                                     class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
@@ -819,16 +863,11 @@
                                                             now_in_seconds={{now_in_seconds}}
                                                         ></app-thumbnail-drawing>
                                                     </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
-                                                    <div class="grid-item" style="height:1px;width:100px;">
-                                                    </div>
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
                                                 </div>
                                                 <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
                                                     <div class="icon">
@@ -860,16 +899,11 @@
                                                 </div>
 
                                     
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
+                                                
+                                                
+                                                
+                                                
+                                                
                                             </div>
                                             <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
                                                 <div class="icon">
@@ -897,16 +931,11 @@
                                                 </div>
                                                 
                                                 
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
+                                                
+                                                
+                                                
+                                                
+                                                
                                             </div>
                                             <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
                                                 <div class="icon">
@@ -934,17 +963,6 @@
                                                     ></app-thumbnail-drawing>
                                                 </div>
 
-                                    
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
                                                 
                                             </div>
                                             <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
@@ -970,16 +988,11 @@
                                                 </div>
 
                                     
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
-                                                <div class="grid-item" style="height:1px;width:100px;">
-                                                </div>
+                                                
+                                                
+                                                
+                                                
+                                                
                                             </div>
                                             <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
                                                 <div class="icon">
@@ -1240,7 +1253,7 @@
                 
                 <app-thumbnail-ad *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index"
                 [item]=item
-                now_in_seconds={{now_in_seconds}}
+                [now_in_seconds]=now_in_seconds
                 ></app-thumbnail-ad>
                 
                
@@ -1249,18 +1262,28 @@
                 </div>
             </ng-container>
 
+           
+
+            <ng-container *ngIf="opened_section==5">
+                
+                <app-account-about
+                [opened_category]=category_for_account_about
+                [pseudo]=pseudo
+                [id_user]=user_id
+                ></app-account-about>
+            </ng-container>
+
             <ng-container *ngIf="opened_section==6">
                 <app-archives
                 ></app-archives>
             </ng-container>
 
-            <ng-container *ngIf="opened_section==5">
-                
-                <app-account-about
-                category_to_open=0
-                pseudo={{pseudo}}
-                user_id={{user_id}}
-                ></app-account-about>
+            <ng-container *ngIf="opened_section==7 && !mode_visiteur">
+                <app-account-my-account
+                [opened_category]=category_for_account_about
+                [pseudo]=pseudo
+                [id_user]=user_id
+                ></app-account-my-account>
             </ng-container>
 
         </ng-container>

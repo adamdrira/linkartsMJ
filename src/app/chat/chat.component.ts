@@ -40,7 +40,7 @@ export class ChatComponent implements OnInit  {
     private Profile_Edition_Service:Profile_Edition_Service
     ){
       //navbar
-      navbar.set_using_chat();
+     
       //uploader
       this.uploader = new FileUploader({
         url:url,
@@ -237,7 +237,7 @@ export class ChatComponent implements OnInit  {
           console.log(l[0])
           if(!(l[0].message)){
             let message_to_send ={
-              id_user_name:this.current_user_name,
+              id_user_name:this.current_user_pseudo,
               id_user:this.current_user_id,   
               id_receiver:this.friend_id, 
               message:"",
@@ -348,7 +348,7 @@ export class ChatComponent implements OnInit  {
         console.log(l[0])
         if(!(l[0].message)){
           let message_to_send ={
-            id_user_name:this.current_user_name,
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id, 
             message:"",
@@ -434,7 +434,7 @@ export class ChatComponent implements OnInit  {
         console.log(l[0])
         if(!(l[0].message)){
           let message_to_send ={
-            id_user_name:this.current_user_name,
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id, 
             message:"",
@@ -644,7 +644,7 @@ export class ChatComponent implements OnInit  {
       console.log("checking complete 2")
       this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).subscribe(r=>{
         let message ={
-          id_user_name:this.current_user_name,
+          id_user_name:this.current_user_pseudo,
           id_user:this.current_user_id,   
           id_receiver:this.friend_id,  
           message:null,
@@ -737,7 +737,7 @@ export class ChatComponent implements OnInit  {
         console.log(l);
         if(!(l[0].message)){
           let message_to_send ={
-            id_user_name:this.current_user_name,
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id, 
             message:"",
@@ -999,12 +999,13 @@ export class ChatComponent implements OnInit  {
     } 
     console.log("sending writing")
     if(this.spam=='true'){
-      console.log("changing status to seen spam")
+      //pas de mention vue pour les spams
+      /*console.log("changing status to seen spam")
       this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(l=>{
         console.log(l[0])
         if(!(l[0].message)){
           let message_to_send ={
-            id_user_name:this.current_user_name,
+            id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id, 
             message:"",
@@ -1026,7 +1027,7 @@ export class ChatComponent implements OnInit  {
           this.chatService.messages.next(message_to_send);
         }
         
-      });
+      });*/
      
     }
     else{
@@ -1039,7 +1040,7 @@ export class ChatComponent implements OnInit  {
     if(this.input){
       this.input.nativeElement.blur();
       let msg ={
-        id_user_name:this.current_user_name,
+        id_user_name:this.current_user_pseudo,
         id_user:this.current_user_id,   
         id_receiver:this.friend_id,  
         message:this.message_group.value.message,
@@ -1182,7 +1183,7 @@ export class ChatComponent implements OnInit  {
     }
 
     this.message_one ={
-      id_user_name:this.current_user_name,
+      id_user_name:this.current_user_pseudo,
       id_user:this.current_user_id,   
       id_receiver:this.friend_id,  
       message:this.message_group.value.message,
@@ -1233,7 +1234,7 @@ export class ChatComponent implements OnInit  {
     let file_name=this.attachments_name[i];
     let file=this.attachments_for_sql[num];
     let message ={
-      id_user_name:this.current_user_name,
+      id_user_name:this.current_user_pseudo,
       id_user:this.current_user_id,   
       id_receiver:this.friend_id,  
       message:null,
@@ -1443,7 +1444,7 @@ export class ChatComponent implements OnInit  {
       this.chatService.add_spam_to_contacts(this.friend_id).subscribe(l=>{
         console.log(l);
         let message_one ={
-          id_user_name:this.current_user_name,
+          id_user_name:this.current_user_pseudo,
           chat_id:l[0].id,
           id_user:this.current_user_id,   
           id_receiver:this.friend_id,  
@@ -1796,7 +1797,7 @@ reaction_click($event,i) {
         })
       }
       let message={
-        id_user_name:this.current_user_name,
+        id_user_name:this.current_user_pseudo,
         id_user:this.current_user_id,   
         id_receiver:this.friend_id,  
         old_emoji:(!r[0].message)?r[0].emoji_reaction:null,
@@ -1820,7 +1821,7 @@ reaction_click($event,i) {
   }
   else{
     let message={
-      id_user_name:this.current_user_name,
+      id_user_name:this.current_user_pseudo,
       id_user:this.current_user_id,   
       id_receiver:this.friend_id, 
       type_of_user:"user",
@@ -2855,7 +2856,7 @@ exit_group(){
     if(result){
       this.chatService.exit_group(this.friend_id).subscribe(r=>{
         let message_one ={
-          id_user_name:this.current_user_name,
+          id_user_name:this.current_user_pseudo,
           id_user:this.current_user_id,   
           id_receiver:this.friend_id,  
           message:"Exit",
@@ -3058,7 +3059,7 @@ chat_service_managment_function(msg){
           if(this.user_present && msg[0].id_chat_section==this.id_chat_section){
             console.log("i am present")
             let message_to_send ={
-              id_user_name:this.current_user_name,
+              id_user_name:this.current_user_pseudo,
               id_user:this.current_user_id,   
               id_receiver:this.friend_id, 
               message:msg[0].message,
@@ -3265,7 +3266,7 @@ chat_service_managment_function(msg){
               console.log("i am present");
               message.status='seen';
               let message_to_send ={
-                id_user_name:this.current_user_name,
+                id_user_name:this.current_user_pseudo,
                 id_user:this.current_user_id,   
                 id_receiver:this.friend_id, 
                 message:msg[0].message,
@@ -3670,7 +3671,7 @@ block_user(){
               this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).subscribe(r=>{
                 console.log(r);
                 let message_to_send ={
-                  id_user_name:this.current_user_name,
+                  id_user_name:this.current_user_pseudo,
                   id_user:this.current_user_id,   
                   id_receiver:this.friend_id, 
                   message:"block",

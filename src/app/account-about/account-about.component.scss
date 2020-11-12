@@ -6,7 +6,7 @@
     background: rgb(234, 234, 234);
     color: rgb(124, 124, 124);
     padding: 9px 45px;
-    font-size: 19px;
+    font-size: 13px;
     border-radius: 50px;
     padding: 10px 45px;
     margin: auto 10px auto 10px;
@@ -23,22 +23,20 @@
   }
 
 
-  .albums-filter {    
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top:10px;
-    padding-bottom:10px;
-    overflow-x:auto;
-    display:flex;justify-content: center;
-    //height:100%;
+  .albums-filter {   
     position:relative;
     display:-webkit-box;
     -webkit-box-pack: center;
-    border-radius:10px 10px 0px 0px;
     -webkit-transition: opacity 500ms;
     transition: opacity 500ms;
-    border-radius: 0px !important;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
   }
   
   .invisible{
@@ -48,3 +46,296 @@
   .really-invisible{
     visibility:hidden !important;
   }
+
+
+  .stats-container{
+    width:80%;
+    margin:auto;
+  }
+  .panel-controller {
+    margin: auto;
+    width: 100%;
+    height:50px;
+    display:flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .panel-controller .left-container {
+    color:rgb(32,56,100);  
+    //display:flex;
+    margin-left:auto auto;
+    float:left;
+    height:100%;
+  }
+
+  .dropdowns-container{
+    height: 75%;
+    margin: auto 0px auto auto;
+  }
+
+
+  //SumoSelect
+
+
+  
+
+  ::ng-deep .SumoSelect > .CaptionCont  {
+    display: flex;
+    position: relative;
+    min-height: 14px;
+    border-radius: 2px;
+    margin: 0;
+    border-radius: 30px;
+  }
+
+::ng-deep .SumoSelect > .CaptionCont > span {
+  padding-right:20px;
+  color: white;
+  font-size: 12px;
+  font-style:unset;
+}
+
+::ng-deep .SumoSelect > .CaptionCont > span.placeholder {
+  color: white;
+  font-size: 12px;
+  font-style: unset; 
+}
+
+
+::ng-deep .panel-controller .SumoSelect > .CaptionCont > label > i {
+  height: 12px;
+  margin-right: 10px;
+  background-image:none !important;
+  background-color: #203864;
+  -webkit-mask:  url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
+  mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
+}
+
+::ng-deep .panel-controller .SumoSelect {
+  
+  width: unset !important;
+  height: 100%;
+  margin-left: 30px;
+  background: #d1e0fb;
+  border-radius: 30px;
+  color: #203864;
+  font-size: 11px;
+}
+
+::ng-deep .panel-controller .SumoSelect > .optWrapper > .options li.opt.disabled {
+  background-color: inherit;
+  pointer-events: none;
+  display: none;
+}
+
+::ng-deep .panel-controller .SumoSelect > .optWrapper > .options li.opt {
+  width: 178px;
+  padding: 5px 5px;
+  position: relative;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+
+
+::ng-deep #right-container .panel-controller .SumoSelect {
+  width:unset !important;
+  height:100%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+::ng-deep .panel-controller .SumoSelect .SelectBox{
+  padding: 0 8px;
+}
+
+::ng-deep .panel-controller .SumoSelect > p.CaptionCont > span {
+  color: #203864;
+  font-size: 12px;
+  font-weight: 500;
+  margin: auto 10px auto 0px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  border-radius: 30px;
+  padding-left: 5px;
+}
+
+::ng-deep .panel-controller .SumoSelect .optWrapper {
+  width:auto !important;
+  background: #f9f9f9;
+  left: 10px !important;
+}
+
+
+
+.contents-trendings-container{
+  min-height:400px;
+  width:100%;
+  display:block;
+  margin-bottom: 30px;
+}
+
+
+.contents-trendings{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.new-artworks {
+  width:95%;
+  margin-left:auto;
+  margin-right:auto;
+  display:flex;
+  flex-wrap: nowrap;
+}
+
+.loading-page{
+  margin:auto;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+
+.really-invisible{
+  display:none;
+}
+
+.category-container{
+  width:80%;
+  margin: auto;
+}
+.sub-category-title{
+  width:100%;
+  display:flex;
+  align-items: center;
+}
+
+
+
+.sub-category-title .title{
+  margin: auto auto auto 0px;
+}
+
+.sub-category-title .options{
+  margin: auto 0px auto auto;
+}
+
+.options-links{
+  margin: auto 0px auto auto;
+}
+
+
+.edit-button{
+  margin-left:3px;
+  margin-right:3px;
+}
+
+.form-item {
+  position:relative;
+  width: 100%;
+  padding: 10px;
+  height: 70px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+::ng-deep .mat-input-element {
+  padding-right: 75px !important;
+  line-height: 22px !important;
+}
+
+::ng-deep .mat-dialog-container {
+  position:relative !important;
+}
+
+::ng-deep .form-item .mat-form-field {
+  width:100%;
+}
+
+::ng-deep .form-item .mat-form-field .mat-form-field-flex {
+  background: #84c7e626 !important;
+  padding-left: 10px !important;
+}
+
+
+
+
+::ng-deep .form-item .mat-form-field textarea {
+  max-height:180px;
+}
+
+
+.form-item .length-indicator {
+  position: absolute;
+  right: 22px;
+  color: grey;    
+  font-size: 12px;
+  top: 5px;
+}
+
+
+.links-container {
+  display:block;
+  max-height:120px;
+  overflow-y:auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.links-container .link {
+  display: flex;
+  text-overflow: ellipsis;
+  border-radius: 3px;
+  padding-left: 9px;
+  font-size: 12px;
+}
+
+
+.links-container .link > span {
+  margin: auto auto auto 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor:default;
+}
+
+.link-container{
+  display:flex;
+  margin: auto auto auto 0px;
+}
+
+.link-option{
+  visibility: hidden;
+  margin: auto 0px auto auto;
+}
+
+.information-container{
+  display:flex
+}
+
+.information-container:hover {
+  background:lightgray;
+}
+
+.information-container:hover .link-option{
+  visibility:visible !important;
+}
+
+.link:hover .link-option{
+  visibility:visible !important;
+}
+
+
+
+
+.step-form .links-container .link .mat-icon-button {
+  margin: auto 5px auto auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -128,7 +128,7 @@
                         <mat-icon>clear</mat-icon>
                     </button>-->
 
-                    <button mat-icon-button *ngIf="edit_name==-1" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
+                    <button mat-icon-button *ngIf="edit_name==-1 && list_of_new_chapters[i]" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
                         <mat-icon>edit</mat-icon>
                     </button>         
                     <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1" (click)="openDeleteDialog(i);$event.stopPropagation();">
@@ -163,7 +163,7 @@
 
 </div>
 
-<div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
+<div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress && display_swiper">
     <ng-container  >
         <app-swiper-upload-serie type="Série" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
     </ng-container>

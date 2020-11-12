@@ -7,6 +7,7 @@ import { NotificationsService } from '../services/notifications.service';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { convert_timestamp_to_number } from '../helpers/dates';
 
 
 declare var $: any;
@@ -93,7 +94,7 @@ export class CommentsComponent implements OnInit {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.visitor_id=r[0].id;
-      this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
+      this.visitor_name=r[0].nickname;
       if(r[0].id==this.authorid){
         this.visitor_mode=false;
       }
@@ -121,27 +122,20 @@ export class CommentsComponent implements OnInit {
         this.profile_picture = SafeURL;
       });
 
-      this.NotationService.get_my_commentaries(this.category,this.format,this.style,this.publication_id,this.chapter_number).subscribe(t=>{
-        (async () => {
+      this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(t=>{
           this.my_comments_list=t[0];
           if(this.my_comments_list.length>0){
-              await this.sort_comments(this.my_comments_list);
-              this.display_my_comments=true;
+              this.sort_comments(this.my_comments_list,'mine');
+              
           }
-        })();
       })
 
-      this.NotationService.get_commentaries(this.category,this.format,this.style,this.publication_id,this.chapter_number).subscribe(l=>{
+      this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(l=>{
 
-        (async () => {
         this.comments_list=l[0];
         if(this.comments_list.length>0){
-          await this.sort_comments(this.comments_list);
-          console.log(this.comments_list)
-          this.display_comments=true;
-          
+         this.sort_comments(this.comments_list,"other");  
         }
-      })();
       });
     })
    
@@ -195,6 +189,7 @@ export class CommentsComponent implements OnInit {
             console.log(r[0])
             if(this.visitor_id!=this.authorid){
               this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).subscribe(l=>{
+                console.log(l[0])
                 let message_to_send ={
                   for_notifications:true,
                   type:"comment",
@@ -214,7 +209,7 @@ export class CommentsComponent implements OnInit {
                 this.chatService.messages.next(message_to_send);
                 this.my_comments_list.splice(0, 0, r[0]);
                 this.display_my_comments=true;
-
+                
                 this.new_comment.emit();
                 this.comment.reset();
                 this.cd.detectChanges();
@@ -227,7 +222,7 @@ export class CommentsComponent implements OnInit {
             else{
               this.my_comments_list.splice(0, 0, r[0]);
               this.new_comment.emit();
-              
+              this.display_my_comments=true;
               this.comment.reset();
               var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
               $('textarea.textarea-add-comment').height(totalHeight + 10);
@@ -312,32 +307,40 @@ export class CommentsComponent implements OnInit {
     this.editable_comment = i;
   }
 
-  sort_comments(list){
+  sort_comments(list,target){
     if(list.length>1){
       for (let i=1; i<list.length; i++){
-        let time = this.convert_timestamp_to_number(list[i].createdAt);
+        let time = convert_timestamp_to_number(list[i].createdAt);
         let number_of_likes= 60*60*list[i].number_of_likes; //un like fait gagner 1h
         for (let j=0; j<i;j++){
-          if( (time + number_of_likes) > (this.convert_timestamp_to_number(list[j].createdAt) + 60*60*list[j].number_of_likes)){
+          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + 60*60*list[j].number_of_likes)){
             list.splice(j, 0, list.splice(i, 1)[0]);
           }
           if(j==list.length-2){
-            return Promise.resolve(list);
+            if(target=="other"){
+              this.display_comments=true;
+            }
+            else{
+              this.display_my_comments=true;
+            }
+           
           }
         }
+      }
+    }
+    else{
+      if(target=="other"){
+        this.display_comments=true;
+      }
+      else{
+        this.display_my_comments=true;
       }
     }
             
   }
 
   
-  convert_timestamp_to_number(timestamp){
-    var uploaded_date = timestamp.substring(0,timestamp.length- 5);
-    uploaded_date=uploaded_date.replace("T",' ');
-    uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
-    let number = new Date(uploaded_date + ' GMT').getTime()/1000;
-    return number;
-  }
+ 
 
 
   

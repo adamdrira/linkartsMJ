@@ -1,11 +1,10 @@
-
-<div *ngIf="opened_category>=0 && visitor_mode_retrieved" class="albums-filter" >
+<div [ngClass]="{'invisible':!visitor_mode_retrieved && !trendings_checked && !list_of_privacy_retrieved}" class="albums-filter" >
     <div >
         <button mat-raised-button  class="content-action text-center" [ngClass]="{ 'opened' : opened_category== 0 }" (click)="open_catgory(0);">
             <div>Présentation</div>
         </button>
     </div>
-    <div>
+    <div *ngIf="(list_of_privacy_retrieved && visitor_mode && show_stats) || (!visitor_mode && list_of_privacy_retrieved)">
         <button mat-raised-button   class="content-action text-center" [ngClass]="{ 'opened' : opened_category == 1 }" (click)="open_catgory(1);">
             <div>Statistiques</div>
         </button>
@@ -13,6 +12,1103 @@
 </div>
 
 
-<div *ngIf="opened_category== 0">
+<!-- ------------------------------------------------------PRESENTATION ------------------------------------------------>
+<!-- ------------------------------------------------------PRESENTATION ------------------------------------------------>
+<!-- ------------------------------------------------------PRESENTATION ------------------------------------------------>
+<!-- ------------------------------------------------------PRESENTATION ------------------------------------------------>
+<!-- ------------------------------------------------------PRESENTATION ------------------------------------------------>
+
+<div  *ngIf="opened_category== 0 "  [ngClass]="{'invisible':!visitor_mode_retrieved || !profile_data_retrieved || !list_of_privacy_retrieved}" >
+
+    <!-- Description principale -->
+    <div class="category-container" [formGroup]="registerForm1" *ngIf="(visitor_mode && list_of_privacy[0]=='public') || !visitor_mode">
+        <div class="sub-category-title">
+            <span class="title">
+                Description principale
+            </span>
+            <span class="options" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <div style="display:flex" *ngIf="registerForm1_activated">
+                    <button  (click)="validate_primary_description_extended()" mat-raised-button class="edit-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
+                        <mat-icon class="item-icon" style="margin:auto auto; color:green">done</mat-icon>
+                        <span>Valider</span>
+                    </button>
+                    <button  (click)="cancel_primary_description_extended()" mat-raised-button class="edit-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
+                        <mat-icon class="item-icon" style="margin:auto auto; color:red">cancel</mat-icon>
+                        <span>Annuler</span>
+                    </button>
+                </div>
+                
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" *ngIf="!registerForm1_activated">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button (click)="edit_primary_description_extended()" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">create</mat-icon>
+                        <span>Editer</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[0]=='private'" (click)="change_information_privacy_public(0)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[0]=='public'" (click)="change_information_privacy_private(0)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+            
+        </div>
+    
+        <div *ngIf="!registerForm1_activated && profile_data_retrieved" class="form-item" style="height:unset !important;">
+           <div>
+               {{primary_description_extended}}
+           </div>
+        </div>
+    
+        <div *ngIf="registerForm1_activated " class="form-item" style="height:unset !important;">
+            <div *ngIf="display_error_validator_1" style="padding:10px;font-size:12px;color:red">
+                Les données entrées sont incompatibles, veuillez faire une saisie valide.
+            </div>
+            <mat-form-field>
+                <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off"></textarea>
+                <!--<input matInput formControlName="primary_description_extended" autocomplete="off">-->
+                <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide
+                </mat-error>
+                <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
+            </mat-form-field>
+        </div>
+    </div>
+
+
+
+    <!-- Liens mode non visiteur -->
+    <div class="category-container" [formGroup]="registerForm2" *ngIf="visitor_mode_retrieved && !visitor_mode " [ngClass]="{'invisible':!links_retrieved}">
+        <div class="sub-category-title">
+            <span class="title">
+                Liens externes
+            </span>
+            <span class="options" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <div style="display:flex" *ngIf="registerForm2_activated">
+                    <button  (click)="cancel_add_link_to_the_list()" mat-raised-button class="edit-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
+                        <mat-icon class="item-icon" style="margin:auto auto; color:red">cancel</mat-icon>
+                        <span>Quitter</span>
+                    </button>
+                </div>
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" *ngIf="!registerForm2_activated" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button (click)="add_link_to_the_list()" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">create</mat-icon>
+                        <span>Ajouter</span>
+                    </button>
+                </mat-menu>
+            </span>
+            
+        </div>
+    
+        <div *ngIf="links.length==0 && !registerForm2_activated">
+            Vous n'avez mentionné aucun lien externe. Cette partie ne sera donc pas visible pour les visiteurs.
+        </div>
+
+        <div style="display:flex;align-items: center;" *ngIf="registerForm2_activated">
+            <div *ngIf="display_error_validator_2" style="padding:10px;font-size:12px;color:red">
+                Les données entrées sont incompatibles, veuillez faire une saisie valide.
+            </div>
+            <div class="form-item" style="width: calc( 50% - 30px);margin-left: auto;margin-right: auto;">
+                <mat-form-field>
+                    <mat-label>Titre du lien</mat-label>
+                    <input matInput formControlName="link_title" maxLength="30" autocomplete="off">
+                    <mat-error *ngIf="registerForm2.controls['link_title'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm2.controls['link_title'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>
+            <div class="form-item" style="width: calc( 50% - 30px);margin-left: auto;margin-right: auto;">
+                <mat-form-field>
+                    <mat-label>Lien</mat-label>
+                    <input matInput formControlName="link" maxLength="60" autocomplete="off">
+                    <mat-error *ngIf="registerForm2.controls['link'].invalid">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm2.controls['link'].value?.length || 0}}/60</div>
+                </mat-form-field>
+            </div>
+            <button mat-button class="mat-icon-button" *ngIf="4>links_titles.length" tabIndex="-1" (click)="add_link()" 
+            style="width: 40px;
+            margin-bottom: 10px;"> 	
+
+                <mat-icon class="item-icon" style="margin:auto auto;">add</mat-icon>
+            </button>
+        </div>
+
+        <div class="links-container" *ngIf="links.length>0">
+            <div class="link" *ngFor="let item of links_titles;let i=index">
+                <div class="link-container">
+                    <span> {{item}} : &nbsp; </span>
+                    <a href="links[i]"> {{links[i]}} </a>
+                </div>
+                <div class="link-option">
+                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                        <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                    </button>
+                    <mat-menu  #artworkOptions2="matMenu">
+                        <button (click)="remove_link(i)" class="mat-menu-item" mat-menu-item > 	
+                            <mat-icon class="item-icon">close</mat-icon>
+                            <span>Supprimer</span>
+                        </button>
+                    </mat-menu>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <!-- Liens  mode visiteur -->
+    <div class="category-container" [formGroup]="registerForm2"  [ngClass]="{'invisible':!links_retrieved}" *ngIf="visitor_mode_retrieved && visitor_mode && links.length>0 "  >
+        <div class="sub-category-title">
+            <span class="title">
+                Liens externes
+            </span>
+            
+        </div>
+        <div class="links-container">
+            <div class="link" *ngFor="let item of links_titles;let i=index">
+                <div class="link-container">
+                    <span> {{item}} : &nbsp;</span>
+                    <a href="links[i]"> {{links[i]}} </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Informations -->
+    <div class="category-container" [formGroup]="registerForm3" >
+        <div class="sub-category-title">
+            <span class="title">
+                Informations
+            </span>
+            <span class="options" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <div style="display:flex" *ngIf="registerForm3_activated">
+                    <button  (click)="validate_edit_information()" mat-raised-button class="edit-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
+                        <mat-icon class="item-icon" style="margin:auto auto; color:green">done</mat-icon>
+                        <span>Valider</span>
+                    </button>
+                    <button  (click)="cancel_edit_information()" mat-raised-button class="edit-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
+                        <mat-icon class="item-icon" style="margin:auto auto; color:red">cancel</mat-icon>
+                        <span>Annuler</span>
+                    </button>
+                </div>
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" *ngIf="!registerForm3_activated" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button (click)="edit_information()" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">create</mat-icon>
+                        <span>Editer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+    
+        
+        <div *ngIf="!registerForm3_activated && profile_data_retrieved"  class="form-item" style="height:unset !important;">
+           <div style="display:block">
+                <!-- type of profile -->
+                <div class="information-container"  *ngIf="(visitor_mode && list_of_privacy[1]=='public') || !visitor_mode">
+                    <div style="margin: auto auto auto 0px">
+                        Profil : {{type_of_profile}}
+                    </div>
+                    <div class="link-option">
+                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                            <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                        </button>
+                        <mat-menu  #artworkOptions2="matMenu">
+                            <button *ngIf="list_of_privacy[1]=='private'" (click)="change_information_privacy_public(1)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Dévoiler</span>
+                            </button>
+                            <button *ngIf="list_of_privacy[1]=='public'" (click)="change_information_privacy_private(1)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Masquer</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+
+                <!-- contact -->
+                <div  class="information-container"   *ngIf="(email!='' && visitor_mode && list_of_privacy[2]=='public') || (!visitor_mode)">
+                    <div style="margin: auto auto auto 0px" *ngIf="email!=''">
+                        contact : {{email}}
+                    </div>
+                    <div style="margin: auto auto auto 0px" *ngIf="email==''">
+                        contact : Vous pouvez ajouter un mail de contact depuis le menu des options de cette partie
+                    </div>
+                    <div class="link-option">
+                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                            <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                        </button>
+                        <mat-menu #artworkOptions2="matMenu">
+                            <button *ngIf="list_of_privacy[2]=='private'" (click)="change_information_privacy_public(2)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Dévoiler</span>
+                            </button>
+                            <button *ngIf="list_of_privacy[2]=='public'" (click)="change_information_privacy_private(2)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Masquer</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+
+                <!-- Age -->
+                <div  class="information-container" *ngIf="type_of_profile!='Groupe' && (!visitor_mode || ( visitor_mode && list_of_privacy[3]=='public'))">
+                    <div style="margin: auto auto auto 0px">
+                        Age : {{birthday}} ans
+                    </div>
+                    <div class="link-option">
+                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                            <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                        </button>
+                        <mat-menu  #artworkOptions2="matMenu">
+                            <button *ngIf="list_of_privacy[3]=='private'" (click)="change_information_privacy_public(3)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Dévoiler</span>
+                            </button>
+                            <button *ngIf="list_of_privacy[3]=='public'" (click)="change_information_privacy_private(3)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Masquer</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+
+                
+
+                 <!-- job -->
+                 <div  class="information-container" *ngIf="(job!='' && visitor_mode && list_of_privacy[4]=='public') || (!visitor_mode)">
+                    <div style="margin: auto auto auto 0px" *ngIf="job!=''">
+                        Profession : {{job}}
+                    </div>
+                    <div style="margin: auto auto auto 0px" *ngIf="job==''">
+                        Profession : Vous pouvez spécifier votre prefession depuis le menu des options de cette partie
+                    </div>
+                    <div class="link-option">
+                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                            <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                        </button>
+                        <mat-menu  #artworkOptions2="matMenu">
+                            <button *ngIf="list_of_privacy[4]=='private'" (click)="change_information_privacy_public(4)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Dévoiler</span>
+                            </button>
+                            <button *ngIf="list_of_privacy[4]=='public'" (click)="change_information_privacy_private(4)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Masquer</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+
+                <!-- formation ou compétences -->
+                <div  class="information-container" *ngIf="(training!='' && visitor_mode && list_of_privacy[5]=='public') || (!visitor_mode)">
+                    <div style="margin: auto auto auto 0px" *ngIf="training!=''">
+                        Formation ou compétences : {{training}}
+                    </div>
+                    <div style="margin: auto auto auto 0px" *ngIf="training==''">
+                        Formation ou compétences : Vous pouvez spécifier votre formation ou vos compétences depuis le menu des options de cette partie
+                    </div>
+                    <div class="link-option">
+                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                            <mat-icon class="optionsButton"    style="font-size: 16px !important;" >more_vert</mat-icon>
+                        </button>
+                        <mat-menu  #artworkOptions2="matMenu">
+                            <button *ngIf="list_of_privacy[5]=='private'" (click)="change_information_privacy_public(5)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Dévoiler</span>
+                            </button>
+                            <button *ngIf="list_of_privacy[5]=='public'" (click)="change_information_privacy_private(5)" class="mat-menu-item" mat-menu-item > 	
+                                <mat-icon class="item-icon">close</mat-icon>
+                                <span>Masquer</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+               
+           </div>
+        </div>
+    
+        <div *ngIf="registerForm3_activated ">
+            
+            <div *ngIf="display_error_validator_3" style="padding:10px;font-size:12px;color:red">
+                Les données entrées sont incompatibles, veuillez faire une saisie valide.
+            </div>
+            <div style="padding:10px;font-size:12px">
+                La modification de l'e-mail ne concerne que cette section et n'a donc aucun impacte sur l'e-mail du compte.
+            </div>
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>E-mail</mat-label>
+                    <input matInput formControlName="email" autocomplete="off">
+                    <mat-error *ngIf="registerForm3.controls['email'].invalid">Veuillez saisir un e-mail valide</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item datepicker"  style="margin-bottom:20px">
+                <mat-form-field appearance="fill">
+                    <mat-label>Date de naissance</mat-label>
+                    <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
+                    <mat-datepicker-toggle matSuffix [for]="picker">
+                      <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Veuillez saisir une date de naissance valide</mat-error>
+                    <mat-datepicker #picker disabled="false"></mat-datepicker>
+
+                </mat-form-field>
+            </div>
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Profession</mat-label>
+                    <input matInput formControlName="job" maxLength="100" autocomplete="off">
+                    <mat-error *ngIf="registerForm3.controls['job'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm3.controls['job'].value?.length || 0}}/100</div>
+                </mat-form-field>
+            </div>
+            
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>Formations ou compétences</mat-label>
+                    <input matInput formControlName="training" maxLength="100" autocomplete="off">
+                    <mat-error *ngIf="registerForm3.controls['training'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm3.controls['training'].value?.length || 0}}/100</div>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    
 
 </div>
+
+
+
+
+
+
+
+
+
+
+<!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
+<!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
+<!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
+<!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
+<!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
+
+
+<div *ngIf="opened_category== 1 && ((list_of_privacy_retrieved && visitor_mode && show_stats) || (!visitor_mode && list_of_privacy_retrieved))" [ngClass]="{'invisible':!visitor_mode_retrieved}">
+
+
+
+    <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+    
+     
+    
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques des tendances
+            </div>
+
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[6]=='private'" (click)="change_information_privacy_public(6)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[6]=='public'" (click)="change_information_privacy_private(6)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+        <div class="panel-controller" >
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_trendings"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+        </div>
+    
+        <div class="contents-trendings-container" *ngIf="!trendings_found">
+            <div class="loading-page" *ngIf="trendings_loaded && !visitor_mode">
+                Vous n'avez aucune oeuvre en tendances pour l'instant. Les autres utilisateurs ne peuvent avoir accès à cette information.
+            </div>
+
+            <div class="loading-page" *ngIf="!trendings_loaded ">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="trendings_found && trendings_loaded">
+
+            <div>Total de nombre de bandes dessinées en tendances : <b>{{number_of_comics_trendings}}</b></div>
+            <div>Total de nombre de tendances dessins en tendances : <b>{{number_of_drawings_trendings}}</b></div>
+            <div>Total de nombre de tendances écrits en tendances : <b>{{number_of_writings_trendings}}</b></div>
+        </div>
+    
+        <div class="contents-trendings-container" *ngIf="trendings_found && trendings_loaded">
+
+
+                <ngx-charts-line-chart
+                [view]="view_trendings_1"
+                [scheme]="colorScheme"
+                [results]="multi_trendings_1"
+                [gradient]="gradient"
+                [xAxis]="showXAxis"
+                [yAxis]="showYAxis"
+                [legend]="showLegend_trendings_1"
+                [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel"
+                [xAxisLabel]="xAxis_trendings_1"
+                [yAxisLabel]="yAxis_trendings_1"
+                (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+               
+    
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="trendings_found && trendings_loaded ">
+
+                <ngx-charts-line-chart
+                [view]="view_trendings_2"
+                [scheme]="colorScheme"
+                [results]="multi_trendings_2"
+                [gradient]="gradient"
+                [xAxis]="showXAxis"
+                [yAxis]="showYAxis"
+                [legend]="showLegend_trendings_2"
+                [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel"
+                [xAxisLabel]="xAxis_trendings_2"
+                [yAxisLabel]="yAxis_trendings_2"
+                (select)="onSelect($event)">
+                </ngx-charts-line-chart>
+               
+    
+        </div>
+    </div>
+
+
+    <!-- ADS STATS -->
+    <!-- ADS STATS -->
+    <!-- ADS STATS -->
+    <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[7]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+    
+     
+    
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques des annonces
+            </div>
+
+           
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[7]=='private'" (click)="change_information_privacy_public(7)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[7]=='public'" (click)="change_information_privacy_private(7)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+
+        <div class="panel-controller" >
+
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_ads_stats"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+           
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_ads_loaded">
+            <div *ngIf="list_of_ads_retrieved">
+                aucune annonce
+            </div>
+            <div class="loading-page" *ngIf="!list_of_ads_retrieved ">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+        
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_ads_retrieved && list_of_ads_loaded">
+            <div>Total nombre d'annonces postées : <b>{{number_of_ads}}</b></div>
+            <div>Total nombre de réponses à ces annonces depuis toujours: <b>{{number_of_ads_answers}}</b></div>
+            <div>Total nombre de personnes ayant consultés ces annonces depuis toujours: <b>{{number_of_ads_views}}</b></div>
+            <div>Total nombre de commentaires postés sur ces annonces depuis toujours: <b>{{number_of_ads_comments}}</b></div>
+        </div>
+
+        <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_ads_ready || !list_of_ads_retrieved || !list_of_ads_loaded}">
+
+            <div class="title">
+                Nombre de visiteurs par annonce 
+            </div>
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_for_ads_2"  style="height: 100%;    width: 200px;" >
+                    <option  value="" selected disabled>{{list_of_ads_names[0]}}</option>
+                    <option *ngFor="let section of list_of_ads_names;let i=index;" > {{section}}</option> 
+                </select>
+            </div>
+           
+           
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_ad_stats_retrieved && list_of_ads_retrieved && list_of_ads_loaded">
+
+            <div class="loading-page" >
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="single_ad_stats_retrieved">
+            
+            
+
+            <ngx-charts-line-chart
+            [view]="view_profile_stats_nb_visitors"
+            [scheme]="colorScheme"
+            [results]="multi_ad_stats"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend_profile_stats_nb_visitors"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+            (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+
+           
+        </div>
+      
+    </div>
+
+
+    <!-- COMICS STATS -->
+    <!-- COMICS STATS -->
+    <!-- COMICS STATS -->
+    <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[8]=='public'  && visitor_mode && show_stats) || (!visitor_mode )) }">
+    
+     
+    
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques des bandes dessinées
+            </div>
+
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[8]=='private'" (click)="change_information_privacy_public(8)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[8]=='public'" (click)="change_information_privacy_private(8)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+
+        <div class="panel-controller" >
+
+            
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_comics_stats"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+           
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_comics_loaded">
+            <div *ngIf="list_of_comics_retrieved">
+                aucune bande dessinée
+            </div>
+            <div class="loading-page" *ngIf="!list_of_comics_retrieved ">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+        
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_comics_retrieved && list_of_comics_loaded">
+            <div>Total nombre de B.D. postées : <b>{{number_of_comics}}</b></div>
+            <div>Total nombre de vues de ces B.D. depuis toujours: <b>{{number_of_comics_views}}</b></div>
+            <div>Total nombre de mentions j'aime de ces B.D. depuis toujours: <b>{{number_of_comics_likes}}</b></div>
+            <div>Total nombre de mentions j'adore de ces B.D. depuis toujours: <b>{{number_of_comics_loves}}</b></div>
+            <div>Total nombre de commentaires de ces B.D. depuis toujours: <b>{{number_of_comics_comments}}</b></div>
+        </div>
+
+        <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_comics_ready || !list_of_comics_retrieved || !list_of_comics_loaded}">
+
+            <div class="title">
+                Statistiques par B.D.
+            </div>
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_for_comics_2"  style="height: 100%;    width: 200px;" >
+                    <option  value="" selected disabled>{{list_of_comics_names[0]}}</option>
+                    <option *ngFor="let section of list_of_comics_names;let i=index;" > {{section}}</option> 
+                </select>
+            </div>
+           
+           
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_comics_stats_retrieved && list_of_comics_retrieved && list_of_comics_loaded">
+
+            <div class="loading-page" >
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="single_comics_stats_retrieved">
+            
+            
+
+            <ngx-charts-line-chart
+            [view]="view_profile_stats_nb_visitors"
+            [scheme]="colorScheme"
+            [results]="multi_comics_contents"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend_profile_stats_nb_visitors"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+            (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+
+           
+        </div>
+      
+    </div>
+
+    <!-- DRAWINGS STATS -->
+    <!-- DRAWINGS STATS -->
+    <!-- DRAWINGS STATS -->
+    <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[9]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+
+        
+
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques des dessins
+            </div>
+
+           
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[9]=='private'" (click)="change_information_privacy_public(9)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[9]=='public'" (click)="change_information_privacy_private(9)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+
+        <div class="panel-controller" >
+
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_drawings_stats"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+          
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_drawings_loaded">
+            <div *ngIf="list_of_drawings_retrieved">
+                aucun dessin
+            </div>
+            <div class="loading-page" *ngIf="!list_of_drawings_retrieved ">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+        
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_drawings_retrieved && list_of_drawings_loaded">
+            <div>Total nombre de dessins postées : <b>{{number_of_drawings}}</b></div>
+            <div>Total nombre de vues de ces dessins depuis toujours: <b>{{number_of_drawings_views}}</b></div>
+            <div>Total nombre de mentions j'aime de ces dessins depuis toujours: <b>{{number_of_drawings_likes}}</b></div>
+            <div>Total nombre de mentions j'adore de ces dessins depuis toujours: <b>{{number_of_drawings_loves}}</b></div>
+            <div>Total nombre de commentaires de ces dessins depuis toujours: <b>{{number_of_drawings_comments}}</b></div>
+        </div>
+
+        <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_drawings_ready || !list_of_drawings_retrieved || !list_of_drawings_loaded}">
+
+            <div class="title">
+                Statistiques par dessin/artbook
+            </div>
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_for_drawings_2"  style="height: 100%;    width: 200px;" >
+                    <option  value="" selected disabled>{{list_of_drawings_names[0]}}</option>
+                    <option *ngFor="let section of list_of_drawings_names;let i=index;" > {{section}}</option> 
+                </select>
+            </div>
+            
+            
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_drawings_stats_retrieved && list_of_drawings_retrieved && list_of_drawings_loaded">
+
+            <div class="loading-page" >
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="single_drawings_stats_retrieved">
+            
+            
+
+            <ngx-charts-line-chart
+            [view]="view_profile_stats_nb_visitors"
+            [scheme]="colorScheme"
+            [results]="multi_drawings_contents"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend_profile_stats_nb_visitors"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+            (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+
+            
+        </div>
+        
+    </div>
+
+    <!-- WRITINGS STATS -->
+    <!-- WRITINGS STATS -->
+    <!-- WRITINGS STATS -->
+    <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[10]=='public'  && visitor_mode && show_stats) || (!visitor_mode )) }">
+
+        
+
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques des écrits
+            </div>
+
+            
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[10]=='private'" (click)="change_information_privacy_public(10)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[10]=='public'" (click)="change_information_privacy_private(10)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+
+
+        <div class="panel-controller" >
+
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_writings_stats"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+            
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_writings_loaded">
+            <div *ngIf="list_of_writings_retrieved">
+                aucun écrit
+            </div>
+            <div class="loading-page" *ngIf="!list_of_writings_retrieved ">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+        
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_writings_retrieved && list_of_writings_loaded">
+            <div>Total nombre d'écrits postées : <b>{{number_of_writings}}</b></div>
+            <div>Total nombre de vues de ces écrits depuis toujours: <b>{{number_of_writings_views}}</b></div>
+            <div>Total nombre de mentions j'aime de ces dessins depuis toujours: <b>{{number_of_writings_likes}}</b></div>
+            <div>Total nombre de mentions j'adore de ces écrits depuis toujours: <b>{{number_of_writings_loves}}</b></div>
+            <div>Total nombre de commentaires de ces écrits depuis toujours: <b>{{number_of_writings_comments}}</b></div>
+        </div>
+
+        <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_writings_ready || !list_of_writings_retrieved || !list_of_writings_loaded}">
+
+            <div class="title">
+                Statistiques par écrit
+            </div>
+
+            <div class="dropdowns-container"  >
+                <select name="somename" class="Sumo_for_writings_2"  style="height: 100%;    width: 200px;" >
+                    <option  value="" selected disabled>{{list_of_writings_names[0]}}</option>
+                    <option *ngFor="let section of list_of_writings_names;let i=index;" > {{section}}</option> 
+                </select>
+            </div>
+            
+            
+        </div>
+
+        <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_writings_stats_retrieved && list_of_writings_retrieved && list_of_writings_loaded">
+
+            <div class="loading-page" >
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+            
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="single_writings_stats_retrieved">
+            
+            
+
+            <ngx-charts-line-chart
+            [view]="view_profile_stats_nb_visitors"
+            [scheme]="colorScheme"
+            [results]="multi_writings_contents"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend_profile_stats_nb_visitors"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+            (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+
+            
+        </div>
+        
+    </div>
+
+    <!-- PROFILE STATS -->
+    <!-- PROFILE STATS -->
+    <!-- PROFILE STATS -->
+    <div  class="stats-container"  [ngClass]="{'invisible': !sumo_ready,'really-invisible': !((list_of_privacy[11]=='public' && visitor_mode && show_stats) || !visitor_mode )}">
+        <div class="panel-controller" >
+
+            <div class="title">
+                Statistiques du profil
+            </div>
+
+            <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu  #artworkOptions2="matMenu">
+                    <button *ngIf="list_of_privacy[11]=='private'" (click)="change_information_privacy_public(11)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Dévoiler</span>
+                    </button>
+                    <button *ngIf="list_of_privacy[11]=='public'" (click)="change_information_privacy_private(11)" class="mat-menu-item" mat-menu-item > 	
+                        <mat-icon class="item-icon">close</mat-icon>
+                        <span>Masquer</span>
+                    </button>
+                </mat-menu>
+            </span>
+        </div>
+
+        <div class="panel-controller" >
+
+            <div class="title">
+                Nombre de visiteurs
+            </div>
+
+            <div class="dropdowns-container"  >
+                
+                <select name="somename" class="Sumo_profile_stats"  style="height: 100%;    width: 200px;" >
+                    <option disabled selected value="none">Depuis toujours</option>
+                    <option label="Depuis 1 semaine">Depuis 1 semaine</option>
+                    <option label="Depuis 1 mois">Depuis 1 mois</option>
+                    <option label="Depuis 1 an">Depuis 1 an</option>
+                    <option label="Depuis toujours">Depuis toujours</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="!profile_stats_nb_visitors_found">
+            <div *ngIf="profile_stats_number_of_viewers_retrieved && !visitor_mode">
+                Vous n'avez reçu aucun visiteur pour le moment. Les autres utilisateurs ne peuvent avoir accès à cette information.
+            </div>
+            <div class="loading-page" *ngIf="!profile_stats_number_of_viewers_retrieved">
+                <mat-spinner diameter="30"  ></mat-spinner>
+            </div>
+        </div>
+
+   
+
+        <div class="contents-trendings-container" *ngIf="profile_stats_number_of_viewers_retrieved && profile_stats_nb_visitors_found">
+            
+            
+
+            <ngx-charts-line-chart
+            [view]="view_profile_stats_nb_visitors"
+            [scheme]="colorScheme"
+            [results]="multi_profile_stats_nb_visitors"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend_profile_stats_nb_visitors"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+            (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+
+           
+        </div>
+        
+        <div class="contents-trendings-container" *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
+           
+            Types de profiles des 100 derniers visiteurs
+           
+            <ngx-charts-pie-chart
+            [view]="view_viewers_stats"
+            [scheme]="colorScheme_viewers_stats"
+            [results]="single_viewers_profiles_stats"
+            [gradient]="gradient"
+            [legend]="showLegend_viewers_stats"
+            [legendPosition]="legendPosition_viewers_stats"
+            [labels]="showLabels"
+            [doughnut]="isDoughnut_viewers_stats"
+            (select)="onSelect($event)"
+            >
+            </ngx-charts-pie-chart>
+            
+           
+        </div>
+        <div class="contents-trendings-container" *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
+
+            Types de comptes des 100 derniers visiteurs
+            <ngx-charts-pie-chart
+            [view]="view_viewers_stats"
+            [scheme]="colorScheme_viewers_stats"
+            [results]="single_viewers_accounts_stats"
+            [gradient]="gradient"
+            [legend]="showLegend_viewers_stats"
+            [legendPosition]="legendPosition_viewers_stats"
+            [labels]="showLabels"
+            [doughnut]="isDoughnut_viewers_stats"
+            (select)="onSelect($event)"
+            >
+            </ngx-charts-pie-chart>
+        </div>
+
+        <div class="contents-trendings-container" *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
+            Age des 100 derniers visiteurs
+            <ngx-charts-pie-chart
+            [view]="view_viewers_stats"
+            [scheme]="colorScheme_viewers_stats"
+            [results]="single_viewers_age_stats"
+            [gradient]="gradient"
+            [legend]="showLegend_viewers_stats"
+            [legendPosition]="legendPosition_viewers_stats"
+            [labels]="showLabels"
+            [doughnut]="isDoughnut_viewers_stats"
+            (select)="onSelect($event)"
+            >
+            </ngx-charts-pie-chart>
+        </div>
+        <div class="contents-trendings-container" *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
+            Localisations 100 derniers visiteurs
+            <ngx-charts-pie-chart
+            [view]="view_viewers_stats"
+            [scheme]="colorScheme_viewers_stats"
+            [results]="single_viewers_locations_stats"
+            [gradient]="gradient"
+            [legend]="showLegend_viewers_stats"
+            [legendPosition]="legendPosition_viewers_stats"
+            [labels]="showLabels"
+            [doughnut]="isDoughnut_viewers_stats"
+            (select)="onSelect($event)"
+            >
+            </ngx-charts-pie-chart>
+        </div>
+    </div>
+    
+    
+</div>
+

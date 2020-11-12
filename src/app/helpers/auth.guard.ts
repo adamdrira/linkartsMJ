@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
                  .subscribe(
                     (status:any) => {
                         console.log(status);
-                        if(status=="account"){
+                        if(status=="account" || status=="suspended"){
                             resolve(true);
                         }
                         else if(status=="visitor"){
@@ -34,6 +34,7 @@ export class AuthGuard implements CanActivate {
             })
         }
         else{
+            console.log(false)
             return new Promise(resolve=>{resolve(false)})
           
         }

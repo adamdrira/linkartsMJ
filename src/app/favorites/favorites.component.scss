@@ -1,0 +1,298 @@
+
+  /*
+   * Content
+   */
+
+   $number: 1000; 
+  
+
+   
+
+    a {
+      color:#333;
+      cursor:pointer;
+    }
+    
+    a:hover {
+      text-decoration: none;
+    }
+ 
+   hr {
+     margin-right:45%;
+     margin-left:45%;
+     margin-top:0px;
+     border: 0;
+     border-top: 1px solid rgb(190, 173, 96);
+   }
+ 
+   
+// First section
+   
+// First section
+.panel-controller {
+  //margin-top:30px;
+  width:100%;
+  font-size: 13px;
+  margin-bottom:30px;
+  box-shadow:0px 0px 3px 1px #dadbdc;
+  background: linear-gradient(0.02turn, #8696bd, #475e88, #8696bd, #203865);
+  height: 50px;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius:10px;
+  //background-color:rgb(32,56,100);  
+  //box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
+}
+
+
+.panel-controller .controller-category {
+  display: flex;
+  box-shadow: 0px 0px 2px 0px #203864;
+  padding: 5px 20px 5px 20px;
+  font-size: 15px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  cursor:pointer;
+  height: 100%;
+  width: 33.33%;
+  color:white;
+  
+  transition:background-color 200ms !important;
+}
+
+.panel-controller .controller-category span {
+  margin:auto auto auto 10px;
+}
+.comic-bubble-icon {
+  background-image:none !important;
+  background-color: rgb(255, 255, 255);
+  width:30px;
+  height:30px;
+  margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
+  mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
+}
+.pencil-icon {
+  background-image:none !important;
+  background-color: rgb(255, 255, 255);
+  width:25px;
+  height:25px;
+  margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
+  mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
+}
+.writing2-icon {
+  background-image:none !important;
+  background-color: rgb(255, 255, 255);
+  width:28px;
+  height:28px;
+  margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
+  mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
+}
+
+
+
+.panel-controller > .controller-category:hover {
+  background-color: rgba(32, 56, 100, 0.071);
+  text-shadow: -0.01ex 0 #ffffff, 0.01ex 0 #ffffff;
+}
+
+.panel-controller > .open {
+    text-shadow: -0.01ex 0 white, 0.01ex 0 white !important;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    color: #ffffff !important;
+    background: #203864 !important;
+}
+
+
+
+.panel-controller .right-container {
+  display:flex;
+  float:right;
+  height:100%;
+  margin-right:50px;
+}
+
+.panel-controller .right-container .dropdowns-container {
+  display:flex;
+}
+
+.panel-controller .right-container select{
+  display:flex;
+  float:right;
+  height:100%;
+}
+
+
+.panel-controller .right-container select{
+  display:flex;
+  float:right;
+  height:100%;
+}
+
+
+
+mat-spinner {
+  margin: auto;
+  ::ng-deep circle {
+      stroke: rgb(32,56,100);
+  }
+}
+.loading-page{
+  position:relative;
+  margin-top:calc(50vh - 180px);
+  /*top:50%;
+  left:50%;*/
+}
+
+.ranking {
+  box-shadow: 0px 2px 1px -2px rgba(0, 0, 0, 0.2), 0px 3px 1px 0px rgba(0, 0, 0, 0.14), 0px 5px 14px 0px rgba(0, 0, 0, 0.12);
+}
+
+.ranking .shining-box {
+  padding-top: 10px;
+  padding-bottom: 7px;
+  display:flex;
+  background-image: linear-gradient(
+      to right,
+      transparent 33%,
+      rgba(255,255,255,0.3) 50%,
+      transparent 66%
+  );
+  background-size:300% 100%;
+  animation: shine 2s infinite;
+}
+
+.ranking.gold {
+  background-image: linear-gradient(-280deg,#eee142,#ffbb23);
+}
+.ranking.silver {
+  background-image: linear-gradient(-280deg, #e2e2e2, #bdbdbd);
+}
+.ranking.bronze {
+  background-image: linear-gradient(-280deg, #ffb48a, #f27025);
+}
+.ranking.other {
+  background-image: linear-gradient(-280deg, #d7ebff,#9ecbf2);
+}
+
+.ranking .ranking-number {
+  margin: auto auto 5px 10px;
+  font-size: 17px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border: 2px solid rgb(32,56,100);
+  border-radius: 100px;
+  cursor:default;
+}
+
+.ranked-thumbnail-container {
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:20px;
+  margin-bottom: 15px;
+}
+
+
+.skeleton {
+  width: 100%;
+  height: 269px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border-radius: 25px;
+  background-color: gainsboro;
+  background-image: linear-gradient(to right, transparent 33%, rgb(255 255 255 / 70%) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 1500ms infinite;
+}
+
+
+
+
+@keyframes shine {
+  0% {
+      background-position: right;    
+  }
+  /*100% {
+      background-position: left; it's the default value, no need to define it
+  }*/
+}
+
+
+.trendings-global-container {
+  margin-right:auto;
+}
+
+
+@media (max-width: 600px) {
+  .skeleton {
+    height: 500px !important;
+  }
+}
+
+@media (max-width:700px) {
+  .panel-controller {
+    height:unset !important;
+  }
+  .panel-controller .controller-category {
+    font-size: 14px !important;
+    flex-direction: column;
+    height:unset !important;
+  }
+  .panel-controller .controller-category span {
+    margin:5px auto 0px auto;
+  }
+  .panel-controller .controller-category .comic-bubble-icon {
+    margin:5px auto auto auto;
+    width:23px;
+    height:23px;
+  }
+  .panel-controller .controller-category .pencil-icon {
+    margin:5px auto auto auto;
+    width:23px;
+    height:23px;
+  }
+  .panel-controller .controller-category .writing2-icon {
+    margin:5px auto auto auto;
+    width:23px;
+    height:23px;
+  }
+} 
+@media (max-width:500px) {
+  .panel-controller .controller-category {
+    font-size: 11px !important;
+    padding:5px 10px 5px 10px !important;
+  }
+} 
+
+@media (min-width: 0px) and (max-width: 1000px) {
+  .category-filter, .subcategory-filter {
+   width:100%;
+  }
+}
+
+ @media (min-width:1000px) and (max-width:1300px) {
+   .category-filter, .subcategory-filter {
+    width:85%;
+   }
+ }
+
+ @media (min-width:1300px) {
+  .category-filter, .subcategory-filter {
+    width:65%;
+  }
+ }
+
+@media (max-width: 1120px) {
+  .trendings-global-container {
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
+

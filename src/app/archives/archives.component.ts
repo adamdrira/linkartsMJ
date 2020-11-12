@@ -20,7 +20,7 @@ import { Story_service } from '../services/story.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
-
+import {get_date_to_show_chat} from '../helpers/dates';
 
 declare var $: any;
 
@@ -31,7 +31,8 @@ declare var $: any;
 })
 export class ArchivesComponent implements OnInit {
 
-  constructor(private rd: Renderer2, 
+  constructor(
+    private rd: Renderer2, 
     private authenticationService: AuthenticationService,
     private router: Router,
     public route: ActivatedRoute, 
@@ -518,6 +519,14 @@ export class ArchivesComponent implements OnInit {
     })
   }
 
+
+  get_date(created){
+    let now=Math.trunc( new Date().getTime()/1000);
+    let date=created.substring(0,10);
+    let table=date.split('-')
+    return table[2]+'/'+table[1]+'/'+table[0];
+  }
+
   
   /**************************************************ADS ******************************* */
 /**************************************************ADS ******************************* */
@@ -635,9 +644,8 @@ container_drawings_rendred() {
   get_number_of_drawings_to_show(){
 
     let width =$('.drawings-container').width();
-  
     if(width>0 && !this.got_number_of_drawings_to_show){
-      this.number_of_drawings_variable=Math.floor(width/300);
+      this.number_of_drawings_variable=Math.floor(width/220);
       this.got_number_of_drawings_to_show=true;
       this.number_of_lines_drawings=2;
       
@@ -656,7 +664,9 @@ container_drawings_rendred() {
     this.updating_drawings=true;
     if(this.got_number_of_drawings_to_show){
       let width =$('.drawings-container').width();
-      let variable =Math.floor(width/300);
+      console.log(width)
+      console.log(width*0.8)
+      let variable =Math.floor(width/220);
       if(variable!=this.number_of_drawings_variable){
         for(let i=0;i<2;i++){
           this.number_of_drawings_to_show_by_category[i]/=this.number_of_drawings_variable;

@@ -35,6 +35,7 @@ export class TempAuthGuard implements CanActivate {
             })
         }
         else{
+            console.log(false)
             this.router.navigate(['/login_invited_user']);
             return new Promise(resolve=>{resolve(false)})
         }

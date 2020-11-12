@@ -15,7 +15,6 @@ import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
-
 import { pattern } from '../helpers/patterns';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
@@ -83,8 +82,8 @@ export class AddWritingComponent implements OnInit {
   REAL_step: number;
   CURRENT_step: number;
   pdfSrc:SafeUrl;
-
-  
+  type_of_account:string;
+  user_retrieved=false;
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
   @ViewChild("title", {static:false}) title: ElementRef;
@@ -95,6 +94,8 @@ export class AddWritingComponent implements OnInit {
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
       this.visitor_name=r[0].firstname + ' ' + r[0].lastname;
+      this.type_of_account=r[0].type_of_account;
+      this.user_retrieved=true;
     })
 
     this.createFormControlsWritings();
@@ -170,7 +171,8 @@ export class AddWritingComponent implements OnInit {
   validateForm00() {
 
     this.nextButton.nativeElement.disabled = true;
-
+    console.log( this.fw)
+    console.log(this.Writing_CoverService.get_confirmation())
     if ( this.fw.valid  && /*this.Writing_Upload_Service.get_confirmation() &&*/ this.Writing_CoverService.get_confirmation() ) {
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.CURRENT_step++;
@@ -190,18 +192,28 @@ export class AddWritingComponent implements OnInit {
     }
     else {
       this.nextButton.nativeElement.disabled = false;
-      
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-      });
+      if(this.fw.controls.fwTags.status=='INVALID' && this.fw.controls.fwTitle.status=='VALID' && this.fw.controls.fwDescription.status=='VALID' && this.fw.controls.fwCategory.status=='VALID'){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        });
+      }
+    
     }
   }
 
   validate_form_writing() {
 
     this.validateButton.nativeElement.disabled = true;
+    console.log(this.Writing_Upload_Service.get_confirmation())
+    let confirmation =this.Writing_Upload_Service.get_confirmation()[0];
+    let total_pages=this.Writing_Upload_Service.get_confirmation()[1];
     
-    if ( this.fw.valid  && this.Writing_Upload_Service.get_confirmation() && this.Writing_CoverService.get_confirmation() ) {
+    if ( this.fw.valid  && [0] && confirmation ) {
 
       
        this.display_loading=true;
@@ -211,7 +223,8 @@ export class AddWritingComponent implements OnInit {
           this.fw.value.fwCategory, 
           this.fw.value.fwTags, 
           this.fw.value.fwDescription,  
-          this.monetised )
+          this.monetised,
+          total_pages)
         .subscribe( v => {
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing().subscribe(r=>{
@@ -235,7 +248,9 @@ export class AddWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  window.location.href = `/account/${this.pseudo}/${this.user_id}`;
+                  this.block_cancel=true;
+                  this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+                  //window.location.href = `/account/${this.pseudo}/${this.user_id}`;
                 }) 
               }); 
             })
@@ -273,8 +288,12 @@ export class AddWritingComponent implements OnInit {
     this.cancelled.emit();
   }
 
+  block_cancel=false;
   cancel_all(){
-    this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
+    if(!this.block_cancel){
+      this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
+    }
+   
   }
 
   
