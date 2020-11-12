@@ -36,11 +36,14 @@ export class MediaWritingsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-
+    if(this.number_of_writings_to_show>=0){
+      this.update_lists(this.number_of_writings_to_show);
+    }
+    
   }
   
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
-  
+  @Output() list_of_writings_retrieved_emitter = new EventEmitter<object>();
   cancelled: number;
 
   @Input() sorted_style_list: any[];
@@ -65,12 +68,18 @@ export class MediaWritingsComponent implements OnInit {
       this.sorted_artpieces_scenario.length +
       this.sorted_artpieces_article.length +
       this.sorted_artpieces_poetry.length;
+      console.log(this.number_of_thumbnails)
+
+      if(this.number_of_thumbnails==0){
+        this.list_of_contents_sorted=true;
+        this.list_of_writings_retrieved_emitter.emit({retrieved:true})
+      }
   }
 
   j=0;
   number_retrieved=false;
   send_number_of_thumbnails(object){
-    
+    console.log("send_number_of_thumbnails")
     if(object.number!=this.number_of_writings_to_show){
       this.list_of_contents_sorted=false;
       this.number_of_writings_to_show=object.number;
@@ -82,7 +91,7 @@ export class MediaWritingsComponent implements OnInit {
   }
 
   number_of_loaded=0;
-  send_loaded(object){
+  sendLoaded(object){
     this.number_of_loaded++;
 
     if(this.number_of_loaded==this.number_of_thumbnails){
@@ -106,7 +115,7 @@ export class MediaWritingsComponent implements OnInit {
   }
 
   update_lists(number){
-
+    console.log("update list ")
     if( number== 1 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
@@ -130,6 +139,7 @@ export class MediaWritingsComponent implements OnInit {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.list_of_contents_sorted=true;
+    this.list_of_writings_retrieved_emitter.emit({retrieved:true})
     this.cd.detectChanges();
   }
 

@@ -3,7 +3,7 @@
 
 
     <div class="swiper-container456" id="target1">
-        <app-uploader-dessin-unique [upload]=upload [title]=name (uploaded)="uploaded_image( $event );" (image)="get_image( $event );"></app-uploader-dessin-unique>
+        <app-uploader-dessin-unique [upload]=upload [title]=name (uploaded)="uploaded_image( $event );" (sendValidated)="sendValidated($event)" (image)="get_image( $event );"></app-uploader-dessin-unique>
     </div>
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">
@@ -18,7 +18,7 @@
                     <div class="full-crop">
                         <img #image [src]="imageSource" crossorigin>
                     </div>
-                    <div class="buttons-container">
+                    <div class="buttons-container" style=" margin-top: 20px;">
                         <button mat-raised-button class="restart-crop-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
                             <mat-icon>refresh</mat-icon>
                             <span>Recommencer</span>

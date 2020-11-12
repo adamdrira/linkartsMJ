@@ -11,6 +11,7 @@ import { first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 
 declare var $:any;
@@ -51,7 +52,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     private Drawings_CoverService:Drawings_CoverService,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
-
+    private router:Router,
     ) {
 
   }
@@ -478,17 +479,27 @@ export class SwiperUploadArtbookComponent implements OnInit {
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
+        this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+          console.log("received validated")
+          this.block_cancel=true;
+          this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
+          //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
+        });
       }
     }
 
 
   }
 
+  block_cancel=false;
   cancel_all() {
-    this.Drawings_Artbook_Service.RemoveDrawingArtbook(0).pipe(first()).subscribe(res=>{
-      this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
-      console.log(res)
-    });  
+    if(!this.block_cancel){
+      this.Drawings_Artbook_Service.RemoveDrawingArtbook(0).pipe(first()).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
+        console.log(res)
+      });
+    }
+      
   }
 
   uploaded_image( event1: boolean) {

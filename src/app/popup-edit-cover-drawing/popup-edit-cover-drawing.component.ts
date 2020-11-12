@@ -245,7 +245,7 @@ export class PopupEditCoverDrawingComponent implements OnInit {
         });
     }
 
-    else if ( this.Drawings_CoverService.get_confirmation() &&this.data.format == "Artbook" ) {
+    else if ( this.Drawings_CoverService.get_confirmation() &&this.data.format == "artbook" ) {
       this.Drawings_CoverService.add_covername_to_sql2("Série",this.data.bd_id).subscribe(r=>{
         location.reload();
       });

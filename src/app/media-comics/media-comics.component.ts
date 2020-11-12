@@ -42,7 +42,9 @@ export class MediaComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    
+    if(this.number_of_comics_to_show>=0){
+      this.update_lists(this.number_of_comics_to_show);
+    }
 
   }
 
@@ -65,26 +67,29 @@ export class MediaComicsComponent implements OnInit {
 
   @Input() now_in_seconds: number;
 
+  @Output() list_of_comics_retrieved_emitter = new EventEmitter<object>();
+  
+
   number_of_comics_to_show=0;
   show_more=[false,false,false,false];
   list_of_contents_sorted:boolean=false;
   number_of_thumbnails=0;
   
   ngOnInit() {
-    console.log(this.sorted_artpieces_manga_format)
     this.number_of_thumbnails=this.sorted_artpieces_comics.length +
       this.sorted_artpieces_webtoon.length +
       this.sorted_artpieces_manga.length +
       this.sorted_artpieces_bd.length;
-    console.log( this.number_of_thumbnails);
 
-    
+      if(this.number_of_thumbnails==0){
+        this.list_of_contents_sorted=true;
+        this.list_of_comics_retrieved_emitter.emit({retrieved:true})
+      }
   }
 
   j=0;
   number_retrieved=false;
   send_number_of_thumbnails(object){
-    
     if(object.number!=this.number_of_comics_to_show){
       this.list_of_contents_sorted=false;
       this.number_of_comics_to_show=object.number;
@@ -111,6 +116,7 @@ export class MediaComicsComponent implements OnInit {
     this.list_of_more_contents_sorted=true;
   }
 
+  categories_array = Array(4);
   skeleton_array = Array(20);
   number_of_skeletons_per_line = 1;
   send_number_of_skeletons(object) {
@@ -119,7 +125,6 @@ export class MediaComicsComponent implements OnInit {
   }
 
   update_lists(number){
-    
     if( number== 1 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
@@ -143,6 +148,7 @@ export class MediaComicsComponent implements OnInit {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.list_of_contents_sorted=true;
+    this.list_of_comics_retrieved_emitter.emit({retrieved:true})
     this.cd.detectChanges();
   }
 
@@ -176,5 +182,9 @@ export class MediaComicsComponent implements OnInit {
   }
 
 
+
+  
+
+  
 
 }

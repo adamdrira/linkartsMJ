@@ -21,7 +21,7 @@ import { Ads_service } from '../services/ads.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_chat} from '../helpers/dates';
-
+import {get_date_to_show_navbar} from '../helpers/dates';
 declare var $: any;
 
 
@@ -66,10 +66,26 @@ export class NavbarLinkartsComponent implements OnInit {
     private NotificationsService:NotificationsService,
     
     ) {
-      
+      navbar.connexion.subscribe(r=>{
+        if(r!=this.connexion_status){
+          this.connexion_status=r
+          if(!r){
+            //console.log("not connected")
+          }
+          if(r){
+            //console.log("connected")
+            this.reload_page();
+          }
+        }
+        
+      })
   }
-  
 
+  reload_page(){
+    location.reload();
+  }
+
+  connexion_status=true;
   activated_search:boolean = false;
   activate_search() {
     this.activated_search = true;
@@ -113,7 +129,7 @@ export class NavbarLinkartsComponent implements OnInit {
   @ViewChild('propositions') propositions:ElementRef;
   @ViewChild('navbarLogo') navbarLogo:ElementRef;
 
-  list_of_real_categories=["Artist","Ad","Comic","Drawing","Writing"];
+  list_of_real_categories=["Account","Ad","Comic","Drawing","Writing"];
   first_filters_artists=["Auteur de B.D.", "Dessinateur", "Ecrivain"];
   first_filters_ads=["B.D.","BD euro.","Comics","Manga","Webtoon","Dessin","Dessin dig.","Dessin trad.","Ecrit","Article","Poésie","Roman","Roman il."];
   first_filters_comics=["Comics", "BD", "Manga","Webtoon"];
@@ -130,7 +146,7 @@ export class NavbarLinkartsComponent implements OnInit {
   
   @HostListener('window:focus', ['$event'])
   onFocus(event: any): void {
-    if(!this.user_present && this.type_of_profile=='account' && !this.show_chat_messages){
+    if(!this.user_present && (this.type_of_profile=='account' || this.type_of_profile=='suspended') && !this.show_chat_messages){
        this.list_of_friends_retrieved=false;
        this.user_present=true;
        this.sort_friends_list();
@@ -147,15 +163,14 @@ export class NavbarLinkartsComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    if(!this.user_present && !this.show_notifications && this.type_of_profile=='account'){
+    if(!this.user_present && !this.show_notifications && (this.type_of_profile=='account' || this.type_of_profile=='suspended')){
       this.user_present=true;
       this.list_of_friends_retrieved=false;
       this.sort_friends_list();
     }
     if(this.focus_activated){
       if(!this.input.nativeElement.contains(event.target) && !this.searchicon.nativeElement.contains(event.target) && !this.propositions.nativeElement.contains(event.target) ) {
-        this.focus_activated=false;
-        this.show_researches_propositions=false;
+        
         this.cancel_research();
       } 
     }
@@ -190,9 +205,9 @@ export class NavbarLinkartsComponent implements OnInit {
     //this.define_margin_top();
 
     this.AuthenticationService.tokenCheck().subscribe(r=>{
-      if(r=="account"){
-        this.type_of_profile="account";
-        console.log(this.type_of_profile)
+      if(r=="account" || r=="suspended"){
+        this.type_of_profile=r;
+        //console.log(this.type_of_profile)
         this.retrieve_profile();
       }
       else{
@@ -200,7 +215,7 @@ export class NavbarLinkartsComponent implements OnInit {
         this.using_chat_retrieved=true;
         this.type_of_profile="visitor";
       }
-      console.log("in constructor")
+      //console.log("in constructor")
       this.type_of_profile_retrieved=true;
       
       
@@ -217,7 +232,7 @@ export class NavbarLinkartsComponent implements OnInit {
       }*/
       if( this.navbar.visible ) {
         if(this.type_of_profile_retrieved){
-          console.log("in else")
+          //console.log("in else")
           this.initialize_selectors();
           clearInterval(interval);
         }
@@ -225,9 +240,16 @@ export class NavbarLinkartsComponent implements OnInit {
     },50);
 
     //connexion to chat service interval
+
+    setInterval(() => {
+      if(this.list_of_friends_retrieved){
+        this.get_connections_status();
+      }
+    }, 60000);
+
     let chatinterval = setInterval(()=>{
       if(this.chatService.messages && !this.navbar.get_using_chat()){
-        console.log("if not using chat")
+        //console.log("if not using chat")
         this.using_chat_retrieved=true;
         this.check_chat_service=true;
         this.check_chat_service_func();
@@ -236,10 +258,10 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     },50)
 
-    console.log("check_notifications_from_service_func");
+    //console.log("check_notifications_from_service_func");
     this.navbar.notification.subscribe(msg=>{
       if(msg && msg[0].for_notifications){
-        console.log(msg[0])
+        //console.log(msg[0])
         this.sort_notifications(msg);
       }
     })  
@@ -294,7 +316,7 @@ export class NavbarLinkartsComponent implements OnInit {
   check_chat_service_func(){
     this.chatService.messages.subscribe(msg=>{
       if(msg[0].for_notifications){
-        console.log(msg[0])
+        //console.log(msg[0])
         this.sort_notifications(msg);
       }
       else{
@@ -307,7 +329,7 @@ export class NavbarLinkartsComponent implements OnInit {
   
 
   retrieve_profile(){
-    console.log("retrieve profile")
+    //console.log("retrieve profile")
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id=r[0].id;
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
@@ -317,7 +339,7 @@ export class NavbarLinkartsComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
         this.chatService.get_number_of_unseen_messages().subscribe(a=>{
-          console.log(a);
+          //console.log(a);
           if(a[0]){
             this.number_of_unseen_messages=a[0].number_of_unseen_messages;
           }
@@ -326,13 +348,13 @@ export class NavbarLinkartsComponent implements OnInit {
           }
           
           this.NotificationsService.get_list_of_notifications().subscribe(r=>{
-            console.log(r[0])
+            //console.log(r[0])
             if(r[0].length>0){
               for(let i=0;i<r[0].length;i++){
                 this.list_of_notifications[i]=r[0][i];
                 if(i==r[0].length-1){
-                  console.log("end retrieve profile")
-                  this.get_final_list_of_notifications_to_show();
+                  //console.log("end retrieve profile")
+                  this.get_final_list_of_notifications_to_show("initialize");
                   this.sort_friends_list();
                 }
               }
@@ -360,9 +382,9 @@ export class NavbarLinkartsComponent implements OnInit {
   }
  
   sort_notifications(msg){
-    console.log("sorting notif")
+    //console.log("sorting notif")
     if(msg[0].for_notifications){
-      console.log(msg[0].information)
+      //console.log(msg[0].information)
       if(msg[0].information!='remove'){
         this.list_of_notifications.splice(0,0,msg[0])
       }
@@ -380,14 +402,14 @@ export class NavbarLinkartsComponent implements OnInit {
               index=i;
             }
         }
-        console.log(this.list_of_notifications[index])
+        //console.log(this.list_of_notifications[index])
         if(index>=0){
           this.list_of_notifications.splice(index,1)
         }
         
       }
-      this.get_final_list_of_notifications_to_show();
-      console.log(this.list_of_notifications)
+      this.get_final_list_of_notifications_to_show("add");
+      //console.log(this.list_of_notifications)
     }
     else{
       this.list_of_messages.splice(0,0,msg[0]);
@@ -403,19 +425,26 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     
     else{
+      for(let i=0;i<this.list_of_notifications.length;i++){
+        this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+      }
       this.show_notifications=true;
     }
   }
 
   
   change_notifications_status_to_checked(){
-    console.log("change_notifications_status_to_checked")
+    //console.log("change_notifications_status_to_checked")
+    //console.log( this.list_of_notifications)
+    //console.log(this.final_list_of_notifications_to_show)
     let modify=false;
     for(let i=0;i<this.list_of_notifications.length;i++){
       if(this.list_of_notifications[i].status=="unchecked"){
         modify=true;
         this.list_of_notifications[i].status="checked";
-        this.final_list_of_notifications_to_show[i].status="checked";
+        if(this.final_list_of_notifications_to_show[i]){
+          this.final_list_of_notifications_to_show[i].status="checked"
+        }
       }
     }
     if(modify){
@@ -426,8 +455,16 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   dictionnary_of_similar_notifications={};
+  list_of_notifications_dates=[];
   final_list_of_notifications_to_show=[];
-  get_final_list_of_notifications_to_show(){
+  compteur_get_final_list=0;
+  get_final_list_of_notifications_to_show(status){
+    if(status=="add"){
+      this.list_of_notifications_profile_pictures.splice(0,0,null);
+    }
+    this.compteur_get_final_list++;
+    let compteur=this.compteur_get_final_list
+    //console.log("Az get fi list of notifs r c " + this.compteur_get_final_list)
     this.final_list_of_notifications_to_show=[];
     this.dictionnary_of_similar_notifications={};
     this.dictionnary_of_similar_notifications[0]=[];
@@ -485,27 +522,70 @@ export class NavbarLinkartsComponent implements OnInit {
     this.data_retrieved=true;
     this.display_number_of_unchecked_notifications();
     let compteur_pp=0;
+    //console.log("Az r to go list for l" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
     for(let i=0;i<this.list_of_notifications.length;i++){
-      this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_notifications[i].id_user).subscribe(t=> {
-        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_notifications_profile_pictures[i] = SafeURL;
+     // console.log("Az index " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
+      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+
+      if(status=="initialize"){
+        this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
+          if(this.compteur_get_final_list==t[1]){
+           // console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
+            let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_notifications_profile_pictures[i] = SafeURL;
+              compteur_pp++;
+              if(compteur_pp==this.list_of_notifications.length){
+                //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
+                this.index_of_notifications_to_show=15+number_of_empties;
+                this.notifications_pictures_retrieved=true;
+                this.display_number_of_unchecked_notifications();
+              }
+            
+          }
+         
+        })
+      }
+      if(status=="add" ){
+        if( this.list_of_notifications_profile_pictures[i]){
           compteur_pp++;
           if(compteur_pp==this.list_of_notifications.length){
+            //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
             this.index_of_notifications_to_show=15+number_of_empties;
             this.notifications_pictures_retrieved=true;
             this.display_number_of_unchecked_notifications();
           }
-        
-      })
+        }
+        else{
+          this.Profile_Edition_Service.retrieve_profile_picture_for_notifs(this.list_of_notifications[i].id_user,compteur).subscribe(t=> {
+            if(this.compteur_get_final_list==t[1]){
+              //console.log("Az pp ret i " + i + "/" + this.list_of_notifications.length + " and c " +  compteur + " and r c " +  this.compteur_get_final_list)
+              let url = (window.URL) ? window.URL.createObjectURL(t[0]) : (window as any).webkitURL.createObjectURL(t[0]);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.list_of_notifications_profile_pictures[i] = SafeURL;
+                compteur_pp++;
+                if(compteur_pp==this.list_of_notifications.length){
+                 // console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
+                  this.index_of_notifications_to_show=15+number_of_empties;
+                  this.notifications_pictures_retrieved=true;
+                  this.display_number_of_unchecked_notifications();
+                }
+              
+            }
+           
+          })
+        }
+
+      }
+      
     }
     
     
     
     
-    console.log(this.final_list_of_notifications_to_show)
-    console.log(this.dictionnary_of_similar_notifications)
-    console.log(this.list_of_notifications)
+    //console.log(this.final_list_of_notifications_to_show)
+    //console.log(this.dictionnary_of_similar_notifications)
+    //console.log(this.list_of_notifications)
   }
 
  
@@ -517,8 +597,24 @@ export class NavbarLinkartsComponent implements OnInit {
       }
     }
     this.number_of_unchecked_notifications=number;
-    console.log("number_of_unchecked_notifications")
-    console.log(number)
+    //console.log(.log("number_of_unchecked_notifications")
+    //console.log(.log(number)
+  }
+
+  indice=0
+  get_date(created,i){
+    if(created){
+      let now=Math.trunc( new Date().getTime()/1000);
+      let date=created
+      date = date.replace("T",' ');
+      date = date.replace("-",'/').replace("-",'/');
+      let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+      return get_date_to_show_navbar(now-deco_date);
+    }
+    else{
+      return "A l'instant"
+    }
+    
   }
 
   /******************************************** SEARCHBAR******************************* */
@@ -577,19 +673,22 @@ export class NavbarLinkartsComponent implements OnInit {
     this.input.nativeElement.focus();
     this.loading_recent=true;
     this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"researched").subscribe(r=>{
-      console.log(r[0][0]);
+      //console.log(.log(r[0][0]);
       this.show_researches_propositions=true;
-      console.log(r[1]);
-      console.log(this.compteur_recent)
+      //console.log(.log(r[1]);
+      //console.log(.log(this.compteur_recent)
       if(r[1]==this.compteur_recent){
         this.most_researched_propositions=r[0][0];
         this.show_most_researched_propositions=true;
         this.navbar.get_last_researched_navbar(this.publication_category,r[1]).subscribe(m=>{
+          //console.log(.log(m[0][0])
           if(m[1]==this.compteur_recent){
-            console.log(m[0][0]);
+            //console.log(.log(m[0][0]);
             this.list_of_first_propositions_history=m[0][0];
             if(m[0][0].length>0){
               this.first_option=true;
+              console.log("list_of_first_propositions_history")
+              console.log(this.list_of_first_propositions_history)
               for(let i=0;i<m[0][0].length;i++){
                 this.get_first_propositions(i,m[1])
               }
@@ -599,9 +698,11 @@ export class NavbarLinkartsComponent implements OnInit {
               this.first_option=false;
               this.navbar.get_most_researched_navbar(this.publication_category,r[1],"clicked").subscribe(n=>{
                 if(n[1]==this.compteur_recent){
-                  console.log(n[0][0]);
+                  //console.log(.log(n[0][0]);
                   this.list_of_first_propositions_history=n[0][0];
                   if(n[0][0].length>0){
+                    console.log("list_of_first_propositions_history")
+                    console.log(this.list_of_first_propositions_history)
                     for(let i=0;i<n[0][0].length;i++){
                       this.get_first_propositions(i,n[1])
                     }
@@ -633,12 +734,14 @@ export class NavbarLinkartsComponent implements OnInit {
   
 
   cancel_research(){
+    this.focus_activated=false;
+    this.show_researches_propositions=false;
     this.input.nativeElement.value='';
   }
 
   
   researches_propositions(event){
-    console.log(this.input.nativeElement.value);
+    //console.log(this.input.nativeElement.value);
     this.compteur_research+=1;
     this.compteur_recent+=1;
     //this.show_other_propositions=false;
@@ -657,20 +760,20 @@ export class NavbarLinkartsComponent implements OnInit {
         this.show_most_researched_propositions=false;
 
         this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).subscribe(m=>{
-          console.log(m[0][0]);
+          //console.log(m[0][0]);
           if(m[1]==this.compteur_research){
             this.list_of_first_propositions=m[0][0];
             if(m[0][0].length<10){
               this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10-m[0].length,m[1]).subscribe(r=>{
-                console.log(r[0][0]);
+                //console.log(r[0][0]);
                 if(r[1]==this.compteur_research){
                   if(r[0][0].length>0){
                     this.list_of_first_propositions=this.list_of_first_propositions.concat(r[0][0]);
                   }
                   if(this.list_of_first_propositions.length<10){
-                    console.log(this.list_of_first_propositions.length)
+                    //console.log(this.list_of_first_propositions.length)
                     this.navbar.get_global_tags_propositions_navbar(this.publication_category,this.input.nativeElement.value,10-this.list_of_first_propositions.length,r[1]).subscribe(u=>{
-                      console.log(u[0][0]);
+                      //console.log(u[0][0]);
                       if(u[1]==this.compteur_research){
                         if(u[0][0].length>0){
                           let len=this.list_of_first_propositions.length;
@@ -694,6 +797,7 @@ export class NavbarLinkartsComponent implements OnInit {
                           }
                         }
                         if(this.list_of_first_propositions.length>0){
+                          console.log("this.list_of_first_propositions")
                           console.log(this.list_of_first_propositions)
                           for(let i=0;i<this.list_of_first_propositions.length;i++){
                             this.get_other_propositions(i,u[1]);
@@ -745,8 +849,8 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_first_propositions(i,compteur){
-    if(this.list_of_first_propositions_history[i].publication_category=="Artist"){
-      console.log("artist");
+    if(this.list_of_first_propositions_history[i].publication_category=="Account"){
+      //console.log("Account");
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions_history[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=profile[0];
@@ -757,6 +861,7 @@ export class NavbarLinkartsComponent implements OnInit {
               this.list_of_thumbnails_history[i] = SafeURL;
               this.compteur_first_propositions++;
               if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                console.log("this.list_of_last_propositions_history");
                 console.log(this.list_of_last_propositions_history)
                 this.show_first_propositions=true;
                 this.loading_recent=false;
@@ -771,7 +876,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Ad"){
-      console.log("artist");
+      //console.log("artist");
       this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(ad=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=ad[0];
@@ -782,6 +887,7 @@ export class NavbarLinkartsComponent implements OnInit {
               this.list_of_thumbnails_history[i] = SafeURL;
               this.compteur_first_propositions++;
               if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                console.log("this.list_of_last_propositions_history");
                 console.log(this.list_of_last_propositions_history)
                 this.show_first_propositions=true;
                 this.loading_recent=false;
@@ -794,12 +900,12 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Comic"){
-      console.log("comic");
+      //console.log("comic");
       if(this.list_of_first_propositions_history[i].format=="one-shot"){
         this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
             this.list_of_last_propositions_history[i]=comic[0];
-            console.log(this.list_of_first_propositions_history[i].target_id);
+            //console.log(this.list_of_first_propositions_history[i].target_id);
             this.BdOneShotService.retrieve_thumbnail_picture(comic[0].name_coverpage).subscribe(t=>{
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -807,6 +913,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails_history[i] = SafeURL;
                   this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                    console.log("this.list_of_last_propositions_history");
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
@@ -830,6 +937,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails_history[i] = SafeURL;
                   this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                    console.log("this.list_of_last_propositions_history");
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
@@ -843,7 +951,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Drawing"){
-      console.log("drawing");
+      //console.log("drawing");
       if(this.list_of_first_propositions_history[i].format=="one-shot"){
         this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_recent){
@@ -855,6 +963,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails_history[i] = SafeURL;
                   this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                    console.log("this.list_of_last_propositions_history");
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
@@ -877,6 +986,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails_history[i] = SafeURL;
                   this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                    console.log("this.list_of_last_propositions_history");
                     console.log(this.list_of_last_propositions_history);
                     this.show_first_propositions=true;
                     this.loading_recent=false;
@@ -891,7 +1001,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions_history[i].publication_category=="Writing"){
-      console.log("writing");
+      //console.log("writing");
       this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions_history[i].target_id).subscribe(comic=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=comic[0];
@@ -902,6 +1012,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 this.list_of_thumbnails_history[i] = SafeURL;
                 this.compteur_first_propositions++;
                 if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+                  console.log("this.list_of_last_propositions_history");
                   console.log(this.list_of_last_propositions_history);
                   this.show_first_propositions=true;
                   this.loading_recent=false;
@@ -917,8 +1028,8 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   get_other_propositions(i,compteur){
-    if(this.list_of_first_propositions[i].publication_category=="Artist"){
-      console.log("artist");
+    if(this.list_of_first_propositions[i].publication_category=="Account"){
+      //console.log("artist");
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
@@ -928,9 +1039,8 @@ export class NavbarLinkartsComponent implements OnInit {
             if(compteur==this.compteur_research){
               this.list_of_thumbnails[i] = SafeURL;
               this.compteur_other_propositions++;
-              console.log(this.compteur_other_propositions)
-              console.log(this.list_of_first_propositions)
               if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                console.log("this.list_of_last_propositions");
                 console.log(this.list_of_last_propositions)
                 this.show_other_propositions=true;
                 this.loading_other=false;
@@ -945,7 +1055,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions[i].publication_category=="Ad"){
-      console.log("artist");
+      //console.log("artist");
       this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
@@ -955,9 +1065,8 @@ export class NavbarLinkartsComponent implements OnInit {
             if(compteur==this.compteur_research){
               this.list_of_thumbnails[i] = SafeURL;
               this.compteur_other_propositions++;
-              console.log(this.compteur_other_propositions)
-              console.log(this.list_of_last_propositions)
               if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                console.log("this.list_of_last_propositions");
                 console.log(this.list_of_last_propositions)
                 this.show_other_propositions=true;
                 this.loading_other=false;
@@ -972,7 +1081,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions[i].publication_category=="Comic"){
-      console.log("comic");
+      //console.log("comic");
       if(this.list_of_first_propositions[i].format=="one-shot"){
         this.BdOneShotService.retrieve_bd_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
@@ -984,6 +1093,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails[i] = SafeURL;
                   this.compteur_other_propositions++;
                   if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                    console.log("this.list_of_last_propositions");
                     console.log(this.list_of_last_propositions);
                     this.show_other_propositions=true;
                     this.loading_other=false;
@@ -1007,8 +1117,9 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails[i] = SafeURL;
                   this.compteur_other_propositions++;
                   if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                    console.log("this.list_of_last_propositions");
                     console.log(this.list_of_last_propositions);
-                    console.log(this.list_of_thumbnails);
+                    //console.log(this.list_of_thumbnails);
                     this.show_other_propositions=true;
                     this.loading_other=false;
                     this.cd.detectChanges();
@@ -1021,7 +1132,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions[i].publication_category=="Drawing"){
-      console.log("drawing");
+      //console.log("drawing");
       if(this.list_of_first_propositions[i].format=="one-shot"){
         this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
           if(compteur==this.compteur_research){
@@ -1033,6 +1144,7 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails[i] = SafeURL;
                   this.compteur_other_propositions++;
                   if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                    console.log("this.list_of_last_propositions");
                     console.log(this.list_of_last_propositions);
                     this.show_other_propositions=true;
                     this.loading_other=false;
@@ -1055,8 +1167,9 @@ export class NavbarLinkartsComponent implements OnInit {
                   this.list_of_thumbnails[i] = SafeURL;
                   this.compteur_other_propositions++;
                   if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                    console.log("this.list_of_last_propositions");
                     console.log(this.list_of_last_propositions);
-                    console.log(this.list_of_thumbnails);
+                    //console.log(this.list_of_thumbnails);
                     this.show_other_propositions=true;
                     this.loading_other=false;
                     this.cd.detectChanges();
@@ -1070,7 +1183,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
 
     if(this.list_of_first_propositions[i].publication_category=="Writing"){
-      console.log("writing");
+      //console.log("writing");
       this.Writing_Upload_Service.retrieve_writing_information_by_id(this.list_of_first_propositions[i].target_id).subscribe(comic=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=comic[0];
@@ -1081,6 +1194,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 this.list_of_thumbnails[i] = SafeURL;
                 this.compteur_other_propositions++;
                 if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+                  console.log("this.list_of_last_propositions");
                   console.log(this.list_of_last_propositions);
                   this.show_other_propositions=true;
                   this.loading_other=false;
@@ -1112,25 +1226,42 @@ export class NavbarLinkartsComponent implements OnInit {
     this.router.navigate([s]);
   }
 
+  close_notifications(){
+    this.show_notifications=false;
+    this.change_notifications_status_to_checked();
+    this.cd.detectChanges();
+  }
+
   open_research_style_and_tags(i: number) {
+    this.cancel_research()
     this.router.navigate([`/main-research-style-and-tag/1/${this.list_of_real_categories[i]}/item/all`]);
   }
   open_main_research(s: string) {
+    this.cancel_research()
     this.router.navigate([`/main-research/1/${s}/All`]);
   }
   open_account(i: number) {
+    //console.log("open_account")
+    this.cancel_research()
+    //console.log(this.list_of_last_propositions[i].nickname)
+    //console.log(this.list_of_last_propositions[i].id)
     this.router.navigate([`/account/${this.list_of_last_propositions[i].nickname}/${this.list_of_last_propositions[i].id}`]);
   }
   open_history_account(i: number) {
+    //console.log("open_history_account")
+    this.cancel_research()
     this.router.navigate([`/account/${this.list_of_last_propositions_history[i].nickname}/${this.list_of_last_propositions_history[i].id}`]);
   }
   open_ad_last_propositions(i: number) {
+    this.cancel_research()
     this.router.navigate([`/ad-page/${this.list_of_last_propositions[i].title}/${this.list_of_last_propositions[i].id}`]);
   }
   open_ad_last_propositions_history(i: number) {
+    this.cancel_research()
     this.router.navigate([`/ad-page/${this.list_of_last_propositions_history[i].title}/${this.list_of_last_propositions_history[i].id}`]);
   }
   open_artwork_last_proposition(s:any, i:number) {
+    this.cancel_research()
     if(s.publication_category.toLowerCase()=="writing") {
       this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions[i].title}/${s.target_id}`]);
     }
@@ -1139,6 +1270,7 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   open_artwork_last_proposition_history(s:any, i:number) {
+    this.cancel_research()
     if(s.publication_category.toLowerCase()=="writing") {
       this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions_history[i].title}/${s.target_id}`]);
     }
@@ -1147,30 +1279,55 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
   open_chat_2(i:number) {
+    this.show_chat_messages=false;
     this.router.navigate([`/chat/${this.get_chat_url(i)}`]);
   }
   open_chat_main() {
+    this.show_chat_messages=false;
     this.router.navigate([`/chat`]);
   }
   open_my_profile() {
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
   }
   open_my_account() {
+    if(this.show_notifications){
+      this.close_notifications();
+    }
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
   }
+
+  open_my_trending(category){
+    this.close_notifications();
+    if(category=='comic'){
+      this.router.navigate([`/trendings/comics`]);
+    }
+    if(category=='drawing'){
+      this.router.navigate([`/trendings/drawings`]);
+    }
+    if(category=='writing'){
+      this.router.navigate([`/trendings/writings`]);
+    }
+  }
+
+  
   open_comic(notif:any) {
+    this.close_notifications();
     this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
   }
   open_comic_chapter(notif:any) {
+    this.close_notifications();
     this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}/${notif.chapter_number}`]);
   }
   open_drawing(notif:any) {
+    this.close_notifications();
     this.router.navigate([`/artwork-drawing/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
   }
   open_writing(notif:any) {
+    this.close_notifications();
     this.router.navigate([`/artwork-writing/${notif.publication_name}/${notif.publication_id}`]);
   }
   open_ad(notif:any) {
+    this.close_notifications();
     this.router.navigate([`/ad-page/${notif.publication_name}/${notif.publication_id}`]);
   }
 
@@ -1187,39 +1344,39 @@ export class NavbarLinkartsComponent implements OnInit {
       return;
     }
     this.input.nativeElement.blur();
-    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,"researched",0,0,0,"unknown","unknown","unknown","unknown").subscribe(r=>{
-      console.log(r);
-      //this.location.go(`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`);
-      //location.reload();
+    this.activated_search=false;
+    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+      //console.log(r);
       this.router.navigate([`/main-research/1/${this.input.nativeElement.value}/${this.publication_category}`]);
       return;
     })
   }
 
   click_on_trending_message(i){
+    this.activated_search=false;
     let str=this.most_researched_propositions[i].research_string;
-    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,"researched",0,0,0,"unknown","unknown","unknown","unknown").subscribe(r=>{
-      console.log(r);
+    this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,null,"researched",0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+      //console.log(r);
     })
   }
 
   add_clicked_after_research(i){
     let lst=this.list_of_first_propositions[i];
     let lst2=this.list_of_last_propositions[i];
-    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag).subscribe()
+    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).subscribe()
   }
 
   add_clicked_after_research_recent(i){
     let lst=this.list_of_first_propositions_history[i];
     let lst2=this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag).subscribe()
+    this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).subscribe()
   }
 
   delete_from_history(i){
     let str=this.list_of_first_propositions_history[i].research_string
-    console.log(str);
+    //console.log(str);
     this.navbar.delete_click_after_ressearch_from_history(str).subscribe(r=>{
-      console.log(r);
+      //console.log(r);
       this.list_of_first_propositions_history.splice(i,1);
       this.list_of_last_propositions_history.splice(i,1);
     })
@@ -1235,7 +1392,9 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   login(){
-    const dialogRef = this.dialog.open(LoginComponent, {});
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: {usage:"login"}
+    });
   }
 
   signup(){
@@ -1298,6 +1457,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
 display_style_and_tag_research=false;
 indice_title_selected=-1;
+indice_page_loading=0;
 initialize_selectors(){
 
   let THIS=this;
@@ -1324,13 +1484,12 @@ initialize_selectors(){
   });
 
   $(".NavbarSelectBox").change(function(){
-    console.log($(this).val())
+    //console.log($(this).val())
     THIS.input.nativeElement.value="";
     THIS.publication_category=$(this).val();
     if(THIS.publication_category=="Comic" || THIS.publication_category=="Drawing" || THIS.publication_category=="Writing"){
       THIS.display_style_and_tag_research=true;
       THIS.indice_title_selected=THIS.list_of_real_categories.indexOf(THIS.publication_category);
-      console.log(THIS.first_filters[THIS.indice_title_selected])
     }
     else{
       THIS.display_style_and_tag_research=false;
@@ -1339,15 +1498,18 @@ initialize_selectors(){
   })
 
   $(".NavbarSelectBox2").change(function(){
-    if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
-      THIS.go_to_section(0);
+    if(THIS.indice_page_loading>0){
+      if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
+        THIS.go_to_section(0);
+      }
+      else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='1' ) {
+        THIS.go_to_section(1);
+      }
+      else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='2' ) {
+        THIS.go_to_section(2);
+      }
     }
-    else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='1' ) {
-      THIS.go_to_section(1);
-    }
-    else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='2' ) {
-      THIS.go_to_section(2);
-    }
+    THIS.indice_page_loading++;
   })
 
 }
@@ -1418,11 +1580,11 @@ sort_friends_list() {
   this.list_of_groups_retrieved=false;
   this.list_of_groups_ids=[];
 
-  console.log("first sort friends list")
+  //console.log("first sort friends list")
   this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
     if(r[0].length>0){
       let compt=0;
-      console.log(r[0])
+      //console.log(r[0])
       for(let i=0;i<r[0].length;i++){
         this.list_of_chat_friends_ids[i]=r[0][i].id;
         if(r[0][i].id_user==this.user_id){
@@ -1439,7 +1601,7 @@ sort_friends_list() {
                 this.list_of_friends_profile_pictures[i] = SafeURL;
                 compt ++;
                 if(compt==r[0].length){
-                  console.log(this.list_of_friends_ids)
+                  //console.log(this.list_of_friends_ids)
                   this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
                     this.list_of_friends_last_message=u[0].list_of_friends_messages;
                       this.sort_friends_groups_chats_list();
@@ -1462,10 +1624,10 @@ sort_friends_list() {
                 this.list_of_friends_profile_pictures[i] = SafeURL;
                 compt ++;
                 if(compt==r[0].length){
-                  console.log(this.list_of_friends_ids)
+                  //console.log(this.list_of_friends_ids)
                   this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
                     this.list_of_friends_last_message=u[0].list_of_friends_messages;
-                    console.log(this.list_of_friends_last_message)
+                    //console.log(this.list_of_friends_last_message)
                       this.sort_friends_groups_chats_list();
                   });
                 }
@@ -1475,7 +1637,7 @@ sort_friends_list() {
       }
     }
     else{
-      console.log("régler le cas 0 ...")
+      //console.log("régler le cas 0 ...")
     }
     
   })
@@ -1486,7 +1648,6 @@ sort_friends_groups_chats_list(){
   let len =this.list_of_friends_ids.length;
   this.chatService.get_my_list_of_groups().subscribe(l=>{
     let list_of_names=[]
-    console.log(l[0]);
     if(l[0].length>0){
       for(let k=0;k<l[0].length;k++){
         
@@ -1495,10 +1656,9 @@ sort_friends_groups_chats_list(){
         this.list_of_friends_pseudos[len+k]=l[0][k].name
         this.list_of_groups_ids[k]=l[0][k].id;
         if(k==l[0].length-1){
-          console.log(this.list_of_groups_ids)
           // get_list_of_groups_I_am_in sans les spams
           this.chatService.get_list_of_groups_I_am_in( this.list_of_groups_ids).subscribe(r=>{
-            console.log(r[0].friends)
+           
             let compt=0;
             let list_of_ids=[]
             for(let i=0;i<r[0].friends.length;i++){
@@ -1507,22 +1667,17 @@ sort_friends_groups_chats_list(){
               this.list_of_friends_ids[len+i]=r[0].friends[i].id_receiver;
               this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
               this.list_of_friends_types[len+i]='group';
-              console.log(r[0].friends[i].chat_profile_pic_name);
-              console.log(r[0].friends[i].profile_pic_origin)
               this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
-                console.log(t);
+               
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_friends_profile_pictures[len+i]=SafeURL;
                 compt ++;
                 if(compt==r[0].friends.length){
-                  console.log(this.list_of_friends_ids)
-                  console.log(list_of_names)
-                  console.log(list_of_ids)
                   this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
-                    console.log(u[0])
+                   
                     this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
-                    console.log(this.list_of_friends_last_message);
+                   
                     this.sort_list_of_groups_and_friends();
                   });
                 }
@@ -1634,10 +1789,6 @@ display_exit(event){
 }
 
 change_message_status(event){
-  console.log(event);
-  console.log(this.list_of_friends_ids);
-  console.log(this.list_of_friends_names)
-  console.log(this.list_of_friends_last_message)
   if(!event.spam){
     
     let index_friend=-1;
@@ -1646,7 +1797,7 @@ change_message_status(event){
         index_friend=i;
       }
     }
-    console.log(index_friend)
+    //console.log(index_friend)
     
     if(index_friend>=0){
       if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
@@ -1656,7 +1807,7 @@ change_message_status(event){
         if(event.friend_type=='group'){
            if( (this.list_of_friends_last_message[index_friend].id_user==this.user_id && this.user_id!=event.real_friend_id)
              || this.list_of_friends_last_message[index_friend].id_user!=this.user_id ){
-               console.log("putting messages group to seen")
+               //console.log("putting messages group to seen")
               if( this.list_of_friends_last_message[index_friend].list_of_users_who_saw.indexOf(event.real_friend_id)<0){
                 this.list_of_friends_last_message[index_friend].list_of_users_who_saw.push(event.real_friend_id);
               }
@@ -1673,7 +1824,7 @@ change_message_status(event){
       
     }
     else{
-      console.log("error friend not retrieved")
+      //console.log("error friend not retrieved")
     }
     
   }
@@ -1681,26 +1832,26 @@ change_message_status(event){
 }
 
   new_sort_friends_list(event){
-    console.log("getting message from chat")
-    console.log(event);
-    console.log(this.list_of_friends_ids)
-    console.log(this.list_of_friends_types)
+    //console.log("getting message from chat")
+    //console.log(event);
+    //console.log(this.list_of_friends_ids)
+    //console.log(this.list_of_friends_types)
     let index=-1;
     for(let i=0;i<this.list_of_friends_ids.length;i++){
       if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type ){
         index=i;
       }
     }
-    console.log(index)
+    //console.log(index)
     if(index>=0){
-      console.log("a friend message")
+      //console.log("a friend message")
       //fait partie de la liste des contacts
-      console.log(event.message);
+      //console.log(event.message);
       this.list_of_friends_last_message[index]=event.message;
       this.cd.detectChanges();
       //put message to received
       this.list_of_friends_last_message[index].status="received";
-      console.log("received");
+      //console.log("received");
       this.cd.detectChanges();
       
       this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
@@ -1710,14 +1861,14 @@ change_message_status(event){
       this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
       this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
       this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
-      console.log(this.list_of_friends_last_message)
+      //console.log(this.list_of_friends_last_message)
       this.cd.detectChanges();
 
     }
     else{
-      console.log("dans le else new sort")
+      //console.log("dans le else new sort")
       //à compléter
-      console.log(event);
+      //console.log(event);
       if(event.friend_type=='group'){
         this.get_group_chat_name(event.friend_id,event.message,false);
       }
@@ -1727,20 +1878,20 @@ change_message_status(event){
 
 
   add_group_to_contacts(event){
-    console.log("adding group to contacts")
-    console.log(event);
+    //console.log("adding group to contacts")
+    //console.log(event);
     this.get_group_chat_name(event.friend_id,event.message,event.value)
   }
   
 
   get_group_chat_name(id,message,value){
-    console.log("get_group_chat_name")
-    console.log(id);
-    console.log(message)
+    //console.log("get_group_chat_name")
+    //console.log(id);
+    //console.log(message)
     let pseudo = message.group_name;
     let name =message.group_name;
     this.chatService.get_group_chat_as_friend(id).subscribe(s=>{
-      console.log(s[0])
+      //console.log(s[0])
       
       this.chatService.retrieve_chat_profile_picture(s[0].chat_profile_pic_name,s[0].profile_pic_origin).subscribe(t=> {
         let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
@@ -1754,9 +1905,9 @@ change_message_status(event){
         this.list_of_friends_names.splice(0,0,name);
         this.list_of_friends_profile_pictures.splice(0,0,picture);
         this.list_of_friends_pseudos.splice(0,0,pseudo);
-        console.log(this.list_of_friends_last_message);
-        console.log(this.list_of_friends_types)
-        console.log(this.list_of_friends_names)
+        //console.log(this.list_of_friends_last_message);
+        //console.log(this.list_of_friends_types)
+        //console.log(this.list_of_friends_names)
         this.cd.detectChanges();
       })
       
@@ -1831,7 +1982,7 @@ change_message_status(event){
         index=i;
       }
     }
-    console.log(index)
+    //console.log(index)
     if(index>=0){
       this.list_of_friends_types.splice(index,1);
       this.list_of_friends_ids.splice(index,1);
@@ -1852,22 +2003,22 @@ change_message_status(event){
   chat_service_managment_function(msg){
    
     if(!msg[0].for_notifications){
-      console.log(msg[0])
-      console.log(this.list_of_messages)
+      //console.log(msg[0])
+      //console.log(this.list_of_messages)
       //a person sends a message
       if(msg[0].id_user!="server" && !msg[0].is_from_server){
-        console.log("it's not from server");
-        console.log(msg[0].status)
+        //console.log("it's not from server");
+        //console.log(msg[0].status)
         if(msg[0].is_a_group_chat){
-          console.log("is from a group");
+          //console.log("is from a group");
           if( msg[0].status=="seen"){
-            console.log("in the else if seen")
-            console.log("change message status 2")
+            //console.log("in the else if seen")
+            //console.log("change message status 2")
             this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_receiver,friend_type:'group',spam:false,real_friend_id:msg[0].id_user});
           }
           else{
-            console.log(msg[0].status)
-            console.log("in the else ");
+            //console.log(msg[0].status)
+            //console.log("in the else ");
             this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group'});
             if(!this.show_chat_messages){
               this.number_of_unseen_messages+=1;
@@ -1876,12 +2027,12 @@ change_message_status(event){
           }
         }
         else{
-          console.log("is from a user ");
+          //console.log("is from a user ");
           
           // not the friend I am talking to but seen
           if(msg[0].status=="seen"){
-            console.log("in the else if seen")
-            console.log("change message status 3")
+            //console.log("in the else if seen")
+            //console.log("change message status 3")
             this.change_message_status({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
           }
           // not the friend I am talking to and not seen
@@ -1896,7 +2047,7 @@ change_message_status(event){
         
       }
       else if(msg[0].server_message=="received_new"){
-        console.log("received new but not here")
+        //console.log("received new but not here")
         this.new_sort_friends_list({friend_id:msg[0].message.id_receiver,message:msg[0].message,friend_type:'user'});
         if(!this.show_chat_messages){
           this.number_of_unseen_messages+=1;
@@ -1904,14 +2055,14 @@ change_message_status(event){
         this.cd.detectChanges;
       }
       else if(msg[0].server_message=="block" ){
-        console.log("block")
+        //console.log("block")
         this.blocking_managment({friend_id:msg[0].id_user_blocking})
       }
       //a message from the server to tell that the message has been sent
       else if(msg[0].message=="New"){
-        console.log("new");
+        //console.log("new");
         if(msg[0].is_a_group_chat){
-          console.log("adding new group to contacts")
+          //console.log("adding new group to contacts")
           this.add_group_to_contacts({friend_id:msg[0].id_receiver,message:msg[0]});
           this.cd.detectChanges;
         }
@@ -1924,7 +2075,7 @@ change_message_status(event){
         }
       }
       else if(msg[0].message=="New_friend_in_the_group"){
-        console.log("New_friend_in_the_group");
+        //console.log("New_friend_in_the_group");
         this.new_sort_friends_list({friend_id:msg[0].id_user,message:msg[0],friend_type:'group',value:false});
         if(!this.show_chat_messages){
           this.number_of_unseen_messages+=1;
@@ -1933,7 +2084,7 @@ change_message_status(event){
         
       }
       else if(msg[0].message=="Exit"){
-        console.log("Exit");
+        //console.log("Exit");
         if(msg[0].is_a_group_chat){
           this.display_exit({friend_id:msg[0].id_user,message:msg[0]});
           if(!this.show_chat_messages){
@@ -1946,15 +2097,31 @@ change_message_status(event){
   }
 
   open_chat(i){
-    console.log(this.list_of_friends_ids[i]);
-    console.log(this.list_of_friends_types[i]);
+    //console.log(this.list_of_friends_ids[i]);
+    //console.log(this.list_of_friends_types[i]);
   }
 
   get_chat_url(i){
     if(this.list_of_friends_types[i]=='group'){
+      /*let found=false;
+      for(let j=0;this.list_of_friends_last_message[i].list_of_users_who_saw.length;j++){
+        if(this.list_of_friends_last_message[i].list_of_users_who_saw[j]==this.user_id){
+          found=true;
+        }
+      }
+      if(!found ){
+        this.number_of_unseen_messages--;
+      }*/
+      this.number_of_unseen_messages=0;
+      this.show_chat_messages=false;
       return `group/${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
     else{
+      /*if(this.list_of_friends_last_message[i].id_user!=this.user_id && this.list_of_friends_last_message[i].status!="seen"){
+        this.number_of_unseen_messages--;
+      }*/
+      this.number_of_unseen_messages=0;
+      this.show_chat_messages=false;
       return `${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
   }

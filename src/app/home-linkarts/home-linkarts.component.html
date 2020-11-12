@@ -35,6 +35,15 @@
                           Abonnements
                         </div>
                     </a>
+                    <a class="content-action text-center" [routerLink]=get_category(3) [ngClass]="{'opened': category_index==3 }">
+                        <div class="title" [ngClass]="{'title-opened': category_index==3 }"> 
+                            <div class="icon-container">
+                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': category_index==3 }">
+                                </div>
+                            </div>
+                          Coups de coeur
+                        </div>
+                    </a>
                     <!--<div class="content-action text-center" (click)="open_category(3)">
                         <span>Mode découverte</span> 
                         <div class="bottom-border">
@@ -45,14 +54,17 @@
     
     
             <div class="left-container-scrollable">
-                <ng-container *ngIf="this.category_index==0">
+                <ng-container *ngIf="category_index==0">
                     <app-recommendations></app-recommendations>
                 </ng-container>
-                <ng-container *ngIf="this.category_index==1">
+                <ng-container *ngIf="category_index==1">
                     <app-trendings></app-trendings>
                 </ng-container>
-                <ng-container *ngIf="this.category_index==2">
+                <ng-container *ngIf="category_index==2">
                     <app-subscribings></app-subscribings>
+                </ng-container>
+                <ng-container *ngIf="category_index==3">
+                    <app-favorites></app-favorites>
                 </ng-container>
             </div>
     

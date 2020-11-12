@@ -76,7 +76,7 @@
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field>
                     <textarea matInput cdkTextareaAutosize formControlName="message_for_content" maxLength="2000" autocomplete="off"></textarea>
-                    <mat-error *ngIf="registerForm1.controls['message_for_content'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide</mat-error>
+                    <mat-error *ngIf="registerForm.controls['message_for_content'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide</mat-error>
                 </mat-form-field>
             </div>
         </div>

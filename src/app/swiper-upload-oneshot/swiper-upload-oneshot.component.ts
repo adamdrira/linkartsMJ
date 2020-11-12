@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 
 declare var Swiper: any;
@@ -35,6 +36,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     private el: ElementRef,
     private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
+    private router:Router,
     private cd: ChangeDetectorRef,
     private viewref: ViewContainerRef,
     private bdOneShotService: BdOneShotService,
@@ -46,8 +48,6 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   }
 
-  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
-  display_loading=false;
 
   @Input() type: string;
   @Input() bdtitle: string;
@@ -93,23 +93,18 @@ export class SwiperUploadOneshotComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
-          spaceBetween: 10
         },
         700: {
             slidesPerView: 2,
-            spaceBetween: 10
         },
         900: {
             slidesPerView: 3,
-            spaceBetween: 10
         },
         1400: {
             slidesPerView: 4,
-            spaceBetween: 10
         },
         1700: {
             slidesPerView: 5,
-            spaceBetween: 10
         }
       }
     });
@@ -285,8 +280,6 @@ export class SwiperUploadOneshotComponent implements OnInit {
   
   validateAll() {
 
-    this.validateButton.nativeElement.disabled = true;
-
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
     let valid : boolean = true;
 
@@ -304,15 +297,17 @@ export class SwiperUploadOneshotComponent implements OnInit {
         data: {showChoice:false, text:errorMsg},
       });
 
-      this.validateButton.nativeElement.disabled = false;
     }
     else {
-      
-      this.display_loading=true;
-
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;
+        this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+          console.log("received validated")
+          this.block_cancel=true;
+          this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
+          //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
+        });
       }
 
       
@@ -321,12 +316,17 @@ export class SwiperUploadOneshotComponent implements OnInit {
   }
 
 
-  
+  block_cancel=false;
   cancel_all() {
-    this.bdOneShotService.RemoveBdOneshot(0).pipe(first()).subscribe(res=>{
-      this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
-      console.log(res)
-    });  
+    console.log("cancel all")
+    if(!this.block_cancel){
+      console.log("cancelling all")
+      this.bdOneShotService.RemoveBdOneshot(0).pipe(first()).subscribe(res=>{
+        this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
+        console.log(res)
+      });
+    }
+      
   }
 
   

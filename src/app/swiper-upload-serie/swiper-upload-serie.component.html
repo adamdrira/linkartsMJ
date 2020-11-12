@@ -1,7 +1,6 @@
 
 
 <div *ngIf="validated_chapter" class="hidden-chapter">
-    <mat-icon>done</mat-icon>
     <span>Chapitre téléchargé</span>
 </div>
 
@@ -72,8 +71,8 @@
     </div>
 
             
-    <button mat-raised-button class="validate-chapter-button" *ngIf="!validated_chapter" (click)="validateAll();">
-        <mat-icon>done</mat-icon>
+    <button mat-raised-button class="validate-chapter-button style0" *ngIf="!validated_chapter" (click)="validateAll();">
+        <mat-icon>cloud_upload</mat-icon>
         <span>Valider ce chapitre</span>
     </button>
     

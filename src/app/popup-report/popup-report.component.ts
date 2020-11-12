@@ -60,7 +60,7 @@ export class PopupReportComponent implements OnInit {
   type_of_report:string;
   
   ngOnInit() {
-
+    console.log(this.data)
     this.step = 0;
     this.from_account=this.data.from_account;
 
@@ -127,12 +127,18 @@ export class PopupReportComponent implements OnInit {
         this.message=this.registerForm.value.message_for_content;
       }
     }
-
+    
     this.Reports_service.add_primary_information_report(this.type_of_report,this.data.id_receiver,this.data.publication_category,this.data.publication_id,this.data.format,this.data.chapter_number,this.message).subscribe(r=>{
       console.log(r[0])
       this.id_report=r[0].id
-      this.begin_download_attachments=true;
-      this.display_loading=true;
+      if(this.open_plagiarism){
+        this.begin_download_attachments=true;
+        this.display_loading=true;
+      }
+      else{
+        location.reload();
+      }
+     
     })
   }
 

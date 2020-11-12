@@ -90,6 +90,7 @@ export class PopupStoriesComponent implements OnInit {
     this.Story_service.get_last_seen_story(this.data.list_of_users[s]).subscribe(l=>{
       console.log(l[0]);
       console.log(s);
+      console.log(this.data.list_of_users)
        console.log(this.data.list_of_data[s]) ;
       if(l[0]){
         console.log(this.data.list_of_data[s].length)
@@ -109,7 +110,7 @@ export class PopupStoriesComponent implements OnInit {
             if(k==this.data.list_of_users.length){
               console.log(this.list_index_debut);
               for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-                this.createStory( this.data.list_of_users[j], this.list_index_debut[j]);
+                this.createStory( this.data.list_of_users[j], this.list_index_debut[j],this.data.list_of_data[j] );
                 this.refresh_stories_status();
                 this.swiper.slideTo( this.data.index_id_of_user, false, false );
                 this.refresh_stories_status();
@@ -119,11 +120,12 @@ export class PopupStoriesComponent implements OnInit {
         }
       }
       else{
+        console.log("in ex");
         this.list_index_debut[s]=0;
         k++;
         if(k==this.data.list_of_users.length){
           for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-            this.createStory( this.data.list_of_users[j], this.list_index_debut[j]);
+            this.createStory( this.data.list_of_users[j], this.list_index_debut[j],this.data.list_of_data[j]);
             this.refresh_stories_status();
             this.swiper.slideTo( this.data.index_id_of_user, false, false );
             this.refresh_stories_status();
@@ -142,7 +144,7 @@ export class PopupStoriesComponent implements OnInit {
   }
 
 
-  createStory( user_id: number, index_debut: number) {
+  createStory( user_id: number, index_debut: number,list_of_data:any) {
     
     let THIS = this;
 
@@ -151,7 +153,7 @@ export class PopupStoriesComponent implements OnInit {
     this.componentRef.push( this.entry.createComponent(factory) );
 
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
-
+    this.componentRef[ this.componentRef.length - 1 ].instance.list_of_data = list_of_data;
     this.componentRef[ this.componentRef.length - 1 ].instance.user_id = user_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.current_user = this.data.current_user;
     this.componentRef[ this.componentRef.length - 1 ].instance.index_debut = index_debut;

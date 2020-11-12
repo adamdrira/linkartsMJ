@@ -139,7 +139,7 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
     
   }  
  
-  send_loaded(object){
+  sendLoaded(object){
     console.log("loaded")
     this.number_of_loaded++;
     console.log(this.number_of_thumbnails);

@@ -68,6 +68,9 @@ export class HomeLinkartsComponent implements OnInit {
     else if( i==2 ) {
       return '/subscribings';
     }
+    else if( i==3 ) {
+      return '/favorites';
+    }
   }
 
   change_profile_number=0;

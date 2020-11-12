@@ -63,17 +63,21 @@ export class SubscribingsComponent implements OnInit {
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
-    let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
-    let max = document.documentElement.scrollHeight;
-    let sup=max*0.1;
-    if(pos>= max - sup )   {
-      if(this.list_of_users.length==0){
-        this.list_of_users=this.list_of_new_users;
-        this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
-        this.list_of_contents_sorted=true;
+    if((this.list_of_new_contents_sorted && this.list_of_new_contents.length>0) || (this.list_of_contents_sorted && this.list_of_contents.length>0)){
+      let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
+      let max = document.documentElement.scrollHeight;
+      let sup=max*0.1;
+      if(pos>= max - sup )   {
+        console.log("load new")
+        if(this.list_of_users.length==0){
+          this.list_of_users=this.list_of_new_users;
+          this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
+        }
+        this.show_more=true;
+        this.cd.detectChanges();
       }
-      this.show_more=true;
     }
+    
   }
 
   ngOnInit() {
@@ -86,6 +90,7 @@ export class SubscribingsComponent implements OnInit {
   }
 
   sort_list_of_contents(list,period,callback){
+    console.log(list);
     if(list.length>1){
       for (let i=1; i<list.length; i++){
         let time = this.convert_timestamp_to_number(list[i].createdAt);
@@ -95,12 +100,13 @@ export class SubscribingsComponent implements OnInit {
             
           }
           if(j==list.length -2 && period=='old'){
+            console.log(this.list_of_contents)
             this.list_of_contents_sorted=true;
             this.last_timestamp=list[list.length-1].createdAt;
           }
           if(j==list.length -2 && period=='new'){
             this.list_of_new_contents_sorted=true;
-            this.cd.detectChanges();
+            this.last_timestamp=list[list.length-1].createdAt;
             callback(this);
           }
         }
@@ -125,6 +131,7 @@ export class SubscribingsComponent implements OnInit {
 
 
   convert_timestamp_to_number(timestamp){
+    console.log(timestamp)
     var uploaded_date = timestamp.substring(0,timestamp.length- 5);
     uploaded_date=uploaded_date.replace("T",' ');
     uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
@@ -144,7 +151,7 @@ export class SubscribingsComponent implements OnInit {
               let compt=0; 
               if(r[0].length>0){
                 for (let j=0; j< r[0].length;j++){
-                  if(r[0][j].publication_category=="comics"){
+                  if(r[0][j].publication_category=="comic"){
                     if(r[0][j].format=="one-shot"){
                       THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                         if(info[0].status="public"){
@@ -248,6 +255,8 @@ export class SubscribingsComponent implements OnInit {
       }
       else{
         console.log("put a message to say they need to subscribe to someone")
+        
+        THIS.list_of_contents_sorted=true;
       }
       
     })
@@ -268,9 +277,9 @@ export class SubscribingsComponent implements OnInit {
                   let new_contents=[];
                   if(r[0].length>0){
                     let compt=0;
-                    if(r[0].length>0){
+                    //if(r[0].length>0){
                       for (let j=0; j< r[0].length;j++){                  
-                        if(r[0][j].publication_category=="comics"){
+                        if(r[0][j].publication_category=="comic"){
                           if(r[0][j].format=="one-shot"){
                             this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                               if(info[0].status=="public"){
@@ -405,28 +414,22 @@ export class SubscribingsComponent implements OnInit {
                           })
                         }   
                       }
-                    }
-                    else{
-                      compteur_user++;
-                      if(compteur_user==this.list_of_new_users.length){
-                        console.log(this.list_of_new_contents);
-                        this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
-                      }
-                    }
-                    
                   }
                   else{
-                    callback(this);
+                    compteur_user++;
+                    if(compteur_user==this.list_of_new_users.length){
+                      console.log(this.list_of_new_contents);
+                      this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                    }
                   }
                 })
             }
-
-
           }        
         }
         
       }
       else{
+        this.list_of_new_contents_sorted=true;
         callback(this);
       }
     })

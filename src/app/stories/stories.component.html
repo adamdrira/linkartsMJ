@@ -15,8 +15,10 @@
                         <div class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i] }">
                                 <img class="img" [src]="item" >
                         </div>
-                        <div class="author" *ngIf="i==0">Ma story
+                        <div class="author"*ngIf="i==0" >
+                            Publier une story
                         </div>
+                        
                         <div class="author" *ngIf="i>0">
                             {{list_of_author_names[i]}}
                         </div>
@@ -35,14 +37,15 @@
 <div style="position:relative;" *ngIf="users_retrieved && 4>list_of_profile_pictures.length" [@enterAnimation]>
     <div class="stories-bar-no-swiper">
         <div class="swiper-slide-no-swiper" *ngFor="let item of list_of_profile_pictures;let i=index">
-            <div class="story" (click)="watch_story(i)">
-                <img class="background-image" [src]="list_of_cover_pictures[i]">
-                <div class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i] }">
+            <div class="story">
+                <img   (click)="watch_story(i)"class="background-image" [src]="list_of_cover_pictures[i]">
+                <div   (click)="watch_story(i)" class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i] }">
                         <img class="img" [src]="item" >
                 </div>
-                <div class="author" *ngIf="i==0">Ma story
+                <div  (click)="add_story()" class="author"*ngIf="i==0" >
+                      Ma story
                 </div>
-                <div class="author" *ngIf="i>0">
+                <div (click)="watch_story(i)" class="author" *ngIf="i>0">
                     {{list_of_author_names[i]}}
                 </div>
             </div>

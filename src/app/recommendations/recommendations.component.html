@@ -18,74 +18,22 @@
     </div>
 
 
-    <div class="loading-page" *ngIf="!sorted_category_retrieved">
-        <mat-spinner diameter="50" ></mat-spinner>
-    </div>
 
-        <!--<div class="right-container">
-
-            
-            
-            <div class="dropdowns-container" *ngIf="subcategory==0">
-                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Catégories" style="height: 100%;">
-                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[0].array">
-                        <optgroup label={{item2.name}}>
-                            <ng-container *ngFor="let item3 of item2.values">
-                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
-                            </ng-container>
-                        </optgroup>
-                    </ng-container>
-                </select>
-                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Format" style="height: 100%;">
-                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[1].array">
-                        <optgroup label={{item2.name}}>
-                            <ng-container *ngFor="let item3 of item2.values">
-                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
-                            </ng-container>
-                        </optgroup>
-                    </ng-container>
-                </select>
-                
+    <ng-container *ngIf="!list_of_categories_retrieved">
+        <div *ngFor="let item of categories_array; index as i1">
+            <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center" [@enterAnimation]>
+                <ng-container *ngFor="let item of skeleton_array; let i = index">
+                    <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
+                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                        [type_of_skeleton]=type_of_skeleton
+                    ></app-thumbnail-skeleton>
+                </ng-container>
             </div>
-
             
-            <div class="dropdowns-container" *ngIf="subcategory==1">
-                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Catégories" style="height: 100%;">
-                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[0].array">
-                        <optgroup label={{item2.name}}>
-                            <ng-container *ngFor="let item3 of item2.values">
-                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
-                            </ng-container>
-                        </optgroup>
-                    </ng-container>
-                </select>
-                <select name="somename" class="SelectBox" multiple="multiple" placeholder="Format" style="height: 100%;">
-                    <ng-container *ngFor="let item2 of dropdowns.categories[0].dropdowns[subcategory].values[1].array">
-                        <optgroup label={{item2.name}}>
-                            <ng-container *ngFor="let item3 of item2.values">
-                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
-                            </ng-container>
-                        </optgroup>
-                    </ng-container>
-                </select>
-            </div>
+        </div>
+    </ng-container>
 
-
-                <select name="somename" class="SelectBox" multiple="multiple" style="height: 100%;">
-
-                    <ng-container *ngFor="let item2 of item.array">
-                        <optgroup label={{item2.name}}>
-                            <ng-container *ngFor="let item3 of item2.values">
-                                <option value={{item2.name}}:{{item3}}>{{item3}}</option>
-                            </ng-container>
-                        </optgroup>
-                    </ng-container>
-
-                </select>
-
-
-        </div>-->
-    
+       
 
     <div class="media-container" *ngIf="bd_is_loaded && subcategory==0" [ngClass]="{'invisible':!sorted_category_retrieved }">
         <app-media-comics 
@@ -99,6 +47,7 @@
         [sorted_artpieces_bd_format]=sorted_artpieces_bd_format
         [sorted_artpieces_bd]=sorted_artpieces_bd
         [now_in_seconds]=now_in_seconds
+        (list_of_comics_retrieved_emitter)="list_of_comics_retrieved_receiver( $event );"
         ></app-media-comics>
     </div>
     <div class="media-container" *ngIf="drawing_is_loaded  && subcategory==1" [ngClass]="{'invisible':!sorted_category_retrieved }">
@@ -109,6 +58,7 @@
         [sorted_artpieces_digital]=sorted_artpieces_digital
         [sorted_artpieces_digital_format]=sorted_artpieces_digital_format
         [now_in_seconds]=now_in_seconds
+        (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver( $event );"
         ></app-media-drawings>
     </div>
     <div class="media-container" *ngIf="writing_is_loaded  && subcategory==2" [ngClass]="{'invisible':!sorted_category_retrieved }">
@@ -121,6 +71,7 @@
          [sorted_artpieces_article]=sorted_artpieces_article
          [sorted_artpieces_poetry]=sorted_artpieces_poetry
          [now_in_seconds]=now_in_seconds
+         (list_of_writings_retrieved_emitter)="list_of_writings_retrieved_receiver( $event );"
          ></app-media-writings>
     </div>
 
@@ -131,43 +82,3 @@
     <br/>
     <br/>
 
-
-
-
-<!--<ng-container *ngIf="category==1">
-
-    <div class="panel-controller">
-        <div class="left-container">
-            <div class="controller-category open">
-                Toutes les catégories
-            </div>
-            <div class="controller-category">
-                Bandes dessinées
-            </div>
-            <div class="controller-category">
-                Dessins
-            </div>
-            <div class="controller-category">
-                Écrits
-            </div>
-        </div>
-    </div>
-
-    <app-trends></app-trends>
-
-
-
-</ng-container>
-
-
-
-
-
-
-
-
-
-<ng-container *ngIf="category==2">2</ng-container>
-
-<ng-container *ngIf="category==3">3</ng-container>
--->

@@ -39,39 +39,50 @@
     margin-right: 7px;
   }
 
+  .invisible{
+    visibility:hidden ;
+  }
 
+  ::ng-deep .grid {
+    margin:0 auto !important;
+    //width:100% !important;
+  }
+  
+  .grid-item {
+    margin-bottom:10px;
+    min-width: 100px;
+  }
+  
     
   .see-more {
-  display:flex;
-  width:100%;
-  height:40px;
-  border-bottom:3px solid rgb(77, 105, 158);
-  text-align:center;
-  margin:10px 0px 10px 0px;
-  cursor:pointer;
-  transition:background-color 200ms;
-  }
-
-  .see-more:hover {
-    border-bottom:3px solid rgb(56, 81, 129);
-    background-color:rgb(235, 235, 235);
-  }
-
-  .see-more .icon {
-  width:25px;
-  height:25px;
-  margin:auto auto;
-  mask-image: url("../../assets/img/svg/see-more.svg");
-  -webkit-mask-image: url("../../assets/img/svg/see-more.svg");
-  background-color: rgb(116, 116, 116);
-  }
-
-  .see-more:hover .icon {
-  background-color:rgb(56, 81, 129);
-  }
-
-
-
+    display: flex;
+    width: 90%;
+    height: 40px;
+    border-bottom: 4px solid rgb(230 230 230);
+    text-align: center;
+    margin: 10px auto 10px auto;
+    cursor: pointer;
+    transition:background-color 200ms;
+    }
+  
+    .see-more:hover {
+      border-bottom:4px solid rgb(56, 81, 129);
+      background-color:rgb(235, 235, 235);
+    }
+  
+    .see-more .icon {
+    width:25px;
+    height:25px;
+    margin:auto auto;
+    mask-image: url("../../assets/img/svg/see-more.svg");
+    -webkit-mask-image: url("../../assets/img/svg/see-more.svg");
+    background-color: #203864;
+    }
+  
+    .see-more:hover .icon {
+    background-color:rgb(56, 81, 129);
+    }
+  
  
 
 
@@ -80,6 +91,7 @@
   //CODE POUR LA PAGE D'ACCUEIL
   .container-homepage {
     padding:0px;
+    padding-top:30px;
     justify-content: center;
   }
 

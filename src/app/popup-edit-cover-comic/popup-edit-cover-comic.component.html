@@ -1,7 +1,12 @@
 
   
     <div class="form-container">
-
+        <div class="button-container-close">
+            <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
+                <mat-icon class="item-icon" >close</mat-icon>
+            </button>
+        </div>
+        
             
 
             <!--******************************************************-->
@@ -14,16 +19,18 @@
                     [author_name]=data.author_name
                     [primary_description]=data.primary_description
                     [profile_picture]=data.profile_picture
-                    name={{data.title}}
-                    description={{data.primary_description}}
-                    category={{data.style}}
-                    format={{data.format}}
+                    [name]=data.title
+                    [description]=data.primary_description
+                    [category]=data.style
+                    [format]=data.format
+                    [for_edition]=for_edition
+                    [bd_id]=data.bd_id
                 ></app-uploader-bd-cover>
 
             </div>
 
     </div>
-    <button mat-raised-button class="validate-form-button style1" (click)="validateForm00();">Valider</button>
+   
 
 
 

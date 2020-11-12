@@ -110,23 +110,18 @@ export class SwiperUploadSerieComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
-          spaceBetween: 10
         },
         700: {
             slidesPerView: 2,
-            spaceBetween: 10
         },
         900: {
             slidesPerView: 3,
-            spaceBetween: 10
         },
         1400: {
             slidesPerView: 4,
-            spaceBetween: 10
         },
         1700: {
             slidesPerView: 5,
-            spaceBetween: 10
         }
       }
     });
@@ -342,10 +337,14 @@ export class SwiperUploadSerieComponent implements OnInit {
         for (let step = 0; step < this.componentRef.length; step++) {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
+          this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+              console.log("received validated")
+              this.validated.emit();
+              this.validated_chapter=true;
+          });
         }
         
-        this.validated.emit();
-        this.validated_chapter=true;
+       
       }
 
     }

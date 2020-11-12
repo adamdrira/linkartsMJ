@@ -8,6 +8,7 @@ import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 
 declare var $: any;
@@ -42,8 +43,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private rd:Renderer2,
     public dialog: MatDialog,
-    private cd:ChangeDetectorRef
-
+    private cd:ChangeDetectorRef,
+    private router:Router,
      ) { 
     this.image_uploaded = false;
   }
@@ -196,7 +197,13 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.imageSource = event2;
   }
 
+  sendValidated(event){
+      this.block_cancel=true;
+      this.router.navigate([`/account/${event.pseudo}/${event.user_id}`]);
+      //window.location.href = `/account/${event.pseudo}/${event.user_id}`;
+  }
 
+  block_cancel=false;
   validateAll() {
 
     this.validateButton.nativeElement.disabled = true;
@@ -220,9 +227,11 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       this.displayErrors = true;
     }
     else {
-      this.display_loading=true;
-      this.upload=true;
+      
       this.Drawings_CoverService.add_covername_to_sql(this.format).subscribe(res=>{
+        this.display_loading=true;
+        this.upload=true;
+        this.cd.detectChanges();
       });
     }
 
@@ -230,10 +239,13 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   
 
   cancel_all() {
-    this.Drawings_Onepage_Service.remove_drawing_from_sql(0).pipe(first()).subscribe(res=>{
-      this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
-      console.log(res)
-    });  
+    if(!this.block_cancel){
+      this.Drawings_Onepage_Service.remove_drawing_from_sql(0).pipe(first()).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
+        console.log(res)
+      }); 
+    }
+     
   }
 
 

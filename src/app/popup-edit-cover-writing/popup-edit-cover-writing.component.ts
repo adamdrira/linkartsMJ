@@ -32,7 +32,7 @@ export class PopupEditCoverWritingComponent implements OnInit {
     public dialog: MatDialog,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-
+      dialogRef.disableClose = true;
   }
 
 
@@ -47,9 +47,20 @@ export class PopupEditCoverWritingComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  close_dialog(){
+    if(!this.Writing_CoverService.get_confirmation()){
+      this.Writing_CoverService.remove_cover_from_folder().subscribe(r=>{
+        this.dialogRef.close();
+      })
+    }
+    else{
+      this.dialogRef.close();
+    }
+    
+  }
 
 
-  //à écrire
+
   validateForm00() {
     
   if (this.Writing_CoverService.get_confirmation())  {

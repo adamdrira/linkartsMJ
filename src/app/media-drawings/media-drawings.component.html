@@ -4,36 +4,79 @@
         
         <div class="category">
             <a [routerLink]=open_research(item)>
-                <mat-icon>dehaze</mat-icon>
                 <span>{{item}}</span>
             </a>
         </div>
-        <div class="container-homepage d-flex flex-wrap">
+        <div  class="container-homepage d-flex flex-wrap" [ngClass]="{'invisible':!list_visibility_albums_drawings }" >
             
-            <ng-container *ngIf="item==='Traditionnel'">
-                <ng-container *ngFor="let item of sorted_artpieces_traditional; let i = index">
+            <ng-container *ngIf="item==='Traditionnel' && sorted_artpieces_traditional.length>0">
+                <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
+                    <div *ngFor="let item of sorted_artpieces_traditional.slice(0,number_of_drawings_to_show_by_category[0])"  
+                     class="grid-item" >
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                            (sendLoaded)="sendLoaded( $event );"
+                            [item]=item
+                            format='one-shot'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                            (sendLoaded)="sendLoaded( $event );"
+                            [item]=item
+                            format='artbook'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                    </div>
+                </div>
+                <div *ngIf="sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0]" 
+                    class="see-more" (click)="see_more_drawings(0)">
+                    <div class="icon">
+                    </div>
+                </div>
+                <!--<ng-container *ngFor="let item of sorted_artpieces_traditional; let i = index">
                     <app-thumbnail-drawing class="thumbnail-component-container" 
                         [item]=item
                         [format]=sorted_artpieces_traditional_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-drawing>
-                </ng-container>
+                </ng-container>-->
             </ng-container>
 
-            <ng-container *ngIf="item==='Digital'">
-                <ng-container *ngFor="let item of sorted_artpieces_digital; let i = index">
+            <ng-container *ngIf="item==='Digital' && sorted_artpieces_digital.length>0">
+                <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
+                    <div *ngFor="let item of sorted_artpieces_digital.slice(0,number_of_drawings_to_show_by_category[1])"  
+                     class="grid-item" >
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
+                            (sendLoaded)="sendLoaded( $event );"
+                            [item]=item
+                            format='one-shot'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                        <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
+                            (sendLoaded)="sendLoaded( $event );"
+                            [item]=item
+                            format='artbook'
+                            now_in_seconds={{now_in_seconds}}
+                        ></app-thumbnail-drawing>
+                    </div>
+                </div>
+                <div *ngIf="sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1]" 
+                    class="see-more" (click)="see_more_drawings(1)">
+                    <div class="icon">
+                    </div>
+                </div>
+                <!--<ng-container *ngFor="let item of sorted_artpieces_digital; let i = index">
                     <app-thumbnail-drawing class="thumbnail-component-container" 
                         [item]=item
                         [format]=sorted_artpieces_digital_format[i]
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-drawing>
-                </ng-container>
+                </ng-container>-->
             </ng-container>
 
 
 
 
-            <ng-container *ngIf=" list_of_contents_sorted">
+            <!--<ng-container *ngIf=" list_of_contents_sorted">
                 <div *ngIf="!show_more[sorted_style_list.indexOf(item)]" class="see-more" (click)="see_more(item)">
                     <div class="icon">
                     </div>
@@ -46,7 +89,7 @@
                         now_in_seconds={{now_in_seconds}}
                     ></app-media-see-more-drawings>
                 </ng-container>        
-            </ng-container>   
+            </ng-container>   -->
         </div>
         
     </ng-container>

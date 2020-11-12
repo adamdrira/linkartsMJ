@@ -46,8 +46,10 @@
             <div class="form-item">
                 <mat-form-field>
                     <mat-label>E-mail*</mat-label>
-                    <input matInput formControlName="email" autocomplete="off">
+                    <input matInput formControlName="email" autocomplete="off" (input)="check_email()">
                     <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide</mat-error>
+                    <div class="pseudo-found" *ngIf="!registerForm1.controls['email'].invalid && display_email_found_1">email déjà existant
+                    </div>
                 </mat-form-field>
             </div>
 
@@ -125,17 +127,17 @@
                             {{ obj }}
                         </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un genre</mat-error>
+                    <mat-error *ngIf="registerForm2.controls['type_of_account'].invalid">Veuillez sélectionner un type de compte</mat-error>
                 </mat-form-field>
     
             </div>
 
-            <div class="warning" *ngIf="registerForm2.value.type_of_account=='Editrice' || registerForm2.value.type_of_account=='Artiste professionnelle'  || registerForm2.value.type_of_account=='Professionnelle non artiste'
-            || registerForm2.value.type_of_account=='Editeur' || registerForm2.value.type_of_account=='Artiste professionnel'  || registerForm2.value.type_of_account=='Professionnel non artiste' 
+            <div class="warning" *ngIf="registerForm2.value.type_of_account=='Artiste professionnelle'  
+            || registerForm2.value.type_of_account=='Artiste professionnel'   
             || registerForm2.value.type_of_account=='Maison d\'édition' ||  registerForm2.value.type_of_account=='Artistes professionnels'">Attention ! Une vérification ultérieure vous sera demandée après avoir enregistré votre numéro SIRET</div>
 
-            <div class="form-item" *ngIf="registerForm2.value.type_of_account=='Editrice' || registerForm2.value.type_of_account=='Artiste professionnelle'  || registerForm2.value.type_of_account=='Professionnelle non artiste'
-                || registerForm2.value.type_of_account=='Editeur' || registerForm2.value.type_of_account=='Artiste professionnel'  || registerForm2.value.type_of_account=='Professionnel non artiste' 
+            <div class="form-item" *ngIf=" registerForm2.value.type_of_account=='Artiste professionnelle' 
+                 || registerForm2.value.type_of_account=='Artiste professionnel'  
                 || registerForm2.value.type_of_account=='Maison d\'édition' || registerForm2.value.type_of_account=='Artistes professionnels'">
                     <mat-form-field>
                     <mat-label>Numéro SIRET*</mat-label>
@@ -171,7 +173,7 @@
             <div class="form-item datepicker"  *ngIf="registerForm1.value.gender!='Groupe'">
                 <mat-form-field appearance="fill">
                     <mat-label>Date de naissance*</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="birthday">
+                    <input matInput [max]="maxDate"  [matDatepicker]="picker" formControlName="birthday">
                     <mat-datepicker-toggle matSuffix [for]="picker">
                       <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                     </mat-datepicker-toggle>
@@ -216,7 +218,7 @@
             <div class="form-item">
                 <mat-form-field>
                     <mat-label>Pseudonyme*</mat-label>
-                    <input matInput formControlName="nickname" maxLength="20" autocomplete="off" (keyup)="check_pseudo()">
+                    <input matInput formControlName="nickname" maxLength="20" autocomplete="off" (input)="check_pseudo()">
                     <mat-error *ngIf="registerForm3.controls['nickname'].invalid">Veuillez saisir un pseudonyme valide
                     </mat-error>
                     <div class="pseudo-found" *ngIf="!registerForm3.controls['nickname'].invalid && display_pseudo_found_1">Pseudonyme déjà existant
@@ -228,17 +230,17 @@
 
             <div class="form-item">
                 <mat-form-field>
-                    <mat-label>Description principale*</mat-label>
-                    <input matInput formControlName="primary_description" maxLength="40" autocomplete="off">
-                    <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Veuillez saisir une description valide
+                    <mat-label>Bio*</mat-label>
+                    <input matInput formControlName="primary_description" maxLength="100" autocomplete="off">
+                    <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Veuillez saisir une bio valide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['primary_description'].value?.length || 0}}/40</div>
+                    <div class="length-indicator">{{registerForm3.controls['primary_description'].value?.length || 0}}/100</div>
                 </mat-form-field>
             </div>
             
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field>
-                    <mat-label>Description complète (optionnel)</mat-label>
+                    <mat-label>Description principale (optionnel)</mat-label>
                 
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off"></textarea>
                     <!--<input matInput formControlName="primary_description_extended" autocomplete="off">-->
@@ -264,7 +266,9 @@
     </div>
 
 
-    <div class="popup-step" *ngIf="step==3 && registerForm1.value.gender=='Groupe'">
+    <div class="popup-step" *ngIf="step==3 && registerForm1.value.gender=='Groupe' 
+    && (registerForm2.value.type_of_account=='Artistes' 
+        || registerForm2.value.type_of_account=='Artistes professionels')">
 
         <div class="back-and-logo">
             
@@ -282,7 +286,7 @@
                 <span>Liste des membres du groupe* </span>
             </div>
 
-            <ng-container *ngIf="registerForm2.value.type_of_account!='Maison d\'édition' || type_of_account!='Maison d\'édition'">
+            <ng-container *ngIf="registerForm2.value.type_of_account!='Maison d\'édition' ">
 
     
                 <div #research class="searchbar-container" >
@@ -306,8 +310,8 @@
                     (click)="activateFocus_add()"
                     onfocus="this.placeholder = ''"
                     (input)="research_member();"
-                    onblur="this.placeholder = 'Rechercher un compte par pseudo'"
-                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher un compte par pseudo'">
+                    onblur="this.placeholder = 'Rechercher par pseudo'"
+                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher par pseudo'">
     
                     <div  class="research-results" *ngIf="research_member_loading">
                         <div *ngIf="display_no_pseudos_found">
@@ -345,7 +349,8 @@
     
                 <div class="list-of-members" *ngIf="list_of_pseudos.length==0">
                     <div>-Ajouter jusqu'à 10 membres à commencer par l'administrateur.</div>
-                    <div>-Le compte ne sera valide qu'après confirmation et vérification des membres du groupe.</div>
+                    <div>-Seuls les artistes sont autorisés.</div>
+                    <div>-Le compte ne sera valide qu'après confirmation de tous les membres du groupe.</div>
                     <div *ngIf="registerForm2.value.type_of_account!='Maison d\'édition' ">-Les rémunérations sont réparties équitablement pour le moment puis modifiables ultérieurement par l'administrateur.</div>
                 </div>
 
@@ -387,7 +392,7 @@
     </div>
 
 
-    <div class="popup-step" *ngIf="step==4 && (registerForm1.value.gender=='Groupe' || type_of_gender=='Groupe')">
+    <div class="popup-step" *ngIf="step==4 && (registerForm1.value.gender=='Groupe' )">
 
         <div class="back-and-logo">
             <div class="logo" style="width:40px">
@@ -409,8 +414,8 @@
                 <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
                     <mat-form-field>
                         <mat-label>Ville</mat-label>
-                        <input matInput formControlName="city" maxLength="30" autocomplete="off">
-                        <mat-error *ngIf="registerForm6.controls['city'].invalid">Veuillez faire une saisie valide
+                        <input (input)="adding_city();" matInput formControlName="city" maxLength="30" autocomplete="off">
+                        <mat-error *ngIf="registerForm6.controls['city'].invalid ">Veuillez faire une saisie valide
                         </mat-error>
                         <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -418,10 +423,12 @@
                 <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
                     <mat-form-field>
                         <mat-label>Pays</mat-label>
-                        <input matInput formControlName="country" maxLength="30" autocomplete="off">
-                        <mat-error *ngIf="registerForm6.controls['country'].invalid">Veuillez faire une saisie valide
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm6.controls['country'].value?.length || 0}}/30</div>
+                        <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country">
+                            <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="registerForm6.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
                     </mat-form-field>
                 </div>
             </div>
@@ -447,21 +454,17 @@
                 <div class="form-item" style="width: calc( 50% - 30px);margin-left: auto;margin-right: auto;">
                     <mat-form-field>
                         <mat-label>Lien</mat-label>
-                        <input matInput formControlName="link" maxLength="30" autocomplete="off">
+                        <input matInput formControlName="link" maxLength="60" autocomplete="off">
                         <mat-error *ngIf="registerForm6.controls['link'].invalid">Veuillez faire une saisie valide
                         </mat-error>
-                        <div class="length-indicator">{{registerForm6.controls['link'].value?.length || 0}}/30</div>
+                        <div class="length-indicator">{{registerForm6.controls['link'].value?.length || 0}}/60</div>
                     </mat-form-field>
                 </div>
                 <button mat-button class="mat-icon-button" *ngIf="4>links_titles.length" tabIndex="-1" (click)="add_link()" 
-                style="width: 40px; 
-                display:flex;
-                margin-left: auto;
-                margin-right: auto;
-                justify-content: center;
-                align-items: center;"> 	
+                style="width: 40px;
+                margin-bottom: 10px;"> 	
 
-                    <mat-icon class="item-icon" style="margin:auto auto;">library_add</mat-icon>
+                    <mat-icon class="item-icon" style="margin:auto auto;">add</mat-icon>
                 </button>
             </div>
 
@@ -489,7 +492,11 @@
             <button mat-raised-button class="submit-button style0" (click)="register();">
                 <span>M'inscrire</span>
             </button>
-            <div class="pseudo-found2" *ngIf="display_pseudo_found_2">Oups! Votre pseudonyme vient d'être validé par quelqu'un d'autre. Veuillez en choisir un nouveau.
+            <div class="pseudo-found2" *ngIf="display_pseudo_found_2">Une erreur s'est produite lors de l'inscription. Votre pseudonyme semble avoir été utilisé par un autre utilisateur.
+            </div>
+            <div class="pseudo-found2" *ngIf="display_email_found_2">Une erreur s'est produite lors de l'inscription. Votre email semble avoir été utilisé par un autre utilisateur.
+            </div>
+            <div class="pseudo-found2" *ngIf="display_email_or_pseudo_found">Une erreur s'est produite lors de l'inscription. Votre email ou votre pseudonyme semble avoir été utilisé par un autre utilisateur.
             </div>
         </div>
 
@@ -512,22 +519,22 @@
 
             <div class="form-item">
                 <mat-form-field>
-                    <mat-label>Métier</mat-label>
-                    <input matInput formControlName="job" maxLength="30" autocomplete="off">
+                    <mat-label>Profession</mat-label>
+                    <input matInput formControlName="job" maxLength="100" autocomplete="off">
                     <mat-error *ngIf="registerForm4.controls['job'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['job'].value?.length || 0}}/30</div>
+                    <div class="length-indicator">{{registerForm4.controls['job'].value?.length || 0}}/100</div>
                 </mat-form-field>
             </div>
             
 
             <div class="form-item">
                 <mat-form-field>
-                    <mat-label>Formation</mat-label>
-                    <input matInput formControlName="training" maxLength="30" autocomplete="off">
+                    <mat-label>Formation ou compétences</mat-label>
+                    <input matInput formControlName="training" maxLength="100" autocomplete="off">
                     <mat-error *ngIf="registerForm4.controls['training'].invalid">Veuillez faire une saisie valide, ou laisser ce champ vide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/30</div>
+                    <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/100</div>
                 </mat-form-field>
             </div>
 
@@ -536,8 +543,8 @@
                 <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
                     <mat-form-field>
                         <mat-label>Ville</mat-label>
-                        <input matInput formControlName="city" maxLength="30" autocomplete="off">
-                        <mat-error *ngIf="registerForm4.controls['city'].invalid">Veuillez faire une saisie valide
+                        <input  (input)="adding_city();" matInput formControlName="city" maxLength="30" autocomplete="off">
+                        <mat-error *ngIf="registerForm4.controls['city'].invalid ">Veuillez faire une saisie valide
                         </mat-error>
                         <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -545,10 +552,12 @@
                 <div class="form-item" style="width: calc( 50% - 15px);margin-left: auto;margin-right: auto;">
                     <mat-form-field>
                         <mat-label>Pays</mat-label>
-                        <input matInput formControlName="country" maxLength="30" autocomplete="off">
-                        <mat-error *ngIf="registerForm4.controls['country'].invalid">Veuillez faire une saisie valide
-                        </mat-error>
-                        <div class="length-indicator">{{registerForm4.controls['country'].value?.length || 0}}/30</div>
+                        <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country">
+                            <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="registerForm4.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
                     </mat-form-field>
                 </div>
             </div>
@@ -586,7 +595,7 @@
                 justify-content: center;
                 align-items: center;"> 	
 
-                    <mat-icon class="item-icon" style="margin:auto auto;">library_add</mat-icon>
+                    <mat-icon class="item-icon" style="margin:auto auto;">add</mat-icon>
                 </button>
             </div>
 

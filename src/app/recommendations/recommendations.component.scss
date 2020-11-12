@@ -25,19 +25,20 @@
    
 // First section
 .panel-controller {
-  //margin-top:30px;
-  width:100%;
+
+  width: 90%;
+  display: flex;
   font-size: 13px;
-  margin-bottom:30px;
-  box-shadow:0px 0px 3px 1px #dadbdc;
+  margin-bottom: 30px;
+  box-shadow: 0px 0px 3px 1px #dadbdc;
   background: linear-gradient(0.02turn, #8696bd, #475e88, #8696bd, #203865);
-  height: 50px;
+  height: 40px;
   overflow: hidden;
   display: flex;
+  margin: auto;
+  /* justify-content: center; */
   flex-wrap: wrap;
-  border-radius:10px;
-  //background-color:rgb(32,56,100);  
-  //box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
+  border-radius: 10px;
 }
 
 
@@ -63,8 +64,8 @@
 .comic-bubble-icon {
   background-image:none !important;
   background-color: rgb(255, 255, 255);
-  width:30px;
-  height:30px;
+  width:24px;
+  height:24px;
   margin:auto 10px auto auto;
   -webkit-mask:  url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
@@ -72,8 +73,8 @@
 .pencil-icon {
   background-image:none !important;
   background-color: rgb(255, 255, 255);
-  width:25px;
-  height:25px;
+  width:20px;
+  height:20px;
   margin:auto 10px auto auto;
   -webkit-mask:  url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
@@ -81,8 +82,8 @@
 .writing2-icon {
   background-image:none !important;
   background-color: rgb(255, 255, 255);
-  width:28px;
-  height:28px;
+  width:22px;
+  height:22px;
   margin:auto 10px auto auto;
   -webkit-mask:  url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
@@ -98,7 +99,7 @@
     text-shadow: -0.01ex 0 white, 0.01ex 0 white !important;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     color: #ffffff !important;
-    background: #203864 !important;
+    background: linear-gradient(0.02turn, #225a8c, #081647, #1b4779, #203865) !important;
 }
 
 
@@ -132,9 +133,17 @@
   display:none ;
 }
 
+.container-skeletons{
+  margin-top:50px;
+  width:90%;
+  margin:auto;
+}
+
 .media-container{
   padding-left: 10px;
   padding-right:10px;
+  margin: auto;
+  width: 90%;
 }
 
 mat-spinner {

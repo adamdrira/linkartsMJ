@@ -1,8 +1,12 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter, SimpleChanges, Renderer2, HostListener } from '@angular/core';
 import {Story_service} from '../services/story.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
+import {Reports_service} from '../services/reports.service';
+import {Subscribing_service} from '../services/subscribing.service';
+import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component';
+import {PopupReportComponent} from '../popup-report/popup-report.component';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-
+import { MatDialog } from '@angular/material/dialog';
 declare var Swiper:any;
 declare var $: any;
 
@@ -15,8 +19,11 @@ export class StoryViewComponent implements OnInit {
 
 
   constructor(
+    public dialog: MatDialog,
+    private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
     private rd:Renderer2,
+    private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
     private Story_service:Story_service,
@@ -29,6 +36,7 @@ export class StoryViewComponent implements OnInit {
   @ViewChild('storyBarFill', {static: false}) storyBarFill:ElementRef;
 
   @Input('user_id') user_id; //author
+  @Input('list_of_data') list_of_data; //list_of_data
   @Input('current_user') current_user;  //visitor
   @Input('index_debut') index_debut;
   //index_debut:number=3;
@@ -40,7 +48,6 @@ export class StoryViewComponent implements OnInit {
 
   swiper:any;
   pictures_links: any[];
-  list_of_data:any[]=[];
   list_of_contents:any[]=[];
   list_of_contents_retrieved=false;
   list_of_data_sorted=false;
@@ -85,7 +92,7 @@ export class StoryViewComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    console.log(this.list_of_data)
     let THIS=this;
     $(window).on('blur', function(){
       if(!THIS.paused){
@@ -104,45 +111,33 @@ export class StoryViewComponent implements OnInit {
       this.visitor_mode=false;
     }
     
-    this.Story_service.get_stories_by_user_id(this.user_id).subscribe(r=>{
-      (async () => {
-      this.list_of_data=r[0];
-      let k=0;
+    let k=0;
 
 
-      for (let i=0;i<this.list_of_data.length;i++){
+    for (let i=0;i<this.list_of_data.length;i++){
 
-        this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
-          let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_contents[i]=SafeURL;
-          k++;
-          if(k== this.list_of_data.length ){
+      this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
+        let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.list_of_contents[i]=SafeURL;
+        k++;
+        if(k== this.list_of_data.length ){
 
-            
+          
+          this.cd.detectChanges();
+          this.initialize_swiper();
+          this.swiper.update();
+          this.cd.detectChanges();
+
+          this.swiper.slideTo( this.index_debut, false, r=>{
+            this.timeLeft = 10;
             this.cd.detectChanges();
-            this.initialize_swiper();
-            this.swiper.update();
-            this.cd.detectChanges();
+          }); // n'affiche pas le dernier si l'indexe est le dernier...
+          
+        }
+      });
 
-            
-
-            //console.log("$$$$$$$$$$$$$$$$$>> INDEX DEBUT : " + this.index_debut);
-            //console.log("$$$$$$$$$$$$$$$$$>> SWIPER SIZE : " + this.swiper.slides.length);
-
-
-            this.swiper.slideTo( this.index_debut, false, r=>{
-              this.timeLeft = 10;
-              this.cd.detectChanges();
-            }); // n'affiche pas le dernier si l'indexe est le dernier...
-            
-          }
-        });
-
-      }
-
-    })();
-    })
+    }
 
 
 
@@ -273,29 +268,124 @@ export class StoryViewComponent implements OnInit {
   }
 
 
-  delete_story(i){
-    this.Story_service.delete_story(this.list_of_data[i].id).subscribe(r=>{
-      location.reload();
+
+  compteur_loaded_image=0;
+  display_images=false;
+  display_pp=false;
+  loaded_image(){
+    this.compteur_loaded_image+=1;
+    if(this.compteur_loaded_image==this.list_of_contents.length){
+      this.display_images=true;
+    }
+    
+  }
+
+  loaded_pp(){
+    this.display_pp=true;
+  }
+
+
+   /********************************************* options  *************************************/
+ /********************************************* options  *************************************/
+ /********************************************* options  *************************************/
+
+ delete_story(i){
+  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+    data: {showChoice:true, text:'Etes vous sûr de vouloir supprimer la story ?'},
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if(result){
+      this.Story_service.delete_story(this.list_of_data[i].id).subscribe(r=>{
+        location.reload();
+      })
+    }
+  })
+}
+
+show_list_of_viewers=false;
+viewers_found=false;
+list_of_viewers=[];
+list_of_check_subscribtion=[];
+list_of_profile_pictures:SafeUrl[]=[];
+list_of_pp_loaded=[];
+get_list_of_viewers(i){
+  this.paused=true;
+  clearInterval(this.interval);
+  
+  console.log("list_of_viewers")
+  if(this.viewers_found){
+    this.show_list_of_viewers=true;
+    return
+  }
+  this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
+    console.log(r[0])
+    if(r[0].length>0){
+      let n =r[0].length;
+      for (let i=0;i<n;i++){
+        console.log(r[0][i].id_user_who_looks)
+        this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user_who_looks).subscribe(l=>{
+          this.list_of_viewers[i]=l[0];
+          this.Subscribing_service.check_if_visitor_susbcribed(r[0][i].id_user_who_looks).subscribe(information=>{
+            if(information[0].value){
+              this.list_of_check_subscribtion[i]=true;
+            }
+            else{
+              this.list_of_check_subscribtion[i]=false;
+            }
+            this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_profile_pictures[i] = SafeURL;
+              if(i==n-1){
+                this.viewers_found=true;
+                this.show_list_of_viewers=true;
+              }
+            });
+            
+          });
+        })
+        
+      }
+    }
+  })
+}
+
+subscribtion(i){
+  if(!this.list_of_check_subscribtion[i]){
+    this.Subscribing_service.subscribe_to_a_user(this.list_of_viewers[i].id).subscribe(information=>{
+      this.list_of_check_subscribtion[i]=true;
+    });
+  }
+  if(this.list_of_check_subscribtion[i]){
+    this.Subscribing_service.remove_subscribtion(this.list_of_viewers[i].id).subscribe(information=>{
+      this.list_of_check_subscribtion[i]=false;
+    });
+  }
+}
+load_list_of_pp(k){
+  this.list_of_pp_loaded[k]=true;
+}
+close_list_of_viewers(){
+  this.show_list_of_viewers=false;
+}
+
+  report(i){
+    this.Reports_service.check_if_content_reported('story',this.list_of_data[i].id,"unknown",0).subscribe(r=>{
+      console.log(r[0])
+      if(r[0].nothing){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupReportComponent, {
+          data: {from_account:false,id_receiver:this.user_id,publication_category:'story',publication_id:this.list_of_data[i].id,format:"unknown",chapter_number:0},
+        });
+      }
     })
-
+    
   }
-  
-compteur_loaded_image=0;
-display_images=false;
-display_pp=false;
-loaded_image(){
-  this.compteur_loaded_image+=1;
-  if(this.compteur_loaded_image==this.list_of_contents.length){
-    this.display_images=true;
-  }
-  
-}
-
-loaded_pp(){
-  this.display_pp=true;
-}
-
-
 
 
 }

@@ -10,6 +10,7 @@ import { BdSerieService } from '../services/comics_serie.service';
 
 import { ConstantsService } from '../services/constants.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+//import { runInThisContext } from 'vm';
 
 declare var Swiper: any
 declare var $: any
@@ -91,86 +92,90 @@ export class RecommendationsComponent implements OnInit {
   subcategory: number = 0;
  // dropdowns = this._constants.filters;
  sorted_category_retrieved=false;
-  
-
   ngOnInit() {
     this.display_selector();
     this.initializeselector();
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
+  
     this.Community_recommendation.send_list_view_to_python().subscribe(r=>{
-      console.log(r)
+      //console.log(r)
       if (r>=1){
-        this.Community_recommendation.sorted_category_list().subscribe(information=>{
-          console.log(information);
-         
-          this.index_bd= information[0].bd;
-          this.index_drawing= information[0].drawing;
-          this.index_writing= information[0].writing;
-          if( this.index_bd == 0) {
-            this.subcategory=0;
-          } 
-          if(this.index_drawing == 0){
-            this.subcategory=1;
-          } 
-          else if(this.index_writing == 0) {
-            this.subcategory=2;
-          }
-          this.Community_recommendation.sorted_favourite_type_list().subscribe(information=>{
-            var i = 0;
-            var j=0;
-            var k=0;
-            if(this.index_bd >=0){
-              for (let item of information[0].bd[this.index_bd]){
-                this.change_list_position(this.sorted_style_list_bd,this.sorted_style_list_bd.indexOf(item[0]),i);
-                i++;
-              };
+        this.Community_recommendation.sorted_category_list().subscribe(info=>{
+          //console.log(info);
+            this.index_bd= info[0].bd;
+            this.index_drawing= info[0].drawing;
+            this.index_writing= info[0].writing;
+            if( this.index_bd == 0) {
+              this.subcategory=0;
+            } 
+            if(this.index_drawing == 0){
+              this.subcategory=1;
+            } 
+            else if(this.index_writing == 0) {
+              this.subcategory=2;
             }
-            if(this.index_drawing >=0){
-              
-              for (let item of information[0].drawing[this.index_drawing]){
-                this.change_list_position(this.sorted_style_list_drawing,this.sorted_style_list_drawing.indexOf(item[0]),j);
-                j++;
-              };
-            }
-            if(this.index_writing>=0){
-              for (let item of information[0].writing[this.index_writing]){
-                this.change_list_position(this.sorted_style_list_writing,this.sorted_style_list_writing.indexOf(item[0]),k);
-                k++;
-              };
-              for (let i=0; i< this.sorted_style_list_writing.length;i++) {
-                if (this.sorted_style_list_writing[i] == "Scenario") {
-                  this.sorted_style_list_writing[i] ="Scénario";
-                }
-                else if (this.sorted_style_list_writing[i]  == "Illustrated novel") {
-                  this.sorted_style_list_writing[i] ="Roman illustré";
-                }
-                else if (this.sorted_style_list_writing[i]  == "Poetry") {
-                  this.sorted_style_list_writing[i] ="Poésie";
+            this.Community_recommendation.sorted_favourite_type_list().subscribe(information=>{
+              var i = 0;
+              var j=0;
+              var k=0;
+              if(this.index_bd >=0){
+                for (let item of information[0].bd[this.index_bd]){
+                  this.change_list_position(this.sorted_style_list_bd,this.sorted_style_list_bd.indexOf(item[0]),i);
+                  i++;
+                };
+              }
+              if(this.index_drawing >=0){
+                
+                for (let item of information[0].drawing[this.index_drawing]){
+                  this.change_list_position(this.sorted_style_list_drawing,this.sorted_style_list_drawing.indexOf(item[0]),j);
+                  j++;
+                };
+              }
+              if(this.index_writing>=0){
+                for (let item of information[0].writing[this.index_writing]){
+                  this.change_list_position(this.sorted_style_list_writing,this.sorted_style_list_writing.indexOf(item[0]),k);
+                  k++;
+                };
+                for (let i=0; i< this.sorted_style_list_writing.length;i++) {
+                  if (this.sorted_style_list_writing[i] == "Scenario") {
+                    this.sorted_style_list_writing[i] ="Scénario";
+                  }
+                  else if (this.sorted_style_list_writing[i]  == "Illustrated novel") {
+                    this.sorted_style_list_writing[i] ="Roman illustré";
+                  }
+                  else if (this.sorted_style_list_writing[i]  == "Poetry") {
+                    this.sorted_style_list_writing[i] ="Poésie";
+                  }
                 }
               }
-            }
- 
-          });
+  
+            });
 
-        if(this.subcategory==0){
-          this.load_bd_recommendations();
-        }
-        if(this.subcategory==1){
-          this.load_drawing_recommendations();
-        }
-        if(this.subcategory==2){
-          this.load_writing_recommendations();
-        }
-        this.sorted_category_retrieved=true;
+            if(this.subcategory==0){
+              this.type_of_skeleton="comic";
+              window.dispatchEvent(new Event('resize'));
+              this.cd.detectChanges()
+              this.load_bd_recommendations();
+            }
+            if(this.subcategory==1){
+              this.type_of_skeleton="drawing";
+              window.dispatchEvent(new Event('resize'));
+              this.cd.detectChanges()
+              this.load_drawing_recommendations();
+            }
+            if(this.subcategory==2){
+              this.type_of_skeleton="writing";
+              window.dispatchEvent(new Event('resize'));
+              this.cd.detectChanges()
+              this.load_writing_recommendations();
+            }
+            this.sorted_category_retrieved=true;
         });
       }
       else{
-        
+        this.type_of_skeleton="comic";
         this.load_bd_recommendations();
         this.sorted_category_retrieved=true;
-        /*this.Community_recommendation.delete_recommendations_artpieces().subscribe(l=>{
-          this.load_bd_recommendations();
-        })*/
       }
     })
 
@@ -193,25 +198,47 @@ export class RecommendationsComponent implements OnInit {
     if( this.subcategory==i ) {
       return;
     }
-    if(i==0){
-      if(!this.bd_is_loaded){
-       this.load_bd_recommendations();
-      }     
-      this.subcategory=i;
-    }
-    else if(i==1){
-      if(!this.drawing_is_loaded ){
-      
-        this.load_drawing_recommendations()
+    else if(this.sorted_category_retrieved){
+      //console.log("open new subategory " + i)
+      if(i==0){
+        this.subcategory=i;
+        this.type_of_skeleton="comic";
+        this.list_of_categories_retrieved=false;
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges();
+        if(!this.bd_is_loaded){
+            this.load_bd_recommendations();
+        }     
+        
+        
       }
-      this.subcategory=i;  
-    }
-    else if(i==2){
-      if(!this.writing_is_loaded){
-        this.load_writing_recommendations();
+      else if(i==1){
+        this.subcategory=i;  
+        this.type_of_skeleton="drawing";
+        this.list_of_categories_retrieved=false;
+        window.dispatchEvent(new Event('resize'));
+        //console.log(this.subcategory)
+        //console.log(this.list_of_categories_retrieved)
+        this.cd.detectChanges();
+        if(!this.drawing_is_loaded ){
+            this.load_drawing_recommendations()
+        }
+        
       }
-      this.subcategory=i;
+      else if(i==2){
+        this.subcategory=i;
+        this.type_of_skeleton="writing";
+        this.list_of_categories_retrieved=false;
+        window.dispatchEvent(new Event('resize'));
+        
+        this.cd.detectChanges();
+        if(!this.writing_is_loaded){
+            this.load_writing_recommendations();
+        }
+       
+      }
     }
+   
     
     return;
   }
@@ -232,10 +259,12 @@ export class RecommendationsComponent implements OnInit {
   bd_serie_is_load=false;
 
   load_bd_recommendations(){
+    //console.log("load bd comic")
     this.Community_recommendation.get_first_recommendation_bd_os_for_user(this.index_bd,this.index_drawing,this.index_writing)
           .subscribe(information=>{
-            console.log(information);
+            
             var list_bd_os = information[0].list_bd_os_to_send;
+            //console.log(list_bd_os[0]);
             this.compare_to_compteur_bd+=  list_bd_os.length;
             if(list_bd_os.length>0){
               for (let i=0; i<list_bd_os.length;i++){
@@ -272,7 +301,7 @@ export class RecommendationsComponent implements OnInit {
                     if(i==list_bd_os.length-1){
                       this.bd_os_is_loaded=true;
                       if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        console.log("bd_is_loaded");
+                        //console.log("bd_is_loaded");
                         this.bd_is_loaded=true;
                       }
                     }
@@ -304,6 +333,7 @@ export class RecommendationsComponent implements OnInit {
             else{
               this.bd_os_is_loaded=true;
               if(this.bd_os_is_loaded && this.bd_serie_is_load){
+                this.list_of_categories_retrieved=true;
                 this.bd_is_loaded=true;
               }
             }
@@ -311,9 +341,10 @@ export class RecommendationsComponent implements OnInit {
 
           this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd,this.index_drawing,this.index_writing)
           .subscribe(information=>{
-            console.log(information)
+            //console.log(information)
             var list_bd_serie= information[0].list_bd_serie_to_send;
             this.compare_to_compteur_bd+= list_bd_serie.length;
+            //console.log(list_bd_serie[0])
             if(list_bd_serie.length>0){
               for (let i=0; i<list_bd_serie.length;i++){
                 if (list_bd_serie[i].length>0){
@@ -384,6 +415,7 @@ export class RecommendationsComponent implements OnInit {
             else{
               this.bd_serie_is_load=true;
               if(this.bd_os_is_loaded && this.bd_serie_is_load){
+                this.list_of_categories_retrieved=true;
                 this.bd_is_loaded=true;
               }
             }
@@ -393,15 +425,16 @@ export class RecommendationsComponent implements OnInit {
   drawing_artbook_is_loaded=false;
   drawing_onepage_is_loaded=false;
   load_drawing_recommendations(){
+    //console.log("load  drawing")
     this.Community_recommendation.get_first_recommendation_drawing_artbook_for_user(this.index_bd,this.index_drawing,this.index_writing)
           .subscribe(information=>{
             var list_artbook= information[0].list_artbook_to_send;
-            console.log(list_artbook);
-            console.log("on entre dans artbook")
+            //console.log(list_artbook);
+            //console.log("on entre dans artbook")
             this.compare_to_compteur_drawing= this.compare_to_compteur_drawing + list_artbook.length;
             if(list_artbook.length>0){
               for (let i=0;i<list_artbook.length;i++){
-                console.log(list_artbook[i].length);
+                //console.log(list_artbook[i].length);
                 if (list_artbook[i].length>0){
                   if(list_artbook[i][0].category =="Traditionnel"){
                     if( this.sorted_artpieces_traditional.length<6 && list_artbook[i][0].status=='public'){
@@ -410,10 +443,10 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_artbook.length-1){
                       this.drawing_artbook_is_loaded=true;
-                      console.log("on valide artbook")
+                      //console.log("on valide artbook")
                       if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        console.log(this.sorted_artpieces_traditional);
-                        console.log("on valide tout dans artbook")
+                        //console.log(this.sorted_artpieces_traditional);
+                        //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
                       }
                     }
@@ -425,23 +458,23 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_artbook.length-1){
                       this.drawing_artbook_is_loaded=true;
-                      console.log("on valise artbook")
+                      //console.log("on valise artbook")
                       if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        console.log(this.sorted_artpieces_traditional);
-                        console.log("on valide tout dans artbook")
+                        //console.log(this.sorted_artpieces_traditional);
+                        //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
                       }
                     }
                   }
                 }
                 else{
-                  console.log("on est dans le else if")
+                  //console.log("on est dans le else if")
                   if(i==list_artbook.length-1){
                     this.drawing_artbook_is_loaded=true;
-                    console.log("on valide artbook")
+                    //console.log("on valide artbook")
                     if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                      console.log(this.sorted_artpieces_traditional);
-                      console.log("on valide tout dans artbook")
+                      //console.log(this.sorted_artpieces_traditional);
+                      //console.log("on valide tout dans artbook")
                       this.drawing_is_loaded=true;
                     }
                   }
@@ -451,10 +484,11 @@ export class RecommendationsComponent implements OnInit {
             }
             else{
                 this.drawing_artbook_is_loaded=true;
-                console.log("on valise artbook")
+                //console.log("on valise artbook")
                 if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                  console.log(this.sorted_artpieces_traditional);
-                  console.log("on valide tout dans artbook")
+                  //console.log(this.sorted_artpieces_traditional);
+                  //console.log("on valide tout dans artbook")
+                  this.list_of_categories_retrieved=true;
                   this.drawing_is_loaded=true;
                 }
             }
@@ -464,12 +498,12 @@ export class RecommendationsComponent implements OnInit {
           this.Community_recommendation.get_first_recommendation_drawing_os_for_user(this.index_bd,this.index_drawing,this.index_writing)
           .subscribe(information=>{
             var list_drawing_os= information[0].list_drawing_os_to_send;
-            console.log(list_drawing_os);
-            console.log("on entre dans onpage")
+            //console.log(list_drawing_os);
+            //console.log("on entre dans onpage")
             this.compare_to_compteur_drawing= this.compare_to_compteur_drawing + list_drawing_os.length;
             if(list_drawing_os.length>0){
               for (let i=0;i<list_drawing_os.length;i++){
-                console.log(list_drawing_os[i][0]);
+                //console.log(list_drawing_os[i][0]);
                 if (list_drawing_os[i].length>0){
                   if(list_drawing_os[i][0].category =="Traditionnel"){
                     if( this.sorted_artpieces_traditional.length<6 && list_drawing_os[i][0].status=='public'){
@@ -478,10 +512,10 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_drawing_os.length-1){
                       this.drawing_onepage_is_loaded=true;
-                      console.log("on valise onepage")
+                      //console.log("on valise onepage")
                       if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        console.log(this.sorted_artpieces_traditional);
-                        console.log("on valide tout dans artbook")
+                        //console.log(this.sorted_artpieces_traditional);
+                        //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
                       }
                     }
@@ -493,10 +527,10 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_drawing_os.length-1){
                       this.drawing_onepage_is_loaded=true;
-                      console.log("on valise onepage")
+                      //console.log("on valise onepage")
                       if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        console.log(this.sorted_artpieces_traditional);
-                        console.log("on valide tout dans artbook")
+                        //console.log(this.sorted_artpieces_traditional);
+                        //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
                       }
                     }
@@ -505,10 +539,10 @@ export class RecommendationsComponent implements OnInit {
                 else if(!list_drawing_os[i][0]){
                   if(i==list_drawing_os.length-1){
                     this.drawing_onepage_is_loaded=true;
-                    console.log("on valise onepage")
+                    //console.log("on valise onepage")
                     if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                      console.log(this.sorted_artpieces_traditional);
-                      console.log("on valide tout dans artbook")
+                      //console.log(this.sorted_artpieces_traditional);
+                      //console.log("on valide tout dans artbook")
                       this.drawing_is_loaded=true;
                     }
                   }
@@ -518,10 +552,11 @@ export class RecommendationsComponent implements OnInit {
             }
             else{
                 this.drawing_onepage_is_loaded=true;
-                console.log("on valise onepage")
+                //console.log("on valise onepage")
                 if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                  console.log(this.sorted_artpieces_traditional);
-                  console.log("on valide tout dans artbook")
+                  //console.log(this.sorted_artpieces_traditional);
+                  //console.log("on valide tout dans artbook")
+                  this.list_of_categories_retrieved=true;
                   this.drawing_is_loaded=true;
                 }
             }
@@ -529,13 +564,16 @@ export class RecommendationsComponent implements OnInit {
   }
 
   load_writing_recommendations(){
+    //console.log("load  writing")
     this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_bd,this.index_drawing,this.index_writing).subscribe(information=>{
-      console.log(information)
+      
             var list_writings_to_send= information[0].list_writings_to_send;
+            //console.log(list_writings_to_send)
+            //console.log(list_writings_to_send[0])
             this.compare_to_compteur_writing+= list_writings_to_send.length;
-            if(list_writings_to_send.length>0){
+            if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
               for (let i=0;i<list_writings_to_send.length;i++){
-                console.log(list_writings_to_send[i][0])
+                ////console.log(list_writings_to_send[i][0])
                 if (list_writings_to_send[i].length>0){
                   
                   if(list_writings_to_send[i][0].category =="Illustrated novel"){
@@ -587,7 +625,8 @@ export class RecommendationsComponent implements OnInit {
               }
             }
             else{
-                this.writing_is_loaded=true;
+              this.list_of_categories_retrieved=true;
+              this.writing_is_loaded=true;
             }
             
 
@@ -625,11 +664,51 @@ export class RecommendationsComponent implements OnInit {
     if( width <= 825) {
       this.little_screen=true;
     }
-    else{
+    else if(width>0){
       this.little_screen=false;
     }
     
   }
   
 
+
+  /************************************************* LODING PAGE ***********************************/
+
+  categories_array = Array(4);
+  skeleton_array = Array(20);
+  number_of_skeletons_per_line = 1;
+  list_of_categories_retrieved=false;
+  type_of_skeleton:string;
+  send_number_of_skeletons(object) {
+    //console.log(object)
+    this.number_of_skeletons_per_line=object.number;
+    this.cd.detectChanges();
+  }
+
+  list_of_writings_retrieved_receiver(object){
+    //console.log(this.subcategory)
+    if( this.subcategory==2){
+      this.list_of_categories_retrieved=true;
+      this.cd.detectChanges();
+    }
+      
+  }
+
+  list_of_drawings_retrieved_receiver(object){
+    //console.log(this.subcategory)
+    if( this.subcategory==1){
+      this.list_of_categories_retrieved=true;
+      this.cd.detectChanges();
+    }
+  }
+
+  list_of_comics_retrieved_receiver(object){
+    //console.log(this.subcategory)
+    if( this.subcategory==0){
+      this.list_of_categories_retrieved=true;
+      this.cd.detectChanges();
+    }
+  }
+
+ 
 }

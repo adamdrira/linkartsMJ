@@ -7,19 +7,18 @@
 
         <div class="category">
             <a  [routerLink]=open_research(item)>
-                <mat-icon>dehaze</mat-icon>
                 <span>{{item}}</span>
             </a>
         </div>
         
 
-        <div class="container-skeletons d-flex flex-wrap skeleton" *ngIf="!list_of_more_contents_sorted" [@enterAnimation]>
+        <!--<div class="container-skeletons d-flex flex-wrap skeleton" *ngIf="!list_of_more_contents_sorted" [@enterAnimation]>
             <ng-container *ngFor="let item of skeleton_array; let i = index">
                 <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i && !list_of_contents_sorted"
                     (send_number_of_skeletons)="send_number_of_skeletons( $event );"
                 ></app-thumbnail-skeleton>
             </ng-container>
-        </div>
+        </div>-->
         
         <div class="container-homepage container-comics d-flex flex-wrap" style="transition:opacity 1s;" [ngClass]="{'invisible_without_height': !list_of_contents_sorted}">
 

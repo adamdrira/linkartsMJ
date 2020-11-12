@@ -23,7 +23,7 @@
                         [item]=item
                         page='subscribings'
                         now_in_seconds={{now_in_seconds}}
-                        subscribing_category='comics'
+                        subscribing_category='comic'
                         subscribing_format='serie'
                         ></app-thumbnail-artwork>
                    </div>
@@ -34,7 +34,7 @@
                         [item]=item
                         page='subscribings'
                         now_in_seconds={{now_in_seconds}}
-                        subscribing_category='comics'
+                        subscribing_category='comic'
                         subscribing_format='one-shot'
                         ></app-thumbnail-artwork>
                    </div>
@@ -100,7 +100,7 @@
                         [item]=item
                         page='subscribings'
                         now_in_seconds={{now_in_seconds}}
-                        subscribing_category='comics'
+                        subscribing_category='comic'
                         subscribing_format='serie'
                         ></app-thumbnail-artwork>
                    </div>
@@ -111,7 +111,7 @@
                         [item]=item
                         page='subscribings'
                         now_in_seconds={{now_in_seconds}}
-                        subscribing_category='comics'
+                        subscribing_category='comic'
                         subscribing_format='one-shot'
                         ></app-thumbnail-artwork>
                    </div>
@@ -169,7 +169,7 @@
     </ng-container>
     
     
-    <ng-container *ngIf="list_of_contents_sorted">
+    <ng-container *ngIf="list_of_contents_sorted && list_of_new_contents_sorted">
         <ng-container *ngIf="show_more">
             <app-subscribings-see-more
                 [list_of_users]=list_of_users

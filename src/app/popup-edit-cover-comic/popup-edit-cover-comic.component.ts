@@ -33,7 +33,7 @@ export class PopupEditCoverComicComponent implements OnInit {
     public dialog: MatDialog,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-
+      dialogRef.disableClose = true;
   }
 
 
@@ -46,29 +46,13 @@ export class PopupEditCoverComicComponent implements OnInit {
 
   
  
-
-
-  validateForm00() {
-
-    if ( this.Bd_CoverService.get_confirmation() && this.data.format == "one-shot" ) {
-        this.Bd_CoverService.add_covername_to_sql2("One-shot",this.data.bd_id).subscribe(r=>{
-          location.reload();
-        });
-    }
-
-    else if ( this.Bd_CoverService.get_confirmation() && this.data.format == "serie" ) {
-      this.Bd_CoverService.add_covername_to_sql2("Série",this.data.bd_id).subscribe(r=>{
-        location.reload();
-      });
-    }
-
-    else {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Veuillez télécharger et valider une photo pour la miniature'},
-      });
-    }
-
+  for_edition=true;
+  close_dialog(){
+      this.dialogRef.close();
+    
   }
+
+
 
 
 }

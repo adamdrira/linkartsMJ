@@ -26,6 +26,9 @@
     
             <div *ngFor="let item of list_of_contents; let i=index" class="swiper-slide">
 
+                <button mat-button tabIndex="-1" class="mat-icon-button" *ngIf="!visitor_mode" (click)="get_list_of_viewers(i)">
+                    <mat-icon  class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto; color:white">visibility</mat-icon>
+                </button>
                 <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="storyOptions">
                     <mat-icon class="optionsButton">more_horiz</mat-icon>
                 </button>
@@ -34,13 +37,47 @@
                         <mat-icon class="item-icon">edit</mat-icon>
                         <span>Supprimer la story</span>
                     </button>
-                    <button *ngIf="visitor_mode" class="mat-menu-item" mat-menu-item> 	
-                        <mat-icon class="item-icon">edit</mat-icon>
-                        <span>Signaler la story</span>
+                    
+                    <button *ngIf="visitor_mode" class="mat-menu-item" mat-menu-item (click)="report(i)"> 	
+                        <mat-icon class="item-icon">report_problem</mat-icon>
+                        <span>Signaler</span>
                     </button>
                 </mat-menu>
     
-                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images}">
+                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images,'really-invisible':show_list_of_viewers}">
+                <div class="subscribers-container" *ngIf="show_list_of_viewers && viewers_found">
+                    <button mat-raised-button (click)="close_list_of_viewers()" tabIndex="-1" class="position style1">
+                        <mat-icon class="item-icon" >close</mat-icon>
+                    </button>
+                    <div *ngFor="let item of list_of_viewers; let k=index" class="subscriber-card">
+                        <div class="author-container">
+                            <div class="left-container">
+                                <img [src]="list_of_profile_pictures[k]" (load)="load_list_of_pp[k]" [ngClass]="{'invisible':!list_of_pp_loaded[k]}">
+                            </div>
+                            <a href="/account/{{item.nickname}}/{{item.id}}">
+                                <div class="right-container">
+                                    <span class="author-name">{{item.firstname}} {{item.lastname}} </span>
+                                    <span class="author-description">@{{item.nickname}}</span>
+                                </div>
+                            </a>
+            
+                        </div>
+                        <button mat-raised-button *ngIf="!list_of_check_subscribtion[k]" class="button style1 subscriptions" (click)="subscribtion(k)">
+                            <mat-icon class="icon">person_add</mat-icon>
+                            <span>S'abonner</span>
+                        </button>
+                        <button mat-raised-button *ngIf="list_of_check_subscribtion[k]" class="button style0 subscriptions" (click)="subscribtion(k)">
+                            <mat-icon class="icon">person_add_disabled</mat-icon>
+                            <span>Se désabonner</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="subscribers-container" *ngIf="show_list_of_viewers && !viewers_found">
+                    <div style="margin: auto">
+                        Aucune vue
+                    </div>
+                    
+                </div>
                 
                 <div class="left-absolute-container" (click)="previous_slide();"></div>
                 <div class="right-absolute-container" (click)="next_slide();"></div>

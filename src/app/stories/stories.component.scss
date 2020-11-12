@@ -63,6 +63,15 @@
     text-overflow: ellipsis;
 }
 
+.add{
+  padding: 0px 10px;
+  margin:3px 5px 3px 5px;
+  display:flex;
+  color: white;
+  border-radius:10px;
+  transition:opacity 200ms;
+  background:rgb(230,230,230,0.5);
+}
 
 .new {
     background: linear-gradient(to right, #0014ff, #00feff);

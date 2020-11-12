@@ -1,4 +1,13 @@
 
+.not-connected{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #203864;
+    font-weight: 600;
+    font-size: 13px;
+    height: 53px;
+}
 
 
 
@@ -24,7 +33,10 @@
   .navbar-l1-searchbar-container-activator button {
     width: 33px;
     height: 33px;
+    display: flex;
     outline: none;
+    justify-content: center;
+    align-items: center;
   }
   .SMALL-SCREEN-OPTIONS {
     display:none;
@@ -343,10 +355,12 @@
   
   .item-row .mat-icon-button {
     width: 24px;
-    //border: 1px solid #c9c9c9;
     height: 24px;
     color: #c9c9c9;
-    margin: auto 10px auto 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto 10px 15px 0px;
     transition: all 200ms;
   }
   .item-row .mat-icon-button:hover {
@@ -714,8 +728,11 @@
  }
 
  .optionsMenu {
-   width:30px;
-   height:30px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
  }
 
  .connexion-icon:hover{
@@ -1411,7 +1428,7 @@ display:flex;
 
   .notification-icon {
     position: absolute;
-    bottom: -4px;
+    bottom: -6px;
     height: 22px;
     width: 22px;
     right: -4px;
@@ -1431,6 +1448,10 @@ display:flex;
   .notification-icon.group {
     background-image: linear-gradient(90deg, #364adc 0, #bfd6ff 100%) !important;
   }
+  .notification-icon.trendings {
+    background-image:  linear-gradient(90deg, #f44800 0, #feeb00 100%) !important;
+  }
+  
   .notification-icon.publication {
     background-image: linear-gradient(90deg, #d06900 0, #ffd8ae 100%) !important;
   }
@@ -1439,14 +1460,14 @@ display:flex;
     margin: auto auto;
     height: unset;
     width: unset;
-    font-size: 14px;
+    font-size: 13px;
     color: white;
   }
   .notification-icon.group mat-icon {
-    font-size: 18px;
+    font-size: 14px;
   }
   .notification-icon.publication mat-icon {
-    font-size: 17px;
+    font-size: 14px;
   }
 
   .notification-date {

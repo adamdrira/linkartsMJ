@@ -112,7 +112,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
       if(r[0].length>0){
         let compt=0;
         for (let j=0; j< r[0].length;j++){
-          if(r[0][j].publication_category=="comics"){
+          if(r[0][j].publication_category=="comic"){
             if(r[0][j].format=="one-shot"){
               this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
                 if(info[0].status="public"){

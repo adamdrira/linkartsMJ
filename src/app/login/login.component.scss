@@ -12,6 +12,17 @@
   transition:width 200ms;
 }
 
+.position{
+  right: 0px;
+  top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  outline: none !important;
+}
+
+
 .error{
     position: absolute;
     width: 100%;
@@ -76,20 +87,23 @@
 }
 
 .popup-step > .step-name {
-  display:flex;
-  height:40px;
-  width:400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 400px;
 }
 
 .popup-step > .step-name span {
-  font-size: 23px;
+  display: flex;
+  color: #203864;
+  font-size: 18px;
   font-weight: bold;
-  margin: auto auto auto 5px;
 }
 
 
 .popup-step .step-form {
-  
+  font-size: 12px;
   overflow-y:auto;
   width:400px;
   overflow-y:auto;
@@ -199,4 +213,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+.logo{
+  margin:auto auto;
 }

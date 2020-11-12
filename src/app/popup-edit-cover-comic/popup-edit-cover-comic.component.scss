@@ -92,6 +92,16 @@
     color:rgb(50, 50, 50);
 }
 
+.button-container-close{
+    margin: auto 0px auto auto;
+    width: 30px;
+}
+
+.close-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 @import '../../material-styles.css';
 
