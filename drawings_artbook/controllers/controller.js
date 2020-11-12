@@ -4,9 +4,9 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
+const Sequelize = require('sequelize');
 
-
-module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
+module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_contents) => {
 
   
   function get_current_user(token){
@@ -304,7 +304,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
         fs.access('./data_and_routes/drawings_pages_artbook' + req.params.name, fs.F_OK, (err) => {
           if(err){
             console.log('suppression already done');
-            return res.status(200)
+            return res.status(200).send([{delete:'suppression done'}])
           }
           console.log( 'annulation en cours');
           const name  = req.params.name;
@@ -314,7 +314,7 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
             }  
             else {
               console.log( 'fichier supprimé');
-              return res.status(200)
+              return res.status(200).send([{delete:'suppression done'}])
             }
           });
         });
@@ -398,10 +398,10 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
                    //on valide l'upload
   router.get('/retrieve_drawing_artbook_info_by_userid/:user_id', function (req, res) {
 
-    (async () => {
+   
 
        const user_id= parseInt(req.params.user_id);
-         artbooks = await Liste_artbook.findAll({
+        Liste_artbook.findAll({
             where: {
               authorid: user_id,
               status:"public"
@@ -410,26 +410,108 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users) => {
                 ['drawing_id', 'ASC']
               ],
           })
-          .then(drawings =>  {
-            res.status(200).send([drawings]);
+          .then(drawing =>  {
+            
+            res.status(200).send([drawing]);
+            
           }); 
-    })();
+   
     });
+
+    router.post('/get_number_of_drawings_artbook', function (req, res) {
+      const id_user= req.body.id_user;
+      let date_format=req.body.date_format;
+      let list_of_drawings=[];
+      const Op = Sequelize.Op;
+      let list_of_ids=[];
+      let date=new Date();
+
+      if(date_format==0){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 8);
+      }
+      else if(date_format==1){
+          var last_month = new Date();
+          date=last_month.setDate(last_month.getDate() - 30);
+      }
+      else if(date_format==2){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 365);
+      }
+      Liste_artbook.findAll({
+            where: {
+              authorid: id_user,
+              status:"public",
+              createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+            },
+            order: [
+              ['createdAt', 'DESC']
+            ],
+         })
+         .then(drawings =>  {
+          if(drawings.length>0){
+            for(let j=0;j<drawings.length;j++){
+             list_of_ids.push(drawings[j].drawing_id)
+             list_of_drawings.push(drawings[j])
+            }
+          }
+           res.status(200).send([{number_of_drawings_artbook:drawings.length,list_of_ids:list_of_ids,list_of_drawings:list_of_drawings}]);
+         }); 
+
+    });
+
+ 
  
     router.get('/retrieve_drawing_artbook_by_id/:drawing_id', function (req, res) {
 
-      (async () => {
+      
   
          const drawing_id= parseInt(req.params.drawing_id);
-           artbook = await Liste_artbook.findOne({
+           Liste_artbook.findOne({
               where: {
                 drawing_id: drawing_id,
               }
             })
             .then(drawing =>  {
-              res.status(200).send([drawing]);
+              if(drawing){
+              
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"drawing",
+                    format:"artbook",
+                    publication_id:drawing.drawing_id
+                  }
+                }).then(tren=>{
+                  if(tren){
+                    if(drawing.trending_rank){
+                      if(drawing.trending_rank<tren.rank){
+                        drawing.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([drawing]);
+                      }
+                      else{
+                        res.status(200).send([drawing]);
+                      }
+                    }
+                    else{
+                      drawing.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([drawing]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([drawing]);
+                  }
+                })
+              }
+              else{
+                res.status(200).send([drawing]);
+              }
             }); 
-      })();
+    
       });
       
 

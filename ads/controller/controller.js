@@ -71,8 +71,11 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
          
     router.post('/upload_thumbnail_ad', function (req, res) {
+             console.log("upload_thumbnail_ad")
+             
             let current_user = get_current_user(req.cookies.currentUser);
             var file_name='';
+            console.log(current_user)
             const PATH2= './data_and_routes/thumbnails_ads';
             let storage = multer.diskStorage({
               destination: (req, file, cb) => {
@@ -106,33 +109,29 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
     router.post('/add_thumbnail_ad_to_database', function (req, res) {
             let current_user = get_current_user(req.cookies.currentUser);
-        
             const name = req.body.name;
-            const id = parseInt(req.body.id);
+            const id = req.body.id;
+            list_of_ads.findOne({
+                where: {
+                  id: id,
+                  id_user: current_user,
+                }
+              })
+              .then(ad =>  {
+                ad.update({
+                  "thumbnail_name" :name
+                })
+                .then(ad=>{res.status(200).send([ad])})
+              }); 
         
-            (async () => {
-                console.log('infctly');
-                  await list_of_ads.findOne({
-                    where: {
-                      id: id,
-                      id_user: current_user,
-                    }
-                  })
-                  .then(ad =>  {
-                    ad.update({
-                      "thumbnail_name" :name
-                    })
-                    .then(ad=>{res.status(200).send([ad])})
-                  }); 
-        
-            })();
     });
 
     router.delete('/remove_thumbnail_ad_from_folder/:name', function (req, res) {
+      console.log("remove_thumbnail_ad_from_folder")
             fs.access('./data_and_routes/thumbnails_ads/' + req.params.name, fs.F_OK, (err) => {
               if(err){
                 console.log('suppression already done');
-                return res.status(200)
+                return res.status(200).send([{delete:"already_done"}])
               }
               console.log( 'annulation en cours');
               const name  = req.params.name;
@@ -142,7 +141,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 }  
                 else {
                   console.log( 'fichier supprimé');
-                  return res.status(200).send();
+                  return res.status(200).send([{delete:"done"}]);
                 }
               });
             });
@@ -154,171 +153,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         res.status(200).send([value]);
     });
 
-    router.post('/upload_pictures_ad', function (req, res) {
-      
-        var id_ad = parseInt(req.headers.id_ad);
-        var number_of_pictures_retrieved=0;
-        var number_of_pictures=parseInt(req.headers.number_of_pictures);
-        var picture_number=parseInt(req.headers.picture_number)+1;
-        var current_user = get_current_user(req.cookies.currentUser);
-        var file_name='';
-        const PATH= './data_and_routes/pictures_ads';
-        let storage = multer.diskStorage({
-          destination: (req, file, cb) => {
-            cb(null, PATH);
-          },
-        
-          filename: (req, file, cb) => {
-            var today = new Date();
-            var ms = String(today.getMilliseconds()).padStart(2, '0');
-            var ss = String(today.getSeconds()).padStart(2, '0');
-            var mi = String(today.getMinutes()).padStart(2, '0');
-            var hh = String(today.getHours()).padStart(2, '0');
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-            var yyyy = today.getFullYear();
-            let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-            file_name = current_user + '-' + Today + path.extname(file.originalname);
-            cb(null, current_user + '-' + Today + path.extname(file.originalname));
-            
-          }
-        });
-        
-        let upload_picture = multer({
-          storage: storage
-        }).any();
-
-        upload_picture(req, res, function(err){
-
-          function add_number_of_pictures_retrieved(ad){
-              for(let i=0;i<5;i++){
-                
-                if(i==0 && ad.picture_name_one!=null){
-                  console.log(ad.dataValues);
-                    number_of_pictures_retrieved=number_of_pictures_retrieved+1;
-                  
-                }
-                if(i==1 && ad.picture_name_two!=null){
-                  console.log(ad.dataValues);
-                    number_of_pictures_retrieved=number_of_pictures_retrieved+1;
-                }
-                
-                if(i==2 && ad.picture_name_three!=null){
-                  console.log(ad.dataValues);
-                    number_of_pictures_retrieved=number_of_pictures_retrieved+1;
-                }
-                if(i==3 && ad.picture_name_four!=null){
-                  console.log(ad.dataValues);
-                    number_of_pictures_retrieved=number_of_pictures_retrieved+1;
-                }
-                if(i==4 && ad.picture_name_five!=null){
-                  console.log(ad.dataValues);
-                    number_of_pictures_retrieved=number_of_pictures_retrieved+1;
-                }
-              }
-              console.log(number_of_pictures_retrieved);
-          }
-          (async () => {
-              
-
-              list_of_ads.findOne({
-                where: {
-                  id: id_ad,
-                  id_user: current_user,
-                }
-              })
-              .then(ad =>  {
-                if(picture_number==1){
-                    ad.update({
-                      "picture_name_one" :file_name,
-                    })
-                    .then(ad=>{
-                      add_number_of_pictures_retrieved(ad);
-                      if(number_of_pictures_retrieved==number_of_pictures){
-                        ad.update({
-                          "number_of_pictures":number_of_pictures,
-                        })
-                        .then(ad=>{res.status(200).send([ad])})
-                      }
-                      else{
-                        res.status(200).send([ad])}
-                      }
-                      )
-                }
-
-                if(picture_number==2){
-                  ad.update({
-                    "picture_name_two" :file_name,
-                  })
-                  .then(ad=>{
-                    add_number_of_pictures_retrieved(ad);
-                    if(number_of_pictures_retrieved==number_of_pictures){
-                      ad.update({
-                        "number_of_pictures":number_of_pictures,
-                      })
-                      .then(ad=>{res.status(200).send([ad])})
-                    }
-                    else{
-                      res.status(200).send([ad])}
-                    })
-                }
-
-                if(picture_number==3){
-                  ad.update({
-                    "picture_name_three" :file_name,
-                  })
-                  .then(ad=>{
-                    add_number_of_pictures_retrieved(ad);
-                    if(number_of_pictures_retrieved==number_of_pictures){
-                      ad.update({
-                        "number_of_pictures":number_of_pictures,
-                      })
-                      .then(ad=>{res.status(200).send([ad])})
-                    }
-                    else{
-                      res.status(200).send([ad])}
-                    })
-                }
-
-                if(picture_number==4){
-                  ad.update({
-                    "picture_name_four" :file_name,
-                  })
-                  .then(ad=>{
-                    add_number_of_pictures_retrieved(ad);
-                    if(number_of_pictures_retrieved==number_of_pictures){
-                      ad.update({
-                        "number_of_pictures":number_of_pictures,
-                      })
-                      .then(ad=>{res.status(200).send([ad])})
-                    }
-                    else{
-                      res.status(200).send([ad])}
-                    })
-                }
-
-                if(picture_number==5){
-                  ad.update({
-                    "picture_name_five" :file_name,
-                  })
-                  .then(ad=>{
-                    add_number_of_pictures_retrieved(ad);
-                    if(number_of_pictures_retrieved==number_of_pictures){
-                      ad.update({
-                        "number_of_pictures":number_of_pictures,
-                      })
-                      .then(ad=>{res.status(200).send([ad])})
-                    }
-                    else{
-                      res.status(200).send([ad])}
-                    })
-                }
-
-              }); 
-            })();
-          });
-      
-    });
+ 
 
 
     router.post('/upload_attachments_ad', function (req, res) {
@@ -540,6 +375,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
       list_of_ads_responses.findAll({
          where: {
            id_ad: id_ad,
+           status:"public",
          },
          order: [
              ['createdAt', 'DESC']
@@ -609,7 +445,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 id:current_user,
               }
             }).then(user=>{
-              let number_of_ads=user.number_of_ads-11;
+              let number_of_ads=user.number_of_ads-1;
               user.update({
                 "number_of_ads":number_of_ads,
               })
@@ -622,7 +458,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
   });
 
   router.get('/get_sorted_ads/:remuneration/:type_of_project/:author/:target/:sorting', function (req, res) {
-    console.log("chocolat ads");
+    console.log("get_sorted_ads ads");
       const remuneration = req.params.remuneration;
       const type_of_project = req.params.type_of_project;
       const author = req.params.author;
@@ -649,7 +485,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
               
             },
             order: [
-                ['number_of_responses', 'DESC']
+                ['number_of_responses', 'DESC'],
+                ['createdAt', 'DESC'],
               ],
           })
           .then(ad=>{
@@ -765,6 +602,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
         .then( ad=>{
           list_of_ads_responses.create({
             "id_ad": id_ad,
+            "status":"public",
             "id_user":current_user,
                 "description": description,
             }).then(adr=>{
@@ -953,5 +791,66 @@ upload_attachment(req, res, function(err){
 
 
 
+
+
+router.post('/get_number_of_ads_and_responses', function (req, res) {
+  console.log("get_number_of_ads_and_responses")
+  let id_user = req.body.id_user;
+  let number_of_ads_answers=0;
+  let list_of_ads_ids=[];
+  let date_format=req.body.date_format;
+  const Op = Sequelize.Op;
+  let date=new Date();
+
+  if(date_format==0){
+    date.setDate(date.getDate() - 8);
+  }
+  else if(date_format==1){
+      date.setDate(date.getDate() - 30);
+  }
+  if(date_format==2){
+    date.setDate(date.getDate() - 365);
+  }
+
+  list_of_ads.findAll({
+      where: {
+        id_user: id_user,
+        status:"public",
+        createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
+    .then(ads =>  {
+      console.log(ads.length + "ads length")
+      if(ads.length>0 ){
+        let compt=0;
+        for(let i=0;i<ads.length;i++){
+          list_of_ads_ids.push(ads[i].id)
+          list_of_ads_responses.findAll({
+            where: {
+              id_ad: ads[i].id
+            }
+          })
+          .then(resp =>  {
+            compt++;
+            number_of_ads_answers+=resp.length;
+            if(compt==ads.length){
+              console.log("compt end ads")
+              res.status(200).send([{number_of_ads:ads.length,number_of_ads_answers:number_of_ads_answers,list_of_ads_ids:list_of_ads_ids}]);
+            }
+            
+          });
+        }
+         
+      }
+      else{
+        res.status(200).send([{number_of_ads:0,number_of_ads_answers:0,list_of_ads_ids:null}]);
+      }
+      
+      
+    }); 
+});
 
 }

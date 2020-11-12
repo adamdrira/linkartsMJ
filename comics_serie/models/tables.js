@@ -28,7 +28,8 @@ exports.Bd_serie_Tables = (sequelize, DataTypes) => {
         name_coverpage: DataTypes.STRING,
         status: DataTypes.STRING,
         monetization:DataTypes.STRING,
-
+        trending_rank:DataTypes.INTEGER,
+        list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name

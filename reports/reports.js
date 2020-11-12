@@ -7,7 +7,17 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, reports) => {
+module.exports = (router, 
+  reports,
+  Liste_Bd_Serie, 
+  Chapters_Bd_Serie,
+  list_comics_one_shot,
+  Liste_Drawings_Artbook,
+  Drawings_one_page,
+  Liste_Writings,
+  List_of_contents, 
+  List_of_ads
+  ) => {
 
 
 
@@ -21,7 +31,7 @@ function get_current_user(token){
 
 router.post('/add_primary_information_report', function (req, res) {
   let current_user = get_current_user(req.cookies.currentUser);
-
+  console.log("add_primary_information_report")
 
 
   const type_of_report = req.body.type_of_report;
@@ -44,10 +54,244 @@ router.post('/add_primary_information_report', function (req, res) {
 
     })
     .then(r =>  {
-      res.status(200).send([r])
+      if(publication_category=="comic"){
+        if(format=="one-shot"){
+          list_comics_one_shot.findOne({
+            where:{
+              bd_id:publication_id,
+              status:"public",
+            }
+          }).then(bd=>{
+            if(bd){
+              let list_of_reporters=bd.list_of_reporters;
+              if(!list_of_reporters ){
+                list_of_reporters=[current_user]
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else if(list_of_reporters.indexOf(current_user)<0){
+                list_of_reporters.push(current_user);
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          })
+        }
+        else{
+          Liste_Bd_Serie.findOne({
+            where:{
+              bd_id:publication_id,
+              status:"public",
+            }
+          }).then(bd=>{
+            if(bd){
+              let list_of_reporters=bd.list_of_reporters;
+              if(!list_of_reporters ){
+                list_of_reporters=[current_user];
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else if(list_of_reporters.indexOf(current_user)<0){
+                list_of_reporters.push(current_user);
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          })
+          
+        }
+      }
+      else if(publication_category=="drawing"){
+        if(format=="one-shot"){
+          Drawings_one_page.findOne({
+            where:{
+              drawing_id:publication_id,
+              status:"public",
+            }
+          }).then(bd=>{
+            if(bd){
+              let list_of_reporters=bd.list_of_reporters;
+              if(!list_of_reporters ){
+                list_of_reporters=[current_user];
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else if(list_of_reporters.indexOf(current_user)<0){
+                list_of_reporters.push(current_user);
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          })
+        }
+        else{
+          Liste_Drawings_Artbook.findOne({
+            where:{
+              drawing_id:publication_id,
+              status:"public",
+            }
+          }).then(bd=>{
+            if(bd){
+              let list_of_reporters=bd.list_of_reporters;
+              if(!list_of_reporters ){
+                list_of_reporters=[current_user];
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else if(list_of_reporters.indexOf(current_user)<0){
+                list_of_reporters.push(current_user);
+                bd.update({
+                  "list_of_reporters":list_of_reporters
+                })
+                report_content_and_create(bd)
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          })
+          
+        }
+      }
+      else if(publication_category=="writing"){
+        Liste_Writings.findOne({
+          where:{
+            writing_id:publication_id
+          }
+        }).then(bd=>{
+          if(bd){
+            let list_of_reporters=bd.list_of_reporters;
+            if(!list_of_reporters ){
+              list_of_reporters=[current_user];
+              bd.update({
+                "list_of_reporters":list_of_reporters
+              })
+              report_content_and_create(bd)
+            }
+            else if(list_of_reporters.indexOf(current_user)<0){
+              list_of_reporters.push(current_user);
+              bd.update({
+                "list_of_reporters":list_of_reporters
+              })
+              report_content_and_create(bd)
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          }
+          else{
+            res.status(200).send([{error:"not_found"}])
+          }
+        })
+      }
+      else if(publication_category=="ad"){
+        List_of_ads.findOne({
+          where:{
+            id:publication_id
+          }
+        }).then(bd=>{
+          if(bd){
+            let list_of_reporters=bd.list_of_reporters;
+            if(!list_of_reporters ){
+              list_of_reporters=[current_user];
+              bd.update({
+                "list_of_reporters":list_of_reporters
+              })
+              report_content_and_create(bd)
+            }
+            else if(list_of_reporters.indexOf(current_user)<0){
+              list_of_reporters.push(current_user);
+              bd.update({
+                "list_of_reporters":list_of_reporters
+              })
+              report_content_and_create(bd)
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          }
+          else{
+            res.status(200).send([{error:"not_found"}])
+          }
+        })
+      }
+     
     
     }); 
 
+
+    function report_content_and_create(bd){
+      console.log("report_content_and_create")
+      List_of_contents.findOne({
+        where:{
+          publication_category: publication_category,
+          publication_id:publication_id,
+          format:format,
+          status:"ok",
+        }
+        
+      }).then(content=>{
+        if(content){
+          let list_of_reporters=content.list_of_reporters;
+          console.log(list_of_reporters)
+          if(!list_of_reporters ){
+            list_of_reporters=[current_user];
+            content.update({
+              "list_of_reporters":list_of_reporters
+            })
+            res.status(200).send([bd])
+          }
+          else if(list_of_reporters.indexOf(current_user)<0){
+            list_of_reporters.push(current_user);
+            content.update({
+              "list_of_reporters":list_of_reporters
+            })
+            res.status(200).send([bd])
+          }
+          else{
+            res.status(200).send([{error:"not_found"}])
+          }
+        }
+        else{
+          res.status(200).send([{error:"not_found"}])
+        }
+      })
+    }
 });
 
 
@@ -61,32 +305,285 @@ router.post('/check_if_content_reported', function (req, res) {
   const format = req.body.format;
   const chapter_number = req.body.chapter_number;
 
-  reports.findOne({
-    where:{
-      id_user:current_user,
-      publication_category: publication_category,
-      publication_id:publication_id,
-      format:format,
-      chapter_number: chapter_number,
-    }
+  if(!(format=="serie" && chapter_number==0)){
+    reports.findOne({
+      where:{
+        id_user:current_user,
+        publication_category: publication_category,
+        publication_id:publication_id,
+        format:format,
+        chapter_number: chapter_number,
+      }
+          
+      })
+      .then(r =>  {
+        console.log("result")
+        console.log(r)
+        if(r){
+          res.status(200).send([{nothing:"nothing"}])
+        }
+        else{
+          console.log("send r")
+          res.status(200).send([{error:"nothing_found"}])
+        }
         
-    })
-    .then(r =>  {
-      console.log("result")
-      console.log(r)
-      if(r){
-        res.status(200).send([{nothing:"nothing"}])
-      }
-      else{
-        console.log("send r")
-        res.status(200).send([r])
-      }
       
-    
-    }); 
+      }); 
+  }
+  else{
+    reports.findOne({
+      where:{
+        id_user:current_user,
+        publication_category: publication_category,
+        publication_id:publication_id,
+        format:format,
+      }
+          
+      })
+      .then(r =>  {
+        console.log("result")
+        console.log(r)
+        if(r){
+          res.status(200).send([{nothing:"nothing"}])
+        }
+        else{
+          console.log("send r")
+          res.status(200).send([r])
+        }
+        
+      
+      }); 
+  }
+ 
 
 });
 
+
+router.post('/cancel_report', function (req, res) {
+  console.log("cancel_report")
+  let current_user = get_current_user(req.cookies.currentUser);
+  const publication_category = req.body.publication_category;
+  const publication_id = req.body.publication_id;
+  const format = req.body.format;
+
+    reports.findOne({
+      where:{
+        id_user:current_user,
+        publication_category: publication_category,
+        publication_id:publication_id,
+        format:format,
+      }
+          
+      })
+      .then(report =>  {
+        if(report){
+          report.destroy({
+            truncate:false,
+          })
+          if(publication_category=="comic"){
+            if(format=="one-shot"){
+              list_comics_one_shot.findOne({
+                where:{
+                  bd_id:publication_id,
+                  status:"public",
+                }
+              }).then(bd=>{
+                if(bd){
+                  let list_of_reporters=bd.list_of_reporters;
+                  if(list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
+                    let i=list_of_reporters.indexOf(current_user)
+                    list_of_reporters.splice(i,1);
+                    bd.update({
+                      "list_of_reporters":list_of_reporters
+                    })
+                    delete_and_send(bd)
+                  }
+                  else{
+                    res.status(200).send([{error:"not_found"}])
+                  }
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              })
+            }
+            else{
+              Liste_Bd_Serie.findOne({
+                where:{
+                  bd_id:publication_id,
+                  status:"public",
+                }
+              }).then(bd=>{
+                if(bd){
+                  let list_of_reporters=bd.list_of_reporters;
+                  if(list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
+                    let i=list_of_reporters.indexOf(current_user)
+                    list_of_reporters.splice(i,1);
+                    bd.update({
+                      "list_of_reporters":list_of_reporters
+                    })
+                    delete_and_send(bd)
+                  }
+                  else{
+                    res.status(200).send([{error:"not_found"}])
+                  }
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              })
+              
+            }
+          }
+          else if(publication_category=="drawing"){
+            if(format=="one-shot"){
+              Drawings_one_page.findOne({
+                where:{
+                  drawing_id:publication_id,
+                  status:"public",
+                }
+              }).then(bd=>{
+                if(bd){
+                  let list_of_reporters=bd.list_of_reporters;
+                  if( list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
+                    let i=list_of_reporters.indexOf(current_user)
+                    list_of_reporters.splice(i,1);
+                    bd.update({
+                      "list_of_reporters":list_of_reporters
+                    })
+                    delete_and_send(bd)
+                  }
+                  else{
+                    res.status(200).send([{error:"not_found"}])
+                  }
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              })
+            }
+            else{
+              Liste_Drawings_Artbook.findOne({
+                where:{
+                  drawing_id:publication_id,
+                  status:"public",
+                }
+              }).then(bd=>{
+                if(bd){
+                  let list_of_reporters=bd.list_of_reporters;
+                  if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
+                    let i=list_of_reporters.indexOf(current_user)
+                    list_of_reporters.splice(i,1);
+                    bd.update({
+                      "list_of_reporters":list_of_reporters
+                    })
+                    delete_and_send(bd)
+                  }
+                  else{
+                    res.status(200).send([{error:"not_found"}])
+                  }
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              })
+              
+            }
+          }
+          else if(publication_category=="writing"){
+            Liste_Writings.findOne({
+              where:{
+                writing_id:publication_id,
+                status:"public",
+              }
+            }).then(bd=>{
+              if(bd){
+                let list_of_reporters=bd.list_of_reporters;
+                if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
+                  let i=list_of_reporters.indexOf(current_user)
+                  list_of_reporters.splice(i,1);
+                  bd.update({
+                    "list_of_reporters":list_of_reporters
+                  })
+                  delete_and_send(bd)
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            })
+          }
+          else if(publication_category=="ad"){
+            List_of_ads.findOne({
+              where:{
+                id:publication_id,
+                status:"public",
+              }
+            }).then(bd=>{
+              if(bd){
+                let list_of_reporters=bd.list_of_reporters;
+                if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
+                  let i=list_of_reporters.indexOf(current_user)
+                  list_of_reporters.splice(i,1);
+                  bd.update({
+                    "list_of_reporters":list_of_reporters
+                  })
+                  delete_and_send(bd)
+                }
+                else{
+                  res.status(200).send([{error:"not_found"}])
+                }
+              }
+              else{
+                res.status(200).send([{error:"not_found"}])
+              }
+            })
+          }
+         
+        }
+        else{
+          console.log("send r")
+          res.status(200).send([{error:"nothing_found"}])
+        }
+        
+      
+      }); 
+  
+ 
+    
+      function delete_and_send(bd){
+        List_of_contents.findOne({
+          where:{
+            publication_category: publication_category,
+            publication_id:publication_id,
+            format:format,
+            status:"ok",
+          }
+         
+        }).then(content=>{
+          if(content){
+            let list_of_reporters=content.list_of_reporters;
+           if(list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
+              let i=list_of_reporters.indexOf(current_user)
+              list_of_reporters.splice(i,1);
+              content.update({
+                "list_of_reporters":list_of_reporters
+              })
+              res.status(200).send([bd])
+            }
+            else{
+              res.status(200).send([{error:"not_found"}])
+            }
+          }
+          else{
+            res.status(200).send([{error:"not_found"}])
+          }
+        })
+      }
+});
 
 
 

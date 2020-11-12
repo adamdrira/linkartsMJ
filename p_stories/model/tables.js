@@ -28,6 +28,7 @@ exports.list_of_stories = (sequelize, DataTypes) => {
       authorid: DataTypes.INTEGER,
       id_user_who_looks: DataTypes.INTEGER,
       id_story: DataTypes.INTEGER,
+      status:DataTypes.STRING,
       view:DataTypes.INTEGER,
     },
     {

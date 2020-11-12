@@ -81,65 +81,67 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   let compt1=0;
                   console.log("get_number_of_unseen_messages list_of_users")
                   console.log(list_of_users)
-                  for(let i=0;i<list_of_users.length;i++){
-                    list_of_messages.findAll({
-                      where:{
-                        id_user:list_of_users[i],
-                        id_receiver:current_user,
-                        status:"received",
-                        is_a_group_chat:false,
-                      },
-                      limit:1,
-                      order: [
-                        ['createdAt', 'DESC']
-                      ],
-                      
-                    }).then(r=>{
-                      if(r.length>0){
-                        number_of_unseen_messages+=1;
-                      }
-                      compt1+=1;
-                      console.log("number_of_unseen_messages users")
-                      console.log(number_of_unseen_messages)
-                      if(compt1==list_of_users.length){
-                        let compt2=0;
-                        if(list_of_groups.length>0){
-                          for(let k=0;k<list_of_groups.length;k++){
-                            console.log("finding list_of_users_who_saw length")
-                            list_of_messages.findAll({
-                              where:{
-                                id_user:{[Op.ne]:current_user},
-                                id_receiver:list_of_groups[k],
+                  if(list_of_users.length>0){
+                    for(let i=0;i<list_of_users.length;i++){
+                      list_of_messages.findOne({
+                        where:{
+                          id_user:list_of_users[i],
+                          id_receiver:current_user,
+                          status:"received",
+                          is_a_group_chat:false,
+                        }
+                        
+                      }).then(r=>{
+                        if(r){
+                          number_of_unseen_messages+=1;
+                        }
+                        compt1+=1;
+                        console.log("number_of_unseen_messages users")
+                        console.log(number_of_unseen_messages)
+                        if(compt1==list_of_users.length){
+                          let compt2=0;
+                          if(list_of_groups.length>0){
+                            for(let k=0;k<list_of_groups.length;k++){
+                              console.log("finding list_of_users_who_saw length")
+                              list_of_messages.findAll({
+                                where:{
+                                  id_user:{[Op.ne]:current_user},
+                                  id_receiver:list_of_groups[k],
+                                  
+                                  is_a_group_chat:true,
+                                },
+                                where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
+                                limit:1,
+                                order: [
+                                  ['createdAt', 'DESC']
+                                ],
                                 
-                                is_a_group_chat:true,
-                              },
-                              where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
-                              limit:1,
-                              order: [
-                                ['createdAt', 'DESC']
-                              ],
-                              
-                            }).then(r=>{
-                                if(r.length>0){
-                                  number_of_unseen_messages+=1;
-                                }
-                                compt2+=1;
-                                if(compt2==list_of_groups.length){
-                                  console.log("number_of_unseen_messages end")
-                                  console.log(number_of_unseen_messages)
-                                  res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
-                                }
-                              })
+                              }).then(r=>{
+                                  if(r.length>0){
+                                    number_of_unseen_messages+=1;
+                                  }
+                                  compt2+=1;
+                                  if(compt2==list_of_groups.length){
+                                    console.log("number_of_unseen_messages end")
+                                    console.log(number_of_unseen_messages)
+                                    res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
+                                  }
+                                })
+                            }
                           }
+                          else{
+                            res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
+                          }
+                          
+                          
                         }
-                        else{
-                          res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
-                        }
-                        
-                        
-                      }
-                    })
+                      })
+                    }
                   }
+                  else{
+                    res.status(200).send([{number_of_unseen_messages:0}])
+                  }
+                  
                 })
               }
               else{
@@ -503,7 +505,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             id_chat_section:id_chat_section,
             id_user:id_friend,
             id_receiver:id_user,
-            is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+            is_a_group_chat:{[Op.not]: true},
           }
         }).then( message=>{
           if(message){
@@ -1141,19 +1143,35 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     let id_friend =parseInt(req.params.id_friend);
     let is_a_group_chat=(req.params.is_a_group_chat=='true')?true:false;
     const Op = Sequelize.Op;
-
-    list_of_chat_sections.findAll({
-      where:{
-        is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
-        chat_section_name:{[Op.iLike]:'%'+ text + '%' },
-        [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
-      },
-      order: [
-        ['chat_section_name', 'ASC']
-      ],
-    }).then(sections=>{
-        res.status(200).send([sections])
-    })
+    if(is_a_group_chat){
+      list_of_chat_sections.findAll({
+        where:{
+          is_a_group_chat:true,
+          chat_section_name:{[Op.iLike]:'%'+ text + '%' },
+          id_receiver:id_friend,
+        },
+        order: [
+          ['chat_section_name', 'ASC']
+        ],
+      }).then(sections=>{
+          res.status(200).send([sections])
+      })
+    }
+    else{
+      list_of_chat_sections.findAll({
+        where:{
+          is_a_group_chat:{[Op.not]: true},
+          chat_section_name:{[Op.iLike]:'%'+ text + '%' },
+          [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
+        },
+        order: [
+          ['chat_section_name', 'ASC']
+        ],
+      }).then(sections=>{
+          res.status(200).send([sections])
+      })
+    }
+    
     
     
   });
@@ -1710,7 +1728,7 @@ router.post('/get_other_messages', function (req, res) {
       where: {
          id_chat_section:id_chat_section,
          id: {[Op.lt]: id_last_message},
-         is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+         is_a_group_chat:true,
          id_receiver:id_friend,
         
       },
@@ -2067,7 +2085,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       else{
         list_of_chat_sections.findAll({
           where:{
-              is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+              is_a_group_chat:{[Op.not]: true},
               [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
           
@@ -2139,7 +2157,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       else{
         list_of_chat_sections.findAll({
           where:{
-              is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+              is_a_group_chat:{[Op.not]: true},
               [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
         }).then(sections=>{
@@ -2163,7 +2181,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     "id_user": id_user,
                     "id_receiver": id_friend,
                     "chat_section_name":chat_section,
-                    "is_a_group_chat": (is_a_group_chat)?true:false,
+                    "is_a_group_chat": false,
                   }).then(cr=>{
                     res.status(200).json([{ "is_ok":true,"id_chat_section":list_of_id[0]}])
                   })
@@ -2177,7 +2195,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               "id_user": id_user,
               "id_receiver": id_friend,
               "chat_section_name":chat_section,
-              "is_a_group_chat": (is_a_group_chat)?true:false,
+              "is_a_group_chat": false,
             }).then(cr=>{
               res.status(200).json([{ "is_ok":true,"id_chat_section":2}])
             })
@@ -2197,7 +2215,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       if(is_a_group_chat){
         list_of_chat_sections.findOne({
           where: {
-            is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+            is_a_group_chat:true,
             id_chat_section:id_chat_section,
             id_receiver:id_friend,
           },
@@ -2209,7 +2227,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             })
             list_of_messages.findAll({
               where:{
-                is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+                is_a_group_chat:true,
                 id_chat_section:id_chat_section,
                 id_receiver:id_friend,
               },
@@ -2241,7 +2259,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       else{
         list_of_chat_sections.findOne({
           where: {
-            is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+            is_a_group_chat:{[Op.not]: true},
             id_chat_section:id_chat_section,
             [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
@@ -2253,7 +2271,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             })
             list_of_messages.findAll({
               where:{
-                is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+                is_a_group_chat:{[Op.not]: true},
                 id_chat_section:id_chat_section,
                 [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
               },
@@ -2293,9 +2311,28 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       let id_chat_section= parseInt(req.params.id_chat_section);
       let is_a_group_chat=(req.params.is_a_group_chat=='true')?true:false;
       const Op = Sequelize.Op;
-      list_of_messages.findAll({
+      if(is_a_group_chat){
+        list_of_messages.findAll({
           where:{
-            is_a_group_chat:(is_a_group_chat)?true:{[Op.not]: true},
+              is_a_group_chat:true,
+              id_chat_section:id_chat_section,
+              id_receiver:id_friend, 
+              id_user:{[Op.ne]:id_user},     
+          },
+          where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
+        }).then(messages=>{
+          if(messages.length>0){
+            res.status(200).send([{ "value":true}]); 
+          }
+          else{
+            res.status(200).send([{ "value":false}]); 
+          }
+        })
+      }
+      else{
+        list_of_messages.findAll({
+          where:{
+               is_a_group_chat:{[Op.not]: true},
               status:'received',
               id_chat_section:id_chat_section,
               [Op.and]:[ {id_user:id_friend},{id_receiver:id_user}],         
@@ -2308,6 +2345,8 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             res.status(200).send([{ "value":false}]); 
           }
         })
+      }
+      
       });
 
 
@@ -2476,8 +2515,8 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 }).then(friend=>{
                   console.log("sending friend")
                   list_of_messages.update({
-                    "list_of_users_in_the_group":list_of_receivers_ids,
-                    where:{
+                    "list_of_users_in_the_group":list_of_receivers_ids},
+                    {where:{
                       id_receiver:id_receiver,
                       is_a_group_chat:true,
                     }
@@ -2501,8 +2540,8 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             }).then(group=>{
               console.log("sending grp")
               list_of_messages.update({
-                "list_of_users_in_the_group":list_of_receivers_ids,
-                where:{
+                "list_of_users_in_the_group":list_of_receivers_ids},
+                {where:{
                   id_receiver:id_receiver,
                   is_a_group_chat:true,
                 }
@@ -2896,8 +2935,8 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           "list_of_receivers_ids":list_of_receivers_ids
         }).then(l=>{
           list_of_messages.update({
-            "list_of_users_in_the_group":list_of_receivers_ids,
-            where:{
+            "list_of_users_in_the_group":list_of_receivers_ids},
+            {where:{
               id_receiver:friend_id,
               is_a_group_chat:true,
             }

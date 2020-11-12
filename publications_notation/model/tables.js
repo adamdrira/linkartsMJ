@@ -21,6 +21,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
         thirdtag: DataTypes.STRING,
         author_id_liked: DataTypes.INTEGER,
         monetization:DataTypes.STRING,
+        status:DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -44,6 +45,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
         chapter_number: DataTypes.INTEGER,
         author_id_loved: DataTypes.INTEGER,
         monetization:DataTypes.STRING,
+        status:DataTypes.STRING,
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -68,6 +70,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
       view_time:DataTypes.INTEGER,
       author_id_viewed: DataTypes.INTEGER,
       monetization:DataTypes.STRING,
+      status:DataTypes.STRING,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name
@@ -89,6 +92,7 @@ exports.table_profile_notation = (sequelize, DataTypes) => {
     number_of_likes:DataTypes.INTEGER,
     number_of_answers:DataTypes.INTEGER,
     commentary:DataTypes.STRING(1500),
+    status:DataTypes.STRING,
   },
   {
     freezeTableName: true 
@@ -103,6 +107,12 @@ var comments_likes = sequelize.define('list_of_comments_likes', {
   },
   author_id_who_likes: DataTypes.INTEGER,
   comment_id: DataTypes.INTEGER,
+  status:DataTypes.STRING,
+  publication_category: DataTypes.STRING,
+  format: DataTypes.STRING,
+  style: DataTypes.STRING,
+  publication_id: DataTypes.INTEGER,
+  chapter_number: DataTypes.INTEGER,
 },
 {
   freezeTableName: true // Model tableName will be the same as the model name
@@ -119,6 +129,7 @@ var comments_answers = sequelize.define('list_of_comments_answers', {
   number_of_likes:DataTypes.INTEGER,
   comment_id: DataTypes.INTEGER,
   commentary:DataTypes.STRING(1500),
+  status:DataTypes.STRING,
 },
 {
   freezeTableName: true 
@@ -133,6 +144,7 @@ var comments_answers_likes = sequelize.define('list_of_comments_answers_likes', 
   },
   author_id_who_likes: DataTypes.INTEGER,
   comment_answer_id: DataTypes.INTEGER,
+  status:DataTypes.STRING,
 },
 {
   freezeTableName: true // Model tableName will be the same as the model name

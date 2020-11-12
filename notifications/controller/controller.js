@@ -47,6 +47,7 @@ module.exports = (router,
         list_of_notifications.findAll({
             where:{
                 id_receiver:current_user,
+                status:{[Op.notIn]:["deleted","suspended"]},
                 type:{[Op.notIn]: ['message']}
             }
             ,
@@ -79,6 +80,7 @@ module.exports = (router,
                 format:format,
                 publication_id:publication_id,
                 chapter_number:chapter_number,
+                status:{[Op.notIn]:["deleted","suspended"]},
             }
             ,
             order: [
@@ -165,6 +167,119 @@ module.exports = (router,
         }
         
 
+
+          
+    });
+
+
+    router.post('/add_notification_trendings', function (req, res) {
+        console.log("add_notification_trendings")
+        let current_user = get_current_user(req.cookies.currentUser);
+        const type = req.body.type;
+        const id_user = req.body.id_user;
+        const publication_name=req.body.publication_name;
+        const id_receiver = req.body.id_receiver;
+        const publication_category = req.body.publication_category;
+        const format = req.body.format;
+        const publication_id = req.body.publication_id;
+        const information = req.body.information;
+        const id_user_name=req.body.id_user_name;
+        const is_comment_answer = req.body.is_comment_answer;
+        const chapter_number = req.body.chapter_number;
+        const comment_id=req.body.comment_id;
+        const Op = Sequelize.Op;
+        console.log(publication_category)
+        console.log(publication_id)
+        list_of_notifications.findOne({
+            where:{
+                type:type,
+                id_receiver:id_receiver,
+                format:format,
+                publication_id:publication_id,
+                chapter_number:chapter_number,
+                information:information,
+            }
+            
+        }).then(found=>{
+            if(found){
+               res.status(200).send([{found:true}])
+            }
+            else{
+                list_of_notifications.create({
+                    "type":type,
+                    "id_user":id_user,
+                    "id_user_name":id_user_name,
+                    "publication_name":publication_name,
+                    "id_receiver":id_receiver,
+                    "publication_category":publication_category,
+                    "format":format,
+                    "publication_id":publication_id,
+                    "chapter_number":chapter_number,
+                    "is_comment_answer":is_comment_answer,
+                    "information":information,
+                    "comment_id":comment_id,
+                    "status":"unchecked"
+                })
+                .then(notification=>{res.status(200).send([notification])})   
+            }
+        })
+           
+                
+        
+        
+
+
+          
+    });
+
+
+    
+
+    router.post('/add_notification_for_group_creation', function (req, res) {
+        console.log("add_notification_for_group_creation")
+        const type = req.body.type;
+        const id_user = req.body.id_user;
+        const publication_name=req.body.publication_name;
+        const publication_category = req.body.publication_category;
+        const format = req.body.format;
+        const publication_id = req.body.publication_id;
+        const id_user_name=req.body.id_user_name;
+        const chapter_number = req.body.chapter_number;
+        let list_of_receivers=req.body.list_of_receivers;
+        console.log(type)
+        console.log(id_user)
+        console.log(publication_category)
+        console.log(publication_name)
+        console.log(format)
+        console.log(publication_id)
+        console.log(id_user_name)
+        console.log(chapter_number)
+        console.log(list_of_receivers)
+        let compt=0;
+        for(let i=0;i<list_of_receivers.length;i++){
+            list_of_notifications.create({
+                "type":type,
+                "id_user":id_user,
+                "publication_name":publication_name,
+                "id_user_name":id_user_name,
+                "id_receiver":list_of_receivers[i],
+                "publication_category":publication_category,
+                "format":format,
+                "is_comment_answer":false,
+                "publication_id":publication_id,
+                "chapter_number":chapter_number,
+                "status":"unchecked"
+            })
+            .then(notification=>{
+                compt++;
+                if(compt==list_of_receivers.length){
+                    console.log("notif sent")
+                    res.status(200).send([notification])
+                }
+                
+            })   
+        }
+        
 
           
     });

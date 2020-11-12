@@ -1,5 +1,6 @@
 const multer = require('multer');
 const fs = require('fs');
+const Sequelize = require('sequelize');
 const usercontroller = require('../../authentication/user.controller');
 var path = require('path');
 const jwt = require('jsonwebtoken');
@@ -10,7 +11,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 
 
-module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
+module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_contents) => {
 
   function get_current_user(token){
     var user = 0
@@ -328,7 +329,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
         fs.access('./data_and_routes/pages_bd_oneshot' + req.params.name, fs.F_OK, (err) => {
           if(err){
             console.log('suppression already done');
-            return res.status(200)
+            return res.status(200).send([{delete:'suppression done'}])
           }
           console.log( 'annulation en cours');
           const name  = req.params.name;
@@ -338,7 +339,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
             }  
             else {
               console.log( 'fichier supprimé');
-              return res.status(200).send('suppression done')
+              return res.status(200).send([{delete:'suppression done'}])
             }
           });
         });
@@ -455,10 +456,12 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_bd_from_folder/:name', function (req, res) {
-        fs.access('./data_and_routes/covers_bd' + req.params.name, fs.F_OK, (err) => {
+        console.log("remove_cover_bd_from_folder")
+        console.log("./data_and_routes/covers_bd" + req.params.name)
+        fs.access('./data_and_routes/covers_bd/' + req.params.name, fs.F_OK, (err) => {
           if(err){
             console.log('suppression already done');
-            return res.status(200)
+            return res.status(200).send([{delete:"already_done"}]);
           }
           console.log( 'annulation en cours');
           const name  = req.params.name;
@@ -468,7 +471,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
             }  
             else {
               console.log( 'fichier supprimé');
-              return res.status(200).send();
+              return res.status(200).send([{delete:"done"}]);
             }
           });
         });
@@ -514,28 +517,66 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
                    //on valide l'upload
   router.get('/retrieve_bd_by_user_id/:user_id', function (req, res) {
 
-    (async () => {
 
        const user_id= parseInt(req.params.user_id);
-         bd = await Liste_bd_os.findAll({
+         Liste_bd_os.findAll({
             where: {
               authorid: user_id,
               status:"public"
             },
             order: [
-                ['bd_id', 'ASC']
+                ['createdAt', 'DESC']
               ],
           })
           .then(bd =>  {
+            
             res.status(200).send([bd]);
+            
           }); 
-    })();
     });
+
+    router.post('/get_number_of_bd_oneshot', function (req, res) {
+      const id_user= req.body.id_user;
+      let date_format=req.body.date_format;
+      const Op = Sequelize.Op;
+      let list_of_ids=[];
+      let list_of_comics=[];
+      let date=new Date();
+
+      if(date_format==0){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 8);
+      }
+      else if(date_format==1){
+          var last_month = new Date();
+          date=last_month.setDate(last_month.getDate() - 30);
+      }
+      else if(date_format==2){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 365);
+      }
+      Liste_bd_os.findAll({
+           where: {
+             authorid: id_user,
+             status:"public",
+             createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+           }
+         })
+         .then(bd =>  {
+          if(bd.length>0){
+            for(let j=0;j<bd.length;j++){
+             list_of_ids.push(bd[j].bd_id)
+             list_of_comics.push(bd[j])
+            }
+          }
+           res.status(200).send([{number_of_bd_oneshot:bd.length,list_of_ids:list_of_ids,list_of_comics:list_of_comics}]);
+         }); 
+
+   });
 
     router.get('/retrieve_private_oneshot_bd', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      (async () => {
-           bd = await Liste_bd_os.findAll({
+      Liste_bd_os.findAll({
               where: {
                 authorid: current_user,
                 status:"private"
@@ -547,25 +588,56 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users) => {
             .then(bd =>  {
               res.status(200).send([bd]);
             }); 
-      })();
     });
  
     router.get('/retrieve_bd_by_id/:bd_id', function (req, res) {
 
-      (async () => {
-  
          const bd_id= parseInt(req.params.bd_id);
          console.log(bd_id);
          console.log(typeof(bd_id));
-           bd = await Liste_bd_os.findOne({
+           Liste_bd_os.findOne({
               where: {
                 bd_id: bd_id,
               }
             })
             .then(bd =>  {
-              res.status(200).send([bd]);
+              if(bd){
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"comics",
+                    format:"one-shot",
+                    publication_id:bd.bd_id
+                  }
+                }).then(tren=>{
+                  if(tren){
+                    if(bd.trending_rank){
+                      if(bd.trending_rank<tren.rank){
+                        bd.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([bd]);
+                      }
+                      else{
+                        res.status(200).send([bd]);
+                      }
+                    }
+                    else{
+                      bd.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([bd]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([bd]);
+                  }
+                })
+              }
+              else{
+                res.status(200).send([bd]);
+              }
             }); 
-      })();
       });
       
     

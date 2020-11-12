@@ -36,6 +36,7 @@ exports.list_of_ads = (sequelize, DataTypes) => {
         status:DataTypes.STRING,
         date:DataTypes.DATE,
         commentariesnumber: DataTypes.INTEGER,
+        list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name
@@ -62,6 +63,7 @@ exports.list_of_ads = (sequelize, DataTypes) => {
       attachment_name_four:DataTypes.STRING,
       attachment_real_name_five:DataTypes.STRING,
       attachment_name_five:DataTypes.STRING,
+      status:DataTypes.STRING,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name

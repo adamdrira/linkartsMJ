@@ -10,6 +10,7 @@ exports.list_of_subscribings = (sequelize, DataTypes) => {
           autoIncrement: true
         },
         id_user: DataTypes.INTEGER,
+        status:DataTypes.STRING,
         id_user_subscribed_to:DataTypes.INTEGER,
       },
       {
@@ -30,6 +31,8 @@ exports.list_of_subscribings = (sequelize, DataTypes) => {
       chapter_number: DataTypes.INTEGER,
       status:DataTypes.STRING,
       emphasize:DataTypes.STRING,
+      list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
+      real_date:DataTypes.DATE,
     },
     {
       freezeTableName: true // Model tableName will be the same as the model name

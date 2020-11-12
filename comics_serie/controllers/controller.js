@@ -4,12 +4,12 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
-
+const Sequelize = require('sequelize');
     
 
 
 
-module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list_of_users) => {
+module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list_of_users,trendings_contents) => {
 
   function get_current_user(token){
     var user = 0
@@ -260,10 +260,11 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     //on ajoute les infos du chapitre ajouté
     router.post('/add_chapter_bd_serie', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-
+      console.log("add_chapter_bd_serie")
       const title = req.body.Title;
       const chapter_number = req.body.chapter_number;
       const bd_id = req.body.bd_id;
+      console.log(bd_id)
       console.log("ajout de chapitre")
   
         if (Object.keys(req.body).length === 0 ) {
@@ -391,11 +392,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       }).any();
       //upload.single('image')
         upload(req, res, function(err){
-        (async () => {
             const chapter_number= (parseInt(req.params.chapter)+1);
-            const bd_id = req.params.bd_id;
+            const bd_id = parseInt(req.params.bd_id);
             const page= req.params.page;
-    
+            console.log(bd_id)
           if (err) {
             console.log("erreur");
             return res.send({
@@ -403,11 +403,11 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             });
         
           } else { 
-          console.log(page);
-          const chapter_bd= await chapters_bd_serie.findOne({
+            console.log("upload_page_bd_serie")
+            console.log(page);
+          chapters_bd_serie.findOne({
             where: {
               bd_id: bd_id,
-              chapter_number:chapter_number,
               author_id: current_user,
             }
           }).then(chapter_bd => {
@@ -424,7 +424,6 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           }); 
           });
           }
-        })();
       });
     });
 
@@ -465,7 +464,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
         fs.access('./data_and_routes/pages_bd_serie' + req.params.name, fs.F_OK, (err) => {
           if(err){
             console.log('suppression already done');
-            return res.status(200)
+            return res.status(200).send([{delete:'suppression done'}])
           }
           console.log( 'annulation en cours');
           const name  = req.params.name;
@@ -475,7 +474,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             }  
             else {
               console.log( 'fichier supprimé');
-              return res.status(200).send('suppression done')
+              return res.status(200).send([{delete:'suppression done'}])
             }
           });
         });
@@ -612,12 +611,13 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
     router.post('/validation_chapter_upload_bd_serie', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-
-      (async () => {
+      console.log("validation_chapter_upload_bd_serie")
+    
         const chapter_number=parseInt(req.body.chapter_number) + 1;
         const number_of_pages=parseInt(req.body.number_of_pages);
         const bd_id= req.body.bd_id; 
-        bd_chapter = await chapters_bd_serie.findOne({
+        console.log(bd_id)
+         chapters_bd_serie.findOne({
           where: {
             bd_id: bd_id,
             chapter_number:chapter_number,
@@ -636,35 +636,75 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           .then(res.status(200).send([bd_chapter]))
         }); 
         
-      })();
       });
 
 
                    //on valide l'upload
   router.get('/retrieve_bd_serie_by_user_id/:user_id', function (req, res) {
-
-    (async () => {
-
        const user_id= parseInt(req.params.user_id);
-         bd = await Liste_bd_serie.findAll({
+        Liste_bd_serie.findAll({
             where: {
               authorid: user_id,
               status:"public"
             },
             order: [
-              ['bd_id', 'ASC']
+              ['createdAt', 'DESC']
             ],
           })
           .then(bd =>  {
+            
             res.status(200).send([bd]);
           }); 
-    })();
+ 
     });
+
+
+    router.post('/get_number_of_bd_series', function (req, res) {
+      const id_user= req.body.id_user;
+      let date_format=req.body.date_format;
+      const Op = Sequelize.Op;
+      let list_of_ids=[];
+      let list_of_comics=[];
+      let date=new Date();
+
+      if(date_format==0){
+          var last_month = new Date();
+          date=last_month.setDate(last_month.getDate() - 8);
+      }
+      else if(date_format==1){
+          var last_month = new Date();
+          date=last_month.setDate(last_month.getDate() - 30);
+      }
+      else if(date_format==2){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 365);
+      }
+       Liste_bd_serie.findAll({
+           where: {
+             authorid: id_user,
+             status:"public",
+             createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+           },
+           order: [
+            ['createdAt', 'DESC']
+          ],
+         })
+         .then(bd =>  {
+          if(bd.length>0){
+            for(let j=0;j<bd.length;j++){
+             list_of_ids.push(bd[j].bd_id)
+             list_of_comics.push(bd[j])
+            }
+          }
+           res.status(200).send([{number_of_bd_series:bd.length,list_of_ids:list_of_ids,list_of_comics:list_of_comics}]);
+         }); 
+
+   });
 
     router.get('/retrieve_private_serie_bd', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      (async () => {
-           bd = await Liste_bd_serie.findAll({
+    
+           Liste_bd_serie.findAll({
               where: {
                 authorid: current_user,
                 status:"private"
@@ -676,42 +716,78 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             .then(bd =>  {
               res.status(200).send([bd]);
             }); 
-      })();
+      
     });
  
     router.get('/retrieve_bd_serie_by_id/:bd_id', function (req, res) {
 
-      (async () => {
+      
   
          const bd_id= parseInt(req.params.bd_id);
-           bd = await Liste_bd_serie.findOne({
+           Liste_bd_serie.findOne({
               where: {
                 bd_id: bd_id,
               }
             })
             .then(bd =>  {
-              res.status(200).send([bd]);
+              if(bd){
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"comics",
+                    format:"serie",
+                    publication_id:bd.bd_id
+                  }
+                }).then(tren=>{
+                  if(tren){
+                    if(bd.trending_rank){
+                      if(bd.trending_rank<tren.rank){
+                        bd.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([bd]);
+                      }
+                      else{
+                        res.status(200).send([bd]);
+                      }
+                    }
+                    else{
+                      bd.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([bd]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([bd]);
+                  }
+                })
+                
+              }
+              else{
+                res.status(200).send([bd]);
+              }
             }); 
-      })();
+      
       });
 
   router.get('/retrieve_chapters_by_id/:bd_id', function (req, res) {
 
-    (async () => {
+
 
         const bd_id= parseInt(req.params.bd_id);
-          chapers_bd = await chapters_bd_serie.findAll({
+         chapters_bd_serie.findAll({
             where: {
               bd_id: bd_id,
             },
             order: [
-              ['chapter_id', 'ASC']
+              ['chapter_number', 'ASC']
             ],
           })
           .then(bd =>  {          
             res.status(200).send([bd]);
           }); 
-    })();
+
     });
   
 

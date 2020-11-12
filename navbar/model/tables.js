@@ -15,6 +15,8 @@ var list_of_navbar_researches= sequelize.define('list_of_navbar_researches', {
   format: DataTypes.STRING,
   target_id: DataTypes.INTEGER,
   research_string:DataTypes.STRING,
+  research_string1:DataTypes.STRING,
+  user_status:DataTypes.STRING,
   status:DataTypes.STRING,
   number_of_comics:DataTypes.INTEGER,
   numbar_of_drawings:DataTypes.INTEGER,

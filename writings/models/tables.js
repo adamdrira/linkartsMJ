@@ -16,7 +16,6 @@ exports.Writings_Tables = (sequelize, DataTypes) => {
         firsttag: DataTypes.STRING,
         secondtag: DataTypes.STRING,
         thirdtag: DataTypes.STRING,
-        pagesnumber: DataTypes.INTEGER,
         likesnumber: DataTypes.INTEGER,
         lovesnumber: DataTypes.INTEGER,
         viewnumber: DataTypes.INTEGER,
@@ -27,7 +26,9 @@ exports.Writings_Tables = (sequelize, DataTypes) => {
         status: DataTypes.STRING,
         name_coverpage:DataTypes.STRING,
         monetization:DataTypes.STRING,
-
+        total_pages:DataTypes.INTEGER,
+        trending_rank:DataTypes.INTEGER,
+        list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name

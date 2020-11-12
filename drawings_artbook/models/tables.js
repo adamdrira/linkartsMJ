@@ -26,7 +26,8 @@ exports.Drawings_Artbook_Tables = (sequelize, DataTypes) => {
         thumbnail_color:DataTypes.STRING,
         status: DataTypes.STRING,
         monetization: DataTypes.STRING,
-
+        trending_rank:DataTypes.INTEGER,
+        list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {
         freezeTableName: true // Model tableName will be the same as the model name

@@ -3,11 +3,11 @@ const fs = require('fs');
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
+const Sequelize = require('sequelize');
 
 
 
-
-module.exports = (router, drawings_one_page,list_of_users) => {
+module.exports = (router, drawings_one_page,list_of_users,trendings_contents) => {
   
   function get_current_user(token){
     var user = 0
@@ -82,9 +82,8 @@ module.exports = (router, drawings_one_page,list_of_users) => {
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.body.drawing_id;
       let status=req.body.status;
-      (async () => {
 
-          drawing = await drawings_one_page.findOne({
+          drawings_one_page.findOne({
               where: {
                   authorid:current_user,
                   drawing_id:drawing_id,
@@ -99,13 +98,12 @@ module.exports = (router, drawings_one_page,list_of_users) => {
               )
               
           }); 
-      })();     
   });
 
   router.get('/retrieve_private_oneshot_drawings', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {
-         drawings = await drawings_one_page.findAll({
+    
+         drawings_one_page.findAll({
             where: {
               authorid: current_user,
               status:"private"
@@ -117,7 +115,7 @@ module.exports = (router, drawings_one_page,list_of_users) => {
           .then(drawings =>  {
             res.status(200).send([drawings]);
           }); 
-    })();
+   
   });
 
     
@@ -126,8 +124,8 @@ module.exports = (router, drawings_one_page,list_of_users) => {
     let color = req.body.color;
     let drawing_id = req.body.drawing_id;
 
-    (async () => {
-        drawing = await drawings_one_page.findOne({
+    
+       drawings_one_page.findOne({
           where: {
             drawing_id: drawing_id,
             authorid:current_user,
@@ -139,7 +137,7 @@ module.exports = (router, drawings_one_page,list_of_users) => {
           })
           .then(res.status(200).send([drawing]))
         }); 
-    })();
+    
     });
 
     
@@ -397,10 +395,10 @@ module.exports = (router, drawings_one_page,list_of_users) => {
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_drawing_from_folder/:name', function (req, res) {
-        fs.access('./data_and_routes/covers_drawings' + req.params.name, fs.F_OK, (err) => {
+        fs.access('./data_and_routes/covers_drawings/' + req.params.name, fs.F_OK, (err) => {
           if(err){
             console.log('suppression already done');
-            return res.status(200)
+            return res.status(200).send([{delete:'suppression done'}])
           }
           console.log( 'annulation en cours');
           const name  = req.params.name;
@@ -410,7 +408,7 @@ module.exports = (router, drawings_one_page,list_of_users) => {
             }  
             else {
               console.log( 'fichier supprimé');
-              return res.status(200)
+              return res.status(200).send([{delete:'suppression done'}])
             }
           });
         });
@@ -454,10 +452,10 @@ module.exports = (router, drawings_one_page,list_of_users) => {
                    //on valide l'upload
   router.get('/retrieve_drawing_onepage_info_user_id/:user_id', function (req, res) {
 
-    (async () => {
+   
 
        const user_id= parseInt(req.params.user_id);
-         drawings = await drawings_one_page.findAll({
+         drawings_one_page.findAll({
             where: {
               authorid: user_id,
               status:"public"
@@ -469,24 +467,107 @@ module.exports = (router, drawings_one_page,list_of_users) => {
           .then(drawings =>  {
             res.status(200).send([drawings]);
           }); 
-    })();
+    
     });
+
+
+   router.post('/get_number_of_drawings_oneshot', function (req, res) {
+     console.log("get_number_of_drawings_oneshot")
+    const id_user= req.body.id_user;
+    let date_format=req.body.date_format;
+    let list_of_drawings=[];
+    const Op = Sequelize.Op;
+    let list_of_ids=[];
+    let date=new Date();
+
+    if(date_format==0){
+      var last_month = new Date();
+      date=last_month.setDate(last_month.getDate() - 8);
+    }
+    else if(date_format==1){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 30);
+    }
+    else if(date_format==2){
+      var last_month = new Date();
+      date=last_month.setDate(last_month.getDate() - 365);
+    }
+    drawings_one_page.findAll({
+          where: {
+            authorid: id_user,
+            status:"public",
+            createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+          },
+          order: [
+            ['createdAt', 'DESC']
+          ],
+       })
+       .then(drawings =>  {
+        if(drawings.length>0){
+          for(let j=0;j<drawings.length;j++){
+           list_of_ids.push(drawings[j].drawing_id)
+           list_of_drawings.push(drawings[j])
+          }
+        }
+        console.log("get_number_of_drawings_oneshot")
+         res.status(200).send([{number_of_drawings_oneshot:drawings.length,list_of_ids:list_of_ids,list_of_drawings:list_of_drawings}]);
+       }); 
+
+  });
  
     router.get('/retrieve_drawing_info_onepage_by_id/:drawing_id', function (req, res) {
 
-      (async () => {
+      
   
          const drawing_id= parseInt(req.params.drawing_id);
-           drawing = await drawings_one_page.findOne({
+         drawings_one_page.findOne({
               where: {
                 drawing_id: drawing_id,
               }
             })
             .then(drawing =>  {
-              res.status(200).send([drawing]);
+              if(drawing){
+                
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"drawing",
+                    format:"one-shot",
+                    publication_id:drawing.drawing_id
+                  }
+                }).then(tren=>{
+                  if(tren){
+                    if(drawing.trending_rank){
+                      if(drawing.trending_rank<tren.rank){
+                        drawing.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([drawing]);
+                      }
+                      else{
+                        res.status(200).send([drawing]);
+                      }
+                    }
+                    else{
+                      drawing.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([drawing]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([drawing]);
+                  }
+                })
+              }
+              else{
+                res.status(200).send([drawing]);
+              }
+              
+              
             }); 
-      })();
-      });
+      
+    });
       
     
   router.get('/retrieve_drawing_thumbnail_picture/:file_name', function (req, res) {

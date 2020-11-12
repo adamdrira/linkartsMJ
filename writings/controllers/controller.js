@@ -4,9 +4,9 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
+const Sequelize = require('sequelize');
 
-
-module.exports = (router, Liste_Writings,list_of_users) => {
+module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   function get_current_user(token){
     var user = 0
@@ -30,6 +30,7 @@ module.exports = (router, Liste_Writings,list_of_users) => {
     
     const highlight = req.body.highlight;
     const title = req.body.Title;
+    const total_pages=req.body.total_pages;
     //const category = req.body.Category;
     const category = (req.body.Category === "Poésie") ? "Poetry": (req.body.Category === "Scénario") ? "Scenario" : (req.body.Category === "Roman illustré") ? "Illustrated novel" : req.body.Category;
     const Tags = req.body.Tags;
@@ -69,6 +70,7 @@ module.exports = (router, Liste_Writings,list_of_users) => {
                 "lovesnumber": 0,
                 "commentarynumbers": 0,
                 "monetization":monetization,
+                "total_pages":total_pages,
             })
           
           .then(r =>  {
@@ -78,6 +80,36 @@ module.exports = (router, Liste_Writings,list_of_users) => {
       }
   
     });
+
+    router.post('/add_total_pages_for_writing', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+      console.log("add_total_pages_for_writing")
+      const writing_id = req.body.writing_id;
+      const total_pages=req.body.total_pages;
+      console.log(writing_id)
+      console.log(total_pages)
+      Liste_Writings.findOne({
+        where:{
+          writing_id:writing_id,
+        }
+      }).then(writing=>{
+        if(writing){
+          writing.update({
+            "total_pages":total_pages,
+        }).then(r =>  {
+          res.status(200).send([writing]);
+          }); 
+        }
+        else{
+          res.status(200).send([{error:"writing_not_found"}]);
+        }
+      })
+          
+          
+        
+    
+      });
+      
     
 
     //on supprime le fichier de la base de donnée postgresql
@@ -249,26 +281,24 @@ module.exports = (router, Liste_Writings,list_of_users) => {
 
     router.post('/add_cover_writing_todatabase', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-  
+      
       const name = req.body.name;
       const writing_id = req.body.writing_id;
-  
-      (async () => {
-  
-           writing = await Liste_Writings.findOne({
-              where: {
-                writing_id: writing_id,
-                authorid: current_user,
-              }
-            })
-            .then(writing =>  {
-              writing.update({
-                "name_coverpage" :name
-              })
-              .then(res.status(200).send([writing]))
-            }); 
-            
-      })();
+      console.log("add_cover_writing_todatabase")
+      console.log(name)
+      Liste_Writings.findOne({
+          where: {
+            writing_id: writing_id,
+            authorid: current_user,
+          }
+        })
+        .then(writing =>  {
+          writing.update({
+            "name_coverpage" :name
+          })
+          .then(res.status(200).send([writing]))
+        }); 
+        
       });
   
 
@@ -298,8 +328,8 @@ module.exports = (router, Liste_Writings,list_of_users) => {
 
   router.get('/retrieve_private_writings', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-    (async () => {
-         writings = await Liste_Writings.findAll({
+    
+          Liste_Writings.findAll({
             where: {
               authorid: current_user,
               status:"private"
@@ -311,17 +341,17 @@ module.exports = (router, Liste_Writings,list_of_users) => {
           .then(writings =>  {
             res.status(200).send([writings]);
           }); 
-    })();
+   
   });
  
 
   //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
   router.delete('/remove_writing_from_folder/:name_writing', function (req, res) {
-    console.log( 'tentative annulation');
+    console.log('./data_and_routes/writings/' + req.params.name_writing);
     fs.access('./data_and_routes/writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
         console.log('suppression already done');
-        return res.status(200)
+        return res.status(200).send([{delete:'suppression done'}])
       }
         console.log( 'annulation en cours');
         const name_writing  = req.params.name_writing;
@@ -331,7 +361,7 @@ module.exports = (router, Liste_Writings,list_of_users) => {
           }  
           else {
             console.log( 'fichier supprimé');
-            return res.status(200)
+            return res.status(200).send([{delete:'suppression done'}])
           }
         });
       });
@@ -371,10 +401,10 @@ module.exports = (router, Liste_Writings,list_of_users) => {
                      //récupère toutes les bd selon l'auteur
   router.get('/retrieve_writings_information_by_user_id/:user_id', function (req, res) {
 
-    (async () => {
+    
 
        const user_id= parseInt(req.params.user_id);
-         writings = await Liste_Writings.findAll({
+         Liste_Writings.findAll({
             where: {
               authorid: user_id,
               status:"public"
@@ -383,26 +413,108 @@ module.exports = (router, Liste_Writings,list_of_users) => {
                 ['writing_id', 'ASC']
               ],
           })
-          .then(writings =>  {
-            res.status(200).send([writings]);
+          .then(writing =>  {
+            
+            res.status(200).send([writing]);
           }); 
-    })();
+    
     });
+
+    router.post('/get_number_of_writings', function (req, res) {
+      console.log("get_number_of_writings")
+      const id_user= req.body.id_user;
+      let date_format=req.body.date_format;
+      const Op = Sequelize.Op;
+      let list_of_ids=[];
+      let list_of_writings=[];
+      let date=new Date();
+
+      if(date_format==0){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 8);
+      }
+      else if(date_format==1){
+          var last_month = new Date();
+          date=last_month.setDate(last_month.getDate() - 30);
+      }
+      else if(date_format==2){
+        var last_month = new Date();
+        date=last_month.setDate(last_month.getDate() - 365);
+      }
+      Liste_Writings.findAll({
+            where: {
+              authorid: id_user,
+              status:"public",
+              createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
+            },
+            order: [
+              ['createdAt', 'DESC']
+            ],
+         })
+         .then(writings =>  {
+          if(writings.length>0){
+            for(let j=0;j<writings.length;j++){
+             list_of_ids.push(writings[j].writing_id)
+             list_of_writings.push(writings[j])
+            }
+          }
+           res.status(200).send([{number_of_writings:writings.length,list_of_ids:list_of_ids,list_of_writings:list_of_writings}]);
+         }); 
+
+    });
+
+
+
  
     router.get('/retrieve_writing_information_by_id/:writing_id', function (req, res) {
 
-      (async () => {
+     
   
          const writing_id= parseInt(req.params.writing_id);
-           writing = await Liste_Writings.findOne({
+           Liste_Writings.findOne({
               where: {
                 writing_id: writing_id,
               }
             })
             .then(writing =>  {
-              res.status(200).send([writing]);
+              if(writing){
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"writing",
+                    publication_id:writing.writing_id
+                  }
+                }).then(tren=>{
+                  if(tren){
+                    if(writing.trending_rank){
+                      if(writing.trending_rank<tren.rank){
+                        writing.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([writing]);
+                      }
+                      else{
+                        res.status(200).send([writing]);
+                      }
+                    }
+                    else{
+                      writing.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([writing]);
+                    }
+                    
+                  }
+                  else{
+                    res.status(200).send([writing]);
+                  }
+                })
+                
+              }
+              else{
+                res.status(200).send([writing]);
+              }
             }); 
-      })();
+      
       });
 
   

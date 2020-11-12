@@ -9,14 +9,22 @@ module.exports = function(app) {
      "user" dans la table "username" mais il faut entrer un user après l'url, voir "user.service"*/
     app.post('/api/users/signup', users.create);
     app.post('/api/users/add_link', users.add_link);
+    app.post('/api/users/remove_link', users.remove_link);
+
     // 
     app.post('/api/users/login', users.login);
-
+    app.post('/api/users/reset_password', users.reset_password);
+    
+    app.post('/api/users/decrypt_password', users.decrypt_password);
+    app.post('/api/users/edit_password', users.edit_password);
+    app.post('/api/users/edit_email', users.edit_email);
+    
     //getuserID
     app.get('/api/userid', users.getCurrentUser);
-    //pseudo check
+    //pseudo and email check
     app.post('/api/users/check_pseudo', users.check_pseudo);
-    
+    app.post('/api/users/check_email', users.check_email);
+
     app.post('/api/users/create_visitor', users.create_visitor);
     
     // 

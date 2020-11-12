@@ -62,7 +62,20 @@ wss.on('connection', (ws, req)=>{
       /***************************************** NOTIFICATIONS *************************/
 
       console.log("sending notification for subscribers")
-      if(messageArray.id_receiver){
+      //for groupe creation
+      if(messageArray.list_of_receivers){
+        for(let i=0;i<messageArray.list_of_receivers.length;i++){
+          var toUserWebSocket = webSockets[messageArray.list_of_receivers[i]];
+          if (toUserWebSocket && toUserWebSocket.length>0) {
+            console.log("sending notification group creation");
+            for(let i=0;i<toUserWebSocket.length;i++){
+              console.log("notificaiton sent to " + messageArray.list_of_receivers[i])
+              toUserWebSocket[i].send(JSON.stringify([messageArray]));
+            }
+          } 
+        }
+      }
+      else if(messageArray.id_receiver){
           var toUserWebSocket = webSockets[messageArray.id_receiver];
           if (toUserWebSocket && toUserWebSocket.length>0) {
             console.log("sending notification");
@@ -78,9 +91,9 @@ wss.on('connection', (ws, req)=>{
               id_user_subscribed_to:messageArray.id_user,
           }
         }).then(subscribers=>{
-            console.log(subscribers)
             if(subscribers.length>0){
               for(let i=0;i<subscribers.length;i++){
+                console.log(subscribers[i].id_user)
                 var toUserWebSocket = webSockets[subscribers[i].id_user];
                 if (toUserWebSocket && toUserWebSocket.length>0) {
                   console.log("sending notification");
@@ -479,6 +492,7 @@ wss.on('connection', (ws, req)=>{
             }
           }).then( friend=>{
             console.log("here")
+            console.log("first friend found afte chat fiend search")
             if(friend){
               console.log("true");
               send_message_to_friend();
