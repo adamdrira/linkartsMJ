@@ -55,7 +55,9 @@ export class UploaderThumbnailAdComponent implements OnInit {
   @Input('category') category: string;
   @Input('format') format: string;
 
-
+  @Input('for_edition') for_edition: boolean;
+  @Input('item') item: any;
+  
   ngOnChanges(changes: SimpleChanges) {
 
     if( changes.category && this.category ) {
@@ -75,7 +77,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
   confirmation: boolean = false; //permettre à add-artwork de passer à l'étape 2 ou non si cover non uploadée.
   covername:any;
-
+  id_user:number;
 
 
 
@@ -96,7 +98,13 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
   ngOnInit() {
 
-    this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 
+    if(this.for_edition){
+      this.id_user=this.item.id_user
+    }
+    else{
+      this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 
+    }
+    
 
     this.uploader.onAfterAddingFile = async (file) => {
         
@@ -129,8 +137,33 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
-      this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
-      this.Ads_service.get_thumbnail_name().subscribe();
+      if(!this.for_edition){
+        
+        this.Ads_service.get_thumbnail_name().subscribe(r=>{
+          this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+        });
+      }
+      else{
+        this.Ads_service.get_thumbnail_name().subscribe(s=>{
+          console.log(s)
+          this.Ads_service.add_thumbnail_ad_to_database(this.item.id).subscribe(l=>{
+            console.log(l)
+            console.log(this.item.thumbnail_name)
+            if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
+              this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).subscribe(r=>{
+                console.log(r)
+                 location.reload();
+               });
+            }
+            else{
+              location.reload();
+            }
+           
+          })
+        })
+         
+      }
+    
     }
 
 
@@ -147,28 +180,43 @@ export class UploaderThumbnailAdComponent implements OnInit {
      return SafeURL;
  }
 
-//lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
-remove_beforeupload(item:FileItem){
-   this.confirmation = false;
-   this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
-   item.remove();
-   this.afficheruploader = true;
-   this.afficherpreview = false;
- }
+  //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
+  remove_beforeupload(item){
+    if(!this.for_edition){
+      this.confirmation = false;
+      this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+      item.remove();
+      this.afficheruploader = true;
+      this.afficherpreview = false;
+    }
+    else{
+      item.remove();
+      this.afficheruploader = true;
+      this.afficherpreview = false;
+    }
+    
+  }
 
-//on supprime le fichier en base de donnée et dans le dossier où il est stocké.
-remove_afterupload(item){
-    //On supprime le fichier en base de donnée
-    this.confirmation = false;
-    this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
-    this.Ads_service.remove_thumbnail_ad_from_folder().pipe(first()).subscribe();
-    item.remove();
-    this.afficheruploader = true;
-    this.afficherpreview = false;
-}
+  //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
+  remove_afterupload(item){
+      //On supprime le fichier en base de donnée
+      if(!this.for_edition){
+        this.confirmation = false;
+        this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+        this.Ads_service.remove_thumbnail_ad_from_folder().pipe(first()).subscribe();
+        item.remove();
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      }
+      else{
+          this.Ads_service.remove_thumbnail_ad_from_folder().pipe(first()).subscribe();
+          item.remove();
+      }
+     
+  }
 
-onFileClick(event) {
-  event.target.value = '';
-}
+  onFileClick(event) {
+    event.target.value = '';
+  }
 
 }
