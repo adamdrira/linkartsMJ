@@ -1,11 +1,31 @@
-<div class="top-container">
-    <span class="logo">Gestion des chapitres</span>
 
-</div>
 
-<div class="container-fluid">
+<div class="container-fluid add-artwork">
+
+    <div class="fake-navbar">
+        <div class="navbar-container category1 step0">
+            <a href="/" class="logo-container">
+                <img class="logo" src='../../assets/img/svg/Logo-LA3.svg'>
+            </a>
+            <span>Gestion des chapitres</span>
+            <a class="profile-picture-container" href="/account/{{pseudo}}/{{user_id}}">
+                <img class="profile-picture" [src]="profile_picture" *ngIf="profile_picture">
+            </a>
+        </div>
+    </div>
+    
+
     <div class="form" *ngIf="list_of_chapters_retrieved && comics_data_retrieved">
-        <div> {{comics_data.title}}</div>
+
+        
+        <div class="form-container">
+            <div class="form-container-name">
+                <mat-icon>arrow_forward_ios</mat-icon>
+                <span>Édition de la BD : {{comics_data.title}}</span>
+            </div>
+        </div>
+
+
         <app-form-serie 
         form_number=1
         [bdtitle]="comics_data.title"
@@ -13,6 +33,7 @@
         [list_of_chapters]="list_of_chapters"
         [chapter]="chapter_test"
         ></app-form-serie>
+
     </div>
-    
+
 </div>
