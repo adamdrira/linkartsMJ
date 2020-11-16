@@ -1,10 +1,17 @@
 
 
-<div class="container-fluid">
+<div class="container-fluid add-artwork">
 
     <div class="fake-navbar">
 
-        <div class="navbar-container" [ngClass]="{'category0':(opened_category$ | async)==0, 'category1':(opened_category$ | async)==1, 'category2':(opened_category$ | async)==2, 'category3':(opened_category$ | async)==3}">
+        <div class="navbar-container" 
+        [ngClass]="{'category0':(opened_category$ | async)==0, 
+        'category1':(opened_category$ | async)==1, 
+        'category2':(opened_category$ | async)==2,
+        'category3':(opened_category$ | async)==3,
+        'step0':step==0, 
+        'step1':step==1}">
+
             <a href="/" class="logo-container">
                 <img class="logo" src='../../assets/img/svg/Logo-LA3.svg'>
             </a>
@@ -39,19 +46,19 @@
 
             <span class="title">Que désirez-vous publier ?</span>
 
-            <button mat-raised-button class="category-choice" (click)="open_category(0);">
+            <button class="category-choice" (click)="open_category(0);">
                 <div class="comic-bubble-icon"></div>
                 <span>Une bande dessinée</span>
             </button>
-            <button mat-raised-button class="category-choice" (click)="open_category(1);">
+            <button class="category-choice" (click)="open_category(1);">
                 <div class="pencil-icon"></div>
                 <span>Un dessin ou un artbook</span>
             </button>
-            <button mat-raised-button class="category-choice" (click)="open_category(2);">
+            <button class="category-choice" (click)="open_category(2);">
                 <div class="writing2-icon"></div>
                 <span>Un écrit</span>
             </button>
-            <button mat-raised-button class="category-choice" (click)="open_category(3);">
+            <button class="category-choice" (click)="open_category(3);">
                 <mat-icon>announcement</mat-icon>
                 <span>Une annonce</span>
             </button>
@@ -63,49 +70,54 @@
 
 
     <!--For book type artworks-->
-    <div *ngIf="(opened_category$ | async)==0" class="form">
+    <div *ngIf="(opened_category$ | async)==0" style="width:100%;">
         <app-add-comic 
             author_name={{author_name}} 
-            pseudo={{pseudo}} 
+            pseudo={{pseudo}}
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
             
+            (stepChanged)="step_changed($event);"
             (cancelled)="step_back();">
         </app-add-comic>
     </div>
     
     <!--For drawing type artworks-->
-    <div *ngIf="(opened_category$ | async)==1" class="form">
+    <div *ngIf="(opened_category$ | async)==1" style="width:100%;">
         <app-add-drawing 
             author_name={{author_name}} 
             pseudo={{pseudo}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
 
+            (stepChanged)="step_changed($event);"
             (cancelled)="step_back();">
         </app-add-drawing>
     </div>
 
     <!--For writing type artworks-->
-    <div *ngIf="(opened_category$ | async)==2" class="form">
+    <div *ngIf="(opened_category$ | async)==2" style="width:100%;">
         <app-add-writing 
             author_name={{author_name}} 
             pseudo={{pseudo}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
 
+            (stepChanged)="step_changed($event);"
             (cancelled)="step_back();">
         </app-add-writing>
     </div>
 
     <!--For writing type artworks-->
-    <div *ngIf="(opened_category$ | async)==3" class="form">
+    <div *ngIf="(opened_category$ | async)==3" style="width:100%;">
         <app-add-ad 
             author_name={{author_name}} 
             primary_description={{primary_description}} 
             [profile_picture]=profile_picture
             [id]=user_id
             pseudo={{pseudo}}
+            
+            (stepChanged)="step_changed($event);"
             (cancelled)="step_back();">
         </app-add-ad>
     </div>

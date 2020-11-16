@@ -43,7 +43,6 @@ export class AddArtworkComponent implements OnInit {
     private location: Location,
     public dialog: MatDialog,
     private sanitizer:DomSanitizer,
-    
 
     ) {
 
@@ -82,6 +81,7 @@ export class AddArtworkComponent implements OnInit {
   //*******************************************ng functions************************************************** */
   //********************************************************************************************************* */
   ngOnInit() {
+    
     
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();
@@ -165,6 +165,7 @@ export class AddArtworkComponent implements OnInit {
         THIS._upload.setCategory( -1 );
         THIS.location.go("/add-artwork");
         THIS.cd.detectChanges();
+        THIS.step_changed(-1);
       }
       else {
         THIS.cd.detectChanges();
@@ -210,13 +211,12 @@ export class AddArtworkComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-
+  step:number;
+  step_changed(e:any) {
+    this.step = e;
+    this.cd.detectChanges();
+    //this.rd.setStyle(this.navbarContainer.nativeElement, 'width', ($(".form").width()+130) + "px" );
+  }
 
 
 
