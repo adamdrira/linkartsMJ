@@ -21,14 +21,12 @@
 
 .options-container {
     position: relative;
-    color: #203864;
-    background: #f0f2fb;
-    padding-top: 15px;
+    color: #203864; 
+    padding-top: 30px;
     padding-bottom: 10px;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #a1a1a1;
 }
 
 
@@ -72,12 +70,15 @@
     place-content: center;
     margin-left: auto;
     margin-right: auto;
+    font-weight: 600;
+    cursor:default;
 }
 
 .options-container .pages-controller-container input {
     width:50px;
-    color:rgb(33, 37, 41);
-    font-size:1.1rem;
+    color: #203864;
+    font-size: 15px;
+    outline:none;
     text-align:center;
     margin:0px 10px;
     border:1px solid grey;
@@ -90,6 +91,7 @@
     display:flex;
     width:100%;
     height:calc( 100vh - 100px );
+    border-radius: 30px;
     min-height:800px;
     overflow:hidden;
 }
@@ -101,49 +103,102 @@
     position:relative;
 }
 
-::ng-deep .swiper-container456 .swiper-slide {
-    display:flex;
-    position: relative;
-    width:100%;
-    height:100%;
-    max-width: 100%;;
-    margin-left:auto;
-    margin-right:auto;
+::ng-deep .add-artwork-swiper-styles {
+    .swiper-container456 .swiper-slide {
+        display:flex;
+        position: relative;
+        width:100%;
+        height:100%;
+        max-width: 100%;;
+        margin-left:auto;
+        margin-right:auto;
+    }  
+    .swiper-container456 .swiper-slide app-uploader_bd_oneshot {
+        height:100%;
+        width:100%;
+    }
+    .swiper-container456 .swiper-slide app-uploader_bd_serie {
+        height:100%;
+        width:100%;
+    }
+    .swiper-container456  .swiper-button-prev, .swiper-container456  .swiper-button-next  {
+        outline:none !important;
+        color:rgb(32,56,100) !important;
+    }
+    .swiper-container456  .swiper-scrollbar-drag {
+        background:#d0d3de6b !important;
+    }
+    
+    .cropper-wrap-box {
+        background:rgb(32,56,100);
+    }
+    .cropper-crop {
+        cursor:crosshair;
+    }
+
+
+    .validate-button {
+        font-size: 18px;
+        font-weight: bold;
+        background: white;
+        color: rgb(32,56,100);
+        border: 1px solid #203864;
+        margin-top: 30px;
+        border-radius: 30px;
+        width: 100%;
+        height: 50px;
+        outline: none;
+        display: flex;
+        mat-icon {
+            margin: auto 10px auto auto;
+            color: #203864;
+            width: unset;
+            height: unset;
+            font-size: 28px;
+        }
+        span {
+            margin: auto auto auto 0px;
+        }
+        &:hover {
+            background:#eeeff3 !important;
+            box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+        }
+        &:active {
+            background: #e2e5eb !important;
+            box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+        }
+    }
+
+
+    .swiper-container-thumbnails  .swiper-button-prev, .swiper-container-thumbnails  .swiper-button-next  {
+        outline:none !important;
+        color:rgb(32,56,100) !important;
+    }
+    .swiper-container-thumbnails .swiper-scrollbar {
+        width: 100%;
+        height: 5px;
+        background-color:unset !important;
+    }
+    .swiper-container-thumbnails .swiper-scrollbar-drag {
+        background:rgb(191, 196, 206) !important;
+    }
+    
 }
-
-::ng-deep .swiper-container456 .swiper-slide app-uploader_bd_oneshot {
-    height:100%;
-    width:100%;
-}
-
-
-::ng-deep .swiper-container456 .swiper-slide app-uploader_bd_serie {
-    height:100%;
-    width:100%;
-}
-
-
-
-::ng-deep .swiper-container456  .swiper-button-prev, ::ng-deep .swiper-container456  .swiper-button-next  {
-    outline:none !important;
-    color:rgb(32,56,100) !important;
-}
-::ng-deep .swiper-container456  .swiper-scrollbar-drag {
-    background:rgb(32,56,100) !important;
-}
-
 
 
 //Swiper
 .swiper-container-thumbnails {
-    margin:auto 0px auto auto;
-    width:100%;
-    margin-left:auto;
-    margin-right:auto;
-    //transition:width 200ms;
-    height:220px;
-    position:relative;
-    overflow:hidden;
+    margin: auto 0px auto auto;
+    padding: 10px 60px 10px 60px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background: #ffffff;
+    border: 1px solid rgb(235 236 238);
+    box-shadow: 0px 1px 4px -4px;
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
 }
 
 .swiper-container-thumbnails .swiper-wrapper {
@@ -162,13 +217,18 @@
     flex-direction: column;
     width:330px;
     height:100%;
-    border: 1px solid #d9e5ff;
+
+    .slide {
+        border-radius: 15px;
+        color: white;
+    }
 }
 
 .swiper-container-thumbnails .swiper-slide.add-page {
     background:unset;
     display:flex;
     flex-direction: column;
+    height: 230px;
 }
 
 .swiper-container-thumbnails .swiper-slide.add-page .add-page-button {
@@ -197,21 +257,30 @@
     color: rgb(32, 56, 100);
 }
 
-.swiper-container-thumbnails .swiper-slide:hover {
-    background-color:#d9e5ff;
+.swiper-container-thumbnails .swiper-slide > .slide:hover {
+    background: #e8e8f2;
+    box-shadow: 0px 2px 9px -5px #b8bdd4;
 }
 
 
-.swiper-container-thumbnails .swiper-slide.selected {
-    border: 2px solid hsl(231, 86%, 83%);
-    background-color: #d9e5ff;
+.swiper-container-thumbnails .swiper-slide.selected > .slide {    
+    background-image: linear-gradient(0.05turn, #03093a, #173d6e, #296a9c);
+    box-shadow: 0px 1px 4px 0px #182338;
+    border-radius: 15px;
+    
+    .page-number {
+        color: white;
+    }
 }
 
 .swiper-container-thumbnails .swiper-slide .page-number {
     text-align:center;
     height:25px;
-    font-weight:bold;
+    font-weight:600;
     font-size:15px;
+    margin-top: 5px;
+    color: rgb(32,56,100);
+    cursor:default;
 }
 
 
@@ -221,7 +290,8 @@
     flex-direction: column;
     border-radius: 15px;
     overflow: hidden;
-    background:rgb(239, 244, 255);
+    background:rgb(255, 255, 255);
+    color: rgb(32,56,100);
     box-shadow:0 0px 6px rgb(32, 56, 100);
     margin:10px auto 10px auto;
     height:calc( 220px - 30px - 35px - 10px - 10px - 20px );
@@ -232,6 +302,7 @@
 .swiper-container-thumbnails .swiper-slide .img-container span {
     margin: 3px auto auto auto;
     font-size: 13px;
+    font-weight: 600;
 }
 
 .swiper-container-thumbnails .swiper-slide .img-container img{
@@ -254,6 +325,7 @@
     height:35px;
     margin-left:auto;
     margin-right:auto;
+    margin-bottom: 10px;
     background: rgb(32,56,100);
     color: white;
     border-radius: 30px;
@@ -267,39 +339,23 @@
 }
 
 
-::ng-deep .swiper-container-thumbnails  .swiper-button-prev, ::ng-deep .swiper-container-thumbnails  .swiper-button-next  {
-    outline:none !important;
-    color:rgb(32,56,100) !important;
-}
 
-::ng-deep .swiper-container-thumbnails .swiper-scrollbar {
-    width: 100%;
-    height: 5px;
-    background-color:unset !important;
-}
-
-::ng-deep .swiper-container-thumbnails .swiper-scrollbar-drag {
-    background:rgb(191, 196, 206) !important;
-}
-
-
-::ng-deep .mat-button {
-    font-family:Calibri, "Helvetica Neue", sans-serif;
-}
-
-
-.validate-chapter-button {
-    font-size: 18px;
-    font-weight: bold;
-    width: 100%;
-    height: 50px;
+.hidden-chapter {
+    height: 100px;
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    cursor:default;
 }
-
-.validate-chapter-button mat-icon {
-    margin: auto 10px auto auto;
-    color: #203864;
-    width: unset;
-    height: unset;
-    font-size: 28px;
+.hidden-chapter mat-icon {
+    margin: auto auto 5px auto;
+    font-size: 33px;
+    color: #2bb900;
+    height: unset !important;
+    width: unset !important;
+}
+.hidden-chapter > span {    
+    margin: 0px auto auto auto;
+    font-size: 20px;
+    font-weight: 600;
 }

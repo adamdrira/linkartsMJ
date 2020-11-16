@@ -1,0 +1,11 @@
+
+::ng-deep 
+::ng-deep .mat-button-focus-overlay {
+    background-color:transparent;
+}
+::ng-deep button .mat-ripple {
+    z-index:-1;
+}
+::ng-deep button .mat-ripple *{
+    background-color: rgb(204, 209, 255) !important;
+}
