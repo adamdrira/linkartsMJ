@@ -68,10 +68,6 @@
     object-fit: cover;
     height: 100%;
     width: auto;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transition: .2s ease-in-out;
-    transition: .2s ease-in-out;
   }
 
   .element-writing .absolute-thumbnail-data {
@@ -328,8 +324,8 @@
 
 .border-verso .verso-type {
   width: 100%;
-  display:flex;
-  flex-wrap: wrap;
+  /*display:flex;
+  flex-wrap: wrap;*/
   align-items:center;
   text-align: left;
   margin-top: auto;

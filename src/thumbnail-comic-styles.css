@@ -58,10 +58,6 @@
     object-fit: cover;
     height: 100%;
     width: auto;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transition: .2s ease-in-out;
-    transition: .2s ease-in-out;
   }
 
   /*linear-gradient(0deg, rgb(0, 18, 51), rgba(0, 16, 45, 0.71))*/
@@ -319,8 +315,8 @@
 
 .border-verso .verso-type {
   width: 100%;
-  display:flex;
-  flex-wrap: wrap;
+  /*display:flex;
+  flex-wrap: wrap;*/
   margin-top: auto;
   align-items:center;
   text-align: left;

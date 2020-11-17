@@ -40,97 +40,19 @@
     outline: none !important;
     text-align: center !important;
     box-shadow: 0px 0px 4px rgb(71, 111, 183) !important;
-    background-image:linear-gradient(0.02turn, #8696bd, #475e88, #8696bd) !important;
+    background-image:linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185)) !important;
     color: white;
     border-radius: 40px;
 }
 
 ::ng-deep .form button.style1.mat-raised-button:hover {
-    background-image:linear-gradient(0.02turn, #7a8bb4, #3d5580, #7788b3) !important;
+    background-image:linear-gradient(0.02turn, rgb(115, 132, 172), rgb(61, 83, 124), rgb(111, 127, 167)) !important;
 }
 
 ::ng-deep .form button.style1 .mat-ripple *{
     background-color: unset !important;
 }
 
-
-
-
-
-
-
-::ng-deep .mat-button-wrapper {
-    display:flex !important;
-}
-
-::ng-deep button.mat-raised-button .mat-button-focus-overlay {
-    background-color:transparent !important;
-}
-
-::ng-deep button.mat-raised-button .mat-ripple {
-    z-index:-1 !important;
-}
-
-
-::ng-deep button.mat-raised-button > span {
-    margin:auto auto !important;
-}
-
-
-
-.steps {
-    width:100%;
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-size:17px;
-    cursor:default;
-}
-
-.steps .step-container {    
-    display: flex;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 10px;
-    padding: 15px 30px;
-    border-radius: 35px;
-    box-shadow: 0px 4px 1px -2px rgb(0 0 0 / 20%), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px 0px rgba(0, 0, 0, 0.12);
-    color: white;
-    opacity: 0.25;
-    background-image:linear-gradient(0.02turn, #8696bd, #475e88, #8696bd);
-}
-
-.steps .step-container.opened {
-    opacity:1 !important;
-}
-.steps .step-container .step {
-    cursor: default;
-    display: flex;
-    width: 35px;
-    height: 35px;
-    margin-right: 15px;
-    border-radius: 50%;
-    color: white;
-    border: 2px solid white;
-}
-
-.step-container span {
-    margin:auto auto;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-.step-container .step span {
-    line-height: 30px;
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-.steps .opened .step {
-    color: white;
-    border: 2px solid white;
-}
 
 
 .horizontal-line {
