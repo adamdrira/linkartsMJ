@@ -1,11 +1,26 @@
 
-
-@import '../../material-styles.css';
-
 .popup-container {
     display:flex;
     flex-direction: column;
     margin: 20px 50px 0px 50px;
+
+    color:rgb(32,56,100);
+
+    .alert-icon {
+        width:100%;
+        display:flex;
+        mat-icon {    
+            cursor:default;
+            width: unset;
+            height: unset;
+            font-size: 40px;
+            margin: 10px auto 5px auto;
+        }
+    }
+
+    > span {
+        cursor:default;
+    }
 }
 
 .buttons-container {
@@ -16,12 +31,42 @@
 }
 
 .buttons-container button {
-    margin-left:10px;
-    margin-right:10px;
-    outline:none;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 35px;
+    background-color: unset;
+    outline: none;
+    border: 1px solid #203864;
+    background: white;
+    display: flex;
+    padding: 8px 22px;
+    font-size: 14px;
+
+    span {
+        margin: auto auto;
+        color: #203864;
+        font-weight: bold;
+    }
+    
 }
 
-::ng-deep .popup-container .mat-button-focus-overlay {
-    outline:none !important;
-    background-color: transparent!important;
+.buttons-container button:hover {
+    background:#eeeff3 !important;
+    box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+}
+
+.buttons-container button:active {
+    background: #e2e5eb !important;
+    box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+}
+
+::ng-deep .dialogRefClassText {
+    @media (min-width:701px) {
+        max-width:80vw;
+        width:unset !important;
+    }
+    @media (max-width:700px) {
+        max-width:unset !important;
+        width:80vw !important;
+    }
 }

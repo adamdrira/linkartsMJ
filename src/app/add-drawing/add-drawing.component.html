@@ -2,7 +2,7 @@
 
 
 
-        
+<div class="form" [ngClass]="{ 'form0' : CURRENT_step == 0 }">
 
         <!--*****************************************************************************-->
         <!--*****************************************************************************-->
@@ -12,8 +12,8 @@
         <div *ngIf="REAL_step>=0 || CURRENT_step==0" [hidden]="CURRENT_step!=0">
 
             
-            <button mat-raised-button class="step-back-button" (click)="back_home();">
-                <div class="back-icon"></div>
+            <button class="step-back-button" (click)="back_home();">
+                <mat-icon>keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
@@ -42,8 +42,7 @@
 
                 <div class="form-container">
                     <div class="form-container-name">
-                        <mat-icon>insert_drive_file</mat-icon>
-                        <span>Présentation du projet</span>
+                        <span>Description du projet</span>
                     </div>
 
                     
@@ -61,7 +60,7 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Format</mat-label>
-                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdFormat" (openedChange)="format_change_alert();" (selectionChange)="onFormatChange($event)">
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdFormat" (openedChange)="format_change_alert();" (selectionChange)="onFormatChange($event)">
                                 <mat-option  *ngFor="let obj of listOfFormats" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
@@ -75,7 +74,7 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Catégorie</mat-label>
-                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdCategory">
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdCategory">
                                 <mat-option  *ngFor="let obj of listOfCategories" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
@@ -106,7 +105,7 @@
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                 (matChipInputTokenEnd)="add($event)">
                             </mat-chip-list>
-                            <mat-autocomplete #auto="matAutocomplete" class="custom-scroll" (optionSelected)="selected($event)">
+                            <mat-autocomplete #auto="matAutocomplete" class="custom-scroll addArtworkMatautocompleteClass" (optionSelected)="selected($event)">
                               <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
                                 {{genre}}
                               </mat-option>
@@ -137,12 +136,10 @@
                             <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
                                 Monétiser mon œuvre et autoriser l'apparition en tendances
                             </mat-slide-toggle>
-                            &nbsp; 
-                            &nbsp; 
                             <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
                         </div>
 
-                        <div *ngIf="monetised" style="color: #f44336;">
+                        <div *ngIf="monetised" class="monetised-text">
                             Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.
                         </div>
                     </div>
@@ -150,8 +147,8 @@
                 </div>
                 
 
-                <button mat-raised-button class="submit-button style1" (click)="validate_form_drawings();">
-                    <span>Valider</span>
+                <button #nextButton mat-raised-button class="submit-button style1" (click)="validate_form_drawings();">
+                    <span>Suivant</span>
                 </button>
 
             </form>
@@ -163,8 +160,8 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && fd.value.fdFormat=='Œuvre unique' " [hidden]="CURRENT_step==0 && fd.value.fdFormat=='Œuvre unique'">
 
             
-            <button mat-raised-button class="step-back-button" (click)="step_back();">
-                <div class="back-icon"></div>
+            <button class="step-back-button" (click)="step_back();">
+                <mat-icon>keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
@@ -209,8 +206,8 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && fd.value.fdFormat=='Artbook' " [hidden]="CURRENT_step==0 && fd.value.fdFormat=='Artbook'">
 
             
-            <button mat-raised-button class="step-back-button" (click)="step_back();">
-                <div class="back-icon"></div>
+            <button class="step-back-button" (click)="step_back();">
+                <mat-icon>keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
             
@@ -218,7 +215,7 @@
 
             <!--Forms : adding drawing-->
             <div class="steps">
-                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=0 }">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step ==0 }">
                     <div class="step">
                         <span>1</span>
                     </div>
@@ -226,7 +223,7 @@
                 </div>
                 <!--<div class="horizontal-line">
                 </div>-->
-                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step >=1 }">
+                <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step ==1 }">
                     <div class="step">
                         <span>2</span>
                     </div>
@@ -251,4 +248,4 @@
             </app-swiper-upload-artbook>
         </div>
 
-        
+</div>

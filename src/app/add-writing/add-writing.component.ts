@@ -78,6 +78,7 @@ export class AddWritingComponent implements OnInit {
 
   @Output() cancelled = new EventEmitter<any>();
 
+  @Output() stepChanged = new EventEmitter<number>();
 
   REAL_step: number;
   CURRENT_step: number;
@@ -101,6 +102,7 @@ export class AddWritingComponent implements OnInit {
     this.createFormControlsWritings();
     this.createFormWritings();
 
+    this.stepChanged.emit(0);
 
   }
 
@@ -118,6 +120,7 @@ export class AddWritingComponent implements OnInit {
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
+        panelClass: 'dialogRefClassText'
       });
    }else{
     this.monetised = false;
@@ -127,6 +130,7 @@ export class AddWritingComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Conditions en cours d'écriture"},
+      panelClass: 'dialogRefClassText'
     });
   }
 
@@ -164,6 +168,7 @@ export class AddWritingComponent implements OnInit {
 
   step_back() {
 
+    this.stepChanged.emit(0);
     this.CURRENT_step = this.REAL_step - 1;
     this.cd.detectChanges();
   }
@@ -175,6 +180,7 @@ export class AddWritingComponent implements OnInit {
     console.log(this.Writing_CoverService.get_confirmation())
     if ( this.fw.valid  && /*this.Writing_Upload_Service.get_confirmation() &&*/ this.Writing_CoverService.get_confirmation() ) {
       if( this.CURRENT_step < (this.REAL_step) ) {
+        this.stepChanged.emit(1);
         this.CURRENT_step++;
 
         this.nextButton.nativeElement.disabled = false;
@@ -182,6 +188,7 @@ export class AddWritingComponent implements OnInit {
         window.scroll(0, 0);
       }
       else {
+        this.stepChanged.emit(1);
         this.CURRENT_step++;
         this.REAL_step++;
 
@@ -195,11 +202,13 @@ export class AddWritingComponent implements OnInit {
       if(this.fw.controls.fwTags.status=='INVALID' && this.fw.controls.fwTitle.status=='VALID' && this.fw.controls.fwDescription.status=='VALID' && this.fw.controls.fwCategory.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          panelClass: 'dialogRefClassText'
         });
       }
     
@@ -265,18 +274,21 @@ export class AddWritingComponent implements OnInit {
       if( !this.fw.valid ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          panelClass: 'dialogRefClassText'
         });
         this.validateButton.nativeElement.disabled = false;
       }
       else if ( !this.Writing_Upload_Service.get_confirmation() ){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez télécharger l\'écrit en PDF, puis le valider.'},
+          panelClass: 'dialogRefClassText'
         });
         this.validateButton.nativeElement.disabled = false;
       }
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+          panelClass: 'dialogRefClassText'
         });
         this.validateButton.nativeElement.disabled = false;
       }
@@ -285,6 +297,7 @@ export class AddWritingComponent implements OnInit {
 
 
   back_home() {
+    this.stepChanged.emit(0);
     this.cancelled.emit();
   }
 

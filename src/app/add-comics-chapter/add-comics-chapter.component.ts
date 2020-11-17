@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-add-comics-chapter',
@@ -35,7 +36,11 @@ export class AddComicsChapterComponent implements OnInit {
   data_retrieved=false;
 
 
-
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    $event.returnValue = true;
+  }
+  
   ngOnInit(): void {
 
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));

@@ -77,12 +77,16 @@ export class AddComicComponent implements OnInit {
   
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
+  
+  @Output() stepChanged = new EventEmitter<number>();
 
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
   type_of_account:string;
   user_retrieved=false;
+
+
   ngOnInit() {
 
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
@@ -94,6 +98,7 @@ export class AddComicComponent implements OnInit {
 
     this.cd.detectChanges();
     
+    this.stepChanged.emit(0);
   }
 
 
@@ -142,6 +147,7 @@ export class AddComicComponent implements OnInit {
 
   
   back_home() {
+    this.stepChanged.emit(0);
     this.cancelled.emit();
   }
 
@@ -149,6 +155,8 @@ export class AddComicComponent implements OnInit {
   step_back() {
 
     this.CURRENT_step = this.REAL_step - 1;
+    this.stepChanged.emit(0);
+
     this.cd.detectChanges();
     this.modal_displayed=false;
     this.cd.detectChanges();
@@ -160,6 +168,7 @@ export class AddComicComponent implements OnInit {
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
+        panelClass: 'dialogRefClassText'
       });
    }else{
     this.monetised = false;
@@ -169,6 +178,7 @@ export class AddComicComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Conditions en cours d'écriture"},
+      panelClass: 'dialogRefClassText'
     });
   }
 
@@ -233,6 +243,7 @@ export class AddComicComponent implements OnInit {
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.CURRENT_step++;
+            this.stepChanged.emit(1);
             
             this.nextButton.nativeElement.disabled = false;
 
@@ -247,6 +258,7 @@ export class AddComicComponent implements OnInit {
             this.Subscribing_service.validate_content('comic', 'one-shot', val[0].bd_id,0).subscribe(r=>{
               this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
               this.CURRENT_step++;
+              this.stepChanged.emit(1);
               this.REAL_step++;
   
               this.nextButton.nativeElement.disabled = false;
@@ -271,6 +283,7 @@ export class AddComicComponent implements OnInit {
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.bdSerieService.modify_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;
+            this.stepChanged.emit(1);
 
             this.nextButton.nativeElement.disabled = false;
 
@@ -285,6 +298,7 @@ export class AddComicComponent implements OnInit {
             this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
             this.bdSerieService.add_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
             this.CURRENT_step++;
+            this.stepChanged.emit(1);
             this.REAL_step++;
 
             this.nextButton.nativeElement.disabled = false;
@@ -303,16 +317,19 @@ export class AddComicComponent implements OnInit {
         if(this.f00.value.f00Format == "Série" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+            panelClass: 'dialogRefClassText'
           });
         }
         else if(this.f00.value.f00Format == "One-shot" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+            panelClass: 'dialogRefClassText'
           });
         }
         else{
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+            panelClass: 'dialogRefClassText'
           });
         }
 
@@ -321,6 +338,7 @@ export class AddComicComponent implements OnInit {
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+          panelClass: 'dialogRefClassText'
         });
       }
     }

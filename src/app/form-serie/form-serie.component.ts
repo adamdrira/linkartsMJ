@@ -184,6 +184,7 @@ value:string="add";
     }, 0); */
 
     if(this.form_number==0){
+      this.display_swiper=false;
       this.changeName.nativeElement.value= this.componentRef[i].name;
     }
     else{
@@ -200,7 +201,7 @@ value:string="add";
   }
 
 
-  display_swiper=false;
+  display_swiper=true;
   new_chapter_added=false;
   number_of_new_chapters=0;
 
@@ -216,19 +217,26 @@ value:string="add";
 
       this.componentRef[i].swiperInitialized = true;
       this.edit_name = -1;
+
+
       if (this.value=="modify") {
         console.log("on est en modification pour le chapitre " + (i+1) );
         this.bdSerieService.modify_chapter_bd_serie(i+1,this.componentRef[i].name).subscribe();
+        this.display_swiper=true;
         return true;
       }
       else if (this.value=="add") {
         console.log("on est en ajout de chapitre pour le chapitre " + (i+1) );
         this.bdSerieService.add_chapter_bd_serie( i+1 , this.componentRef[i].name).subscribe();
+        this.display_swiper=true;
         return false;
       }
     }
 
     if(this.form_number==1 && (<FormArray>this.form.get('chapters')).controls[i].valid){
+
+      
+
       console.log((<FormArray>this.form.get('chapters')).controls[i].value);
       this.edit_name = -1;
       if (this.value=="modify") {
@@ -239,6 +247,7 @@ value:string="add";
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
           this.cd.detectChanges();
         });
+        this.display_swiper=true;
         return true;
       }
       else if (this.value=="add") {
@@ -248,9 +257,9 @@ value:string="add";
           console.log(r);
           this.new_chapter_added=true;
           this.number_of_new_chapters+=1;
-          this.display_swiper=true;
           this.list_of_chapters[i].title=(<FormArray>this.form.get('chapters')).controls[i].value;
         });
+        this.display_swiper=true;
         return false;
       }
       
@@ -276,6 +285,7 @@ value:string="add";
       if( this.chapter_creation_in_progress ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
+          panelClass: 'dialogRefClassText'
         });
       }
       else if(this.form_number==0){
@@ -329,6 +339,7 @@ value:string="add";
       if( this.componentRef.length > 1 ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer ce chapitre ?'},
+          panelClass: 'dialogRefClassText'
         });
   
         dialogRef.afterClosed().subscribe(result => {
@@ -341,6 +352,7 @@ value:string="add";
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous devez conserver au moins un chapitre'},
+          panelClass: 'dialogRefClassText'
         });
       }
     }
@@ -348,6 +360,7 @@ value:string="add";
       if( this.list_of_chapters.length > 1 ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer ce chapitre ?'},
+          panelClass: 'dialogRefClassText'
         });
   
         dialogRef.afterClosed().subscribe(result => {
@@ -360,6 +373,7 @@ value:string="add";
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer la bande dessinée'},
+          panelClass: 'dialogRefClassText'
         });
   
         dialogRef.afterClosed().subscribe(result => {
@@ -426,6 +440,7 @@ value:string="add";
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Vous ne pouvez pas modifier le contenu des chapitres validés"},
+          panelClass: 'dialogRefClassText'
         });
       }
     }
@@ -455,6 +470,14 @@ value:string="add";
 
     this.validateButton.nativeElement.disabled = true;
 
+    if( this.edit_name != -1 ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Attention ! Vous devez valider l\'édition du nom avant de finaliser le téléchargement.'},
+        panelClass: 'dialogRefClassText'
+      });
+      this.validateButton.nativeElement.disabled = false;
+    }
+
     let errorMsg : string = "Le ou les chapitres suivants n'ont pas été validés : "
     let valid = true;
       
@@ -474,6 +497,7 @@ value:string="add";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:errorMsg},
+          panelClass: 'dialogRefClassText'
         });
   
       }
@@ -526,6 +550,7 @@ value:string="add";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:errorMsg},
+          panelClass: 'dialogRefClassText'
         });
   
       }
@@ -606,6 +631,10 @@ value:string="add";
 
 
   
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 
 
     

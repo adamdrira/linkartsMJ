@@ -1,6 +1,8 @@
 
 
 
+<div class="form form0">
+
         <!--*****************************************************************************-->
         <!--*****************************************************************************-->
         <!--******************************** primary information ************************-->
@@ -9,17 +11,24 @@
         <div>
 
             
-            <button mat-raised-button class="step-back-button" (click)="back_home();">
-                <div class="back-icon"></div>
+            <button class="step-back-button" (click)="back_home();">
+                <mat-icon>keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
-            
+                
+            <!--Forms : adding cartoon strip-->
+            <div class="steps">
+                <div class="step-container opened" style="width:100% !important;">
+                    <span style="margin:auto !important;">Présentation de l'annonce</span>
+                </div>
+            </div>
+
+
             <form [formGroup]="fd" novalidate>
                 <div class="form-container">
 
                     <div class="form-container-name">
-                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Informations de base</span>
                     </div>
 
@@ -50,7 +59,7 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Type de projet</mat-label>
-                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdProject_type">
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdProject_type">
                                 <mat-option  *ngFor="let obj of listOfTypes" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
@@ -63,7 +72,7 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Description personnelle (comment vous décriveriez-vous)</mat-label>
-                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdMydescription">
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdMydescription">
                                 <mat-option  *ngFor="let obj of listOfDescriptions" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
@@ -94,7 +103,7 @@
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                 (matChipInputTokenEnd)="add($event)">
                             </mat-chip-list>
-                            <mat-autocomplete #auto="matAutocomplete" class="custom-scroll" (optionSelected)="selected($event)">
+                            <mat-autocomplete #auto="matAutocomplete" class="custom-scroll addArtworkMatautocompleteClass" (optionSelected)="selected($event)">
                               <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
                                 {{genre}}
                               </mat-option>
@@ -123,7 +132,7 @@
                     <div class="form-item" *ngIf="remuneration" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label>Type de rémunération (optionnel)</mat-label>
-                            <mat-select [compareWith]="compareObjects" disableOptionCentering formControlName="fdPrice_type">
+                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type">
                                 <mat-option  *ngFor="let obj of listOfPriceTypes" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
@@ -150,7 +159,6 @@
                 
                 <div class="form-container">
                     <div class="form-container-name">
-                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Edition de la miniature</span>
                     </div>
                     <app-uploader-thumbnail-ad
@@ -161,7 +169,6 @@
                 
                 <div class="form-container">
                     <div class="form-container-name">
-                        <mat-icon>insert_drive_file</mat-icon>
                         <span>Documents complémentaires</span>
                     </div>
 
@@ -187,10 +194,7 @@
         </div>
 
 
-        
+</div>
 
         
-        
-        
-
         

@@ -9,8 +9,8 @@
             <span>Ajouter</span>
         </div>-->
         
-        <button mat-raised-button class="add-chapter-button style0" (click)="add_series_chapter();">
-            <mat-icon>library_add</mat-icon>
+        <button class="add-chapter-button style0" (click)="add_series_chapter();">
+            <mat-icon>add</mat-icon>
             <span>Ajouter un chapitre</span>
         </button>
 
@@ -27,7 +27,7 @@
                 <div class="chapter-number">
                     <span>Chapitre {{element.chapter + 1}}</span>
                 </div>
-                <div class="chapter-name form-item2">
+                <div class="chapter-name form-item2" (click)="stop($event);">
                     <!--<span *ngIf="edit_name!=i"> {{element.name}} </span>-->
                     <mat-form-field floatLabel='never' class="disabled" *ngIf="edit_name!=i">
                         <mat-label>Nom du chapitre</mat-label>
@@ -36,6 +36,8 @@
                         type="text" [value]=element.name autocomplete="off" 
                         *ngIf="edit_name!=i"/>
                     </mat-form-field>
+
+                    
 
                     <mat-form-field floatLabel='never' *ngIf="edit_name==i" >
                         <mat-label>Nom du chapitre</mat-label>
@@ -95,7 +97,7 @@
                 <div class="chapter-number">
                     <span>Chapitre {{element.chapter_number}}</span>
                 </div>
-                <div class="chapter-name form-item2">
+                <div class="chapter-name form-item2" (click)="stop($event);">
                     <mat-form-field class="disabled" floatLabel='never' *ngIf="edit_name!=i">
                         <mat-label>Nom du chapitre</mat-label>
                         
@@ -157,15 +159,14 @@
 <div class="pages-controller" *ngIf="form_number==0">
 
     <ng-container *ngFor="let element of componentRef; let i = index" >
-        <app-swiper-upload-serie *ngIf=element.swiperInitialized type="Série" [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
+        <app-swiper-upload-serie *ngIf=element.swiperInitialized type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
     </ng-container>
-    
 
 </div>
 
-<div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress && display_swiper">
+<div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
     <ng-container  >
-        <app-swiper-upload-serie type="Série" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
+        <app-swiper-upload-serie type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
     </ng-container>
     
 

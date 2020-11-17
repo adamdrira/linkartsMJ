@@ -14,7 +14,7 @@
     flex-wrap: wrap;
     padding-bottom: 5px;
     padding-top: 5px;
-    background-image:linear-gradient(0.02turn, #8696bd, #475e88, #8696bd);
+    background-image:linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185));
 }
 
  .chapters-title > span {
@@ -22,21 +22,42 @@
     color: rgb(255, 255, 255);
     font-weight:bold;
     margin:auto auto auto 20px;
+    cursor:default;
 }
 
 .chapters-controller .add-chapter-button {
+
     font-size: 14px;
     font-weight: bold;
+    background: white;
+    color: #203864;
+    border: 1px solid #203864;
     margin: 10px 15px 10px auto;
+    padding: 8px 8px 8px 4px;
+    border-radius: 30px;
+    outline: none;
     display: flex;
+
+    mat-icon {
+        margin: auto 5px auto auto;
+        color: #203864;
+        width: unset;
+        height: unset;
+        font-size: 20px;
+    }
+    span {
+        margin: auto auto auto 0px;
+    }
+    &:hover {
+        background:#eeeff3 !important;
+        box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+    }
+    &:active {
+        background: #e2e5eb !important;
+        box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+    }
 }
 
-.chapters-controller .add-chapter-button mat-icon {
-    margin: auto 5px auto auto;
-    color: rgb(32,56,100);
-    width:unset;
-    height:unset;
-}
 
 .validate-chapter-button mat-icon {
     margin: auto 5px auto auto;
@@ -89,6 +110,7 @@
  .chapters-list .chapter .chapter-number {
     cursor:default;
     padding-left:5px;
+    font-weight:600;
     width: 110px;
     display:flex;
     cursor:pointer;
@@ -248,26 +270,26 @@
 }
 
 //ng deep
-::ng-deep .mat-form-field-underline {
-    position:unset !important;
-
-}
-
-::ng-deep .mat-form-field-wrapper {
-    padding-top:0px !important;
-    padding-bottom:0px !important;
-}
-
-::ng-deep .mat-form-field {
-    font-family:unset;
-    width: calc( 100% - 30px );
-    height:100%;
-    margin:auto auto auto 0px;
-}
-
-::ng-deep .disabled .mat-form-field-underline {
-    background-image:unset !important;
-    background-color: rgba(0,0,0,.42) !important;
+.chapters-controller ::ng-deep {
+     .mat-form-field-underline {
+        position:unset !important;
+    
+    }
+    .mat-form-field-wrapper {
+        padding-top:0px !important;
+        padding-bottom:20px !important;
+    }
+    .mat-form-field {
+        font-weight: 600;
+        font-family:unset;
+        width: calc( 100% - 30px );
+        height:100%;
+        margin:auto auto auto 0px;
+    }
+    .disabled .mat-form-field-underline {
+        background-image:unset !important;
+        background-color: rgba(0,0,0,.42) !important;
+    }
 }
 
 .mat-input-element {

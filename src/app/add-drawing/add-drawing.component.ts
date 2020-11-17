@@ -64,6 +64,8 @@ export class AddDrawingComponent implements OnInit {
   }
 
   
+  @ViewChild('nextButton', { read: ElementRef }) nextButton:ElementRef;
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -72,6 +74,7 @@ export class AddDrawingComponent implements OnInit {
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
+  @Output() stepChanged = new EventEmitter<number>();
 
   dropdowns = this._constants.filters.categories[0].dropdowns;
   REAL_step: number;
@@ -90,6 +93,7 @@ export class AddDrawingComponent implements OnInit {
 
     this.cd.detectChanges();
 
+    this.stepChanged.emit(0);
   }
 
   ngAfterContentInit() {
@@ -98,11 +102,13 @@ export class AddDrawingComponent implements OnInit {
   
 
   back_home() {
+    this.stepChanged.emit(0);
     this.cancelled.emit();
   }
 
   step_back() {
 
+    this.stepChanged.emit(0);
     this.CURRENT_step = this.REAL_step - 1;
     this.cd.detectChanges();
     this.modal_displayed=false;
@@ -116,6 +122,7 @@ export class AddDrawingComponent implements OnInit {
       this.monetised = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
+        panelClass: 'dialogRefClassText'
       });
    }else{
     this.monetised = false;
@@ -125,6 +132,7 @@ export class AddDrawingComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Conditions en cours d'écriture"},
+      panelClass: 'dialogRefClassText'
     });
   }
 
@@ -133,6 +141,7 @@ export class AddDrawingComponent implements OnInit {
     if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
+        panelClass: 'dialogRefClassText'
       });
       this.modal_displayed = true;
     }
@@ -182,12 +191,17 @@ export class AddDrawingComponent implements OnInit {
   validate_form_drawings() {
 
 
+    this.nextButton.nativeElement.disabled = true;
+
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
         .subscribe(inf=>{
+          this.stepChanged.emit(1);
           this.CURRENT_step++;
+
+          this.nextButton.nativeElement.disabled = false;
 
           this.cd.detectChanges();
           window.scroll(0,0);
@@ -196,9 +210,12 @@ export class AddDrawingComponent implements OnInit {
       else {
         this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false).subscribe((val)=> {
           this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
+            this.stepChanged.emit(1);
             this.CURRENT_step++;
             this.REAL_step++;
   
+            this.nextButton.nativeElement.disabled = false;
+
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -212,8 +229,11 @@ export class AddDrawingComponent implements OnInit {
         if( this.CURRENT_step < (this.REAL_step) ) {
           this.Drawings_Artbook_Service.ModifyArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
           .subscribe(inf=>{
+            this.stepChanged.emit(1);
             this.CURRENT_step++;
 
+            this.nextButton.nativeElement.disabled = false;
+            
             this.cd.detectChanges();
             window.scroll(0,0);
           });
@@ -222,9 +242,12 @@ export class AddDrawingComponent implements OnInit {
           this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription, this.monetised)
           .subscribe((val)=> {
             this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).subscribe(r=>{
+              this.stepChanged.emit(1);
               this.CURRENT_step++;
               this.REAL_step++;
   
+              this.nextButton.nativeElement.disabled = false;
+
               this.cd.detectChanges();
               window.scroll(0,0);
             });
@@ -236,14 +259,18 @@ export class AddDrawingComponent implements OnInit {
     }
 
     else {
+      this.nextButton.nativeElement.disabled = false;
+      
       if(this.fd.controls.fdTags.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdDescription.status=='VALID' && this.fd.controls.fdCategory.status=='VALID' &&  this.fd.controls.fdFormat.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          panelClass: 'dialogRefClassText'
         });
       }
 

@@ -58,6 +58,7 @@ export class AddAdComponent implements OnInit {
   ) { 
     
     this.CURRENT_step = 0;
+    this.stepChanged.emit(0);
     
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
@@ -79,6 +80,8 @@ export class AddAdComponent implements OnInit {
   @Output() started = new EventEmitter<any>();
   @Output() cancelled = new EventEmitter<any>();
   
+  @Output() stepChanged = new EventEmitter<number>();
+
   dropdowns = this._constants.filters.categories[0].dropdowns;
   CURRENT_step: number;
 
@@ -93,6 +96,8 @@ export class AddAdComponent implements OnInit {
     this.createFormAd();
 
     this.cd.detectChanges();
+    this.stepChanged.emit(0);
+
   }
 
   ngAfterContentInit() {
@@ -100,6 +105,7 @@ export class AddAdComponent implements OnInit {
 
 
   back_home() {
+    this.stepChanged.emit(0);
     this.cancelled.emit();
   }
 
@@ -231,11 +237,13 @@ export class AddAdComponent implements OnInit {
       if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides.'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          panelClass: 'dialogRefClassText'
         });
       }
 
@@ -244,6 +252,7 @@ export class AddAdComponent implements OnInit {
     else {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+        panelClass: 'dialogRefClassText'
       });
       this.validateButton.nativeElement.disabled = false;
     }
