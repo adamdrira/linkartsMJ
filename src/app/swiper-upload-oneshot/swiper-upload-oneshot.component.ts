@@ -48,6 +48,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   }
 
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
+
 
   @Input() type: string;
   @Input() bdtitle: string;
@@ -91,20 +94,33 @@ export class SwiperUploadOneshotComponent implements OnInit {
         prevEl: '.swiper-button-prev',
       },
       breakpoints: {
+        0: {
+          slidesPerView: 1,
+          spaceBetween:100,
+        },
         580: {
           slidesPerView: 1,
+          spaceBetween:100,
         },
         700: {
             slidesPerView: 2,
+            spaceBetween:100,
         },
-        900: {
+        1000: {
             slidesPerView: 3,
+            spaceBetween:100,
         },
-        1400: {
+        1300: {
+            slidesPerView: 2,
+            spaceBetween:100,
+        },
+        1550: {
+            slidesPerView: 3,
+            spaceBetween:100,
+        },
+        1875: {
             slidesPerView: 4,
-        },
-        1700: {
-            slidesPerView: 5,
+            spaceBetween:100,
         }
       }
     });
@@ -145,6 +161,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
     
     this.cd.detectChanges();
     this.add_page();
+    this.cd.detectChanges();
   }
 
   
@@ -280,6 +297,11 @@ export class SwiperUploadOneshotComponent implements OnInit {
   
   validateAll() {
 
+
+    
+    this.validateButton.nativeElement.disabled = true;
+
+
     let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
     let valid : boolean = true;
 
@@ -291,6 +313,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
     }
 
     if(!valid) {
+      
+      this.validateButton.nativeElement.disabled = false;
+
       errorMsg = errorMsg + "merci de les télécharger ou de supprimer ces pages";
       
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -299,6 +324,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
     }
     else {
+      
+      this.display_loading=true;
+      
       for (let step = 0; step < this.componentRef.length; step++) {
         this.componentRef[ step ].instance.upload = true;
         this.componentRef[ step ].instance.total_pages = this.componentRef.length;

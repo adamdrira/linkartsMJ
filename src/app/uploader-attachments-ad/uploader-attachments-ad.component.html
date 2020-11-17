@@ -13,9 +13,10 @@
     <label>
 
         <span class="uploader-absolute-number">{{uploader.queue.length}}/5</span>
+
         <div class="select-button">
-            <mat-icon>photo_library</mat-icon>
-            <mat-icon>picture_as_pdf</mat-icon>
+            
+            <mat-icon>attachment</mat-icon>
             <span>Ajouter une pièce jointe</span>
 
             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
@@ -64,7 +65,7 @@
                 <mat-icon>close</mat-icon>
             </button>
             <div class="attachment-picture">
-                <mat-icon>picture_as_pdf</mat-icon>
+                <mat-icon>insert_drive_file</mat-icon>
             </div>
         </ng-container>
 

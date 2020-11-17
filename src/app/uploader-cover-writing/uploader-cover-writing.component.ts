@@ -11,6 +11,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 
 declare var $:any;
+declare var Swiper:any;
 
 
 const url = 'http://localhost:4600/routes/upload_cover_writing';
@@ -96,6 +97,15 @@ export class UploaderCoverWritingComponent implements OnInit {
       this.cd.detectChanges();
 
     }
+
+
+    if( changes.thirdtag ) {
+      if( this.thirdtag != '' ) {
+        this.cd.detectChanges();
+        this.initialize_swiper();
+      }
+    }
+    
   }
 
 
@@ -143,13 +153,15 @@ export class UploaderCoverWritingComponent implements OnInit {
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
-        if(Math.trunc(size)>=10){
+        if(Math.trunc(size)>=1){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 1mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            panelClass: 'dialogRefClassText'
           });
         }
         else{
@@ -191,35 +203,57 @@ export class UploaderCoverWritingComponent implements OnInit {
   
 
 
-//on affiche le preview du fichier ajouté
- displayContent(item: FileItem): SafeUrl {
-     let url = (window.URL) ? window.URL.createObjectURL(item._file) : (window as any).webkitURL.createObjectURL(item._file);
-     const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-     return SafeURL;
- }
+  //on affiche le preview du fichier ajouté
+  displayContent(item: FileItem): SafeUrl {
+      let url = (window.URL) ? window.URL.createObjectURL(item._file) : (window as any).webkitURL.createObjectURL(item._file);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      return SafeURL;
+  }
 
-//lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
-remove_beforeupload(item:FileItem){
-   this.confirmation = false;
-   this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-   item.remove();
-   this.afficheruploader = true;
-   this.afficherpreview = false;
- }
-
-//on supprime le fichier en base de donnée et dans le dossier où il est stocké.
-remove_afterupload(item){
-    //On supprime le fichier en base de donnée
+  //lorsqu'on supprime l'item avant l'upload, on l'enlève de l'uploader queue et on affiche l'uplaoder
+  remove_beforeupload(item:FileItem){
     this.confirmation = false;
     this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-    this.Writing_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
     item.remove();
     this.afficheruploader = true;
     this.afficherpreview = false;
-}
+  }
 
-onFileClick(event) {
-  event.target.value = '';
-}
+  //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
+  remove_afterupload(item){
+      //On supprime le fichier en base de donnée
+      this.confirmation = false;
+      this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
+      this.Writing_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
+      item.remove();
+      this.afficheruploader = true;
+      this.afficherpreview = false;
+  }
+
+  onFileClick(event) {
+    event.target.value = '';
+  }
+  
+
+  @ViewChild("swiperCategories") swiperCategories:ElementRef;
+  swiper:any;
+  initialize_swiper() {
+    if( this.swiperCategories ) {
+      this.swiper = new Swiper( this.swiperCategories.nativeElement, {
+        speed: 300,
+        initialSlide:0,
+        spaceBetween:100,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+      })
+    }
+  }
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
 
 }

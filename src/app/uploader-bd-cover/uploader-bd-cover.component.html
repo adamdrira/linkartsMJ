@@ -7,7 +7,7 @@
     <div #thumbnail class="col-book text-center" style="display:flex;">
         
         <!--Slide recto-->
-        <div class="swiper-slide">
+        <div class="swiper-slide thumbnail">
             <div class="element-book border-recto">
 
                 <div class="miniature">
@@ -16,7 +16,7 @@
                         <div class="dropzone">
                             <div class="icon-container">
                                 <label>
-                                    <div class="upload-icon"></div>
+                                    <mat-icon>save_alt</mat-icon>
                                     <div class="select-button">
                                         Sélectionner un fichier
                                     </div>
@@ -30,18 +30,18 @@
                         <div class="buttons-container">
 
                             <ng-container *ngIf="!uploader.queue[0].isSuccess">
-                                <button mat-raised-button class="button style1"
+                                <button class="button style1"
                                         (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
                                     <span>Valider</span> 
                                 </button>
-                                <button mat-raised-button class="button style0"
+                                <button class="button style0"
                                         (click)="remove_beforeupload(uploader.queue[0]);">
                                     <span class="">Recommencer</span> 
                                 </button>
                             </ng-container>
 
                             <ng-container *ngIf="uploader.queue[0].isSuccess">
-                                <button mat-raised-button class="button style0"
+                                <button class="button style0"
                                         (click)="remove_afterupload(uploader.queue[0]);">
                                     <span class="">Recommencer</span> 
                                 </button>
@@ -109,7 +109,7 @@
 
 
         <!--Slide verso-->
-        <div class="swiper-slide">
+        <div class="swiper-slide thumbnail">
         
             <div #thumbnailVerso class="element-book border-verso">
             
@@ -137,18 +137,43 @@
                 <!--********************-->
                 <!--Type container-->
                 <!--********************-->
-                <div class="verso-type" style="display:block">
+                <div class="verso-type">
                     <!--&bull;-->
-                    <ng-container *ngIf="format=='One-shot'">
+                    <div *ngIf="format=='One-shot'" class="d-flex">
                         <div class="tag-container"><span>One shot</span></div>
-                    </ng-container>
-                    <ng-container *ngIf="format=='Série'">
+                    </div>
+                    <div *ngIf="format=='Série'" class="d-flex">
                         <div class="tag-container"><span>Série</span></div>
-                    </ng-container>
-                    <div  style="display:flex" >
+                    </div>
+
+
+                    <!--<div class="d-flex flex-wrap">
                         <div *ngIf="firsttag" class="tag-container type" ><span  class="categories" >{{firsttag}}</span></div>
                         <div  *ngIf="secondtag" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
                         <div  *ngIf="thirdtag" class="tag-container type"><span  class="categories" >{{thirdtag}}</span></div>
+                    </div>-->
+
+
+                    <div class="d-flex" *ngIf="thirdtag==''">
+                        <div class="tag-container type" *ngIf="firsttag!=''"><span  class="categories" >{{firsttag}}</span></div>
+                        <div *ngIf="secondtag!=''" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                    </div>
+                    <div class="d-flex" *ngIf="thirdtag!=''">
+                        <div #swiperCategories class="swiper-categories">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <div class="tag-container type" style="width: fit-content; margin: auto;" ><span  class="categories" >{{firsttag}}</span></div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div  *ngIf="secondtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{secondtag}}</span></div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div  *ngIf="thirdtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{thirdtag}}</span></div>
+                                </div>
+                            </div>
+                            <div class="swiper-button-prev" (click)="stop($event)"></div>
+                            <div class="swiper-button-next" (click)="stop($event)"></div>
+                        </div>
                     </div>
                    
                     

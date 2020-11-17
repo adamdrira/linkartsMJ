@@ -133,13 +133,15 @@ get upload(): boolean {
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
-        if(Math.trunc(size)>=10){
+        if(Math.trunc(size)>=3){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 3mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            panelClass: 'dialogRefClassText'
           });
         }
         else{

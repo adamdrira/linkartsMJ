@@ -47,6 +47,7 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   }
 
+  @Input() disabled: boolean;
   @Input() type: string;
   @Input() chapter: number;
   @Input() name: string;
@@ -108,20 +109,33 @@ export class SwiperUploadSerieComponent implements OnInit {
         prevEl: '.swiper-button-prev',
       },
       breakpoints: {
+        0: {
+          slidesPerView: 1,
+          spaceBetween:100,
+        },
         580: {
           slidesPerView: 1,
+          spaceBetween:100,
         },
         700: {
             slidesPerView: 2,
+            spaceBetween:100,
         },
-        900: {
+        1000: {
             slidesPerView: 3,
+            spaceBetween:100,
         },
-        1400: {
+        1300: {
+            slidesPerView: 2,
+            spaceBetween:100,
+        },
+        1550: {
+            slidesPerView: 3,
+            spaceBetween:100,
+        },
+        1875: {
             slidesPerView: 4,
-        },
-        1700: {
-            slidesPerView: 5,
+            spaceBetween:100,
         }
       }
     });
@@ -162,6 +176,7 @@ export class SwiperUploadSerieComponent implements OnInit {
     
     this.cd.detectChanges();
     this.add_page();
+    this.cd.detectChanges();
   }
 
   

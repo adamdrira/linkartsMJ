@@ -60,6 +60,10 @@ export class SwiperUploadArtbookComponent implements OnInit {
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
 
+  
+  thumbnail_height_with_200px_width:number = 300;
+
+
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -139,25 +143,33 @@ export class SwiperUploadArtbookComponent implements OnInit {
         prevEl: '.swiper-button-prev',
       },
       breakpoints: {
+        0: {
+          slidesPerView: 1,
+          spaceBetween:100,
+        },
         580: {
           slidesPerView: 1,
-          spaceBetween: 10
+          spaceBetween:100,
         },
         700: {
             slidesPerView: 2,
-            spaceBetween: 10
+            spaceBetween:100,
         },
-        900: {
+        1000: {
             slidesPerView: 3,
-            spaceBetween: 10
+            spaceBetween:100,
         },
-        1400: {
+        1300: {
+            slidesPerView: 2,
+            spaceBetween:100,
+        },
+        1550: {
+            slidesPerView: 3,
+            spaceBetween:100,
+        },
+        1875: {
             slidesPerView: 4,
-            spaceBetween: 10
-        },
-        1700: {
-            slidesPerView: 5,
-            spaceBetween: 10
+            spaceBetween:100,
         }
       }
     });
@@ -198,6 +210,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     
     this.cd.detectChanges();
     this.add_page();
+    this.cd.detectChanges();
   }
   
 
@@ -380,13 +393,13 @@ export class SwiperUploadArtbookComponent implements OnInit {
     
     if( !this.cropperInitialized ) {
       this.cropper = new Cropper(content.nativeElement, {
-        zoomable: false,
-        scalable: false,
         guides: false,
-        viewMode: 1,
-        responsive: true,
-        movable: false,
-        cropmove:'mousemove',
+        viewMode:2,
+        autoCropArea:1,
+        center:true,
+        restore:false,
+        zoomOnWheel:false,
+        fillColor: '#FFFFFF'
       });
       this.cropperInitialized = true;
     }
@@ -419,7 +432,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     this.imageDestination = canvas.toDataURL("image/png");
 
 
-    this.cd.detectChanges();
+    this.thumbnail_height_with_200px_width = Math.round( 200 * (canvas.height / canvas.width) );
     this.cd.detectChanges();
     
     let el = document.getElementById("target3");

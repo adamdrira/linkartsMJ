@@ -30,7 +30,7 @@
   }*/
   
 
-.swiper-slide {
+.writing-container-2 .swiper-slide.thumbnail {
     backface-visibility: hidden;
     margin: 10px 30px 10px 30px;
     width: 280px;
@@ -64,37 +64,58 @@
     height:100%;
     margin:auto auto;
     color: black;
-    background:rgb(245, 245, 245);
+    background:white;
   }
   
   .uploader-container .dropzone .icon-container {
     margin:65px auto auto auto;
-    display:block
+    display:block;
+    
+    label {
+      cursor:pointer;
+    }
   }
   
-.icon-container .select-button {
+
+  .icon-container .select-button {
     cursor: pointer;
     display: flex;
-    font-size: 16px;
-    padding: 4px 10px 4px 10px;
-    font-weight: bold;
-    border-radius: 3px 3px 0px 0px;
-    color: rgb(32, 56, 100);
-    border-bottom: 1px solid #8a8f92;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 8px !important;
+    border-radius:40px;
+    //box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgb(32,56,100);
+    color:rgb(32,56,100);
+    background: white;
+    outline:none !important;
+    mat-icon {
+        width:unset;
+        height:unset;
+        font-size: 24px;
+        margin:auto 10px auto 10px;
+        color:rgb(32,56,100);
+    }
+    span {
+        margin:auto 10px auto 0px;
+        color:rgb(32,56,100);
+    }
+  }
+  .select-button:hover {
+      background:#eeeff3 !important;
+      box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+  }
+  .select-button:active {
+      background: #e2e5eb !important;
+      box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
   }
 
-  .icon-container .select-button:hover {
-    background: #f0ecec;
-  }
-  
-  .uploader-container .dropzone .icon-container .upload-icon {
-    cursor:pointer;
-    margin: auto auto 10px auto;
-    height: 40px;
-    width: 40px;
-    background: rgb(32,56,100);
-    -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
+
+  .uploader-container .dropzone .icon-container mat-icon {
+    height: unset;
+    width: unset;
+    font-size: 50px;
+    color: rgb(32,56,100);
   }
   
   .uploader-container .dropzone .icon-container span {
@@ -104,42 +125,87 @@
     transition:opacity 200ms;
   }
   
+  
+.buttons-container {
+  position: absolute;
+  display: flex;
+  padding:5px;
+  border-radius:20px;
+  flex-direction: column;
+  left: 50%;
+  top: 37%;
+  transform: translate(-50%,-50%);
+  background: #707f9c70;
+  justify-content: center;
+}
 
-    
-  .buttons-container {
-    position: absolute;
-    bottom: 115px;
-    display: flex;
-    flex-direction: column;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 5px;
-    border: 2px solid rgb(104, 122, 156);
-    background: #707f9cbf;
-    justify-content: center;
+.buttons-container .button {
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 10px;
+  width: 120px;
+  padding: 6px 8px !important;
+  border-radius:40px;
+  border: 1px solid rgb(32,56,100);
+  color:rgb(32,56,100);
+  background: white;
+  outline:none !important;
+  mat-icon {
+    width:unset;
+    height:unset;
+    font-size: 24px;
+    margin:auto 10px auto 10px;
+    color:rgb(32,56,100);
   }
-
-  .buttons-container .button {
-    cursor: pointer;
-    display: flex;
-    height: 35px;
-    padding-left: 10px;
-    padding-right: 10px;
-    background: white;
-    border-radius: 4px;
-    border: 1px solid grey;
-    font-size: 1rem;
-    margin-left: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-right: 10px;
+  span {
+    margin: auto;
+    color:rgb(32,56,100);
   }
+}
+.buttons-container .button:hover {
+    background:#eeeff3 !important;
+    box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+}
+.buttons-container .button:active {
+    background: #e2e5eb !important;
+    box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+}
+
+  
+
+.swiper-categories {
+  position:relative;
+  height: 25px;
+  width: 100%;
+  margin-top: 2px;
+  padding:0px 25px 0px 25px;
+}
 
 
-  .buttons-container .button span {
-    cursor: pointer;
-    width: 100%;
-    margin: auto auto;
-    height: 100%;
-    line-height: 20px !important;
-  }
+.swiper-categories .swiper-wrapper {
+  height: 100% !important;
+  width: 100% !important;
+}
+.swiper-categories .swiper-button-next, .swiper-button-prev {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  color: #ffffff;
+  /*background: #203864;*/
+  border-radius: 50px;
+  height: 20px;
+  width: 20px;
+  margin-top: unset !important;
+  outline: none !important;
+}
+.swiper-categories .swiper-button-next {
+  right:0;
+}
+.swiper-categories .swiper-button-prev {
+  left:0;
+}
+.swiper-categories .swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 11px !important;
+}

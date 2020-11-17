@@ -1,5 +1,5 @@
     
-<div class="oneshot-upload-container">                
+<div class="oneshot-upload-container add-artwork-swiper-styles">                
 
 
     
@@ -11,26 +11,28 @@
             (click)="setSwiperSlide(i+1);setSwiperThumbnailsSlide(i+1);"
             [ngClass]="{ 'selected' : swiper.activeIndex == i }">
 
-                <div class="page-number">
-                    Page {{ item.instance.page + 1 }}
+                <div class="slide">
+                    <div class="page-number">
+                        Page {{ item.instance.page + 1 }}
+                    </div>
+
+                    <div class="img-container">
+                        <ng-container *ngIf="!item.instance.uploader.queue[0]">
+                            <mat-icon >error</mat-icon>
+                            <span>
+                                Aucune image téléchargée
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="item.instance.uploader.queue[0]">
+                            <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                        </ng-container>
+                    </div>
+
+                    <button mat-button class="remove_page_button" (click)="remove_page(i);">
+                        <mat-icon>remove_circle_outline</mat-icon>
+                        Retirer
+                    </button>
                 </div>
-
-                <div class="img-container">
-                    <ng-container *ngIf="!item.instance.uploader.queue[0]">
-                        <mat-icon >error</mat-icon>
-                        <span>
-                            Aucune image téléchargée
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="item.instance.uploader.queue[0]">
-                        <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
-                    </ng-container>
-                 </div>
-
-                <button mat-button class="remove_page_button" (click)="remove_page(i);">
-                    <mat-icon>remove_circle_outline</mat-icon>
-                    Retirer
-                </button>
 
             </div>
 
@@ -71,7 +73,13 @@
 
 
 
-<button mat-raised-button class="submit-button style1" (click)="validateAll();">
-    <span>Valider</span>
+<button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validateAll();">
+    <ng-container *ngIf="!display_loading">
+        <mat-icon>done_all</mat-icon>
+        <span>Valider </span>
+    </ng-container>
+    <ng-container *ngIf="display_loading">
+        <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+    </ng-container>
 </button>
   

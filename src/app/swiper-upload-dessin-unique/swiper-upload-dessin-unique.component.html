@@ -1,5 +1,5 @@
     
-<div class="dessin-unique-upload-container">                
+<div class="dessin-unique-upload-container add-artwork-swiper-styles">                
 
 
     <div class="swiper-container456" id="target1">
@@ -8,7 +8,6 @@
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">
         <div class="form-container-name">
-            <mat-icon>insert_drive_file</mat-icon>
             <span>Édition de la miniature</span>
         </div>
         <div class="form-container-data">
@@ -19,11 +18,11 @@
                         <img #image [src]="imageSource" crossorigin>
                     </div>
                     <div class="buttons-container" style=" margin-top: 20px;">
-                        <button mat-raised-button class="restart-crop-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
+                        <button class="validate-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
                             <mat-icon>refresh</mat-icon>
                             <span>Recommencer</span>
                         </button>
-                        <button mat-raised-button class="validate-crop-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
+                        <button class="validate-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
                             <mat-icon>crop_free</mat-icon>
                             <span>Rogner</span>
                         </button>

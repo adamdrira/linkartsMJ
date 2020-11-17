@@ -106,6 +106,7 @@ export class UploaderPicturesAdComponent implements OnInit {
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 images'},
+          panelClass: 'dialogRefClassText'
         });
       }
       else{
@@ -119,6 +120,7 @@ export class UploaderPicturesAdComponent implements OnInit {
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+            panelClass: 'dialogRefClassText'
           });
         }
         else{
@@ -126,6 +128,7 @@ export class UploaderPicturesAdComponent implements OnInit {
             this.uploader.queue.pop();
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+              panelClass: 'dialogRefClassText'
             });
           }
           else{

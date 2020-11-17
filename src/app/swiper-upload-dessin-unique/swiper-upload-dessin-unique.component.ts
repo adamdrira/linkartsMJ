@@ -52,6 +52,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
 
+  thumbnail_height_with_200px_width:number = 300;
   
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
@@ -158,6 +159,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     
     this.imageDestination = canvas.toDataURL("image/png");
 
+    this.thumbnail_height_with_200px_width = Math.round( 200 * (canvas.height / canvas.width) );
     this.cd.detectChanges();
     
     let el = document.getElementById("target3");

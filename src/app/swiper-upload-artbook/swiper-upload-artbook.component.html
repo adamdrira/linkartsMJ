@@ -1,5 +1,5 @@
     
-<div class="artbook-upload-container">                
+<div class="artbook-upload-container add-artwork-swiper-styles">                
 
 
     <!--burst_mode
@@ -16,26 +16,28 @@ view_module
             (click)="setSwiperSlide(i+1);setSwiperThumbnailsSlide(i+1);"
             [ngClass]="{ 'selected' : swiper.activeIndex == i }">
 
-                <div class="page-number">
-                    Page {{ item.instance.page + 1 }}
+                <div class="slide">
+                    <div class="page-number">
+                        Page {{ item.instance.page + 1 }}
+                    </div>
+
+                    <div class="img-container">
+                        <ng-container *ngIf="!item.instance.uploader.queue[0]">
+                            <mat-icon >error</mat-icon>
+                            <span>
+                                Aucune image téléchargée
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="item.instance.uploader.queue[0]">
+                            <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
+                        </ng-container>
+                    </div>
+
+                    <button mat-button class="remove_page_button" (click)="remove_page(i);">
+                        <mat-icon>remove_circle_outline</mat-icon>
+                        Retirer
+                    </button>
                 </div>
-
-                <div class="img-container">
-                    <ng-container *ngIf="!item.instance.uploader.queue[0]">
-                        <mat-icon >error</mat-icon>
-                        <span>
-                            Aucune image téléchargée
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="item.instance.uploader.queue[0]">
-                        <img [src]=item.instance.displayContent(item.instance.uploader.queue[0])>
-                    </ng-container>
-                 </div>
-
-                <button mat-button class="remove_page_button" (click)="remove_page(i);">
-                    <mat-icon>remove_circle_outline</mat-icon>
-                    Retirer
-                </button>
 
             </div>
 
@@ -73,9 +75,8 @@ view_module
 
 </div>
 
-<div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" >
+<div class="form-container add-artwork-swiper-styles" *ngIf="image_uploaded" style="margin-top:40px;" >
     <div class="form-container-name">
-        <mat-icon>insert_drive_file</mat-icon>
         <span>Édition de la miniature</span>
     </div>
     <div class="form-container-data">
@@ -85,12 +86,12 @@ view_module
                 <div class="full-crop">
                     <img #image [src]="imageSource" crossorigin>
                 </div>
-                <div class="buttons-container">
-                    <button mat-raised-button class="restart-crop-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
+                <div class="buttons-container" style=" margin-top: 20px;">
+                    <button class="validate-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
                         <mat-icon>refresh</mat-icon>
                         <span>Recommencer</span>
                     </button>
-                    <button mat-raised-button class="validate-crop-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
+                    <button class="validate-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
                         <mat-icon>crop_free</mat-icon>
                         <span>Rogner</span>
                     </button>
