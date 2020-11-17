@@ -97,7 +97,6 @@ export class ThumbnailWritingComponent implements OnInit {
     this.firsttag = this.item.firsttag;
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;
-   
     this.date_upload = this.item.createdAt;
     this.writing_id = this.item.writing_id;
     

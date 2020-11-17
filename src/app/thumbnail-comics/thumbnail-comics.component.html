@@ -3,7 +3,7 @@
 <div class="comic-container">
 
 
-        <div class="col-book text-center">
+        <div class="col-book text-center" >
             
             <a [routerLink]=get_artwork()>
             
@@ -16,8 +16,8 @@
                                 
                                     <div class="element-book border-recto">
 
-                                        <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}">
-                                                <img [src]="thumbnail_picture" (load)="loaded()">
+                                        <div class="miniature" [ngClass]="{'shiny':!imageloaded}" >
+                                                <img [src]="thumbnail_picture" (load)="loaded()" [ngClass]="{'invisible':!imageloaded}">
                                         </div>
 
 
@@ -32,8 +32,8 @@
                                             <!--Author container-->
                                             <!--********************-->
                                             <div class="author-container">
-                                                <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
-                                                    <img [src]="profile_picture" (load)="pp_loaded()">
+                                                <div class="left-container" style="border-radius: 50px;" [ngClass]="{'shiny':!pp_is_loaded}">
+                                                    <img [src]="profile_picture" (load)="pp_loaded()"  [ngClass]="{ 'invisible':!pp_is_loaded}">
                                                 </div>
                                                 <div class="right-container">
                                                     <span class="author-name">{{author_name}}</span>

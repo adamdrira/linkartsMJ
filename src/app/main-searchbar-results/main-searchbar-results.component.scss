@@ -79,6 +79,7 @@
     }
     .category {
       display:flex;
+      height: 44px;
       margin-left: 10px;
       margin-right: 10px;
       padding: 7px 20px 7px 20px;
@@ -259,6 +260,8 @@
     }
   }
 
+  
+
   .swiper-container {
 
     position:relative;
@@ -266,7 +269,7 @@
     margin-bottom:40px;
 
     .swiper-item {
-
+      height: 44px;
       padding-left: 35px;
       padding-right: 35px;
       overflow: hidden;
@@ -282,6 +285,7 @@
 
           .element {
             cursor:pointer;
+            height: 34px;
             padding: 5px 15px;
             margin-top: 5px;
             margin-bottom: 5px;
@@ -306,7 +310,7 @@
         }
         
         .swiper-slide.title-selected .element.first-filter {
-          background-image: linear-gradient(0.03turn, #050c3d, #183e70, #2b71a4);
+          background-image: linear-gradient(0.03turn,  #31999c,#44c2c2, #6fe1fb );
           > span {
             color:white;
           }
@@ -353,14 +357,14 @@
     .swiper-button-next, .swiper-button-prev {
       position: absolute;
       top: 7px;
-      color: #ffffff;
-      background: #203864;
+      color:  #203864;
+      //background: #203864;
       border-radius: 50px;
-      height: 30px;
-      width: 30px;
+      height: 34px;
+      width: 15px;
       margin-top: unset !important;
       outline: none !important;
-      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      //box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     }
     .swiper-button-next {
       right:0;
@@ -369,7 +373,7 @@
       left:0;
     }
     .swiper-button-next:after, .swiper-button-prev:after {
-      font-size: 11px !important;
+      font-size: 20px !important;
       text-shadow: -0.5px 0px 0px white, 0.5px 0px 0px white, 0px 0.5px 0px white, 0px -0.5px 0px white;
     }
 
@@ -455,14 +459,33 @@
     -webkit-animation: shine 2s infinite;
     animation: shine 1500ms infinite;
   }
+
+  .loading_heght_5{
+    min-height:4825px;
+  }
   
+  .shiny{
+    width:110px; 
+    height:44px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 30px;
+    background-color: rgb(220, 220, 220);
+    background-image: linear-gradient(
+      to right,
+      transparent 33%,
+      rgba(255,255,255,0.3) 50%,
+      transparent 66%
+    );
+    background-size:300% 100%;
+    animation: shine 2s infinite;
+  }
+  
+
   @keyframes shine {
     0% {
         background-position: right;    
     }
-    /*100% {
-        background-position: left; it's the default value, no need to define it
-    }*/
   }
 
   

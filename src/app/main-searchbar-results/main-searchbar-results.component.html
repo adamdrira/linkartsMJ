@@ -74,14 +74,22 @@
 
 
 <!-- ***************************RECHERCHE PAR MOTS *********************-->
-    <div class="main-title" *ngIf="display_title && !display_no_results" [@enterAnimation]>
+    <div class="main-title" *ngIf="display_title" [@enterAnimation]>
         <span>Meilleurs résultats pour : "{{research_string}}"</span>
     </div>
     <div class="no-results-container" *ngIf="display_no_results" [@enterAnimation]>
         <mat-icon>find_in_page</mat-icon>
-        <span>Aucun résultat pour la recherche demandée :</span>
-        <span>"{{research_string}}"</span>
+        <span>Aucun résultat pour la recherche demandée </span>
     </div>
+
+
+    <div *ngIf="!display_results && !display_no_results" class="categories-container"  [@enterAnimation]>
+        <div class="categories">
+            <div class="shiny" *ngFor="let item of shinies"></div>
+        </div>
+    </div>
+    
+    
     
     <div *ngIf="display_results" [@enterAnimation]>
 
@@ -89,7 +97,7 @@
                 <div class="categories">
                     <div class="category" (click)="change_indice_title_selected(i)" *ngFor="let item of list_of_categories;let i=index" [ngClass]="{'selected': indice_title_selected==i }" >
                         <div class="icon-container">
-                            <div class="icon icon-artist" *ngIf="item == 'Artistes'"></div>
+                            <div class="icon icon-artist" *ngIf="item == 'Utilisateurs'"></div>
                             <mat-icon *ngIf="item == 'Annonces'">announcement</mat-icon>
                             <div class="icon icon-comic" *ngIf="item == 'Bandes dessinées'"></div>
                             <div class="icon icon-drawing" *ngIf="item == 'Dessins'"></div>
@@ -103,10 +111,18 @@
     </div>
 
 
-    <div class="thumbnails-container" [@enterAnimation]>
+    <div *ngIf="!show_tags" class="swiper-container" style=" align-items: center;justify-content: center; display: flex;">
+        <div class="swiper-item" style=" align-items: center; display: flex;justify-content: center"> 
+            <div class="swiper-wrapper">
+                <div class="shiny" style=" height: 34px; width:90px" *ngFor="let item of shinies2"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="thumbnails-container" *ngIf="display_results" [@enterAnimation]>
 
 
-        <div class="swiper-container">
+        <div class="swiper-container" *ngIf="show_tags">
             <div #swiperCategories class="swiper-item" *ngIf="display_results || display_title_style_and_tags">
                 <div class="swiper-wrapper">
                     <ng-container *ngIf="!display_title_style_and_tags">
@@ -180,6 +196,7 @@
 
         
         <ng-container *ngIf="(!show_propositions || loading_propositions) && !display_no_propositions">
+            
             <ng-container *ngFor="let item of skeleton_array; let i = index">
                 <div class="skeleton" [@enterAnimation]>
                 </div>
@@ -187,45 +204,47 @@
         </ng-container>
 
         
-        <ng-container *ngIf="show_propositions && !loading_propositions">
-            <ng-container *ngFor="let item of list_of_first_propositions;let i=index">
+        <ng-container *ngIf="show_propositions">
+            <div [ngClass]="{'loading_heght_5':(number_of_pages>current_page)}">
+                <ng-container *ngFor="let item of list_of_first_propositions;let i=index">
 
-
-                <div class="thumbnail" *ngIf="item.publication_category=='Comic'">
-                    <app-thumbnail-artwork
-                        [item]=list_of_last_propositions[i]
-                        page='subscribings'
-                        now_in_seconds={{now_in_seconds}}
-                        subscribing_category='comics'
-                        [subscribing_format]=item.format>
-                    </app-thumbnail-artwork>
-                </div>
-                <div class="thumbnail" *ngIf="item.publication_category=='Drawing'">
-                    <app-thumbnail-artwork
-                        [item]=list_of_last_propositions[i]
-                        page='subscribings'
-                        now_in_seconds={{now_in_seconds}}
-                        subscribing_category='drawing'
-                        [subscribing_format]=item.format>
-                    </app-thumbnail-artwork>
-                </div>
-                <div class="thumbnail" *ngIf="item.publication_category=='Writing'">
-                    <app-thumbnail-artwork 
-                        [item]=list_of_last_propositions[i]
-                        page='subscribings'
-                        now_in_seconds={{now_in_seconds}}
-                        subscribing_category='writing'>
-                    </app-thumbnail-artwork>
-                </div>
-
-                <div class="thumbnail thumbnail-user" *ngIf="item.publication_category=='Artist'">
-                    <app-thumbnail-user
-                    [item]=list_of_last_propositions[i]>
-                    </app-thumbnail-user>
-                </div>
-
-
-            </ng-container>
+                    <div class="thumbnail" *ngIf="item.publication_category=='Comic'">
+                        <app-thumbnail-artwork
+                            [item]=list_of_last_propositions[i]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='comic'
+                            [subscribing_format]=item.format>
+                        </app-thumbnail-artwork>
+                    </div>
+                    <div class="thumbnail" *ngIf="item.publication_category=='Drawing'">
+                        <app-thumbnail-artwork
+                            [item]=list_of_last_propositions[i]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='drawing'
+                            [subscribing_format]=item.format>
+                        </app-thumbnail-artwork>
+                    </div>
+                    <div class="thumbnail" *ngIf="item.publication_category=='Writing'">
+                        <app-thumbnail-artwork 
+                            [item]=list_of_last_propositions[i]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='writing'>
+                        </app-thumbnail-artwork>
+                    </div>
+    
+                    <div class="thumbnail thumbnail-user" *ngIf="item.publication_category=='Artist'">
+                        <app-thumbnail-user
+                        [item]=list_of_last_propositions[i]>
+                        </app-thumbnail-user>
+                    </div>
+    
+    
+                </ng-container>
+            </div>
+            
 
             
             <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
@@ -256,6 +275,10 @@
         <mat-icon>find_in_page</mat-icon>
         <span>Aucun résultat pour la recherche demandée</span>
     </div>
+    <div class="no-proposition-container" *ngIf="display_no_propositions" [@enterAnimation]>
+        <span *ngIf="error_page"> Le numéro de page indiqué en URL est trop élevé</span>
+    </div>
+    
     
     
     

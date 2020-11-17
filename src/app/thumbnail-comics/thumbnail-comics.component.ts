@@ -42,7 +42,7 @@ export class ThumbnailComicsComponent implements OnInit {
     this.resize_comic();
   }
 
-
+  imageloaded=false;
   @Output() send_number_of_thumbnails = new EventEmitter<object>();
   @Output() send_loaded = new EventEmitter<boolean>();
 
@@ -114,6 +114,12 @@ export class ThumbnailComicsComponent implements OnInit {
     }
     
 
+    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
+      this.author_name = r[0].firstname + ' ' + r[0].lastname;
+      this.pseudo=r[0].nickname;
+      this.primary_description=r[0].primary_description;
+    });
+
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -146,7 +152,6 @@ export class ThumbnailComicsComponent implements OnInit {
       });
       
       this.BdSerieService.retrieve_chapters_by_id(this.item.bd_id).subscribe(s => {
-        console.log(s[0]);
         let last_week=new Date();
         last_week.setDate(last_week.getDate() - 7);
         let num_last_week= Math.trunc( last_week.getTime()/1000);
@@ -157,6 +162,8 @@ export class ThumbnailComicsComponent implements OnInit {
         }
         this.recent_chapter_retrieved=true;
       })
+
+      
 
       this.NotationService.get_content_marks("comic", 'serie', this.bd_id,0).subscribe(r=>{
         //marks
@@ -169,11 +176,7 @@ export class ThumbnailComicsComponent implements OnInit {
 
     
     
-    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
-      this.pseudo=r[0].nickname;
-      this.primary_description=r[0].primary_description;
-    });
+    
 
 
     //this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
@@ -264,16 +267,18 @@ export class ThumbnailComicsComponent implements OnInit {
   }
 
   
-  imageloaded=false;
+ 
   loaded(){
     //console.log("thumb laoded")
     this.imageloaded=true;
     this.send_loaded.emit(true);
+    this.cd.detectChanges()
   }
 
   pp_is_loaded=false;
   pp_loaded(){
     this.pp_is_loaded=true;
+    this.cd.detectChanges()
   }
   
   

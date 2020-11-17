@@ -15,8 +15,8 @@
                             
                             <div class="element-writing border-recto">
 
-                                <div class="miniature" [ngClass]="{ 'invisible':!imageloaded}" >
-                                    <img [src]="thumbnail_picture" (load)="loaded()" >
+                                <div class="miniature" [ngClass]="{ 'shiny':!imageloaded}" >
+                                    <img [src]="thumbnail_picture" (load)="loaded()" [ngClass]="{ 'invisible':!imageloaded}" >
                                 </div>
 
 
@@ -31,8 +31,8 @@
                                     <!--Author container-->
                                     <!--********************-->
                                     <div class="author-container">
-                                        <div class="left-container" [ngClass]="{ 'invisible':!pp_is_loaded}">
-                                            <img [src]="profile_picture" (load)="pp_loaded()">
+                                        <div class="left-container" style="border-radius: 50px;"  [ngClass]="{'shiny':!pp_is_loaded}">
+                                            <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{ 'invisible':!pp_is_loaded}">
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{author_name}}</span>
@@ -79,7 +79,11 @@
                                 <!--********************-->
                                 <div class="verso-resume">
                                     <span class="resume" *ngIf="!category">Catégorie</span>
-                                    <span class="resume">{{category}}</span>
+                                    <span class="resume" *ngIf="category=='Poetry'">Poème</span>
+                                    <span class="resume" *ngIf="category=='Scenario'">Scénario</span>
+                                    <span class="resume" *ngIf="category=='Illustrated novel'">Roman illustré</span>
+                                    <span class="resume" *ngIf="category=='Roman'">Roman</span>
+                                    <span class="resume" *ngIf="category=='Article'">Article</span>
                                 </div>
                                 <div class="horizontal-line">
                                 </div>
