@@ -6,6 +6,7 @@ import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $:any;
@@ -17,6 +18,16 @@ const url = 'http://localhost:4600/routes/upload_cover_bd_oneshot';
   selector: 'app-uploader-bd-cover',
   templateUrl: './uploader-bd-cover.component.html',
   styleUrls: ['./uploader-bd-cover.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
   
 })
 export class UploaderBdCoverComponent implements OnInit {

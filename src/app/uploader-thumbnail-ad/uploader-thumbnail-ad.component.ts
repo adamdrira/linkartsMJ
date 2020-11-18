@@ -7,6 +7,7 @@ import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var $:any;
@@ -16,7 +17,17 @@ const url = 'http://localhost:4600/routes/upload_thumbnail_ad';
 @Component({
   selector: 'app-uploader-thumbnail-ad',
   templateUrl: './uploader-thumbnail-ad.component.html',
-  styleUrls: ['./uploader-thumbnail-ad.component.scss']
+  styleUrls: ['./uploader-thumbnail-ad.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class UploaderThumbnailAdComponent implements OnInit {
 

@@ -127,26 +127,19 @@
   
   
 .buttons-container {
-  position: absolute;
   display: flex;
-  padding:5px;
-  border-radius:20px;
   flex-direction: column;
-  left: 50%;
-  top: 37%;
-  transform: translate(-50%,-50%);
-  background: #707f9c70;
   justify-content: center;
 }
 
 .buttons-container .button {
   cursor: pointer;
   display: flex;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  margin: 10px;
-  width: 120px;
-  padding: 6px 8px !important;
+  margin: 10px 0px;
+  width: 100%;
+  padding: 8px !important;
   border-radius:40px;
   border: 1px solid rgb(32,56,100);
   color:rgb(32,56,100);
@@ -156,12 +149,13 @@
     width:unset;
     height:unset;
     font-size: 24px;
-    margin:auto 10px auto 10px;
+    margin:auto 10px auto auto;
     color:rgb(32,56,100);
   }
   span {
-    margin: auto;
+    margin:auto auto auto 0px;
     color:rgb(32,56,100);
+    font-weight: 600;
   }
 }
 .buttons-container .button:hover {

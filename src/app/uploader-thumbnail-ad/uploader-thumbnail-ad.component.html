@@ -27,51 +27,6 @@
                     </div>
                     <ng-container  *ngIf="afficherpreview">
                         <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}" >
-                       
-                        <div class="buttons-container">
-
-                             <!-- before upload-->
-                            <ng-container *ngIf="!for_edition && !uploader.queue[0].isSuccess">
-                                <button class="button style1"
-                                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-                                    <span>Valider</span> 
-                                </button>
-                                <button class="button style0"
-                                        (click)="remove_beforeupload(uploader.queue[0]);">
-                                    <span class="">Recommencer</span> 
-                                </button>
-                            </ng-container>
-
-                              
-
-                            <ng-container *ngIf="for_edition && uploader.queue[0] && !uploader.queue[0].isSuccess">
-                                <button class="button style1"
-                                        (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-                                    <span>Valider</span> 
-                                </button>
-                                <button class="button style0"
-                                        (click)="remove_beforeupload(uploader.queue[0]);">
-                                    <span class="">Recommencer</span> 
-                                </button>
-                            </ng-container>
-
-                            <!-- after upload-->
-
-                            <ng-container *ngIf=" !for_edition && uploader.queue[0].isSuccess">
-                                <button  class="button style0"
-                                        (click)="remove_afterupload(uploader.queue[0]);">
-                                    <span class="">Recommencer</span> 
-                                </button>
-                            </ng-container>
-
-                            <ng-container *ngIf="for_edition  && uploader.queue[0] && uploader.queue[0].isSuccess">
-                                <button class="button style0"
-                                        (click)="remove_afterupload(uploader.queue[0]);">
-                                    <span class="">Recommencer</span> 
-                                </button>
-                            </ng-container>
-
-                        </div>
                     </ng-container>
                     
 
@@ -86,6 +41,60 @@
     </div>
     
 </div>
+
+
+
+<div class="buttons-container" *ngIf="afficherpreview" [@enterAnimation]>
+
+    <!-- before upload-->
+   <ng-container *ngIf="!for_edition && !uploader.queue[0].isSuccess">
+       <button class="button style1"
+               (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+            <mat-icon>done</mat-icon>
+            <span>Valider</span> 
+       </button>
+       <button class="button style0"    
+               (click)="remove_beforeupload(uploader.queue[0]);">
+               <mat-icon>refresh</mat-icon>
+               <span class="">Recommencer</span> 
+       </button>
+   </ng-container>
+
+     
+
+   <ng-container *ngIf="for_edition && uploader.queue[0] && !uploader.queue[0].isSuccess">
+       <button class="button style1"
+               (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+            <mat-icon>done</mat-icon>
+            <span>Valider</span> 
+       </button>
+       <button class="button style0"
+               (click)="remove_beforeupload(uploader.queue[0]);">
+               <mat-icon>refresh</mat-icon>
+               <span class="">Recommencer</span> 
+       </button>
+   </ng-container>
+
+   <!-- after upload-->
+
+   <ng-container *ngIf=" !for_edition && uploader.queue[0].isSuccess">
+       <button  class="button style0"
+               (click)="remove_afterupload(uploader.queue[0]);">
+            <mat-icon>refresh</mat-icon>
+            <span class="">Recommencer</span> 
+       </button>
+   </ng-container>
+
+   <ng-container *ngIf="for_edition  && uploader.queue[0] && uploader.queue[0].isSuccess">
+       <button class="button style0"
+               (click)="remove_afterupload(uploader.queue[0]);">
+               <mat-icon>refresh</mat-icon>
+               <span class="">Recommencer</span> 
+       </button>
+   </ng-container>
+
+</div>
+
 
 
 
