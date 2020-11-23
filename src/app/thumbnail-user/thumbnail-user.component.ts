@@ -4,6 +4,9 @@ import {Profile_Edition_Service} from '../services/profile_edition.service';
 import { Router  } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { animate, style, transition, trigger } from '@angular/animations';
+import {Subscribing_service} from '../services/subscribing.service';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-thumbnail-user',
@@ -35,6 +38,8 @@ export class ThumbnailUserComponent implements OnInit {
     private rd:Renderer2,
     private sanitizer:DomSanitizer,
     private router:Router,
+    public dialog:MatDialog,
+    private Subscribing_service:Subscribing_service,
     private cd:ChangeDetectorRef) { }
 
   /*Inputs*/
@@ -46,8 +51,11 @@ export class ThumbnailUserComponent implements OnInit {
   pseudo:string;
   author_name:string;
   profile_picture: SafeUrl;
+  cover_picture: SafeUrl;
   primary_description:string;
   user_id: number;
+  pp_is_loaded=false;
+  cover_is_loaded=false;
 
 
   //variables à récupérer
@@ -59,10 +67,12 @@ export class ThumbnailUserComponent implements OnInit {
   number_of_drawings:number ;
   number_of_writings:number ;
   number_of_ads:number;
+  type_of_profile:string;
   number_of_contents_retrieved=false;
   //déjà abonné ou pas
   subscribed_to_user:boolean = false;
-
+  subscribtion_retrieved=false;
+  visitor_mode=true;
   display_thumbnail=false;
   date_retrieved=false;
   ngOnInit(): void {
@@ -75,6 +85,28 @@ export class ThumbnailUserComponent implements OnInit {
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
     });
+
+    this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.cover_picture = SafeURL;
+    });
+
+    
+
+    this.Profile_Edition_Service.get_current_user().subscribe(s=>{
+      if(s[0].id==this.user_id){
+        this.visitor_mode=false;
+        this.type_of_profile=s[0].status
+      }
+      this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
+        if(information[0].value){
+          this.subscribed_to_user=true;
+        }
+        this.subscribtion_retrieved = true;
+      }); 
+    })
+
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.pseudo=r[0].nickname;
@@ -104,6 +136,38 @@ export class ThumbnailUserComponent implements OnInit {
 
   }
 
+
+  load_pp(){
+    this.pp_is_loaded=true;
+    this.cd.detectChanges()
+  }
+
+  load_cover(){
+    this.cover_is_loaded=true;
+    this.cd.detectChanges()
+  }
+
+
+  subscribtion(){
+    if(this.type_of_profile=='account'){
+      if(!this.subscribed_to_user){
+        this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
+          this.subscribed_to_user=true;
+        });
+      }
+      else{
+        this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
+          this.subscribed_to_user=false;
+        });
+      }
+    }
+    else{
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
+      });
+    }
+  
+  }
 
   stop(e: Event) {
     e.preventDefault();

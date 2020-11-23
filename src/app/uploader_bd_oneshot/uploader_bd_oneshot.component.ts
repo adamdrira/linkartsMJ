@@ -10,7 +10,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
-
+import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import {NotificationsService}from '../services/notifications.service';
@@ -29,6 +29,7 @@ const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 export class Uploader_bd_oneshot implements OnInit{
 
   constructor (
+    private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
      private sanitizer:DomSanitizer,  
@@ -54,7 +55,6 @@ export class Uploader_bd_oneshot implements OnInit{
   hasAnotherDropZoneOver:boolean;
   response:string;
   total_pages:number;
-  bd_id:number;
   //pour cacher l'uploader dans certains cas
   afficherpreview :boolean;
   afficheruploader:boolean;
@@ -64,12 +64,11 @@ export class Uploader_bd_oneshot implements OnInit{
   user_id:number;
   visitor_name:string;
   pseudo:string;
-
+  @Input() bd_id:number;
    //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
    @Input() set page(page: number) {
      this._page=page;
-     let bd_id = this.bdOneShotService.get_bdid_cookies();
-     let URL = url + page.toString() + '/' + bd_id;
+     let URL = url + page.toString() + '/' + this.bd_id;
      console.log('suivant' + URL)
      this.uploader.setOptions({ url: URL});
    }
@@ -114,7 +113,7 @@ get upload(): boolean {
 
   ngOnInit() {
 
-    this.bd_id=parseInt(this.bdOneShotService.get_bdid_cookies());
+    console.log(this.bd_id)
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
@@ -155,27 +154,30 @@ get upload(): boolean {
 
     this.uploader.onCompleteItem = (file) => {
     if( (this._page + 1) == this.total_pages ) {
-      this.bdOneShotService.validate_bd(this.total_pages).subscribe(r=>{
-        this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
-          let message_to_send ={
-            for_notifications:true,
-            type:"add_publication",
-            id_user_name:this.visitor_name,
-            id_user:this.user_id, 
-            publication_category:'comic',
-            publication_name:this.bdtitle,
-            format:'one-shot',
-            publication_id:this.bd_id,
-            chapter_number:0,
-            information:"add",
-            status:"unchecked",
-            is_comment_answer:false,
-            comment_id:0,
-          }
-          this.chatService.messages.next(message_to_send);
-          this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
-         
-        }) 
+      this.bdOneShotService.validate_bd(this.bd_id,this.total_pages).subscribe(r=>{
+        this.Subscribing_service.validate_content("comic","one-shot",this.bd_id,0).subscribe(l=>{
+          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'comic',this.bdtitle,'one-shot',this.bd_id,0,"add",false,0).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"add_publication",
+              id_user_name:this.visitor_name,
+              id_user:this.user_id, 
+              publication_category:'comic',
+              publication_name:this.bdtitle,
+              format:'one-shot',
+              publication_id:this.bd_id,
+              chapter_number:0,
+              information:"add",
+              status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
+            }
+            this.chatService.messages.next(message_to_send);
+            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
+           
+          }) 
+        })
+        
       })
     }
   
@@ -200,7 +202,7 @@ remove_beforeupload(item:FileItem){
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
     //On supprime le fichier en base de donnée
-    this.bdOneShotService.remove_page_from_sql(this.page).subscribe(information=>{
+    this.bdOneShotService.remove_page_from_sql(this.bd_id,this.page).subscribe(information=>{
       console.log(information);
       const filename= information[0].file_name;
       this.bdOneShotService.remove_page_from_folder(filename).subscribe()

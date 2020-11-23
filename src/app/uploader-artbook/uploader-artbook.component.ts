@@ -9,7 +9,7 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import { Subscribing_service } from '../services/subscribing.service';
 
 const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 
@@ -24,6 +24,7 @@ const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 export class UploaderArtbookComponent implements OnInit {
 
   constructor (
+    private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer, 
@@ -48,7 +49,7 @@ export class UploaderArtbookComponent implements OnInit {
 
   @Output() sendValidated = new EventEmitter<object>();
   @Output() sendPicture = new EventEmitter<object>();
-  
+  @Input('drawing_id') drawing_id:number;
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   hasAnotherDropZoneOver:boolean;
@@ -67,15 +68,13 @@ export class UploaderArtbookComponent implements OnInit {
   user_id:number;
   visitor_name:string;
   pseudo:string;
-  drawing_id:number;
 
 
    //on récupère le titre de la bd et le numéro de la page où se trouve l'uplaoder
    @Input() title:string;
    @Input() set page(page: number) {
      this._page=page;
-     let drawing_id = this.Drawings_Artbook_Service.get_artbookid_cookies();
-     let URL = url + page.toString() + '/' + drawing_id;
+     let URL = url + page.toString() + '/' + this.drawing_id;
      console.log('suivant' + URL)
      this.uploader.setOptions({ url: URL});
 
@@ -116,8 +115,7 @@ export class UploaderArtbookComponent implements OnInit {
   
 
   ngOnInit(): void {
-    console.log(this.title)
-    this.drawing_id=parseInt(this.Drawings_Artbook_Service.get_artbookid_cookies());
+    console.log(this.drawing_id)
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
@@ -163,26 +161,29 @@ export class UploaderArtbookComponent implements OnInit {
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {
-        this.Drawings_Artbook_Service.validate_drawing(this.total_pages).subscribe(r=>{
-          this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:"add_publication",
-              id_user_name:this.visitor_name,
-              id_user:this.user_id, 
-              publication_category:'drawing',
-              publication_name:this.title,
-              format:'artbook',
-              publication_id:this.drawing_id,
-              chapter_number:0,
-              information:"add",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-            this.chatService.messages.next(message_to_send);
-            this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
-          }) 
+        this.Drawings_Artbook_Service.validate_drawing(this.total_pages,this.drawing_id).subscribe(r=>{
+          this.Subscribing_service.validate_content("drawing","artbook",this.drawing_id,0).subscribe(l=>{
+            this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"add_publication",
+                id_user_name:this.visitor_name,
+                id_user:this.user_id, 
+                publication_category:'drawing',
+                publication_name:this.title,
+                format:'artbook',
+                publication_id:this.drawing_id,
+                chapter_number:0,
+                information:"add",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.chatService.messages.next(message_to_send);
+              this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
+            }) 
+          }); 
+          
           
         })
   
@@ -224,16 +225,19 @@ export class UploaderArtbookComponent implements OnInit {
 
   //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
   remove_afterupload(item){
-    this.sendPicture.emit( {page: this._page, changePage: false, removing: true } );
+   
     //On supprime le fichier en base de donnée
-    this.Drawings_Artbook_Service.remove_page_from_sql(this._page).pipe(first()).subscribe(information=>{
+    this.Drawings_Artbook_Service.remove_page_from_sql(this._page,this.drawing_id).subscribe(information=>{
       console.log(information);
       const filename= information[0].drawing_name;
-      this.Drawings_Artbook_Service.remove_page_from_sql(this._page).pipe(first()).subscribe()
+      this.Drawings_Artbook_Service.remove_page_from_folder(filename).subscribe(r=>{
+        this.sendPicture.emit( {page: this._page, changePage: false, removing: true } );
+        item.remove();
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      })
     });
-    item.remove();
-    this.afficheruploader = true;
-    this.afficherpreview = false;
+    
   }
 
   onFileClick(event) {

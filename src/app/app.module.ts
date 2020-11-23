@@ -4,7 +4,7 @@ import { NgModule, CompilerFactory, Compiler } from '@angular/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
@@ -15,12 +15,11 @@ import {MatBadgeModule} from '@angular/material/badge';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -66,7 +65,7 @@ import { TrendsComponent } from './trends/trends.component';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
 
 import { ConstantsService } from './services/constants.service';
-
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 
@@ -165,6 +164,16 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { UploaderChatProfilePictureComponent } from './uploader-chat-profile-picture/uploader-chat-profile-picture.component';
 import { PopupChatGroupMembersComponent } from './popup-chat-group-members/popup-chat-group-members.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PopupShareContentComponent } from './popup-share-content/popup-share-content.component';
+import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
+import { PopupReportComponent } from './popup-report/popup-report.component';
+import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachments/uploader-reports-attachments.component';
+import { AccountMyAccountComponent } from './account-my-account/account-my-account.component';
+import { ThumbnailSkeletonComponent } from './thumbnail-skeleton/thumbnail-skeleton.component';
+import { PopupEditCoverComponent } from './popup-edit-cover/popup-edit-cover.component';
+import { FavoritesComponent } from './favorites/favorites.component';
+import { ThumbnailUserComponent } from './thumbnail-user/thumbnail-user.component';
 
 
 @NgModule({
@@ -274,6 +283,16 @@ import { AdPageComponent } from './ad-page/ad-page.component';
     UploaderChatProfilePictureComponent,
     PopupChatGroupMembersComponent,
     AdPageComponent,
+    PageNotFoundComponent,
+    PopupShareContentComponent,
+    LoginInvitedUserComponent,
+    PopupReportComponent,
+    UploaderReportsAttachmentsComponent,
+    AccountMyAccountComponent,
+    ThumbnailSkeletonComponent,
+    PopupEditCoverComponent,
+    FavoritesComponent,
+    ThumbnailUserComponent,
   ],
   imports: [
     BrowserModule,
@@ -305,13 +324,12 @@ import { AdPageComponent } from './ad-page/ad-page.component';
     MatBadgeModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
-    
     MatDatepickerModule,
     MatNativeDateModule,
     MatChipsModule,
     MatAutocompleteModule,
-
-    
+    NgxChartsModule,
+    MatTooltipModule,
   ],
   providers: [
     ConstantsService,
@@ -322,7 +340,10 @@ import { AdPageComponent } from './ad-page/ad-page.component';
     CookieService,
     WebSocketService,
     ChatService,
-
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
     MatDatepickerModule,
 
   ],

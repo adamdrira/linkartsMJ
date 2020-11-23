@@ -4,12 +4,12 @@
     <div class="left-container">
         
         
-        <div class="cover-picture">
-            <img src="../../assets/img/account.jpg">
+        <div class="cover-picture" [ngClass]="{'shiny':!cover_is_loaded}">
+            <img [src]=cover_picture (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
         </div>
 
-        <div class="profile-picture">
-            <img src="../../assets/img/cvfranck.jpg">
+        <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
+            <img [src]=profile_picture (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
         </div>
 
         <div class="profile-name">
@@ -40,10 +40,15 @@
             <span>{{subscribers_number}} abonnés</span>
         </div>
 
-
-        <button class="subscribe-button" (click)="stop($event)" *ngIf="!subscribed_to_user">
-            <span>S'abonner</span>
-        </button>
+        <ng-container *ngIf="subscribtion_retrieved">
+            <button  class="subscribe-button" (click)="subscribtion()" *ngIf="!subscribed_to_user && visitor_mode">
+                <span>S'abonner</span>
+            </button>
+            <button  class="subscribe-button" (click)="subscribtion()" *ngIf="subscribed_to_user && visitor_mode">
+                <span>Se désabonner</span>
+            </button>
+        </ng-container>
+       
 
     </div>
 

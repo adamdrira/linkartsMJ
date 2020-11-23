@@ -106,7 +106,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
   }
 
-
+  cover_loading=false;
   ngOnInit() {
 
     if(this.for_edition){
@@ -150,10 +150,12 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
+      
       if(!this.for_edition){
         
         this.Ads_service.get_thumbnail_name().subscribe(r=>{
           this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+          this.cover_loading=false;
         });
       }
       else{
@@ -165,6 +167,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
             if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
               this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).subscribe(r=>{
                 console.log(r)
+                this.cover_loading=false;
                  location.reload();
                });
             }
@@ -230,6 +233,11 @@ export class UploaderThumbnailAdComponent implements OnInit {
 
   onFileClick(event) {
     event.target.value = '';
+  }
+
+  validate(){
+    this.cover_loading=true;
+    this.uploader.queue[0].upload()
   }
 
 }

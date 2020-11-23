@@ -9,7 +9,28 @@
     background: rgb(251, 251, 251);
     box-shadow: 0 1px 6px 1px #ececec, 0px 0px 1px rgba(0, 0, 0, 0.2);
 
+    .invisible{
+        visibility:hidden;
+    }
     
+    .shiny{
+        background-color: rgb(220, 220, 220);
+        background-image: linear-gradient(
+          to right,
+          transparent 33%,
+          rgba(255,255,255,0.3) 50%,
+          transparent 66%
+        );
+        background-size:300% 100%;
+        animation: shine 2s infinite;
+      }
+      
+      @keyframes shine {
+        0% {
+          background-position: right;    
+        }
+      }
+
     .left-container {
 
         height: 100%;

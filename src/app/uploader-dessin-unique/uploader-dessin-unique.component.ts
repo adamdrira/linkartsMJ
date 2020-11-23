@@ -9,9 +9,9 @@ import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { Subscribing_service } from '../services/subscribing.service';
 
-
-const url = 'http://localhost:4600/routes/upload_drawing_onepage/';
+const url = 'http://localhost:4600/routes/upload_drawing_onepage';
 
 @Component({
   selector: 'app-uploader-dessin-unique',
@@ -28,12 +28,13 @@ export class UploaderDessinUniqueComponent implements OnInit {
     private sanitizer:DomSanitizer,  
     private Drawings_Onepage_Service: Drawings_Onepage_Service, 
     private router: Router,
+    private Subscribing_service:Subscribing_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
     ){
 
     this.uploader = new FileUploader({
-      url : url + `${this.Drawings_Onepage_Service.get_drawing_id_cookies()}/`,
+      url : url ,
      // itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
       
 
@@ -57,7 +58,7 @@ export class UploaderDessinUniqueComponent implements OnInit {
   user_id:number;
   visitor_name:string;
   pseudo:string;
-  drawing_id:number;
+  @Input('drawing_id') drawing_id:number;
    
 
    //Modification 04 avril
@@ -99,7 +100,10 @@ export class UploaderDessinUniqueComponent implements OnInit {
   
 
   ngOnInit() {
-    this.drawing_id=parseInt(this.Drawings_Onepage_Service.get_drawing_id_cookies());
+    console.log(this.drawing_id)
+    let URL = url + '/' + this.drawing_id;
+    console.log(URL)
+     this.uploader.setOptions({ url: URL});
       this.Profile_Edition_Service.get_current_user().subscribe(r=>{
         this.user_id = r[0].id;
         this.pseudo = r[0].nickname;
@@ -145,8 +149,8 @@ export class UploaderDessinUniqueComponent implements OnInit {
       };
 
       this.uploader.onCompleteItem = (file) => {
-        this.Drawings_Onepage_Service.validate_drawing().subscribe(r=>{
-          console.log(r[0])
+        this.Drawings_Onepage_Service.validate_drawing(this.drawing_id).subscribe(r=>{
+        this.Subscribing_service.validate_content("drawing","one-shot",this.drawing_id,0).subscribe(l=>{
           this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
             console.log(l[0])
             let message_to_send ={
@@ -166,7 +170,9 @@ export class UploaderDessinUniqueComponent implements OnInit {
             }
             this.chatService.messages.next(message_to_send);
             this.sendValidated.emit({user_id:this.user_id,pseudo:this.pseudo});
-          }) 
+          })
+        }); 
+           
         })
         
       }
@@ -194,17 +200,17 @@ remove_beforeupload(item:FileItem){
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
     //On supprime le fichier en base de donnée
-    this.Drawings_Onepage_Service.remove_drawing_from_sql(0).pipe(first()).subscribe(information=>{
+    this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(information=>{
       console.log(information);
       const filename= information[0].drawing_name;
-      this.Drawings_Onepage_Service.remove_drawing_from_folder(filename).pipe(first()).subscribe()
+      this.Drawings_Onepage_Service.remove_drawing_from_folder(filename).subscribe(r=>{
+        item.remove();
+        this.uploaded.emit(false);
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      })
     });
-    item.remove();
-    this.uploaded.emit(false);
-
-
-    this.afficheruploader = true;
-    this.afficherpreview = false;
+   
 }
 
 upload_image(){

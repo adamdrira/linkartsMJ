@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, 
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
-
+import { Subscribing_service } from '../services/subscribing.service';
 import { BdSerieService} from '../services/comics_serie.service';
 import { async } from '@angular/core/testing';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
@@ -22,6 +22,7 @@ const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
 export class UploaderBdSerieComponent implements OnInit{
 
   constructor (
+    private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,  
     private BdSerieService: BdSerieService, 
     private cd:ChangeDetectorRef,
@@ -156,7 +157,7 @@ export class UploaderBdSerieComponent implements OnInit{
         console.log("validate bd chapter ")
         console.log(this.total_pages)
         console.log(this.chapter)
-        this.BdSerieService.validate_bd_chapter(this.total_pages, this.chapter).subscribe(r=>{
+        this.BdSerieService.validate_bd_chapter(this.bd_id,this.total_pages, this.chapter).subscribe(r=>{
           this.sendValidated.emit(true);
         })
       }
@@ -184,14 +185,16 @@ remove_beforeupload(item:FileItem){
 //on supprime le fichier en base de donnée et dans le dossier où il est stocké.
 remove_afterupload(item){
     //On supprime le fichier en base de donnée
-    this.BdSerieService.remove_page_from_sql(this.page, this.chapter).subscribe(information=>{
+    this.BdSerieService.remove_page_from_sql(this.bd_id,this.page, this.chapter).subscribe(information=>{
       console.log(information);
       const filename= information[0].file_name;
-      this.BdSerieService.remove_page_from_folder(filename).subscribe()
+      this.BdSerieService.remove_page_from_folder(filename).subscribe(r=>{
+        item.remove();
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      })
     });
-    item.remove();
-    this.afficheruploader = true;
-    this.afficherpreview = false;
+  
 }
 
 onFileClick(event) {

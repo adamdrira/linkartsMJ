@@ -148,6 +148,7 @@ export class UploaderCoverWritingComponent implements OnInit {
   }
 
 
+  cover_loading=false;
   ngOnInit() {
 
     this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation); 
@@ -190,6 +191,7 @@ export class UploaderCoverWritingComponent implements OnInit {
         this.Writing_CoverService.get_cover_name().subscribe(r=>{
           this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
             this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+              this.cover_loading=false;
               location.reload();
               
             });
@@ -200,6 +202,7 @@ export class UploaderCoverWritingComponent implements OnInit {
       else{
         this.Writing_CoverService.get_cover_name().subscribe(r=>{
           this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
+          this.cover_loading=false;
         });
       }
       
@@ -235,10 +238,12 @@ export class UploaderCoverWritingComponent implements OnInit {
       //On supprime le fichier en base de donnée
       this.confirmation = false;
       this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-      this.Writing_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
-      item.remove();
-      this.afficheruploader = true;
-      this.afficherpreview = false;
+      this.Writing_CoverService.remove_cover_from_folder().pipe(first()).subscribe(r=>{
+        item.remove();
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      });
+      
   }
 
   onFileClick(event) {
@@ -267,4 +272,8 @@ export class UploaderCoverWritingComponent implements OnInit {
   }
 
 
+  validate(){
+    this.cover_loading=true;
+    this.uploader.queue[0].upload()
+  }
 }

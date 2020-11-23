@@ -87,6 +87,11 @@
 
 
 //Swiper styles
+
+.loading_thumbnail{
+    background:#101c32 !important;
+  }
+  
 .swiper-container456 {
     display:flex;
     width:100%;
@@ -160,11 +165,11 @@
             margin: auto auto auto 0px;
         }
         &:hover {
-            background:#eeeff3 !important;
+            background:#eeeff3 ;
             box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
         }
         &:active {
-            background: #e2e5eb !important;
+            background: #e2e5eb ;
             box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
         }
     }

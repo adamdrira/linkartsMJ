@@ -48,13 +48,15 @@
 
     <!-- before upload-->
    <ng-container *ngIf="!for_edition && !uploader.queue[0].isSuccess">
-       <button class="button style1"
-               (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-            <mat-icon>done</mat-icon>
-            <span>Valider</span> 
+       <button class="button style1" [ngClass]="{'loading_thumbnail':cover_loading}" 
+               (click)="validate()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || cover_loading">
+            <mat-icon *ngIf="!cover_loading">done</mat-icon>
+            <span *ngIf="!cover_loading">Valider</span> 
+            <mat-spinner *ngIf="cover_loading" diameter="25"  style="margin:auto;"></mat-spinner>
        </button>
        <button class="button style0"    
-               (click)="remove_beforeupload(uploader.queue[0]);">
+               (click)="remove_beforeupload(uploader.queue[0]);"
+               [disabled]="cover_loading">
                <mat-icon>refresh</mat-icon>
                <span class="">Recommencer</span> 
        </button>
@@ -63,13 +65,15 @@
      
 
    <ng-container *ngIf="for_edition && uploader.queue[0] && !uploader.queue[0].isSuccess">
-       <button class="button style1"
-               (click)="uploader.queue[0].upload();" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
-            <mat-icon>done</mat-icon>
-            <span>Valider</span> 
+       <button class="button style1" [ngClass]="{'loading_thumbnail':cover_loading}" 
+               (click)="validate()" [disabled]="cover_loading || uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+            <mat-icon  *ngIf="!cover_loading">done</mat-icon>
+            <span  *ngIf="!cover_loading">Valider</span> 
+            <mat-spinner *ngIf="cover_loading" diameter="25"  style="margin:auto;"></mat-spinner>
        </button>
        <button class="button style0"
-               (click)="remove_beforeupload(uploader.queue[0]);">
+               (click)="remove_beforeupload(uploader.queue[0]);"
+               [disabled]="cover_loading">
                <mat-icon>refresh</mat-icon>
                <span class="">Recommencer</span> 
        </button>
@@ -79,7 +83,8 @@
 
    <ng-container *ngIf=" !for_edition && uploader.queue[0].isSuccess">
        <button  class="button style0"
-               (click)="remove_afterupload(uploader.queue[0]);">
+               (click)="remove_afterupload(uploader.queue[0]);"
+               [disabled]="cover_loading">
             <mat-icon>refresh</mat-icon>
             <span class="">Recommencer</span> 
        </button>
@@ -87,7 +92,8 @@
 
    <ng-container *ngIf="for_edition  && uploader.queue[0] && uploader.queue[0].isSuccess">
        <button class="button style0"
-               (click)="remove_afterupload(uploader.queue[0]);">
+               (click)="remove_afterupload(uploader.queue[0]);"
+               [disabled]="cover_loading">
                <mat-icon>refresh</mat-icon>
                <span class="">Recommencer</span> 
        </button>

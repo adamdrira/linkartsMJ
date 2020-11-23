@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {Writing_Upload_Service} from  '../services/writing.service';
-
+import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -38,6 +38,7 @@ export class UploaderWrittingComponent implements OnInit {
   can_operate=false; // afficher les boutons pour valider ou recommencer
 
   constructor (
+    private Subscribing_service:Subscribing_service,
     private Writing_Upload_Service:Writing_Upload_Service,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,

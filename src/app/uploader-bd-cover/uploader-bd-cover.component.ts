@@ -135,7 +135,7 @@ export class UploaderBdCoverComponent implements OnInit {
 
   }
 
-
+  cover_loading=false;
   ngOnInit() {
 
     this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation); 
@@ -178,6 +178,7 @@ export class UploaderBdCoverComponent implements OnInit {
           if ( this.format == "one-shot" ) {
             this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).subscribe(r=>{
               this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                this.cover_loading=false;
                location.reload();
               });
             });
@@ -186,6 +187,7 @@ export class UploaderBdCoverComponent implements OnInit {
           else if (this.format == "serie" ) {
             this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).subscribe(r=>{
               this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                this.cover_loading=false;
                 location.reload();
               });
             });
@@ -196,6 +198,7 @@ export class UploaderBdCoverComponent implements OnInit {
       else{
         this.Bd_CoverService.get_cover_name().subscribe(r=>{
           this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
+          this.cover_loading=false;
         });
       }
      
@@ -230,10 +233,12 @@ export class UploaderBdCoverComponent implements OnInit {
       //On supprime le fichier en base de donnée
       this.confirmation = false;
       this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
-      this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
-      item.remove();
-      this.afficheruploader = true;
-      this.afficherpreview = false;
+      this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+        item.remove();
+        this.afficheruploader = true;
+        this.afficherpreview = false;
+      });
+     
   }
   onFileClick(event) {
     event.target.value = '';
@@ -260,5 +265,9 @@ export class UploaderBdCoverComponent implements OnInit {
     e.stopPropagation();
   }
 
+  validate(){
+    this.cover_loading=true;
+    this.uploader.queue[0].upload()
+  }
 
 }
