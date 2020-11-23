@@ -5,9 +5,9 @@ var glob = require("glob")
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const mkdirp = require('mkdirp')
-const { group } = require('console');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 
@@ -34,13 +34,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                  ['date', 'DESC']
                ],
            })
-           .then(friends =>  {
+           .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
                res.status(200).send([friends])
            }); 
      });
 
      router.get('/get_number_of_unseen_messages',function(req,res){
-      console.log("get_number_of_unseen_messages")
+      //console.log("get_number_of_unseen_messages")
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -55,7 +58,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                ['date', 'DESC']
              ],
          })
-         .then(friends =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
               if(friends.length>0){
                 for(let j=0;j<friends.length;j++){
                   if(friends[j].id_user==current_user && friends[j].id_receiver!=current_user){
@@ -72,15 +78,18 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   order: [
                       ['createdAt', 'DESC']
                     ],
-                }).then(groups=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(groups=>{
                   if(groups.length>0){
                     for(let j=0;j<groups.length;j++){
                       list_of_groups.push(groups[j].id)
                     }
                   }
                   let compt1=0;
-                  console.log("get_number_of_unseen_messages list_of_users")
-                  console.log(list_of_users)
+                  //console.log("get_number_of_unseen_messages list_of_users")
+                  //console.log(list_of_users)
                   if(list_of_users.length>0){
                     for(let i=0;i<list_of_users.length;i++){
                       list_of_messages.findOne({
@@ -91,18 +100,21 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                           is_a_group_chat:false,
                         }
                         
-                      }).then(r=>{
+                      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
                         if(r){
                           number_of_unseen_messages+=1;
                         }
                         compt1+=1;
-                        console.log("number_of_unseen_messages users")
-                        console.log(number_of_unseen_messages)
+                        //console.log("number_of_unseen_messages users")
+                        //console.log(number_of_unseen_messages)
                         if(compt1==list_of_users.length){
                           let compt2=0;
                           if(list_of_groups.length>0){
                             for(let k=0;k<list_of_groups.length;k++){
-                              console.log("finding list_of_users_who_saw length")
+                              //console.log("finding list_of_users_who_saw length")
                               list_of_messages.findAll({
                                 where:{
                                   id_user:{[Op.ne]:current_user},
@@ -116,14 +128,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                                   ['createdAt', 'DESC']
                                 ],
                                 
-                              }).then(r=>{
+                              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
                                   if(r.length>0){
                                     number_of_unseen_messages+=1;
                                   }
                                   compt2+=1;
                                   if(compt2==list_of_groups.length){
-                                    console.log("number_of_unseen_messages end")
-                                    console.log(number_of_unseen_messages)
+                                    //console.log("number_of_unseen_messages end")
+                                    //console.log(number_of_unseen_messages)
                                     res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
                                   }
                                 })
@@ -153,7 +168,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      })
 
      router.get('/get_number_of_unseen_messages_spams',function(req,res){
-      console.log("get_number_of_unseen_messages_spams")
+      //console.log("get_number_of_unseen_messages_spams")
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -166,7 +181,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                ['date', 'DESC']
              ],
          })
-         .then(friends =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
               if(friends.length>0){
                 for(let j=0;j<friends.length;j++){
                   if(friends[j].id_user==current_user && friends[j].id_receiver!=current_user){
@@ -190,13 +208,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       ['createdAt', 'DESC']
                     ],
                     
-                  }).then(r=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
                     if(r.length>0){
                       number_of_unseen_messages+=1;
                     }
                     compt1+=1;
-                    console.log("get_number_of_unseen_messages_spams spams")
-                    console.log(number_of_unseen_messages)
+                    //console.log("get_number_of_unseen_messages_spams spams")
+                    //console.log(number_of_unseen_messages)
                     if(compt1==list_of_users.length){
                       res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
                     }
@@ -225,7 +246,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                  ['date', 'DESC']
                ],
            })
-           .then(friends =>  {
+           .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
                res.status(200).send([friends])
            }); 
      });
@@ -255,14 +279,20 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               ],
            limit:50,
           })
-          .then(messages =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
               let list_of_messages_reactions={};
               list_of_chat_groups_reactions.findAll({
                 where:{
                   id_group_chat:id_friend,
                   id_message:{[Op.gte]: messages[messages.length-1].id},
                 }
-              }).then(reacts=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(reacts=>{
                 for(let i=0;i<reacts.length;i++){
                   if(list_of_messages_reactions[reacts[i].id_message]){
                     list_of_messages_reactions[reacts[i].id_message].push(reacts[i].emoji_reaction)
@@ -289,7 +319,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               ],
            limit:50,
           })
-          .then(messages =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
               res.status(200).send([messages])
            });
         }
@@ -315,7 +348,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   ],
                limit:1,
               })
-              .then(messages =>  {
+              .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
                  list_of_friends_messages[i]=messages[0];
                   compt++;
                   if(compt==list_of_friends_ids.length){
@@ -335,10 +371,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         const id_friend=req.body.id_user;
         const id_chat_section =req.body.id_chat_section;
         const is_a_group_chat =req.body.is_a_group_chat;
-        console.log("lets see messages seen")
-        console.log(id_friend);
-        console.log(id_chat_section);
-        console.log(current_user);
+        //console.log("lets see messages seen")
+        //console.log(id_friend);
+        //console.log(id_chat_section);
+        //console.log(current_user);
         const Op = Sequelize.Op;
         let compt=0;
         if(is_a_group_chat){
@@ -354,7 +390,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 ['createdAt', 'DESC']
               ],
           })
-          .then(messages =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
               if(messages.length>0){
                 for(let i=0;i<messages.length;i++){
                     if(messages[i].list_of_users_who_saw.indexOf(current_user)<0){
@@ -399,9 +438,12 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 ['createdAt', 'DESC']
               ],
           })
-          .then(messages =>  {
-            console.log("here he is")
-              console.log(messages)
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
+            //console.log("here he is")
+              //console.log(messages)
               if(messages.length>0){
                 for(let i=0;i<messages.length;i++){
                     messages[i].update({
@@ -439,7 +481,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             ],
             limit:1,
             })
-            .then(message =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message =>  {
                 if(message.length>0){
                     res.status(200).send([message])
                 }
@@ -465,7 +510,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               is_a_group_chat:{[Op.not]: true},
               [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
             }
-          }).then( friend=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( friend=>{
             if(friend){
               res.status(200).send([{value:true}])
             }
@@ -474,7 +522,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 where:{
                   [Op.and]:[{[Op.or]:[{id_user: id_user},{id_user_subscribed_to:id_user}]},{[Op.or]:[{id_user: id_friend},{id_user_subscribed_to:id_friend}]}],
                 }
-              }).then(sub=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(sub=>{
                 if(sub){
                   res.status(200).send([{value:true}])
                 }
@@ -507,7 +558,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             id_receiver:id_user,
             is_a_group_chat:{[Op.not]: true},
           }
-        }).then( message=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( message=>{
           if(message){
             res.status(200).send([{value:true}])
           }
@@ -523,7 +577,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             id_receiver:id_friend,
             is_a_group_chat:true,
           }
-        }).then( message=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( message=>{
           if(message){
             res.status(200).send([{value:true}])
           }
@@ -549,12 +606,18 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           id_receiver:id_receiver,
           is_a_group_chat:friend_type,
       }
-    }).then(result=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
       var date= new Date();
       if(result){
         result.update({
           "date":date,
-        }).then(r=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
           res.status(200).send([r]);
         })
       }
@@ -564,7 +627,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           "id_receiver":id_receiver,
           "is_a_group_chat":friend_type,
           "date":date,
-        }).then(r=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
           res.status(200).send([r]);
         })
       }
@@ -589,7 +655,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           ],
         limit:10,
       })
-      .then(friends =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
        
         if(friends.length>0){
           let compt=0;
@@ -605,7 +674,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 where:{
                   id:friends[j].id_receiver
                 }
-              }).then(l=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(l=>{
                 list_of_users_to_send[j]=l;
                 compt++;
                 if(compt==end){
@@ -618,7 +690,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 where:{
                   id:friends[j].id_user
                 }
-              }).then(l=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(l=>{
                 list_of_users_to_send[j]=l;
                 compt++;
                 if(compt==end){
@@ -649,7 +724,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         ['date', 'DESC']
       ],
       limit:10,
-    }).then(searchs=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(searchs=>{
       if(searchs.length>0){
         let compt=0
         let end=searchs.length;
@@ -664,7 +742,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               where:{
                 id:searchs[i].id_receiver
               }
-            }).then(history=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(history=>{
               list_of_history[i]=history;
               compt++;
               if(compt==end){
@@ -692,8 +773,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     //var list_of_history=[];
     var list_of_other_users=[];
     let list_of_words=text.split(" ");
-    console.log("list_of_words");
-    console.log(list_of_words);
+    //console.log("list_of_words");
+    //console.log(list_of_words);
     
     list_of_users.findAll({
       where:{
@@ -711,7 +792,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       order: [
         ['subscribers_number', 'DESC']
       ],
-    }).then(users=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users=>{
         list_of_related_users= users;
         if(is_for_chat=='false'){
           get_other_users();
@@ -733,13 +817,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
               ],
             limit:10,
           })
-          .then(friends =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
             if(friends.length>0){
               let compte=0;
               for(let j=0;j<friends.length;j++){
                 if(friends[j].id_user==id_user){
-                  console.log("find friend 1");
-                  console.log(friends[j].id_receiver)
+                  //console.log("find friend 1");
+                  //console.log(friends[j].id_receiver)
                   list_of_users.findOne({
                     where:{
                       [Op.and]:[
@@ -750,7 +837,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                         {id:friends[j].id_receiver}
                       ]
                     }
-                  }).then(us=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                     if(us){
                       list_of_related_users.push(us);
                     }
@@ -761,8 +851,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                   })
                 }
                 else{
-                  console.log("find friend 2");
-                  console.log(friends[j].id_user)
+                  //console.log("find friend 2");
+                  //console.log(friends[j].id_user)
                   list_of_users.findOne({
                     where:{
                       //[Op.or]:[{firstname:{[Op.iLike]:'%'+ text + '%' }},{lastname:{[Op.iLike]:'%'+ text + '%' }},{nickname:{[Op.iLike]:'%'+ text + '%' }}],
@@ -775,7 +865,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                         {id:friends[j].id_user}
                       ]
                     }
-                  }).then(us=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                     if(us){
                       list_of_related_users.push(us);
                     }
@@ -813,7 +906,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         order: [
           ['subscribers_number', 'DESC']
         ],
-      }).then(users=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users=>{
           list_of_other_users= users;
           res.status(200).send([{related_users:list_of_related_users,other_users:list_of_other_users}])
       })
@@ -832,9 +928,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     const offset = parseInt(req.params.offset);
     var list_of_related_users=[];
     let list_of_words=text.split(" ");
-    console.log("is_for_chat see")
-    console.log(is_for_chat)
-    console.log(typeof(is_for_chat))
+    //console.log("is_for_chat see")
+    //console.log(is_for_chat)
+    //console.log(typeof(is_for_chat))
     list_of_users.findAll({
       where:{
         [Op.and]:[
@@ -850,50 +946,53 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       order: [
         ['subscribers_number', 'DESC']
       ],
-    }).then(users=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users=>{
         if(users.length>offset){
-          console.log("first if users")
+          //console.log("first if users")
           if((users.length-offset)>=limit){
-            console.log(limit);
-            console.log(users.length);
-            console.log(offset);
-            console.log("(users.length-offset)>=limit")
+            //console.log(limit);
+            //console.log(users.length);
+            //console.log(offset);
+            //console.log("(users.length-offset)>=limit")
             //on en prend un peu de la liste et on part
             list=users.slice(offset,offset+limit);
             res.status(200).send([{list:list,"search_more":true}])
           }
           else{
             //on prend un peu de la liste et un peu de l'autre
-            console.log(limit);
-            console.log(users.length);
-            console.log(offset);
-            console.log("(users.length-offset)<limit")
+            //console.log(limit);
+            //console.log(users.length);
+            //console.log(offset);
+            //console.log("(users.length-offset)<limit")
             let len=users.length
             list_of_related_users=users.slice(offset,len);
             if(is_for_chat=='false'){
-              console.log("getting other friends")
+              //console.log("getting other friends")
               get_other_users(0,limit-(len-offset));
             }
             else{
-              console.log("getting other friends for group")
-              console.log(list_of_related_users.length);
+              //console.log("getting other friends for group")
+              //console.log(list_of_related_users.length);
               get_friends_for_groups(0,limit-(len-offset),true);
             }
             
           }
         }
         else{
-          console.log("first user else")
+          //console.log("first user else")
           // on prend tout de l'autre;
           let len=users.length
           if(is_for_chat=='false'){
-            console.log("getting other friends")
+            //console.log("getting other friends")
             get_other_users((offset-len),limit);
           }
           else{
             list_of_related_users=users;
-            console.log("getting other friends for group")
-            console.log(list_of_related_users.length)
+            //console.log("getting other friends for group")
+            //console.log(list_of_related_users.length)
             get_friends_for_groups((offset-len),limit,false);
           }
           
@@ -906,10 +1005,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     
 
     function get_friends_for_groups(offset,limit,value){
-      console.log("group starts like this")
-      console.log(offset);
-      console.log(limit)
-      console.log(value);
+      //console.log("group starts like this")
+      //console.log(offset);
+      //console.log(limit)
+      //console.log(value);
       // si on crééer un groupe on va aussi chercher les utilisateurs amis.
       let list_of_users_ids=[];
       if(list_of_related_users.length>0){
@@ -918,7 +1017,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         }
       }
       list_of_users_ids.push(id_user);
-      console.log(list_of_users_ids.length)
+      //console.log(list_of_users_ids.length)
       list_of_chat_friends.findAll({
         where: {
             [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -928,16 +1027,19 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             ['date', 'DESC']
           ],
       })
-      .then(friends =>  {
-        console.log(friends.length);
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
+        //console.log(friends.length);
         if(friends.length>0){
           let list2=[];
           let compte=0;
           for(let j=0;j<friends.length;j++){
               let pass=true;
               if(friends[j].id_user==id_user && pass){
-                console.log("friends[j].id_user==id_user")
-                console.log(friends[j].id_receiver)
+                //console.log("friends[j].id_user==id_user")
+                //console.log(friends[j].id_receiver)
                 list_of_users.findOne({
                   where:{
                     [Op.and]:[
@@ -948,19 +1050,22 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       {id:friends[j].id_receiver}
                     ]
                   }
-                }).then(us=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                   if(us){
                     list2[j]=us;
                   }
                   compte++;
-                  console.log("compt firt if");
-                  console.log(compte)
+                  //console.log("compt firt if");
+                  //console.log(compte)
                   if(compte==friends.length){
                     pass=false;
-                    console.log(compte-offset)
-                    console.log(compte)
-                    console.log(limit)
-                    console.log(friends.length)
+                    //console.log(compte-offset)
+                    //console.log(compte)
+                    //console.log(limit)
+                    //console.log(friends.length)
                     if(list2.length-offset>=limit){
                       if(list_of_related_users.length>0 && value){
                         list=list_of_related_users.concat(list2.slice(offset,offset+limit));
@@ -991,8 +1096,8 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 })
               }
               else{
-                console.log("friends[j].id_user!=id_user")
-                console.log(friends[j].id_user)
+                //console.log("friends[j].id_user!=id_user")
+                //console.log(friends[j].id_user)
                 list_of_users.findOne({
                   where:{
                     [Op.and]:[
@@ -1003,18 +1108,21 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       {id:friends[j].id_user}
                     ]
                   }
-                }).then(us=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                   if(us){
                     list2[j]=us;
                   }
                   compte++;
-                  console.log("compt second if");
-                  console.log(compte)
+                  //console.log("compt second if");
+                  //console.log(compte)
                   if(compte==friends.length){
-                    console.log(compte-offset)
-                    console.log(compte)
-                    console.log(limit)
-                    console.log(friends.length)
+                    //console.log(compte-offset)
+                    //console.log(compte)
+                    //console.log(limit)
+                    //console.log(friends.length)
                     if(list2.length-offset>=limit){
                       if(list_of_related_users.length>0 && value){
                         list=list_of_related_users.concat(list2.slice(offset,offset+limit));
@@ -1080,7 +1188,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         order: [
           ['subscribers_number', 'DESC']
         ],
-      }).then(users=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users=>{
           if(users.length>0){
             if(list_of_related_users.length>0){
               list= list_of_related_users.concat(users);
@@ -1126,7 +1237,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       order: [
         ['updatedAt', 'DESC']
       ],
-    }).then(groups=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(groups=>{
       res.status(200).send([groups])
     })
     
@@ -1153,7 +1267,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         order: [
           ['chat_section_name', 'ASC']
         ],
-      }).then(sections=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(sections=>{
           res.status(200).send([sections])
       })
     }
@@ -1167,7 +1284,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         order: [
           ['chat_section_name', 'ASC']
         ],
-      }).then(sections=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(sections=>{
           res.status(200).send([sections])
       })
     }
@@ -1185,17 +1305,23 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       where: {
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],        
       }
-      }).then( spam=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( spam=>{
         spam.destroy({
           truncate: false
         })
-        console.log("spam deleted 2");
+        //console.log("spam deleted 2");
         var now = new Date();
         list_of_chat_friends.create({
           "id_user":id_user,
           "id_receiver":id_friend,
           "date":now,
-        }).then(
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
           friend=>{
             res.status(200).send([friend]);
           }
@@ -1222,7 +1348,19 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     }).any();
 
     upload_cover(req, res, function(err){
-      res.status(200).send(([{ "file_name": file_name}]))
+      (async () => {
+        let filename = "./data_and_routes/chat_images/" + file_name ;
+        const files = await imagemin([filename], {
+        destination: './data_and_routes/chat_images',
+        plugins: [
+            imageminPngquant({
+            quality: [0.5, 0.6]
+            })
+        ]
+        });
+        res.status(200).send(([{ "file_name": file_name}]))
+      })();
+      
       });
     });
 
@@ -1255,29 +1393,29 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_type = req.params.friend_type
       let friend_id = parseInt(req.params.friend_id);
       const PATH= '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
-      console.log("checking if file exists");
-      console.log(process.cwd() + PATH + attachment_name.split('.')[0])
-      console.log(value)
+      //console.log("checking if file exists");
+      //console.log(process.cwd() + PATH + attachment_name.split('.')[0])
+      //console.log(value)
       //value =0 : on donne la valeur du nom à crééer
       //value=1 : one donne la valeur du dernier fihier créée
       glob(process.cwd() + PATH + attachment_name, function (er, files) {
         if(er){
-          console.log("there is no file with name "+attachment_name.split('.')[0]);
+          //console.log("there is no file with name "+attachment_name.split('.')[0]);
         }
         else{
-          console.log(files);
-          console.log(files.length);
+          //console.log(files);
+          //console.log(files.length);
           if(files.length>0){
-            console.log(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'[0-9]*'+').'+ attachment_name.split('.')[1])
+            //console.log(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'[0-9]*'+').'+ attachment_name.split('.')[1])
             glob(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'*([0-9])'+').'+ attachment_name.split('.')[1], function (er, files2) {
               if(er){
-                console.log("there is no file with name "+attachment_name.split('.')[0]);
+                //console.log("there is no file with name "+attachment_name.split('.')[0]);
               }
               else{
-                console.log(files2);
+                //console.log(files2);
                 if(files2.length>0){
                   let num =files2.length+1;
-                  console.log(num);
+                  //console.log(num);
                   if(value==1){
                     num-=1;
                   }
@@ -1306,18 +1444,18 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
     router.post('/upload_attachments_for_chat/:friend_type/:friend_id', function (req, res) {
       var attachment_name=req.headers.attachment_name;
-      console.log(" we are uploading a file");
-      console.log(attachment_name)
+      //console.log(" we are uploading a file");
+      //console.log(attachment_name)
       let friend_type = req.params.friend_type
       let friend_id = parseInt(req.params.friend_id);
       const PATH= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${attachment_name}/`;
       const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
-      console.log('./data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${attachment_name}/`)
+      //console.log('./data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${attachment_name}/`)
       let storage = multer.diskStorage({
         destination: (req, file, cb) => {
 
           mkdirp(PATH2, err => {
-            console.log(err)
+            //console.log(err)
             cb(err, PATH2)
           })
           
@@ -1334,7 +1472,23 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       }).any();
       
       upload_attachment(req, res, function(err){
-            res.status(200).send({ok:"ok"})
+        (async () => {
+          console.log("path.extname(attachment_name)")
+          console.log(path.extname(attachment_name))
+          if(path.extname(attachment_name)==".jpg" || path.extname(attachment_name)==".png" || path.extname(attachment_name)==".jpeg"){
+            let file_name = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` + attachment_name ;
+            const files = await imagemin([file_name], {
+            destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
+            plugins: [
+                imageminPngquant({
+                quality: [0.5, 0.6]
+                })
+            ]
+            });
+          }
+          res.status(200).send([{ok:"ok"}])
+        })();
+            
       });
       
     });
@@ -1347,7 +1501,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let id_chat_section = parseInt(req.params.id_chat_section);
       let friend_type=req.params.friend_type;
       const Op = Sequelize.Op;
-      console.log("get_size_of_files")
+      //console.log("get_size_of_files")
       if(friend_type=='group'){
         list_of_messages.findAll({
           attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
@@ -1358,7 +1512,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             is_a_group_chat:true,
           }
          })
-         .then(files =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
              res.status(200).send([files])
          }); 
       }
@@ -1372,7 +1529,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             is_a_group_chat:{[Op.not]: true},
           }
          })
-         .then(files =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
              res.status(200).send([files])
          }); 
       }
@@ -1395,7 +1555,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           is_a_group_chat:true,
         }
        })
-       .then(files =>  {
+       .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
            res.status(200).send([files])
        }); 
     }
@@ -1409,7 +1572,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           is_a_group_chat:{[Op.not]: true},
         }
        })
-       .then(files =>  {
+       .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
            res.status(200).send([files])
        }); 
     }
@@ -1448,7 +1614,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                ],
             limit:15,
            })
-           .then(files =>  {
+           .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
                res.status(200).send([files])
            }); 
       }
@@ -1469,7 +1638,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                ],
             limit:15,
            })
-           .then(files =>  {
+           .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
                res.status(200).send([files])
            }); 
       }
@@ -1506,7 +1678,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           ],
        limit:15,
       })
-      .then(files =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
           res.status(200).send([files])
       }); 
     }
@@ -1526,7 +1701,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           ],
        limit:15,
       })
-      .then(files =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(files =>  {
           res.status(200).send([files])
       }); 
     }
@@ -1540,23 +1718,29 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   list_of_messages.findOne({
     where:
     {id:id}
-  }).then(message=>{
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message=>{
     message.update({
       "status": "deleted"
-    }).then(message=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message=>{
       if(message.is_an_attachment){
         if(message.attachment_type=="picture_message"){
           fs.access('./data_and_routes/chat_images/' + message.attachment_name, fs.F_OK, (err) => {
             if(err){
-              console.log('suppression already done');
+              //console.log('suppression already done');
               return res.status(200).send([{"ok":"ok"}]);
             }
             fs.unlink('./data_and_routes/chat_images/' + message.attachment_name,  function (err) {
               if (err) {
-                console.log(err);
+                //console.log(err);
               }  
               else {
-                console.log( 'fichier supprimé');
+                //console.log( 'fichier supprimé');
                 return res.status(200).send([{"ok":"ok"}]);
               }
             });
@@ -1565,15 +1749,15 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         else{
           fs.access('./data_and_routes/chat_attachments/' + message.attachment_name, fs.F_OK, (err) => {
             if(err){
-              console.log('suppression already done');
+              //console.log('suppression already done');
               return res.status(200)
             }
             fs.unlink('./data_and_routes/chat_attachments/' + message.attachment_name,  function (err) {
               if (err) {
-                console.log(err);
+                //console.log(err);
               }  
               else {
-                console.log( 'fichier supprimé');
+                //console.log( 'fichier supprimé');
                 return res.status(200).send([{"ok":"ok"}]);
               }
             });
@@ -1595,10 +1779,10 @@ router.post('/add_emoji_reaction', function (req, res) {
   let id = req.body.id;
   let emoji = req.body.emoji;
   let is_a_group_chat=req.body.is_a_group_chat;
-  console.log(id)
-  console.log(emoji)
-  console.log(is_a_group_chat)
-  console.log("add_emoji_reaction")
+  //console.log(id)
+  //console.log(emoji)
+  //console.log(is_a_group_chat)
+  //console.log("add_emoji_reaction")
   if(is_a_group_chat){
     if(type_of_user=="create"){
       list_of_messages.findOne({
@@ -1606,13 +1790,19 @@ router.post('/add_emoji_reaction', function (req, res) {
           id:id,
           is_a_group_chat:true,
         }
-      }).then(message=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message=>{
         list_of_chat_groups_reactions.create({
           "id_user":current_user,
           "id_message":id,
           "id_group_chat":message.id_receiver,
           "emoji_reaction":emoji,
-        }).then(react=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(react=>{
           res.status(200).send([react])
         })
       })
@@ -1624,7 +1814,10 @@ router.post('/add_emoji_reaction', function (req, res) {
       },
       {where:{
         id:id,
-      }}).then(react=>{
+      }}).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(react=>{
         res.status(200).send([react])
       })
     }
@@ -1636,7 +1829,10 @@ router.post('/add_emoji_reaction', function (req, res) {
          id:id
       },
     })
-    .then(message =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message =>  {
       
       if(type_of_user=="user"){
          message.update({
@@ -1665,7 +1861,10 @@ router.post('/delete_emoji_reaction', function (req, res) {
       where:{
         id:id
       }
-    },{truncate:false}).then(
+    },{truncate:false}).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
       res.status(200).send([{done:"done"}])
     )
   }
@@ -1675,7 +1874,10 @@ router.post('/delete_emoji_reaction', function (req, res) {
          id:id
       },
     })
-    .then(message =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message =>  {
      if(type_of_user=="user"){
        message.update({
          'emoji_reaction_user': null,
@@ -1718,7 +1920,10 @@ router.post('/get_other_messages', function (req, res) {
         ],
      limit:50,
     })
-    .then(messages =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
        res.status(200).send([messages,{list_of_messages_reactions:list_of_messages_reactions}])
 
      });
@@ -1737,14 +1942,20 @@ router.post('/get_other_messages', function (req, res) {
         ],
      limit:50,
     })
-    .then(messages =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
       if(messages.length>1){
        list_of_chat_groups_reactions.findAll({
          where:{
            id_group_chat:id_friend,
            [Op.and]:[{id_message:{[Op.gte]: messages[messages.length-1].id}},{id_message:{[Op.lt]: id_last_message}}],          
          }
-       }).then(reacts=>{
+       }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(reacts=>{
          for(let i=0;i<reacts.length;i++){
            if(list_of_messages_reactions[reacts[i].id_message]){
              list_of_messages_reactions[reacts[i].id_message].push(reacts[i].emoji_reaction)
@@ -1773,7 +1984,10 @@ router.post('/get_reactions_by_user',function(req,res){
     where:{
       id_message:id_message
     }
-  }).then(reacts=>{
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(reacts=>{
     res.status(200).send([reacts])
   })
 })
@@ -1799,7 +2013,10 @@ router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_sectio
         ],
      limit:15,
     })
-    .then(messages =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
         res.status(200).send([messages])
      });
   }
@@ -1817,7 +2034,10 @@ router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_sectio
         ],
      limit:15,
     })
-    .then(messages =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
         res.status(200).send([messages])
      });
   }
@@ -1847,7 +2067,10 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
         ['createdAt', 'ASC']
       ],
       limit:15,
-    }).then(msg=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(msg=>{
       id_born_sup=msg[msg.length-1].id;
       list_of_messages.findAll({
         where: {
@@ -1860,7 +2083,10 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
             ['createdAt', 'DESC']
           ],
       })
-      .then(messages =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
         if(msg[msg.length-1].id!=id_first_message){
           res.status(200).send([messages])
         }
@@ -1883,7 +2109,10 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
         ['createdAt', 'ASC']
       ],
       limit:15,
-    }).then(msg=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(msg=>{
       id_born_sup=msg[msg.length-1].id;
       list_of_messages.findAll({
         where: {
@@ -1897,7 +2126,10 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
             ['createdAt', 'DESC']
           ],
       })
-      .then(messages =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
         if(msg[msg.length-1].id!=id_first_message){
           res.status(200).send([messages])
         }
@@ -1935,7 +2167,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       order: [
         ['createdAt', 'DESC']
       ],
-    }).then(messages=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
       res.status(200).send([messages])
     })
   }
@@ -1950,7 +2185,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       order: [
         ['createdAt', 'DESC']
       ],
-    }).then(messages=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
       res.status(200).send([messages])
     })
   }
@@ -1979,7 +2217,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           ['createdAt', 'ASC']
         ],
         limit:5,
-      }).then(mess=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
          list_of_messages.findAll({
           where:{
@@ -1992,7 +2233,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ['createdAt', 'DESC']
           ],
           limit:5,
-        }).then(messages=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
           list_of_messages_to_send=messages;
           list_of_messages.findAll({
             where:{
@@ -2005,7 +2249,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               ['createdAt', 'DESC']
             ],
             limit:6,
-          }).then(msg=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
             res.status(200).json([{ "list_of_messages_to_send":list_of_messages_to_send}])
           })  
@@ -2024,7 +2271,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           ['createdAt', 'ASC']
         ],
         limit:5,
-      }).then(mess=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
          list_of_messages.findAll({
           where:{
@@ -2037,7 +2287,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ['createdAt', 'DESC']
           ],
           limit:5,
-        }).then(messages=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
           list_of_messages_to_send=messages;
           list_of_messages.findAll({
             where:{
@@ -2050,7 +2303,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               ['createdAt', 'DESC']
             ],
             limit:6,
-          }).then(msg=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
             res.status(200).json([{ "list_of_messages_to_send":list_of_messages_to_send}])
           })  
@@ -2078,7 +2334,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           order: [
             ['chat_section_name', 'ASC']
           ],
-        }).then(section=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(section=>{
           res.status(200).send([section])
         })
       }
@@ -2092,7 +2351,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           order: [
             ['chat_section_name', 'ASC']
           ],
-        }).then(section=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(section=>{
           res.status(200).send([section])
         })
       }
@@ -2112,7 +2374,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               is_a_group_chat:true,
               id_receiver:id_friend,
             },
-        }).then(sections=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(sections=>{
           if(sections.length>0){
             if(sections.length>14){
               res.status(200).json([{ "is_ok":false,"cause":"number"}])
@@ -2134,7 +2399,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     "id_receiver": id_friend,
                     "chat_section_name":chat_section,
                     "is_a_group_chat": true,
-                  }).then(cr=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(cr=>{
                     res.status(200).json([{ "is_ok":true,"id_chat_section":list_of_id[0]}])
                   })
                 }
@@ -2148,7 +2416,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               "id_receiver": id_friend,
               "chat_section_name":chat_section,
               "is_a_group_chat": true,
-            }).then(cr=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(cr=>{
               res.status(200).json([{ "is_ok":true,"id_chat_section":2}])
             })
           }
@@ -2160,7 +2431,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               is_a_group_chat:{[Op.not]: true},
               [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
-        }).then(sections=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(sections=>{
           if(sections.length>0){
             if(sections.length>14){
               res.status(200).json([{ "is_ok":false,"cause":"number"}])
@@ -2182,7 +2456,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     "id_receiver": id_friend,
                     "chat_section_name":chat_section,
                     "is_a_group_chat": false,
-                  }).then(cr=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(cr=>{
                     res.status(200).json([{ "is_ok":true,"id_chat_section":list_of_id[0]}])
                   })
                 }
@@ -2196,7 +2473,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               "id_receiver": id_friend,
               "chat_section_name":chat_section,
               "is_a_group_chat": false,
-            }).then(cr=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(cr=>{
               res.status(200).json([{ "is_ok":true,"id_chat_section":2}])
             })
           }
@@ -2220,7 +2500,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             id_receiver:id_friend,
           },
         })
-        .then(chat_section =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chat_section =>  {
           if(chat_section.id_user==id_user){
             chat_section.destroy({
               truncate: false
@@ -2231,12 +2514,18 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 id_chat_section:id_chat_section,
                 id_receiver:id_friend,
               },
-            }).then(messages=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
               if(messages.length>0){
                 for(let i=0;i<messages.length;i++){
                   messages[i].destroy({
                     truncate: false
-                  }).then(des=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(des=>{
                     if(i==messages.length-1){
                       res.status(200).send([{ "is_ok":true}])  
                     }
@@ -2264,7 +2553,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
         })
-        .then(chat_section =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chat_section =>  {
           if(chat_section.id_user==id_user){
             chat_section.destroy({
               truncate: false
@@ -2275,12 +2567,18 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 id_chat_section:id_chat_section,
                 [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
               },
-            }).then(messages=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
               if(messages.length>0){
                 for(let i=0;i<messages.length;i++){
                   messages[i].destroy({
                     truncate: false
-                  }).then(des=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(des=>{
                     if(i==messages.length-1){
                       res.status(200).send([{ "is_ok":true}])  
                     }
@@ -2320,7 +2618,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               id_user:{[Op.ne]:id_user},     
           },
           where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
-        }).then(messages=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
           if(messages.length>0){
             res.status(200).send([{ "value":true}]); 
           }
@@ -2337,7 +2638,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               id_chat_section:id_chat_section,
               [Op.and]:[ {id_user:id_friend},{id_receiver:id_user}],         
           },
-        }).then(messages=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
           if(messages.length>0){
             res.status(200).send([{ "value":true}]); 
           }
@@ -2366,14 +2670,20 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
         where:{
           id:id_user,
         }
-      }).then(user=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
         chat_profile_pic_name=user.profile_pic_file_name;
         list_of_chat_groups.create({
           "id_user":id_user,
           "name":name,
           "list_of_receivers_ids":list_of_ids,
           
-          }).then(group=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
             var now = new Date();
             list_of_chat_friends.create({
               "id_user":id_user,
@@ -2382,7 +2692,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               "profile_pic_origin":"user",
             "chat_profile_pic_name":chat_profile_pic_name,
               "date":now,
-            }).then(
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
               friend=>{
                 res.status(200).send([group]);
               }
@@ -2420,21 +2733,27 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           where:{
             id:id
           }
-        }).then(group=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
           res.status(200).send([group]);
         })
       });
 
     router.post('/get_group_chat_as_friend', function (req, res) {
       let id_receiver= req.body.id_receiver;
-      console.log(id_receiver)
-      console.log("get_group_chat_as_friend")
+      //console.log(id_receiver)
+      //console.log("get_group_chat_as_friend")
       list_of_chat_friends.findOne({
           where:{
             id_receiver:id_receiver,
             is_a_group_chat:true,
           }
-        }).then(friend=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
           res.status(200).send([friend]);
         })
       });
@@ -2445,7 +2764,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           where:{
             id:id
           }
-        }).then(group=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
           res.status(200).send([group]);
         })
       });
@@ -2460,12 +2782,15 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
         where:{
           id:id_receiver,
         }
-      }).then(group=>{
-        console.log("finding group exit")
-        console.log(group.id_user);
-        console.log(id_user)
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
+        //console.log("finding group exit")
+        //console.log(group.id_user);
+        //console.log(id_user)
         if(group.id_user==id_user){
-          console.log("in first if exit")
+          //console.log("in first if exit")
           let list_of_receivers_ids=group.list_of_receivers_ids;
           if(list_of_receivers_ids.length==1){
             list_of_chat_groups.destroy({
@@ -2473,14 +2798,20 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 id:id_receiver,
               }
             },
-            {truncate: false}).then(()=>{
+            {truncate: false}).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(()=>{
               list_of_chat_friends.destroy({
                 where:{  
                   id_receiver:id_receiver,
                   is_a_group_chat:true,
                 }
               },
-              {truncate: false}).then(()=>{
+              {truncate: false}).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(()=>{
                 list_of_messages.destroy(
                   {where:{
                     id_receiver:id_receiver,
@@ -2488,8 +2819,11 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                   }},
                   {truncate: false}
                 )
-              }).then(()=>{
-                console.log("sending done")
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(()=>{
+                //console.log("sending done")
                 res.status(200).send([{"supression":"done"}])
               })
             })
@@ -2497,30 +2831,42 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           else{
             let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index);
-            console.log("going to update group");
-            console.log(list_of_receivers_ids);
-            console.log(list_of_receivers_ids[0])
+            //console.log("going to update group");
+            //console.log(list_of_receivers_ids);
+            //console.log(list_of_receivers_ids[0])
             group.update({
                 "id_user":list_of_receivers_ids[0],
                 "list_of_receivers_ids":list_of_receivers_ids,
-            }).then(grp=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(grp=>{
               list_of_chat_friends.findOne({
                 where:{  
                   id_receiver:id_receiver,
                   is_a_group_chat:true,
                 }
-              }).then(friends=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends=>{
                 friends.update({
                   "id_user":list_of_receivers_ids[0]
-                }).then(friend=>{
-                  console.log("sending friend")
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
+                  //console.log("sending friend")
                   list_of_messages.update({
                     "list_of_users_in_the_group":list_of_receivers_ids},
                     {where:{
                       id_receiver:id_receiver,
                       is_a_group_chat:true,
                     }
-                  }).then(messages=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
                     res.status(200).send([friend])
                   })
                   
@@ -2532,20 +2878,26 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           }
         }
         else{
-          console.log("in second if exit")
+          //console.log("in second if exit")
           let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index);
             group.update({
                 "list_of_receivers_ids":list_of_receivers_ids,
-            }).then(group=>{
-              console.log("sending grp")
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
+              //console.log("sending grp")
               list_of_messages.update({
                 "list_of_users_in_the_group":list_of_receivers_ids},
                 {where:{
                   id_receiver:id_receiver,
                   is_a_group_chat:true,
                 }
-              }).then(messages=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages=>{
                 res.status(200).send([group])
               })
             })
@@ -2569,7 +2921,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 ['createdAt', 'DESC']
               ],
           })
-          .then(groups =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(groups =>  {
               res.status(200).send([groups])
           }); 
     });
@@ -2593,7 +2948,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ],
          limit:1,
         })
-        .then(friend =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend =>  {
             friends[i]=friend[0]
             compt++;
             if(compt==list_of_ids.length){
@@ -2623,7 +2981,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               ],
            limit:1,
           })
-          .then(messages =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(messages =>  {
              list_of_friends_messages[i]=messages[0];
               compt++;
               if(compt==list_of_friends_ids.length){
@@ -2654,7 +3015,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ],
             limit:1,
             })
-            .then(message =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message =>  {
                 if(message.length>0){
                     let id=message[0].id;
                     list_of_messages.findAll({
@@ -2668,7 +3032,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                       ],
                       limit:1,
                       })
-                      .then(message2=>{
+                      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message2=>{
                         if(message2.length>0){
                           if(message2[0].id>id){
                             res.status(200).send([message2])
@@ -2694,7 +3061,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     ],
                     limit:1,
                     })
-                    .then(message2=>{
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(message2=>{
                       if(message2.length>0){
                         res.status(200).send([message2])
                       }
@@ -2709,13 +3079,13 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
 
    router.post('/modify_chat_profile_pic/:id_receiver', function (req, res) {
-    console.log("adding pp")
+    //console.log("adding pp")
       let current_user = get_current_user(req.cookies.currentUser);
       let id_receiver=parseInt(req.params.id_receiver);
-      console.log(id_receiver)
+      //console.log(id_receiver)
       var filename = ''
       let PATH = './data_and_routes/chat_profile_pics/';
-      console.log(PATH)
+      //console.log(PATH)
   
       var storage = multer.diskStorage({
           destination: (req, file, cb) => {
@@ -2738,18 +3108,32 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
           if (err) {
               return res.end('Error');
           } else {
+              (async () => {
+                let file_name = "./data_and_routes/chat_profile_pics/" + filename ;
+                const files = await imagemin([file_name], {
+                destination: './data_and_routes/chat_profile_pics',
+                plugins: [
+                    imageminPngquant({
+                    quality: [0.5, 0.6]
+                    })
+                ]
+                });
+              })();
               list_of_chat_friends.findOne({
                   where: {
                     id_receiver: id_receiver,
                     is_a_group_chat:true,
                   }
                 })
-                .then(group =>  {
-                  console.log("the group");
-                  console.log(group)
+                .catch(err => {
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(group =>  {
                   group.update({
                     "chat_profile_pic_name":filename,
                     "profile_pic_origin":'group',
+                  }).catch(err => {
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
                   }).then(res.status(200).send(([{ "chat_profile_pic_name": filename}])))
                 }); 
           }
@@ -2765,14 +3149,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     const Op = Sequelize.Op;
     let compt=0;
     let list=[];
-    console.log("get_chat_first_propositions_add_friend")
+    //console.log("get_chat_first_propositions_add_friend")
     list_of_chat_groups.findOne({
       where:{
         id:friend_id
       }
-    }).then(group=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
       let list_of_users_ids=group.list_of_receivers_ids;
-      console.log("get_chat_first_propositions_add_friend 2")
+      //console.log("get_chat_first_propositions_add_friend 2")
       list_of_chat_friends.findAll({
         where:{
           [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -2781,16 +3168,22 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
         order: [
           ['date', 'DESC']
         ],
-      }).then(friends=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends=>{
         for(let i=0;i<friends.length;i++){
           if(friends[i].id_user==id_user){
-            console.log("friends[i].id_receiver")
-            console.log(friends[i].id_receiver)
+            //console.log("friends[i].id_receiver")
+            //console.log(friends[i].id_receiver)
             list_of_users.findOne({
               where:{
                 id:friends[i].id_receiver
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               list[i]=user;
               compt++;
               if(compt==friends.length){
@@ -2799,13 +3192,16 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             })
           }
           else{
-            console.log("friends[i].id_user")
-            console.log(friends[i].id_user)
+            //console.log("friends[i].id_user")
+            //console.log(friends[i].id_user)
             list_of_users.findOne({
               where:{
                 id:friends[i].id_user
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               list[i]=user;
               compt++;
               if(compt==friends.length){
@@ -2828,14 +3224,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     const friend_id=req.body.friend_id;
     const Op = Sequelize.Op;
     let list=[];
-    console.log("get_chat_propositions_add_friend")
+    //console.log("get_chat_propositions_add_friend")
     list_of_chat_groups.findOne({
       where:{
         id:friend_id
       }
-    }).then(group=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
       let list_of_users_ids=group.list_of_receivers_ids;
-      console.log("get_chat_propositions_add_friend 2")
+      //console.log("get_chat_propositions_add_friend 2")
       list_of_chat_friends.findAll({
         where: {
             [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -2845,13 +3244,16 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ['date', 'DESC']
           ],
       })
-      .then(friends =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friends =>  {
         if(friends.length>0){
           let compte=0;
           for(let j=0;j<friends.length;j++){
             if(friends[j].id_user==id_user){
-              console.log("find friend 1");
-              console.log(friends[j].id_receiver)
+              //console.log("find friend 1");
+              //console.log(friends[j].id_receiver)
               list_of_users.findOne({
                 where:{
                   [Op.and]:[
@@ -2862,7 +3264,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     {id:friends[j].id_receiver}
                   ]
                 }
-              }).then(us=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                 if(us){
                   list.push(us);
                 }
@@ -2874,8 +3279,8 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               })
             }
             else{
-              console.log("find friend 2");
-              console.log(friends[j].id_user)
+              //console.log("find friend 2");
+              //console.log(friends[j].id_user)
               list_of_users.findOne({
                 where:{
                   [Op.and]:[
@@ -2886,14 +3291,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                     {id:friends[j].id_user}
                   ]
                 }
-              }).then(us=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
                 if(us){
                   list.push(us);
                 }
                 compte++;
                 if(compte==friends.length){
-                  console.log("list of friends");
-                  console.log(list)
+                  //console.log("list of friends");
+                  //console.log(list)
                   res.status(200).send([{"list":list}])
                 }
               })
@@ -2915,7 +3323,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
  
  
   router.post('/add_new_friends_to_a_group', function (req, res) {
-    console.log("add_new_friends_to_a_group");
+    //console.log("add_new_friends_to_a_group");
     let current_user = get_current_user(req.cookies.currentUser);
     let list_of_friends = req.body.list_of_friends;
     let friend_id = req.body.friend_id;
@@ -2924,7 +3332,10 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       where:{
         id:friend_id
       }
-    }).then(group=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(group=>{
       list_of_receivers_ids=group.list_of_receivers_ids;
       if(list_of_receivers_ids.length+list_of_friends.length>10){
         res.status(200).send([{"warning":"too_much_friends"}])
@@ -2933,14 +3344,20 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
         list_of_receivers_ids=list_of_receivers_ids.concat(list_of_friends);
         group.update({
           "list_of_receivers_ids":list_of_receivers_ids
-        }).then(l=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(l=>{
           list_of_messages.update({
             "list_of_users_in_the_group":list_of_receivers_ids},
             {where:{
               id_receiver:friend_id,
               is_a_group_chat:true,
             }
-          }).then(m=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
             
             res.status(200).send([group])
           })
@@ -2969,7 +3386,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
       ['date', 'DESC']
     ],
     limit:5,
-  }).then(searchs=>{
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(searchs=>{
     if(searchs.length>0){
       let compt=0
       let end=searchs.length;
@@ -2979,7 +3399,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
             where:{
               id:searchs[i].id_receiver
             }
-          }).then(history=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(history=>{
             list_of_history[i]=history;
             compt++;
             if(compt==end){
@@ -3005,7 +3428,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
             ['updatedAt', 'DESC']
           ],
         limit:limit
-      }).then(groups=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(groups=>{
         if(groups.length>0){
           if(list_of_history.length>0){
             list=list_of_history.concat(groups)
@@ -3031,7 +3457,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
       id:id,
       list_of_receivers_ids: { [Op.contains]: [id_user] },
     }
-  }).then(r=>{
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
     res.status(200).send([r])
   })
 
@@ -3050,7 +3479,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
       id_group_chat:id_group_chat,
       id_message:id_message,
     }
-  }).then(react=>{
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(react=>{
     if(react){
       res.status(200).send([react])
     }
@@ -3066,10 +3498,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.friend_id;
   let is_a_group_chat=req.body.is_a_group_chat;
-  console.log("get chat friend")
-  console.log(id_user)
-  console.log(id_friend)
-  console.log(is_a_group_chat)
+  //console.log("get chat friend")
+  //console.log(id_user)
+  //console.log(id_friend)
+  //console.log(is_a_group_chat)
   const Op = Sequelize.Op;
   if(is_a_group_chat){
     list_of_chat_friends.findOne({
@@ -3077,8 +3509,11 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
         is_a_group_chat:true,
         id_receiver:id_friend,      
       }
-    }).then(friend=>{
-      console.log(friend)
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
+      //console.log(friend)
       if(friend){
         res.status(200).send([friend])
       }
@@ -3094,8 +3529,11 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
         is_a_group_chat:{[Op.not]: true},
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
       }
-    }).then(friend=>{
-      console.log(friend)
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
+      //console.log(friend)
       if(friend){
         res.status(200).send([friend])
       }
@@ -3110,22 +3548,25 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.post('/remove_friend',function(req,res){
-    console.log("remove_friend")
+    //console.log("remove_friend")
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = req.body.id_friend;
-    console.log(id_friend)
+    //console.log(id_friend)
     const Op = Sequelize.Op;
     list_of_chat_friends.findOne({
       where:{
         is_a_group_chat:{[Op.not]: true},
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
       }
-    }).then(friend=>{
-      console.log(friend)
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
+      //console.log(friend)
       
       if(friend){
         let date=friend.date;
-        console.log(date)
+        //console.log(date)
         friend.destroy({
           truncate: false
         })
@@ -3141,7 +3582,7 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.post('/add_chat_friend',function(req,res){
-  console.log("add_chat_friend")
+  //console.log("add_chat_friend")
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
   let date = req.body.date;
@@ -3149,15 +3590,18 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
   date = date.replace("T",' ');
   date = date.replace("-",'/').replace("-",'/');
   let final_date= new Date(date + ' GMT');
-  console.log(id_friend)
+  //console.log(id_friend)
   const Op = Sequelize.Op;
   list_of_chat_friends.findOne({
     where:{
       is_a_group_chat:{[Op.not]: true},
       [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
     }
-  }).then(friend=>{
-    console.log(friend)
+  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(friend=>{
+    //console.log(friend)
     if(friend){
       res.status(200).send([{add:'done'}])
     }
@@ -3166,7 +3610,10 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
         "id_user":id_user,
         "id_receiver":id_friend,
         "date":final_date,
-      }).then(r=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r=>{
         res.status(200).send([r])
       })
     }

@@ -5,7 +5,8 @@ const multer = require('multer');
 const fs = require('fs');
 var path = require('path');
 
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 module.exports = (router, list_of_stories,list_of_views) => {
@@ -50,15 +51,40 @@ module.exports = (router, list_of_stories,list_of_views) => {
         }).any();
 
         upload_cover(req, res, function(err){
-            
-                list_of_stories.create({
-                    "id_user": current_user,
-                    "status":"public",
-                    "file_name": file_name,
-                    "views_number": 0,
-                }).then(stories=>{
-                    res.status(200).send([stories]);
-                });
+            if(err){
+                console.log(err)
+                res.status(500).send([{error:err}])
+            }
+            else{
+
+                (async () => {
+                    let filename = "./data_and_routes/stories/" + file_name ;
+                    const files = await imagemin([filename], {
+                    destination: './data_and_routes/stories',
+                    plugins: [
+                        imageminPngquant({
+                        quality: [0.5, 0.6]
+                        })
+                    ]
+                    });
+
+                    list_of_stories.create({
+                        "id_user": current_user,
+                        "status":"public",
+                        "file_name": file_name,
+                        "views_number": 0,
+                    }).catch(err => {
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(stories=>{
+                        res.status(200).send([stories]);
+                    });
+                })();
+                
+
+                
+            }
+                
             
         });
 
@@ -86,7 +112,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                 ['createdAt', 'ASC']
                 ],
             })
-            .then(stories =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(stories =>  {
                 
                 (async () => {
                    const number_of_stories = await list_of_stories.count({
@@ -121,7 +150,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                               [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
                                   
                             },
-                          }).then(number=>{
+                          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(number=>{
                             res.status(200).send([{stories:stories,state_of_views:false,number_of_views:number}])
                         })
                        
@@ -135,7 +167,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                               [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
                                   
                             },
-                          }).then(number=>{
+                          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(number=>{
                                 res.status(200).send([{stories:stories,state_of_views:true,number_of_views:number}])
                         })
                     }
@@ -158,7 +193,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     ['createdAt', 'DESC']
                 ]
                 })
-                .then(stories =>  {
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(stories =>  {
                 res.status(200).send([stories]);
                 }); 
     });
@@ -172,7 +210,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     id:id,
                 }
                 })
-                .then(story =>  {
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story =>  {
                     story.update({
                         "status":"hide"
                     })
@@ -244,7 +285,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                       [Op.and]: [{ createdAt:{[Op.gte]: before_yesterday} }, { createdAt:{[Op.lte]: today} }],
                           
                     },
-                  }).then(number=>{console.log(number);
+                  }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(number=>{console.log(number);
                       res.status(200).send([{"total":number}])})
                    
            
@@ -268,7 +312,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     id_story:id_story,
                 }
                 })
-                .then(story=>{res.status(200).send([story])})        
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story=>{res.status(200).send([story])})        
     
           
         });
@@ -285,7 +332,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     status:"public",
                     id:id_story,
                 }
-            }).then(story=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story=>{
                 if(story){
                     list_of_views.findOne({
                         where:{
@@ -294,11 +344,17 @@ module.exports = (router, list_of_stories,list_of_views) => {
                             "authorid": authorid,
                             "id_story": id_story,
                         }
-                    }).then(story_view=>{
+                    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story_view=>{
                         if(story_view){
                             story_view.update({
                                 "view": story_view.view+1
-                            }).then(view=>{
+                            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(view=>{
                                     console.log(view.id);
                                     res.status(200).send([view])
                                 });
@@ -311,10 +367,16 @@ module.exports = (router, list_of_stories,list_of_views) => {
                                 "authorid": authorid,
                                 "id_story": id_story,
                                 "view":1
-                            }).then(views=>{
+                            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 story.update({
                                     "views_number": story.views_number +1
-                                }).then(res.status(200).send([views]));
+                                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([views]));
                             });
                         }
                     })
@@ -344,7 +406,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                     createdAt:{[Op.gt]:yesterday}
                 }
                 })
-                .then(date0=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(date0=>{
                     console.log(date0)
                     if(date0!=0){
                         console.log(date0)
@@ -356,12 +421,18 @@ module.exports = (router, list_of_stories,list_of_views) => {
                                 updatedAt:{[Op.gt]:yesterday}
                             }
                             })
-                            .then(date=>{
+                            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(date=>{
                                 list_of_views.findOne({
                                     where: {
                                         updatedAt:date,
                                     }
-                                }).then(story=>{
+                                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story=>{
                                     res.status(200).send([story])})  
                                 })
                     }
@@ -384,7 +455,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
         
                     },
                 })
-                .then(story=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(story=>{
                     story.update({
                         status: "deleted"
                     })});
@@ -404,7 +478,10 @@ module.exports = (router, list_of_stories,list_of_views) => {
                 },
                 attributes: [
                     [Sequelize.fn('DISTINCT', Sequelize.col('authorid'),Sequelize.col('id_user_who_looks')), 'users'],'authorid','id_user_who_looks'],
-            }).then(stories=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(stories=>{
                 res.status(200).send([stories])
             })
             

@@ -3,7 +3,8 @@ const fs = require('fs');
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 const Sequelize = require('sequelize');
 
 module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
@@ -43,18 +44,18 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             Tags[i] = Tags[i].substr(1);
         }
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        console.log(Tags[i]);
+        //console.log(Tags[i]);
       }
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
         Liste_Writings.create({
                 "authorid": current_user,
                 "title":title,
@@ -73,7 +74,10 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 "total_pages":total_pages,
             })
           
-          .then(r =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
           res.status(200).send([r]);
           }); 
         
@@ -83,20 +87,26 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
     router.post('/add_total_pages_for_writing', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      console.log("add_total_pages_for_writing")
+      //console.log("add_total_pages_for_writing")
       const writing_id = req.body.writing_id;
       const total_pages=req.body.total_pages;
-      console.log(writing_id)
-      console.log(total_pages)
+      //console.log(writing_id)
+      //console.log(total_pages)
       Liste_Writings.findOne({
         where:{
           writing_id:writing_id,
         }
-      }).then(writing=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing=>{
         if(writing){
           writing.update({
             "total_pages":total_pages,
-        }).then(r =>  {
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
           res.status(200).send([writing]);
           }); 
         }
@@ -121,12 +131,18 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
         authorid: current_user,
         writing_id: writing_id,
       }
-    }).then(writing=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing=>{
       list_of_users.findOne({
         where:{
           id:current_user,
         }
-      }).then(user=>{
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
         if(writing.status=="public"){
           let number_of_writings=user.number_of_writings-1;
           user.update({
@@ -162,25 +178,28 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               Tags[i] = Tags[i].substr(1);
           }
           Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-          console.log(Tags[i]);
+          //console.log(Tags[i]);
         }
       }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
          writing = await Liste_Writings.findOne({
             where: {
               writing_id: writing_id,
               authorid: current_user,
             }
           })
-          .then(writing =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
             writing.update({
               "title":title,
                 "category": category,
@@ -189,7 +208,10 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 "secondtag": Tags[1],
                 "thirdtag": Tags[2],
             })
-            .then(res.status(200).send([writing]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([writing]))
           }); 
           }
 
@@ -227,14 +249,28 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       }).any();
 
       upload_cover(req, res, function(err){
-          res.cookie('name_cover_writing', file_name).send(file_name);
+        let filename = "./data_and_routes/covers_writings/" + file_name ;
+        (async () => {
+            const files = await imagemin([filename], {
+              destination: './data_and_routes/covers_writings',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.5, 0.6]
+                })
+              ]
+            });
+            res.cookie('name_cover_writing', file_name).send([{file_name:file_name}]);
+
+            
+        })();
+         
         });
     });
 
         //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/upload_writing', function (req, res) {
-      console.log(req.headers.type);
-      console.log("pistache");
+      //console.log(req.headers.type);
+      //console.log("pistache");
       let current_user = get_current_user(req.cookies.currentUser);
       var file_name='';
       const PATH1= './data_and_routes/writings';
@@ -246,7 +282,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
         },
 
         filename: (req, file, cb) => {
-          console.log(file);
+          //console.log(file);
           var today = new Date();
           var ss = String(today.getSeconds()).padStart(2, '0');
           var mi = String(today.getMinutes()).padStart(2, '0');
@@ -267,13 +303,13 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
       upload(req, res, function(err) {
         if (err) {
-          console.log("erreur");
+          //console.log("erreur");
           return res.send({
             success: false
           });
       
         } else { 
-            res.cookie('name_writing', file_name).send(file_name);
+            res.cookie('name_writing', file_name).send([{file_name:file_name}]);
         }
       })
     });
@@ -284,19 +320,25 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       
       const name = req.body.name;
       const writing_id = req.body.writing_id;
-      console.log("add_cover_writing_todatabase")
-      console.log(name)
+      //console.log("add_cover_writing_todatabase")
+      //console.log(name)
       Liste_Writings.findOne({
           where: {
             writing_id: writing_id,
             authorid: current_user,
           }
         })
-        .then(writing =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
           writing.update({
             "name_coverpage" :name
           })
-          .then(res.status(200).send([writing]))
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([writing]))
         }); 
         
       });
@@ -314,10 +356,16 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                   writing_id:writing_id,
               },
           })
-          .then(writings => {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings => {
             writings.update({
                     "status":status
-              }).then(writings => {
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings => {
                   res.status(200).send([writings])
               }
               )
@@ -338,29 +386,53 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 ['createdAt', 'DESC']
               ],
           })
-          .then(writings =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings =>  {
             res.status(200).send([writings]);
           }); 
    
   });
  
+  
+  router.delete('/remove_writing_cover_from_folder/:name_writing', function (req, res) {
+    console.log("remove_writing_cover_from_folder");
+    fs.access('./data_and_routes/covers_writings/' + req.params.name_writing, fs.F_OK, (err) => {
+      if(err){
+        //console.log('suppression already done');
+        return res.status(200).send([{delete:'suppression done'}])
+      }
+        //console.log( 'annulation en cours');
+        const name_writing  = req.params.name_writing;
+        fs.unlink('./data_and_routes/covers_writings/' + name_writing,  function (err) {
+          if (err) {
+            throw err;
+          }  
+          else {
+            //console.log( 'fichier supprimé');
+            return res.status(200).send([{delete:'suppression done'}])
+          }
+        });
+      });
+  });
 
   //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
   router.delete('/remove_writing_from_folder/:name_writing', function (req, res) {
-    console.log('./data_and_routes/writings/' + req.params.name_writing);
+    //console.log('./data_and_routes/writings/' + req.params.name_writing);
     fs.access('./data_and_routes/writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
-        console.log('suppression already done');
+        //console.log('suppression already done');
         return res.status(200).send([{delete:'suppression done'}])
       }
-        console.log( 'annulation en cours');
+        //console.log( 'annulation en cours');
         const name_writing  = req.params.name_writing;
         fs.unlink('./data_and_routes/writings/' + name_writing,  function (err) {
           if (err) {
             throw err;
           }  
           else {
-            console.log( 'fichier supprimé');
+            //console.log( 'fichier supprimé');
             return res.status(200).send([{delete:'suppression done'}])
           }
         });
@@ -379,12 +451,18 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               authorid: current_user,
             }
           })
-          .then(writing =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
             list_of_users.findOne({
               where:{
                 id:current_user,
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               let number_of_writings=user.number_of_writings+1;
               user.update({
                 "number_of_writings":number_of_writings,
@@ -393,7 +471,10 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             writing.update({
               "status":"public",
             })
-            .then(res.status(200).send([writing]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([writing]))
           }); 
     })();
     });
@@ -413,7 +494,10 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 ['writing_id', 'ASC']
               ],
           })
-          .then(writing =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
             
             res.status(200).send([writing]);
           }); 
@@ -421,7 +505,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     });
 
     router.post('/get_number_of_writings', function (req, res) {
-      console.log("get_number_of_writings")
+      //console.log("get_number_of_writings")
       const id_user= req.body.id_user;
       let date_format=req.body.date_format;
       const Op = Sequelize.Op;
@@ -451,7 +535,10 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               ['createdAt', 'DESC']
             ],
          })
-         .then(writings =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings =>  {
           if(writings.length>0){
             for(let j=0;j<writings.length;j++){
              list_of_ids.push(writings[j].writing_id)
@@ -476,14 +563,20 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 writing_id: writing_id,
               }
             })
-            .then(writing =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
               if(writing){
                 trendings_contents.findOne({
                   where:{
                     publication_category:"writing",
                     publication_id:writing.writing_id
                   }
-                }).then(tren=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(tren=>{
                   if(tren){
                     if(writing.trending_rank){
                       if(writing.trending_rank<tren.rank){
@@ -524,7 +617,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          console.log("bd page retrieved");
+          //console.log("bd page retrieved");
           res.status(200).send(data);
         } );
 
@@ -539,7 +632,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       let filename = "./data_and_routes/covers_writings/" + file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
-        console.log("thumbnail writing picture retrieved");
+        //console.log("thumbnail writing picture retrieved");
         res.status(200).send(data);
       });
       })();
@@ -553,19 +646,19 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     (async () => {
     const name_coverpage=req.params.file_name;
 
-    console.log( 'tentative annulation');
+    //console.log( 'tentative annulation');
     fs.access('./data_and_routes/covers_writings/' + name_coverpage, fs.F_OK, (err) => {
       if(err){
-        console.log('suppression already done');
+        //console.log('suppression already done');
         return res.status(200)
       }
-        console.log( 'annulation en cours');
+        //console.log( 'annulation en cours');
         fs.unlink('./data_and_routes/covers_writings/' + name_coverpage,  function (err) {
           if (err) {
             throw err;
           }  
           else {
-            console.log( 'fichier supprimé');
+            //console.log( 'fichier supprimé');
             return res.status(200).send({"ok":"ok"})
           }
         });

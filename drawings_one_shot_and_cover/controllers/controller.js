@@ -4,7 +4,8 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 module.exports = (router, drawings_one_page,list_of_users,trendings_contents) => {
@@ -19,7 +20,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   
 
   router.get('/get_cookies_cover_drawings', (req, res)=>{ 
-    console.log('get it')
+    //console.log('get it')
     let value = req.cookies
     res.status(200).send([value]);
     }); 
@@ -42,18 +43,18 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             Tags[i] = Tags[i].substr(1);
         }
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        console.log(Tags[i]);
+        //console.log(Tags[i]);
       }
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
         drawings_one_page.create({
                 "authorid": current_user,
                 "title":title,
@@ -69,7 +70,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 "monetization":monetization,
             })
           
-          .then(r =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
           res.status(200).send([r]);
           }); 
         
@@ -89,10 +93,16 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   drawing_id:drawing_id,
               },
           })
-          .then(drawing => {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing => {
             drawing.update({
                     "status":status
-              }).then(drawing => {
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing => {
                   res.status(200).send(drawing)
               }
               )
@@ -112,7 +122,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 ['createdAt', 'DESC']
               ],
           })
-          .then(drawings =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings =>  {
             res.status(200).send([drawings]);
           }); 
    
@@ -131,11 +144,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             authorid:current_user,
           }
         })
-        .then(drawing =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
           drawing.update({
             "thumbnail_color": color
           })
-          .then(res.status(200).send([drawing]))
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([drawing]))
         }); 
     
     });
@@ -153,7 +172,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    const drawing_id = parseInt(req.body.drawing_id);
+    const drawing_id = req.body.drawing_id;
     /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
@@ -161,25 +180,28 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             Tags[i] = Tags[i].substr(1);
         }
         Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        console.log(Tags[i]);
+        //console.log(Tags[i]);
       }
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
          drawing = await drawings_one_page.findOne({
             where: {
               drawing_id: drawing_id,
               authorid:current_user,
             }
           })
-          .then(drawing =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
             drawing.update({
               "title":title,
               "category": category,
@@ -189,7 +211,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               "thirdtag": Tags[2],
               "monetization":monetization,
             })
-            .then(res.status(200).send([drawing]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([drawing]))
           }); 
           }
 
@@ -227,11 +252,21 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       }).any();
 
       upload(req, res, function(err){
-        console.log("ici on a le nom de l'oeuvre " + drawing_name + " pour l'id ");
+        //console.log("ici on a le nom de l'oeuvre " + drawing_name + " pour l'id ");
           (async () => {
             const drawing_id = req.params.drawing_id;
             
-            console.log('File is available!');
+            let file_name = "./data_and_routes/covers_drawings/" + drawing_name ;
+            
+            const files = await imagemin([file_name], {
+              destination: './data_and_routes/covers_drawings',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.5, 0.6]
+                })
+              ]
+            });
+           
             
             const drawing = await drawings_one_page.findOne({
                 where: {
@@ -240,16 +275,19 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 }
               });
               if(drawing !== null){
-                console.log("drawing found");
+                //console.log("drawing found");
                 drawing.update({
                     "drawing_name":drawing_name,
                 })
-                .then(r =>  {
-                res.send(r.get({plain:true}));
+                .catch(err => {
+                  //console.log(err);	
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(r =>  {
+                 res.send(r.get({plain:true}));
                 }); 
               }
               else {
-                console.log("drawing not found")
+                //console.log("drawing not found")
               }
             
             
@@ -268,11 +306,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               drawing_id: drawing_id,
               authorid: current_user,
           }
-        }).then(drawing=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing=>{
           list_of_users.findOne({
             where:{
               id:current_user,
             }
+          }).catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
             if(drawing.status=="public"){
               let number_of_drawings=user.number_of_drawings-1;
@@ -292,17 +336,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       router.delete('/remove_drawing_onepage_from_folder/:drawing_name', function (req, res) {
         fs.access('./data_and_routes/drawings_one_page' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            console.log('suppression already done');
+            //console.log('suppression already done');
             return res.status(200)
           }
-          console.log( 'annulation en cours');
+          //console.log( 'annulation en cours');
           const drawing_name  = req.params.drawing_name;
           fs.unlink('./data_and_routes/drawings_one_page/' + drawing_name,  function (err) {
             if (err) {
-              console.log("erreur de suppression de drawing one page : " + drawing_name);
+              //console.log("erreur de suppression de drawing one page : " + drawing_name);
             }  
             else {
-              console.log( 'fichier supprimé dans le folder');
+              //console.log( 'fichier supprimé dans le folder');
               return res.status(200)
             }
           });
@@ -311,12 +355,36 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     
       
-
+    router.post('/send_drawing_height_one_shot', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+      let drawing_id=req.body.drawing_id;
+      let height=req.body.height;
+      drawings_one_page.findOne({
+        where:{
+          drawing_id:drawing_id,
+          authorid:current_user
+        }
+      }).catch(err => {
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(drawing=>{
+        if(drawing){
+          drawing.update({
+            height:height
+          })
+          res.status(200).send([drawing]);
+        }
+        else{
+          res.status(200).send([{error:'drawing_not_found'}]);
+        }
+      })
+    })
     
       
 
     //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/add_cover_drawing_onepage_tofolder', function (req, res) {
+      console.log("add_cover_drawing_onepage_tofolder")
     let current_user = get_current_user(req.cookies.currentUser);
     var filename = ''
     let PATH = './data_and_routes/covers_drawings/';
@@ -342,11 +410,24 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     }).any();
 
     upload(req, res, function(err) {
+      console.log(req.files)
         if (err) {
-            console.log(err);
-            return res.end('Error');
+            console.log("error uplaod");
+            res.status(500).json({msg: "error", details: err});	
         } else {   
-            res.status(200).send(([{ "cover_name": filename}]))
+            let file_name = "./data_and_routes/covers_drawings/" + filename ;
+            (async () => {
+                const files = await imagemin([file_name], {
+                  destination: './data_and_routes/covers_drawings',
+                  plugins: [
+                    imageminPngquant({
+                      quality: [0.5, 0.6]
+                    })
+                  ]
+                });
+                console.log("respond")
+              res.status(200).send([{filename:filename}]);
+            })();
         }
     });
     
@@ -360,32 +441,35 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     let current_user = get_current_user(req.cookies.currentUser);
 
     const name = req.body.name;
-    console.log("name : " + name);
-    const drawing_id = parseInt(req.body.drawing_id);
-    console.log("id : " + drawing_id);
+    console.log("add_cover_drawing_onepage_todatabase ");
+    const drawing_id = req.body.drawing_id;
+    console.log(drawing_id);
 
     (async () => {
 
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("no inftly");
+        //console.log("no inftly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('infctly');
+        //console.log('infctly');
          drawing = await drawings_one_page.findOne({
             where: {
               drawing_id: drawing_id,
               authorid: current_user,
             }
           })
-          .then(drawing =>  {
+          .catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
             drawing.update({
               "name_coverpage" :name
             })
-            .then(res.status(200).send([drawing]))
+            res.status(200).send([drawing]);
           }); 
           }
 
@@ -397,17 +481,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       router.delete('/remove_cover_drawing_from_folder/:name', function (req, res) {
         fs.access('./data_and_routes/covers_drawings/' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            console.log('suppression already done');
+            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          console.log( 'annulation en cours');
+          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/covers_drawings/' + name,  function (err) {
             if (err) {
               throw err;
             }  
             else {
-              console.log( 'fichier supprimé');
+              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -429,12 +513,18 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               authorid: current_user,
             }
           })
-          .then(drawing =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
             list_of_users.findOne({
               where:{
                 id:current_user,
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               let number_of_drawings=user.number_of_drawings+1;
               user.update({
                 "number_of_drawings":number_of_drawings,
@@ -443,7 +533,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             drawing.update({
               "status":"public",
             })
-            .then(res.status(200).send([drawing]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([drawing]))
           }); 
     })();
     });
@@ -464,7 +557,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 ['drawing_id', 'ASC']
               ],
           })
-          .then(drawings =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings =>  {
             res.status(200).send([drawings]);
           }); 
     
@@ -472,7 +568,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
 
    router.post('/get_number_of_drawings_oneshot', function (req, res) {
-     console.log("get_number_of_drawings_oneshot")
+     //console.log("get_number_of_drawings_oneshot")
     const id_user= req.body.id_user;
     let date_format=req.body.date_format;
     let list_of_drawings=[];
@@ -502,14 +598,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
             ['createdAt', 'DESC']
           ],
        })
-       .then(drawings =>  {
+       .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings =>  {
         if(drawings.length>0){
           for(let j=0;j<drawings.length;j++){
            list_of_ids.push(drawings[j].drawing_id)
            list_of_drawings.push(drawings[j])
           }
         }
-        console.log("get_number_of_drawings_oneshot")
+        //console.log("get_number_of_drawings_oneshot")
          res.status(200).send([{number_of_drawings_oneshot:drawings.length,list_of_ids:list_of_ids,list_of_drawings:list_of_drawings}]);
        }); 
 
@@ -525,7 +624,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                 drawing_id: drawing_id,
               }
             })
-            .then(drawing =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
               if(drawing){
                 
                 trendings_contents.findOne({
@@ -534,7 +636,10 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                     format:"one-shot",
                     publication_id:drawing.drawing_id
                   }
-                }).then(tren=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(tren=>{
                   if(tren){
                     if(drawing.trending_rank){
                       if(drawing.trending_rank<tren.rank){
@@ -575,7 +680,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
-        console.log("thumbnail drawing picture retrieved");
+        //console.log("thumbnail drawing picture retrieved");
         res.status(200).send(data);
       });
   });
@@ -585,7 +690,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
           //blob = data.toBlob('application/image');
-          console.log("drawing page retrieved");
+          //console.log("drawing page retrieved");
           res.status(200).send(data);
         } );
 

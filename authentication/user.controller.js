@@ -166,6 +166,9 @@ exports.create = (req, res) => {
 					"special_visitor":true,
 					"group_creation":true,
 					"group_shares":true,
+				}).catch(err => {
+					console.log(err);	
+					res.status(500).json({msg: "error", details: err});		
 				}).then(
 					users_information_privacy.create({
 						"id_user": r.id,
@@ -175,6 +178,9 @@ exports.create = (req, res) => {
 						"birthday":"public",
 						"job":"public",
 						"training":"public",
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
 					})
 				).then(
 					albums_seq.list_of_albums.create({
@@ -182,6 +188,9 @@ exports.create = (req, res) => {
 						"album_name":"one-shot",
 						"album_category":"comics",
 						"status":"standard"
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
 					})
 				)
 				.then(()=>{albums_seq.list_of_albums.create({
@@ -189,25 +198,41 @@ exports.create = (req, res) => {
 						"album_name":"serie",
 						"album_category":"comics",
 						"status":"standard"
-				})})
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
+					})
+				})
 				.then(()=>{albums_seq.list_of_albums.create({
 							"id_user": r.id,
 							"album_name":"artbook",
 							"album_category":"drawings",
 							"status":"standard"
-				})})
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
+					})
+				})
 				.then(()=>{albums_seq.list_of_albums.create({
 							"id_user": r.id,
 							"album_name":"one-shot",
 							"album_category":"drawings",
 							"status":"standard"
-				})})
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
+					})
+				})
 				.then(()=>{albums_seq.list_of_albums.create({
 							"id_user": r.id,
 							"album_name":"all",
 							"album_category":"writings",
 							"status":"standard"
-				})})
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
+					})
+				})
 				.then(()=>{
 					let now= new Date();
 					chat_seq.list_of_chat_friends.create({
@@ -215,6 +240,9 @@ exports.create = (req, res) => {
 						"id_receiver":1,
 						"is_a_group_chat":false,
 						"date":now,
+					}).catch(err => {
+						console.log(err);	
+						res.status(500).json({msg: "error", details: err});		
 					}).then(()=>{
 						chat_seq.list_of_messages.create({
 							"id_user_name":"Linkarts",
@@ -232,13 +260,19 @@ exports.create = (req, res) => {
 							"attachment_type":null,
 							"is_a_group_chat":false,
 							"status":'received',
-						  }).then(
+						  }).catch(err => {
+							console.log(err);	
+							res.status(500).json({msg: "error", details: err});		
+						}).then(
 							  List_of_subscribings.create({
 								"status":"public",
 								"id_user":  r.id,
 								"id_user_subscribed_to":1,
 							  })
-							).then(()=>{
+							).catch(err => {
+								console.log(err);	
+								res.status(500).json({msg: "error", details: err});		
+							}).then(()=>{
 								res.status(200).json([{msg: "creation ok",id_user:r.id}])
 							})
 					})
@@ -274,7 +308,10 @@ exports.decrypt_password = (req, res) => {
 		order: [
 			['createdAt', 'DESC']
 		],
-	}).then(user=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
 		
 		if(user.length>0){
 			const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
@@ -299,7 +336,10 @@ exports.reset_password = (req, res) => {
 		where:{
 			email:email,
 		}
-	}).then(user_found=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user_found=>{
 		if(user_found){
 			User_passwords.findAll({
 				where: {
@@ -309,7 +349,10 @@ exports.reset_password = (req, res) => {
 				order: [
 					['createdAt', 'DESC']
 				],
-			}).then(user=>{
+			}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
 				if(user.length>0){
 					const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
 					const decrypted = Buffer.concat([decipher.update(Buffer.from(user[0].content, 'hex')), decipher.final()]);
@@ -374,12 +417,18 @@ exports.edit_password = (req, res) => {
 				id:id_user,
 			}
 			
+		}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
 			User_passwords.create({
 				"id_user":id_user,
 				"iv":password_hash.iv,
 				"content":password_hash.content,
-			}).then(pass=>{
+			}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(pass=>{
 				res.status(200).json([pass])
 			})
 		})
@@ -397,7 +446,10 @@ exports.edit_email = (req, res) => {
 			id:id_user,
 		}
 		
-	}).then(user=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
 			res.status(200).json([user])
 		
 	})
@@ -413,6 +465,9 @@ exports.add_link = (req, res) => {
 		}).catch(err => {
 			console.log(err);	
 			res.status(200).json({msg: "error registering the user", details: err});		
+		}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
 		}).then(link=>{
 			console.log(link)
 			res.status(200).json([{msg: "creation ok"}])
@@ -437,6 +492,9 @@ exports.remove_link = (req, res) => {
 		  .catch(err => {
 			console.log(err);	
 			res.status(200).json({msg: "error registering the user", details: err});		
+		}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
 		}).then(
 			res.status(200).json([{msg: "deletion ok"}])
 		);
@@ -454,7 +512,10 @@ exports.get_password = (req, res) => {
 		where:{
 			id:id
 		}
-	}).then(user=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
 		if(user){
 
 		}
@@ -475,7 +536,10 @@ exports.check_pseudo=(req,res)=>{
 			status:"account",
 			nickname:pseudo,
 		}
-	}).then(pseudos=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(pseudos=>{
 		console.log(pseudos)
 		if(pseudos.length==0){
 			res.status(200).send([{msg: "ok"}]);		
@@ -498,7 +562,10 @@ exports.check_email=(req,res)=>{
 			status:"account",
 			email:{[Op.iLike]: email},
 		}
-	}).then(user=>{
+	}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
 		console.log(user.email)
 		if(user.length==0){
 			res.status(200).send([{msg: "ok"}]);		
@@ -548,7 +615,10 @@ exports.login = async (req, res) => {
 				order: [
 					['createdAt', 'DESC']
 				],
-				}).then(pass=>{
+				}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(pass=>{
 					if(pass.length>0){
 						let exist=false;
 						for(let i=0;i<pass.length;i++){
@@ -688,7 +758,10 @@ exports.getCurrentUser = async (req, res) => {
 		}
 		else{
 			const user = await User.findOne( { where: { id : decoded.id} } )
-			.then(user=>{res.send([user]);})
+			.catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{res.send([user]);})
 		}
 		
 		
@@ -764,7 +837,10 @@ exports.checkMail = (req, res) => {
 
 	console.log("checking : " + req.body.mail );
 	
-	User.findOne( { where: { email : req.body.mail} } ).then( user => {
+	User.findOne( { where: { email : req.body.mail} } ).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( user => {
 
 		if( user == null ) {
 			return res.json( {msg: "EMAIL_NOT_FOUND", email: req.body.mail} );

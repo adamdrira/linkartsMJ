@@ -28,7 +28,10 @@ module.exports = (router, list_of_albums) => {
                         "album_content":album,
                         "status":"public"
                     })
-                    .then(album=>{res.status(200).send([album])})  
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(album=>{res.status(200).send([album])})  
         })();
     });
 
@@ -46,7 +49,10 @@ module.exports = (router, list_of_albums) => {
                         "thumbnail_cover_drawing":number_cover,
                         "status":"public"
                     })
-                    .then(album=>{res.status(200).send([album])})        
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(album=>{res.status(200).send([album])})        
 
         })();
     });
@@ -63,7 +69,10 @@ module.exports = (router, list_of_albums) => {
                         "album_content":album,
                         "status":"public"
                     })
-                    .then(album=>{res.status(200).send([album])})        
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(album=>{res.status(200).send([album])})        
 
         })();
     });
@@ -79,11 +88,17 @@ module.exports = (router, list_of_albums) => {
                         id_user_subscribed_to:id_user_subscribed_to
                     },
                 })
-                .then(subscribings=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                     subscribings.destroy({
                         truncate: false
                       })
-                        .then(subscribings=>{res.status(200).send([subscribings])})        
+                        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{res.status(200).send([subscribings])})        
                     })
         })();
     });
@@ -104,7 +119,10 @@ module.exports = (router, list_of_albums) => {
                     ['createdAt', 'ASC']
                 ],
             })
-            .then(albums =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
@@ -124,7 +142,10 @@ module.exports = (router, list_of_albums) => {
                     ['album_name', 'ASC']
                 ],
             })
-            .then(albums =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
@@ -145,10 +166,16 @@ module.exports = (router, list_of_albums) => {
                     status:current_status,
                 },
             })
-            .then(albums => {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.update({
                     "status":new_status
-                }).then(albums => {
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                     res.status(200).send([albums])
                 }
                 )
@@ -169,7 +196,10 @@ module.exports = (router, list_of_albums) => {
                     album_name:album_name,
                     status:current_status
                 },
-            }).then(albums => {
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.destroy({
                     where: {
                         id_user:current_user,
@@ -197,7 +227,10 @@ module.exports = (router, list_of_albums) => {
                     ['createdAt', 'ASC']
                 ],
             })
-            .then(albums =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
@@ -217,7 +250,10 @@ module.exports = (router, list_of_albums) => {
                     ['album_name', 'DESC']
                 ],
             })
-            .then(albums =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
@@ -239,10 +275,16 @@ module.exports = (router, list_of_albums) => {
                     status:current_status,
                 },
             })
-            .then(albums => {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.update({
                     "status":new_status
-                }).then(albums => {
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                     res.status(200).send(albums)
                 }
                 )
@@ -265,7 +307,10 @@ module.exports = (router, list_of_albums) => {
                     album_name:album_name,
                     status:current_status,
                 },
-            }).then(albums => {
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.destroy({
                     where: {
                         id_user:current_user,
@@ -298,7 +343,10 @@ module.exports = (router, list_of_albums) => {
                     ['createdAt', 'ASC']
                 ],
             })
-            .then(albums =>  {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
@@ -320,10 +368,16 @@ module.exports = (router, list_of_albums) => {
                     status:current_status,
                 },
             })
-            .then(albums => {
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.update({
                     "status":new_status
-                }).then(albums => {
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                     res.status(200).send(albums)
                 }
                 )
@@ -346,7 +400,10 @@ module.exports = (router, list_of_albums) => {
                     album_name:album_name,
                     status:current_status,
                 },
-            }).then(albums => {
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(albums => {
                 albums.destroy({
                     where: {
                         id_user:current_user,

@@ -53,7 +53,10 @@ router.post('/add_primary_information_report', function (req, res) {
         "message": message,
 
     })
-    .then(r =>  {
+    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
       if(publication_category=="comic"){
         if(format=="one-shot"){
           list_comics_one_shot.findOne({
@@ -61,7 +64,10 @@ router.post('/add_primary_information_report', function (req, res) {
               bd_id:publication_id,
               status:"public",
             }
-          }).then(bd=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
             if(bd){
               let list_of_reporters=bd.list_of_reporters;
               if(!list_of_reporters ){
@@ -93,7 +99,10 @@ router.post('/add_primary_information_report', function (req, res) {
               bd_id:publication_id,
               status:"public",
             }
-          }).then(bd=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
             if(bd){
               let list_of_reporters=bd.list_of_reporters;
               if(!list_of_reporters ){
@@ -128,7 +137,10 @@ router.post('/add_primary_information_report', function (req, res) {
               drawing_id:publication_id,
               status:"public",
             }
-          }).then(bd=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
             if(bd){
               let list_of_reporters=bd.list_of_reporters;
               if(!list_of_reporters ){
@@ -160,7 +172,10 @@ router.post('/add_primary_information_report', function (req, res) {
               drawing_id:publication_id,
               status:"public",
             }
-          }).then(bd=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
             if(bd){
               let list_of_reporters=bd.list_of_reporters;
               if(!list_of_reporters ){
@@ -193,7 +208,10 @@ router.post('/add_primary_information_report', function (req, res) {
           where:{
             writing_id:publication_id
           }
-        }).then(bd=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
           if(bd){
             let list_of_reporters=bd.list_of_reporters;
             if(!list_of_reporters ){
@@ -224,7 +242,10 @@ router.post('/add_primary_information_report', function (req, res) {
           where:{
             id:publication_id
           }
-        }).then(bd=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
           if(bd){
             let list_of_reporters=bd.list_of_reporters;
             if(!list_of_reporters ){
@@ -265,7 +286,10 @@ router.post('/add_primary_information_report', function (req, res) {
           status:"ok",
         }
         
-      }).then(content=>{
+      }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
         if(content){
           let list_of_reporters=content.list_of_reporters;
           console.log(list_of_reporters)
@@ -316,7 +340,10 @@ router.post('/check_if_content_reported', function (req, res) {
       }
           
       })
-      .then(r =>  {
+      .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
         console.log("result")
         console.log(r)
         if(r){
@@ -340,7 +367,10 @@ router.post('/check_if_content_reported', function (req, res) {
       }
           
       })
-      .then(r =>  {
+      .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
         console.log("result")
         console.log(r)
         if(r){
@@ -375,7 +405,10 @@ router.post('/cancel_report', function (req, res) {
       }
           
       })
-      .then(report =>  {
+      .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report =>  {
         if(report){
           report.destroy({
             truncate:false,
@@ -387,7 +420,10 @@ router.post('/cancel_report', function (req, res) {
                   bd_id:publication_id,
                   status:"public",
                 }
-              }).then(bd=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
                 if(bd){
                   let list_of_reporters=bd.list_of_reporters;
                   if(list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
@@ -413,7 +449,10 @@ router.post('/cancel_report', function (req, res) {
                   bd_id:publication_id,
                   status:"public",
                 }
-              }).then(bd=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
                 if(bd){
                   let list_of_reporters=bd.list_of_reporters;
                   if(list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
@@ -442,7 +481,10 @@ router.post('/cancel_report', function (req, res) {
                   drawing_id:publication_id,
                   status:"public",
                 }
-              }).then(bd=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
                 if(bd){
                   let list_of_reporters=bd.list_of_reporters;
                   if( list_of_reporters &&  list_of_reporters.indexOf(current_user)>=0){
@@ -468,7 +510,10 @@ router.post('/cancel_report', function (req, res) {
                   drawing_id:publication_id,
                   status:"public",
                 }
-              }).then(bd=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
                 if(bd){
                   let list_of_reporters=bd.list_of_reporters;
                   if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
@@ -496,7 +541,10 @@ router.post('/cancel_report', function (req, res) {
                 writing_id:publication_id,
                 status:"public",
               }
-            }).then(bd=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
               if(bd){
                 let list_of_reporters=bd.list_of_reporters;
                 if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
@@ -522,7 +570,10 @@ router.post('/cancel_report', function (req, res) {
                 id:publication_id,
                 status:"public",
               }
-            }).then(bd=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
               if(bd){
                 let list_of_reporters=bd.list_of_reporters;
                 if( list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
@@ -563,7 +614,10 @@ router.post('/cancel_report', function (req, res) {
             status:"ok",
           }
          
-        }).then(content=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
           if(content){
             let list_of_reporters=content.list_of_reporters;
            if(list_of_reporters && list_of_reporters.indexOf(current_user)>=0){
@@ -632,12 +686,18 @@ router.post('/upload_attachments_reports', function (req, res) {
         id_user: current_user,
       }
     })
-    .then(report =>  {
+    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report =>  {
       if(attachment_number==1){
           report.update({
             "attachment_name_one" :file_name,
           })
-          .then(report=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report=>{
             res.status(200).send([report])
           })
       }
@@ -646,7 +706,10 @@ router.post('/upload_attachments_reports', function (req, res) {
         report.update({
           "attachment_name_two" :file_name,
         })
-        .then(report=>{
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report=>{
           res.status(200).send([report])
         })
       }
@@ -655,7 +718,10 @@ router.post('/upload_attachments_reports', function (req, res) {
         report.update({
           "attachment_name_three" :file_name,
         })
-        .then(report=>{
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report=>{
           res.status(200).send([report])
         })
       }
@@ -664,7 +730,10 @@ router.post('/upload_attachments_reports', function (req, res) {
         report.update({
           "attachment_name_four" :file_name,
         })
-        .then(report=>{
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report=>{
           res.status(200).send([ad])
         })
       }
@@ -673,7 +742,10 @@ router.post('/upload_attachments_reports', function (req, res) {
         report.update({
           "attachment_name_five" :file_name,
         })
-        .then(report=>{
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(report=>{
           res.status(200).send([report])
         })
       }

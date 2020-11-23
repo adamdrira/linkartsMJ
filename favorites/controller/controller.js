@@ -41,7 +41,10 @@ module.exports = (router, favorites) => {
             ,order: [
                 ['createdAt', 'DESC']
             ]
-        }).then(favorites=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
             res.status(200).send([{list_of_favorites:favorites}])
                         
                     

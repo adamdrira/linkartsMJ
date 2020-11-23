@@ -33,6 +33,7 @@ exports.list_of_ads = (sequelize, DataTypes) => {
         number_of_responses:DataTypes.INTEGER,
         remuneration:DataTypes.BOOLEAN,
         price_value:DataTypes.STRING,
+        price_type:DataTypes.STRING,
         status:DataTypes.STRING,
         date:DataTypes.DATE,
         commentariesnumber: DataTypes.INTEGER,

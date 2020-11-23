@@ -51,7 +51,7 @@ module.exports = (router,
             const secondtag=req.params.secondtag;
             const thirdtag=req.params.thirdtag;
             const author_id_liked=parseInt(req.params.author_id_liked);
-            console.log(firsttag);
+            //console.log(firsttag);
 
             Liste_of_likes.findOne({
                 where:{
@@ -62,7 +62,10 @@ module.exports = (router,
                     chapter_number: chapter_number,
                     author_id_liked:author_id_liked,
                 }
-            }).then(like=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
                 if(!like){
                     add_like()
                 }
@@ -79,12 +82,18 @@ module.exports = (router,
                             bd_id: publication_id,
                             }
                         })
-                        .then(bd =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                             const likes = bd.likesnumber + 1;
                             bd.update({
                             "likesnumber":likes,
                             })
-                            .then(create(bd))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(bd))
                         }); 
                         
                     }
@@ -96,22 +105,34 @@ module.exports = (router,
                             chapter_number:chapter_number,
                             }
                         })
-                        .then(chapter =>  {                      
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {                      
                             const likes = chapter.likesnumber + 1;
                             chapter.update({
                             "likesnumber":likes,
                             }) 
-                            .then(chapter =>  { 
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  { 
                                     Liste_Bd_Serie.findOne({
                                         where: {
                                         bd_id: chapter.bd_id,
                                         }
                                     })
-                                    .then(bd_serie =>  {  
+                                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                         const likes = bd_serie.likesnumber + 1;
                                         bd_serie.update({
                                         "likesnumber":likes,
-                                        }).then(bd_serie=>{create(bd_serie)})
+                                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie=>{create(bd_serie)})
                                     })                   
                                     
                                 })
@@ -128,12 +149,18 @@ module.exports = (router,
                                 drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const likes = drawing.likesnumber + 1;
                             drawing.update({
                             "likesnumber":likes,
                             })
-                            .then(create(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(drawing))
                         }); 
                     }
     
@@ -143,12 +170,18 @@ module.exports = (router,
                             drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const likes = drawing.likesnumber + 1;
                             drawing.update({
                             "likesnumber":likes,
                             })
-                            .then(create(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(drawing))
                         }); 
                     }
                 }
@@ -159,19 +192,25 @@ module.exports = (router,
                             writing_id: publication_id,
                         }
                     })
-                    .then(writing =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                         const likes = writing.likesnumber + 1;
                         writing.update({
                         "likesnumber":likes,
                         })
-                        .then(create(writing))
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(writing))
                     }); 
                     
                 }
             }
             
             function create(content){
-                console.log('ajout de like ok');
+                //console.log('ajout de like ok');
                 Liste_of_likes.create({
                         "status":"public",
                         "author_id_who_likes": current_user,
@@ -185,12 +224,18 @@ module.exports = (router,
                         "chapter_number": chapter_number,
                         "author_id_liked":author_id_liked,
                         "monetization":content.monetization,
-                }).then(likes=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                     User.findOne({
                         where:{
                             id:content.authorid
                         }
-                    }).then(user=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                         let number_of_likes=(user.number_of_likes)?(user.number_of_likes+1):1;
                         user.update({
                             number_of_likes:number_of_likes,
@@ -220,7 +265,10 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(like=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
                 if(like){
                     like.destroy({
                         truncate: false
@@ -240,12 +288,18 @@ module.exports = (router,
                             bd_id: publication_id,
                             }
                         })
-                        .then(bd =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                             const likes = bd.likesnumber - 1;
                             bd.update({
                             "likesnumber":(likes>=0)?likes:0,
                             })
-                            .then(destroy(bd))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(bd))
                         }); 
                         
                     }
@@ -257,25 +311,37 @@ module.exports = (router,
                             chapter_number:chapter_number,
                             }
                         })
-                        .then(chapter =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
        
                             const likes = chapter.likesnumber - 1;      
                             chapter.update({
                             "likesnumber":(likes>=0)?likes:0,
                             })
-                            .then(chapter =>  {  
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {  
                                 Liste_Bd_Serie.findOne({
                                     where: {
                                     bd_id: chapter.bd_id,
                                     }
                                 })
-                                .then(bd_serie =>  {  
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                     const likes = bd_serie.likesnumber - 1;
                                     bd_serie.update({
                                     "likesnumber":(likes>=0)?likes:0,
                                     })
                                 })                   
-                                .then(destroy(bd_serie))
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(bd_serie))
                             
                             })
                         })
@@ -291,12 +357,18 @@ module.exports = (router,
                                 drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const likes = drawing.likesnumber - 1;
                             drawing.update({
                             "likesnumber":(likes>=0)?likes:0,
                             })
-                            .then(destroy(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(drawing))
                         }); 
                     }
             
@@ -306,12 +378,18 @@ module.exports = (router,
                             drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const likes = drawing.likesnumber - 1;
                             drawing.update({
                             "likesnumber":(likes>=0)?likes:0,
                             })
-                            .then(destroy(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(drawing))
                         }); 
                     }
                 }
@@ -322,12 +400,18 @@ module.exports = (router,
                             writing_id: publication_id,
                         }
                     })
-                    .then(writing =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                         const likes = writing.likesnumber - 1;
                         writing.update({
                         "likesnumber":(likes>=0)?likes:0,
                         })
-                        .then(destroy(writing))
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(writing))
                     }); 
                     
                 }
@@ -338,7 +422,10 @@ module.exports = (router,
                     where:{
                         id:content.authorid
                     }
-                }).then(user=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                     let number_of_likes=(user.number_of_likes && user.number_of_likes>0)?(user.number_of_likes-1):0;
                     user.update({
                         number_of_likes:number_of_likes,
@@ -373,7 +460,10 @@ module.exports = (router,
                     chapter_number: chapter_number,
                     author_id_loved:author_id_loved,
                 }
-            }).then(love=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(love=>{
                 if(!love){
                     add_love()
                 }
@@ -390,12 +480,18 @@ module.exports = (router,
                                 bd_id: publication_id,
                             }
                             })
-                            .then(bd =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                             const loves = bd.lovesnumber + 1;
                             bd.update({
                                 "lovesnumber":loves,
                             })
-                            .then(create(bd))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(bd))
                             }); 
                         
                     }
@@ -407,23 +503,35 @@ module.exports = (router,
                                 chapter_number:chapter_number,
                             }
                             })
-                            .then(chapter =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
                             const loves = chapter.lovesnumber + 1;
                             chapter.update({
                                 "lovesnumber":loves,
                             })
-                            .then(chapter =>  { 
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  { 
                             
                                   Liste_Bd_Serie.findOne({
                                         where: {
                                         bd_id: chapter.bd_id,
                                         }
                                     })
-                                    .then(bd_serie =>  {  
+                                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                         const loves = bd_serie.lovesnumber + 1;
                                         bd_serie.update({
                                         "lovesnumber":loves,
-                                        }).then(bd_serie=>{create(bd_serie)})
+                                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie=>{create(bd_serie)})
                                     })                   
                                     
                                 
@@ -440,12 +548,18 @@ module.exports = (router,
                                 drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
                             drawing.update({
                             "lovesnumber":loves,
                             })
-                            .then(create(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(drawing))
                         }); 
                     }
     
@@ -455,12 +569,18 @@ module.exports = (router,
                             drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
                             drawing.update({
                             "lovesnumber":loves,
                             })
-                            .then(create(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(drawing))
                         }); 
                     }
                     }
@@ -471,12 +591,18 @@ module.exports = (router,
                             writing_id: publication_id,
                         }
                     })
-                    .then(writing =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                         const loves = writing.lovesnumber + 1;
                         writing.update({
                         "lovesnumber":loves,
                         })
-                        .then(create(writing))
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(create(writing))
                     }); 
                     
                     }
@@ -496,12 +622,18 @@ module.exports = (router,
                         "chapter_number": chapter_number,
                         "author_id_loved":author_id_loved,
                         "monetization":content.monetization,
-                    }) .then(love=>{
+                    }) .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(love=>{
                         User.findOne({
                             where:{
                                 id:content.authorid
                             }
-                        }).then(user=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                             let number_of_loves=(user.number_of_loves)?(user.number_of_loves+1):1;
                             user.update({
                                 number_of_loves:number_of_loves,
@@ -534,7 +666,10 @@ module.exports = (router,
                 publication_id:publication_id,
                 chapter_number:chapter_number,
             }
-        }).then(love=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(love=>{
             if(love){
                 love.destroy({
                     truncate: false
@@ -554,12 +689,18 @@ module.exports = (router,
                             bd_id: publication_id,
                         }
                         })
-                        .then(bd =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                         const loves = bd.lovesnumber - 1;
                         bd.update({
                             "lovesnumber":(loves>=0)?loves:0,
                         })
-                        .then(destroy(bd))
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(bd))
                         }); 
                     
                 }
@@ -571,24 +712,36 @@ module.exports = (router,
                             chapter_number:chapter_number,
                         }
                         })
-                        .then(chapter =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
                         const loves = chapter.lovesnumber - 1;
                         chapter.update({
                             "lovesnumber":(loves>=0)?loves:0,
                         }) 
-                        .then(chapter =>  {  
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {  
                             Liste_Bd_Serie.findOne({
                                     where: {
                                     bd_id: chapter.bd_id,
                                     }
                                 })
-                                .then(bd_serie =>  {  
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                     const loves = bd_serie.lovesnumber - 1;
                                     bd_serie.update({
                                     "lovesnumber":(loves>=0)?loves:0,
                                     })
                                 })                   
-                                .then(destroy(bd_serie))
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(bd_serie))
                            
                             
                             })
@@ -605,12 +758,18 @@ module.exports = (router,
                                 drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const loves = drawing.lovesnumber - 1;
                             drawing.update({
                             "lovesnumber":(loves>=0)?loves:0,
                             })
-                            .then(destroy(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(drawing))
                         }); 
                     }
     
@@ -620,12 +779,18 @@ module.exports = (router,
                             drawing_id: publication_id,
                             }
                         })
-                        .then(drawing =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                             const loves = drawing.lovesnumber - 1;
                             drawing.update({
                             "lovesnumber":(loves>=0)?loves:0,
                             })
-                            .then(destroy(drawing))
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(drawing))
                         }); 
                     }
                 }
@@ -636,12 +801,18 @@ module.exports = (router,
                         writing_id: publication_id,
                     }
                 })
-                .then(writing =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                     const loves = writing.lovesnumber - 1;
                     writing.update({
                     "lovesnumber":(loves>=0)?loves:0,
                     })
-                    .then(destroy(drawing))
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(destroy(drawing))
                 }); }
         }
             
@@ -653,7 +824,10 @@ module.exports = (router,
                 where:{
                     id:content.authorid
                 }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                 let number_of_loves=(user.number_of_loves && user.number_of_loves>0)?(user.number_of_loves-1):0;
                 user.update({
                     number_of_loves:number_of_loves,
@@ -669,7 +843,7 @@ module.exports = (router,
 
     router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        console.log("add_view")
+        //console.log("add_view")
         const category = req.params.category;
         const format = req.params.format;
         const style = req.params.style;
@@ -679,7 +853,7 @@ module.exports = (router,
         const secondtag=req.params.secondtag;
         const thirdtag=req.params.thirdtag;
         const author_id_viewed=parseInt(req.params.author_id_viewed);
-        console.log('ajout de view');
+        //console.log('ajout de view');
         List_of_views.create({
             "status":"public",
             "author_id_who_looks": current_user,
@@ -693,7 +867,10 @@ module.exports = (router,
             "chapter_number": chapter_number,
             "author_id_viewed":author_id_viewed
         })
-        .then(list_of_view => {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(list_of_view => {
             List_of_contents.findOne({
                 where:{
                      publication_id : publication_id,
@@ -701,16 +878,22 @@ module.exports = (router,
                      publication_category :category,
                      format : format,
                 }
-            }).then(content=>{
-                console.log("content found and is  from ")
-                console.log(content.id_user)
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
+                //console.log("content found and is  from ")
+                //console.log(content.id_user)
                 User.findOne({
                     where:{
                         id:content.id_user
                     }
-                }).then(user=>{
-                    console.log("user view");
-                    console.log(user.nickname)
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
+                    //console.log("user view");
+                    //console.log(user.nickname)
                     let number_of_views=(user.number_of_views)?(user.number_of_views+1):1;
                     user.update({
                         number_of_views:number_of_views,
@@ -726,7 +909,7 @@ module.exports = (router,
         });
 
     router.post('/add_view_time', function (req, res) {
-        console.log(" adding add_view_time")
+        //console.log(" adding add_view_time")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
@@ -736,7 +919,10 @@ module.exports = (router,
                     id:id_view_created,
                 }
             })
-            .then(view =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(view =>  {
                 if(view){
                     if(view_time>5){
                         if (view.publication_category=== "comic" ) {
@@ -746,7 +932,10 @@ module.exports = (router,
                                         bd_id: view.publication_id,
                                     }
                                     })
-                                    .then(bd =>  {
+                                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                                         const views = bd.viewnumber + 1;
                                         bd.update({
                                             "viewnumber":views,
@@ -759,7 +948,10 @@ module.exports = (router,
                                                 view.update({
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
-                                                }).then(view=>{
+                                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(view=>{
                                                     res.status(200).send([view])
                                                 })
                                             }
@@ -768,15 +960,18 @@ module.exports = (router,
                                                 
                                             } 
                                         }
-                                        else if(bd.firsttag=='Caricature' || bd.firsttag=='Religion' 
-                                        || bd.secondtag=='Caricature' || bd.secondtag=='Religion' 
-                                        || bd.thirdtag=='Caricature' || bd.thirdtag=='Religion'){
+                                        else if(bd.firsttag=='Caricatural' || bd.firsttag=='Religion' 
+                                        || bd.secondtag=='Caricatural' || bd.secondtag=='Religion' 
+                                        || bd.thirdtag=='Caricatural' || bd.thirdtag=='Religion'){
                                             if(getRandomInt(20)==0){
                                                 
                                                 view.update({
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
-                                                }).then(view=>{
+                                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(view=>{
                                                     res.status(200).send([view])
                                                 })
                                             }
@@ -804,21 +999,30 @@ module.exports = (router,
                                         chapter_number:view.chapter_number,
                                     }
                                     })
-                                    .then(chapter =>  {
+                                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
                                         const views = chapter.viewnumber + 1;
                                         chapter.update({
                                             "viewnumber":views,
                                         })
-                                        .then(chapter =>  {  
-                                            console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
+                                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {  
+                                            //console.log("la boucle de vue est dans l'ajout de like bd serie " + chapter.bd_id);
                                     
                                             Liste_Bd_Serie.findOne({
                                                 where: {
                                                 bd_id: chapter.bd_id,
                                                 }
                                             })
-                                            .then(bd =>  {
-                                                console.log(bd.viewnumber);
+                                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
+                                                //console.log(bd.viewnumber);
                                                 const viewnumber = bd.viewnumber + 1;
                                                 bd.update({
                                                     "viewnumber":viewnumber,
@@ -839,9 +1043,9 @@ module.exports = (router,
                                                         res.status(200).send([view])
                                                     } 
                                                 }
-                                                else if(bd.firsttag=='Caricature' || bd.firsttag=='Religion' 
-                                                || bd.secondtag=='Caricature' || bd.secondtag=='Religion'  
-                                                || bd.thirdtag=='Caricature' || bd.thirdtag=='Religion' ){
+                                                else if(bd.firsttag=='Caricatural' || bd.firsttag=='Religion' 
+                                                || bd.secondtag=='Caricatural' || bd.secondtag=='Religion'  
+                                                || bd.thirdtag=='Caricatural' || bd.thirdtag=='Religion' ){
                                                     if(getRandomInt(20)==0){
                                                         view.update({
                                                             "view_time":view_time,
@@ -877,7 +1081,10 @@ module.exports = (router,
                                         drawing_id: view.publication_id,
                                     }
                                 })
-                                .then(drawing =>  {
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
                                     drawing.update({
                                         "viewnumber":views,
@@ -886,7 +1093,7 @@ module.exports = (router,
                                     || drawing.secondtag=='Romantique' || drawing.secondtag=='Shojo' || drawing.secondtag=='Yuri' || drawing.secondtag=='Yaoi' || drawing.secondtag=='Josei' 
                                     || drawing.thirdtag=='Romantique' || drawing.thirdtag=='Shojo' || drawing.thirdtag=='Yuri' || drawing.thirdtag=='Yaoi' || drawing.thirdtag=='Josei'){
                                         if(getRandomInt(5)==0){
-                                            console.log("pass")
+                                            //console.log("pass")
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":drawing.monetization,
@@ -898,11 +1105,11 @@ module.exports = (router,
                                             res.status(200).send([view])
                                         } 
                                     }
-                                    else if(drawing.firsttag=='Caricature' || drawing.firsttag=='Religion'  
-                                    || drawing.secondtag=='Caricature' || drawing.secondtag=='Religion' 
-                                    || drawing.thirdtag=='Caricature' || drawing.thirdtag=='Religion' ){
+                                    else if(drawing.firsttag=='Caricatural' || drawing.firsttag=='Religion'  
+                                    || drawing.secondtag=='Caricatural' || drawing.secondtag=='Religion' 
+                                    || drawing.thirdtag=='Caricatural' || drawing.thirdtag=='Religion' ){
                                         if(getRandomInt(20)==0){
-                                            console.log("pass")
+                                            //console.log("pass")
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":drawing.monetization,
@@ -915,7 +1122,7 @@ module.exports = (router,
                                         } 
                                     }
                                     else{
-                                        console.log("no pass")
+                                        //console.log("no pass")
                                         view.update({
                                             "view_time":view_time,
                                             "monetization":drawing.monetization,
@@ -931,7 +1138,10 @@ module.exports = (router,
                                         drawing_id: view.publication_id,
                                     }
                                 })
-                                .then(drawing =>  {
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                                     const views = drawing.viewnumber + 1;
                                     drawing.update({
                                         "viewnumber":views,
@@ -951,9 +1161,9 @@ module.exports = (router,
                                             res.status(200).send([view])
                                         } 
                                     }
-                                    else if(drawing.firsttag=='Caricature' || drawing.firsttag=='Religion'  
-                                    || drawing.secondtag=='Caricature' || drawing.secondtag=='Religion' 
-                                    || drawing.thirdtag=='Caricature' || drawing.thirdtag=='Religion'){
+                                    else if(drawing.firsttag=='Caricatural' || drawing.firsttag=='Religion'  
+                                    || drawing.secondtag=='Caricatural' || drawing.secondtag=='Religion' 
+                                    || drawing.thirdtag=='Caricatural' || drawing.thirdtag=='Religion'){
                                         if(getRandomInt(20)==0){
                                             view.update({
                                                 "view_time":view_time,
@@ -978,19 +1188,22 @@ module.exports = (router,
                             }
                         }
                         else if (view.publication_category === "writing" ) {
-                            console.log("ajout vu pour writing");
+                            //console.log("ajout vu pour writing");
                             Liste_Writings.findOne({
                                 where: {
                                     writing_id: view.publication_id,
                                 }
                             })
-                            .then(writing =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                                 
                                 const views = writing.viewnumber + 1;
                                 writing.update({
                                     "viewnumber":views,
                                 })
-                                console.log(writing)
+                                //console.log(writing)
                                 if(writing.firsttag=='Romantique' || writing.firsttag=='Shojo' || writing.firsttag=='Yuri' || writing.firsttag=='Yaoi' || writing.firsttag=='Josei' 
                                 || writing.secondtag=='Romantique' || writing.secondtag=='Shojo' || writing.secondtag=='Yuri' || writing.secondtag=='Yaoi' || writing.secondtag=='Josei' 
                                 || writing.thirdtag=='Romantique' || writing.thirdtag=='Shojo' || writing.thirdtag=='Yuri' || writing.thirdtag=='Yaoi' || writing.thirdtag=='Josei'){
@@ -1007,9 +1220,9 @@ module.exports = (router,
                                         res.status(200).send([view])
                                     } 
                                 }
-                                else if(writing.firsttag=='Caricature' || writing.firsttag=='Religion' 
-                                || writing.secondtag=='Caricature' || writing.secondtag=='Religion' 
-                                || writing.thirdtag=='Caricature' || writing.thirdtag=='Religion' ){
+                                else if(writing.firsttag=='Caricatural' || writing.firsttag=='Religion' 
+                                || writing.secondtag=='Caricatural' || writing.secondtag=='Religion' 
+                                || writing.thirdtag=='Caricatural' || writing.thirdtag=='Religion' ){
                                     if(getRandomInt(20)==0){
                                         
                                         view.update({
@@ -1073,7 +1286,10 @@ module.exports = (router,
                 ['createdAt', 'DESC']
             ],
         })
-        .then(likes =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
             list_of_likes=likes;
             Liste_of_loves.findAll({
                 where: {
@@ -1087,7 +1303,10 @@ module.exports = (router,
                     ['createdAt', 'DESC']
                 ],
             })
-            .then(loves =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                 list_of_loves=loves;
                 List_of_views.findAll({
                     where: {
@@ -1101,7 +1320,10 @@ module.exports = (router,
                         ['createdAt', 'DESC']
                     ],
                 })
-                .then(views =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
                     list_of_views=views;
                     List_of_comments.findAll({
                         where: {
@@ -1115,7 +1337,10 @@ module.exports = (router,
                             ['createdAt', 'DESC']
                         ],
                     })
-                    .then(comments =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                         list_of_comments=comments;
                         res.status(200).send([{list_of_likes:list_of_likes,list_of_loves:list_of_loves,list_of_views:list_of_views,list_of_comments:list_of_comments}])
                     }); 
@@ -1145,7 +1370,10 @@ module.exports = (router,
                 ['createdAt', 'DESC']
               ],
         })
-        .then(likes =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
             res.status(200).send([likes])
         }); 
  
@@ -1159,7 +1387,7 @@ module.exports = (router,
         const style = req.params.style;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-        console.log("get loves")
+        //console.log("get loves")
         Liste_of_loves.findAll({
             where: {
                 publication_category:category,
@@ -1171,8 +1399,11 @@ module.exports = (router,
                 ['createdAt', 'DESC']
               ],
         })
-        .then(loves =>  {
-            console.log("result loves")
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
+            //console.log("result loves")
             res.status(200).send([loves])
         }); 
      })();     
@@ -1183,7 +1414,7 @@ module.exports = (router,
     router.post('/add_commentary', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
         
-        console.log("adding comment")
+        //console.log("adding comment")
         const category = req.body.category;
         const format = req.body.format;
         const style = req.body.style;
@@ -1198,7 +1429,10 @@ module.exports = (router,
                         bd_id: publication_id,
                     }
                     })
-                    .then(bd =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                     const number = bd.commentarynumbers + 1;
                     bd.update({
                         "commentarynumbers":number,
@@ -1215,18 +1449,27 @@ module.exports = (router,
                             chapter_number:chapter_number + 1,
                         }
                     })
-                    .then(chapter =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
                     const number = chapter.commentarynumbers + 1;
                     chapter.update({
                         "commentarynumbers":number,
                     })
-                    .then(chapter =>  { 
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  { 
                             Liste_Bd_Serie.findOne({
                                 where: {
                                 bd_id: chapter.bd_id,
                                 }
                             })
-                            .then(bd_serie =>  {  
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                 const number = bd_serie.commentarynumbers + 1;
                                 bd_serie.update({
                                 "commentarynumbers":number,
@@ -1246,7 +1489,10 @@ module.exports = (router,
                         drawing_id: publication_id,
                     }
                 })
-                .then(drawing =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                     const number = drawing.commentarynumbers + 1;
                     drawing.update({
                     "commentarynumbers":number,
@@ -1261,7 +1507,10 @@ module.exports = (router,
                     drawing_id: publication_id,
                     }
                 })
-                .then(drawing =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                     const number = drawing.commentarynumbers + 1;
                     drawing.update({
                     "commentarynumbers":number,
@@ -1276,7 +1525,10 @@ module.exports = (router,
                     writing_id: publication_id,
                 }
             })
-            .then(writing =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                 const number = writing.commentarynumbers + 1;
                 writing.update({
                 "commentarynumbers":number,
@@ -1286,13 +1538,16 @@ module.exports = (router,
             
         }
         else if(category=="ad"){
-                console.log("looking for ad")
+                //console.log("looking for ad")
                 list_of_ads.findOne({
                     where: {
                         id: publication_id,
                     }
                 })
-                .then(ad =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
                     let number=0;
                     if(!ad.commentariesnumber){
                         number=1;
@@ -1319,12 +1574,18 @@ module.exports = (router,
                 "number_of_answers":0,
                 "status":"public",
                 "commentary":commentary
-            }).then(comment=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comment=>{
                 User.findOne({
                     where:{
                         id:id
                     }
-                }).then(user=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                     let number_of_comments=(user.number_of_comments)?(user.number_of_comments+1):1;
                     user.update({
                         number_of_comments:number_of_comments,
@@ -1349,19 +1610,25 @@ module.exports = (router,
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
 
-        console.log('suppression de commentaire ok');
+        //console.log('suppression de commentaire ok');
         List_of_comments.findOne({
             where: {
                 id:comment_id,
             }
-        }).then(comment=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comment=>{
             if(comment){
                 List_of_contents.findOne({
                     publication_category: category,
                     format:format,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
-                }).then(content=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
                     if(content){
                         if((content.id_user==current_user && content.publication_category!='ad') || comment.author_id_who_comments==current_user){
                             comment.destroy({
@@ -1369,7 +1636,10 @@ module.exports = (router,
                                     id:comment_id,
                                         },
                                 truncate: false
-                            }).then( remove_comment(comment))
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( remove_comment(comment))
                            
                         }
                         else{
@@ -1396,7 +1666,10 @@ module.exports = (router,
                             bd_id: publication_id,
                         }
                         })
-                        .then(bd =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
                             const commentarynumbers = bd.commentarynumbers - 1;
                             bd.update({
                                 "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
@@ -1413,18 +1686,27 @@ module.exports = (router,
                             chapter_number:chapter_number +1,
                         }
                         })
-                        .then(chapter =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
                         const commentarynumbers = chapter.commentarynumbers - 1;
                         chapter.update({
                             "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
                         }) 
-                        .then(chapter =>  {  
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {  
                             Liste_Bd_Serie.findOne({
                                     where: {
                                     bd_id: chapter.bd_id,
                                     }
                                 })
-                                .then(bd_serie =>  {  
+                                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie =>  {  
                                     const commentarynumbers = bd_serie.commentarynumbers - 1;
                                     bd_serie.update({
                                     "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
@@ -1443,7 +1725,10 @@ module.exports = (router,
                             drawing_id: publication_id,
                         }
                     })
-                    .then(drawing =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                         const commentarynumbers = drawing.commentarynumbers - 1;
                         drawing.update({
                         "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
@@ -1458,7 +1743,10 @@ module.exports = (router,
                         drawing_id: publication_id,
                         }
                     })
-                    .then(drawing =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing =>  {
                         const commentarynumbers = drawing.commentarynumbers - 1;
                         drawing.update({
                         "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
@@ -1473,7 +1761,10 @@ module.exports = (router,
                         writing_id: publication_id,
                     }
                 })
-                .then(writing =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing =>  {
                     const commentarynumbers = writing.commentarynumbers - 1;
                     writing.update({
                     "commentarynumbers":(commentarynumbers>=0)?commentarynumbers:0,
@@ -1488,7 +1779,10 @@ module.exports = (router,
                             id: publication_id,
                         }
                     })
-                    .then(ad =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
                         const commentariesnumber = ad.commentariesnumber - 1;
                         ad.update({
                         "commentariesnumber":(commentariesnumber>=0)?commentariesnumber:0,
@@ -1504,7 +1798,10 @@ module.exports = (router,
                 where:{
                     id:id
                 }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                 let number_of_comments=(user.number_of_comments && user.number_of_comments>0)?(user.number_of_comments-1):0;
                 user.update({
                     number_of_comments:number_of_comments,
@@ -1539,10 +1836,16 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 comments.update({
                     "commentary":commentary
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     res.status(200).send([comments]);
                 })
                
@@ -1567,7 +1870,10 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(like=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
                 if(!like){
                     add_like()
                 }
@@ -1585,11 +1891,17 @@ module.exports = (router,
                         publication_id:publication_id,
                         chapter_number:chapter_number,
                     }
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     let number_of_likes=comments.number_of_likes+1;
                     comments.update({
                         "number_of_likes":number_of_likes
-                    }).then(comments=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                         List_of_comments_likes.create({
                         "status":"public",
                         "author_id_who_likes": current_user,
@@ -1627,18 +1939,27 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 let number_of_answers=comments.number_of_answers+1;
                 comments.update({
                     "number_of_answers":number_of_answers
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     List_of_comments_answers.create({
                         "status":"public",
                         "author_id_who_replies": current_user,
                         "number_of_likes":0,
                         "comment_id": comments.id,
                         "commentary":commentary,
-                    }).then(answer=>{res.status(200).send([answer])});
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(answer=>{res.status(200).send([answer])});
                     
                 })
                
@@ -1657,10 +1978,16 @@ module.exports = (router,
                 where: {
                     id:id,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     comments.update({
                         "commentary":commentary,
-                    }).then(answer=>{res.status(200).send([answer])});
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(answer=>{res.status(200).send([answer])});
                     
                 })
          
@@ -1675,10 +2002,16 @@ module.exports = (router,
                 where: {
                     id:id,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     comments.update({
                         "commentary":commentary,
-                    }).then(answer=>{res.status(200).send([answer])});
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(answer=>{res.status(200).send([answer])});
                     
                 })
            
@@ -1695,7 +2028,10 @@ module.exports = (router,
                 author_id_who_likes: current_user,
                 comment_answer_id:comment_answer_id
             }
-        }).then(like=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
             if(!like){
                 add_like()
             }
@@ -1709,11 +2045,17 @@ module.exports = (router,
                 where: {
                     id:comment_answer_id,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes+1;
                 comments.update({
                     "number_of_likes":number_of_likes
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     List_of_comments_answers_likes.create({
                     "status":"public",
                     "author_id_who_likes": current_user,
@@ -1739,7 +2081,10 @@ module.exports = (router,
                 author_id_who_likes:current_user,
                 comment_answer_id:comment_answer_id,
             }
-        }).then(like=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
             if(like){
                 like.destroy({
                     truncate: false
@@ -1756,11 +2101,17 @@ module.exports = (router,
                 where: {
                     id:comment_answer_id,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes-1;
                 comments.update({
                     "number_of_likes":(number_of_likes>=0)?number_of_likes:0,
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     List_of_comments_answers_likes.destroy({
                         where: {
                             author_id_who_likes:current_user,
@@ -1793,7 +2144,10 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     res.status(200).send([comments]);
                 })
            
@@ -1810,7 +2164,10 @@ module.exports = (router,
                 order: [
                     ['createdAt', 'DESC']
                   ],
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     res.status(200).send([comments]);
                 })
           
@@ -1827,7 +2184,10 @@ module.exports = (router,
                 order: [
                     ['createdAt', 'DESC']
                   ],
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     res.status(200).send([comments]);
                 })
        
@@ -1844,7 +2204,10 @@ module.exports = (router,
             order: [
                 ['createdAt', 'DESC']
                 ],
-        }).then(comments=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 res.status(200).send([comments]);
             })
         
@@ -1867,7 +2230,10 @@ module.exports = (router,
                 publication_id:publication_id,
                 chapter_number:chapter_number,
             }
-        }).then(like=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(like=>{
             if(like){
                 like.destroy({
                     truncate: false
@@ -1888,11 +2254,17 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                 }
-            }).then(comments=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                 let number_of_likes=comments.number_of_likes-1;
                 comments.update({
                     "number_of_likes":(number_of_likes>=0)?number_of_likes:0,
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     List_of_comments_likes.destroy({
                         where: {
                             author_id_who_likes:current_user,
@@ -1932,17 +2304,26 @@ module.exports = (router,
                 publication_id:publication_id,
                 chapter_number:chapter_number,
             }
-        }).then(comment=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comment=>{
             if(comment){
                 let number_of_answers=comment.number_of_answers-1;
                 comment.update({
                     "number_of_answers":(number_of_answers>=0)?number_of_answers:0,
-                }).then(comments=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                     List_of_comments_answers.findOne({
                         where: {
                             id:comment_anwser_id,
                             }
-                    }).then(comment_answer=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comment_answer=>{
                         if(comment_answer){
                             List_of_contents.findOne({
                                 where:{
@@ -1951,7 +2332,10 @@ module.exports = (router,
                                     publication_id:publication_id,
                                     chapter_number:chapter_number,
                                 }
-                            }).then(content=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
                                 if(content){
                                     if(comment_answer.author_id_who_replies==current_user ){
                                         List_of_comments_answers.destroy({
@@ -2009,7 +2393,10 @@ module.exports = (router,
                 ['createdAt', 'DESC']
               ],
         })
-        .then(comments =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
             res.status(200).send([comments])
         }); 
  
@@ -2024,8 +2411,8 @@ module.exports = (router,
         const format = req.params.format;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-        console.log("get_commentaries")
-        console.log(publication_id)
+        //console.log("get_commentaries")
+        //console.log(publication_id)
         List_of_comments.findAll({
             where: {
                 status:"public",
@@ -2039,7 +2426,10 @@ module.exports = (router,
                 ['createdAt', 'DESC']
               ],
         })
-        .then(comments =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
             res.status(200).send([comments])
         }); 
   
@@ -2050,7 +2440,7 @@ module.exports = (router,
    
 
     router.post('/get_number_of_ads_comments', function (req, res) {
-        console.log("get_number_of_ads_comments")
+        //console.log("get_number_of_ads_comments")
         let list_of_ads_ids = req.body.list_of_ads_ids;
         let number_of_comments=0
         let compt=0
@@ -2061,11 +2451,14 @@ module.exports = (router,
                     publication_id: list_of_ads_ids[i],
                 }
             })
-            .then(comments =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                 number_of_comments+=comments.length
                 compt++;
                 if(compt==list_of_ads_ids.length){
-                    console.log("return comments ads info ")
+                    //console.log("return comments ads info ")
                     res.status(200).send([{number_of_comments:number_of_comments}])
                 }
             }); 
@@ -2074,7 +2467,7 @@ module.exports = (router,
 
 
     router.post('/get_number_of_notations', function (req, res) {
-        console.log("get_number_of_notations")
+        //console.log("get_number_of_notations")
         let list_of_ids = req.body.list_of_ids;
         let publication_category = req.body.publication_category;
         let format = req.body.format;
@@ -2091,8 +2484,11 @@ module.exports = (router,
                     publication_id: list_of_ids[i],
                 },
             })
-            .then(views =>  {
-                console.log("views found get_number_of_notations")
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
+                //console.log("views found get_number_of_notations")
                 number_of_views+=views.length
                 Liste_of_likes.findAll({
                     where: {
@@ -2101,8 +2497,11 @@ module.exports = (router,
                         publication_id: list_of_ids[i],
                     },
                 })
-                .then(likes =>  {
-                    console.log("likes found get_number_of_notations")
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
+                    //console.log("likes found get_number_of_notations")
                     number_of_likes+=likes.length
                     Liste_of_loves.findAll({
                         where: {
@@ -2111,9 +2510,12 @@ module.exports = (router,
                             publication_id: list_of_ids[i],
                         },
                     })
-                    .then(loves =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                         number_of_loves+=loves.length;
-                        console.log("getting comments notations")
+                        //console.log("getting comments notations")
                         List_of_comments.findAll({
                             where: {
                                 publication_category:publication_category,
@@ -2121,11 +2523,14 @@ module.exports = (router,
                                 publication_id: list_of_ids[i],
                             },
                         })
-                        .then(comments =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                             number_of_comments+=comments.length
                             compt++;
                             if(compt==list_of_ids.length){
-                                console.log("get_number_of_notations done")
+                                //console.log("get_number_of_notations done")
                                 res.status(200).send([{number_of_views:number_of_views,number_of_likes:number_of_likes,number_of_loves:number_of_loves,number_of_comments:number_of_comments}])
                             }
                         }); 
@@ -2140,7 +2545,7 @@ module.exports = (router,
 
     
     router.post('/get_notations_for_a_content', function (req, res) {
-        console.log("get_notations_for_a_content")
+        //console.log("get_notations_for_a_content")
         let publication_id = req.body.publication_id;
         let publication_category = req.body.publication_category;
         let date_format = req.body.date_format;
@@ -2154,7 +2559,7 @@ module.exports = (router,
 
         if(date_format==0){
             let today=new Date();
-            console.log("day_compteur ")
+            //console.log("day_compteur ")
             for(let i=0;i<8;i++){
                 let day_i=new Date();
                 day_i.setDate(day_i.getDate() - i);
@@ -2169,7 +2574,10 @@ module.exports = (router,
                         [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                     },
                 })
-                .then(views =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
                     list_of_views[i]=views.length
                     Liste_of_likes.findAll({
                         where: {
@@ -2179,7 +2587,10 @@ module.exports = (router,
                             [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                         },
                     })
-                    .then(likes =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
                         list_of_likes[i]=likes.length
                         Liste_of_loves.findAll({
                             where: {
@@ -2189,7 +2600,10 @@ module.exports = (router,
                                 [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                             },
                         })
-                        .then(loves =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
                             List_of_comments.findAll({
                                 where: {
@@ -2199,7 +2613,10 @@ module.exports = (router,
                                     [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                                 },
                             })
-                            .then(comments =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
                                 compt++;
                                 if(compt==8){
@@ -2218,7 +2635,7 @@ module.exports = (router,
 
         if(date_format==1){
             let today=new Date();
-            console.log("week_compteur ")
+            //console.log("week_compteur ")
             for(let i=0;i<30;i++){
                 let day_i=new Date();
                 day_i.setDate(day_i.getDate() - i);
@@ -2233,7 +2650,10 @@ module.exports = (router,
                         [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                     },
                 })
-                .then(views =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
                     list_of_views[i]=views.length
                     Liste_of_likes.findAll({
                         where: {
@@ -2243,7 +2663,10 @@ module.exports = (router,
                             [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                         },
                     })
-                    .then(likes =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
                         list_of_likes[i]=likes.length
                         Liste_of_loves.findAll({
                             where: {
@@ -2253,7 +2676,10 @@ module.exports = (router,
                                 [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                             },
                         })
-                        .then(loves =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
                             List_of_comments.findAll({
                                 where: {
@@ -2263,7 +2689,10 @@ module.exports = (router,
                                     [Op.and]:[{createdAt: {[Op.lte]: day_i}},{createdAt: {[Op.gte]: day_i_1}}],
                                 },
                             })
-                            .then(comments =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
                                 compt++;
                                 if(compt==30){
@@ -2280,7 +2709,7 @@ module.exports = (router,
         }
      
         if(date_format==2){
-            console.log("week_compteur last year ")
+            //console.log("week_compteur last year ")
             for(let i=0;i<53;i++){
                 let week_i=new Date();
                 week_i.setDate(week_i.getDate() - 7*i);
@@ -2295,7 +2724,10 @@ module.exports = (router,
                         [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                     },
                 })
-                .then(views =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
                     list_of_views[i]=views.length
                     Liste_of_likes.findAll({
                         where: {
@@ -2305,7 +2737,10 @@ module.exports = (router,
                             [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                         },
                     })
-                    .then(likes =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
                         list_of_likes[i]=likes.length
                         Liste_of_loves.findAll({
                             where: {
@@ -2315,7 +2750,10 @@ module.exports = (router,
                                 [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                             },
                         })
-                        .then(loves =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
                             List_of_comments.findAll({
                                 where: {
@@ -2325,7 +2763,10 @@ module.exports = (router,
                                     [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                                 },
                             })
-                            .then(comments =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
                                 compt++;
                                 if(compt==53){
@@ -2343,7 +2784,7 @@ module.exports = (router,
         }
 
         if(date_format==3){
-            console.log("depuis toujours")
+            //console.log("depuis toujours")
             var date1 = new Date('08/01/2019');
             var date2 = new Date();
             var difference = date2.getTime() - date1.getTime();
@@ -2363,7 +2804,10 @@ module.exports = (router,
                         [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                     },
                 })
-                .then(views =>  {
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views =>  {
                     list_of_views[i]=views.length
                     Liste_of_likes.findAll({
                         where: {
@@ -2373,7 +2817,10 @@ module.exports = (router,
                             [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                         },
                     })
-                    .then(likes =>  {
+                    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes =>  {
                         list_of_likes[i]=likes.length
                         Liste_of_loves.findAll({
                             where: {
@@ -2383,7 +2830,10 @@ module.exports = (router,
                                 [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                             },
                         })
-                        .then(loves =>  {
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves =>  {
                             list_of_loves[i]=loves.length;
                             List_of_comments.findAll({
                                 where: {
@@ -2393,7 +2843,10 @@ module.exports = (router,
                                     [Op.and]:[{createdAt: {[Op.lte]: week_i}},{createdAt: {[Op.gte]: week_i_1}}],
                                 },
                             })
-                            .then(comments =>  {
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments =>  {
                                 list_of_comments[i]=comments.length
                                 compt++;
                                 if(compt==weeks){
@@ -2415,7 +2868,7 @@ module.exports = (router,
     
 
     router.post('/update_marks', function (req, res) {
-        console.log("update_marks")
+        //console.log("update_marks")
         let id = req.body.id;
         
 
@@ -2432,7 +2885,10 @@ module.exports = (router,
             where:{
                 authorid:id,
             }
-        }).then(series=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(series=>{
             if(series[0]){
                 let compt=0
                 for(let i=0;i<series.length;i++){
@@ -2443,7 +2899,10 @@ module.exports = (router,
                             format: "one-shot",
                             publication_id: series[i].bd_id,
                         }
-                    }).then(likes=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                         number_of_likes+=likes.length;
                         Liste_of_loves.findAll({
                             where: {
@@ -2452,7 +2911,10 @@ module.exports = (router,
                                 format: "one-shot",
                                 publication_id: series[i].bd_id,
                             }
-                        }).then(loves=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves=>{
                             number_of_loves+=loves.length;
                             List_of_views.findAll({
                                 where: {
@@ -2461,7 +2923,10 @@ module.exports = (router,
                                     format: "one-shot",
                                     publication_id: series[i].bd_id,
                                 }
-                            }).then(views=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 number_of_views+=views.length;
                                 List_of_comments.findAll({
                                     where: {
@@ -2470,7 +2935,10 @@ module.exports = (router,
                                         format: "one-shot",
                                         publication_id: series[i].bd_id,
                                     }
-                                }).then(comments=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                                     number_of_comments+=comments.length;
                                     
                                     compt++
@@ -2494,7 +2962,10 @@ module.exports = (router,
             where:{
                 authorid:id,
             }
-        }).then(series=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(series=>{
             if(series[0]){
                 let compt=0
                 for(let i=0;i<series.length;i++){
@@ -2505,7 +2976,10 @@ module.exports = (router,
                             format: "serie",
                             publication_id: series[i].bd_id,
                         }
-                    }).then(likes=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                         number_of_likes+=likes.length;
                         Liste_of_loves.findAll({
                             where: {
@@ -2514,7 +2988,10 @@ module.exports = (router,
                                 format: "serie",
                                 publication_id: series[i].bd_id,
                             }
-                        }).then(loves=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves=>{
                             number_of_loves+=loves.length;
                             List_of_views.findAll({
                                 where: {
@@ -2523,7 +3000,10 @@ module.exports = (router,
                                     format: "serie",
                                     publication_id: series[i].bd_id,
                                 }
-                            }).then(views=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 number_of_views+=views.length;
                                 List_of_comments.findAll({
                                     where: {
@@ -2532,7 +3012,10 @@ module.exports = (router,
                                         format: "serie",
                                         publication_id: series[i].bd_id,
                                     }
-                                }).then(comments=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                                     number_of_comments+=comments.length;
                                     
                                     compt++
@@ -2556,7 +3039,10 @@ module.exports = (router,
             where:{
                 authorid:id,
             }
-        }).then(series=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(series=>{
             if(series[0]){
                 let compt=0
                 for(let i=0;i<series.length;i++){
@@ -2567,7 +3053,10 @@ module.exports = (router,
                             format: "one-shot",
                             publication_id: series[i].drawing_id,
                         }
-                    }).then(likes=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                         number_of_likes+=likes.length;
                         Liste_of_loves.findAll({
                             where: {
@@ -2576,7 +3065,10 @@ module.exports = (router,
                             format: "one-shot",
                             publication_id: series[i].drawing_id,
                             }
-                        }).then(loves=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves=>{
                             number_of_loves+=loves.length;
                             List_of_views.findAll({
                                 where: {
@@ -2585,7 +3077,10 @@ module.exports = (router,
                             format: "one-shot",
                             publication_id: series[i].drawing_id,
                                 }
-                            }).then(views=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 number_of_views+=views.length;
                                 List_of_comments.findAll({
                                     where: {
@@ -2594,7 +3089,10 @@ module.exports = (router,
                             format: "one-shot",
                             publication_id: series[i].drawing_id,
                                     }
-                                }).then(comments=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                                     number_of_comments+=comments.length;
                                     
                                     compt++
@@ -2618,7 +3116,10 @@ module.exports = (router,
             where:{
                 authorid:id,
             }
-        }).then(series=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(series=>{
             if(series[0]){
                 let compt=0
                 for(let i=0;i<series.length;i++){
@@ -2629,7 +3130,10 @@ module.exports = (router,
                             format: "artbook",
                             publication_id: series[i].drawing_id,
                         }
-                    }).then(likes=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                         number_of_likes+=likes.length;
                         Liste_of_loves.findAll({
                             where: {
@@ -2638,7 +3142,10 @@ module.exports = (router,
                                 format: "artbook",
                                 publication_id: series[i].drawing_id,
                             }
-                        }).then(loves=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves=>{
                             number_of_loves+=loves.length;
                             List_of_views.findAll({
                                 where: {
@@ -2647,7 +3154,10 @@ module.exports = (router,
                                     format: "artbook",
                                     publication_id: series[i].drawing_id,
                                 }
-                            }).then(views=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 number_of_views+=views.length;
                                 List_of_comments.findAll({
                                     where: {
@@ -2656,7 +3166,10 @@ module.exports = (router,
                                         format: "artbook",
                                         publication_id: series[i].drawing_id,
                                     }
-                                }).then(comments=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                                     number_of_comments+=comments.length;
                                     
                                     compt++
@@ -2680,7 +3193,10 @@ module.exports = (router,
             where:{
                 authorid:id,
             }
-        }).then(series=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(series=>{
             if(series[0]){
                 let compt=0
                 for(let i=0;i<series.length;i++){
@@ -2690,7 +3206,10 @@ module.exports = (router,
                             publication_category:"writing",
                             publication_id: series[i].writing_id,
                         }
-                    }).then(likes=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(likes=>{
                         number_of_likes+=likes.length;
                         Liste_of_loves.findAll({
                             where: {
@@ -2698,7 +3217,10 @@ module.exports = (router,
                                 publication_category:"writing",
                                 publication_id: series[i].writing_id,
                             }
-                        }).then(loves=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(loves=>{
                             number_of_loves+=loves.length;
                             List_of_views.findAll({
                                 where: {
@@ -2706,7 +3228,10 @@ module.exports = (router,
                                     publication_category:"writing",
                                     publication_id: series[i].writing_id,
                                 }
-                            }).then(views=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(views=>{
                                 number_of_views+=views.length;
                                 List_of_comments.findAll({
                                     where: {
@@ -2714,7 +3239,10 @@ module.exports = (router,
                                         publication_category:"writing",
                                         publication_id: series[i].writing_id,
                                     }
-                                }).then(comments=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comments=>{
                                     number_of_comments+=comments.length;
                                     
                                     compt++
@@ -2735,19 +3263,22 @@ module.exports = (router,
         })
 
         function check_compteur_category(){
-            console.log("check_compteur_category")
-            console.log(compteur_category)
+            //console.log("check_compteur_category")
+            //console.log(compteur_category)
             if(compteur_category==5){
-                console.log(number_of_likes)
-                console.log(number_of_loves)
-                console.log(number_of_views)
-                console.log(number_of_comments);
+                //console.log(number_of_likes)
+                //console.log(number_of_loves)
+                //console.log(number_of_views)
+                //console.log(number_of_comments);
 
                 User.findOne({
                     where:{
                         id:id
                     }
-                }).then(user=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                     if(user){
                         user.update({
                             "number_of_likes":number_of_likes,

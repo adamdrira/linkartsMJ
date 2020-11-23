@@ -3,10 +3,9 @@ const fs = require('fs');
 var path = require('path');
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
-const { list_of_stories } = require('../p_stories/model/tables');
-const { Drawings_Artbook_Tables } = require('../drawings_artbook/models/tables');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 module.exports = (router, 
@@ -50,7 +49,7 @@ function get_current_user(token){
 
 
 router.post('/add_profile_pic', function (req, res) {
-  console.log("adding pp")
+  //console.log("adding pp")
     let current_user = get_current_user(req.cookies.currentUser);
     var filename = ''
     let PATH = './data_and_routes/profile_pics/';
@@ -82,17 +81,29 @@ router.post('/add_profile_pic', function (req, res) {
         if (err) {
             return res.end('Error');
         } else {
-            req.files.forEach(function(item) {
-                console.log("item uploaded");
+            let file_name = "./data_and_routes/profile_pics/" + filename ;
+            const files = await imagemin([file_name], {
+              destination: './data_and_routes/profile_pics',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.5, 0.6]
+                })
+              ]
             });
             User = await users.findOne({
                 where: {
                   id: current_user,
                 }
               })
-              .then(User =>  {
+              .catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(User =>  {
                 User.update({
                   "profile_pic_file_name":filename,
+                }).catch(err => {
+                  //console.log(err);	
+                  res.status(500).json({msg: "error", details: err});		
                 }).then(res.status(200).send(([{ "profile_pic_name": filename}])))
               }); 
         }
@@ -130,22 +141,37 @@ router.post('/add_cover_pic', function (req, res) {
 
     upload(req, res, function(err) {
         (async () => {
-        if (err) {
-            return res.end('Error');
-        } else {
-            req.files.forEach(function(item) {
-                console.log("item uploaded");
+            if (err) {
+                return res.end('Error');
+            } 
+            else {
+
+            let file_name = "./data_and_routes/cover_pics/" + filename ;
+            const files = await imagemin([file_name], {
+              destination: './data_and_routes/cover_pics',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.5, 0.6]
+                })
+              ]
             });
             User = await users.findOne({
                 where: {
                   id: current_user,
                 }
               })
-              .then(User =>  {
-                User.update({
-                  "cover_pic_file_name":filename,
-                }).then(res.status(200).send(([{ "cover_pic_file_name": filename}])))
-              }); 
+              .catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(User =>  {
+                  User.update({
+                    "cover_pic_file_name":filename,
+                  }).catch(err => {
+                    //console.log(err);	
+                       res.status(500).json({msg: "error", details: err});		
+                    })
+                    .then(res.status(200).send(([{ "cover_pic_file_name": filename}])))
+                }); 
         }
         })();
     });
@@ -163,7 +189,10 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
         id: user_id,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
       if(User){
         let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
@@ -192,7 +221,10 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
         id: user_id,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
       let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
@@ -215,7 +247,10 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
         id: user_id,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
         res.status(200).send([User]);
       } );
 
@@ -234,49 +269,70 @@ router.post('/retrieve_number_of_contents', function (req, res) {
         id: id,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
       if(User){
         Liste_Bd_Serie.findAll({
           where:{
             authorid:id,
             status:"public"
           }
-        }).then(bd_serie=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_serie=>{
           number_of_comics+=bd_serie.length;
           List_comics_one_shot.findAll({
             where:{
               authorid:id,
               status:"public"
             }
-          }).then(bd_os=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_os=>{
             number_of_comics+=bd_os.length;
             Drawings_one_page.findAll({
               where:{
                 authorid:id,
                 status:"public"
               }
-            }).then(drawings_os=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings_os=>{
               number_of_drawings+=drawings_os.length;
               Liste_Drawings_Artbook.findAll({
                 where:{
                   authorid:id,
                   status:"public"
                 }
-              }).then(drawings_at=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings_at=>{
                 number_of_drawings+=drawings_at.length;
                 Liste_Writings.findAll({
                   where:{
                     authorid:id,
                     status:"public"
                   }
-                }).then(writings=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings=>{
                   number_of_writings+=writings.length;
                   list_of_ads.findAll({
                     where:{
                       id_user:id,
                       status:"public"
                     }
-                  }).then(ads=>{
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads=>{
                     number_of_ads+=ads.length;
                     res.status(200).send([{number_of_ads:number_of_ads,number_of_comics:number_of_comics,number_of_drawings:number_of_drawings,number_of_writings:number_of_writings}])
                   })
@@ -306,7 +362,10 @@ router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
         ['link_title', 'ASC']
       ],
     })
-    .then(links =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(links =>  {
         res.status(200).send([links]);
       } );
 
@@ -322,7 +381,10 @@ router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
         nickname: pseudo,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
         res.status(200).send([User]);
       } );
 
@@ -338,7 +400,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id: user_id,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
         res.status(200).send([User]);
       } );
   })();
@@ -365,13 +430,19 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id: current_user,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
       User.update({
         "firstname":firstname,
         "lastname":lastname,
         "primary_description":primary_description,
         "location":location,
-      }).then(res.status(200).send([User]))
+      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([User]))
     }); 
 
    
@@ -380,9 +451,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   router.post('/block_user', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-    console.log("block_user");
+    //console.log("block_user");
     var date = req.body.date;
-    console.log(date)
+    //console.log(date)
     const id_user_blocked= req.body.id_user_blocked;
     let final_date=new Date();
     if(date){
@@ -391,13 +462,16 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       date = date.replace("-",'/').replace("-",'/');
       final_date= new Date(date + ' GMT');
     }
-    console.log(final_date);
+    //console.log(final_date);
     
     users_blocked.create({
       "id_user":current_user,
       "id_user_blocked":id_user_blocked,
       "date":date?final_date:null,
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       res.status(200).send([user])
     })
   });
@@ -413,7 +487,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       order: [
         ['createdAt', 'DESC']
       ],
-    }).then(users=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users=>{
       if(users.length>0){
         res.status(200).send([users])
       }
@@ -427,7 +504,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/check_if_user_blocked', function (req, res) {
-    console.log("check_if_user_blocked")
+    //console.log("check_if_user_blocked")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
     const Op = Sequelize.Op;
@@ -435,7 +512,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       where:{
         [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
       }
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         res.status(200).send([user])
       }
@@ -449,7 +529,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/unblock_user', function (req, res) {
-    console.log("unblock user")
+    //console.log("unblock user")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
     const Op = Sequelize.Op;
@@ -457,9 +537,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       where:{
         [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
       }
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       let date=user.date;
-      console.log(date)
+      //console.log(date)
       user.destroy({
         truncate: false
       })
@@ -474,7 +557,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_pseudos_who_match_for_signup', function (req, res) {
-    console.log("get_pseudos_who_match_for_signup")
+    //console.log("get_pseudos_who_match_for_signup")
     let pseudo = (req.body.pseudo).toLowerCase();
     const Op = Sequelize.Op;
     users.findOne({
@@ -485,9 +568,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         gender:{[Op.ne]:'Groupe'}
       }
     })
-    .then(User =>  {
-      console.log("result one")
-      console.log(User)
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
+      //console.log("result one")
+      //console.log(User)
       if(User){
         res.status(200).send([User])
       }
@@ -499,9 +585,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             status:"account",
             gender:{[Op.ne]:'Groupe'}
           }
-        }).then(User=>{
-          console.log("result two")
-          console.log(User)
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User=>{
+          //console.log("result two")
+          //console.log(User)
           if(User){
             res.status(200).send([User])
           }
@@ -520,21 +609,27 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/edit_primary_description_extended', function (req, res) {
-    console.log("edit_primary_description_extended")
+    //console.log("edit_primary_description_extended")
     const id_user = req.body.id_user;
     const primary_description_extended = req.body.primary_description_extended;
-    console.log(primary_description_extended)
+    //console.log(primary_description_extended)
     users.findOne({
       where: {
         id:id_user,
       }
     })
-    .then(user =>  {
-      console.log(user.primary_description_extended)
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user =>  {
+      //console.log(user.primary_description_extended)
         user.update({
           "primary_description_extended":primary_description_extended,
-        }).then(us=>{
-          console.log(us.primary_description_extended);
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
+          //console.log(us.primary_description_extended);
           res.status(200).send([us])}
           
         )
@@ -546,7 +641,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/edit_profile_information', function (req, res) {
-    console.log("edit_profile_information")
+    //console.log("edit_profile_information")
     const id_user = req.body.id_user;
     const email = req.body.email;
     const birthday = req.body.birthday;
@@ -557,13 +652,19 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:id_user,
       }
     })
-    .then(user =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user =>  {
         user.update({
           "email_about":email,
           "birthday":birthday,
           "job":job,
           "training":training
-        }).then(us=>{res.status(200).send([us])}
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{res.status(200).send([us])}
         )
     }); 
 
@@ -574,15 +675,18 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_information_privacy', function (req, res) {
-    console.log("get_information_privacy")
+    //console.log("get_information_privacy")
     let id_user = req.body.id_user;
-    console.log(id_user)
+    //console.log(id_user)
     users_information_privacy.findOne({
       where: {
         id_user:id_user,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
       if(User){
         res.status(200).send([User])
       }
@@ -602,9 +706,12 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "writings_stats":"public",
           "profile_stats":"private",
 
-        }).then(User=>{
-          console.log("result two")
-          console.log(User)
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User=>{
+          //console.log("result two")
+          //console.log(User)
           res.status(200).send([User])
         })
        
@@ -617,7 +724,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/change_information_privacy_public', function (req, res) {
-    console.log("change_information_privacy_public")
+    //console.log("change_information_privacy_public")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
     users_information_privacy.findOne({
@@ -625,7 +732,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id_user:id_user,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
         if(indice==0){
           User.update({
             "primary_description_extended":"public",
@@ -696,7 +806,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/change_information_privacy_private', function (req, res) {
-    console.log("change_information_privacy_private")
+    //console.log("change_information_privacy_private")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
     users_information_privacy.findOne({
@@ -704,7 +814,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id_user:id_user,
       }
     })
-    .then(User =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
         if(indice==0){
           User.update({
             "primary_description_extended":"private",
@@ -777,7 +890,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_my_list_of_groups_from_users', function (req, res) {
-    console.log("get_my_list_of_groups_from_users")
+    //console.log("get_my_list_of_groups_from_users")
     let current_user = req.body.id_user;
     const Op = Sequelize.Op;
     users.findAll({
@@ -790,7 +903,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         ['createdAt', 'DESC']
       ],
     })
-    .then(us =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us =>  {
        res.status(200).send([us])
     }); 
 
@@ -799,7 +915,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_group_information_by_id', function (req, res) {
-    console.log("get_group_information_by_id")
+    //console.log("get_group_information_by_id")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group
     const Op = Sequelize.Op;
@@ -811,7 +927,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         ['createdAt', 'DESC']
       ],
     })
-    .then(users =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users =>  {
       if(users[0]){
         res.status(200).send([users])
       }
@@ -827,7 +946,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/validate_group_creation_and_shares', function (req, res) {
-    console.log("validate_group_creation_and_shares")
+    //console.log("validate_group_creation_and_shares")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
     let list_of_ids=req.body.list_of_ids;
@@ -838,7 +957,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:id_group,
         list_of_members: { [Op.contains]: [current_user] },
       }
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         let list_of_members_validations=user.list_of_members_validations;
         let created_list=false;
@@ -848,7 +970,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         }
 
         if(list_of_members_validations.indexOf(current_user)<0 ||  created_list){
-          console.log("first if")
+          //console.log("first if")
           if(list_of_members_validations.indexOf(current_user)<0){
             list_of_members_validations.push(current_user);
           }
@@ -862,7 +984,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 id_group:id_group,
                 id_user:list_of_ids[i],
               }
-            }).then(user_found=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user_found=>{
               if(user_found){
                 if(list_of_ids[i]==current_user){
                   user_found.update({
@@ -894,7 +1019,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           }
         }
         else if(user.id_admin==current_user){
-          console.log(list_of_ids)
+          //console.log(list_of_ids)
           let compt=0;
           for( let i=0;i<list_of_ids.length;i++){
             users_groups_managment.findOne({
@@ -902,7 +1027,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 id_group:id_group,
                 id_user:list_of_ids[i]
               },
-            }).then(user_of_group=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user_of_group=>{
               if(user_of_group && user_of_group.id_user==current_user){
                 user_of_group.update({
                   "share":list_of_shares[i],
@@ -945,7 +1073,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/abort_group_creation', function (req, res) {
-    console.log("abort_group_creation")
+    //console.log("abort_group_creation")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
     const Op = Sequelize.Op;
@@ -955,7 +1083,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:id_group,
         list_of_members: { [Op.contains]: [current_user] },
       } 
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         user.update({
           "email":null,
@@ -973,7 +1104,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/exit_group', function (req, res) {
-    console.log("exit_group")
+    //console.log("exit_group")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
     const Op = Sequelize.Op;
@@ -983,7 +1114,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:id_group,
         list_of_members: { [Op.contains]: [current_user] },
       } 
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         let list_of_members=user.list_of_members;
         let compt=0;
@@ -993,7 +1127,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               id_group:id_group,
               id_user:list_of_members[i]
             },
-          }).then(user_of_group=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user_of_group=>{
             let num=list_of_members.length-1;
             if(user_of_group.id_user && user_of_group.id_user==current_user){
               user_of_group.destroy({
@@ -1038,7 +1175,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/delete_account', function (req, res) {
-    console.log("delete_account")
+    //console.log("delete_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     
@@ -1047,7 +1184,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:current_user,
         status:"account",
       } 
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         user.update({
           "status":"deleted",
@@ -1057,7 +1197,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "lastname":"",
           "profile_pic_file_name":"default_profile_picture.png",
 					"cover_pic_file_name":"default_cover_picture.png",
-        }).then(
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
           List_of_loves.update({
             "status":"deleted"
           },
@@ -1065,7 +1208,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             where:{
               author_id_who_loves:current_user
             }
-          }).then(
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
             List_of_likes.update({
               "status":"deleted"
             },
@@ -1073,7 +1219,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               where:{
                 author_id_who_likes:current_user
               }
-            }).then(
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
               List_of_comments.update({
                 "status":"deleted"
               },
@@ -1081,7 +1230,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 where:{
                   author_id_who_comments:current_user
                 }
-              }).then(
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                 List_of_comments_answers.update({
                   "status":"deleted"
                 },
@@ -1089,7 +1241,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   where:{
                     author_id_who_replies:current_user
                   }
-                }).then(
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                   List_of_comments_answers_likes.update({
                     "status":"deleted"
                   },
@@ -1097,7 +1252,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     where:{
                       author_id_who_likes:current_user
                     }
-                  }).then(
+                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                     List_of_comments_likes.update({
                       "status":"deleted"
                     },
@@ -1105,7 +1263,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       where:{
                         author_id_who_likes:current_user
                       }
-                    }).then(
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                       List_of_subscribings.update({
                         "status":"deleted"
                       },
@@ -1113,7 +1274,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         where:{
                           [Op.or]:[{id_user: current_user},{id_user_subscribed_to:current_user}],
                         }
-                      }).then(
+                      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                         list_of_ads.update({
                           "status":"deleted"
                         },
@@ -1121,7 +1285,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           where:{
                             id_user: current_user,
                           }
-                        }).then(
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                           list_of_ads_responses.update({
                             "status":"deleted"
                           },
@@ -1129,7 +1296,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             where:{
                               id_user: current_user,
                             }
-                          }).then(
+                          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                             List_of_stories.update({
                               "status":"deleted"
                             },
@@ -1137,7 +1307,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                               where:{
                                 id_user: current_user,
                               }
-                            }).then(
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                               List_of_stories_views.update({
                                 "status":"deleted"
                               },
@@ -1145,7 +1318,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                 where:{
                                   authorid: current_user,
                                 }
-                              }).then(
+                              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                 List_of_contents.update({
                                   "status":"deleted"
                                 },
@@ -1153,7 +1329,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                   where:{
                                     id_user: current_user,
                                   }
-                                }).then(
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                   Liste_Bd_Serie.update({
                                     "status":"deleted"
                                   },
@@ -1161,7 +1340,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                     where:{
                                       authorid: current_user,
                                     }
-                                  }).then(
+                                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                      List_comics_one_shot.update({
                                        "status":"deleted"
                                      },
@@ -1169,7 +1351,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                       where:{
                                         authorid:current_user
                                       }
-                                    }).then(
+                                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                       Drawings_one_page.update({
                                         "status":"deleted"
                                       },
@@ -1177,7 +1362,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                         where:{
                                           authorid: current_user,
                                         }
-                                      }).then(
+                                      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                         Liste_Drawings_Artbook.update({
                                           "status":"deleted"
                                         },
@@ -1185,7 +1373,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                           where:{
                                             authorid: current_user,
                                           }
-                                        }).then(
+                                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                           Liste_Writings.update({
                                             "status":"deleted"
                                           },
@@ -1193,7 +1384,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                             where:{
                                               authorid: current_user,
                                             }
-                                          }).then(
+                                          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                             List_of_notifications.update({
                                               "status":"deleted"
                                             },
@@ -1201,7 +1395,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                               where:{
                                                 id_user: current_user,
                                               }
-                                            }).then(
+                                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                               res.status(200).send([user])
                                             )
                                           )
@@ -1235,7 +1432,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/suspend_account', function (req, res) {
-    console.log("suspend_account")
+    //console.log("suspend_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     
@@ -1244,11 +1441,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:current_user,
         status:"account",
       } 
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
         user.update({
           "status":"suspended",
-        }).then(
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
           List_of_loves.update({
             "status":"suspended"
           },
@@ -1256,7 +1459,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             where:{
               author_id_who_loves:current_user
             }
-          }).then(
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
             List_of_likes.update({
               "status":"suspended"
             },
@@ -1264,7 +1470,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               where:{
                 author_id_who_likes:current_user
               }
-            }).then(
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
               List_of_comments.update({
                 "status":"suspended"
               },
@@ -1272,7 +1481,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 where:{
                   author_id_who_comments:current_user
                 }
-              },).then(
+              },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                 List_of_comments_answers.update({
                   "status":"suspended"
                 },
@@ -1280,7 +1492,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   where:{
                     author_id_who_replies:current_user
                   }
-                },).then(
+                },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                   List_of_comments_answers_likes.update({
                     "status":"suspended"
                   },
@@ -1288,7 +1503,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                     where:{
                       author_id_who_likes:current_user
                     }
-                  },).then(
+                  },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                     List_of_comments_likes.update({
                       "status":"suspended"
                     },
@@ -1296,7 +1514,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                       where:{
                         author_id_who_likes:current_user
                       }
-                    }).then(
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                       List_of_subscribings.update({
                         "status":"suspended"
                       },
@@ -1304,7 +1525,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                         where:{
                           [Op.or]:[{id_user: current_user},{id_user_subscribed_to:current_user}],
                         }
-                      },).then(
+                      },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                         list_of_ads.update({
                           "status":"suspended"
                         },
@@ -1312,7 +1536,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                           where:{
                             id_user: current_user,
                           }
-                        },).then(
+                        },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                           list_of_ads_responses.update({
                             "status":"suspended"
                           },
@@ -1320,7 +1547,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                             where:{
                               id_user: current_user,
                             }
-                          }).then(
+                          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                             List_of_stories.update({
                               "status":"suspended"
                             },
@@ -1328,7 +1558,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                               where:{
                                 id_user: current_user,
                               }
-                            },).then(
+                            },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                               List_of_stories_views.update({
                                 "status":"suspended"
                               },
@@ -1336,7 +1569,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                 where:{
                                   authorid: current_user,
                                 }
-                              },).then(
+                              },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                 List_of_contents.update({
                                   "status":"suspended"
                                 },
@@ -1344,7 +1580,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                   where:{
                                     id_user: current_user,
                                   }
-                                },).then(
+                                },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                   Liste_Bd_Serie.update({
                                     "status":"suspended"
                                   },
@@ -1352,7 +1591,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                     where:{
                                       authorid: current_user,
                                     }
-                                  }).then(
+                                  }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                      List_comics_one_shot.update({
                                        "status":"suspended"
                                      },
@@ -1360,7 +1602,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                       where:{
                                         authorid:current_user
                                       }
-                                    }).then(
+                                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                       Drawings_one_page.update({
                                         "status":"suspended"
                                       },
@@ -1368,7 +1613,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                         where:{
                                           authorid: current_user,
                                         }
-                                      }).then(
+                                      }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                         Liste_Drawings_Artbook.update({
                                           "status":"suspended"
                                         },
@@ -1376,7 +1624,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                           where:{
                                             authorid: current_user,
                                           }
-                                        }).then(
+                                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                           Liste_Writings.update({
                                             "status":"suspended"
                                           },
@@ -1384,7 +1635,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                             where:{
                                               authorid: current_user,
                                             }
-                                          },).then(
+                                          },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                             List_of_notifications.update({
                                               "status":"suspended"
                                             },
@@ -1392,7 +1646,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                                               where:{
                                                 id_user: current_user,
                                               }
-                                            },).then(
+                                            },).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(
                                               res.status(200).send([user])
                                             )
                                           )
@@ -1426,7 +1683,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_back_suspended_account', function (req, res) {
-    console.log("get_back_suspended_account")
+    //console.log("get_back_suspended_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     
@@ -1435,13 +1692,19 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id:current_user,
         status:"suspended",
       } 
-    }).then(user=>{
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
       if(user){
-        console.log("get_back_suspended_account user found")
+        //console.log("get_back_suspended_account user found")
         user.update({
           "status":"account",
-        }).then(()=>{
-          console.log("love update")
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(()=>{
+          //console.log("love update")
           List_of_loves.update({
             "status":"public"
           },
@@ -1451,7 +1714,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               status:"suspended"
             }
           });
-          console.log("like update")
+          //console.log("like update")
           List_of_likes.update(
           
           {
@@ -1623,7 +1886,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
   
   router.post('/change_mailing_managment', function (req, res) {
-    console.log("change_mailing_managment")
+    //console.log("change_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
     let type=req.body.type;
     let special_visitor_type=req.body.special_visitor_type;
@@ -1634,7 +1897,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id_user: current_user ,
       }
     })
-    .then(user =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user =>  {
       if(user){
         user.update({
           "trending_mail":(type=="trending_mail")?value:user.trending_mail,
@@ -1643,7 +1909,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           "special_visitor":(type=="special_visitor")?value:user.special_visitor,
           "group_creation":(type=="group_creation")?value:user.group_creation,
           "group_shares":(type=="group_shares")?value:user.group_shares,
-        }).then(mailing=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mailing=>{
           res.status(200).send([mailing])
         })
       }
@@ -1652,7 +1921,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           where:{
             id:current_user
           }
-        }).then(real_user=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(real_user=>{
           if(real_user && real_user.status=='account'){
             users_mailing.create({
               "id_user":current_user,
@@ -1662,7 +1934,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               "special_visitor":(type=="special_visitor")?value:true,
               "group_creation":(type=="group_creation")?value:true,
               "group_shares":(type=="group_shares")?value:true,
-            }).then(mailing=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mailing=>{
               res.status(200).send([mailing])
             })
           }
@@ -1681,7 +1956,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/update_special_visitor', function (req, res) {
-    console.log("update_special_visitor")
+    //console.log("update_special_visitor")
     let current_user = get_current_user(req.cookies.currentUser);
     let special_visitor_type=req.body.special_visitor_type;
     const Op = Sequelize.Op;
@@ -1690,11 +1965,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id_user: current_user ,
       }
     })
-    .then(user =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user =>  {
       if(user){
         user.update({
           "special_visitor_type":special_visitor_type,
-        }).then(mailing=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mailing=>{
           res.status(200).send([mailing])
         })
       }
@@ -1703,12 +1984,18 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           where:{
             id:current_user
           }
-        }).then(real_user=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(real_user=>{
           if(real_user && real_user.status=='account'){
             users_mailing.create({
               "id_user":current_user,
               "special_visitor_type":special_visitor_type,
-            }).then(mailing=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(mailing=>{
               res.status(200).send([mailing])
             })
           }
@@ -1724,7 +2011,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/get_mailing_managment', function (req, res) {
-    console.log("get_mailing_managment")
+    //console.log("get_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
 
     const Op = Sequelize.Op;
@@ -1733,7 +2020,10 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         id_user: current_user,
       }
     })
-    .then(user =>  {
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user =>  {
       if(user){
           res.status(200).send([user])
       }

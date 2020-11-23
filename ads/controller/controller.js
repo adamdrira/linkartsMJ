@@ -4,7 +4,8 @@ const fs = require('fs');
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 
@@ -19,6 +20,39 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     };
 
 
+    
+
+    router.post('/check_if_ad_is_ok', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+      const Op = Sequelize.Op;
+      var today = new Date();
+      today.setDate(today.getDate() - 8);
+      const type_of_project = req.body.type_of_project;
+      const my_description = req.body.my_description;
+      const targets = req.body.targets;
+
+      list_of_ads.findOne({
+        where:{
+          id_user:current_user,
+          status:"public",
+          createdAt: {[Op.gte]: today},
+          type_of_project:type_of_project,
+          my_description:my_description,
+          [Op.or]: [{ target_one: {[Op.in]:targets} }, { target_two: {[Op.in]:targets}}],
+        }
+      }).catch(err => {
+        console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(ad=>{
+        if(ad){
+          res.status(200).send([{result:ad}])
+        }
+        else{
+          res.status(200).send([{result:"ok"}])
+        }
+      })
+    })
+
     router.post('/add_primary_information_ad', function (req, res) {
             let current_user = get_current_user(req.cookies.currentUser);
 
@@ -32,6 +66,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             const targets = req.body.targets;
             const remuneration = req.body.remuneration;
             const price_value = req.body.price_value;
+            const price_type = req.body.price_type;
             console.log(price_value);
 
             list_of_ads.create({
@@ -48,23 +83,33 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "number_of_responses":0,
                   "remuneration":remuneration,
                   "price_value":price_value,
+                  "price_type":price_type,
                   "status":"public",
                   "refreshment_number":0,
                   "commentariesnumber":0,
                   "date":today,
         
               })
-              .then(r =>  {
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
               list_of_users.findOne({
                 where:{
                   id:current_user,
                 }
-              }).then(user=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                 let number_of_ads=user.number_of_ads+1;
                 user.update({
                   "number_of_ads":number_of_ads,
                 })
-              }).then( ()=>{res.status(200).send([r])})
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( ()=>{res.status(200).send([r])})
               
               }); 
         
@@ -103,8 +148,20 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             }).any();
       
             upload_cover(req, res, function(err){
-                res.cookie('name_thumbnail_ad', file_name).send(file_name);
-              });
+              let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
+              (async () => {
+                const files = await imagemin([filename], {
+                  destination: './data_and_routes/thumbnails_ads',
+                  plugins: [
+                    imageminPngquant({
+                      quality: [0.5, 0.6]
+                    })
+                  ]
+                });
+                console.log("respond name_thumbnail_ad")
+                res.cookie('name_thumbnail_ad', file_name).send([{file_name:file_name}]);
+               })();
+            });
     });
 
     router.post('/add_thumbnail_ad_to_database', function (req, res) {
@@ -117,11 +174,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   id_user: current_user,
                 }
               })
-              .then(ad =>  {
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
                 ad.update({
                   "thumbnail_name" :name
                 })
-                .then(ad=>{res.status(200).send([ad])})
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
               }); 
         
     });
@@ -229,6 +292,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             console.log(number_of_attachments_retrieved);
         }
         (async () => {
+            console.log(file_name)
+            console.log(path.extname(file_name))
+            if(path.extname(file_name)==".jpg" || path.extname(file_name)==".png" || path.extname(file_name)==".jpeg"){
+              let filename = "./data_and_routes/attachments_ads/" + file_name ;
+              const files = await imagemin([filename], {
+                destination: './data_and_routes/attachments_ads',
+                plugins: [
+                  imageminPngquant({
+                    quality: [0.5, 0.6]
+                  })
+                ]
+              });
+            }
             
 
             list_of_ads.findOne({
@@ -237,19 +313,28 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 id_user: current_user,
               }
             })
-            .then(ad =>  {
+            .catch(err => {
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(ad =>  {
               if(attachment_number==1){
                   ad.update({
                     "attachment_name_one" :file_name,
                     "attachment_real_name_one" :name,
                   })
-                  .then(ad=>{
+                  .catch(err => {
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(ad=>{
                     add_number_of_attachments_retrieved(ad);
                     if(number_of_attachments_retrieved==number_of_attachments){
                       ad.update({
                         "number_of_attachments":number_of_attachments,
                       })
-                      .then(ad=>{res.status(200).send([ad])})
+                      .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
                     }
                     else{
                       res.status(200).send([ad])}
@@ -262,13 +347,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "attachment_name_two" :file_name,
                   "attachment_real_name_two" :name,
                 })
-                .then(ad=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
                   if(number_of_attachments_retrieved==number_of_attachments){
                     ad.update({
                       "number_of_attachments":number_of_attachments,
                     })
-                    .then(ad=>{res.status(200).send([ad])})
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
                   }
                   else{
                     res.status(200).send([ad])}
@@ -280,13 +371,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "attachment_name_three" :file_name,
                   "attachment_real_name_three" :name,
                 })
-                .then(ad=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
                   if(number_of_attachments_retrieved==number_of_attachments){
                     ad.update({
                       "number_of_attachments":number_of_attachments,
                     })
-                    .then(ad=>{res.status(200).send([ad])})
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
                   }
                   else{
                     res.status(200).send([ad])}
@@ -298,13 +395,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "attachment_name_four" :file_name,
                   "attachment_real_name_four" :name,
                 })
-                .then(ad=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
                   if(number_of_attachments_retrieved==number_of_attachments){
                     ad.update({
                       "number_of_attachments":number_of_attachments,
                     })
-                    .then(ad=>{res.status(200).send([ad])})
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
                   }
                   else{
                     res.status(200).send([ad])}
@@ -316,13 +419,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "attachment_name_five" :file_name,
                   "attachment_real_name_five" :name,
                 })
-                .then(ad=>{
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
                   add_number_of_attachments_retrieved(ad);
                   if(number_of_attachments_retrieved==number_of_attachments){
                     ad.update({
                       "number_of_attachments":number_of_attachments,
                     })
-                    .then(ad=>{res.status(200).send([ad])})
+                    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
                   }
                   else{
                     res.status(200).send([ad])}
@@ -347,7 +456,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['date', 'DESC']
               ],
           })
-          .then(ads =>  {
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads =>  {
             res.status(200).send([ads]);
           }); 
     });
@@ -365,7 +477,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                ['date', 'DESC']
              ],
          })
-         .then(ads =>  {
+         .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads =>  {
            res.status(200).send([ads]);
          }); 
    });
@@ -381,7 +496,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
              ['createdAt', 'DESC']
            ],
        })
-       .then(ads =>  {
+       .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads =>  {
          res.status(200).send([ads]);
        }); 
  });
@@ -395,7 +513,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
              id: id,
            },
          })
-         .then(ad =>  {
+         .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
            res.status(200).send([ad]);
          }); 
    });
@@ -439,12 +560,18 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   id_user:current_user,
               },
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             list_of_users.findOne({
               where:{
                 id:current_user,
               }
-            }).then(user=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               let number_of_ads=user.number_of_ads-1;
               user.update({
                 "number_of_ads":number_of_ads,
@@ -489,7 +616,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['createdAt', 'DESC'],
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
   
@@ -506,7 +636,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['date', 'DESC']
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
   
@@ -523,7 +656,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['date', 'ASC']
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
       }
@@ -543,7 +679,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['number_of_responses', 'DESC']
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
   
@@ -560,7 +699,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['date', 'DESC']
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
   
@@ -577,7 +719,10 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 ['date', 'ASC']
               ],
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             res.status(200).send([ad]);});
         }
       }
@@ -594,18 +739,27 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             id: id_ad,
         }
         })
-        .then(ad =>  {
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
         const number = ad.number_of_responses + 1;
         ad.update({
             "number_of_responses":number,
         })})
-        .then( ad=>{
+        .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then( ad=>{
           list_of_ads_responses.create({
             "id_ad": id_ad,
             "status":"public",
             "id_user":current_user,
                 "description": description,
-            }).then(adr=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(adr=>{
                 res.status(200).send([adr]);
         })
         } );
@@ -691,19 +845,28 @@ upload_attachment(req, res, function(err){
           id_user: current_user,
         }
       })
-      .then(ad =>  {
+      .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad =>  {
         if(attachment_number==1){
             ad.update({
               "attachment_name_one" :file_name,
               "attachment_real_name_one" :name,
             })
-            .then(ad=>{
+            .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
               add_number_of_attachments_retrieved(ad);
               if(number_of_attachments_retrieved==number_of_attachments){
                 ad.update({
                   "number_of_attachments":number_of_attachments,
                 })
-                .then(ad=>{res.status(200).send([ad])})
+                .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
               }
               else{
                 res.status(200).send([ad])}
@@ -716,13 +879,19 @@ upload_attachment(req, res, function(err){
             "attachment_name_two" :file_name,
             "attachment_real_name_two" :name,
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
             if(number_of_attachments_retrieved==number_of_attachments){
               ad.update({
                 "number_of_attachments":number_of_attachments,
               })
-              .then(ad=>{res.status(200).send([ad])})
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
             }
             else{
               res.status(200).send([ad])}
@@ -734,13 +903,19 @@ upload_attachment(req, res, function(err){
             "attachment_name_three" :file_name,
             "attachment_real_name_three" :name,
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
             if(number_of_attachments_retrieved==number_of_attachments){
               ad.update({
                 "number_of_attachments":number_of_attachments,
               })
-              .then(ad=>{res.status(200).send([ad])})
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
             }
             else{
               res.status(200).send([ad])}
@@ -752,13 +927,19 @@ upload_attachment(req, res, function(err){
             "attachment_name_four" :file_name,
             "attachment_real_name_four" :name,
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
             if(number_of_attachments_retrieved==number_of_attachments){
               ad.update({
                 "number_of_attachments":number_of_attachments,
               })
-              .then(ad=>{res.status(200).send([ad])})
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
             }
             else{
               res.status(200).send([ad])}
@@ -770,13 +951,19 @@ upload_attachment(req, res, function(err){
             "attachment_name_five" :file_name,
             "attachment_real_name_five" :name,
           })
-          .then(ad=>{
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{
             add_number_of_attachments_retrieved(ad);
             if(number_of_attachments_retrieved==number_of_attachments){
               ad.update({
                 "number_of_attachments":number_of_attachments,
               })
-              .then(ad=>{res.status(200).send([ad])})
+              .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ad=>{res.status(200).send([ad])})
             }
             else{
               res.status(200).send([ad])}
@@ -822,7 +1009,10 @@ router.post('/get_number_of_ads_and_responses', function (req, res) {
         ['createdAt', 'DESC']
       ],
     })
-    .then(ads =>  {
+    .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(ads =>  {
       console.log(ads.length + "ads length")
       if(ads.length>0 ){
         let compt=0;
@@ -833,7 +1023,10 @@ router.post('/get_number_of_ads_and_responses', function (req, res) {
               id_ad: ads[i].id
             }
           })
-          .then(resp =>  {
+          .catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(resp =>  {
             compt++;
             number_of_ads_answers+=resp.length;
             if(compt==ads.length){

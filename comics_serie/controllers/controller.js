@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 
 const Sequelize = require('sequelize');
-    
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 
 
 
@@ -31,8 +32,8 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
  
 
   router.get('/get_cookies_cover_bd_serie', (req, res)=>{ 
-    console.log('get it')
-    console.log(req.cookies)
+    //console.log('get it')
+    //console.log(req.cookies)
     let value = req.cookies
     res.status(200).send([value]);
     }); 
@@ -58,13 +59,13 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
         Liste_bd_serie.create({
           "authorid": current_user,
           "title":title,
@@ -81,7 +82,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           "monetization":monetization,
 
       })
-      .then(r =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
       bd_id=r.bd_id; // onr récupère l'id de la bd qu'on upload
       res.status(200).send([r]);
       }); 
@@ -100,12 +104,18 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             authorid: current_user,
             bd_id: bd_id,
           }
-        }).then(bd=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
           list_of_users.findOne({
             where:{
               id:current_user,
             }
-          }).then(user=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
             if(bd.status=="public"){
               let number_of_comics=user.number_of_comics-1;
               user.update({
@@ -153,20 +163,23 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
          bd = await Liste_bd_serie.findOne({
             where: {
               bd_id: bd_id,
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             bd.update({
               "title":title,
               "category": category,
@@ -176,7 +189,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               "thirdtag": Tags[2],
               "monetization":monetization,
             })
-            .then(res.status(200).send([bd]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
           }); 
           }
 
@@ -204,20 +220,23 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       }*/
   
         if (Object.keys(req.body).length === 0 ) {
-          console.log("information isn't uploaded correctly");
+          //console.log("information isn't uploaded correctly");
           return res.send({
             success: false
           });
           
         } else { 
-          console.log('information uploaded correctly');
+          //console.log('information uploaded correctly');
            bd = await Liste_bd_serie.findOne({
               where: {
                 bd_id: bd_id,
                 authorid: current_user,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               bd.update({
                 "title":title,
                 "category": category,
@@ -226,7 +245,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 "secondtag": Tags[1],
                 "thirdtag": Tags[2],
               })
-              .then(res.status(200).send([bd]))
+              .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
             }); 
             }
   
@@ -245,10 +267,16 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                   bd_id:bd_id,
               },
           })
-          .then(bd_os => {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_os => {
               bd_os.update({
                     "status":status
-              }).then(bd_os => {
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_os => {
                   res.status(200).send(bd_os)
               }
               )
@@ -260,15 +288,15 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     //on ajoute les infos du chapitre ajouté
     router.post('/add_chapter_bd_serie', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      console.log("add_chapter_bd_serie")
+      //console.log("add_chapter_bd_serie")
       const title = req.body.Title;
       const chapter_number = req.body.chapter_number;
       const bd_id = req.body.bd_id;
-      console.log(bd_id)
-      console.log("ajout de chapitre")
+      //console.log(bd_id)
+      //console.log("ajout de chapitre")
   
         if (Object.keys(req.body).length === 0 ) {
-          console.log("information isn't uploaded correctly");
+          //console.log("information isn't uploaded correctly");
           return res.send({
             success: false
           });
@@ -280,21 +308,27 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             let chaptersnumber=bd.chaptersnumber+=1;
             bd.update({
               "chaptersnumber":chaptersnumber
             })
           })
-          console.log('on ajoute le chapitre');
+          //console.log('on ajoute le chapitre');
           chapters_bd_serie.create({
             "author_id": current_user,
             "title":title,
             "bd_id": bd_id,
             "chapter_number": chapter_number
         })
-        .then(r =>  {
-        console.log("chapitre ajouté numéro :" + chapter_number)
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
+        //console.log("chapitre ajouté numéro :" + chapter_number)
         res.status(200).send([r]);
         }); 
         }
@@ -308,17 +342,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     (async () => {
     const title= req.body.Title;
     const number = req.body.chapter_number;
-    console.log("modification de chapitre")
-    const bd_id = parseInt(req.body.bd_id);
+    //console.log("modification de chapitre")
+    const bd_id = req.body.bd_id;
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
          chapter = await chapters_bd_serie.findOne({
             where: {
               author_id: current_user,
@@ -326,10 +360,16 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               chapter_number: number
             }
           })
-          .then(chapter =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
             chapter.update({
               "title":title,
-            }).then(res.status(200).send([chapter]));
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([chapter]));
           });
           }
 
@@ -349,13 +389,16 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             authorid: current_user,
           }
         })
-        .then(bd =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
           let chaptersnumber=bd.chaptersnumber-=1;
           bd.update({
             "chaptersnumber":chaptersnumber
           })
         })
-        console.log( 'suppression en cours');
+        //console.log( 'suppression en cours');
         chapters_bd_serie.destroy({
           where: {
             chapter_number: chapter_number,
@@ -371,7 +414,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     router.post('/upload_page_bd_serie/:page/:chapter/:bd_id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
       var file_name ='';
-      console.log("ici" + file_name);
+      //console.log("ici" + file_name);
 
       const PATH1= './data_and_routes/pages_bd_serie';
 
@@ -395,22 +438,36 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             const chapter_number= (parseInt(req.params.chapter)+1);
             const bd_id = parseInt(req.params.bd_id);
             const page= req.params.page;
-            console.log(bd_id)
+            (async () => {
+              let filename = "./data_and_routes/pages_bd_serie/" + file_name ;
+              const files = await imagemin([filename], {
+                destination: './data_and_routes/pages_bd_serie',
+                plugins: [
+                  imageminPngquant({
+                    quality: [0.5, 0.6]
+                  })
+                ]
+              });
+            })();
+            //console.log(bd_id)
           if (err) {
-            console.log("erreur");
+            //console.log("erreur");
             return res.send({
               success: false
             });
         
           } else { 
-            console.log("upload_page_bd_serie")
-            console.log(page);
+            //console.log("upload_page_bd_serie")
+            //console.log(page);
           chapters_bd_serie.findOne({
             where: {
               bd_id: bd_id,
               author_id: current_user,
             }
-          }).then(chapter_bd => {
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter_bd => {
           pages_bd_serie.create({
             "bd_id": bd_id,
             "chapter_id":chapter_bd.chapter_id,
@@ -419,7 +476,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             "page_number": page,
             "file_name":file_name,
           })
-          .then(r =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
           res.send(r.get({plain:true}));
           }); 
           });
@@ -443,10 +503,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             res.json([pagebd]);
           }
           else {
-            console.log("page not found")
+            //console.log("page not found")
           }
 
-          console.log( 'suppression en cours');
+          //console.log( 'suppression en cours');
           const page  = req.params.page;
           pages_bd_serie.destroy({
             where: {
@@ -463,17 +523,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       router.delete('/remove_page_bdserie_from_folder/:name', function (req, res) {
         fs.access('./data_and_routes/pages_bd_serie' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            console.log('suppression already done');
+            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          console.log( 'annulation en cours');
+          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/pages_bd_serie/' + name,  function (err) {
             if (err) {
               throw err;
             }  
             else {
-              console.log( 'fichier supprimé');
+              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -486,30 +546,36 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     let current_user = get_current_user(req.cookies.currentUser);
 
     const name = req.body.name;
-    const bd_id = parseInt(req.body.bd_id);
+    const bd_id = req.body.bd_id;
 
     (async () => {
 
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("no inftly");
+        //console.log("no inftly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('infctly');
+        //console.log('infctly');
          bd = await Liste_bd_serie.findOne({
             where: {
               bd_id: bd_id,
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             bd.update({
               "name_coverpage" :name
             })
-            .then(res.status(200).send([bd]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
           }); 
           }
 
@@ -520,32 +586,38 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       let current_user = get_current_user(req.cookies.currentUser);
   
       const name = req.body.name;
-      const bd_id = parseInt(req.body.bd_id);
+      const bd_id = req.body.bd_id;
       const thumbnail_color=req.body.thumbnail_color;
   
       (async () => {
   
   
         if (Object.keys(req.body).length === 0 ) {
-          console.log("no inftly");
+          //console.log("no inftly");
           return res.send({
             success: false
           });
           
         } else { 
-          console.log('infctly');
+          //console.log('infctly');
            bd = await Liste_bd_serie.findOne({
               where: {
                 bd_id: bd_id,
                 authorid: current_user,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               bd.update({
                 "name_coverpage" :name,
                 "thumbnail_color":thumbnail_color
               })
-              .then(res.status(200).send([bd]))
+              .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
             }); 
             }
   
@@ -558,7 +630,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     let current_user = get_current_user(req.cookies.currentUser);
     var average_page_by_chapter=0;
     (async () => {
-       const number_of_chapters=parseInt(req.body.number_of_chapters);
+       const number_of_chapters=req.body.number_of_chapters;
        const bd_id= req.body.bd_id;
         bd = await Liste_bd_serie.findOne({
             where: {
@@ -566,7 +638,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             chapters_bd_serie.findAll({
               where: {
                 bd_id: bd_id,
@@ -576,7 +651,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 ['chapter_id', 'ASC']
               ],
             })
-            .then(bd_chapters =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_chapters =>  {
               for(let step = 0; step < number_of_chapters; step++){
                 average_page_by_chapter = average_page_by_chapter + bd_chapters[step].dataValues.pagesnumber;
               };
@@ -587,12 +665,18 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               bd_id: bd_id,
               authorid: current_user,
             }
-          }).then(bd=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
             list_of_users.findOne({
               where:{
                 id:current_user,
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               let number_of_comics=user.number_of_comics+1;
               user.update({
                 "number_of_comics":number_of_comics,
@@ -603,7 +687,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               "chaptersnumber":number_of_chapters,
               "pagesnumber": average_page_by_chapter,
             })
-          .then(res.status(200).send([bd]))
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
         }); 
           
     })();
@@ -611,12 +698,12 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
     router.post('/validation_chapter_upload_bd_serie', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
-      console.log("validation_chapter_upload_bd_serie")
+      //console.log("validation_chapter_upload_bd_serie")
     
-        const chapter_number=parseInt(req.body.chapter_number) + 1;
-        const number_of_pages=parseInt(req.body.number_of_pages);
+        const chapter_number=req.body.chapter_number + 1;
+        const number_of_pages=req.body.number_of_pages;
         const bd_id= req.body.bd_id; 
-        console.log(bd_id)
+        //console.log(bd_id)
          chapters_bd_serie.findOne({
           where: {
             bd_id: bd_id,
@@ -624,7 +711,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             author_id: current_user,
           }
         })
-        .then(bd_chapter =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_chapter =>  {
           bd_chapter.update({
             "status":"public",
             "pagesnumber":number_of_pages,
@@ -633,7 +723,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             "lovesnumber":0,
             "commentarynumbers":0,
           })
-          .then(res.status(200).send([bd_chapter]))
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd_chapter]))
         }); 
         
       });
@@ -651,7 +744,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               ['createdAt', 'DESC']
             ],
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             
             res.status(200).send([bd]);
           }); 
@@ -689,7 +785,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             ['createdAt', 'DESC']
           ],
          })
-         .then(bd =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
           if(bd.length>0){
             for(let j=0;j<bd.length;j++){
              list_of_ids.push(bd[j].bd_id)
@@ -713,7 +812,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                   ['createdAt', 'DESC']
                 ],
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               res.status(200).send([bd]);
             }); 
       
@@ -729,7 +831,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 bd_id: bd_id,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               if(bd){
                 trendings_contents.findOne({
                   where:{
@@ -737,7 +842,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                     format:"serie",
                     publication_id:bd.bd_id
                   }
-                }).then(tren=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(tren=>{
                   if(tren){
                     if(bd.trending_rank){
                       if(bd.trending_rank<tren.rank){
@@ -784,7 +892,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               ['chapter_number', 'ASC']
             ],
           })
-          .then(bd =>  {          
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {          
             res.status(200).send([bd]);
           }); 
 
@@ -793,7 +904,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
 
   router.get('/retrieve_chapter_by_number/:bd_id/:chapter_number', function (req, res) {
-    console.log('tentativee de récupération');
+    //console.log('tentativee de récupération');
 
     (async () => {
 
@@ -807,7 +918,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           chapter_number:chapter_number,
         }
       })
-      .then(chapter =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(chapter =>  {
           res.status(200).send([chapter]);
         } );
      
@@ -829,11 +943,14 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
           page_number:bd_page,
         }
       })
-      .then(page =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(page =>  {
   
         let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          console.log("bd page retrieved");
+          //console.log("bd page retrieved");
           res.status(200).send(data);
         } );
       });

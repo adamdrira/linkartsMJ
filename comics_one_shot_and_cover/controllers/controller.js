@@ -5,7 +5,8 @@ const usercontroller = require('../../authentication/user.controller');
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const imagemin = require("imagemin");
+const imageminPngquant = require("imagemin-pngquant");
 //On récupère le numéro de la page uplaodé
 
 
@@ -17,7 +18,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     var user = 0
     jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
-      console.log(user);
+      //console.log(user);
     });
     return user;
   };
@@ -38,7 +39,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
  
 
   router.get('/get_cookies_cover_bd', (req, res)=>{ 
-    console.log('get it');
+    //console.log('get it');
     let value = req.cookies;
     res.status(200).send([value]);
     }); 
@@ -78,7 +79,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       "viewnumber": 0,
       "commentarynumbers":0,
       "monetization":monetization,
-    }).then(r =>  {
+    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
       res.status(200).send([r]);
       }); 
         
@@ -97,12 +101,18 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             authorid: current_user,
             bd_id: bd_id,
           }
-        }).then(bd=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd=>{
           list_of_users.findOne({
             where:{
               id:current_user,
             }
-          }).then(user=>{
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
             if(bd.status=="public"){
               let number_of_comics=user.number_of_comics-1;
               user.update({
@@ -133,7 +143,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
-    const bd_id = parseInt(req.body.bd_id);
+    const bd_id = req.body.bd_id;
     /*for (let i = 0; i < Tags.length; i++){
       if (Tags[i] !=null){
         Tags[i] = Tags[i].substring(1);
@@ -145,20 +155,23 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     }*/
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("information isn't uploaded correctly");
+        //console.log("information isn't uploaded correctly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('information uploaded correctly');
+        //console.log('information uploaded correctly');
          bd = await Liste_bd_os.findOne({
             where: {
               bd_id: bd_id,
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             bd.update({
               "title":title,
               "category": category,
@@ -168,7 +181,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               "thirdtag": Tags[2],
               "monetization":monetization,
             })
-            .then(res.status(200).send([bd]))
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
           }); 
           }
 
@@ -183,22 +199,25 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       const title = req.body.Title;
       const category = req.body.Category;
       const Tags = req.body.Tags;
-      const bd_id = parseInt(req.body.bd_id);
+      const bd_id = req.body.bd_id;
         if (Object.keys(req.body).length === 0 ) {
-          console.log("information isn't uploaded correctly");
+          //console.log("information isn't uploaded correctly");
           return res.send({
             success: false
           });
           
         } else { 
-          console.log('information uploaded correctly');
+          //console.log('information uploaded correctly');
            bd = await Liste_bd_os.findOne({
               where: {
                 bd_id: bd_id,
                 authorid: current_user,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               bd.update({
                 "title":title,
                 "category": category,
@@ -207,7 +226,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                 "secondtag": Tags[1],
                 "thirdtag": Tags[2],
               })
-              .then(res.status(200).send([bd]))
+              .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
             }); 
             }
   
@@ -224,10 +246,16 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               bd_id:bd_id,
           },
       })
-      .then(bd_os => {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_os => {
           bd_os.update({
                 "status":status
-          }).then(bd_os => {
+          }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd_os => {
               res.status(200).send(bd_os)
           }
           )
@@ -240,7 +268,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     router.post('/upload_page_bd_oneshot/:page/:bd_id', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
       var file_name ='';
-      console.log("ici" + file_name);
+      //console.log("ici" + file_name);
 
       const PATH1= './data_and_routes/pages_bd_oneshot';
 
@@ -265,7 +293,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
         const page= req.params.page;
         const bd_id = req.params.bd_id;
         if (err) {
-          console.log("erreur");
+          //console.log("erreur");
           return res.send({
             success: false
           });
@@ -280,7 +308,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           if(bd !== null){
           }
           else {
-            console.log("bd not found")
+            //console.log("bd not found")
           }
           pages_bd_os.create({
             "bd_id": bd_id,
@@ -288,8 +316,26 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             "file_name":file_name,
             "page_number": page
         })
-        .then(r =>  {
-        res.send(r.get({plain:true}));
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(r =>  {
+          (async () => {
+            let filename = "./data_and_routes/pages_bd_oneshot/" + file_name ;
+            //console.log(filename)
+              const files = await imagemin([filename], {
+                destination: './data_and_routes/pages_bd_oneshot',
+                plugins: [
+                  imageminPngquant({
+                    quality: [0.5, 0.6]
+                  })
+                ]
+              });
+              //console.log(files)
+            //console.log("bd uploaded 2")
+            res.send(r.get({plain:true}));
+        })();
+        
         }); 
         }
 
@@ -311,10 +357,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             res.json([pagebd]);
           }
           else {
-            console.log("page not found")
+            //console.log("page not found")
           }
 
-          console.log( 'suppression en cours');
+          //console.log( 'suppression en cours');
           const page  = req.params.page;
           pages_bd_os.destroy({
             where: {page_number:page, bd_id: bd_id },
@@ -328,17 +374,17 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
 
         fs.access('./data_and_routes/pages_bd_oneshot' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            console.log('suppression already done');
+            //console.log('suppression already done');
             return res.status(200).send([{delete:'suppression done'}])
           }
-          console.log( 'annulation en cours');
+          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/pages_bd_oneshot/' + name,  function (err) {
             if (err) {
-              console.log(err);
+              //console.log(err);
             }  
             else {
-              console.log( 'fichier supprimé');
+              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:'suppression done'}])
             }
           });
@@ -346,11 +392,29 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       });
 
 
+    router.post('/compress_all_comics_thumbnails',function(req,res){
+      (async () => {
+        const files = await imagemin(['./data_and_routes/covers_bd/*.{png,jpeg,jpg}'], {
+          destination: './data_and_routes/covers_bd',
+          plugins: [
+            imageminPngquant({
+              quality: [0.5, 0.6]
+            })
+          ]
+        });
+       
+        console.log(files)
+      res.status(200).send([{compressed:"ok"}]);
+    })();
+    })
+
         //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/upload_cover_bd_oneshot', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
       var file_name='';
       const PATH2= './data_and_routes/covers_bd';
+      var ext='';
+      console.log("upload_cover_bd_oneshot")
       let storage2 = multer.diskStorage({
         destination: (req, file, cb) => {
           cb(null, PATH2);
@@ -367,6 +431,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           var yyyy = today.getFullYear();
           let Today = yyyy + mm + dd + hh+ mi + ss + ms;
           file_name = current_user + '-' + Today + path.extname(file.originalname);
+          ext=path.extname(file.originalname)
           cb(null, current_user + '-' + Today + path.extname(file.originalname));
           //enlever nickname
         }
@@ -377,7 +442,20 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       }).any();
 
       upload_cover(req, res, function(err){
-          res.cookie('name_cover_bd', file_name).send(file_name);
+        let filename = "./data_and_routes/covers_bd/" + file_name ;
+         (async () => {
+            const files = await imagemin([filename], {
+              destination: './data_and_routes/covers_bd',
+              plugins: [
+                imageminPngquant({
+                  quality: [0.5, 0.6]
+                })
+              ]
+            });
+            console.log("respong name_cover")
+            res.cookie('name_cover_bd', file_name).send([{file_name:file_name}]);
+        })();
+         
         });
       });
 
@@ -385,33 +463,39 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       //on ajoute le nom de la coverpage dans la base de donnée
   router.post('/add_cover_bd_oneshot_todatabase', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
-
+    console.log("add_cover_bd_oneshot_todatabase")
     const name = req.body.name;
-    const bd_id = parseInt(req.body.bd_id);
+    const bd_id = req.body.bd_id;
 
     (async () => {
 
 
       if (Object.keys(req.body).length === 0 ) {
-        console.log("no inftly");
+        //console.log("no inftly");
         return res.send({
           success: false
         });
         
       } else { 
-        console.log('infctly');
+        //console.log('infctly');
          bd = await Liste_bd_os.findOne({
             where: {
               bd_id: bd_id,
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(bd =>  {
             bd.update({
               "name_coverpage" :name
             })
-            .then(res.status(200).send([bd]))
-          }); 
+            .catch(err => {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(res.status(200).send([bd]))
+                  }); 
           }
 
     })();
@@ -421,32 +505,38 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       let current_user = get_current_user(req.cookies.currentUser);
   
       const name = req.body.name;
-      const bd_id = parseInt(req.body.bd_id);
+      const bd_id = req.body.bd_id;
       const thumbnail_color=req.body.thumbnail_color;
   
       (async () => {
   
   
         if (Object.keys(req.body).length === 0 ) {
-          console.log("no inftly");
+          //console.log("no inftly");
           return res.send({
             success: false
           });
           
         } else { 
-          console.log('infctly');
+          //console.log('infctly');
            bd = await Liste_bd_os.findOne({
               where: {
                 bd_id: bd_id,
                 authorid: current_user,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               bd.update({
                 "name_coverpage" :name,
                 "thumbnail_color":thumbnail_color
               })
-              .then(res.status(200).send([bd]))
+              .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
             }); 
             }
   
@@ -456,21 +546,21 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_bd_from_folder/:name', function (req, res) {
-        console.log("remove_cover_bd_from_folder")
-        console.log("./data_and_routes/covers_bd" + req.params.name)
+        //console.log("remove_cover_bd_from_folder")
+        //console.log("./data_and_routes/covers_bd" + req.params.name)
         fs.access('./data_and_routes/covers_bd/' + req.params.name, fs.F_OK, (err) => {
           if(err){
-            console.log('suppression already done');
+            //console.log('suppression already done');
             return res.status(200).send([{delete:"already_done"}]);
           }
-          console.log( 'annulation en cours');
+          //console.log( 'annulation en cours');
           const name  = req.params.name;
           fs.unlink('./data_and_routes/covers_bd/' + name,  function (err) {
             if (err) {
-              console.log(err);
+              //console.log(err);
             }  
             else {
-              console.log( 'fichier supprimé');
+              //console.log( 'fichier supprimé');
               return res.status(200).send([{delete:"done"}]);
             }
           });
@@ -483,7 +573,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     let current_user = get_current_user(req.cookies.currentUser);
 
     (async () => {
-       const page_number=parseInt(req.body.page_number);
+       const page_number=req.body.page_number;
        const bd_id= req.body.bd_id;
          bd = await Liste_bd_os.findOne({
             where: {
@@ -491,21 +581,33 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               authorid: current_user,
             }
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             list_of_users.findOne({
               where:{
                 id:current_user,
               }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
               let number_of_comics=user.number_of_comics+1;
               user.update({
                 "number_of_comics":number_of_comics,
-              }).then(()=>{
+              }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(()=>{
                 bd.update({
                   "status":"public",
                   "pagesnumber":page_number,
                 })
-                .then(res.status(200).send([bd]))
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(res.status(200).send([bd]))
               })
             })
             
@@ -528,7 +630,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                 ['createdAt', 'DESC']
               ],
           })
-          .then(bd =>  {
+          .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
             
             res.status(200).send([bd]);
             
@@ -562,7 +667,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
              createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
            }
          })
-         .then(bd =>  {
+         .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
           if(bd.length>0){
             for(let j=0;j<bd.length;j++){
              list_of_ids.push(bd[j].bd_id)
@@ -585,7 +693,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                   ['createdAt', 'DESC']
                 ],
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               res.status(200).send([bd]);
             }); 
     });
@@ -593,14 +704,17 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     router.get('/retrieve_bd_by_id/:bd_id', function (req, res) {
 
          const bd_id= parseInt(req.params.bd_id);
-         console.log(bd_id);
-         console.log(typeof(bd_id));
+         //console.log(bd_id);
+         //console.log(typeof(bd_id));
            Liste_bd_os.findOne({
               where: {
                 bd_id: bd_id,
               }
             })
-            .then(bd =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(bd =>  {
               if(bd){
                 trendings_contents.findOne({
                   where:{
@@ -608,7 +722,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                     format:"one-shot",
                     publication_id:bd.bd_id
                   }
-                }).then(tren=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(tren=>{
                   if(tren){
                     if(bd.trending_rank){
                       if(bd.trending_rank<tren.rank){
@@ -649,7 +766,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       let filename = "./data_and_routes/covers_bd/" + file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
         //blob = data.toBlob('application/image');
-        console.log("thumbnail bd picture retrieved");
+        //console.log("thumbnail bd picture retrieved");
         res.status(200).send(data);
       });
       })();
@@ -668,12 +785,15 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           page_number:bd_page,
         }
       })
-      .then(page =>  {
+      .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(page =>  {
   
         let filename = "./data_and_routes/pages_bd_oneshot/" + page.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
           //blob = data.toBlob('application/image');
-          console.log("bd page retrieved");
+          //console.log("bd page retrieved");
           res.status(200).send(data);
         } );
       });

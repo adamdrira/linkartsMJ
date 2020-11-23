@@ -26,7 +26,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 "format":format,
                 "publication_category":publication_category,
             })
-            .then(archives=>{res.status(200).send([archives])})     
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives=>{res.status(200).send([archives])})     
     });
 
     router.post('/unarchive', function (req, res) {
@@ -42,7 +45,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_category:publication_category,
                 }
             })
-            .then(archives=>{
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives=>{
 
                 archives.destroy({
                     truncate: false
@@ -72,7 +78,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(archives =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives =>  {
             if(archives.length>0){
                 res.status(200).send([{"value":true}])
             }
@@ -95,7 +104,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(archives =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives =>  {
             res.status(200).send([archives])
         }); 
     
@@ -113,7 +125,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(archives =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives =>  {
             res.status(200).send([archives])
         }); 
    
@@ -131,7 +146,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(archives =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives =>  {
             res.status(200).send([archives])
         }); 
    
@@ -149,7 +167,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(archives =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(archives =>  {
             res.status(200).send([archives])
         }); 
     });
@@ -161,19 +182,28 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             where:{
                 id:id_user_to_subscribe,
             }
-        }).then(us=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(us=>{
             if(us && us.status=="account"){
                 list_of_subscribings.create({
                     "status":"public",
                     "id_user": current_user,
                     "id_user_subscribed_to":id_user_to_subscribe,
                 })
-                .then(subscribings=>{
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                     list_of_users.findOne({
                         where:{
                             id:id_user_to_subscribe,
                         }
-                    }).then(user=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                         let list = user.subscribers;
                         if(!list.includes(current_user)){
                             let number=user.subscribers_number +1;
@@ -181,12 +211,18 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                 'subscribers': Sequelize.fn('array_append', Sequelize.col('subscribers'), current_user),
                                 'subscribers_number':number,
                             })
-                            .then(user=>{
+                            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                                 list_of_users.findOne({
                                     where:{
                                         id:current_user,
                                     }
-                                }).then(user1=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user1=>{
                                     let list1 = user1.subscribings;
                                     if(list1.includes(id_user_to_subscribe)){
                                             res.status(200).send([{"subscribings":"already sbscribed"}])
@@ -197,7 +233,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                             'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
                                             'subscribings_number':number1,
                                         },
-                                        ).then(m=>{
+                                        ).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
                                             res.status(200).send([subscribings])
                                         })
                                     }
@@ -210,7 +249,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                 where:{
                                     id:current_user,
                                 }
-                            }).then(user1=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user1=>{
                                 let list1 = user1.subscribings;
                                 if(list1.includes(id_user_to_subscribe)){
                                         res.status(200).send([{"subscribings":"already sbscribed"}])
@@ -221,7 +263,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                         'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
                                         'subscribings_number':number1,
                                     },
-                                    ).then(m=>{
+                                    ).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
                                         res.status(200).send([subscribings])
                                     })
                                 }
@@ -255,33 +300,51 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 id_user_subscribed_to:id_user_subscribed_to
             },
         })
-        .then(subscribings=>{
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
             if(subscribings){
                 subscribings.destroy({
                     truncate: false
-                    }).then(subscribings=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                     list_of_users.findOne({
                         where:{
                             id:id_user_subscribed_to,
                         }
-                    }).then(user=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                         let number=user.subscribers_number -1;
                         user.update({
                             'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), current_user),
                             'subscribers_number':number,
                         },
-                            ).then(user=>{
+                            ).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                             list_of_users.findOne({
                                 where:{
                                     id:current_user,
                                 }
-                            }).then(user1=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user1=>{
                                 let number1=user1.subscribings_number -1;
                                 user1.update( {
                                     'subscribings': Sequelize.fn('array_remove', Sequelize.col('subscribings'), id_user_subscribed_to),
                                     'subscribings_number':number1,
                                 },
-                                    ).then(m=>{
+                                    ).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
                                     res.status(200).send([subscribings])
                                 })
                             })
@@ -312,7 +375,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(users_subscribed_to =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
         });   
     });
@@ -333,7 +399,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(users_subscribed_to =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
         }); 
     });
@@ -349,7 +418,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ['createdAt', 'DESC']
             ]
         })
-        .then(users_subscribed_to =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(users_subscribed_to =>  {
             res.status(200).send([users_subscribed_to])
         });    
     });
@@ -357,17 +429,20 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
 
-        console.log("check_if_visitor_susbcribed")
+        //console.log("check_if_visitor_susbcribed")
         const id_user_to_check = req.params.id_user_to_check;
-        console.log(current_user)
-        console.log(id_user_to_check)
+        //console.log(current_user)
+        //console.log(id_user_to_check)
 
         list_of_subscribings.findOne({
             where: {
                 id_user:current_user,
                 id_user_subscribed_to:id_user_to_check
             },
-        }).then(subscribtion=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribtion=>{
             if(subscribtion){
                 res.status(200).send([{"value":true}])
             }
@@ -394,7 +469,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             "chapter_number": chapter_number,
         
         })
-        .then(contents => {res.status(200).send([contents])})
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(contents => {res.status(200).send([contents])})
 
         
     });
@@ -415,12 +493,18 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_id: publication_id,
                 chapter_number: chapter_number
             },
-        }).then(content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
             if(content){
                 content.update({
                     "status":"ok",
                     "real_date":today
-                }).then(content => {res.status(200).send([content])})
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
             }
             else{
                 list_of_contents.create({
@@ -431,7 +515,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     "chapter_number": chapter_number,
                     "status":"ok",
                     "real_date":today
-                }).then(content => {res.status(200).send([content])})
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
             }
             
         })
@@ -442,9 +529,9 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         let current_user = get_current_user(req.cookies.currentUser); 
         const number_of_chapters = req.body.number_of_chapters;
         const bd_id = req.body.bd_id;
-        console.log("extend_serie_and_update_content")
-        console.log(bd_id)
-        console.log(number_of_chapters)
+        //console.log("extend_serie_and_update_content")
+        //console.log(bd_id)
+        //console.log(number_of_chapters)
         var today = new Date();
         list_of_contents.findOne({
             where: {
@@ -453,14 +540,20 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 format: "serie",
                 publication_id: bd_id,
             },
-        }).then(content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
             if(content){
-                console.log(content.createdAt)
+                //console.log(content.createdAt)
                 content.update({
                     "real_date":today,
                     "chapter_number":number_of_chapters,
-                }).then(cont => {
-                    console.log(cont.createdAt)
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(cont => {
+                    //console.log(cont.createdAt)
                     res.status(200).send([cont])
                 })
             }
@@ -489,27 +582,39 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_id: publication_id,
                 chapter_number: chapter_number
             },
-        }).then(first_content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(first_content=>{
             first_content.update({
                 "status":status
-            }).then(content => {
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {
                 let cat=(category=="writing")?"Writing":(category=="drawing")?"Drawing":"Comic";
-                console.log("catcat")
-                console.log(cat)
+                //console.log("catcat")
+                //console.log(cat)
                 list_of_navbar.findAll({
                     where: {
                         publication_category:cat,
                         format: format,
                         target_id: publication_id,
                     },
-                }).then(research=>{
+                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(research=>{
                     if(research.length>0){
                         for(let i=0;i<research.length;i++){
                             if(status=="private"){
                                 let stat=(research[i].status=="clicked")?"clicked_private":"clicked_after_research_private"
                                 research[i].update({
                                     "status":stat,
-                                }).then(l=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(l=>{
                                     if(i==research.length-1){
                                         res.status(200).send([content])
                                     }
@@ -519,7 +624,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                 let stat=(research[i].status=="clicked_private")?"clicked":"clicked_after_research"
                                 research[i].update({
                                     "status":stat,
-                                }).then(l=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(l=>{
                                     if(i==research.length-1){
                                         res.status(200).send([content])
                                     }
@@ -556,7 +664,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
             },
         })
-        .then(contents=>{
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(contents=>{
             contents.destroy({
                 truncate: false
               })})
@@ -580,7 +691,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ],
                 limit: 15,
             })
-            .then(contents =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(contents =>  {
                 res.status(200).send([contents])
             }); 
          
@@ -600,7 +714,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 ],
                 limit: 5,
             })
-            .then(contents =>  {
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(contents =>  {
                 res.status(200).send([contents])
             }); 
        
@@ -624,7 +741,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             ],
             limit: 5,
         })
-        .then(contents =>  {
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(contents =>  {
             res.status(200).send([contents])
         }); 
           
@@ -643,7 +763,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 id_user:current_user,
                 emphasize:"yes"
             },
-        }).then(content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
             if(content != null){
                 content.update({
                     "emphasize":"no"
@@ -659,10 +782,16 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 publication_id: publication_id,
                 chapter_number: chapter_number
             },
-        }).then(content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
             content.update({
                 "emphasize":"yes"
-            }).then(content => {res.status(200).send([content])})
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
         })
         })();
     });
@@ -684,10 +813,16 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 chapter_number:chapter_number,
                 emphasize:"yes"
             },
-        }).then(content=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content=>{
             content.update({
                 "emphasize":"no"
-            }).then(content => {res.status(200).send([content])})
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
         })
         })();
     });
@@ -700,7 +835,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 id_user:id_user,
                 emphasize:"yes",
             },
-        }).then(content => {res.status(200).send([content])})
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
         })();
     });
 
@@ -717,7 +855,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     ['real_date', 'DESC']
                 ],
                 limit: 6,
-            }).then(content => {res.status(200).send([content])})
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
            
     });
 
@@ -734,7 +875,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     ['real_date', 'DESC']
                 ],
                 limit: 6,
-            }).then(content => {res.status(200).send([content])})
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
        
     });
 
@@ -751,7 +895,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     ['real_date', 'DESC']
                 ],
                 limit: 6,
-            }).then(content => {res.status(200).send([content])})
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(content => {res.status(200).send([content])})
           
     });
 
@@ -768,16 +915,25 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 id_user_subscribed_to:id_friend
             },
         })
-        .then(subscribings=>{
+        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
             if(subscribings){
                 subscribings.destroy({
                     truncate: false
-                    }).then(subscribings=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                     list_of_users.findOne({
                         where:{
                             id:id_friend,
                         }
-                    }).then(user=>{
+                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                         let number=user.subscribers_number;
                         let subscribers=user.subscribers;
                         if(subscribers && subscribers.indexOf(current_user)>=0){
@@ -788,12 +944,18 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                         user.update({
                             'subscribers':subscribers,
                             'subscribers_number':number,
-                        }).then(user=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                             list_of_users.findOne({
                                 where:{
                                     id:current_user,
                                 }
-                            }).then(user1=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user1=>{
                                 let number1=user1.subscribings_number;
                                 let subscribings=user1.subscribings;
                                 if(subscribings && subscribings.indexOf(id_friend)>=0){
@@ -804,7 +966,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                 user1.update( {
                                     'subscribings': subscribings,
                                     'subscribings_number':number1,
-                                }).then(m=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
                                         delete_other_subscribtion()
                                 })
                             })
@@ -825,16 +990,25 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     id_user_subscribed_to:current_user
                 },
             })
-            .then(subscribings=>{
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                 if(subscribings){
                     subscribings.destroy({
                         truncate: false
-                        }).then(subscribings=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(subscribings=>{
                         list_of_users.findOne({
                             where:{
                                 id:current_user,
                             }
-                        }).then(user=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                             let number=user.subscribers_number;
                             let subscribers=user.subscribers;
                             if(subscribers && subscribers.indexOf(id_friend)>=0){
@@ -845,12 +1019,18 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                             user.update({
                                 'subscribers': subscribers,
                                 'subscribers_number':number,
-                            }).then(user=>{
+                            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                                 list_of_users.findOne({
                                     where:{
                                         id:id_friend,
                                     }
-                                }).then(user1=>{
+                                }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user1=>{
                                     let number1=user1.subscribings_number;
                                     let subscribings=user1.subscribings;
                                     if(subscribings && subscribings.indexOf(current_user)>=0){
@@ -861,7 +1041,10 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                                     user1.update( {
                                         'subscribings': subscribings,
                                         'subscribings_number':number1,
-                                    }).then(m=>{
+                                    }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(m=>{
                                         res.status(200).send([subscribings])
                                     })
                                 })

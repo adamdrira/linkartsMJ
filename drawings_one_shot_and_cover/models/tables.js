@@ -27,6 +27,7 @@ exports.Drawings_Onepage_Tables = (sequelize, DataTypes) => {
         status: DataTypes.STRING,
         monetization: DataTypes.STRING,
         trending_rank:DataTypes.INTEGER,
+        height:DataTypes.STRING,
         list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {

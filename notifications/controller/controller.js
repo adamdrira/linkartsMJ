@@ -40,8 +40,8 @@ module.exports = (router,
         };
 
     router.get('/get_list_of_notifications', function (req, res) {
-        console.log("get_list_of_notifications")
-        console.log(req.cookies.currentUser)
+        //console.log("get_list_of_notifications")
+        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
         list_of_notifications.findAll({
@@ -56,12 +56,15 @@ module.exports = (router,
               ],
             limit:150,
             })
-            .then(notifications=>{res.status(200).send([notifications])})     
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notifications=>{res.status(200).send([notifications])})     
     });
 
     
     router.post('/get_notifications_information', function (req, res) {
-        console.log("get_notifications_information")
+        //console.log("get_notifications_information")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const publication_category = req.body.publication_category;
@@ -87,14 +90,17 @@ module.exports = (router,
                 ['createdAt', 'DESC']
               ]
             })
-            .then(notifications=>{res.status(200).send([notifications])})     
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notifications=>{res.status(200).send([notifications])})     
     });
 
 
     
     router.post('/add_notification', function (req, res) {
-        console.log("add_notification")
-        console.log(req.cookies.currentUser)
+        //console.log("add_notification")
+        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const id_user = req.body.id_user;
@@ -125,7 +131,10 @@ module.exports = (router,
                 "comment_id":comment_id,
                 "status":"unchecked"
             })
-            .then(notification=>{res.status(200).send([notification])})   
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notification=>{res.status(200).send([notification])})   
                 
         }
         else{
@@ -133,7 +142,10 @@ module.exports = (router,
                 where:{
                     id:current_user,
                 }
-            }).then(user=>{
+            }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
                 let subscribers=user.subscribers;
                 let compt=0;
                 if(subscribers.length>0){
@@ -150,7 +162,10 @@ module.exports = (router,
                             "chapter_number":chapter_number,
                             "status":"unchecked"
                         })
-                        .then(notification=>{
+                        .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notification=>{
                             compt++;
                             if(compt==subscribers.length){
                                 res.status(200).send([notification])
@@ -173,7 +188,7 @@ module.exports = (router,
 
 
     router.post('/add_notification_trendings', function (req, res) {
-        console.log("add_notification_trendings")
+        //console.log("add_notification_trendings")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
         const id_user = req.body.id_user;
@@ -188,8 +203,8 @@ module.exports = (router,
         const chapter_number = req.body.chapter_number;
         const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
-        console.log(publication_category)
-        console.log(publication_id)
+        //console.log(publication_category)
+        //console.log(publication_id)
         list_of_notifications.findOne({
             where:{
                 type:type,
@@ -200,7 +215,10 @@ module.exports = (router,
                 information:information,
             }
             
-        }).then(found=>{
+        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(found=>{
             if(found){
                res.status(200).send([{found:true}])
             }
@@ -220,7 +238,10 @@ module.exports = (router,
                     "comment_id":comment_id,
                     "status":"unchecked"
                 })
-                .then(notification=>{res.status(200).send([notification])})   
+                .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notification=>{res.status(200).send([notification])})   
             }
         })
            
@@ -236,7 +257,7 @@ module.exports = (router,
     
 
     router.post('/add_notification_for_group_creation', function (req, res) {
-        console.log("add_notification_for_group_creation")
+        //console.log("add_notification_for_group_creation")
         const type = req.body.type;
         const id_user = req.body.id_user;
         const publication_name=req.body.publication_name;
@@ -246,15 +267,15 @@ module.exports = (router,
         const id_user_name=req.body.id_user_name;
         const chapter_number = req.body.chapter_number;
         let list_of_receivers=req.body.list_of_receivers;
-        console.log(type)
-        console.log(id_user)
-        console.log(publication_category)
-        console.log(publication_name)
-        console.log(format)
-        console.log(publication_id)
-        console.log(id_user_name)
-        console.log(chapter_number)
-        console.log(list_of_receivers)
+        //console.log(type)
+        //console.log(id_user)
+        //console.log(publication_category)
+        //console.log(publication_name)
+        //console.log(format)
+        //console.log(publication_id)
+        //console.log(id_user_name)
+        //console.log(chapter_number)
+        //console.log(list_of_receivers)
         let compt=0;
         for(let i=0;i<list_of_receivers.length;i++){
             list_of_notifications.create({
@@ -270,10 +291,13 @@ module.exports = (router,
                 "chapter_number":chapter_number,
                 "status":"unchecked"
             })
-            .then(notification=>{
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notification=>{
                 compt++;
                 if(compt==list_of_receivers.length){
-                    console.log("notif sent")
+                    //console.log("notif sent")
                     res.status(200).send([notification])
                 }
                 
@@ -287,8 +311,8 @@ module.exports = (router,
 
 
     router.post('/remove_notification', function (req, res) {
-        console.log("remove_notification")
-        console.log(req.cookies.currentUser)
+        //console.log("remove_notification")
+        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const publication_category = req.body.publication_category;
         const type =req.body.type;
@@ -311,29 +335,38 @@ module.exports = (router,
                 }
            
             },{truncate:false})
-            .then(notifications=>{res.status(200).send([{suppression:"done"}])})     
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notifications=>{res.status(200).send([{suppression:"done"}])})     
     });
 
     
     
 
     router.post('/change_all_notifications_status_to_checked', function (req, res) {
-        console.log("change_all_notifications_status_to_checked");
+        //console.log("change_all_notifications_status_to_checked");
         let current_user = req.body.user_id;
-        console.log(current_user)
+        //console.log(current_user)
         const Op = Sequelize.Op;
         list_of_notifications.findAll({
                 where:{
                     id_receiver:current_user,
                 }
             })
-            .then(notifications=>{
+            .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notifications=>{
                 let compt=0;
                 if(notifications.length>0){
                     for(let i=0;i<notifications.length;i++){
                         notifications[i].update({
                             "status":"checked"
-                        }).then(not=>{
+                        }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(not=>{
                             compt+=1;
                             if(compt==notifications.length){
                                 res.status(200).send([notifications])
@@ -351,8 +384,8 @@ module.exports = (router,
 
     
     router.post('/change_notification_status_to_seen', function (req, res) {
-        console.log("change_notification_status_to_seen")
-        console.log(req.cookies.currentUser)
+        //console.log("change_notification_status_to_seen")
+        //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user=req.body.id_user;
         const publication_category = req.body.publication_category;
@@ -371,7 +404,10 @@ module.exports = (router,
                     publication_id:publication_id,
                     chapter_number:chapter_number,
                  }
-             }).then(notif=>{
+             }).catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(notif=>{
                 notif.update({
                     "status":"seen"
                 })

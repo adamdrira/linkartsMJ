@@ -30,7 +30,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
             ,order: [
                 ['createdAt', 'DESC']
             ]
-        }).then(tren=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(tren=>{
             if(tren.length>0){
                     trendings_contents.findAll({
                         where:{
@@ -40,7 +43,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                         ,order: [
                             ['createdAt', 'DESC']
                         ]
-                    }).then(comics=>{
+                    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comics=>{
                         let list_of_comics=comics
                         trendings_contents.findAll({
                             where:{
@@ -50,7 +56,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                             ,order: [
                                 ['createdAt', 'DESC']
                             ]
-                        }).then(drawings=>{
+                        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings=>{
                             let list_of_drawings=drawings
                             trendings_contents.findAll({
                                 where:{
@@ -60,7 +69,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                                 ,order: [
                                     ['createdAt', 'DESC']
                                 ]
-                            }).then(writings=>{
+                            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings=>{
                                 let list_of_writings=writings
                                 res.status(200).send([{found:true,list_of_writings:list_of_writings,list_of_drawings:list_of_drawings,list_of_comics:list_of_comics}])
                                         
@@ -109,7 +121,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                     ['createdAt', 'DESC']
                 ],
                 limit:6,
-            }).then(trendings=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings=>{
                 list_of_contents=trendings;
                 trendings_contents.findAll({
                     where:{
@@ -120,7 +135,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                         ['createdAt', 'DESC']
                     ],
                     limit:6,
-                }).then(trendings_com=>{
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings_com=>{
                     list_of_comics=trendings_com;
                     trendings_contents.findAll({
                         where:{
@@ -131,7 +149,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                             ['createdAt', 'DESC']
                         ],
                         limit:6,
-                    }).then(trendings_draw=>{
+                    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings_draw=>{
                         list_of_drawings=trendings_draw;
                         trendings_contents.findAll({
                             where:{
@@ -142,7 +163,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                                 ['createdAt', 'DESC']
                             ],
                             limit:6,
-                        }).then(trendings_wri=>{
+                        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings_wri=>{
                             list_of_writings=trendings_wri;
                             res.status(200).send([{list_of_contents:list_of_contents,list_of_comics:list_of_comics,list_of_writings:list_of_writings,list_of_drawings:list_of_drawings}])
                         })
@@ -159,7 +183,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                 ,order: [
                     ['createdAt', 'DESC']
                 ]
-            }).then(trendings=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings=>{
                 let list_of_contents=trendings
                 trendings_contents.findAll({
                     where:{
@@ -170,7 +197,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                     ,order: [
                         ['createdAt', 'DESC']
                     ]
-                }).then(comics=>{
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(comics=>{
                     let list_of_comics=comics
                     trendings_contents.findAll({
                         where:{
@@ -181,7 +211,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                         ,order: [
                             ['createdAt', 'DESC']
                         ]
-                    }).then(drawings=>{
+                    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawings=>{
                         let list_of_drawings=drawings
                         trendings_contents.findAll({
                             where:{
@@ -192,7 +225,10 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                             ,order: [
                                 ['createdAt', 'DESC']
                             ]
-                        }).then(writings=>{
+                        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writings=>{
                             let list_of_writings=writings
                             res.status(200).send([{list_of_contents:list_of_contents,list_of_writings:list_of_writings,list_of_drawings:list_of_drawings,list_of_comics:list_of_comics}])
                                     
