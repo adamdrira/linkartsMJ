@@ -871,6 +871,7 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
 
 //Ouverture du server
 const port = process.env.PORT || 4600;
+console.log(process.env.NODE_ENV)
 server.listen(port, (req,res)=> {
     console.log(`server http/ws running on port ${port} `);
  });

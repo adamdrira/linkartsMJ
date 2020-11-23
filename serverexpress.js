@@ -14,7 +14,8 @@ global.appRoot = __dirname;  //pour testdb
 
 
 
-//Middleware
+  //Middleware
+  process.env.NODE_ENV="production"
   app.use(session({secret:'zz',resave:true,saveUninitialized:true}))
   app.use(cookieParser());
   app.use(bodyParser.json())
