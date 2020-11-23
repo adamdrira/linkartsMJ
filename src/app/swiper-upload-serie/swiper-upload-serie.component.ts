@@ -369,9 +369,10 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   cancel_all() {
     if (this.chapter==0) {
-      this.BdSerieService.RemoveBdSerie(0).pipe(first()).subscribe(res=>{
-        this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
-        console.log(res)
+      this.BdSerieService.RemoveBdSerie(this.bd_id).subscribe(res=>{
+        this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+          console.log(r)
+        })
       }); 
     }
   }

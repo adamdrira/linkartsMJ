@@ -30,32 +30,19 @@ export class BdOneShotService {
    //création ligne dans table "list-bd_oneshot" après étape 1 formulaire
   CreateBdOneShot(Title, Category, Tags:String[], highlight, monetization){
     return this.httpClient.post('routes/add_bd_oneshot', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, monetization:monetization}, {withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('current_bd_oneshot_id','/');
-        this.CookieService.delete('current_bd_serie_id','/');
-        this.CookieService.set('current_bd_oneshot_id', information[0].bd_id, undefined, '/','localhost',undefined,'Lax');
-      
         return information;
     }));
   }
 
   RemoveBdOneshot(bd_id) {
-    if(bd_id==0){
-      console.log("ca vaut 0");
-      bd_id=this.CookieService.get('current_bd_oneshot_id');
-    }
     return this.httpClient.delete(`routes/remove_bd_oneshot/${bd_id}`, {withCredentials:true}).pipe(map(information=>{
-        this.Subscribing_service.remove_content('comics', 'one-shot', bd_id,0).subscribe(r=>{
           return information;
-        });
     }));
   }
 
-  get_bdid_cookies(){
-   return this.CookieService.get('current_bd_oneshot_id');
-  }
 
-  ModifyBdOneShot(Title, Category, Tags:String[], highlight, monetization){
-    let bd_id = this.CookieService.get('current_bd_oneshot_id')
+
+  ModifyBdOneShot(bd_id,Title, Category, Tags:String[], highlight, monetization){
     return this.httpClient.post('routes/modify_bd_oneshot', {Title: Title, Category:Category, Tags:Tags, bd_id:bd_id, highlight:highlight, monetization:monetization}, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
@@ -82,9 +69,7 @@ export class BdOneShotService {
 
 
    //remove the page from postgresql
-   remove_page_from_sql(page:number){
-    let bd_id = this.CookieService.get('current_bd_oneshot_id')
-    this.CookieService.delete('current_bd_oneshot_id','/');
+   remove_page_from_sql(bd_id,page:number){
     return this.httpClient.delete(`routes/remove_page_from_data/${page}/${bd_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
@@ -99,14 +84,8 @@ export class BdOneShotService {
     }));
    };
 
-   validate_bd(page_number){
-    let bd_id = this.CookieService.get('current_bd_oneshot_id')
+   validate_bd(bd_id,page_number){
     return this.httpClient.post('routes/validation_upload_bd_oneshot/',{bd_id:bd_id, page_number:page_number},{withCredentials:true}).pipe(map(information=>{
-      this.CookieService.delete('current_bd_oneshot_id','/');
-      this.CookieService.delete('name_cover_bd','/');
-      return this.Subscribing_service.validate_content("comic","one-shot",bd_id,0).subscribe(l=>{
-        return l
-      }); 
      }));
     }
 

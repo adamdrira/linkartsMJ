@@ -61,9 +61,9 @@ export class SwiperUploadArtbookComponent implements OnInit {
   display_loading=false;
 
   
-  thumbnail_height_with_200px_width:number = 300;
+  thumbnail_height:string;
 
-
+  @Input('drawing_id') drawing_id:number;
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -112,6 +112,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
   
   
   ngOnInit(): void {
+    console.log(this.drawing_id)
   }
 
   ngAfterViewInit() {
@@ -343,9 +344,11 @@ export class SwiperUploadArtbookComponent implements OnInit {
 
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
     this.swiper.update();
+    this.componentRef[ this.componentRef.length - 1 ].instance.drawing_id = this.drawing_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.title = this.name;
-
+  
+    
     this.componentRef[ this.componentRef.length - 1 ].instance.sendPicture.subscribe( v => {
       if( v.page == 0 && !v.removing && !v.changePage ) {
 
@@ -405,7 +408,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
     }
   }
 
-
+  loading_thumbnail=false;
   set_crop() {
 
     const canvas = this.cropper.getCroppedCanvas();
@@ -423,21 +426,27 @@ export class SwiperUploadArtbookComponent implements OnInit {
       return;
     }
     
-    canvas.toBlob(blob => {
-      this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
-        console.log(res);
-        this.confirmation = true;
-      })
-    }, "image/png");
-    this.imageDestination = canvas.toDataURL("image/png");
+    this.thumbnail_height = ( 200 * (canvas.height / canvas.width) ).toFixed(2);
 
-
-    this.thumbnail_height_with_200px_width = Math.round( 200 * (canvas.height / canvas.width) );
-    this.cd.detectChanges();
     
-    let el = document.getElementById("target3");
-    var topOfElement = el.offsetTop - 200;
-    window.scroll({top: topOfElement, behavior:"smooth"});
+    canvas.toBlob(blob => {
+      if(this.imageDestination=='' && !this.loading_thumbnail){
+        this.loading_thumbnail=true;
+        this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
+            this.confirmation = true;
+            this.imageDestination = canvas.toDataURL("image/png");
+            this.loading_thumbnail=false;
+            this.cd.detectChanges();
+            let el = document.getElementById("target3");
+            var topOfElement = el.offsetTop - 200;
+            window.scroll({top: topOfElement, behavior:"smooth"});
+            this.cd.detectChanges();
+         
+        })
+      }
+      
+    }, "image/png");
+    
   }
 
   cancel_crop(){
@@ -445,9 +454,11 @@ export class SwiperUploadArtbookComponent implements OnInit {
     if( !this.imageDestination ) {
       return;
     }
-    this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
-    this.imageDestination='';
-    this.confirmation = false;
+    this.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+      this.imageDestination='';
+      this.confirmation = false;
+    });
+    
   }
 
 
@@ -488,17 +499,23 @@ export class SwiperUploadArtbookComponent implements OnInit {
     
     else {
       this.display_loading=true;
-      this.Drawings_CoverService.add_covername_to_sql(this.format).subscribe();
-      for (let step = 0; step < this.componentRef.length; step++) {
-        this.componentRef[ step ].instance.upload = true;
-        this.componentRef[ step ].instance.total_pages = this.componentRef.length;
-        this.componentRef[ step ].instance.sendValidated.subscribe( v => {
-          console.log("received validated")
-          this.block_cancel=true;
-          this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
-          //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
-        });
-      }
+      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(r=>{
+        this.Drawings_Artbook_Service.send_drawing_height_artbook(this.thumbnail_height,this.drawing_id).subscribe(sr=>{
+          for (let step = 0; step < this.componentRef.length; step++) {
+            this.componentRef[ step ].instance.upload = true;
+            this.componentRef[ step ].instance.total_pages = this.componentRef.length;
+            this.componentRef[ step ].instance.sendValidated.subscribe( v => {
+              console.log("received validated")
+              this.block_cancel=true;
+              this.display_loading=false
+              this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
+              //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
+            });
+          }
+        })
+        
+      });
+     
     }
 
 
@@ -507,8 +524,8 @@ export class SwiperUploadArtbookComponent implements OnInit {
   block_cancel=false;
   cancel_all() {
     if(!this.block_cancel){
-      this.Drawings_Artbook_Service.RemoveDrawingArtbook(0).pipe(first()).subscribe(res=>{
-        this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
+      this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().subscribe()
         console.log(res)
       });
     }

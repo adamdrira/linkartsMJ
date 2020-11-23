@@ -139,9 +139,10 @@
                     <div *ngIf="category_index==0" class="section-container" [@enterAnimation]>
 
                         <span *ngIf="!item.remuneration">{{item.type_of_project}}</span>
-                        <span *ngIf="item.remuneration && item.price_value>0">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€</span>
-                        <span *ngIf="item.remuneration && !(item.price_value>0)">{{item.type_of_project}} • Rémunéré</span>
-
+                        <span *ngIf="item.remuneration && item.price_value>0 && item.price_type==''">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€</span>
+                        <span *ngIf="item.remuneration && item.price_value>0 && item.price_type!=''">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€ • {{item.price_type}}</span>
+                        <span *ngIf="item.remuneration && !(item.price_value>0) && item.price_type==''">{{item.type_of_project}} • Rémunéré</span>
+                        <span *ngIf="item.remuneration && !(item.price_value>0) && item.price_type!=''">{{item.type_of_project}} • Rémunéré • {{item.price_type}}</span>
                         <!--<div class="verso-type">
                             <div class="type-container"><span>{{item.type_of_project}}</span></div>
                             <div class="tag-container" *ngIf="item.remuneration && item.price_value!='0'"><span>Rémunumation : {{item.price_value}}€</span></div>

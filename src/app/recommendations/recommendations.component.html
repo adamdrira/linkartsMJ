@@ -19,9 +19,12 @@
 
 
 
-    <ng-container *ngIf="!list_of_categories_retrieved">
+    <ng-container *ngIf=" (!bd_is_loaded && subcategory==0) || (!drawing_is_loaded && !show_media_drawing && subcategory==1 ) || (!writing_is_loaded && subcategory==2 ) " >
         <div *ngFor="let item of categories_array; index as i1">
-            <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center" [@enterAnimation]>
+            <div class="category">
+                <div class="category-title shiny"></div>
+            </div>
+            <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;" [@enterAnimation]>
                 <ng-container *ngFor="let item of skeleton_array; let i = index">
                     <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
                         (send_number_of_skeletons)="send_number_of_skeletons( $event );"
@@ -47,7 +50,6 @@
         [sorted_artpieces_bd_format]=sorted_artpieces_bd_format
         [sorted_artpieces_bd]=sorted_artpieces_bd
         [now_in_seconds]=now_in_seconds
-        (list_of_comics_retrieved_emitter)="list_of_comics_retrieved_receiver( $event );"
         ></app-media-comics>
     </div>
     <div class="media-container" *ngIf="drawing_is_loaded  && subcategory==1" [ngClass]="{'invisible':!sorted_category_retrieved }">
@@ -58,7 +60,7 @@
         [sorted_artpieces_digital]=sorted_artpieces_digital
         [sorted_artpieces_digital_format]=sorted_artpieces_digital_format
         [now_in_seconds]=now_in_seconds
-        (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver( $event );"
+        (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"
         ></app-media-drawings>
     </div>
     <div class="media-container" *ngIf="writing_is_loaded  && subcategory==2" [ngClass]="{'invisible':!sorted_category_retrieved }">
@@ -71,7 +73,6 @@
          [sorted_artpieces_article]=sorted_artpieces_article
          [sorted_artpieces_poetry]=sorted_artpieces_poetry
          [now_in_seconds]=now_in_seconds
-         (list_of_writings_retrieved_emitter)="list_of_writings_retrieved_receiver( $event );"
          ></app-media-writings>
     </div>
 

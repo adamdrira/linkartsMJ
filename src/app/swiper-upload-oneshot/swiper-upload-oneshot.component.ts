@@ -51,7 +51,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
 
-
+  @Input() bd_id: number;
   @Input() type: string;
   @Input() bdtitle: string;
   @ViewChild('swiperContainer', { static : false }) swiperContainer: ElementRef;
@@ -284,6 +284,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
     this.rd.addClass( this.componentRef[ this.componentRef.length - 1 ].location.nativeElement, "swiper-slide" );
     this.swiper.update();
+    this.componentRef[ this.componentRef.length - 1 ].instance.bd_id = this.bd_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.page = this.swiper.slides.length - 1;
     this.componentRef[ this.componentRef.length - 1 ].instance.bdtitle = this.bdtitle;
   }
@@ -346,12 +347,11 @@ export class SwiperUploadOneshotComponent implements OnInit {
 
   block_cancel=false;
   cancel_all() {
-    console.log("cancel all")
     if(!this.block_cancel){
-      console.log("cancelling all")
-      this.bdOneShotService.RemoveBdOneshot(0).pipe(first()).subscribe(res=>{
-        this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
-        console.log(res)
+      this.bdOneShotService.RemoveBdOneshot(this.bd_id).subscribe(res=>{
+        this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+          console.log(r)
+        })
       });
     }
       

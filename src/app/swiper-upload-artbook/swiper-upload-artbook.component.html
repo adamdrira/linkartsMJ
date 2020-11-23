@@ -87,13 +87,16 @@ view_module
                     <img #image [src]="imageSource" crossorigin>
                 </div>
                 <div class="buttons-container" style=" margin-top: 20px;">
-                    <button class="validate-button" *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
-                        <mat-icon>refresh</mat-icon>
-                        <span>Recommencer</span>
+                    <button class="validate-button"  *ngIf="imageDestination != ''" [@enterAnimation] (click)="cancel_crop();">
+                        <mat-icon  >refresh</mat-icon>
+                        <span >Recommencer</span>
                     </button>
-                    <button class="validate-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
-                        <mat-icon>crop_free</mat-icon>
-                        <span>Rogner</span>
+                    <button class="validate-button" [ngClass]="{'loading_thumbnail':loading_thumbnail}" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
+                        <mat-icon *ngIf="!loading_thumbnail" >crop_free</mat-icon>
+                        <span *ngIf="!loading_thumbnail" >Rogner</span>
+                        <mat-spinner *ngIf="loading_thumbnail" diameter="25"  style="margin:auto;"></mat-spinner>
+                        
+                        
                     </button>
                 </div>
             </div>
@@ -139,7 +142,6 @@ view_module
                                 <div>
                                     <mat-icon>visibility</mat-icon>
                                     <span>&nbsp;</span>
-                                    <!--<div class="view-logo"></div>-->
                                 </div>
                             </div>
                             <div class="figure-container likes">
@@ -156,21 +158,7 @@ view_module
                             </div>
                         </div>
                         
-                        <!--********************-->
-                        <!--Type container-->
-                        <!--********************-->
-                        <!--<div class="verso-type" *ngIf="format">
-                            <ng-container *ngIf="format=='One-shot'">
-                                <div class="tag-container"><span>One shot</span></div>
-                            </ng-container>
-        
-                            <ng-container *ngIf="format!='One-shot'">
-                                <div class="tag-container"><span>Série</span></div>
-                            </ng-container>
-                        </div>
-                        <div class="verso-type" *ngIf="!format">
-                            <div class="tag-container"><span>Format</span></div>
-                        </div>-->
+                       
                         <!--********************-->
                         <!--Date container-->
                         <!--********************-->

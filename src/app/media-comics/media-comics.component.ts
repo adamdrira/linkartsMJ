@@ -42,10 +42,13 @@ export class MediaComicsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if(this.number_of_comics_to_show>=0){
+    /*if(this.number_of_comics_to_show>=0){
       this.update_lists(this.number_of_comics_to_show);
-    }
-
+    }*/
+    var width = $('.media-container').width();
+    var n = Math.floor(width/250);
+    this.number_of_comics_to_show=n;
+    this.cd.detectChanges()
   }
 
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
@@ -76,19 +79,24 @@ export class MediaComicsComponent implements OnInit {
   number_of_thumbnails=0;
   
   ngOnInit() {
+    console.log("all bd ready to load")
+
+    var width = $('.media-container').width();
+    var n = Math.floor(width/250);
+    this.number_of_comics_to_show=n;
     this.number_of_thumbnails=this.sorted_artpieces_comics.length +
       this.sorted_artpieces_webtoon.length +
       this.sorted_artpieces_manga.length +
       this.sorted_artpieces_bd.length;
 
-      if(this.number_of_thumbnails==0){
+
+      /*if(this.number_of_thumbnails==0){
         this.list_of_contents_sorted=true;
         this.list_of_comics_retrieved_emitter.emit({retrieved:true})
-      }
+      }*/
   }
 
-  j=0;
-  number_retrieved=false;
+  /*j=0;
   send_number_of_thumbnails(object){
     if(object.number!=this.number_of_comics_to_show){
       this.list_of_contents_sorted=false;
@@ -98,26 +106,26 @@ export class MediaComicsComponent implements OnInit {
       }
     }
     this.j++;
-  }
+  }*/
 
-  number_of_loaded=0;
+  /*number_of_loaded=0;
   send_loaded(object){
     this.number_of_loaded++;
     if(this.number_of_loaded==this.number_of_thumbnails){
-      this.update_lists(this.number_of_comics_to_show);
+      console.log("all loaded ")
     }
    
   }
 
   list_of_more_contents_sorted=false;
   send_put_more_visible(event){
-    this.cd.detectChanges();
-    this.list_of_contents_sorted=true;
+    //this.list_of_contents_sorted=true;
     this.list_of_more_contents_sorted=true;
+    this.cd.detectChanges();
   }
 
   categories_array = Array(4);
-  skeleton_array = Array(20);
+  skeleton_array = Array(6);
   number_of_skeletons_per_line = 1;
   send_number_of_skeletons(object) {
     this.number_of_skeletons_per_line=object.number;
@@ -125,6 +133,7 @@ export class MediaComicsComponent implements OnInit {
   }
 
   update_lists(number){
+    
     if( number== 1 ) {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
@@ -148,9 +157,10 @@ export class MediaComicsComponent implements OnInit {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.list_of_contents_sorted=true;
+    console.log("emit to display sent")
     this.list_of_comics_retrieved_emitter.emit({retrieved:true})
     this.cd.detectChanges();
-  }
+  }*/
 
   //Other
   see_more(item) {

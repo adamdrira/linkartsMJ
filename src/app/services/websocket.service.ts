@@ -44,7 +44,7 @@ public check_state(){
   connect(url):Subject<MessageEvent>{
       if(!this.subject){
           this.subject=this.create(url);
-          console.log("connected to " + url);
+          //console.log("connected to " + url);
       }
       return this.subject;
 
@@ -56,20 +56,20 @@ public check_state(){
       let THIS=this;
       
       this.ws = new WebSocket(url);
-      console.log(this.ws );
+      //console.log(this.ws );
       let observable = new Observable(
           (obs:Observer<MessageEvent>)=>{
              this.ws.onmessage=obs.next.bind(obs);
              this.ws.onerror=obs.error.bind(obs);
              
              this.ws.onclose=function(e) {  
-              console.log(e);
-              console.log('socket closed try again'); 
+              //console.log(e);
+              //console.log('socket closed try again'); 
                if(!e.wasClean){
-                 console.log("not cleen");
+                 //console.log("not cleen");
                  //THIS.ChatService.reconnect();
                  let retry= setInterval(() => {
-                    console.log(THIS.ws.readyState);
+                    //console.log(THIS.ws.readyState);
                     if(THIS.ws.readyState==2 || THIS.ws.readyState==3){
                       THIS.subject = null;
                       THIS.NavbarService.send_connextion_status(false)

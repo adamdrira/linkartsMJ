@@ -43,14 +43,14 @@
               </div>
             </div>COLLABORATIONS
           </div>
-          <div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
+          <!--<div class="category" [ngClass]="{'opened': navbar.active_section==2 }">
             <div style="margin-right: 6px;">
               <div class="icon-shopping"  [ngClass]="{'icon-clicked': navbar.active_section==2 }" style=" margin: auto auto;
               height: 14px;
               width: 14px;">
               </div>
             </div>LIBRAIRIE
-          </div>
+          </div>-->
         </div>
       </div>
 
@@ -124,7 +124,7 @@
                   </div>
                   <div class="first-block-container">
                     <ng-container *ngFor="let item of most_researched_propositions;let i=index">
-                      <div class="string-proposition-container" *ngIf="item.research_string!=''" (click)="click_on_trending_message(i);open_main_research(item.research_string);">
+                      <div class="string-proposition-container" *ngIf="item.research_string!=''" (click)="click_on_trending_message(i)">
                         <span class="string-proposition"  > 
                             {{item.research_string}} 
                         </span>
@@ -299,24 +299,6 @@
                               <mat-icon class="close-icon">close</mat-icon>
                           </button>
 
-                          <!--<div class="author-container" (click)="add_clicked_after_research_recent(i)">
-                            <div class="author-left-container">
-                                <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
-                            </div>
-                            <a href="/ad-page/{{list_of_last_propositions_history[i].title}}/{{list_of_last_propositions_history[i].id}}">
-                              <div class="author-right-container">
-                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
-                              </div>
-                            </a>
-                            <span class="item-title">Annonce</span>
-                            <span class="item-title">{{list_of_last_propositions_history[i].type_of_project}} </span>
-                            <span class="item-title">{{list_of_last_propositions_history[i].target_one}} </span>
-                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].target_two">{{list_of_last_propositions_history[i].target_two}} </span>
-                          
-                          </div>
-                          <button mat-button tabIndex="-1" *ngIf="!first_option" class="mat-icon-button" (click)="delete_from_history(i)">
-                              <mat-icon class="item-icon" >close</mat-icon>
-                          </button>-->
                         </div>
 
                         <!-- Comic writing drawing -->
@@ -342,36 +324,7 @@
                           <button mat-button tabIndex="-1" *ngIf="first_option" class="mat-icon-button" (click)="delete_from_history(i)">
                               <mat-icon class="close-icon">close</mat-icon>
                           </button>
-                          <!--<div class="author-container">
-                            <div class="author-left-container">
-                                <img [src]="list_of_thumbnails_history[i]" (load)="pp_thumb_hist_load(i)" [ngClass]="{'invisible': !pp_thumb_hist_is_loaded[i] }">
-                            </div>
-                            <a *ngIf="item.publication_category=='Comic'" href='/artwork-comic/{{item.format}}/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
-                              <div class="author-right-container">
-                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
-                              </div>
-                            </a>
-                            <a *ngIf="item.publication_category=='Drawing'" href='/artwork-drawing/{{item.format}}/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
-                              <div class="author-right-container">
-                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
-                              </div>
-                            </a>
-                            <a *ngIf="item.publication_category=='Writing'" href='/artwork-writing/{{list_of_last_propositions_history[i].title}}/{{item.target_id}}'>
-                              <div class="author-right-container">
-                                  <span class="author-name">{{list_of_last_propositions_history[i].title}} </span>
-                                  
-                              </div>
-                            </a>
-                            <span  class="item-title" *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
-                            <span  class="item-title" *ngIf="item.publication_category=='Drawing'">Dessin</span>
-                            <span  class="item-title" *ngIf="item.publication_category=='Writing'">Ecrit</span>
-                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].firsttag">{{list_of_last_propositions_history[i].firsttag}} </span>
-                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].secondtag">{{list_of_last_propositions_history[i].secondtag}} </span>
-                            <span class="item-title" *ngIf="list_of_last_propositions_history[i].thirdtag">{{list_of_last_propositions_history[i].thirdtag}} </span>
-                          </div>
-                          <button mat-button tabIndex="-1" class="mat-icon-button" (click)="delete_from_history(i)" *ngIf="!first_option">
-                            <mat-icon class="item-icon">close</mat-icon>
-                          </button>-->
+                       
                         </div>
                         
                       </div>
@@ -390,7 +343,8 @@
               onblur="this.placeholder = 'Rechercher'"
               class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
               <div style="display: flex;justify-content: center; align-items: center;" #searchicon>
-                <mat-icon class="item-icon" (click)="click_on_research()" style="color:#5b6b87;width:30px;cursor:pointer;">search</mat-icon>
+                <mat-icon *ngIf="!loading_research" class="item-icon" (click)="click_on_research()" style="color:#5b6b87;width:30px;cursor:pointer;">search</mat-icon>
+                <mat-spinner *ngIf="loading_research" diameter="20"></mat-spinner>
               </div>
 
               
@@ -419,11 +373,10 @@
         <div class="navbar-l1-icons-container" style="margin: auto 10px auto auto;" *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
 
           
-          <div #chat class="icon-container" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}">
-            <div class="icon icon-messenger" (click)="open_messages()">
-            </div>
+          <div #chat class="icon-container" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
+            <div class="icon icon-messenger" (click)="open_messages()" [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"></div>
             <ng-container *ngIf="number_of_unseen_messages>0">
-              <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
+              <div [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved || !using_chat_retrieved || using_chat,
                                 'notif-size-1':10>number_of_unseen_messages,
                                 'notif-size-2':100>number_of_unseen_messages && number_of_unseen_messages>=10,
                                 'notif-size-3':number_of_unseen_messages>=100}" style="cursor:pointer;" (click)="open_messages()">
@@ -438,21 +391,11 @@
               </div>
             </ng-container>
             
-            <!--<div class="number-of-notifs-container" *ngIf="number_of_unseen_messages>0 && 100>number_of_unseen_messages" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
-                <div class="number-of-notifs">
-                  {{number_of_unseen_messages}}
-                </div>
-            </div>
-            <div class="number-of-notifs-container-more" *ngIf="number_of_unseen_messages>0 && number_of_unseen_messages>99" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
-              <span *ngIf="number_of_unseen_messages>99 " class="number-of-notifs">
-                +99
-              </span>
-            </div>-->
-            <!--<div class="title">Messagerie</div>-->
+  
 
             <div class="notifications-chat-container "  [ngClass]="{'invisible':!show_chat_messages || !data_retrieved || !using_chat_retrieved}">
 
-                <div #myScrollContainer_chat  class="notifications-container " style="position:relative">
+                <div #myScrollContainer_chat  class="notifications-container " >
                   <div class="loading-page" *ngIf="!list_of_friends_retrieved ">
                     <mat-spinner diameter="20"></mat-spinner>
                    </div>
@@ -725,11 +668,11 @@
             <!-- ---------------------------NOTIFICATIONS----------------------------------->
              <!-- ---------------------------NOTIFICATIONS----------------------------------->
 
-          <div #notifications class="icon-container" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}">
-            <div class="icon icon-bell" (click)="open_notifications()">
+          <div #notifications class="icon-container" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
+            <div class="icon icon-bell" (click)="open_notifications() " [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}">
             </div>
             <ng-container *ngIf="number_of_unchecked_notifications>0">
-              <div [ngClass]="{ 'invisible':!data_retrieved || !using_chat_retrieved || using_chat,
+              <div [ngClass]="{ 'invisible':!pp_is_loaded || !data_retrieved || !using_chat_retrieved || using_chat,
                                 'notif-size-1':10>number_of_unchecked_notifications,
                                 'notif-size-2':100>number_of_unchecked_notifications && number_of_unchecked_notifications>=10,
                                 'notif-size-3':number_of_unchecked_notifications>=100}" style="cursor:pointer;" (click)="open_notifications()">
@@ -744,22 +687,7 @@
               </div>
             </ng-container>
 
-          <!--<div #notifications class="icon-container" (click)="open_notifications()" >
-            <div class="icon icon-bell">
-            </div>
-            <div class="number-of-notifs-container" *ngIf="number_of_unchecked_notifications>0 && 100>number_of_unchecked_notifications" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
-              <span *ngIf="10>number_of_unchecked_notifications" class="number-of-notifs">
-                {{number_of_unchecked_notifications}}
-              </span>
-              <span *ngIf="number_of_unchecked_notifications>9 && 100>number_of_unchecked_notifications" class="number-of-notifs-more">
-                {{number_of_unchecked_notifications}}
-              </span>
-            </div>
-            <div class="number-of-notifs-container-more" *ngIf="number_of_unchecked_notifications>0 && number_of_unchecked_notifications>99" [ngClass]="{'invisible':!data_retrieved || !using_chat_retrieved || using_chat}" >
-              <span *ngIf="number_of_unchecked_notifications>99 " class="number-of-notifs">
-                +99
-              </span>
-            </div>-->
+    
 
 
 
@@ -1821,10 +1749,10 @@
               <!-- ---------------------------NOTIFICATIONS END----------------------------------->
 
           <div class="profile-container" (click)="open_my_profile();">
-            <div class="profile-picture" [ngClass]="{ 'delete-background': pp_is_loaded && data_retrieved}" >
+            <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" >
               <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}" >
             </div>
-            <!--<div class="title">Moi</div>-->
+            <div class="title"  [ngClass]="{'invisible': !data_retrieved}">{{author_first_name}}</div>
           </div>
           
 
@@ -1847,9 +1775,10 @@
           
           <div class="connexion-container" [ngClass]="{'account_opened': type_of_profile=='account' || type_of_profile=='suspended' }" *ngIf="!activated_search" >
 
-              <div class="connexion" *ngIf="type_of_profile=='account' || type_of_profile=='suspended'" (click)="logout()">
-                  <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
-                  <span style="margin-left: 5px; font-weight: 500;font-size: 12px;" >Se déconnecter</span>
+              <div class="connexion" [ngClass]="{'disconnecting': disconnecting}" *ngIf="type_of_profile=='account' || type_of_profile=='suspended'" (click)="logout()">
+                  <mat-icon *ngIf="!disconnecting"  class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
+                  <span *ngIf="!disconnecting"  style="margin-left: 5px; font-weight: 500;font-size: 12px;" >Se déconnecter</span>
+                  <mat-spinner *ngIf="disconnecting" diameter="20" ></mat-spinner>
               </div>
               <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
                 <mat-icon class="item-icon connexion-icon" style="transform: rotate(180deg);">login</mat-icon> 
@@ -1872,9 +1801,9 @@
                   <mat-icon class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
               </button>
-              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="open_my_account()" > 	
                   <mat-icon class="item-icon">settings</mat-icon>
-                  <span>Paramètres et confidentialité</span>
+                  <span>Mon compte</span>
               </button>
             </mat-menu>
           </div>
@@ -1900,10 +1829,10 @@
                   <mat-icon class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
               </button>
-              <button class="mat-menu-item" tabIndex="-1" mat-menu-item > 	
-                  <mat-icon class="item-icon">settings</mat-icon>
-                  <span>Paramètres et confidentialité</span>
-              </button>
+              <button class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="open_my_account()" > 	
+                <mat-icon class="item-icon">settings</mat-icon>
+                <span>Mon compte</span>
+             </button>
             </mat-menu>
           </div>
 
@@ -1953,6 +1882,6 @@
 
 </div>
 
-<div class="navbar-margin"></div>
+<div #navbarMargin class="navbar-margin"></div>
 
 <!--Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->

@@ -27,21 +27,13 @@ export class Drawings_Onepage_Service {
   CreateDrawingOnepage(Title, Category, Tags:String[],highlight,monetization){
 
     return this.httpClient.post('routes/add_drawing_one_page', {Title: Title, Category:Category, Tags:Tags,highlight:highlight,monetization:monetization }, {withCredentials:true}).pipe(map((information)=>{
-        console.log(information[0]) 
-        this.CookieService.delete('current_drawing_onepage_id');
-        this.CookieService.delete('current_drawing_artbook_id');
-        this.CookieService.set('current_drawing_onepage_id', information[0].drawing_id, undefined, '/','localhost',undefined,'Lax');  
         return information
     }));
   }
 
 
-  get_drawing_id_cookies(){
-   return this.CookieService.get('current_drawing_onepage_id');
-  }
 
-  ModifyDrawingOnePage(Title, Category, Tags:String[],highlight,monetization){
-    let drawing_id = this.CookieService.get('current_drawing_onepage_id')
+  ModifyDrawingOnePage(drawing_id,Title, Category, Tags:String[],highlight,monetization){
     return this.httpClient.post('routes/modify_drawing_one_page', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id, highlight:highlight,monetization:monetization }, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
@@ -57,20 +49,16 @@ export class Drawings_Onepage_Service {
 
    //remove the page from postgresql
    remove_drawing_from_sql(drawing_id){
-     if (drawing_id==0){
-      drawing_id = this.CookieService.get('current_drawing_onepage_id');
-     }
     return this.httpClient.delete(`routes/remove_drawing_from_data/${drawing_id}`, {withCredentials:true}).pipe(map(information=>{
-      this.Subscribing_service.remove_content('drawing', 'one-shot', drawing_id,0).subscribe(r=>{
-        this.remove_drawing_from_folder(information[0].drawing_name).subscribe(l=>{
-          return information;
-        })
-      });
-        
+      return information
     }));
    };
    
-  
+  send_drawing_height_one_shot(height,drawing_id){
+    return this.httpClient.post('routes/send_drawing_height_one_shot', {height:height,drawing_id:drawing_id}, {withCredentials: true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
    //remove the page file from the folder associated
    remove_drawing_from_folder(filename) {
@@ -79,22 +67,12 @@ export class Drawings_Onepage_Service {
     }));
    };
 
-   validate_drawing(){
-    let drawing_id = this.CookieService.get('current_drawing_onepage_id')
+   validate_drawing(drawing_id){
     return this.httpClient.post('routes/validation_upload_drawing_onepage/',{drawing_id:drawing_id}, {withCredentials:true}).pipe(map(information=>{
-      this.CookieService.delete('current_drawing_onepage_id');
-      return this.Subscribing_service.validate_content("drawing","one-shot",drawing_id,0).subscribe(l=>{
-        return l
-      });   
+      return information  
      }));
   }
 
-  update_filter(color){
-    let drawing_id = this.CookieService.get('current_drawing_onepage_id')
-    return this.httpClient.post('routes/update_filter_color_drawing_onepage',{color:color,drawing_id:drawing_id}, {withCredentials:true}).pipe(map(information=>{
-       return information;   
-     }));
-  }
 
   change_oneshot_drawing_status(drawing_id,status){
     return this.httpClient.post('routes/change_oneshot_drawing_status', {status: status, drawing_id:drawing_id}, {withCredentials:true}).pipe(map((information)=>{

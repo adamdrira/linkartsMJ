@@ -26,21 +26,10 @@ export class Drawings_Artbook_Service {
 
   CreateDrawingArtbook(Title, Category, Tags:String[],highlight,monetization){
     return this.httpClient.post('routes/add_drawings_artbook', {Title: Title, Category:Category, Tags:Tags, highlight:highlight, monetization:monetization}, {withCredentials:true}).pipe(map((information)=>{
-        console.log(information[0]) 
-        this.CookieService.delete('current_drawing_artbook_id');
-        this.CookieService.delete('current_drawing_onepage_id');
-        this.CookieService.set('current_drawing_artbook_id', information[0].drawing_id, undefined, '/','localhost',undefined,'Lax');
-       
         return information
     }));
   }
   
-  update_filter(color){
-    let drawing_id = this.CookieService.get('current_drawing_artbook_id')
-    return this.httpClient.post('routes/update_filter_color_drawing_artbook',{color:color,drawing_id:drawing_id}, {withCredentials:true}).pipe(map(information=>{
-       return information;   
-     }));
-  }
 
   change_artbook_drawing_status(drawing_id,status){
     return this.httpClient.post('routes/change_artbook_drawing_status', {status: status, drawing_id:drawing_id,  }, {withCredentials:true}).pipe(map((information)=>{
@@ -54,29 +43,25 @@ export class Drawings_Artbook_Service {
     }));
   }
 
+  send_drawing_height_artbook(height,drawing_id){
+    return this.httpClient.post('routes/send_drawing_height_artbook', {height:height,drawing_id:drawing_id}, {withCredentials: true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   RemoveDrawingArtbook(drawing_id) {
-    if(drawing_id==0){
-       drawing_id = this.CookieService.get('current_drawing_artbook_id');
-    }
     return this.httpClient.delete(`routes/remove_drawings_artbook/${drawing_id}`, {withCredentials:true}).pipe(map(information=>{
-      this.Subscribing_service.remove_content('drawing', 'artbook', drawing_id,0).subscribe(r=>{return information;});
       }));
   }
 
-  get_artbookid_cookies(){
-   return this.CookieService.get('current_drawing_artbook_id');
-  }
 
-  ModifyArtbook(Title, Category, Tags:String[],highlight, monetization){
-    let drawing_id = this.CookieService.get('current_drawing_artbook_id');
-    console.log(drawing_id);
+  ModifyArtbook(drawing_id,Title, Category, Tags:String[],highlight, monetization){
     return this.httpClient.post('routes/modify_drawings_artbook', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight,monetization:monetization }, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
 
   ModifyArtbook2(drawing_id,Title, Category, Tags:String[],highlight){
-    console.log(drawing_id);
     return this.httpClient.post('routes/modify_drawings_artbook', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight }, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
@@ -84,9 +69,7 @@ export class Drawings_Artbook_Service {
 
 
    //remove the page from postgresql
-   remove_page_from_sql(page:number){
-    let drawing_id = this.CookieService.get('current_drawing_artbook_id')
-    this.CookieService.delete('current_drawing_artbook_id');
+   remove_page_from_sql(page:number,drawing_id){
     return this.httpClient.delete(`routes/remove_artbook_page_from_data/${page}/${drawing_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;
     }));
@@ -102,15 +85,9 @@ export class Drawings_Artbook_Service {
     }));
    };
 
-   validate_drawing(page_number){
-    console.log(page_number);
-    let drawing_id = this.CookieService.get('current_drawing_artbook_id')
+   validate_drawing(page_number,drawing_id){
     return this.httpClient.post('routes/validation_upload_drawing_artbook/',{drawing_id:drawing_id, page_number:page_number}, {withCredentials:true}).pipe(map(information=>{
-      this.CookieService.delete('current_drawing_artbook_id');
-      return this.Subscribing_service.validate_content("drawing","artbook",drawing_id,0).subscribe(l=>{
-        return l
-      }); 
-       
+      return information
      }));
   }
 

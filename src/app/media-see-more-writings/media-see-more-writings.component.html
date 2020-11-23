@@ -1,12 +1,10 @@
 
 
 <div *ngIf="new_sorted_artpieces_added" class="container-homepage d-flex flex-wrap">
-    <div *ngFor="let item of new_sorted_artpieces">
+    <div *ngFor="let item of new_sorted_artpieces.slice(0,number_of_writings_to_show)">
         <app-thumbnail-writing  class="writing-component-container" *ngIf="item.status=='public'"
         [item]=item
         now_in_seconds={{now_in_seconds}}
-        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-        (sendLoaded)="sendLoaded( $event );"
     ></app-thumbnail-writing>
     </div>
 </div>

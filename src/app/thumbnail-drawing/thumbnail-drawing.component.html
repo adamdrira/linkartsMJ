@@ -3,7 +3,7 @@
         
     
     <a [routerLink]=get_artwork() [ngClass]="{ 'for_news':for_news=='yes'}">
-        <div class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture}">
+        <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny}">
 
             <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'for_news':for_news=='yes'}">
             <div class="display-on-hover" [ngClass]="{'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>

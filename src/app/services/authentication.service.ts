@@ -50,7 +50,7 @@ export class AuthenticationService {
 
     check_invited_user(){
         return this.http.post<any>('api/users/check_invited_user', {}, {withCredentials:true}).pipe(map(res => {
-            console.log(res)
+            //console.log(res)
             if(res.msg=="TOKEN_OK"){
                 return true
             }
@@ -69,12 +69,19 @@ export class AuthenticationService {
     login(username, password) {
         return this.http.post<any>('api/users/login', { mail_or_username: username, password: password })
             .pipe(map(res => {
-                console.log(res);
+                //console.log(res);
                 if(!res.msg){
-                    console.log("reset cookie")
+                    //console.log("reset cookie")
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                     this.currentUserSubject.next( this.CookieService.get('currentUser') );
                     this.currentUserTypeSubject.next("account");
+
+                    let  recommendations=this.CookieService.get('recommendations');
+                    if( recommendations ){
+                        this.CookieService.set('visitor_recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+                    }
+                   
+
                 }
                 return res;
             }));
@@ -89,10 +96,10 @@ export class AuthenticationService {
 
     
     create_visitor() {
-        console.log("debut creation visitor 35");
+        //console.log("debut creation visitor 35");
         return this.http.post<any>('api/users/create_visitor', { })
             .pipe(map(res => {
-                console.log(res);
+                //console.log(res);
                 this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
                 this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
                 this.currentUserSubject.next( this.CookieService.get('currentUser') );
@@ -103,32 +110,40 @@ export class AuthenticationService {
 
     logout() {
         let visitor=this.CookieService.get('currentVisitor');
-        console.log(visitor);
+        //console.log(visitor);
         if(visitor){
-            console.log("dans visitor")
+            //console.log("dans visitor")
             //this.CookieService.delete('currentUser', '/')
             this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
             this.currentUserSubject.next(visitor);
             this.currentUserTypeSubject.next("visitor");
+
+            let  recommendations=this.CookieService.get('visitor_recommendations');
+            if( recommendations ){
+                this.CookieService.set('recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+            }
+            else{
+                this.CookieService.delete('recommendations','/');
+            }
         }
         else{
-            console.log("dans autre");
+            //console.log("dans autre");
             this.create_visitor().subscribe(l=>{
-                console.log(l)
+                //console.log(l)
             });
         }
         
     }
 
     tokenCheck() {
-        console.log("checking token 65")
+        //console.log("checking token 65")
         return this.http.post<any>('api/users/checkToken', {},{withCredentials:true} )
             .pipe(map(res => {
-                console.log(res);
+                //console.log(res);
                 if( res.msg == "TOKEN_UNKNOWN" ) {
-                    console.log("token unknown")
+                    //console.log("token unknown")
                     this.create_visitor().subscribe(l=>{
-                        console.log(l);
+                        //console.log(l);
                     });
                 }
                 if( res.msg == "TOKEN_REFRESH" ) {
@@ -137,7 +152,7 @@ export class AuthenticationService {
                     
                 }
                 else if(res.status=="visitor"){
-                    console.log("visitor mode");
+                    //console.log("visitor mode");
                     if(res.token){
                         this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
                         this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');

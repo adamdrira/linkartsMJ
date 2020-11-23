@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, EventEmitter, Output, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, HostListener, EventEmitter, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -16,6 +16,7 @@ declare var $: any
 export class MediaSeeMoreWritingsComponent implements OnInit {
 
   constructor(
+    private cd: ChangeDetectorRef,
     private rd: Renderer2,
     private Community_recommendation:Community_recommendation,
     private BdOneShotService:BdOneShotService,
@@ -49,12 +50,9 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
   number_of_loaded=0;
   
   
-  index_changes=0;
+
   ngOnChanges(changes: SimpleChanges) { 
-    if(this.index_changes>0){
-      this.update_lists(this.number_of_writings_to_show);
-    }
-    this.index_changes++;
+    this.cd.detectChanges()
   }
 
   ngOnInit() {
@@ -135,11 +133,8 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
 
 
 
-  send_number_of_thumbnails(event){
-    
-  }  
  
-  sendLoaded(object){
+  /*sendLoaded(object){
     console.log("loaded")
     this.number_of_loaded++;
     console.log(this.number_of_thumbnails);
@@ -174,7 +169,7 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
       $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
     }
     this.send_put_more_visible.emit(true)
-  }
+  }*/
 
 
 

@@ -52,8 +52,9 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
   display_loading=false;
 
-  thumbnail_height_with_200px_width:number = 300;
-  
+  thumbnail_height:string;
+
+  @Input('drawing_id') drawing_id:number;
   @Input('author_name') author_name:string;
   @Input('primary_description') primary_description:string;
   @Input('pseudo') pseudo:string;
@@ -129,6 +130,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     this.scroll(document.getElementById("target2"));
   }
 
+  loading_thumbnail=false;
   set_crop() {
     
 
@@ -148,23 +150,28 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     }
 
 
-
+    this.thumbnail_height = ( 200 * (canvas.height / canvas.width) ).toFixed(2);
     canvas.toBlob(blob => {
-      console.log(blob);
-      this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
-        console.log(res);
-        this.confirmation = true;
-      })
+      if(this.imageDestination=='' && !this.loading_thumbnail){
+        this.loading_thumbnail=true;
+        this.Drawings_CoverService.send_cover_todata(blob).subscribe(res=>{
+          this.confirmation = true;
+          this.loading_thumbnail=false;
+          this.imageDestination = canvas.toDataURL("image/png");
+          this.cd.detectChanges();
+          let el = document.getElementById("target3");
+          var topOfElement = el.offsetTop - 200;
+          window.scroll({top: topOfElement, behavior:"smooth"});
+          this.cd.detectChanges();
+        })
+      }
+     
     }, "image/png");
     
-    this.imageDestination = canvas.toDataURL("image/png");
-
-    this.thumbnail_height_with_200px_width = Math.round( 200 * (canvas.height / canvas.width) );
-    this.cd.detectChanges();
+   
     
-    let el = document.getElementById("target3");
-    var topOfElement = el.offsetTop - 200;
-    window.scroll({top: topOfElement, behavior:"smooth"});
+    
+    
   }
 
   cancel_crop(){
@@ -173,9 +180,11 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       return;
     }
 
-    this.Drawings_CoverService.remove_cover_from_folder().subscribe();
-    this.imageDestination='';
-    this.confirmation = false;
+    this.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+      this.imageDestination='';
+      this.confirmation = false;
+    });
+    
   }
 
 
@@ -229,11 +238,14 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
       this.displayErrors = true;
     }
     else {
-      
-      this.Drawings_CoverService.add_covername_to_sql(this.format).subscribe(res=>{
-        this.display_loading=true;
-        this.upload=true;
-        this.cd.detectChanges();
+      this.display_loading=true;
+      this.Drawings_CoverService.add_covername_to_sql(this.format,this.drawing_id).subscribe(res=>{
+        this.Drawings_Onepage_Service.send_drawing_height_one_shot(this.thumbnail_height,this.drawing_id).subscribe(r=>{
+          this.display_loading=false;
+          this.upload=true;
+          this.cd.detectChanges();
+        })
+        
       });
     }
 
@@ -242,8 +254,8 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   cancel_all() {
     if(!this.block_cancel){
-      this.Drawings_Onepage_Service.remove_drawing_from_sql(0).pipe(first()).subscribe(res=>{
-        this.Drawings_CoverService.remove_cover_from_folder().pipe(first()).subscribe()
+      this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(res=>{
+        this.Drawings_CoverService.remove_cover_from_folder().subscribe()
         console.log(res)
       }); 
     }

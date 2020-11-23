@@ -48,7 +48,6 @@ export class Subscribing_service {
 
   get_all_users_subscribed_to_today(id_user){
     return this.httpClient.get(`routes/get_all_users_subscribed_to_today/${id_user}`, {withCredentials:true}).pipe(map(information=>{
-        console.log(information)
         return information;
       }));
   };
@@ -106,7 +105,6 @@ export class Subscribing_service {
 
   see_more_contents(formdata,last_timestamp){
     return this.httpClient.post(`routes/see_more_contents`, {formData: formdata, last_timestamp:last_timestamp}).pipe(map(information=>{
-        console.log(information);
         return information;
       }));
   };

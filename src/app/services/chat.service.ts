@@ -36,7 +36,7 @@ export class ChatService {
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               //this.wsService.check_state();
-              console.log(response)
+              //console.log(response)
               let data = JSON.parse(response.data);
               return data
           }))
@@ -46,7 +46,7 @@ export class ChatService {
           /*this.messages=<WebSocketSubject<Message>>this.connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               //this.wsService.check_state();
-              console.log(response.data)
+              //console.log(response.data)
               let data = JSON.parse(response.data);
               return data
           }))*/
@@ -68,7 +68,7 @@ export class ChatService {
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               //this.wsService.check_state();
-              //console.log(response)
+              ////console.log(response)
               let data = JSON.parse(response.data);
               return data
           }))
@@ -82,10 +82,10 @@ export class ChatService {
  
     if (!this.socket$ || this.socket$.closed) {
       this.socket$ = this.getNewWebSocket(url);
-      console.log("connected 2 to " + url);
+      //console.log("connected 2 to " + url);
       const messages = this.socket$.pipe(
         tap({
-          error: error => console.log(error),
+          error: error => //console.log(error),
         }), catchError(_ => EMPTY));
       this.messagesSubject$.next(messages);
     }
@@ -357,7 +357,7 @@ get_picture_sent_by_msg(file_name):Observable<any>{
 }
 
 check_if_file_exists(type_of_friend,friend_id,file_name,value):Observable<any>{
-  console.log(`check_if_file_exists/${type_of_friend}/${friend_id}/${file_name}/${value}`)
+  //console.log(`check_if_file_exists/${type_of_friend}/${friend_id}/${file_name}/${value}`)
   return this.httpClient.get(`routes/check_if_file_exists/${type_of_friend}/${friend_id}/${file_name}/${value}`).pipe(map((information)=>{
     return information;
   }));
@@ -378,7 +378,7 @@ get_all_files(date:string,friend_id,id_chat_section,friend_type):Observable<any>
 }
 
 get_size_of_files(friend_id,id_chat_section,friend_type):Observable<any>{
-  console.log(`routes/get_size_of_files/${friend_id}/${id_chat_section}/${friend_type}`)
+  //console.log(`routes/get_size_of_files/${friend_id}/${id_chat_section}/${friend_type}`)
   return this.httpClient.get(`routes/get_size_of_files/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
@@ -391,7 +391,7 @@ get_size_of_pictures(friend_id,id_chat_section,friend_type):Observable<any>{
 }
 
 get_all_pictures(date,friend_id,id_chat_section,friend_type){
-  console.log(date)
+  //console.log(date)
   return this.httpClient.get(`routes/get_all_pictures/${date}/${friend_id}/${id_chat_section}/${friend_type}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
@@ -480,7 +480,7 @@ get_messages_around(id_message,id_chat_section,id_friend,friend_type){
 
 
 get_chat_sections(id_friend,is_a_group_chat){
-  console.log(is_a_group_chat)
+  //console.log(is_a_group_chat)
   return this.httpClient.get(`routes/get_chat_sections/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));

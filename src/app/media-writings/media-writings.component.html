@@ -19,81 +19,71 @@
             </ng-container>
         </div>-->
 
-        <div class="container-homepage container-writings d-flex flex-wrap" style="transition:opacity 1s;" [ngClass]="{'invisible_without_height': !list_of_contents_sorted}">
+        <div class="container-homepage container-writings d-flex flex-wrap" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="style==='Roman illustré'">
-                <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel; let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (sendLoaded)="sendLoaded( $event );"
                     ></app-thumbnail-writing>
                 </ng-container>
             </ng-container>
 
             <ng-container *ngIf="style==='Poésie'">
-                <ng-container *ngFor="let item of sorted_artpieces_poetry; let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_poetry.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (sendLoaded)="sendLoaded( $event );"
                     ></app-thumbnail-writing>
                 </ng-container>
             </ng-container>
 
             <ng-container *ngIf="style==='Roman'">
-                <ng-container *ngFor="let item of sorted_artpieces_roman; let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_roman.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (sendLoaded)="sendLoaded( $event );"
                     ></app-thumbnail-writing>
                 </ng-container>
             </ng-container>
 
 
             <ng-container *ngIf="style==='Scénario'">
-                <ng-container *ngFor="let item of sorted_artpieces_scenario; let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_scenario.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (sendLoaded)="sendLoaded( $event );"
                     ></app-thumbnail-writing>
                 </ng-container>
             </ng-container>
 
             <ng-container *ngIf="style==='Article'">
-                <ng-container *ngFor="let item of sorted_artpieces_article; let i = index">
+                <ng-container *ngFor="let item of sorted_artpieces_article.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
                         now_in_seconds={{now_in_seconds}}
-                        (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-                        (sendLoaded)="sendLoaded( $event );"
                     ></app-thumbnail-writing>
                 </ng-container>
             </ng-container>
 
 
             <ng-container>
-                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && get_number_of_thumbnails(style)>=6" class="see-more" (click)="see_more(style)">
+                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && get_number_of_thumbnails(style)>=number_of_writings_to_show" class="see-more" (click)="see_more(style)">
                     <div class="icon">
                     </div>
                 </div>
                 <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
                     
-                    <div *ngIf="!list_of_more_contents_sorted" [@enterAnimation] class="container-homepage container-writings d-flex flex-wrap">
+                    <!--<div *ngIf="!list_of_more_contents_sorted" [@enterAnimation] class="container-homepage container-writings d-flex flex-wrap">
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
                                 (send_number_of_skeletons)="send_number_of_skeletons( $event );"
                             ></app-thumbnail-skeleton>
                         </ng-container>
-                    </div>
+                    </div>-->
 
-                    <div [ngClass]="{'invisible_without_height': !list_of_more_contents_sorted}" style="transition:opacity 1s;">
+                    <div  style="transition:opacity 1s;">
                         <app-media-see-more-writings
                             [style]=style
                             [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
@@ -101,7 +91,6 @@
                             [sorted_artpieces_scenario]=sorted_artpieces_scenario
                             [sorted_artpieces_article]=sorted_artpieces_article
                             now_in_seconds={{now_in_seconds}}
-                            (send_put_more_visible)="send_put_more_visible( $event );"
                         ></app-media-see-more-writings>
                     </div>
                 </ng-container>        

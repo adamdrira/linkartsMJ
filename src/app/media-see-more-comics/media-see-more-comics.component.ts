@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, HostListener, SimpleChanges, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -15,6 +15,7 @@ declare var $: any
 export class MediaSeeMoreComicsComponent implements OnInit {
 
   constructor(
+    private cd: ChangeDetectorRef,
     private rd: Renderer2,
     private Community_recommendation:Community_recommendation,
     private BdOneShotService:BdOneShotService,
@@ -49,13 +50,9 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   number_of_loaded=0;
 
 
-  
-  index_changes=0;
+
   ngOnChanges(changes: SimpleChanges) { 
-    if(this.index_changes>0){
-      this.update_lists(this.number_of_comics_to_show);
-    }
-    this.index_changes++;
+    this.cd.detectChanges()
   }
   
   ngOnInit() {
@@ -186,11 +183,9 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   }
 
   
-  send_number_of_thumbnails(event){
-    
-  }  
+
  
-  send_loaded(object){
+  /*send_loaded(object){
     console.log("loaded")
     this.number_of_loaded++;
     console.log(this.number_of_thumbnails);
@@ -198,7 +193,7 @@ export class MediaSeeMoreComicsComponent implements OnInit {
       console.log("updating_list")
       this.update_lists(this.number_of_comics_to_show);
     }
-  }
+  }*/
 
   update_lists(number){
     if( number== 1 ) {

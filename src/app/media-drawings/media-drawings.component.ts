@@ -46,7 +46,6 @@ export class MediaDrawingsComponent implements OnInit {
   ngOnInit(){
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
-      this.list_visibility_albums_drawings=true;
     }
     else{
        this.get_number_of_drawings_to_show()
@@ -150,7 +149,7 @@ export class MediaDrawingsComponent implements OnInit {
     fitWidth: true,
     //horizontalOrder: true,
     
-  });
+    });
   
   }
   compteur_visibility_drawings=0
@@ -158,7 +157,6 @@ export class MediaDrawingsComponent implements OnInit {
   contents_loading=false;
   list_visibility_albums_drawings=false;
   ini_masonry() {
-  console.log("mansour")
   let THIS=this;
 
   var $grid = $('.grid').masonry({
@@ -176,24 +174,19 @@ export class MediaDrawingsComponent implements OnInit {
     console.log("layout complete")
     
     $grid.masonry('reloadItems');
-    
-    THIS.compteur_visibility_drawings+=1;
+    THIS.compteur_visibility_drawings++;
     let total=0;
-    if(THIS.sorted_artpieces_traditional.length>0){
-      total+=1;
-    }
     if(THIS.sorted_artpieces_digital.length>0){
-      total+=1;
+      total++;
     }
-
-      if(THIS.compteur_visibility_drawings==total){
-        console.log("put drawing v")
-        THIS.contents_loading=false;
-        THIS.list_of_drawings_retrieved_emitter.emit({retrieved:true})
-        THIS.list_visibility_albums_drawings=true;
-      }
+    if(THIS.sorted_artpieces_traditional.length>0){
+      total++;
+    }
+    if(total==THIS.compteur_visibility_drawings){
+      THIS.first_masonry_loaded=true;
+      THIS.list_of_drawings_retrieved_emitter.emit({retrieved:true})
+    }
     
-    THIS.prevent_see_more=false;
     THIS.cd.detectChanges();
     
     
@@ -234,10 +227,7 @@ export class MediaDrawingsComponent implements OnInit {
       let width =$('.media-container').width()-20;
       //console.log(width)
       let variable =Math.floor(width/210);
-      //console.log(this.number_of_drawings_variable)
-      //console.log(variable)
       if(variable!=this.number_of_drawings_variable && variable>0){
-        //console.log("prevent see more")
         this.prevent_see_more=true;
         this.detect_new_compteur_drawings=false;
         
@@ -315,8 +305,10 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
 
-
+  first_masonry_loaded=false;
+  all_drawings_loaded=false;
   sendLoaded(event){
+    console.log("loaded")
     if(!this.updating_drawings_for_zoom){
       //console.log("loading")
       this.compteur_drawings_thumbnails++;
@@ -330,24 +322,23 @@ export class MediaDrawingsComponent implements OnInit {
           
           this.total_for_new_compteur=0;
           this.compteur_drawings_thumbnails=0;
+          
           //console.log("start reload after count end")
           this.reload_masonry();
+          this.prevent_see_more=false;
           this.cd.detectChanges();
         }
       }
       else{
+          this.ini_masonry();
           let total = this.sorted_artpieces_traditional.slice(0,this.number_of_drawings_to_show_by_category[0]).length 
           + this.sorted_artpieces_digital.slice(0,this.number_of_drawings_to_show_by_category[1]).length
 
           if(this.compteur_drawings_thumbnails==total){
             this.compteur_drawings_thumbnails=0;
-            
-            //console.log(this.got_number_of_drawings_to_show)
-            //console.log(this.number_of_drawings_variable)
-            //console.log(this.number_of_lines_drawings)
-            //console.log(this.number_of_drawings_to_show_by_category)
-            //console.log(this.number_of_private_contents_drawings)
-            this.ini_masonry();
+            this.all_drawings_loaded=true;
+            this.prevent_see_more=false;
+            //this.ini_masonry();
           }
         
       }
@@ -356,11 +347,12 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
   new_contents_loading=false;
+  prevent_shiny=false;
   see_more_drawings(category_number){
     //console.log(category_number)
     this.updating_drawings_for_zoom=false;
-    //console.log(this.prevent_see_more)
-    
+    console.log(this.prevent_see_more)
+    this.prevent_shiny=true;
     if(this.prevent_see_more){
       return;
     }

@@ -25,8 +25,7 @@ export class Bd_CoverService {
   
 
   get_cover_name(){
-   return this.httpClient.get('routes/get_cookies_cover_bd', {withCredentials:true
-  }).pipe(map(information=>{
+   return this.httpClient.get('routes/get_cookies_cover_bd', {withCredentials:true}).pipe(map(information=>{
        this.covername = information[0].name_cover_bd;
        return this.covername
   }));
@@ -43,24 +42,22 @@ export class Bd_CoverService {
 
 
 
-  add_covername_to_sql(format:string){
+  add_covername_to_sql(bd_id,format:string){
+    this.CookieService.delete('name_cover_bd','/');
     if(format==="One-shot"){
-      let bd_id = this.CookieService.get('current_bd_oneshot_id');
       return this.httpClient.post('routes/add_cover_bd_oneshot_todatabase', {name: this.covername, bd_id: bd_id}, {withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
     else if(format==="Série"){
-      let bd_id = this.CookieService.get('current_bd_serie_id');
       return this.httpClient.post('routes/add_cover_bd_serie_todatabase', {name: this.covername, bd_id: bd_id},{withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
   }
 
   add_covername_to_sql2(format,bd_id){
+    
     if(format==="One-shot"){
       return this.httpClient.post('routes/add_cover_bd_oneshot_todatabase', {name: this.covername, bd_id: bd_id}, {withCredentials:true}).pipe(map((information)=>{
         this.CookieService.delete('name_cover_bd','/');
@@ -78,11 +75,11 @@ export class Bd_CoverService {
 
    //remove the page file from the folder associated
    remove_cover_from_folder() {
-     alert("remove cover from folder")
-    this.CookieService.delete('name_cover_bd','/'); 
+    
     if(this.covername != ''){
       return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${this.covername}`, {withCredentials:true}).pipe(map(information=>{
         this.covername = '';
+        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
@@ -93,11 +90,23 @@ export class Bd_CoverService {
    };
 
    remove_last_cover_from_folder(name){
-    return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
-      return information;
-    }))
+    
+     if(name && name!=''){
+      return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
+        this.CookieService.delete('name_cover_bd','/');
+        return information;
+      }))
+     }
+     else{
+      return new Observable<true>();
+    }
   };
 
 
+  compress_all_comics_thumbnails(){
+    return this.httpClient.post(`routes/compress_all_comics_thumbnails`, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }))
+  }
   
 }

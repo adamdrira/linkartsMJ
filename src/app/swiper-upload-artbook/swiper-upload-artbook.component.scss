@@ -2,16 +2,13 @@
 @import '../swiper-styles.scss';
 
 
-app-uploader-dessin-unique {
-  width:100% !important;
-}
+
 
 .dessin-unique-upload-container {
     margin-top:30px;
     margin-left:auto;
     margin-right:auto;
 }
-
 
 .form-container-data {
   padding-bottom:0px !important;
@@ -94,6 +91,9 @@ app-uploader-dessin-unique {
   color: black;
   background: white;
 }
+
+
+
 
 .form-container-data .img-preview > span {
   margin:auto auto;

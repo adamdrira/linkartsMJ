@@ -16,6 +16,7 @@
     color:#203864;
     font-weight:bold;
     text-align: center;
+    height: 25px;
   }
   .category a {
     display: inline-flex;
@@ -92,12 +93,13 @@
   }
 
   .mediaVisible {
+    visibility: visibile;
     opacity:1 ;
   }
 
   
   .invisible{
-    opacity:0 !important;
+    visibility:hidden !important;
   }
   .invisible_without_height{
     opacity:0 !important;

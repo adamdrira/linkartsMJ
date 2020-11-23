@@ -25,11 +25,16 @@ export class Ads_service {
   
 
 
-  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value){
-    console.log(description);  
-    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,my_description:my_description,targets:targets,location:location,remuneration,price_value}, {withCredentials:true}).pipe(map((information)=>{
+  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value,price_type){  
+    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,my_description:my_description,targets:targets,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
          return information;
        }));
+   }
+
+   check_if_ad_is_ok(type_of_project,my_description,targets){
+    return this.httpClient.post('routes/check_if_ad_is_ok', {type_of_project:type_of_project,my_description:my_description,targets:targets}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
    }
 
    //thumbnail
@@ -39,13 +44,16 @@ export class Ads_service {
   };
 
    get_thumbnail_name(){
-    console.log("get_thumbnail_name")
-    return this.httpClient.get('routes/get_cookies_thumbnail_ad', {withCredentials:true
-        }).pipe(map(information=>{
-                this.name_thumbnail_ad = information[0].name_thumbnail_ad;
-                return this.name_thumbnail_ad
+    return this.httpClient.get('routes/get_cookies_thumbnail_ad', {withCredentials:true}).pipe(map(information=>{
+        this.name_thumbnail_ad = information[0].name_thumbnail_ad;
+        console.log(this.name_thumbnail_ad)
+        return this.name_thumbnail_ad
     }));
   };
+
+  get_thumbnail_name2(){
+    return this.name_thumbnail_ad;
+  }
 
   send_confirmation_for_add_ad(confirmation:boolean){
     this.CookieService.delete('name_thumbnail_ad','/');
@@ -60,16 +68,18 @@ export class Ads_service {
 
   add_thumbnail_ad_to_database(id){
       return this.httpClient.post('routes/add_thumbnail_ad_to_database', {name: this.name_thumbnail_ad, id: id}, {withCredentials:true}).pipe(map((information)=>{
+        this.CookieService.delete('name_thumbnail_ad','/');
         return information;
       }));
   };
 
 
    remove_thumbnail_ad_from_folder() {
-    this.CookieService.delete('name_thumbnail_ad','/');
+    
     if(this.name_thumbnail_ad!=''){
         return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${this.name_thumbnail_ad}`, {withCredentials:true}).pipe(map(information=>{
-            return information;
+          this.CookieService.delete('name_thumbnail_ad','/');  
+          return information;
           }));
     }
     else{
@@ -79,10 +89,15 @@ export class Ads_service {
    };
 
    remove_thumbnail_ad_from_folder2(name):Observable<any> {
-     console.log(name)
-        return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
-            return information;
-          }));
+     if(name && name!=''){
+      return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
+        this.CookieService.delete('name_thumbnail_ad','/');
+        return information;
+      }));
+     }
+     else{
+      return new Observable<true>();
+    }
     
    };
 

@@ -25,8 +25,7 @@ export class Writing_CoverService {
   
 
   get_cover_name(){
-   return this.httpClient.get('routes/get_cookies_writing', {withCredentials:true
-  }).pipe(map(information=>{
+   return this.httpClient.get('routes/get_cookies_writing', {withCredentials:true}).pipe(map(information=>{
        this.covername = information[0].name_cover_writing;
        return this.covername
   }));
@@ -54,16 +53,32 @@ export class Writing_CoverService {
 
    //remove the page file from the folder associated
    remove_cover_from_folder() {
-    this.CookieService.delete('name_cover_writing'); 
-    return this.httpClient.delete(`routes/remove_writing_from_folder/${this.covername}`).pipe(map(information=>{
-      return information;
-    }));
+    
+    if(this.covername!=''){
+      console.log(this.covername);
+      return this.httpClient.delete(`routes/remove_writing_cover_from_folder/${this.covername}`).pipe(map(information=>{
+        this.covername='';
+        this.CookieService.delete('name_cover_writing','/');
+        return information;
+      }));
+    }
+    else{
+      return new Observable<true>();
+    }
+    
+    
    };
 
    remove_last_cover_from_folder(file_name){
-     return this.httpClient.delete(`routes/remove_last_cover_from_folder/${file_name}`).pipe(map(information=>{
-         return information;
-  }));
+     if(file_name && file_name!=''){
+      return this.httpClient.delete(`routes/remove_last_cover_from_folder/${file_name}`).pipe(map(information=>{
+        return information;
+       }));
+     }
+     else{
+      return new Observable<true>();
+     }
+     
  };
 
   

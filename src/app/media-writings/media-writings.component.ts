@@ -36,10 +36,10 @@ export class MediaWritingsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if(this.number_of_writings_to_show>=0){
-      this.update_lists(this.number_of_writings_to_show);
-    }
-    
+    var width = $('.media-container').width();
+    var n = Math.floor(width/250);
+    this.number_of_writings_to_show=n;
+    this.cd.detectChanges()
   }
   
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
@@ -63,20 +63,18 @@ export class MediaWritingsComponent implements OnInit {
   number_of_thumbnails=0;
   
   ngOnInit() {
+    var width = $('.media-container').width();
+    var n = Math.floor(width/250);
+    this.number_of_writings_to_show=n;
     this.number_of_thumbnails=this.sorted_artpieces_illustrated_novel.length +
       this.sorted_artpieces_roman.length +
       this.sorted_artpieces_scenario.length +
       this.sorted_artpieces_article.length +
       this.sorted_artpieces_poetry.length;
-      console.log(this.number_of_thumbnails)
 
-      if(this.number_of_thumbnails==0){
-        this.list_of_contents_sorted=true;
-        this.list_of_writings_retrieved_emitter.emit({retrieved:true})
-      }
   }
 
-  j=0;
+  /*j=0;
   number_retrieved=false;
   send_number_of_thumbnails(object){
     console.log("send_number_of_thumbnails")
@@ -88,22 +86,21 @@ export class MediaWritingsComponent implements OnInit {
       }
     }
     this.j++;
-  }
+  }*/
 
-  number_of_loaded=0;
+  /*number_of_loaded=0;
   sendLoaded(object){
     this.number_of_loaded++;
 
     if(this.number_of_loaded==this.number_of_thumbnails){
       this.update_lists(this.number_of_writings_to_show);
     }
-  }
+  }*/
 
-  list_of_more_contents_sorted=false;
+  /*list_of_more_contents_sorted=false;
   send_put_more_visible(event){
-    this.cd.detectChanges();
-    this.list_of_contents_sorted=true;
     this.list_of_more_contents_sorted=true;
+    this.cd.detectChanges();
   }
 
   
@@ -141,7 +138,7 @@ export class MediaWritingsComponent implements OnInit {
     this.list_of_contents_sorted=true;
     this.list_of_writings_retrieved_emitter.emit({retrieved:true})
     this.cd.detectChanges();
-  }
+  }*/
 
 
 

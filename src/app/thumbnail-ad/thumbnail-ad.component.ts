@@ -60,7 +60,7 @@ export class ThumbnailAdComponent implements OnInit {
     private cd:ChangeDetectorRef,
     ) { 
     
-    this.navbar.setActiveSection(1);
+    //this.navbar.setActiveSection(1);
     this.navbar.show();
   }
 

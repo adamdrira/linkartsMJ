@@ -1,11 +1,9 @@
 
     <div *ngIf="new_sorted_artpieces_added" class="container-homepage container-comics d-flex flex-wrap">
-        <ng-container *ngFor="let item of new_sorted_artpieces; let i=index">
+        <ng-container *ngFor="let item of new_sorted_artpieces.slice(0,number_of_comics_to_show); let i=index">
             <app-thumbnail-comics class="thumbnail-component-container"
             [item]=item 
             [format]=list_of_formats[i]
-            now_in_seconds={{now_in_seconds}}
-            (send_number_of_thumbnails)="send_number_of_thumbnails( $event );"
-            (send_loaded)="send_loaded( $event );"></app-thumbnail-comics> 
+            now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
         </ng-container>
     </div>

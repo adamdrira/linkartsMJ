@@ -53,7 +53,6 @@ export class ThumbnailDrawingComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
 
-    this.resize_drawing();
   }
 
 
@@ -82,19 +81,19 @@ export class ThumbnailDrawingComponent implements OnInit {
   date_upload: string;
   date_upload_to_show: string;
   drawing_id: string;
-
+  height:string;
   @Input() item:any;
   @Input() for_news:any;
   @Input() now_in_seconds: number;
   @Input() format: string;
- 
+  @Input() prevent_shiny: boolean;
 
-    
+  
 
   tagsSplit: string;
   
   marks_retrieved=false;
-  
+  @ViewChild('final_thumbnail', { read: ElementRef }) final_thumbnail:ElementRef;
 
   ngOnInit(): void {
 
@@ -109,9 +108,9 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.pagesnumber = this.item.pagesnumber;
     this.date_upload = this.item.createdAt;
     this.drawing_id = this.item.drawing_id;
-    this.thumbnail_color = this.item.thumbnail_color;
- 
-
+    this.height = this.item.height;
+    
+    console.log(this.height)
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -162,8 +161,10 @@ export class ThumbnailDrawingComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    
-    this.resize_drawing();
+    if(!this.prevent_shiny){
+      this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+    }
+  
   }
 
 
@@ -178,31 +179,9 @@ export class ThumbnailDrawingComponent implements OnInit {
   }
 
   
-  //Drawings functions
 
-  resize_drawing() {
 
-    if( $('.container-drawings') ) {
-      $('.drawing-container').css({'width': this.get_drawing_size() +'px'});
-    }
-  }
-
-  get_drawing_size() {
-    return $('.container-drawings').width()/this.drawings_per_line();
-  }
-
-  drawings_per_line() {
-    var width = $('.container-drawings').width();
-
-    var n = Math.floor(width/250);
-    if( width < 500 ) {
-      return 1;
-    }
-    else if(width>0) {
-      return n;
-    }
-    
-  }
+ 
   show_picture=false;
   dosomething(){
     this.show_picture=true;

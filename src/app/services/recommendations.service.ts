@@ -21,10 +21,14 @@ export class Community_recommendation {
     httpClient.options
   }
 
-  send_list_view_to_python(){
-    return this.httpClient.post('routes/view_table_by_author_to_python', {}, {withCredentials:true}).pipe(map((information)=>{
-      return parseInt(information[0].length);
+  generate_recommendations(){
+    return this.httpClient.post('routes/generate_recommendations', {}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
       }));
+  }
+
+  delete_recommendations_cookies(){
+    this.CookieService.delete('recommendations','/');
   }
 
   see_more_recommendations_bd(style){
@@ -55,7 +59,6 @@ export class Community_recommendation {
   }
 
   sorted_category_list(){
-    console.log("sorted_category_list")
    return this.httpClient.get('python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
         return information;
      }));
@@ -73,33 +76,31 @@ delete_recommendations_artpieces(){
     }));
 }
 
-get_first_recommendation_bd_os_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{  
+get_first_recommendation_bd_os_for_user(index_bd){
+  return this.httpClient.post('routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd},{withCredentials:true}).pipe(map(information=>{  
     return information;
     }));
 };
-get_first_recommendation_bd_serie_for_user(index_bd,index_drawing,index_writing){
-  console.log("getting bd serie recom")
-  return this.httpClient.post('routes/get_first_recommendation_bd_serie_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
-    console.log(information);
+get_first_recommendation_bd_serie_for_user(index_bd){
+  return this.httpClient.post('routes/get_first_recommendation_bd_serie_for_user', {index_bd:index_bd},{withCredentials:true}).pipe(map(information=>{
     return information;
     }));
 };
-get_first_recommendation_drawing_os_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('routes/get_first_recommendation_drawing_os_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+get_first_recommendation_drawing_os_for_user(index_drawing){
+  return this.httpClient.post('routes/get_first_recommendation_drawing_os_for_user',{index_drawing:index_drawing},{withCredentials:true}).pipe(map(information=>{
     
     return information;
     }));
 };
-get_first_recommendation_drawing_artbook_for_user(index_bd,index_drawing,index_writing){
+get_first_recommendation_drawing_artbook_for_user(index_drawing){
   
-  return this.httpClient.post('routes/get_first_recommendation_drawing_artbook_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/get_first_recommendation_drawing_artbook_for_user', {index_drawing:index_drawing},{withCredentials:true}).pipe(map(information=>{
      
     return information;
     }));
 };
-get_first_recommendation_writings_for_user(index_bd,index_drawing,index_writing){
-  return this.httpClient.post('routes/get_first_recommendation_writings_for_user', {index_bd:index_bd,index_drawing:index_drawing,index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
+get_first_recommendation_writings_for_user(index_writing){
+  return this.httpClient.post('routes/get_first_recommendation_writings_for_user', {index_writing:index_writing},{withCredentials:true}).pipe(map(information=>{
       return information;
     }));
 };
@@ -135,7 +136,6 @@ get_recommendations_by_tag(id_user,publication_category,publication_id,format,st
 }
 
 get_artwork_recommendations_by_tag(category,format,target_id,first_filter,second_filter,limit){
-  console.log(first_filter)
   return this.httpClient.post('routes/get_artwork_recommendations_by_tag', {category:category,format:format,target_id:target_id,first_filter:first_filter,second_filter:second_filter,limit:limit},{withCredentials:true}).pipe(map(information=>{
      return information;
     }));

@@ -9,7 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 import { SignupComponent } from '../signup/signup.component';
 import { Location } from '@angular/common';
 import { pattern } from '../helpers/patterns';
-
+import { Community_recommendation } from '../services/recommendations.service';
 
 
 @Component({
@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
       public navbar:NavbarService,
       private Profile_Edition_Service:Profile_Edition_Service,
       private router: Router,
+      private Community_recommendation:Community_recommendation,
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<LoginComponent>,
       private cd:ChangeDetectorRef,
@@ -138,23 +139,32 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
     this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
-          this.loading=false
-          console.log(data.msg);
+         
+         
           if(data.token){
-            location.reload();
+            this.Community_recommendation.delete_recommendations_cookies();
+            this.Community_recommendation.generate_recommendations().subscribe(r=>{
+              
+                location.reload();
+            })
+            
           }
-          if(data.msg=="error"){
+          else{
+            this.loading=false;
+            if(data.msg=="error"){
               console.log("error");
               this.display_wrong_data=true;
+            }
+            if(data.msg=="error_old_value"){
+              console.log("error_old_value");
+              this.display_old_password=true;
+            }
+            if(data.msg=="error_group"){
+              console.log("error_group");
+              this.display_error_group=true;
+            }
           }
-          if(data.msg=="error_old_value"){
-            console.log("error_old_value");
-            this.display_old_password=true;
-          }
-          if(data.msg=="error_group"){
-            console.log("error_group");
-            this.display_error_group=true;
-          }
+          
 
           
           

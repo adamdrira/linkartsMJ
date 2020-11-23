@@ -3,7 +3,7 @@
 
 
     <div class="swiper-container456" id="target1">
-        <app-uploader-dessin-unique [upload]=upload [title]=name (uploaded)="uploaded_image( $event );" (sendValidated)="sendValidated($event)" (image)="get_image( $event );"></app-uploader-dessin-unique>
+        <app-uploader-dessin-unique [upload]=upload [drawing_id]=drawing_id [title]=name (uploaded)="uploaded_image( $event );" (sendValidated)="sendValidated($event)" (image)="get_image( $event );"></app-uploader-dessin-unique>
     </div>
 
     <div class="form-container" *ngIf="image_uploaded" style="margin-top:40px;" id="target2">
@@ -22,9 +22,10 @@
                             <mat-icon>refresh</mat-icon>
                             <span>Recommencer</span>
                         </button>
-                        <button class="validate-button" *ngIf="imageDestination == ''" [@enterAnimation] (click)="set_crop();">
-                            <mat-icon>crop_free</mat-icon>
-                            <span>Rogner</span>
+                        <button class="validate-button" *ngIf="imageDestination == ''" [ngClass]="{'loading_thumbnail':loading_thumbnail}"  [@enterAnimation] (click)="set_crop();">
+                            <mat-icon *ngIf="!loading_thumbnail" >crop_free</mat-icon>
+                            <span *ngIf="!loading_thumbnail" >Rogner</span>
+                            <mat-spinner *ngIf="loading_thumbnail" diameter="25"  style="margin:auto;"></mat-spinner>
                         </button>
                     </div>
                 </div>
