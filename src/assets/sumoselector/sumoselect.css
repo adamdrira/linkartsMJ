@@ -21,7 +21,7 @@
 .SumoSelect { display: inline-block; position: relative;outline:none;}
 .SumoSelect:hover > .CaptionCont, .SumoSelect.open > .CaptionCont {box-shadow: 0 0 2px rgb(200, 200, 200);border-color: rgb(200, 200, 200);}
     .SumoSelect > .CaptionCont { display:flex; position: relative; min-height: 14px; border-radius:2px;margin:0;}
-        .SumoSelect > .CaptionCont > span { display: block; padding-right: 30px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;cursor:default; margin: auto 0 auto 0; color:black;}
+        .SumoSelect > .CaptionCont > span { display: block; padding-right: 30px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;cursor:default; margin: auto 0 auto 0;}
             /*placeholder style*/
             .SumoSelect > .CaptionCont > span.placeholder { color: #ccc; font-style: italic; }
 
