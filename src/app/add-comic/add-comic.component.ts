@@ -80,6 +80,7 @@ export class AddComicComponent implements OnInit {
   
   @Output() stepChanged = new EventEmitter<number>();
 
+  bd_id:number;
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
@@ -147,8 +148,11 @@ export class AddComicComponent implements OnInit {
 
   
   back_home() {
-    this.stepChanged.emit(0);
-    this.cancelled.emit();
+    this.Bd_CoverService.get_cover_name().subscribe(name=>{
+      this.stepChanged.emit(0);
+      this.cancelled.emit({bd_cover:name});
+    })
+    
   }
 
 
@@ -239,34 +243,36 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdOneShotService.ModifyBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe(inf=>{
-            this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
-            this.CURRENT_step++;
-            this.stepChanged.emit(1);
-            
-            this.nextButton.nativeElement.disabled = false;
-
-            this.cd.detectChanges();
-            window.scroll(0,0);
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
+              this.CURRENT_step++;
+              this.stepChanged.emit(1);
+              
+              this.nextButton.nativeElement.disabled = false;
+  
+              this.cd.detectChanges();
+              window.scroll(0,0);
+            });
+           
           });
         }
         //Else if NEW Step1
         else {
           this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
-            this.Subscribing_service.validate_content('comic', 'one-shot', val[0].bd_id,0).subscribe(r=>{
-              this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
-              this.CURRENT_step++;
-              this.stepChanged.emit(1);
-              this.REAL_step++;
+            this.bd_id=val[0].bd_id;
+              this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
+                this.CURRENT_step++;
+                this.stepChanged.emit(1);
+                this.REAL_step++;
+    
+                this.nextButton.nativeElement.disabled = false;
   
-              this.nextButton.nativeElement.disabled = false;
-
-              this.cd.detectChanges();
-              window.scroll(0,0);
-            })
-           
+                this.cd.detectChanges();
+                window.scroll(0,0);
+              });
+             
             });
         }
     }
@@ -278,33 +284,41 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdSerieService.ModifyBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe(inf=>{
-            this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
-            this.bdSerieService.modify_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
-            this.CURRENT_step++;
-            this.stepChanged.emit(1);
-
-            this.nextButton.nativeElement.disabled = false;
-
-            this.cd.detectChanges();
-            window.scroll(0,0);
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(m=>{
+              this.bdSerieService.modify_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe(m=>{
+                this.CURRENT_step++;
+                this.stepChanged.emit(1);
+                this.nextButton.nativeElement.disabled = false;
+                this.cd.detectChanges();
+                window.scroll(0,0);
+              });
+              
+            });
+            
           });
         }
         //Else if NEW Step1
         else {
           this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
           .subscribe((val)=> {
-            this.Bd_CoverService.add_covername_to_sql(this.f00.value.f00Format).subscribe();
-            this.bdSerieService.add_chapter_bd_serie(1,this.f00SerieFirstChapter.value).subscribe();
-            this.CURRENT_step++;
-            this.stepChanged.emit(1);
-            this.REAL_step++;
-
-            this.nextButton.nativeElement.disabled = false;
-
-            this.cd.detectChanges();
-            window.scroll(0,0);
+            this.bd_id=val[0].bd_id;
+            this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
+              this.bdSerieService.add_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe( r=>{
+                this.CURRENT_step++;
+                this.stepChanged.emit(1);
+                this.REAL_step++;
+    
+                this.nextButton.nativeElement.disabled = false;
+    
+                this.cd.detectChanges();
+                window.scroll(0,0);
+                }
+              );
+              
+            });
+           
             });
         }
         
@@ -346,7 +360,9 @@ export class AddComicComponent implements OnInit {
   }
   
   cancel_all() {
-      this.Bd_CoverService.remove_cover_from_folder().pipe(first()).subscribe();
+      this.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+        console.log(r)
+      });
   }
 
 
@@ -369,8 +385,8 @@ export class AddComicComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
+  "Policier","Religion","Romantique","Satirique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

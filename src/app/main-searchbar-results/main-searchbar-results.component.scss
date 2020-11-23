@@ -379,6 +379,18 @@
 
   }
 
+  .switch-target{
+    box-shadow: unset !important;
+    border: unset !important;
+    background: unset !important;
+    border-radius: unset !important;
+    cursor: pointer !important;
+  }
+
+  .switch-target:hover{
+    color: rgb(32,56,100);
+  }
+
   .filters-container {
     display:flex;
     flex-wrap:wrap;
@@ -460,8 +472,21 @@
     animation: shine 1500ms infinite;
   }
 
-  .loading_heght_5{
-    min-height:4825px;
+  .loading_height_5{
+    min-height:1500px;
+  }
+  .loading_height_4{
+    min-height:1200px;
+  }
+  .loading_height_3{
+    min-height:900px;
+  }
+  .loading_height_2{
+    min-height:600px;
+  }
+
+  .loading_height_1{
+    min-height:300px;
   }
   
   .shiny{

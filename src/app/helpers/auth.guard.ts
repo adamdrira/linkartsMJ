@@ -16,13 +16,13 @@ export class AuthGuard implements CanActivate {
 
         const currentUser = this.authenticationService.currentUserValue;
         if ( currentUser ) {
-            console.log(currentUser);
+            //console.log(currentUser);
             return new Promise(resolve=>{
                 this.authenticationService
                 .tokenCheck()
                  .subscribe(
                     (status:any) => {
-                        console.log(status);
+                        //console.log(status);
                         if(status=="account" || status=="suspended"){
                             resolve(true);
                         }
@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
             })
         }
         else{
-            console.log(false)
+            //console.log(false)
             return new Promise(resolve=>{resolve(false)})
           
         }

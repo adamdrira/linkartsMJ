@@ -78,7 +78,7 @@
             [profile_picture]=profile_picture
             
             (stepChanged)="step_changed($event);"
-            (cancelled)="step_back();">
+            (cancelled)="step_back($event);">
         </app-add-comic>
     </div>
     
@@ -91,7 +91,7 @@
             [profile_picture]=profile_picture
 
             (stepChanged)="step_changed($event);"
-            (cancelled)="step_back();">
+            (cancelled)="step_back($event);">
         </app-add-drawing>
     </div>
 
@@ -104,7 +104,7 @@
             [profile_picture]=profile_picture
 
             (stepChanged)="step_changed($event);"
-            (cancelled)="step_back();">
+            (cancelled)="step_back($event);">
         </app-add-writing>
     </div>
 
@@ -118,7 +118,7 @@
             pseudo={{pseudo}}
             
             (stepChanged)="step_changed($event);"
-            (cancelled)="step_back();">
+            (cancelled)="step_back($event);">
         </app-add-ad>
     </div>
 

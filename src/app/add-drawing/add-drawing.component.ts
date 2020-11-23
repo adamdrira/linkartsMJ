@@ -2,6 +2,7 @@ import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, Cha
 import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service} from '../services/drawings_artbook.service';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -41,6 +42,7 @@ export class AddDrawingComponent implements OnInit {
   constructor(
     private Subscribing_service:Subscribing_service,
     private rd: Renderer2, 
+    private Drawings_CoverService:Drawings_CoverService,
     private el: ElementRef,
     private _constants: ConstantsService, 
     private _upload: UploadService,
@@ -75,7 +77,7 @@ export class AddDrawingComponent implements OnInit {
   @Output() cancelled = new EventEmitter<any>();
   
   @Output() stepChanged = new EventEmitter<number>();
-
+  drawing_id:number;
   dropdowns = this._constants.filters.categories[0].dropdowns;
   REAL_step: number;
   CURRENT_step: number;
@@ -102,8 +104,9 @@ export class AddDrawingComponent implements OnInit {
   
 
   back_home() {
+    let covername = this.Drawings_CoverService.get_covername()
     this.stepChanged.emit(0);
-    this.cancelled.emit();
+    this.cancelled.emit({drawing_cover:covername});
   }
 
   step_back() {
@@ -196,7 +199,7 @@ export class AddDrawingComponent implements OnInit {
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
         .subscribe(inf=>{
           this.stepChanged.emit(1);
           this.CURRENT_step++;
@@ -208,8 +211,9 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false).subscribe((val)=> {
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false).subscribe(val=> {
           this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
+            this.drawing_id=val[0].drawing_id;
             this.stepChanged.emit(1);
             this.CURRENT_step++;
             this.REAL_step++;
@@ -227,11 +231,11 @@ export class AddDrawingComponent implements OnInit {
     else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") ) {
 
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.Drawings_Artbook_Service.ModifyArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+          this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
           .subscribe(inf=>{
             this.stepChanged.emit(1);
             this.CURRENT_step++;
-
+           
             this.nextButton.nativeElement.disabled = false;
             
             this.cd.detectChanges();
@@ -245,7 +249,7 @@ export class AddDrawingComponent implements OnInit {
               this.stepChanged.emit(1);
               this.CURRENT_step++;
               this.REAL_step++;
-  
+              this.drawing_id=val[0].drawing_id;
               this.nextButton.nativeElement.disabled = false;
 
               this.cd.detectChanges();
@@ -300,8 +304,8 @@ export class AddDrawingComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
 
-  allGenres: string[] = ["Abstrait","Action","Aventure","Animaux","Culture","Enfants","Epique","Esotérisme","Fanart","Fantaisie","Femme","Fresque","Guerre","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Journalisme","Monstre","Paysage","Portrait","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Western"];
+  allGenres: string[] = ["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
+  "Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

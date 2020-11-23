@@ -268,7 +268,7 @@ export class AccountComponent implements OnInit {
   number_of_comics:number;
   number_of_drawings:number;
   number_of_writings:number;
-
+  number_of_ads:number;
   visible_number_of_comics:number=0;
   visible_number_of_drawings:number=0;
   visible_number_of_writings:number=0;
@@ -286,8 +286,6 @@ export class AccountComponent implements OnInit {
   update_new_contents() {
 
     let width = $(".bd-container").width();
-    console.log(width)
-    console.log(width*0.8)
     if( width < 500 ) {
       this.number_of_new_contents_to_show=1;
       this.cd.detectChanges();
@@ -295,7 +293,6 @@ export class AccountComponent implements OnInit {
     else if(width>0){
       this.number_of_new_contents_to_show = Math.floor(width/250);
       this.cd.detectChanges();
-      console.log(Math.floor(width/250))
     }
     /*else if( width <= 820) {
       this.number_of_new_contents_to_show=2
@@ -312,7 +309,6 @@ export class AccountComponent implements OnInit {
     else{
       this.number_of_new_contents_to_show=6
     }*/
-    console.log(this.number_of_new_contents_to_show)
 
     /*
     if( width <= 550 ) {
@@ -460,10 +456,6 @@ export class AccountComponent implements OnInit {
             this.my_profile_is_suspended=true;
           }
           console.log(this.user_id)
-          this.number_of_comics=r[0].number_of_comics;
-          this.number_of_drawings=r[0].number_of_drawings;
-          this.number_of_writings=r[0].number_of_writings;
-
           
           this.author_name = r[0].firstname + ' ' + r[0].lastname;
           this.gender=r[0].gender;
@@ -518,16 +510,25 @@ export class AccountComponent implements OnInit {
                 }
               });         
             };
-            if(!this.mode_visiteur){
-              this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
-                if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
-                }
-              })
-            }
-            else{
-              this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
-            } 
+
+            this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+              console.log(r[0]);
+              this.number_of_comics=r[0].number_of_comics;
+              this.number_of_drawings=r[0].number_of_drawings;
+              this.number_of_writings=r[0].number_of_writings;
+              this.number_of_ads=r[0].number_of_ads;
+              if(!this.mode_visiteur){
+                this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
+                  if(!p[0].value){
+                    this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+                  }
+                })
+              }
+              else{
+                this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+              } 
+            })
+            
 
             console.log(this.route.snapshot.data['section'])
             if(this.type_of_profile=="suspended"){
@@ -2088,9 +2089,6 @@ export class AccountComponent implements OnInit {
   display_new_drawing_contents=false;
   new_contents_comics_thumbnails(event){
     this.compteur_new_comic_contents+=1;
-    console.log(this.compteur_new_comic_contents)
-    console.log(this.number_of_new_contents_to_show)
-    console.log(this.new_comic_contents.slice(0,this.number_of_new_contents_to_show).length)
     if(this.compteur_new_comic_contents==this.new_comic_contents.slice(0,this.number_of_new_contents_to_show).length){
       this.display_new_comic_contents=true;
     }
@@ -2105,8 +2103,6 @@ export class AccountComponent implements OnInit {
 
   new_contents_writings_thumbnails(event){
     this.compteur_new_writing_contents+=1;
-    console.log(this.compteur_new_writing_contents)
-    console.log(this.new_writing_contents.slice(0,this.number_of_new_contents_to_show).length)
     if(this.compteur_new_writing_contents==this.new_writing_contents.slice(0,this.number_of_new_contents_to_show).length){
       this.display_new_writing_contents=true;
     }

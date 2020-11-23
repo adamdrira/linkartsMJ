@@ -9,6 +9,12 @@ import { BdSerieService} from '../services/comics_serie.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Location } from '@angular/common';
 import { Bd_CoverService } from '../services/comics_cover.service';
+import { Writing_CoverService } from '../services/writing_cover.service';
+import { Writing_Upload_Service } from '../services/writing.service';
+import { Ads_service } from '../services/ads.service';
+import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
+import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
+import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavbarService } from '../services/navbar.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,6 +36,12 @@ export class AddArtworkComponent implements OnInit {
   constructor(private rd: Renderer2, 
     private el: ElementRef,
     public route: ActivatedRoute, 
+    private Drawings_CoverService:Drawings_CoverService,
+    private Drawings_Onepage_Service:Drawings_Onepage_Service,
+    private Drawings_Artbook_Service:Drawings_Artbook_Service,
+    private Writing_CoverService:Writing_CoverService,
+    private Writing_Upload_Service:Writing_Upload_Service,
+    private Ads_service:Ads_service,
     private _constants: ConstantsService, 
     private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
@@ -38,7 +50,7 @@ export class AddArtworkComponent implements OnInit {
     private viewref: ViewContainerRef,
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService: Bd_CoverService,
-    private bdSerieService: BdSerieService,
+    private BdSerieService: BdSerieService,
     public navbar: NavbarService,
     private location: Location,
     public dialog: MatDialog,
@@ -59,7 +71,6 @@ export class AddArtworkComponent implements OnInit {
   @HostListener('window:popstate', ['$event'])
   onPopState(event) {
     
-
     this.step_back_browser();
   }
 
@@ -152,7 +163,7 @@ export class AddArtworkComponent implements OnInit {
   }
 
 
-  step_back() {
+  step_back(event) {
 
     let THIS = this;
 
@@ -162,6 +173,33 @@ export class AddArtworkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
+       console.log(event)
+       alert("del red")
+        if(event.bd_cover && event.bd_cover!=''){
+          alert("del bd")
+            THIS.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
+              console.log(r)
+            })
+          
+        }
+        else if(event.drawing_cover && event.drawing_cover!='' ){
+          alert("del drawing")
+          THIS.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
+              console.log(r)
+            })
+        }
+        else if (event.writing_cover && event.writing_cover!=''){
+          alert("del writing")
+          THIS.Writing_CoverService.remove_cover_from_folder().subscribe(m=>{
+            alert("del writing 1")
+            THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).subscribe(r=>{
+              alert("del writing 2")
+            })
+          });
+        }
+        else if (event.ad_cover && event.ad_cover!=''){
+          THIS.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
+        }
         THIS._upload.setCategory( -1 );
         THIS.location.go("/add-artwork");
         THIS.cd.detectChanges();
@@ -181,27 +219,12 @@ export class AddArtworkComponent implements OnInit {
 
     THIS._upload.step.subscribe( v => { 
       
-
+      console.log(v)
       if( v == 0 ) {
         
         THIS.location.go("/add-artwork");
         window.location.reload();
-        /*let THIS = this;
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          if( result ) {
-            THIS._upload.setCategory( -1 );
-            THIS.location.go("/add-artwork");
-            THIS.cd.detectChanges();
-          }
-          else {
-            THIS.location.back();
-            THIS.cd.detectChanges();
-          }
-        });*/
+       
       }
 
     });

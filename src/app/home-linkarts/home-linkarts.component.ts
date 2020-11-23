@@ -49,7 +49,6 @@ export class HomeLinkartsComponent implements OnInit {
 
 
   initialize_heights() {
-    console.log("initializing height")
     //if( !this.fullscreen_mode ) {
       $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
       $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
@@ -81,7 +80,6 @@ export class HomeLinkartsComponent implements OnInit {
         this.type_of_profile=r;
         this.type_of_profile_retrieved=true;
         this.change_profile_number++;
-        console.log( this.type_of_profile)
         this.initializeselector();
         this.display_selector();
         this.initialize_heights();
@@ -90,7 +88,6 @@ export class HomeLinkartsComponent implements OnInit {
     })
     this.display_selector();
     
-    console.log(this.little_screen);
   }
 
   little_screen=false;

@@ -292,16 +292,6 @@
 
 
 
-::ng-deep .SumoSelect > .CaptionCont > span {
-  padding-right:30px;
-  color: white;
-  font-style:unset;
-}
-
-::ng-deep .SumoSelect > .CaptionCont > span.placeholder {
-  color: white;
-  font-style: unset; 
-}
 
 
 .icon-container {
@@ -407,6 +397,18 @@
 
 
 //SumoSelect
+
+::ng-deep .SumoSelect > .CaptionCont > span {
+  padding-right:30px;
+  color: white;
+  font-style:unset;
+}
+
+::ng-deep .SumoSelect > .CaptionCont > span.placeholder {
+  color: white;
+  font-style: unset; 
+}
+
 
 ::ng-deep .panel-controller .SumoSelect > .CaptionCont > label > i {
   background-image:none !important;

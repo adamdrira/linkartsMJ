@@ -177,7 +177,7 @@
                                 pseudo={{pseudo}}
                                 primary_description={{primary_description}}
                                 [profile_picture]=profile_picture
-
+                                [bd_id]=bd_id
                                 firsttag={{f00.value.f00Tags[0]}}
                                 secondtag={{f00.value.f00Tags[1]}}
                                 thirdtag={{f00.value.f00Tags[2]}}
@@ -235,7 +235,10 @@
                 </div>
             </div>
 
-            <app-swiper-upload-oneshot [bdtitle]="f00.value.f00Title" [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
+            <app-swiper-upload-oneshot 
+            [bdtitle]="f00.value.f00Title" 
+            [bd_id]=bd_id 
+            [type]="f00.value.f00Format"></app-swiper-upload-oneshot>
 
 
         </div>
@@ -270,6 +273,7 @@
             
             <app-form-serie 
             form_number=0
+            [bd_id]=bd_id
             [bdtitle]="f00.value.f00Title"
             [chapter]=f00.value.f00SerieFirstChapter></app-form-serie>
 

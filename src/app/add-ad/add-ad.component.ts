@@ -105,8 +105,11 @@ export class AddAdComponent implements OnInit {
 
 
   back_home() {
+    let name = this.Ads_service.get_thumbnail_name2()
+    console.log(name)
     this.stepChanged.emit(0);
-    this.cancelled.emit();
+    this.cancelled.emit({ad_cover:name});
+    
   }
 
 
@@ -116,6 +119,7 @@ export class AddAdComponent implements OnInit {
   fdDescription: FormControl;
   fdPrice:FormControl;
   price_value:string;
+  price_type:string='';
   fdMydescription: FormControl;
   fdTargets: FormControl;
   fdProject_type: FormControl;
@@ -127,7 +131,7 @@ export class AddAdComponent implements OnInit {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
     this.fdMydescription = new FormControl('', Validators.required);
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
-    this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("integer") ) ]);
+    this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
     this.fdPrice_type = new FormControl('');
     this.fdTargets = new FormControl( this.genres, [Validators.required]);
     this.fdProject_type = new FormControl('', [Validators.required]);
@@ -190,91 +194,16 @@ export class AddAdComponent implements OnInit {
 
 
 
-  validate_form_ads() {
-
-    
-    this.validateButton.nativeElement.disabled = true;
-
-    if(this.remuneration && !this.fd.valid){
-      if(this.fd.value.fdPrice.length==0){
-        this.price_value ="0";
-        console.log(this.price_value);
-      }
-    }
-    else if(this.remuneration && this.fd.valid){
-      this.price_value =this.fd.value.fdPrice;
-    }
-    else if(!this.remuneration){
-      this.price_value ="0";
-    }
-    
-
-    if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() ) {
-        console.log(this.price_value);
-        console.log("ok");
-        console.log(this.fd.value.fdDescription);
-
-        this.display_loading=true;
-
-        this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value)
-          .subscribe((val)=> {
-            this.ad_id=val[0].id;
-            this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
-              this.id_ad=l[0].id;
-              this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(m=>{
-                this.status_pictures=true;
-                this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(n=>{
-                  this.status_pictures=true;
-                  console.log(n);
-                })
-              })
-            })           
-          });
-    }
-
-
-    else if(!this.fd.valid){
-      if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides.'},
-          panelClass: 'dialogRefClassText'
-        });
-      }
-      else{
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-          panelClass: 'dialogRefClassText'
-        });
-      }
-
-      this.validateButton.nativeElement.disabled = false;
-    }
-    else {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
-        panelClass: 'dialogRefClassText'
-      });
-      this.validateButton.nativeElement.disabled = false;
-    }
-
-  }
-
-  can_delete=true;
-  cancel_all(){ 
-    if(this.can_delete){
-      this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
-    }
-  }
-
+ 
 
 
   //Ajouté par Mokhtar
   listOfTypes = ["Bandes dessinées en tout genre","BD européennes","Comics","Manga","Webtoon","Dessin en tout genre","Dessin digital",
   "Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
 
-  listOfPriceTypes = ["Par mission","Mensuelle","Annuelle"];
+  listOfPriceTypes = ["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
 
-  listOfDescriptions = ["Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  listOfDescriptions = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
   
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
@@ -290,7 +219,7 @@ export class AddAdComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  allGenres: string[] = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -362,5 +291,108 @@ export class AddAdComponent implements OnInit {
 
 
 
+  change_price_type(event){
+    if(this.fd.value.fdPrice_type=="Réinitialiser"){
+      this.fd.controls['fdPrice_type'].setValue(null);
+      this.fd.controls['fdPrice_type'].updateValueAndValidity();
+      this.price_type='';
+    }
+    else{
+      this.price_type=this.fd.value.fdPrice_type;
+    }
+    console.log(this.price_type)
+  }
+
+
+  validate_form_ads() {
+
+    
+    this.validateButton.nativeElement.disabled = true;
+
+    if(this.remuneration && !this.fd.valid){
+      if(this.fd.value.fdPrice.length==0){
+        this.price_value ="0";
+        console.log(this.price_value);
+      }
+    }
+    else if(this.remuneration && this.fd.valid){
+      this.price_value =this.fd.value.fdPrice;
+    }
+    else if(!this.remuneration){
+      this.price_value ="0";
+    }
+    
+
+    if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() ) {
+        console.log(this.price_value);
+        console.log(this.price_type);
+        console.log("ok");
+        console.log(this.fd.value.fdDescription);
+
+        this.display_loading=true;
+        this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).subscribe(r=>{
+          if(r[0].result=="ok"){
+            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type)
+            .subscribe((val)=> {
+              this.ad_id=val[0].id;
+              this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
+                this.id_ad=l[0].id;
+                this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(m=>{
+                  this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(n=>{
+                    this.status_pictures=true;
+                    console.log(n);
+                  })
+                })
+              })           
+            });
+          }
+          else{
+            this.display_loading=false;
+            this.validateButton.nativeElement.disabled = false;
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une annonce similaire publiée il y a moins d'une semaine est déjà disponible, veuillez la supprimer afin de pouvoir publier une annonce similaire"},
+              panelClass: 'dialogRefClassText'
+            });
+          }
+        })
+
+       
+    }
+
+
+    else if(!this.fd.valid){
+      console.log(this.fd.value.fdTargets)
+      console.log(this.fd)
+      if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides.'},
+          panelClass: 'dialogRefClassText'
+        });
+      }
+      else{
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+          panelClass: 'dialogRefClassText'
+        });
+      }
+
+      this.validateButton.nativeElement.disabled = false;
+    }
+    else {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
+        panelClass: 'dialogRefClassText'
+      });
+      this.validateButton.nativeElement.disabled = false;
+    }
+
+  }
+
+  can_delete=true;
+  cancel_all(){ 
+    if(this.can_delete){
+      this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
+    }
+  }
 
 }

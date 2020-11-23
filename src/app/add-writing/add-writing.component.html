@@ -64,35 +64,7 @@
                 </div>
 
 
-                <!--*********************************************************-->
-                <!--Catégorie-->
-                <!--*********************************************************-->
-                <!--<div class="form-group">
-                    <label for="artworkCategory">Catégorie</label>
-                    <select formControlName="fwCategory" class="fwselect1" style="height: 100%;">
-                        <option value="" disabled="true">Sélectionner une catégorie</option>
-                        <option label="Roman illustré">Roman illustré</option>
-                        <option label="Roman">Roman</option>
-                        <option label="Scénario">Scénario</option>
-                        <option label="Article">Article</option>
-                        <option label="Poésie">Poésie</option>
-                    </select>
-                    <p *ngIf="fwCategory.value == '' && fwDisplayErrors">Veuillez sélectionner une catégorie</p>
-                    <p> Vos oeuvres ne sont pas protégés contre le plagiat en dehors du site,nous vous invitons donc à prendre les
-                        dispositions nécessaires pour vous protéger contre cela.
-                    </p>
-                </div>-->
-
-                <!--*********************************************************-->
-                <!--Genres-->
-                <!--*********************************************************-->
-                <!--<div class="form-group">
-                    <label for="artworkTags">Genres</label>
-                    <select formControlName="fwTags" class="multipleSelectfw" placeholder="Sélectionner des genres (max : 3)" multiple name="language">
-                        <option value="{{writings_tags[i]}}" *ngFor="let item of writings_tags;let i=index">{{item}}</option>
-                    </select>
-                    <p *ngIf="!tagsValidator && fwDisplayErrors">Veuillez sélectionner au moins un genre</p>
-                </div>-->
+              
                 
                 <div class="form-item">
                     <mat-form-field floatLabel='never'>
@@ -150,38 +122,6 @@
                 </div>
 
 
-
-
-
-
-
-
-
-                <!--<div class="form-group">
-                    <label>Monétisation</label>
-                    <div class="monetisation-container">
-                        <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )">
-                            Je souhaite monétiser mon œuvre
-                        </mat-slide-toggle>
-                        &nbsp; 
-                        &nbsp; 
-                        <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="artworkDescription">Description</label>
-                    <textarea type="text" formControlName="fwDescription" maxlength="500" style="height: 250px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
-                    </textarea>
-                    <p *ngIf="!fwDescription.valid && fwDisplayErrors">Veuillez saisir une description valide</p>
-                </div>-->
-
-
-
-                <!--<div style="margin-bottom: 40px;">
-                    <app-uploader-writting (SafeUrlOutput)="get_writing_safeurl($event)"></app-uploader-writting>
-                </div>-->
-
             </div>
 
 
@@ -205,7 +145,7 @@
                             primary_description={{primary_description}}
                             pseudo={{pseudo}}
                             [profile_picture]=profile_picture
-
+                            [writing_id]=writing_id
                             firsttag={{fw.value.fwTags[0]}}
                             secondtag={{fw.value.fwTags[1]}}
                             thirdtag={{fw.value.fwTags[2]}}
@@ -261,34 +201,8 @@
         
 
 
-        <!--<div #swiperContainer class="swiper-container swiper-artwork-writing" >
-            <div #swiperWrapper class="swiper-wrapper">
-                <div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
-                    <div class="slide-container" #pdfDocument>
-                        <pdf-viewer
-                        class="pdf-document"
-                        [src]="pdfSrc"
-                        [render-text]="false"
-
-                        [autoresize]="true"
-                        [original-size]='true'
-                        [fit-to-page]='true'
-
-                        [show-all]="false"
-                        [page]="(i+1)"
-                        (after-load-complete)="afterLoadComplete($event, i)"
-                        ></pdf-viewer>
-
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-scrollbar"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-        </div>-->
-
         
-        <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_writing();">
+        <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_writing();" >
             <ng-container *ngIf="!display_loading">
                 <mat-icon>done_all</mat-icon>
                 <span>Valider </span>

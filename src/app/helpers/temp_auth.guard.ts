@@ -15,15 +15,15 @@ export class TempAuthGuard implements CanActivate {
         
 
         const currentUser = this.authenticationService.currentInvitedUserValue;
-        console.log(currentUser)
+        //console.log(currentUser)
         if ( currentUser ) {
-            console.log(currentUser);
+            //console.log(currentUser);
             return new Promise(resolve=>{
                 this.authenticationService
                 .check_invited_user()
                  .subscribe(
                     res => {
-                        console.log(res);
+                        //console.log(res);
                         if(res){
                             resolve(true);
                         }
@@ -35,7 +35,7 @@ export class TempAuthGuard implements CanActivate {
             })
         }
         else{
-            console.log(false)
+            //console.log(false)
             this.router.navigate(['/login_invited_user']);
             return new Promise(resolve=>{resolve(false)})
         }

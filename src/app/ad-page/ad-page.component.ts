@@ -209,16 +209,16 @@ export class AdPageComponent implements OnInit {
           }
          
             if(!this.visitor_mode){
-              this.navbar.check_if_research_exists("Ad",this.item.type_of_project,this.item.id,this.item.title,"clicked").subscribe(p=>{
+              this.navbar.check_if_research_exists("Ad",`${this.item.remuneration}`,this.item.id,this.item.title,"clicked").subscribe(p=>{
                 if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,null,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two,"account").subscribe(l=>{
+                  this.navbar.add_main_research_to_history("Ad",`${this.item.remuneration}` ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,"account").subscribe(l=>{
                   });
                 }
               })
             }
             else{
               
-              this.navbar.add_main_research_to_history("Ad",this.item.type_of_project,this.item.id,this.item.title,null,"clicked",0,0,0,this.item.location,this.item.my_description,this.item.target_one,this.item.target_two,r[0].status).subscribe(l=>{
+              this.navbar.add_main_research_to_history("Ad",`${this.item.remuneration}` ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,r[0].status).subscribe(l=>{
               });
             }
             

@@ -234,24 +234,24 @@
 
 
 #left-container .recommendations .cols {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content: center;
+    display:block;
+    //flex-wrap:wrap;
+    margin:auto;
+    width:90%;
+    //justify-content: center;
 } 
 
 #left-container .recommendations .col1, 
 #left-container .recommendations .col2, 
 #left-container .recommendations .col3  {
     min-width:400px;
-    margin-top: 20px;
-    display:flex;
-    flex-direction: column;
-    margin-left:20px;
-    margin-right:20px;
-    border: 1px solid #0c1b35;
-    border-radius: 20px;
-    box-shadow: 0px 0px 18px 0px #24385d;
-    background:rgb(32,56,100);
+    display:block;
+    //flex-direction: column;
+    margin:20px;
+    //border: 1px solid #0c1b35;
+    //border-radius: 20px;
+    //box-shadow: 0px 0px 18px 0px #24385d;
+    //background:rgb(32,56,100);
 }
 
 .genre {

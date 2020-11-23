@@ -120,19 +120,19 @@
                         </div>
                     </div>
 
-                    <div class="form-item" *ngIf="remuneration" [@enterAnimation]>
+                    <div class="form-item monetization"  *ngIf="remuneration" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label>Montant en € (optionnel)</mat-label>
                             <input matInput formControlName="fdPrice" maxLength="9" autocomplete="off">
-                            <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                            <mat-error *ngIf="fd.controls['fdPrice'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
                             </mat-error>
                             <div class="length-indicator">{{fd.controls['fdPrice'].value?.length || 0}}/9</div>
                         </mat-form-field>
                     </div>
-                    <div class="form-item" *ngIf="remuneration" [@enterAnimation]>
+                    <div class="form-item monetization" *ngIf="remuneration" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
                             <mat-label>Type de rémunération (optionnel)</mat-label>
-                            <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type">
+                            <mat-select [compareWith]="compareObjects" (selectionChange)="change_price_type($event)" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type">
                                 <mat-option  *ngFor="let obj of listOfPriceTypes" [value]="obj">
                                     {{ obj }}
                                 </mat-option>

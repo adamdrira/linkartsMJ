@@ -141,31 +141,29 @@
                 <!--********************-->
                 <!--********************-->
                 <div class="cols" *ngIf="left_container_category_index==0">
-                    <div class="col1" *ngIf="list_of_author_recommendations_comics.length>0"  [ngClass]="{'invisible': !display_comics_recommendations }">
-                        <div class="genre">
-                            <span>Bandes dessinées</span>
-                        </div>
-                        <div class="comic" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
-                            <app-thumbnail-comics *ngIf="item[0].chaptersnumber == null"
-                                (send_loaded)="sendLoadedComic( $event );"
-                                [item]=item[0]
-                                format='one-shot'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-comics>
-                            <app-thumbnail-comics *ngIf="item[0].chaptersnumber >=0"
-                                (send_loaded)="sendLoadedComic( $event );"
-                                [item]=item[0]
-                                format='serie'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-comics>
-                        </div>
-                    </div>
-                    <div class="col2" *ngIf="list_of_author_recommendations_drawings.length>0" [ngClass]="{'invisible': !display_drawings_recommendations }">
+                    <div class="col2" *ngIf="list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved" >
                         <div class="genre">
                             <span>Dessins</span>
                         </div>
                         <div *ngFor="let item of list_of_author_recommendations_drawings; let i=index" >
-                            <app-thumbnail-drawing *ngIf="item[0].pagesnumber == null"
+                            <app-thumbnail-artwork 
+                            *ngIf="item[0].pagesnumber >=0"
+                            [item]=item[0]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='drawing'
+                            subscribing_format="artbook"
+                            ></app-thumbnail-artwork>
+
+                            <app-thumbnail-artwork 
+                            *ngIf="item[0].pagesnumber == null"
+                            [item]=item[0]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='drawing'
+                            subscribing_format="one-shot"
+                            ></app-thumbnail-artwork>
+                            <!--<app-thumbnail-drawing *ngIf="item[0].pagesnumber == null"
                                 (sendLoaded)="sendLoadedDrawing( $event );"
                                 [item]=item[0]
                                 format='one-shot'
@@ -176,19 +174,63 @@
                                 [item]=item[0] 
                                 format='artbook'
                                 now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-drawing>
+                            ></app-thumbnail-drawing>-->
                         </div>
                     </div>
-                    <div class="col3" *ngIf="list_of_author_recommendations_writings.length>0" [ngClass]="{'invisible': !display_writings_recommendations }">
+                    
+                    <div class="col1" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved"  >
+                        <div class="genre">
+                            <span>Bandes dessinées</span>
+                        </div>
+                        <div class="comic" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
+                            <app-thumbnail-artwork 
+                                *ngIf="item[0].chaptersnumber >=0"
+                                [item]=item[0]
+                                page='subscribings'
+                                now_in_seconds={{now_in_seconds}}
+                                subscribing_category='comic'
+                                subscribing_format='serie'
+                            ></app-thumbnail-artwork>
+                            <app-thumbnail-artwork 
+                                *ngIf="item[0].chaptersnumber == null"
+                                [item]=item[0]
+                                page='subscribings'
+                                now_in_seconds={{now_in_seconds}}
+                                subscribing_category='comic'
+                                subscribing_format='one-shot'
+                            ></app-thumbnail-artwork>
+                            
+                            <!--<app-thumbnail-comics *ngIf="item[0].chaptersnumber == null"
+                                (send_loaded)="sendLoadedComic( $event );"
+                                [item]=item[0]
+                                format='one-shot'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics>
+                            <app-thumbnail-comics *ngIf="item[0].chaptersnumber >=0"
+                                (send_loaded)="sendLoadedComic( $event );"
+                                [item]=item[0]
+                                format='serie'
+                                now_in_seconds={{now_in_seconds}}
+                            ></app-thumbnail-comics>-->
+                        </div>
+                    </div>
+                    
+                    <div class="col3" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_retrieved" >
                         <div class="genre">
                             <span>Écrits</span>
                         </div>
                         <div *ngFor="let item of list_of_author_recommendations_writings; let i=index"  >
-                            <app-thumbnail-writing
+                            <app-thumbnail-artwork 
+                            [item]=item[0]
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='writing'
+                            ></app-thumbnail-artwork>
+                            <!--<app-thumbnail-writing
                                 (sendLoaded)="sendLoadedWriting( $event );"
                                 [item]=item[0]
                                 now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-writing>
+                            ></app-thumbnail-writing>-->
                         </div>
                     </div>
                 </div>
@@ -198,9 +240,28 @@
                 <!--SAME TYPE ARTWORKS-->
                 <!--******************-->
                 <!--******************-->
-                <div style="display:flex;flex-wrap: wrap;min-height: 550px;" class="container-drawings" [ngClass]="{'invisible': !list_of_recommendations_by_tag_retrieved }" *ngIf="  left_container_category_index==1">
-                    <div *ngFor="let item of list_of_recommendations_by_tag; let i=index"  [ngClass]="{'invisible': !display_drawings_recommendations_others }">
-                        <app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
+                <div style="display:flex;flex-wrap: wrap;min-height: 550px;" class="container-drawings" *ngIf="list_of_recommendations_by_tag_retrieved &&  left_container_category_index==1">
+                    <div *ngFor="let item of list_of_recommendations_by_tag; let i=index" >
+                        
+                        <app-thumbnail-artwork 
+                            *ngIf="item.pagesnumber >=0"
+                            [item]=item
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='drawing'
+                            subscribing_format="artbook"
+                            ></app-thumbnail-artwork>
+
+                            <app-thumbnail-artwork 
+                            *ngIf="item.pagesnumber == null"
+                            [item]=item
+                            page='subscribings'
+                            now_in_seconds={{now_in_seconds}}
+                            subscribing_category='drawing'
+                            subscribing_format="one-shot"
+                        ></app-thumbnail-artwork>
+
+                        <!--<app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
                                 (sendLoaded)="sendLoadedDrawingOthers( $event );"
                                 [item]=item
                                 format='artbook'
@@ -211,7 +272,7 @@
                                 [item]=item
                                 format='one-shot'
                                 now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-drawing>
+                        ></app-thumbnail-drawing>-->
                     </div>
                     <div style="    display: flex;
                     justify-content: center;

@@ -74,7 +74,7 @@ export class AddWritingComponent implements OnInit {
   visitor_name:string;
   dropdowns = this._constants.filters.categories[0].dropdowns;
   user_id:number;
-
+  writing_id:number;
 
   @Output() cancelled = new EventEmitter<any>();
 
@@ -215,14 +215,18 @@ export class AddWritingComponent implements OnInit {
     }
   }
 
+  confirmation_writing_uploaded=false;
   validate_form_writing() {
 
     this.validateButton.nativeElement.disabled = true;
     console.log(this.Writing_Upload_Service.get_confirmation())
-    let confirmation =this.Writing_Upload_Service.get_confirmation()[0];
-    let total_pages=this.Writing_Upload_Service.get_confirmation()[1];
+    let list =this.Writing_Upload_Service.get_confirmation()
+    this.confirmation_writing_uploaded =list[0];
+    let total_pages=list[1];
+
+ 
     
-    if ( this.fw.valid  && [0] && confirmation ) {
+    if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
 
       
        this.display_loading=true;
@@ -235,8 +239,9 @@ export class AddWritingComponent implements OnInit {
           this.monetised,
           total_pages)
         .subscribe( v => {
+          this.writing_id=v[0].writing_id;
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
-            this.Writing_Upload_Service.validate_writing().subscribe(r=>{
+            this.Writing_Upload_Service.validate_writing(this.writing_id).subscribe(r=>{
               console.log(r[0])
               this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).subscribe(l=>{
                 console.log(l)
@@ -278,9 +283,9 @@ export class AddWritingComponent implements OnInit {
         });
         this.validateButton.nativeElement.disabled = false;
       }
-      else if ( !this.Writing_Upload_Service.get_confirmation() ){
+      else if ( !this.confirmation_writing_uploaded ){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez télécharger l\'écrit en PDF, puis le valider.'},
+          data: {showChoice:false, text:'Veuillez attendre la fin du téléchargement du PDF et le valider après l\'avoir téléchargé.'},
           panelClass: 'dialogRefClassText'
         });
         this.validateButton.nativeElement.disabled = false;
@@ -297,14 +302,22 @@ export class AddWritingComponent implements OnInit {
 
 
   back_home() {
-    this.stepChanged.emit(0);
-    this.cancelled.emit();
+    this.Writing_CoverService.get_cover_name().subscribe(name=>{
+      this.Writing_Upload_Service.get_writing_name().subscribe(name_writing=>{
+        this.stepChanged.emit(0);
+        this.cancelled.emit({writing_cover:name,name_writing:name_writing});
+      })
+      
+    })
   }
 
   block_cancel=false;
   cancel_all(){
     if(!this.block_cancel){
-      this.Writing_Upload_Service.remove_writing_from_folder().subscribe();
+      this.Writing_Upload_Service.remove_writing_from_folder().subscribe(r=>{
+        this.Writing_CoverService.remove_cover_from_folder().subscribe(m=>{
+        })
+      });
     }
    
   }
@@ -327,8 +340,8 @@ export class AddWritingComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
 
-  allGenres: string[] = ["Action","Aventure","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Satirique","Science-fiction","Sociologie","Sport","Thriller","Western"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
