@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#003864;}
+	.st1{fill:url(#SVGID_1_);}
+</style>
+<path class="st0" d="M1000,829.4c0,96.5-78.2,174.7-174.7,174.7H174.7C78.2,1004.1,0,925.9,0,829.4V178.9C0,82.4,78.2,4.1,174.7,4.1
+	h650.6c96.5,0,174.7,78.2,174.7,174.7V829.4z"/>
+<g id="Calque_3">
+	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="518.6415" y1="210.9859" x2="518.6415" y2="747.9859">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="0.229" style="stop-color:#FCFCFF"/>
+		<stop  offset="0.4074" style="stop-color:#F2F4FF"/>
+		<stop  offset="0.5688" style="stop-color:#E2E6FF"/>
+		<stop  offset="0.7201" style="stop-color:#CAD2FF"/>
+		<stop  offset="0.8629" style="stop-color:#ACB8FF"/>
+		<stop  offset="1" style="stop-color:#8899FF"/>
+	</linearGradient>
+	<polygon class="st1" points="943.2,748 700.4,211 492.2,671.8 199.3,671.8 199.3,211.1 94.1,211.1 94.1,748 566.8,748 700.4,452.2 
+		782.5,633.8 675.4,633.8 675.4,709.9 817,709.9 834.1,747.9 	"/>
+</g>
+</svg>
