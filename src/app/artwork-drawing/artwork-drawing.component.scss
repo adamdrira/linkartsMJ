@@ -316,6 +316,15 @@
 }
   
   
+.like-invisible{
+    visibility: hidden;
+    height:0px;
+    pointer-events: none;
+}
+
+.spinner{
+   margin:auto;
+}
 
     
 //*********************************************************************

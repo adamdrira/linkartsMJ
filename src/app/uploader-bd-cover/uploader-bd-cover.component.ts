@@ -138,6 +138,7 @@ export class UploaderBdCoverComponent implements OnInit {
   cover_loading=false;
   ngOnInit() {
 
+    this.description = this.description.slice(0,290);
     this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation); 
 
     this.uploader.onAfterAddingFile = async (file) => {
@@ -173,6 +174,7 @@ export class UploaderBdCoverComponent implements OnInit {
 
       this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
+      console.log(file._file.name)
       if(this.for_edition){
         this.Bd_CoverService.get_cover_name().subscribe(r=>{
           if ( this.format == "one-shot" ) {

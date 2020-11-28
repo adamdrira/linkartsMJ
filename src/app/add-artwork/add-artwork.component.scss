@@ -31,6 +31,11 @@
     box-shadow: 0px 3px 0px -2px rgba(150, 150, 150, 0.11), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 14px 0px rgb(109,109,109,0.20);
     z-index:1010;
 
+    .invisible{
+        visibility: hidden;
+        pointer-events: none;
+    }
+
     .navbar-container {
         display:flex;
         width:460px;
@@ -425,7 +430,7 @@
         .mat-input-element {
             font-size: 14px;
             line-height: 22px !important;
-            padding-right: 70px !important;
+            padding-right: 80px !important;
         }
         
         .form-item .mat-form-field {

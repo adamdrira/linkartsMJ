@@ -148,10 +148,9 @@ export class AddComicComponent implements OnInit {
 
   
   back_home() {
-    this.Bd_CoverService.get_cover_name().subscribe(name=>{
-      this.stepChanged.emit(0);
-      this.cancelled.emit({bd_cover:name});
-    })
+    let name= this.Bd_CoverService.get_cover_name2();
+    this.stepChanged.emit(0);
+    this.cancelled.emit({bd_cover:name});
     
   }
 
@@ -191,7 +190,7 @@ export class AddComicComponent implements OnInit {
   
   createFormControls00() {
     this.f00Title = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(290), Validators.pattern( pattern("text") ) ]);
+    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
     this.f00Category = new FormControl('', Validators.required);
     this.f00Tags = new FormControl( this.genres, [Validators.required]);
     this.f00Format = new FormControl('', [Validators.required]);

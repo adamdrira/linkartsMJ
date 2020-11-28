@@ -101,7 +101,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.file_name = this.item.name_coverpage;
     this.title = this.item.title;
     this.category = this.item.category;
-    this.highlight = this.item.highlight;
+    this.highlight = this.item.highlight.slice(0,290);;
     this.firsttag = this.item.firsttag;
     this.secondtag = this.item.secondtag;
     this.thirdtag = this.item.thirdtag;

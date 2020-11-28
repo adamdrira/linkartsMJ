@@ -13,27 +13,27 @@
         'step1':step==1}">
 
             <a href="/" class="logo-container">
-                <img class="logo" src='../../assets/img/svg/Logo-LA3.svg'>
+                <img class="logo" src='../../assets/img/svg/Logo-LA3.svg' (load)="load_logo()"  [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
             </a>
     
             <ng-container *ngIf="(opened_category$ | async)!=0 && (opened_category$ | async)!=1 && (opened_category$ | async)!=2 && (opened_category$ | async)!=3">
-                <span>Publication</span>
+                <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publication</span>
             </ng-container>
             <ng-container *ngIf="(opened_category$ | async)==0">
-                <span>Publier une bande dessinée</span>
+                <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier une bande dessinée</span>
             </ng-container>
             <ng-container *ngIf="(opened_category$ | async)==1">
-                <span>Publier un dessin ou un artbook</span>
+                <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier un dessin ou un artbook</span>
             </ng-container>
             <ng-container *ngIf="(opened_category$ | async)==2">
-                <span>Publier un écrit</span>
+                <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier un écrit</span>
             </ng-container>
             <ng-container *ngIf="(opened_category$ | async)==3">
-                <span>Publier une annonce</span>
+                <span [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">Publier une annonce</span>
             </ng-container>
     
-            <a class="profile-picture-container" href="/account/{{pseudo}}/{{user_id}}">
-                <img class="profile-picture" [src]="profile_picture" *ngIf="profile_picture">
+            <a class="profile-picture-container" *ngIf="profile_picture_retrieved" href="/account/{{pseudo}}/{{user_id}}">
+                <img class="profile-picture" [src]="profile_picture"  (load)="load_pp()" [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">
             </a>
         </div>
         
@@ -47,19 +47,19 @@
             <span class="title">Que désirez-vous publier ?</span>
 
             <button class="category-choice" (click)="open_category(0);">
-                <div class="comic-bubble-icon"></div>
+                <div [ngClass]="{'invisible':!logo_loaded || !pp_loaded}" class="comic-bubble-icon"></div>
                 <span>Une bande dessinée</span>
             </button>
             <button class="category-choice" (click)="open_category(1);">
-                <div class="pencil-icon"></div>
+                <div [ngClass]="{'invisible':!logo_loaded || !pp_loaded}" class="pencil-icon"></div>
                 <span>Un dessin ou un artbook</span>
             </button>
             <button class="category-choice" (click)="open_category(2);">
-                <div class="writing2-icon"></div>
+                <div [ngClass]="{'invisible':!logo_loaded || !pp_loaded}" class="writing2-icon"></div>
                 <span>Un écrit</span>
             </button>
             <button class="category-choice" (click)="open_category(3);">
-                <mat-icon>announcement</mat-icon>
+                <mat-icon [ngClass]="{'invisible':!logo_loaded || !pp_loaded}">announcement</mat-icon>
                 <span>Une annonce</span>
             </button>
 

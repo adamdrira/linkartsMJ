@@ -452,8 +452,11 @@
             </div>
             <!--Line 6 : DESCRIPTION OR COMMENTS-->
             <div class="d6-category-content">
-                <div *ngIf="category_index==0" class="description-container">
-                    <div  class="categories-container"  [ngClass]="{'invisible': !display_right_container }">
+                <div *ngIf="!display_right_container">
+                    <mat-spinner diameter="30" class="spinner"></mat-spinner>
+                </div>
+                <div *ngIf="category_index==0" class="description-container"  [ngClass]="{'like-invisible': !display_right_container }">
+                    <div  class="categories-container" >
                         &bull;
                         <div  class="tag-container">
                             <a href="/main-research-style-and-tag/1/Writing/{{style}}/all">
@@ -464,7 +467,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="categories-container"  [ngClass]="{'invisible': !display_right_container }">  
+                    <div class="categories-container"  >  
                         &bull;
                         <div class="tag-container">
                             <a href="/main-research-style-and-tag/1/Writing/{{style}}/{{firsttag}}">
@@ -486,7 +489,7 @@
                         {{highlight}}
                     </div>
                 </div>
-                <div *ngIf="category_index==1" class="comments-container">
+                <div class="comments-container" [ngClass]="{'like-invisible':!(category_index==1) || !display_right_container}">
                     <app-comments 
                     [type_of_account]=type_of_account
                     [title]="title"

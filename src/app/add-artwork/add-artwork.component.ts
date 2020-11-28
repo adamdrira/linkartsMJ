@@ -83,8 +83,9 @@ export class AddArtworkComponent implements OnInit {
   primary_description:string;
   profile_picture:SafeUrl;
   pseudo:string;
-
-  
+  profile_picture_retrieved=false;
+  logo_loaded=false;
+  pp_loaded=false;
   
 
   
@@ -100,14 +101,6 @@ export class AddArtworkComponent implements OnInit {
     
     this.get_user_data();
 
-    /*
-    console.log("test1");
-    this.get_user_data().then( (value) => { console.log("test data"); } );
-    console.log("test2");*/
-
-    //console.log(this.user_id);
-    //console.log("test");
-    //console.log(this.user_id + "/" + this.author_name + "/" + this.primary_description );
     
   }
 
@@ -126,19 +119,20 @@ export class AddArtworkComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
+        this.profile_picture_retrieved=true;
       });
       
     });
   }
 
 
-  ngAfterViewInit() {
-    
-
+  load_logo(){
+    this.logo_loaded=true;
   }
 
-
-
+  load_pp(){
+    this.pp_loaded=true;
+  }
   
   //********************************************************************************************************* */
   //******************************************other functions************************************************ */
@@ -174,26 +168,20 @@ export class AddArtworkComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
        console.log(event)
-       alert("del red")
         if(event.bd_cover && event.bd_cover!=''){
-          alert("del bd")
             THIS.Bd_CoverService.remove_cover_from_folder().subscribe(r=>{
               console.log(r)
             })
           
         }
         else if(event.drawing_cover && event.drawing_cover!='' ){
-          alert("del drawing")
           THIS.Drawings_CoverService.remove_cover_from_folder().subscribe(r=>{
               console.log(r)
             })
         }
         else if (event.writing_cover && event.writing_cover!=''){
-          alert("del writing")
           THIS.Writing_CoverService.remove_cover_from_folder().subscribe(m=>{
-            alert("del writing 1")
             THIS.Writing_Upload_Service.remove_writing_from_folder2(event.name_writing).subscribe(r=>{
-              alert("del writing 2")
             })
           });
         }

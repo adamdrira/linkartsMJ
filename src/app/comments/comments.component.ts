@@ -133,6 +133,7 @@ export class CommentsComponent implements OnInit {
       this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(l=>{
 
         this.comments_list=l[0];
+        console.log(this.comments_list);
         if(this.comments_list.length>0){
          this.sort_comments(this.comments_list,"other");  
         }
@@ -312,8 +313,15 @@ export class CommentsComponent implements OnInit {
       for (let i=1; i<list.length; i++){
         let time = convert_timestamp_to_number(list[i].createdAt);
         let number_of_likes= 60*60*list[i].number_of_likes; //un like fait gagner 1h
+        if(list[i].author_id_who_comments==this.authorid){
+          number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
+        }
         for (let j=0; j<i;j++){
-          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + 60*60*list[j].number_of_likes)){
+          let second_number_of_likes=60*60*list[j].number_of_likes;
+          if(list[j].author_id_who_comments==this.authorid){
+            second_number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
+          }
+          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + second_number_of_likes)){
             list.splice(j, 0, list.splice(i, 1)[0]);
           }
           if(j==list.length-2){

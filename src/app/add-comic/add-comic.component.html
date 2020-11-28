@@ -125,20 +125,16 @@
                                     
                     <div class="form-item input-multiple-lines">
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Description</mat-label>
+                            <mat-label>Description - Seuls les 290 premiers charactères seront affichés sur les miniatures</mat-label>
                         
-                            <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="290" autocomplete="off"></textarea>
+                            <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off"></textarea>
                             <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
-                            <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/290</div>
+                            <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/2000</div>
                         </mat-form-field>
                     </div>
-                    <!--<div class="form-group">
-                        <label for="artworkDescription">Description</label>
-                        <textarea type="text" formControlName="f00Description" maxlength="290" style="height: 100px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
-                        </textarea>
-                        <p *ngIf="!f00Description.valid && f00DisplayErrors">Veuillez saisir une description valide</p>
-                    </div>-->
+
+                    
 
 
                     <div class="form-item height-unset" *ngIf="type_of_account=='Artistes' || type_of_account=='Artistes professionnels'

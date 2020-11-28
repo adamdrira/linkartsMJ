@@ -98,12 +98,12 @@
             
                 <div class="form-item input-multiple-lines" style="height:unset !important;">
                     <mat-form-field floatLabel='never'>
-                        <mat-label>Description</mat-label>
+                        <mat-label>Description - Seuls les 290 premiers charactères seront affichés sur les miniatures</mat-label>
                     
-                        <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="290" autocomplete="off"></textarea>
+                        <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="2000" autocomplete="off"></textarea>
                         <mat-error *ngIf="fw.controls['fwDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                         </mat-error>
-                        <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/290</div>
+                        <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/2000</div>
                     </mat-form-field>
                 </div>
 

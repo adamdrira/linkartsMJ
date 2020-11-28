@@ -151,6 +151,7 @@ export class UploaderCoverWritingComponent implements OnInit {
   cover_loading=false;
   ngOnInit() {
 
+    this.description=this.description.slice(0,290);
     this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation); 
 
     this.uploader.onAfterAddingFile = async (file) => {

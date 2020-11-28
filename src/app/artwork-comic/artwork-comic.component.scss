@@ -410,11 +410,14 @@
     }
 
     .like-invisible{
-        opacity:0;
+        visibility: hidden;
+        height:0px;
         pointer-events: none;
-        cursor: default;
-        text-decoration: none;
     }
+
+   .spinner{
+       margin:auto;
+   }
 
     .other-chapter{
         display: flex;

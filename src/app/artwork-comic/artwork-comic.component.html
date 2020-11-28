@@ -19,12 +19,7 @@
                 <div class="top-container">
                     <div class="dropdowns-container">
 
-                        <!--<div class="options-container" [ngClass]="{'like-invisible':!(current_chapter>0)}">
-                            <a class="other-chapter" href="/artwork-comic/{{type}}/{{title}}/{{bd_id}}/{{current_chapter}}">
-                                <span><mat-icon class="icon">navigate_before</mat-icon></span>
-                                <span style="margin-right: 15px;">Chapitre {{current_chapter}}</span>
-                            </a>
-                        </div>-->
+                        
 
                         <div class="options-container">
                             
@@ -72,14 +67,7 @@
 
                         </div>
 
-                        <!--<div class="options-container" [ngClass]="{'like-invisible':!(chapterList.length>current_chapter+1)}">
-                            <a class="other-chapter" href="/artwork-comic/{{type}}/{{title}}/{{bd_id}}/{{current_chapter + 2}}">
-                                <span style="margin-left: 15px;">Chapitre {{current_chapter+2}}</span>
-                                <span>
-                                    <mat-icon class="icon">navigate_next</mat-icon>
-                                </span>
-                            </a>
-                        </div>-->
+                       
                     </div>
                 </div>
 
@@ -508,19 +496,6 @@
                     </div>
                 </div>
             </div>
-            <!--Line 4 : OPTIONAL VIDEO-->
-            <!--<div class="d4-video-container" id="scrollToComments">
-
-                <button mat-raised-button class="d4-button">
-                    <mat-icon class="video-icon">play_circle_filled</mat-icon>
-                    <span>Soutenir l'artiste</span>
-                </button>
-
-                <div class="d4-text">
-                    <span>Soutenir l’artiste en visualisant une courte publicité</span>
-                </div>
-            </div>-->
-            <!--Line 5 : DESCRIPTION OR COMMENTS : CHOICE-->
             <!--Line 5 : DESCRIPTION OR COMMENTS : CHOICE-->
             <div class="d5-category">
                 <div #category class="category-description opened" (click)="open_category(0);">
@@ -533,9 +508,12 @@
                 </div>
             </div>
             <!--Line 6 : DESCRIPTION OR COMMENTS-->
-            <div class="d6-category-content">
-                <div *ngIf="category_index==0" class="description-container">
-                    <div  class="categories-container"  [ngClass]="{'invisible': !display_right_container }">
+            <div class="d6-category-content" >
+                <div *ngIf="!display_right_container">
+                    <mat-spinner diameter="30" class="spinner"></mat-spinner>
+                </div>
+                <div *ngIf="category_index==0" class="description-container" [ngClass]="{'like-invisible': !display_right_container }">
+                    <div  class="categories-container"  >
                         &bull;
                         <div  class="tag-container">
                             <a href="/main-research-style-and-tag/1/Comic/{{style}}/all">
@@ -545,7 +523,7 @@
                         <div *ngIf="type=='serie'"  class="tag-container"> <span>Série</span> </div>
                         <div *ngIf="type=='one-shot'"  class="tag-container"><span>One-shot</span>  </div>
                     </div>
-                    <div class="categories-container"  [ngClass]="{'invisible': !display_right_container }">  
+                    <div class="categories-container">  
                         &bull;
                         <div class="tag-container">
                             <a href="/main-research-style-and-tag/1/Comic/{{style}}/{{firsttag}}">
@@ -568,7 +546,7 @@
                         {{highlight}}
                     </div>
                 </div>
-                <div *ngIf="category_index==1" class="comments-container">
+                <div  class="comments-container" [ngClass]="{'like-invisible':!(category_index==1) || !display_right_container}">
                     <app-comments 
                     [type_of_account]=type_of_account
                     [title]="title"

@@ -302,13 +302,9 @@ export class AddWritingComponent implements OnInit {
 
 
   back_home() {
-    this.Writing_CoverService.get_cover_name().subscribe(name=>{
-      this.Writing_Upload_Service.get_writing_name().subscribe(name_writing=>{
-        this.stepChanged.emit(0);
-        this.cancelled.emit({writing_cover:name,name_writing:name_writing});
-      })
-      
-    })
+    let name = this.Writing_CoverService.get_cover_name2();
+    this.stepChanged.emit(0);
+    this.cancelled.emit({writing_cover:name,name_writing:name});
   }
 
   block_cancel=false;
