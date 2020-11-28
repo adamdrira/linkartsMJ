@@ -8,7 +8,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 //On récupère le numéro de la page uplaodé
-
+var list_covers_by_id={};
 
 
 
@@ -24,24 +24,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
   };
   
 
-  router.post('/setcookies_cover_bd_oneshot/:name', (req, res)=>{ 
-    
-
-    let value = req.params.name;
-    res.send(value)
-    //res.cookie('name_cover_bd_oneshot', value).send('cookie set' + value);
-    });
-
-  router.get('/clear_cookies_cover_bd_oneshot', function(req, res){
-      res.clearCookie('name_cover_bd');
-      res.send('cookie cover cleared');
-  });
- 
-
-  router.get('/get_cookies_cover_bd', (req, res)=>{ 
-    //console.log('get it');
-    let value = req.cookies;
-    res.status(200).send([value]);
+  router.post('/get_covername_comic', (req, res)=>{ 
+    let current_user = get_current_user(req.cookies.currentUser);
+    let covername=list_covers_by_id[current_user];
+    res.status(200).send([{covername:covername}]);
     }); 
       
 
@@ -453,7 +439,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               ]
             });
             console.log("respong name_cover")
-            res.cookie('name_cover_bd', file_name).send([{file_name:file_name}]);
+            list_covers_by_id[current_user]=file_name;
+            console.log(list_covers_by_id)
+            res.status(200).send([{file_name:file_name}]);
         })();
          
         });

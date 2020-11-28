@@ -6,6 +6,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const Sequelize = require('sequelize');
+var list_of_covers={};
 
 module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
@@ -20,7 +21,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   router.get('/get_cookies_writing', (req, res)=>{ 
     let value = req.cookies
-    res.status(200).send([value]);
+    let current_user = get_current_user(req.cookies.currentUser);
+
+    res.status(200).send([{covername:list_of_covers[current_user]}]);
     }); 
       
 
@@ -259,7 +262,8 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
                 })
               ]
             });
-            res.cookie('name_cover_writing', file_name).send([{file_name:file_name}]);
+            list_of_covers[current_user]=file_name
+            res.status(200).send([{file_name:file_name}]);
 
             
         })();

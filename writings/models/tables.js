@@ -20,7 +20,7 @@ exports.Writings_Tables = (sequelize, DataTypes) => {
         lovesnumber: DataTypes.INTEGER,
         viewnumber: DataTypes.INTEGER,
         commentarynumbers:DataTypes.INTEGER,
-        highlight: DataTypes.STRING(500),
+        highlight: DataTypes.STRING(2000),
         average_lecture_time:DataTypes.INTEGER,
         file_name: DataTypes.STRING,
         status: DataTypes.STRING,
