@@ -1,234 +1,313 @@
 
-<div class="container-fluid" [ngClass]="{'invisible': !(list_writings_added && list_drawings_artbook_added
+<div class="container-fluid account" [ngClass]="{'invisible': !(list_writings_added && list_drawings_artbook_added
 && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && user_blocked_retrieved)}">
-    <main role="main">
         
-        <div class="account-container">
+    <div class="account-container">
 
-            <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }">
+        <img [src]="cover_picture" (load)="cover_loaded()" [ngClass]="{'invisible': !cover_is_loaded }">
 
-            <button mat-raised-button *ngIf="!mode_visiteur && showEditCoverPic" class="change-cover-picture style0" (click)="change_cover_picture();">
-                <div class="cover-picture-icon"></div>
-                <span>Changer ma photo de couverture</span>
-            </button>
+        <button *ngIf="!mode_visiteur && showEditCoverPic" class="change-cover-picture" (click)="change_cover_picture();">
+            <mat-icon>camera_alt</mat-icon>
+            <span>Changer ma photo de couverture</span>
+        </button>
 
-            <div #profileHovered class="profile">
-
-                <div #profilePicHovered class="profile-picture" [ngClass]="{'visiteur': mode_visiteur }">
-
-                    <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
-
-
-                    <button mat-raised-button *ngIf="!mode_visiteur" class="change-profile-picture style0" (click)="change_profile_picture();">
-                        <div class="picture-icon"></div>
-                        <span>Changer de photo de profil</span>
-                    </button>
-
-                    <button mat-raised-button *ngIf="!mode_visiteur" class="change-story-picture style0" (click)="add_story();">
-                        <mat-icon class="icon">play_circle_outline</mat-icon>
-                        <span>Ajouter une story</span>
-                    </button>
-                    
-                </div>
-               
-                
-
-                <div *ngIf="mode_visiteur_added " class="profile-information">
-                    <div class="profile-name">
-                        <span style="width:85%;margin-right:5px">{{author_name}}</span>
-                        <button *ngIf="user_blocked_retrieved && !profile_not_found && type_of_profile=='account'" mat-icon-button  tabIndex="-1" [matMenuTriggerFor]="options">
-                            <mat-icon class="optionsButton" style="color: white;width: 30p;    font-size: 18px;margin: auto;">more_vert</mat-icon>
-                        </button>
-                        <mat-menu  #options="matMenu" style="min-height:unset !important">
-                            <button *ngIf="!user_blocked && !mode_visiteur"  class="mat-menu-item" (click)="change_profile_bio();">
-                                <mat-icon class="item-icon">edit</mat-icon>
-                                <span>Editer</span>
-                            </button>
-
-                            <button *ngIf="!user_blocked && mode_visiteur" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)=block_user()> 	
-                                <mat-icon class="item-icon">report</mat-icon>
-                                <span>Bloquer</span>
-                            </button>
-                            <button *ngIf="user_blocked && user_who_blocked=='me' && mode_visiteur" class="mat-menu-item" tabIndex="-1" mat-menu-item  (click)="unblock_user()"> 	
-                                <mat-icon class="item-icon">report_off</mat-icon>
-                                <span>Débloquer</span>
-                            </button>
-                            <button *ngIf="mode_visiteur && !user_blocked" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
-                                <mat-icon class="item-icon">report_problem</mat-icon>
-                                <span>Signaler</span>
-                            </button>
-                        </mat-menu>
-                    </div>
-
-                    <div class="profile-description">
-                        <span *ngIf="primary_description!=null">{{primary_description}}</span>
-                    </div>
-
-                    <div class="profile-text" *ngIf="pseudo">	
-                        <mat-icon class="icon">alternate_email</mat-icon>
-                        <span> &nbsp; {{pseudo}}</span>
-                    </div>
-                    
-
-                    <div class="profile-text" *ngIf="user_location">
-                        <mat-icon class="icon"> location_on</mat-icon>
-                        <span> &nbsp; {{user_location }}</span>
-                    </div>
-
-                    <div class="profile-text" *ngIf="user_location">
-                        <mat-icon class="icon"> portrait</mat-icon>
-                        <span> &nbsp; {{type_of_account}}</span>
-                    </div>
-
-                    <div *ngIf="mode_visiteur && type_of_profile_retrieved && !profile_not_found" class="visitor-buttons-container">
-                        <a href="chat/{{pseudo}}/{{user_id}}">
-                            <button mat-raised-button  class="visitor-button style0">
-                                <div class="message-icon"></div>
-                                    <span>Écrire</span>
-                            </button>
-                        </a>
-                        <button *ngIf="!already_subscribed" (click)="subscribtion()" mat-raised-button class="visitor-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;">
-                            <div class="subscribe-icon"></div>
-                            <span>S'abonner</span>
-                        </button>
-                        <button *ngIf="already_subscribed" (click)="subscribtion()" mat-raised-button class="visitor-button style1" style="box-shadow: 0px 0px 0px 2px rgb(69, 95, 143) !important;" >
-                            <div class="subscribe-icon"></div>
-                            <span>Se désabonner</span>
-                        </button>
-                    </div>
-
-                </div>
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!-----------------------------------PROFIL---------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <div #profileHovered class="profile">
 
 
-
-                
-
-                
+            <div *ngIf="mode_visiteur && type_of_profile_retrieved && !profile_not_found" class="visitor-buttons-container">
+                <button (click)="open_chat_link()">
+                        <mat-icon>send</mat-icon>
+                        <span>Écrire</span>
+                </button>
+                <button *ngIf="!already_subscribed" (click)="subscribtion()">
+                    <mat-icon>person_add</mat-icon>
+                    <span>S'abonner</span>
+                </button>
+                <button *ngIf="already_subscribed" (click)="subscribtion()">
+                    <mat-icon>person_add_disabled</mat-icon>
+                    <span>Se désabonner</span>
+                </button>
             </div>
+
+            
+            <button *ngIf="user_blocked_retrieved && !profile_not_found && type_of_profile=='account' && mode_visiteur" class="profile-mat-menu" [ngClass]="{'opacity1': openedMenu=='0profile' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(0,'profile');" [matMenuTriggerFor]="options">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #options="matMenu" xPosition='before' class="account-mat-menu">
+                <button *ngIf="!user_blocked && mode_visiteur" class="account-mat-menu-item" tabIndex="-1" mat-menu-item (click)=block_user()> 	
+                    <mat-icon>report</mat-icon>
+                    <span>Bloquer</span>
+                </button>
+                <button *ngIf="user_blocked && user_who_blocked=='me' && mode_visiteur" class="account-mat-menu-item" tabIndex="-1" mat-menu-item (click)="unblock_user()"> 	
+                    <mat-icon>report_off</mat-icon>
+                    <span>Débloquer</span>
+                </button>
+                <button *ngIf="mode_visiteur && !user_blocked" class="account-mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                    <mat-icon>flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+            </mat-menu>
+
+            <div class="profile-picture" [ngClass]="{'visiteur': mode_visiteur }">
+                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                <button *ngIf="!mode_visiteur" class="change-profile-picture" (click)="change_profile_picture();">
+                    <mat-icon>camera_alt</mat-icon>
+                    <span>Changer de photo de profil</span>
+                </button>
+                <button *ngIf="!mode_visiteur" class="change-story-picture" (click)="add_story();">
+                    <mat-icon>play_circle_outline</mat-icon>
+                    <span>Ajouter une story</span>
+                </button>
+            </div>
+            
+            
+            <div *ngIf="mode_visiteur_added" class="profile-information">
+                <div class="profile-name">
+                    <span class="author-name">{{author_name}} 
+
+                        <mat-icon *ngIf="certified_account"
+                        matTooltip="Compte certifié" 
+                        matTooltipClass='tooltip-account-profile' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">verified</mat-icon>
+
+                        <span *ngIf="type_of_account_checked"
+                        matTooltip="Compte professionnel" 
+                        matTooltipClass='tooltip-account-profile'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">PRO</span>
+
+                    </span>
+                </div>
+                <div class="profile-description">
+                    <span *ngIf="primary_description!=null">{{primary_description}}</span>
+                </div>
+
+                <div class="profile-text" *ngIf="pseudo">	
+                    <mat-icon
+                    matTooltip='Pseudonyme' 
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">alternate_email</mat-icon>
+                    <span>{{pseudo}}</span>
+                </div>
+
+                <div class="profile-text" *ngIf="user_location">
+                    <mat-icon
+                    matTooltip='Localisation' 
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">location_on</mat-icon>
+                    <span>{{user_location}}</span>
+                </div>
+                <div class="profile-text" *ngIf="type_of_account">
+                    <mat-icon
+                    matTooltip='Profil' 
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">portrait</mat-icon>
+
+                    <span>{{type_of_account}}
+                        
+                        <!--<mat-icon *ngIf="professional_account"
+                        matTooltip="Compte professionnel" 
+                        matTooltipClass='tooltip-account-profile'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">home_repair_service</mat-icon>-->
+
+                    </span>
+                </div>
+
+            </div>
+            
         </div>
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!-------------------------------FIN-PROFIL---------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+    </div>
+    
+
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!------------------------------- BOUTONS CONTROLLER------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+
+    
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <div class="panel-controller" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found">
+
         
+        <div class="middle-container">
 
-        <div class="panel-controller" >
-            <div  class="middle-container" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found">
+            <div class="absolute-background-color" #absoluteBackgroundColor></div>
 
-                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">home</mat-icon>
-                    Accueil
+            <div #buttonSection>
+                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0);">
+                    <mat-icon>home</mat-icon>
+                    <span>Accueil</span>
                 </button>
-                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">palette</mat-icon>
-                        Œuvres ({{number_of_artpieces}})
+            </div>
+            <div #buttonSection>
+                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 1 }" (click)="open_section(1);scrollDown();">
+                    <mat-icon>palette</mat-icon>
+                    <span>Œuvres ({{number_of_artpieces}})</span>
                 </button>
-                <button mat-raised-button  class="controller-category" [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">announcement</mat-icon>
-                    Annonces ({{list_of_ads.length}})
+            </div>
+            <div #buttonSection>
+                <button [ngClass]="{'opened': opened_section == 2 }" (click)="open_section(2);">
+                    <mat-icon>announcement</mat-icon>
+                    <span>Annonces ({{list_of_ads.length}})</span>
                 </button>
-                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 3 }" (click)="see_subscribers();">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">group</mat-icon>
-                    Abonnés ({{subscribed_users_list.length}})
+            </div>
+            <div #buttonSection>
+                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 3 }" (click)="see_subscribers();">
+                    <mat-icon>group</mat-icon>
+                    <span>Abonnés ({{subscribed_users_list.length}})</span>
                 </button>
-                <button mat-raised-button *ngIf="!my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribings();">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">subscriptions</mat-icon>
-                    Abonnements ({{users_subscribed_to_list.length}})
+            </div>
+            <div #buttonSection>
+                <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 4 }" (click)="see_subscribings();">
+                    <mat-icon>subscriptions</mat-icon>
+                    <span>Abonnements ({{users_subscribed_to_list.length}})</span>
                 </button>
-                <button mat-raised-button   class="controller-category" [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">help</mat-icon>
-                    À propos
+            </div>
+            <div #buttonSection>
+                <button [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5);">
+                    <mat-icon>help</mat-icon>
+                    <span>Qui suis-je</span>
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur && !my_profile_is_suspended" class="controller-category" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
-                    <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">bookmarks</mat-icon>
-                    Archives 
+            </div>
+            <div #buttonSection>
+                <button *ngIf="!mode_visiteur && !my_profile_is_suspended" [ngClass]="{'opened': opened_section == 6 }" (click)="open_section(6);">
+                    <mat-icon>bookmarks</mat-icon>
+                    <span>Archives</span>
                 </button>
-                <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
-                    <div class="profile-picture2">
+            </div>
+            <div #buttonSection>
+                <button *ngIf="!mode_visiteur" [ngClass]="{'opened': opened_section == 7 }" (click)="open_section(7);">
+                    <div class="profile-picture">
                         <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                     </div>
-                    Mon compte 
+                    <span>Mon compte</span>
                 </button>
-                <a href="/add-artwork" *ngIf="!my_profile_is_suspended">
-                    <button mat-raised-button  *ngIf="!mode_visiteur" class="controller-category">
-                        <mat-icon style="font-size: 23px;margin: auto 5px auto auto;">add_circle_outline</mat-icon>
-                        Publier 
-                    </button>
-                </a>
-
             </div>
-
-            <div   *ngIf="user_blocked && user_blocked_retrieved">
-                <div *ngIf="user_who_blocked=='me'">
-                    Vous avez bloqué cet utilisateur et ne pouvez donc plus avoir accès à sa page de profile
-                </div>
-                <div *ngIf="user_who_blocked!='me'">
-                    Compte suspendu
-                </div>
-            </div>
-
-            <div class="middle-container" *ngIf="profile_not_found">
-                <div *ngIf="profile_suspended">
-                    Compte suspendu
-                </div>
-                <div *ngIf="!profile_suspended">
-                   Compte supprimé
-                </div>
-            </div>
+            
+            <a [routerLink]=get_add_artwork_link() *ngIf="!my_profile_is_suspended">
+                <button *ngIf="!mode_visiteur">
+                    <mat-icon>add_circle_outline</mat-icon>
+                    <span>Publier</span> 
+                </button>
+            </a>
         </div>
+    </div>
+
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!----------------------------FIN BOUTONS CONTROLLER------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
 
 
-        <div *ngIf="opened_section==0 && list_writings_added && list_drawings_artbook_added
-            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added  && !user_blocked && user_blocked_retrieved && !profile_not_found && !my_profile_is_suspended">
+    
         
-            <ng-container *ngIf="emphasized_artwork_added" >
-                <div class="title">
-                    <span>Œuvre mise en avant</span>
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!-------------------------------PAGE COMPTE BLQUÉ--------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------->
+    <div *ngIf="user_blocked && user_blocked_retrieved" class="blocked-user-container">
+        <mat-icon>error_outline</mat-icon>
+        <span *ngIf="user_who_blocked=='me'">Vous avez bloqué cet utilisateur et ne pouvez plus accéder à son profil</span>
+        <span *ngIf="user_who_blocked!='me'">Compte suspendu</span>
+    </div>
+    <div *ngIf="profile_not_found" class="blocked-user-container">
+        <mat-icon>error_outline</mat-icon>
+        <span *ngIf="profile_suspended">Compte suspendu</span>
+        <span *ngIf="!profile_suspended">Compte supprimé</span>
+    </div>
+
+
+    <ng-container *ngIf="!user_blocked && user_blocked_retrieved">
+        
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!------------------------------------ACCUEIL-------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <div *ngIf="opened_section==0 && list_writings_added && list_drawings_artbook_added
+            && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !profile_not_found && !my_profile_is_suspended">
+        
+
+            <ng-container *ngIf="emphasized_artwork_added">
+                <div class="account-title">
+                    <span>
+                        <mat-icon>stars</mat-icon>
+                        Œuvre mise en avant
+                    </span>
                 </div>
-                <div class="highlighted_artwork">
-                     <app-thumbnail-artwork 
-                     [item]=emphasized_artwork
-                     now_in_seconds={{now_in_seconds}}
-                     ></app-thumbnail-artwork>
+                <div class="highlighted-artwork">
+                    <app-thumbnail-artwork 
+                    [item]=emphasized_artwork
+                    now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-artwork>
                 </div>
             </ng-container>
-            
 
             <ng-container *ngIf="!emphasized_artwork_added && !mode_visiteur && !(!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added)" >
-                <div class="title">
-                    <span>Œuvre mise en avant</span>
+                <div class="account-title">
+                    <span>
+                        <mat-icon>stars</mat-icon>
+                        Œuvre mise en avant
+                    </span>
                 </div>
-                <div class="highlighted_artwork">
-                    <span >Aucune œuvre mise en avant <br> Vous pouvez mettre une œuvre en avant depuis la lecture d'une œuvre</span>
+                <div class="text-lines">
+                    <mat-icon>info_outline</mat-icon>
+                    <span>Aucune œuvre mise en avant</span>
+                    <span>Vous pouvez mettre une œuvre en avant depuis la lecture d'une œuvre</span>
                 </div>
             </ng-container>
 
-            
-
             <ng-container *ngIf="!new_comic_contents_added && !new_drawing_contents_added && !new_writing_contents_added">
-                <div class="highlighted_artwork" *ngIf="!mode_visiteur">
-                    <a href="/add-artwork">
-                        <button mat-raised-button >
-                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">add_to_photos</mat-icon>
-                            Publier votre première oeuvre !
+                <div class="add-artwork-button" *ngIf="!mode_visiteur">
+                    <a [routerLink]=get_add_artwork_link()>
+                        <button>
+                            <mat-icon>add</mat-icon>
+                            <span>Publier votre première oeuvre</span>
                         </button>
                     </a>
                 </div>
-                <div class="highlighted_artwork" *ngIf="mode_visiteur">
-                    <span>Aucune oeuvre de disponible pour cet utilisateur</span>
+                <div class="text-lines large" *ngIf="mode_visiteur">
+                    <mat-icon>info_outline</mat-icon>
+                    <span>L'utilisateur n'a pas publié d'œuvre pour le moment</span>
                 </div>
             </ng-container>
 
 
             <ng-container *ngIf="(new_comic_contents_added || new_drawing_contents_added || new_writing_contents_added)">
 
-                <div class="title"  >
-                    <span>Nouveautés</span>
+                <div class="account-title large-icon">
+                    <span>
+                        <mat-icon>campaign</mat-icon>
+                        Nouveautés
+                    </span>
                 </div>
-    
+
                 <div *ngIf="new_comic_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_comic_contents || !(number_of_new_contents_to_show>0)}">
-                    
                     <div class="artwork-type-title">
-                        Bandes dessinées
+                        <span>Bandes dessinées</span>
                     </div>
-                    <div class="container-comics newDrawings " >
-                        <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" class="new-artwork" #getwidth>
+                    
+                    <div class="container-comics newDrawings">
+                        <div *ngFor="let item of new_comic_contents.slice(0,number_of_new_contents_to_show),let i=index" #getwidth>
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber == null" 
                             (send_loaded)="new_contents_comics_thumbnails($event)"
@@ -243,14 +322,14 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div *ngIf="new_drawing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents || !(number_of_new_contents_to_show>0)}">
-                    
                     <div class="artwork-type-title">
-                        Dessins
+                        <span>Dessins</span>
                     </div>
+
                     <div class="container-drawings newDrawings">
-                        <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)"  class="drawing-container" #getwidth>
+                        <div *ngFor="let item of new_drawing_contents.slice(0,number_of_new_contents_to_show)" class="drawing-container" #getwidth>
                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 (sendLoaded)="new_contents_drawings_thumbnails($event)"
                                 [item]=item
@@ -267,18 +346,15 @@
                             ></app-thumbnail-drawing>
                         </div>
                     </div>
-                    
                 </div>
-    
-                
+
                 <div *ngIf="new_writing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_writing_contents || !(number_of_new_contents_to_show>0)}">
-                    
                     <div class="artwork-type-title">
-                        Écrits
+                        <span>Écrits</span>
                     </div>
+
                     <div class="container-writings newDrawings">
-                        <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" style="height:300px;" class="new-artwork" #getwidth>
-                          
+                        <div *ngFor="let item of new_writing_contents.slice(0,number_of_new_contents_to_show)" #getwidth>
                             <app-thumbnail-writing
                             (sendLoaded)="new_contents_writings_thumbnails($event)"
                             [item]=item
@@ -286,24 +362,26 @@
                             ></app-thumbnail-writing>
                         </div>
                     </div>
-                    
                 </div>
             </ng-container >
             
 
             <ng-container *ngIf="trendings_found">
 
-                <div class="title"  >
-                    <span>Parus en Tendances</span>
+                <div class="account-title large-icon">
+                    <span>
+                        <mat-icon>whatshot</mat-icon>
+                        Apparitions en tendance
+                    </span>
                 </div>
-    
+
                 <div *ngIf="trendings_loaded && list_of_comics_trendings && list_of_comics_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded || !(number_of_new_contents_to_show>0)}">
-                    
                     <div class="artwork-type-title">
-                        Bandes dessinées
+                        <span>Bandes dessinées</span>
                     </div>
-                    <div class="container-comics newDrawings " >
-                        <div *ngFor="let item of list_of_comics_trendings.slice(0,number_of_new_contents_to_show),let i=index" class="new-artwork" #getwidth>
+
+                    <div class="container-comics newDrawings">
+                        <div *ngFor="let item of list_of_comics_trendings.slice(0,number_of_new_contents_to_show),let i=index" #getwidth>
                             <app-thumbnail-comics 
                             *ngIf="item.chaptersnumber == null" 
                             [item]=item format='one-shot' 
@@ -316,14 +394,13 @@
                         </div>
                     </div>
                 </div>
-    
+
                 <div *ngIf="trendings_loaded && list_of_drawings_trendings && list_of_drawings_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded}">
-                    
                     <div class="artwork-type-title">
-                        Dessins
+                        <span>Dessins</span>
                     </div>
                     <div class="container-drawings newDrawings">
-                        <div *ngFor="let item of list_of_drawings_trendings.slice(0,number_of_new_contents_to_show)" style="height:280px; margin:40px 0px 30px 0px" class="new-artwork" #getwidth>
+                        <div *ngFor="let item of list_of_drawings_trendings.slice(0,number_of_new_contents_to_show)" #getwidth>
                             <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                 [item]=item
                                 for_news="yes"
@@ -338,266 +415,259 @@
                             ></app-thumbnail-drawing>
                         </div>
                     </div>
-                    
                 </div>
-    
-                
+
                 <div *ngIf="trendings_loaded && list_of_writings_trendings && list_of_writings_trendings.length>0" class="bd-container" [ngClass]="{'invisible':!trendings_loaded}">
-                    
                     <div class="artwork-type-title">
-                        Écrits
+                        <span>Écrits</span>
                     </div>
                     <div class="container-writings newDrawings">
-                        <div *ngFor="let item of list_of_writings_trendings.slice(0,number_of_new_contents_to_show)" style="height:300px;" class="new-artwork" #getwidth>
-                            
+                        <div *ngFor="let item of list_of_writings_trendings.slice(0,number_of_new_contents_to_show)" #getwidth>
                             <app-thumbnail-writing
                             [item]=item
                             now_in_seconds={{now_in_seconds}}
                             ></app-thumbnail-writing>
                         </div>
                     </div>
-                    
                 </div>
-            </ng-container >
 
-
+            </ng-container>
         </div>
 
 
             
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!------------------------------------OEUVRES-------------------------------------->
+        <!--------------------------------------------------------------------------------->
+        <!--------------------------------------------------------------------------------->
         <ng-container *ngIf="opened_section==1 && list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved && !profile_not_found && !my_profile_is_suspended">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !profile_not_found && !my_profile_is_suspended">
+            
             
             <div class="logos-container">
-                <div class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target id="logo">
+                <button class="logo" [ngClass]="{'opened': opened_category == 0 }" 
+                (click)="open_category(0);scroll(target);" #target
+                [matTooltip]="visible_number_of_comics==0 ? 'Aucune bande-dessinée' : null"
+                matTooltipClass='tooltip-account-profile' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
                     <div class="image1"></div>
-                    <span *ngIf="!mode_visiteur">
-                        Bandes dessinées ({{visible_number_of_comics}})
-                    </span>
-                    <span *ngIf="mode_visiteur">
-                        Bandes dessinées ({{visible_number_of_comics}})
-                    </span>
-                </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+                    <span>Bandes dessinées ({{visible_number_of_comics}})</span>
+                </button>
+                <button class="logo" [ngClass]="{'opened': opened_category == 1 }" 
+                (click)="open_category(1);scroll(target);" #target
+                [matTooltip]="visible_number_of_drawings==0 ? 'Aucun dessin' : null"
+                matTooltipClass='tooltip-account-profile' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
                     <div class="image2"></div>
-                    <span  *ngIf="!mode_visiteur">
-                        Dessins ({{visible_number_of_drawings}})
-                    </span>
-                    <span  *ngIf="mode_visiteur">
-                        Dessins ({{visible_number_of_drawings}})
-                    </span>
-                </div>
-                <div class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target>
+                    <span>Dessins ({{visible_number_of_drawings}})</span>
+                </button>
+                <button class="logo" [ngClass]="{'opened': opened_category == 2 }" 
+                (click)="open_category(2);scroll(target);" #target
+                [matTooltip]="visible_number_of_writings==0 ? 'Aucun écrit' : null"
+                matTooltipClass='tooltip-account-profile' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
                     <div class="image3"></div>
-                    <span *ngIf="!mode_visiteur">
-                        Écrits ({{visible_number_of_writings}})
-                    </span>
-                    <span *ngIf="mode_visiteur">
-                        Écrits ({{visible_number_of_writings}})
-                    </span>
-                </div>
+                    <span>Écrits ({{visible_number_of_writings}})</span>
+                </button>
             </div>
 
             
             <ng-container *ngIf="opened_category != -1">
-                
 
-                <div class="albums-container">
-                    <div class="albums-filter">
+                <div class="albums-title-main">
+                    <div class="albums-title-container">
                         <!-- Titres des albums bd-->
                         <ng-container *ngIf="opened_category==0 && list_albums_bd_added && (list_bd_oneshot.length != 0 || list_bd_series.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_bd; let i=index" style="position:relative;margin-bottom:5px">
+                            <ng-container *ngFor="let element of list_titles_albums_bd; let i=index">
 
                                 <ng-container *ngIf="!(i==1 && list_bd_oneshot.length==0) && !(i==2 && list_bd_series.length==0)">
 
+                                    <div class="albums-title">
+                                        
+                                        <ng-container *ngIf="!mode_visiteur && ( i == 1 || i == 2 )">
+                                            <button class="optionsMenu" [ngClass]="{ 'opened' : opened_album == i, 'opacity1': openedMenu==i+'album_name' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'album_name');" [matMenuTriggerFor]="albumOptions">
+                                                <mat-icon class="optionsButton">more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu class="account-mat-menu" xPosition='before' #albumOptions="matMenu">
+                                                <button class="account-mat-menu-item" *ngIf="list_bd_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,true)"> 	
+                                                    <mat-icon class="item-icon">visibility_off</mat-icon>
+                                                    <span>Rendre privé</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,false)"> 	
+                                                    <mat-icon class="item-icon">visibility</mat-icon>
+                                                    <span>Rendre public</span>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-container>
+                                        <ng-container *ngIf="!mode_visiteur && i>2">
+                                            <button class="optionsMenu" [ngClass]="{ 'opened' : opened_album == i, 'opacity1': openedMenu==i+'album_name' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'album_name');" [matMenuTriggerFor]="albumOptions">
+                                                <mat-icon class="optionsButton">more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu class="account-mat-menu" xPosition='before' #albumOptions="matMenu">
+                                                <button class="account-mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='public'" mat-menu-item (click)="change_bd_album_status(i,true)"> 	
+                                                    <mat-icon class="item-icon">visibility_off</mat-icon>
+                                                    <span>Rendre privé</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='private'" mat-menu-item (click)="change_bd_album_status(i,false)"> 	
+                                                    <mat-icon class="item-icon">visibility</mat-icon>
+                                                    <span>Rendre public</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" mat-menu-item (click)="remove_bd_album(i)"> 	
+                                                    <mat-icon class="item-icon">cancel</mat-icon>
+                                                    <span>Supprimer cet album</span>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-container>
 
-                                    <ng-container *ngIf="!mode_visiteur && ( i == 1 || i == 2 )">
-                                        <button mat-icon-button class="optionsMenu"  [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+
+                                        <button *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_bd[i-3] && list_albums_bd[i-3].length>0) ) && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="albums-title-button" 
+                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+
+                                            <mat-icon *ngIf="list_bd_albums_status[i-1]=='private'" class="visibility-off"
+                                            matTooltip="Cet album est actuellement privé"
+                                            matTooltipClass='tooltip-account-profile' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">visibility_off</mat-icon>
+
+                                            <span>{{element}}</span>
                                         </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_bd_album_status(i-1,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                        </mat-menu>
-                                    </ng-container>
-                                    <ng-container *ngIf="!mode_visiteur && i>2">
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
-                                        </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='public'" mat-menu-item (click)="change_bd_album_status(i,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
-                                            </button>
-                                            <button class="mat-menu-item" *ngIf="list_bd_albums_status[i-1]=='private'" mat-menu-item (click)="change_bd_album_status(i,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                            <button class="mat-menu-item" mat-menu-item (click)="remove_bd_album(i)"> 	
-                                                <mat-icon class="item-icon">cancel</mat-icon>
-                                                <span>Supprimer cet album</span>
-                                            </button>
-                                        </mat-menu>
-                                    </ng-container>
+                                        
+                                    </div>
 
-
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_bd[i-3] && list_albums_bd[i-3].length>0) ) && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="content-action text-center" 
-                                    (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                                        <div >{{element}}</div>
-                                    </button>
                                 </ng-container>
-
-                            </div>
+                            </ng-container>
 
                         </ng-container>
 
                         <!-- Titres des albums drawing-->
                         <ng-container *ngIf="opened_category==1 && list_albums_drawings_added && (list_drawings_onepage.length != 0 || list_drawings_artbook.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_drawings; let i=index" style="position:relative;margin-bottom:5px">
-                                
-                                
+                            <ng-container *ngFor="let element of list_titles_albums_drawings; let i=index" class="albums-title">
                                 <ng-container *ngIf="!(i==1 && list_drawings_onepage.length==0) && !(i==2 && list_drawings_artbook.length==0)">
 
-                                    <ng-container *ngIf="!mode_visiteur && ( i == 1 || i == 2 ) ">
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
-                                        </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
+                                    <div class="albums-title">
+                                        
+                                        <ng-container *ngIf="!mode_visiteur && ( i == 1 || i == 2 ) ">
+                                            <button class="optionsMenu" [ngClass]="{ 'opened' : opened_album == i, 'opacity1': openedMenu==i+'album_name' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'album_name');" [matMenuTriggerFor]="albumOptions">
+                                                <mat-icon class="optionsButton">more_vert</mat-icon>
                                             </button>
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                        </mat-menu>
-                                    </ng-container>
+                                            <mat-menu class="account-mat-menu" xPosition='before' #albumOptions="matMenu">
+                                                <button class="account-mat-menu-item" *ngIf="list_drawing_albums_status[i-1]!=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,true)"> 	
+                                                    <mat-icon class="item-icon">visibility_off</mat-icon>
+                                                    <span>Rendre privé</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='hidden'" mat-menu-item (click)="change_drawing_album_status(i-1,false)"> 	
+                                                    <mat-icon class="item-icon">visibility</mat-icon>
+                                                    <span>Rendre public</span>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-container>
 
-                                    <ng-container *ngIf="!mode_visiteur && i>2">
-                                        <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                            <mat-icon class="optionsButton">more_vert</mat-icon>
-                                        </button>
-                                        <mat-menu  #albumOptions="matMenu">
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='public'" mat-menu-item (click)="change_drawing_album_status(i,true)"> 	
-                                                <mat-icon class="item-icon">visibility_off</mat-icon>
-                                                <span>Rendre privé</span>
+                                        <ng-container *ngIf="!mode_visiteur && i>2">
+                                            <button class="optionsMenu" [ngClass]="{ 'opened' : opened_album == i, 'opacity1': openedMenu==i+'album_name' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'album_name');" [matMenuTriggerFor]="albumOptions">
+                                                <mat-icon class="optionsButton">more_vert</mat-icon>
                                             </button>
-                                            <button class="mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='private'" mat-menu-item (click)="change_drawing_album_status(i,false)"> 	
-                                                <mat-icon class="item-icon">visibility</mat-icon>
-                                                <span>Rendre public</span>
-                                            </button>
-                                            <button class="mat-menu-item" mat-menu-item (click)="remove_drawing_album(i)"> 	
-                                                <mat-icon class="item-icon">cancel</mat-icon>
-                                                <span>Supprimer cet album</span>
-                                            </button>
-                                        </mat-menu>
-                                    </ng-container>
+                                            <mat-menu class="account-mat-menu" xPosition='before' #albumOptions="matMenu">
+                                                <button class="account-mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='public'" mat-menu-item (click)="change_drawing_album_status(i,true)"> 	
+                                                    <mat-icon class="item-icon">visibility_off</mat-icon>
+                                                    <span>Rendre privé</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" *ngIf="list_drawing_albums_status[i-1]=='private'" mat-menu-item (click)="change_drawing_album_status(i,false)"> 	
+                                                    <mat-icon class="item-icon">visibility</mat-icon>
+                                                    <span>Rendre public</span>
+                                                </button>
+                                                <button class="account-mat-menu-item" mat-menu-item (click)="remove_drawing_album(i)"> 	
+                                                    <mat-icon class="item-icon">cancel</mat-icon>
+                                                    <span>Supprimer cet album</span>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-container>
+                                        
 
-                                    <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_drawings[i-3] && list_albums_drawings[i-3].length>0) ) && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="content-action text-center" 
-                                    (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                                        <div>{{element}}</div>
-                                    </button>
+                                        <button *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_drawings[i-3] && list_albums_drawings[i-3].length>0) ) && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="albums-title-button" 
+                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+                                            
+                                            <mat-icon *ngIf="list_drawing_albums_status[i-1]=='private'" class="visibility-off"
+                                            matTooltip="Cet album est actuellement privé"
+                                            matTooltipClass='tooltip-account-profile' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">visibility_off</mat-icon>
+                                            
+                                            <span>{{element}}</span>
+                                        </button>
+
+                                    </div>
+
                                 </ng-container>
-                            </div>
+                            </ng-container>
 
 
                         </ng-container>
 
                         <!-- Titres des albums writing-->
                         <ng-container *ngIf="opened_category==2 && (list_writings.length != 0)">
-                            <div *ngFor="let element of list_titles_albums_writings; let i=index" style="position:relative;margin-bottom:5px">
+                            <ng-container *ngFor="let element of list_titles_albums_writings; let i=index">
 
-                                
-                                <ng-container *ngIf="!mode_visiteur && i>0">
-                                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="albumOptions">
-                                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu  #albumOptions="matMenu">
-                                        <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='public'" mat-menu-item (click)="change_writing_album_status(i-1,true)"> 	
-                                            <mat-icon class="item-icon">visibility_off</mat-icon>
-                                            <span>Rendre privé</span>
-                                        </button>
-                                        <button class="mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='private'" mat-menu-item (click)="change_writing_album_status(i-1,false)"> 	
-                                            <mat-icon class="item-icon">visibility</mat-icon>
-                                            <span>Rendre public</span>
-                                        </button>
-                                        <button class="mat-menu-item" mat-menu-item (click)="remove_writing_album(i-1)"> 	
-                                            <mat-icon class="item-icon">cancel</mat-icon>
-                                            <span>Supprimer cet album</span>
-                                        </button>
-                                    </mat-menu>
-                                </ng-container>
-
-                                <button mat-raised-button  *ngIf="!mode_visiteur || (mode_visiteur && (1>i || (list_albums_writings[i-1] && list_albums_writings[i-1].length>0) ) && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="content-action text-center" 
-                                (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }">
-                                    <div>{{element}}</div>
-                                </button>
+                                <div class="albums-title">
                                     
-                            </div>
+                                    <ng-container *ngIf="!mode_visiteur && i>0">
+                                        <button class="optionsMenu" [ngClass]="{ 'opened' : opened_album == i, 'opacity1': openedMenu==i+'album_name' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'album_name');" [matMenuTriggerFor]="albumOptions">
+                                            <mat-icon class="optionsButton">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu class="account-mat-menu" xPosition='before' #albumOptions="matMenu">
+                                            <button class="account-mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='public'" mat-menu-item (click)="change_writing_album_status(i-1,true)"> 	
+                                                <mat-icon class="item-icon">visibility_off</mat-icon>
+                                                <span>Rendre privé</span>
+                                            </button>
+                                            <button class="account-mat-menu-item" *ngIf="list_writings_albums_status[i-1]=='private'" mat-menu-item (click)="change_writing_album_status(i-1,false)"> 	
+                                                <mat-icon class="item-icon">visibility</mat-icon>
+                                                <span>Rendre public</span>
+                                            </button>
+                                            <button class="account-mat-menu-item" mat-menu-item (click)="remove_writing_album(i-1)"> 	
+                                                <mat-icon class="item-icon">cancel</mat-icon>
+                                                <span>Supprimer cet album</span>
+                                            </button>
+                                        </mat-menu>
+                                    </ng-container>
+
+                                    <button *ngIf="!mode_visiteur || (mode_visiteur && (1>i || (list_albums_writings[i-1] && list_albums_writings[i-1].length>0) ) && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="albums-title-button" 
+                                    (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+                                    
+                                        <mat-icon *ngIf="list_writings_albums_status[i-1]=='private'" class="visibility-off"
+                                        matTooltip="Cet album est actuellement privé"
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">visibility_off</mat-icon>
+
+                                        <span>{{element}}</span>
+                                    </button>
+
+                                </div>
+                                    
+                            </ng-container>
 
                         </ng-container>
 
 
-                        <div style="margin-bottom:5px">
-                            <!--AJOUT ALBUM BD-->
-                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==0 && number_of_comics!=0" class="add-album" (click)="start_add_album( opened_category )">
+                        <!--AJOUT ALBUM-->
+                        <div class="albums-title">
+                            <button *ngIf="(!mode_visiteur && opened_category==0 && number_of_comics!=0) || (!mode_visiteur && opened_category==1 && (number_of_drawings!=0)) || (!mode_visiteur && opened_category==2 && number_of_writings!=0)"
+                            class="albums-title-button" (click)="start_add_album( opened_category )" [@enterAnimation]>
                                 <ng-container *ngIf="add_album == -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
-                                    <span>
-                                        Créer une séction
-                                    </span>
+                                    <mat-icon>add</mat-icon>
+                                    <span>Créer une section</span>
                                 </ng-container>
                                 <ng-container *ngIf="add_album != -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">cancel</mat-icon>
-                                    <span>
-                                        Annuler
-                                    </span>
-                                </ng-container>
-                            </button>
-                            <!--AJOUT ALBUM DESSINS-->
-                            <button mat-raised-button *ngIf="!mode_visiteur && opened_category==1 && (number_of_drawings!=0)" class="add-album" (click)="start_add_album( opened_category )">
-                                <ng-container *ngIf="add_album == -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
-                                    <span>
-                                        Créer une séction
-                                    </span>
-                                </ng-container>
-                                <ng-container *ngIf="add_album != -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">cancel</mat-icon>
-                                    <span>
-                                        Annuler
-                                    </span>
-                                </ng-container>
-                            </button>
-                            <!--AJOUT ALBUM ECRITS-->
-                            <button mat-raised-button style="width: 360px !important;" *ngIf="!mode_visiteur && opened_category==2 && number_of_writings!=0" class="add-album" (click)="start_add_album( opened_category )">
-                                <ng-container *ngIf="add_album == -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">create_new_folder</mat-icon>
-                                    <span>
-                                        Créer une séction
-                                    </span>
-                                </ng-container>
-                                <ng-container *ngIf="add_album != -1">
-                                    <mat-icon style="font-size: 25px;margin: auto 15px auto auto;">cancel</mat-icon>
-                                    <span>
-                                        Annuler
-                                    </span>
+                                    <mat-icon>cancel</mat-icon>
+                                    <span>Annuler</span>
                                 </ng-container>
                             </button>
                         </div>
 
-
                     </div>
-        
-                    
-
                 </div>
                 
 
@@ -633,8 +703,8 @@
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
                                             <div class="artwork-type-title" >
-                                                {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
-                                                </div>
+                                                <span>{{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}</span>
+                                            </div>
                                             <div class="bd-thumbnails-container container-comics" #container_comics  >
                                                 <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1].slice(0,number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]);let j=index" >
                                                     <app-thumbnail-comics *ngIf="item2.chaptersnumber == null" 
@@ -653,7 +723,7 @@
                                         </div>
                                         <div *ngIf="mode_visiteur && list_bd_albums_status[list_titles_albums_bd_added.length-i+1]=='public'">
                                             <div class="artwork-type-title" *ngIf="list_albums_bd[list_titles_albums_bd_added.length-i-1].length>0">
-                                                {{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}
+                                                <span>{{list_titles_albums_bd_added[list_titles_albums_bd_added.length-i-1]}}</span>
                                             </div>
                                             <div class="bd-thumbnails-container container-comics" #container_comics  >
                                                 <div *ngFor="let item2 of list_albums_bd[list_titles_albums_bd_added.length-i-1].slice(0,number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]);let j=index" #bdThumbnail>
@@ -670,10 +740,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div *ngIf="list_albums_bd[list_titles_albums_bd_added.length-i-1].length>number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]" class="see-more" (click)="see_more_comics(list_titles_albums_bd_added.length-i+1,0)">
-                                            <div class="icon">
-                                            </div>
-                                        </div>
+                                        <button *ngIf="list_albums_bd[list_titles_albums_bd_added.length-i-1].length>number_of_comics_to_show_by_album[list_titles_albums_bd_added.length-i+1]" class="see-more" (click)="see_more_comics(list_titles_albums_bd_added.length-i+1,0)">
+                                            <mat-icon>expand_more</mat-icon>
+                                        </button>
                                     </div>
                                 </ng-container>
 
@@ -682,10 +751,10 @@
                                     <div *ngIf="mode_visiteur && list_bd_albums_status[1]=='standard'">
                                         <div *ngIf="list_bd_series.length!=0">
                                             <div class="artwork-type-title">
-                                                Séries
+                                                <span>Séries</span>
                                             </div>
                                         </div>
-                                        <div class="bd-thumbnails-container container-comics" #container_comics  >
+                                        <div class="bd-thumbnails-container container-comics" #container_comics>
                                             <app-thumbnail-comics *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index" #container_comics
                                             [item]=item 
                                             format='serie' 
@@ -696,9 +765,9 @@
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_bd_series.length!=0">
                                             <div class="artwork-type-title">
-                                                Séries
+                                                <span>Séries</span>
                                             </div>
-                                             <div class="bd-thumbnails-container container-comics"  #container_comics >
+                                                <div class="bd-thumbnails-container container-comics"  #container_comics>
                                                 <app-thumbnail-comics 
                                                 *ngFor="let item of list_bd_series.slice(0,number_of_comics_to_show_by_album[1]) ; let i = index"
                                                 [item]=item format='serie' now_in_seconds={{now_in_seconds}}
@@ -706,10 +775,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div *ngIf="list_bd_series.length>number_of_comics_to_show_by_album[1]" class="see-more" (click)="see_more_comics(1,0)">
-                                        <div class="icon">
-                                        </div>
-                                    </div>
+                                    <button *ngIf="list_bd_series.length>number_of_comics_to_show_by_album[1]" class="see-more" (click)="see_more_comics(1,0)">
+                                        <mat-icon>expand_more</mat-icon>
+                                    </button>
                                 </div>
 
                                 <!--On parcourt les oneshots -->
@@ -717,7 +785,7 @@
                                     <div *ngIf="mode_visiteur && list_bd_albums_status[0]=='standard'">
                                         <div *ngIf="list_bd_oneshot.length!=0">
                                             <div class="artwork-type-title">
-                                                One-shots
+                                                <span>One-shots</span>
                                             </div>
                                         </div>
                                         <div class="bd-thumbnails-container container-comics" #container_comics >
@@ -729,7 +797,7 @@
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_bd_oneshot.length!=0">
                                             <div class="artwork-type-title">
-                                                One-shots
+                                                <span>One-shots</span>
                                             </div>
                                             <div class="bd-thumbnails-container container-comics" #container_comics >
                                                 <app-thumbnail-comics *ngFor="let item of list_bd_oneshot.slice(0,number_of_comics_to_show_by_album[0]) ; let i = index" #bdThumbnail
@@ -738,10 +806,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div *ngIf="list_bd_oneshot.length>number_of_comics_to_show_by_album[0]" class="see-more" (click)="see_more_comics(0,0)">
-                                        <div class="icon">
-                                        </div>
-                                    </div>
+                                    <button *ngIf="list_bd_oneshot.length>number_of_comics_to_show_by_album[0]" class="see-more" (click)="see_more_comics(0,0)">
+                                        <mat-icon>expand_more</mat-icon>
+                                    </button>
                                 </div>
 
 
@@ -807,7 +874,7 @@
                         <div *ngIf="opened_category==1" class="bd-container"  [ngClass]="{'really-invisible':!list_visibility_albums_drawings }">
                             <ng-container *ngIf="opened_album==0" >
                                 
-                               
+                                
 
                                 <ng-container *ngIf="list_albums_drawings_added">
                                     <div *ngFor="let item of list_titles_albums_drawings_added ; let i = index">
@@ -816,11 +883,11 @@
                                         <div *ngIf="!mode_visiteur" >
                                             <div class="bd-container"  #container_drawings>
                                                 <div class="artwork-type-title" >
-                                                    {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
+                                                    <span>{{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}</span>
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
                                                     <div *ngFor="let item of list_albums_drawings[list_titles_albums_drawings_added.length-i-1].slice(0,number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1])"  
-                                                     class="grid-item" >
+                                                        class="grid-item" >
                                                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                                                             (sendLoaded)="sendLoaded( $event );"
                                                             [item]=item
@@ -835,18 +902,17 @@
                                                         ></app-thumbnail-drawing>
                                                     </div>
                                                 </div>
-                                                <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" 
+                                                <button *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" 
                                                     class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
-                                                    <div class="icon">
-                                                    </div>
-                                                </div>
+                                                    <mat-icon>expand_more</mat-icon>
+                                                </button>
                                             </div>
                                         </div>
 
                                         <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
                                             <div class="bd-container" #container_drawings>
                                                 <div class="artwork-type-title" *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>0" >
-                                                    {{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}
+                                                    <span>{{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}</span>
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                                                     <div *ngFor="let item of list_albums_drawings[list_titles_albums_drawings_added.length-i-1].slice(0,number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1])"  class="grid-item">
@@ -865,14 +931,10 @@
                                                     </div>
                                                     
                                                     
-                                                    
-                                                    
-                                                    
                                                 </div>
-                                                <div *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
-                                                    <div class="icon">
-                                                    </div>
-                                                </div>
+                                                <button *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>number_of_drawings_to_show_by_album[list_titles_albums_drawings_added.length-i+1]" class="see-more" (click)="see_more_drawings(list_titles_albums_drawings_added.length-i+1,0)">
+                                                    <mat-icon>expand_more</mat-icon>
+                                                </button>
                                             </div>
                                         </div>
                                         
@@ -885,7 +947,7 @@
                                         <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
-                                                Artbooks
+                                                <span>Artbooks</span>
                                             </div>
 
                                             <div  class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
@@ -897,18 +959,11 @@
                                                         (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
-
-                                    
-                                                
-                                                
-                                                
-                                                
                                                 
                                             </div>
-                                            <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
-                                                <div class="icon">
-                                                </div>
-                                            </div>
+                                            <button *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
+                                                <mat-icon>expand_more</mat-icon>
+                                            </button>
 
                                         </div>
                                     </div>
@@ -917,7 +972,7 @@
                                         <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
-                                                Artbooks
+                                                <span>Artbooks</span>
                                             </div>
 
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
@@ -930,17 +985,10 @@
                                                     ></app-thumbnail-drawing>
                                                 </div>
                                                 
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                
                                             </div>
-                                            <div *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
-                                                <div class="icon">
-                                                </div>
-                                            </div>
+                                            <button *ngIf="list_drawings_artbook.length>number_of_drawings_to_show_by_album[1]" class="see-more" (click)="see_more_drawings(1,0)">
+                                                <mat-icon>expand_more</mat-icon>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -950,7 +998,7 @@
                                         <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
                                             
                                             <div class="artwork-type-title">
-                                                One-shots
+                                                <span>One-shots</span>
                                             </div>
 
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
@@ -965,17 +1013,16 @@
 
                                                 
                                             </div>
-                                            <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
-                                                <div class="icon">
-                                                </div>
-                                            </div>
+                                            <button *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
+                                                <mat-icon>expand_more</mat-icon>
+                                            </button>
                                         </div>
                                     </div>
                                     <div *ngIf=" !mode_visiteur " >
                                         <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
 
                                             <div class="artwork-type-title">
-                                                One-shots
+                                                <span>One-shots</span>
                                             </div>
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
                                                 <div *ngFor="let item of list_drawings_onepage.slice(0,number_of_drawings_to_show_by_album[0])" class="grid-item" #getwidth>
@@ -994,10 +1041,9 @@
                                                 
                                                 
                                             </div>
-                                            <div *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
-                                                <div class="icon">
-                                                </div>
-                                            </div>
+                                            <button *ngIf="list_drawings_onepage.length>number_of_drawings_to_show_by_album[0]" class="see-more" (click)="see_more_drawings(0,0)">
+                                                <mat-icon>expand_more</mat-icon>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1053,13 +1099,13 @@
                                     </div>
                                     <div class="grid-item" style="height:1px;width:100px;">
                                     </div>
-                                   
+                                    
                                 </div>
                             </div>
 
                             
                             <!--Autres albums-->
-                           
+                            
                             <div class="bd-container" *ngIf="opened_album>=3" #container_drawings>
                                 <div *ngFor="let elem of list_titles_albums_drawings_added;let indice=index">
                                     <div *ngIf="(opened_album-3)==indice" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
@@ -1111,7 +1157,7 @@
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur">
                                             <div class="artwork-type-title" *ngIf="list_albums_writings[list_titles_albums_writings_added.length-i-1].length>0">
-                                                {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
+                                                <span>{{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}</span>
                                             </div>
 
                                             <div class="writing-thumbnails-container container-writings">
@@ -1127,7 +1173,7 @@
                                         </div>
                                         <div *ngIf="mode_visiteur && list_writings_albums_status[list_titles_albums_writings_added.length-i-1]=='public'">
                                             <div class="artwork-type-title">
-                                                {{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}
+                                                <span>{{list_titles_albums_writings_added[list_titles_albums_writings_added.length-i-1]}}</span>
                                             </div>
 
                                             <div class="writing-thumbnails-container container-writings">
@@ -1141,17 +1187,16 @@
                                             </div>
 
                                         </div>
-                                        <div *ngIf="list_albums_writings[list_titles_albums_writings_added.length-i-1].length>number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i]" class="see-more" (click)="see_more_writings(list_titles_albums_writings_added.length-i,0)">
-                                            <div class="icon">
-                                            </div>
-                                        </div>
+                                        <button *ngIf="list_albums_writings[list_titles_albums_writings_added.length-i-1].length>number_of_writings_to_show_by_album[list_titles_albums_writings_added.length-i]" class="see-more" (click)="see_more_writings(list_titles_albums_writings_added.length-i,0)">
+                                            <mat-icon>expand_more</mat-icon>
+                                        </button>
                                     </div>
                                     
                                 </ng-container>
 
                                 <ng-container>
                                     <div *ngIf="list_titles_albums_writings_added.length>0" class="artwork-type-title">
-                                        Tout
+                                        <span>Tout</span>
                                     </div>
                                     <div *ngIf="list_writings_added && list_writings.length!=0 " class="writing-thumbnails-container container-writings">   
                                     
@@ -1163,12 +1208,11 @@
                                             ></app-thumbnail-writing>
                                         </div>
                                     </div>
-                                    <div *ngIf="list_writings.length>number_of_writings_to_show_by_album[0]" class="see-more" (click)="see_more_writings(0,0)">
-                                        <div class="icon">
-                                        </div>
-                                    </div>
+                                    <button *ngIf="list_writings.length>number_of_writings_to_show_by_album[0]" class="see-more" (click)="see_more_writings(0,0)">
+                                        <mat-icon>expand_more</mat-icon>
+                                    </button>
                                 </ng-container>
-                               
+                                
                             </ng-container>
 
 
@@ -1235,9 +1279,7 @@
                     </ng-container>
 
 
-
                 </div>
-
 
             </ng-container>
 
@@ -1245,37 +1287,47 @@
             
         </ng-container>
 
+
+        <!---------------------------------------------------------------------------->
+        <!---------------------------------------------------------------------------->
+        <!-------------------------ADS & ABOUT & MY-ACCOUNT--------------------------->
+        <!---------------------------------------------------------------------------->
+        <!---------------------------------------------------------------------------->
         <ng-container *ngIf="list_writings_added && list_drawings_artbook_added
-        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !user_blocked && user_blocked_retrieved">
+        && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added">
 
-            <ng-container *ngIf="opened_section==2 && list_of_ads_added">
-                
-                
-                <app-thumbnail-ad *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index"
-                [item]=item
-                [now_in_seconds]=now_in_seconds
-                ></app-thumbnail-ad>
-                
-               
-                <div *ngIf="list_of_ads.length==0">
-                    L'utilsiateur n'a publié aucune annonce
+            <div class="ads-container" *ngIf="opened_section==2 && list_of_ads_added && list_of_ads.length>0" [@enterAnimation]>
+                <div class="ad" *ngFor="let item of list_of_ads.slice(0,number_of_ads_to_show); let i = index">
+                    <app-thumbnail-ad
+                    [item]=item
+                    [now_in_seconds]=now_in_seconds
+                    ></app-thumbnail-ad>
                 </div>
-            </ng-container>
+            </div>
 
-           
+            <div class="add-artwork-button" *ngIf="!mode_visiteur && opened_section==2 && list_of_ads_added && list_of_ads.length==0">
+                <a [routerLink]=get_add_artwork_link()>
+                    <button>
+                        <mat-icon>add</mat-icon>
+                        <span>Publier votre première annonce</span>
+                    </button>
+                </a>
+            </div>
+            <div class="text-lines large" *ngIf="mode_visiteur && opened_section==2 && list_of_ads_added && list_of_ads.length==0">
+                <mat-icon>info_outline</mat-icon>
+                <span>Aucune annonce</span>
+            </div>
+
 
             <ng-container *ngIf="opened_section==5">
-                
                 <app-account-about
-                [opened_category]=category_for_account_about
                 [pseudo]=pseudo
                 [id_user]=user_id
                 ></app-account-about>
             </ng-container>
 
             <ng-container *ngIf="opened_section==6">
-                <app-archives
-                ></app-archives>
+                <app-archives></app-archives>
             </ng-container>
 
             <ng-container *ngIf="opened_section==7 && !mode_visiteur">
@@ -1288,9 +1340,7 @@
 
         </ng-container>
 
-        
+    </ng-container>
 
-       
-
-    </main>
+    
 </div>

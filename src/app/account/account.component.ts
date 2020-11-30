@@ -28,6 +28,9 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { NotationService } from '../services/notation.service';
 
 import { Ads_service } from '../../app/services/ads.service'
+import { trigger, transition, style, animate } from '@angular/animations';
+
+
 
 declare var Muuri:any;
 declare var $: any;
@@ -37,7 +40,17 @@ declare var masonry:any;
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  styleUrls: ['./account.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AccountComponent implements OnInit {
   
@@ -80,6 +93,8 @@ export class AccountComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     
+    this.update_background_position(this.opened_section);
+
     this.update_number_of_comics_to_show();
     if(this.list_visibility_albums_drawings){
       this.update_number_of_drawings_to_show();
@@ -133,14 +148,22 @@ export class AccountComponent implements OnInit {
   category_for_account_about=0;
 
   @ViewChild('profileHovered', {static: false}) profileHovered:ElementRef;
-  @ViewChild('profilePicHovered', {static: false}) profilePicHovered:ElementRef;
-  //@ViewChild('drawing') drawing:ElementRef;
-  
   showEditCoverPic:boolean = true;
-  showEditBio:boolean = true;
+
+
+  openedMenu:string = "";
+  menuClosed() {
+    this.openedMenu="";
+  }
+  menuOpened(i:number, s:string) {
+    this.openedMenu=i+s;
+  }
 
 
   type_of_account:string;
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
+
   //NEW VARIABLES
   emphasized_artwork_added: boolean = false;
   emphasized_artwork:any;
@@ -149,7 +172,7 @@ export class AccountComponent implements OnInit {
   
   /************* sections ************/
   //0 : artworks, 1 : posters, etc.
-  opened_section:number=0;
+  opened_section:number=-1;
   //bd, dessins, écrits de l'auteur, etc.
   opened_category:number = -1;
   //-1 : no album add, 1 : add comic, 2 : add drawing, 3 : add writing
@@ -268,7 +291,7 @@ export class AccountComponent implements OnInit {
   number_of_comics:number;
   number_of_drawings:number;
   number_of_writings:number;
-  number_of_ads:number;
+
   visible_number_of_comics:number=0;
   visible_number_of_drawings:number=0;
   visible_number_of_writings:number=0;
@@ -286,6 +309,8 @@ export class AccountComponent implements OnInit {
   update_new_contents() {
 
     let width = $(".bd-container").width();
+    console.log(width)
+    console.log(width*0.8)
     if( width < 500 ) {
       this.number_of_new_contents_to_show=1;
       this.cd.detectChanges();
@@ -293,6 +318,7 @@ export class AccountComponent implements OnInit {
     else if(width>0){
       this.number_of_new_contents_to_show = Math.floor(width/250);
       this.cd.detectChanges();
+      console.log(Math.floor(width/250))
     }
     /*else if( width <= 820) {
       this.number_of_new_contents_to_show=2
@@ -309,6 +335,7 @@ export class AccountComponent implements OnInit {
     else{
       this.number_of_new_contents_to_show=6
     }*/
+    console.log(this.number_of_new_contents_to_show)
 
     /*
     if( width <= 550 ) {
@@ -343,31 +370,44 @@ export class AccountComponent implements OnInit {
 
 
 
-  see_subscribings() {
-    this.dialog.open(PopupSubscribingsComponent, {
-      data: {
-        subscribings:this.users_subscribed_to_list, 
-    },
-    });
-  }
-
   see_subscribers(){
+
+    if(this.subscribed_users_list.length == 0) {
+      return;
+    }
     this.dialog.open(PopupSubscribersComponent, {
       data: {
-        subscribers:this.subscribed_users_list, 
-    },
+        subscribers:this.subscribed_users_list
+      }, 
+      panelClass: 'popupViewUsersClass',
+    });
+  }
+  see_subscribings() {
+    
+    if(this.users_subscribed_to_list.length == 0) {
+      return;
+    }
+    this.dialog.open(PopupSubscribingsComponent, {
+      data: {
+        subscribings:this.users_subscribed_to_list
+      },
+      panelClass: 'popupViewUsersClass',
     });
   }
 
-  
 
-
+  open_chat_link() {
+    this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.user_id);
+  }
+  get_add_artwork_link() {
+    return "/add-artwork";
+  }
   
   profile_not_found=false;
   profile_suspended=false;
   my_profile_is_suspended=false;
   ngOnInit()  {
-
+    
    
     this.Profile_Edition_Service.get_current_user().subscribe(u=>{
       if(u[0] && u[0].status!='deleted'){
@@ -398,6 +438,10 @@ export class AccountComponent implements OnInit {
           
 
           this.profile_not_found=true;
+
+          this.cd.detectChanges();
+          this.update_background_position( this.opened_section );
+
           this.author_name = r[0].firstname + ' ' + r[0].lastname;
 
           this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
@@ -414,9 +458,15 @@ export class AccountComponent implements OnInit {
 
           if (this.pseudo == this.visitor_name){
             this.mode_visiteur = false;
+   
+            this.cd.detectChanges();
+            this.update_background_position( this.opened_section );
           }
           else{
             this.mode_visiteur = true;
+   
+            this.cd.detectChanges();
+            this.update_background_position( this.opened_section );
           }
           
           
@@ -426,6 +476,10 @@ export class AccountComponent implements OnInit {
             this.lastName=r[0].lastname;
             this.primary_description=r[0].primary_description;
             this.type_of_account=r[0].type_of_account;
+
+            this.type_of_account_checked=r[0].type_of_account_checked;
+            this.certified_account=r[0].certified_account;
+
             this.user_location=r[0].location;
             this.profile_suspended=true;
            
@@ -438,11 +492,16 @@ export class AccountComponent implements OnInit {
           this.mode_visiteur_added = true;
           this.user_blocked=false;
           this.user_blocked_retrieved=true;
+
+          
           this.list_writings_added=true; 
           this.list_drawings_artbook_added=true;
           this.list_drawings_onepage_added=true;
           this.list_bd_series_added=true;
           this.list_bd_oneshot_added=true;
+
+          this.cd.detectChanges();
+          this.update_background_position( this.opened_section );
           return
         }
         
@@ -454,8 +513,16 @@ export class AccountComponent implements OnInit {
         else{
           if(r[0] && r[0].status=='suspended' && this.visitor_id==r[0].id){
             this.my_profile_is_suspended=true;
+
+            this.cd.detectChanges();
+            this.update_background_position( this.opened_section );
+            
           }
           console.log(this.user_id)
+          this.number_of_comics=r[0].number_of_comics;
+          this.number_of_drawings=r[0].number_of_drawings;
+          this.number_of_writings=r[0].number_of_writings;
+
           
           this.author_name = r[0].firstname + ' ' + r[0].lastname;
           this.gender=r[0].gender;
@@ -463,6 +530,10 @@ export class AccountComponent implements OnInit {
           this.lastName=r[0].lastname;
           this.primary_description=r[0].primary_description;
           this.type_of_account=r[0].type_of_account;
+
+          this.type_of_account_checked=r[0].type_of_account_checked;
+          this.certified_account=r[0].certified_account;
+
           this.user_location=r[0].location;
           this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -480,8 +551,16 @@ export class AccountComponent implements OnInit {
             if (this.pseudo == this.visitor_name){
               this.mode_visiteur = false;
               this.mode_visiteur_added = true;
+   
+              this.cd.detectChanges();
+              this.update_background_position( this.opened_section );
+
               this.user_blocked=false;
               this.user_blocked_retrieved=true;
+          
+              this.cd.detectChanges();
+              this.update_background_position( this.opened_section );
+
             }
             else{
               this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r=>{
@@ -499,6 +578,10 @@ export class AccountComponent implements OnInit {
                   this.user_blocked=true;
                 }
                 this.user_blocked_retrieved=true;
+                            
+                this.cd.detectChanges();
+                this.update_background_position( this.opened_section );
+
               })
               this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
                 if(information[0].value){
@@ -510,25 +593,16 @@ export class AccountComponent implements OnInit {
                 }
               });         
             };
-
-            this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
-              console.log(r[0]);
-              this.number_of_comics=r[0].number_of_comics;
-              this.number_of_drawings=r[0].number_of_drawings;
-              this.number_of_writings=r[0].number_of_writings;
-              this.number_of_ads=r[0].number_of_ads;
-              if(!this.mode_visiteur){
-                this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
-                  if(!p[0].value){
-                    this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
-                  }
-                })
-              }
-              else{
-                this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
-              } 
-            })
-            
+            if(!this.mode_visiteur){
+              this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
+                if(!p[0].value){
+                  this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
+                }
+              })
+            }
+            else{
+              this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
+            } 
 
             console.log(this.route.snapshot.data['section'])
             if(this.type_of_profile=="suspended"){
@@ -729,6 +803,10 @@ export class AccountComponent implements OnInit {
               }
               
               this.list_bd_oneshot_added=true;
+              this.cd.detectChanges();
+              this.update_background_position( this.opened_section );
+
+              
               this.BdSerieService.retrieve_bd_by_userid( this.user_id ).subscribe( r => {
                 this.list_bd_series = r[0];
                 for(let i=0;i<this.list_bd_series.length;i++){
@@ -747,6 +825,8 @@ export class AccountComponent implements OnInit {
                 }
                 
                 this.list_bd_series_added=true;   
+                this.cd.detectChanges();
+                this.update_background_position( this.opened_section );
                 
                 this.Albums_service.get_albums_comics(this.user_id).subscribe(information=>{
                   if(Object.keys(information).length!=0){
@@ -808,6 +888,8 @@ export class AccountComponent implements OnInit {
               }
             
               this.list_drawings_onepage_added=true;
+              this.cd.detectChanges();
+              this.update_background_position( this.opened_section );
               
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_info_by_userid( this.user_id ).subscribe( r => {
                 this.list_drawings_artbook = r[0];
@@ -827,6 +909,8 @@ export class AccountComponent implements OnInit {
                 }
                 
                 this.list_drawings_artbook_added=true;
+                this.cd.detectChanges();
+                this.update_background_position( this.opened_section );
 
                 this.Albums_service.get_albums_drawings(this.user_id).subscribe(information=>{
                   if(Object.keys(information).length!=0){   
@@ -882,6 +966,9 @@ export class AccountComponent implements OnInit {
             }
             
             this.list_writings_added=true;
+            this.cd.detectChanges();
+            this.update_background_position( this.opened_section );
+            
             this.Albums_service.get_albums_writings(this.user_id).subscribe(information=>{
               if(Object.keys(information).length!=0){
                 for (let i=0; i <Object.keys(information).length;i++){
@@ -919,9 +1006,8 @@ export class AccountComponent implements OnInit {
     })
 
    
-    
-
-
+    this.cd.detectChanges();
+    this.update_background_position( this.opened_section );
     
       
   }
@@ -963,7 +1049,7 @@ export class AccountComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    
+
      this.getwidth.changes.subscribe(t => {
       this.ngForRendred();
     })
@@ -984,21 +1070,27 @@ export class AccountComponent implements OnInit {
     
 
     
-
-
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
       this.showEditCoverPic = false;
     });
     this.profileHovered.nativeElement.addEventListener('mouseleave', e => {
+
       this.showEditCoverPic = true;
     });
-    this.profilePicHovered.nativeElement.addEventListener('mouseenter', e => {
-      this.showEditBio = false;
-    });
-    this.profilePicHovered.nativeElement.addEventListener('mouseleave', e => {
-      this.showEditBio = true;
-    });
 
+  }
+
+
+  @ViewChild("absoluteBackgroundColor", {read: ElementRef}) absoluteBackgroundColor:ElementRef;
+
+
+  @ViewChildren("buttonSection", {read: ElementRef}) buttonSection:QueryList<ElementRef>;
+  update_background_position(i:number) {
+    
+    if( this.absoluteBackgroundColor && this.buttonSection.toArray()[i] ) {
+      this.rd.setStyle( this.absoluteBackgroundColor.nativeElement, "width", this.buttonSection.toArray()[i].nativeElement.offsetWidth +"px" );
+      this.rd.setStyle( this.absoluteBackgroundColor.nativeElement, "transform", "translate("+ this.buttonSection.toArray()[i].nativeElement.offsetLeft +"px,-50%)" );
+    }
   }
 
 
@@ -1007,6 +1099,8 @@ export class AccountComponent implements OnInit {
     console.log(i)
     console.log(this.opened_section)
     if( this.opened_section == i ) {
+      this.cd.detectChanges();
+      this.update_background_position(i);
       return;
     }
 
@@ -1021,6 +1115,7 @@ export class AccountComponent implements OnInit {
    
     this.opened_category = -1;
     this.opened_section=i;
+
     
     if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
     else if( i == 1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); }
@@ -1029,6 +1124,7 @@ export class AccountComponent implements OnInit {
     else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
     else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
     this.cd.detectChanges();
+    this.update_background_position(i);
   }
 
 
@@ -1049,7 +1145,7 @@ export class AccountComponent implements OnInit {
   //For section 0 : Artworks
   open_category(i : number) {
 
-    if( this.opened_category == i ) {
+    if( this.opened_category == i || (i==0 && this.visible_number_of_comics==0) || (i==1 && this.visible_number_of_drawings==0) || (i==2 && this.visible_number_of_writings==0) ) {
       return;
     }
     this.contents_loading=false;
@@ -1230,6 +1326,7 @@ export class AccountComponent implements OnInit {
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
+      panelClass: 'popupUploadPictureClass',
     });
   }
 
@@ -1237,22 +1334,17 @@ export class AccountComponent implements OnInit {
   change_cover_picture() {
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_cover_picture"},
+      panelClass: 'popupUploadPictureClass',
     });
   }
 
   change_profile_picture() {
     const dialogRef = this.dialog.open(PopupFormComponent, {
       data: {type:"edit_profile_picture"},
+      panelClass: 'popupUploadPictureClass',
     });
   }
-
-
-  change_profile_bio() {
-    
-    const dialogRef = this.dialog.open(PopupFormComponent, {
-      data: {type:"edit_bio",gender:this.gender,location:this.user_location,firstName:this.firstName,lastName:this.lastName,primary_description:this.primary_description},
-    });
-  }
+  
 
   subscribtion(){
     if(this.type_of_profile=='account'){
@@ -2089,6 +2181,9 @@ export class AccountComponent implements OnInit {
   display_new_drawing_contents=false;
   new_contents_comics_thumbnails(event){
     this.compteur_new_comic_contents+=1;
+    console.log(this.compteur_new_comic_contents)
+    console.log(this.number_of_new_contents_to_show)
+    console.log(this.new_comic_contents.slice(0,this.number_of_new_contents_to_show).length)
     if(this.compteur_new_comic_contents==this.new_comic_contents.slice(0,this.number_of_new_contents_to_show).length){
       this.display_new_comic_contents=true;
     }
@@ -2103,6 +2198,8 @@ export class AccountComponent implements OnInit {
 
   new_contents_writings_thumbnails(event){
     this.compteur_new_writing_contents+=1;
+    console.log(this.compteur_new_writing_contents)
+    console.log(this.new_writing_contents.slice(0,this.number_of_new_contents_to_show).length)
     if(this.compteur_new_writing_contents==this.new_writing_contents.slice(0,this.number_of_new_contents_to_show).length){
       this.display_new_writing_contents=true;
     }
@@ -2373,6 +2470,9 @@ block_user(){
                 this.chatService.messages.next(message_to_send);
                 this.user_blocked=true;
                 this.user_who_blocked="me";
+
+                this.cd.detectChanges();
+                this.update_background_position( this.opened_section );
               })
             })
           });
@@ -2397,6 +2497,10 @@ unblock_user(){
     else{
       this.user_blocked=false;
     }
+
+
+    this.cd.detectChanges();
+    this.update_background_position( this.opened_section );
     
     
   })
