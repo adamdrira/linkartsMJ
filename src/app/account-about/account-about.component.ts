@@ -30,6 +30,7 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '../helpers/dates';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 
@@ -49,6 +50,25 @@ declare var $: any;
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ],
+  animations: [
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+      
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
   ],
 })
 export class AccountAboutComponent implements OnInit {
@@ -94,9 +114,10 @@ export class AccountAboutComponent implements OnInit {
   date_format_profile=3;
   
 
-  @Input('opened_category') opened_category:number;
   @Input('pseudo') pseudo:string;
   @Input('id_user') id_user:number;
+
+  opened_category=-1;
 
   category_to_open='Dessins';
   list_of_categories=['Bandes dessinées','Dessins','Ecrits']
@@ -122,6 +143,10 @@ export class AccountAboutComponent implements OnInit {
   now_in_seconds:number=Math.trunc( new Date().getTime()/1000);
 
 
+  firstName:string;
+  lastName:string;
+  userLocation:string;
+  primary_description:string;
   primary_description_extended:string;
   profile_data_retrieved=false;
 
@@ -132,44 +157,34 @@ export class AccountAboutComponent implements OnInit {
   links:any[]=[];
   links_retrieved=false;
   
-  email:string='';
+  type_of_account:string;
   type_of_profile:string;
   birthday:string;
   job:string='';
   training:string='';
+  email_about:string='';
 
   registerForm1: FormGroup;
   registerForm1_activated=false;
-  display_error_validator_1=false;
 
   registerForm2: FormGroup;
   registerForm2_activated=false;
-  display_error_validator_2=false;
 
   registerForm3: FormGroup;
   registerForm3_activated=false;
-  display_error_validator_3=false;
   maxDate: moment.Moment;
 
+
   ngOnInit(): void {
-      console.log(this.opened_category);
-      console.log(typeof(this.opened_category));
+    
       console.log(this.id_user);
       console.log(typeof(this.id_user));
       const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
 
-      this.registerForm1 = this.formBuilder.group({
-        primary_description_extended:['', 
-          Validators.compose([
-            Validators.minLength(3),
-            Validators.maxLength(1000),
-            Validators.pattern(pattern("text")),
-          ]),
-        ],
-      });
+      
 
-      this.registerForm2 = this.formBuilder.group({
+      /*this.registerForm2 = this.formBuilder.group({
         link_title:['', 
           Validators.compose([
             Validators.minLength(3),
@@ -195,26 +210,12 @@ export class AccountAboutComponent implements OnInit {
             Validators.maxLength(100),
           ]),
         ],
-        job:['', 
-          Validators.compose([
-            Validators.minLength(3),
-            Validators.maxLength(100),
-            Validators.pattern(pattern("text")),
-          ]),
-        ],
-        training:['', 
-          Validators.compose([
-            Validators.minLength(3),
-            Validators.maxLength(100),
-            Validators.pattern(pattern("text")),
-          ]),
-        ],
         birthday: ['', 
           Validators.compose([
             Validators.minLength(3)
           ]),
         ],
-      });
+      });*/
 
 
      
@@ -249,46 +250,85 @@ export class AccountAboutComponent implements OnInit {
         }
         console.log( this.links)
         this.links_retrieved=true;
+        this.cd.detectChanges();
       })
 
       this.Profile_Edition_Service.get_information_privacy(this.id_user).subscribe(l=>{
-        console.log(l[0]);
+        //  a refaire
+
+        console.log("#################################");
+        console.log(l);
+        console.log("#################################");
+
+
         this.list_of_privacy[0]=l[0].primary_description_extended;
         this.list_of_privacy[1]=l[0].type_of_profile;
         this.list_of_privacy[2]=l[0].email_about;
         this.list_of_privacy[3]=l[0].birthday;
         this.list_of_privacy[4]=l[0].job;
         this.list_of_privacy[5]=l[0].training;
-        this.list_of_privacy[6]=l[0].trendings_stats;
-        this.list_of_privacy[7]=l[0].ads_stats;
-        this.list_of_privacy[8]=l[0].comics_stats;
-        this.list_of_privacy[9]=l[0].drawings_stats;
-        this.list_of_privacy[10]=l[0].writings_stats;
-        this.list_of_privacy[11]=l[0].profile_stats;
-        console.log(this.list_of_privacy)
+
+        
+        this.list_of_privacy[6] = "private";
+        this.list_of_privacy[7] = "private";
+        this.list_of_privacy[8] = "private";
+        this.list_of_privacy[9] = "private";
+        this.list_of_privacy[10] = "private";
+        this.list_of_privacy[11] = "private";
+
+        if( l[0].trendings_stats ) {
+          this.list_of_privacy[6]=l[0].trendings_stats;
+        }
+        if( l[0].ads_stats ) {
+          this.list_of_privacy[7]=l[0].ads_stats;
+        }
+        if( l[0].comics_stats ) {
+          this.list_of_privacy[8]=l[0].comics_stats;
+        }
+        if( l[0].drawings_stats ) {
+          this.list_of_privacy[9]=l[0].drawings_stats;
+        }
+        if( l[0].writings_stats ) {
+          this.list_of_privacy[10]=l[0].writings_stats;
+        }
+        if( l[0].profile_stats ) {
+          this.list_of_privacy[11]=l[0].profile_stats;
+        }
+        
+        
         let compt=0;
         for(let i=6;i<12;i++){
           if(this.list_of_privacy[i]=="private"){
-            compt++
+            compt++;
           }
         }
         if(compt!=6){
           this.show_stats=true;
         }
-        console.log(this.show_stats)
+
+        
         this.list_of_privacy_retrieved=true;
       })
 
 
       this.Profile_Edition_Service.retrieve_profile_data(this.id_user).subscribe(l=>{
-        console.log(l[0]);
-        this.primary_description_extended=l[0].primary_description_extended;
-        this.email=(l[0].email_about)?l[0].email_about:'';
+        //  a refaire
+
+
+        this.firstName = l[0].firstname;
+        this.lastName = l[0].lastname;
+        this.primary_description = l[0].primary_description;
+        this.primary_description_extended = l[0].primary_description_extended;
+        this.userLocation = l[0].location;
+        this.type_of_account = l[0].type_of_account;
+        this.type_of_profile = l[0].gender;
+        this.birthday = this.find_age(l[0].birthday);
+        this.job = (l[0].job)?l[0].job:'';
+        this.training = (l[0].training)?l[0].training:'';
+        this.email_about = (l[0].email_about)?l[0].email_about:'';
+
+        /*console.log(l[0]);
         console.log(this.email);
-        this.type_of_profile=l[0].gender;
-        this.birthday=this.find_age(l[0].birthday);
-        this.job=(l[0].job)?l[0].job:'';
-        this.training=(l[0].training)?l[0].training:'';
 
         this.registerForm1.controls['primary_description_extended'].setValue( this.primary_description_extended );
         if(this.email){this.registerForm3.controls['email'].setValue( this.email );}
@@ -298,11 +338,20 @@ export class AccountAboutComponent implements OnInit {
         
         
 
-        let values=l[0].birthday.split('-');
-        let yy =parseInt(values[2]);
-        let mm =parseInt(values[1])-1
-        let dd =parseInt(values[0])
-        this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
+        */
+        this.build_form_1();
+        this.build_form_2();
+        this.build_form_3();
+
+        if( this.type_of_profile != "Groupe" ) {
+          let values=l[0].birthday.split('-');
+          let yy =parseInt(values[2]);
+          let mm =parseInt(values[1])-1
+          let dd =parseInt(values[0])
+          this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
+        }
+
+
         this.profile_data_retrieved=true;
       })
 
@@ -339,7 +388,7 @@ export class AccountAboutComponent implements OnInit {
 
 
 
-  open_catgory(i){
+  open_category(i){
     if(i==this.opened_category){
       return;
     }
@@ -350,7 +399,7 @@ export class AccountAboutComponent implements OnInit {
         this.cd.detectChanges();
         this.initialize_selectors();
         if(this.selector_for_ads_initialized){
-          if($('.Sumo_for_ads_2')[0].sumo){
+          if($('.Sumo_for_ads_2')[0] && $('.Sumo_for_ads_2')[0].sumo){
             $('.Sumo_for_ads_2')[0].sumo.unload();
             this.initialize_selectors_for_ads()
           }
@@ -359,7 +408,7 @@ export class AccountAboutComponent implements OnInit {
           }
         }
         if(this.selector_for_comics_initialized){
-          if($('.Sumo_for_comics_2')[0].sumo){
+          if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
             $('.Sumo_for_comics_2')[0].sumo.unload();
             this.initialize_selectors_for_comics()
           }
@@ -368,7 +417,7 @@ export class AccountAboutComponent implements OnInit {
           }
         }
         if(this.selector_for_drawings_initialized){
-          if($('.Sumo_for_drawings_2')[0].sumo){
+          if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
             $('.Sumo_for_drawings_2')[0].sumo.unload();
             this.initialize_selectors_for_drawings()
           }
@@ -377,7 +426,7 @@ export class AccountAboutComponent implements OnInit {
           }
         }
         if(this.selector_for_writings_initialized){
-          if($('.Sumo_for_writings_2')[0].sumo){
+          if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
             $('.Sumo_for_writings_2')[0].sumo.unload();
             this.initialize_selectors_for_writings()
           }
@@ -557,7 +606,7 @@ export class AccountAboutComponent implements OnInit {
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_writings){
-       // THIS.get_writings_stats();
+        THIS.get_writings_stats();
       }
       
     });
@@ -990,7 +1039,9 @@ export class AccountAboutComponent implements OnInit {
             this.list_of_ads_retrieved=true;
             this.sumo_for_ads_ready=false;
             if(this.selector_for_ads_initialized){
-              $('.Sumo_for_ads_2')[0].sumo.unload();
+              if($('.Sumo_for_ads_2')[0] && $('.Sumo_for_ads_2')[0].sumo){
+                $('.Sumo_for_ads_2')[0].sumo.unload();
+              }
               this.initialize_selectors_for_ads()
             }
             else{
@@ -1274,8 +1325,14 @@ export class AccountAboutComponent implements OnInit {
 
     
     if(sort){
+
+
       if(this.list_of_comics.length>1){
+
         for (let i=1; i<this.list_of_comics.length; i++){
+          
+
+
           let time = convert_timestamp_to_number(this.list_of_comics[i].createdAt);
           for (let j=0; j<i;j++){
             if( time  > convert_timestamp_to_number(this.list_of_comics[j].createdAt)){
@@ -1290,7 +1347,9 @@ export class AccountAboutComponent implements OnInit {
               this.list_of_comics_retrieved=true;
               this.sumo_for_comics_ready=false;
               if(this.selector_for_comics_initialized){
-                $('.Sumo_for_comics_2')[0].sumo.unload();
+                if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
+                  $('.Sumo_for_comics_2')[0].sumo.unload();
+                }
                 this.initialize_selectors_for_comics()
               }
               else{
@@ -1302,12 +1361,31 @@ export class AccountAboutComponent implements OnInit {
           }
         }
       }
-      else{
+      else if(this.list_of_comics.length==1) {
+        this.list_of_comics_names[0]= this.list_of_comics[0].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_comics[0].createdAt ) ) + ')';
         this.list_of_comics_loaded=true;
         this.list_of_comics_retrieved=true;
         this.sumo_for_comics_ready=false;
         if(this.selector_for_comics_initialized){
-          $('.Sumo_for_comics_2')[0].sumo.unload();
+          if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
+            $('.Sumo_for_comics_2')[0].sumo.unload();
+          }
+          this.initialize_selectors_for_comics()
+        }
+        else{
+          this.initialize_selectors_for_comics()
+        }
+        this.get_stats_for_a_comic(0)
+      }
+      else{
+
+        this.list_of_comics_loaded=true;
+        this.list_of_comics_retrieved=true;
+        this.sumo_for_comics_ready=false;
+        if(this.selector_for_comics_initialized){
+          if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
+            $('.Sumo_for_comics_2')[0].sumo.unload();
+          }
           this.initialize_selectors_for_comics()
         }
         else{
@@ -1687,7 +1765,10 @@ export class AccountAboutComponent implements OnInit {
               this.list_of_drawings_retrieved=true;
               this.sumo_for_drawings_ready=false;
               if(this.selector_for_drawings_initialized){
-                $('.Sumo_for_drawings_2')[0].sumo.unload();
+                
+                if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
+                  $('.Sumo_for_drawings_2')[0].sumo.unload();
+                }
                 this.initialize_selectors_for_drawings()
               }
               else{
@@ -1699,12 +1780,33 @@ export class AccountAboutComponent implements OnInit {
           }
         }
       }
+      else if(this.list_of_drawings.length==1) {
+        
+        this.list_of_drawings_names[0]= this.list_of_drawings[0].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_drawings[0].createdAt ) ) + ')';
+        this.list_of_drawings_loaded=true;
+        this.list_of_drawings_retrieved=true;
+        this.sumo_for_drawings_ready=false;
+        if(this.selector_for_drawings_initialized){
+          
+          if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
+            $('.Sumo_for_drawings_2')[0].sumo.unload();
+          }
+          this.initialize_selectors_for_drawings()
+        }
+        else{
+          this.initialize_selectors_for_drawings()
+        }
+        this.get_stats_for_a_drawing(0)
+      }
       else{
         this.list_of_drawings_loaded=true;
         this.list_of_drawings_retrieved=true;
         this.sumo_for_drawings_ready=false;
         if(this.selector_for_drawings_initialized){
-          $('.Sumo_for_drawings_2')[0].sumo.unload();
+
+          if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
+            $('.Sumo_for_drawings_2')[0].sumo.unload();
+          }
           this.initialize_selectors_for_drawings()
         }
         else{
@@ -1992,10 +2094,10 @@ export class AccountAboutComponent implements OnInit {
     
     if(list_of_writings.length>0 ){
       this.list_of_writings=list_of_writings;
-      this.number_of_writings_views=list_of_writings.number_of_views;
-      this.number_of_writings_likes=list_of_writings.number_of_likes;
-      this.number_of_writings_loves=list_of_writings.number_of_loves;
-      this.number_of_writings_comments=list_of_writings.number_of_comments;
+      this.number_of_writings_views=list_of_notations_writings.number_of_views;
+      this.number_of_writings_likes=list_of_notations_writings.number_of_likes;
+      this.number_of_writings_loves=list_of_notations_writings.number_of_loves;
+      this.number_of_writings_comments=list_of_notations_writings.number_of_comments;
       sort=true;
     }
     else {
@@ -2023,7 +2125,9 @@ export class AccountAboutComponent implements OnInit {
               this.list_of_writings_retrieved=true;
               this.sumo_for_writings_ready=false;
               if(this.selector_for_writings_initialized){
-                $('.Sumo_for_writings_2')[0].sumo.unload();
+                if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
+                  $('.Sumo_for_writings_2')[0].sumo.unload();
+                }
                 this.initialize_selectors_for_writings()
               }
               else{
@@ -2035,12 +2139,33 @@ export class AccountAboutComponent implements OnInit {
           }
         }
       }
+      else if(this.list_of_writings.length==1) {
+        
+        this.list_of_writings_names[0]= this.list_of_writings[0].title + ' (' + get_date_to_show( date_in_seconds( this.now_in_seconds, this.list_of_writings[0].createdAt ) ) + ')';
+        this.list_of_writings_loaded=true;
+        this.list_of_writings_retrieved=true;
+        this.sumo_for_writings_ready=false;
+        if(this.selector_for_writings_initialized){
+          
+          if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
+            $('.Sumo_for_writings_2')[0].sumo.unload();
+          }
+          this.initialize_selectors_for_writings()
+        }
+        else{
+          this.initialize_selectors_for_writings()
+        }
+        this.get_stats_for_a_writing(0)
+              
+      }
       else{
         this.list_of_writings_loaded=true;
         this.list_of_writings_retrieved=true;
         this.sumo_for_writings_ready=false;
         if(this.selector_for_writings_initialized){
-          $('.Sumo_for_writings_2')[0].sumo.unload();
+          if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
+            $('.Sumo_for_writings_2')[0].sumo.unload();
+          }
           this.initialize_selectors_for_writings()
         }
         else{
@@ -2557,80 +2682,191 @@ export class AccountAboutComponent implements OnInit {
   }
 
   
-  
+    
 
-onSelect(data): void {
-  console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-}
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
 
 
-  /***************************************OPTIONS CATEGORY PRESENTATION ****************************************/
-  /***************************************OPTIONS CATEGORY PRESENTATION ****************************************/
-  /***************************************OPTIONS CATEGORY PRESENTATION ****************************************/
+
+  /********************************************************************************************** */
+  /********************************************************************************************** */
+  /*******************************************FORM 1********************************************* */
+  /********************************************************************************************** */
+  /********************************************************************************************** */
+
+  build_form_1() {
+    this.registerForm1 = this.formBuilder.group({
+        
+      primary_description: [this.primary_description, 
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(100),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+      primary_description_extended:[this.primary_description_extended, 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(1000),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+      job:[this.job, 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(100),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+      training:[this.training, 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(100),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+      /*city:['', 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(pattern("name")),
+        ]),
+      ],
+      country:['', 
+        Validators.compose([
+        ]),
+      ]*/
+      /*primary_description_extended:['', 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(1000),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],*/
+    });
+  }
 
   //primary description 
-  edit_primary_description_extended(){
+  edit_form_1(){
     this.registerForm1_activated=true;
   }
 
-  validate_primary_description_extended(){
+  validate_form_1(){
     //fonction backend
     console.log()
-    if(this.registerForm1.invalid ||this.registerForm1.value.primary_description_extended==""){
-      this.display_error_validator_1=true;
+    if(this.registerForm1.invalid){
+      //this.display_error_validator_1=true;
     }
     else{
-      let primary_description_extended=this.registerForm1.value.primary_description_extended;
-      console.log(this.registerForm1.value.primary_description_extended)
+      
+      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
+      
       this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
-        console.log(l)
+        console.log(l);
         this.primary_description_extended=primary_description_extended;
-        this.display_error_validator_1=false;
-        this.registerForm1_activated=false;
-      })
-     
+        this.registerForm3_activated=false;
+      });*/
     }
   }
-
-  cancel_primary_description_extended(){
-    this.display_error_validator_1=false;
+  cancel_form_1(){
     this.registerForm1_activated=false;
   }
 
 
+  /********************************************************************************************** */
+  /********************************************************************************************** */
+  /*******************************************FORM 1********************************************* */
+  /********************************************************************************************** */
+  /********************************************************************************************** */
 
-  //links
+  build_form_2() {
+    this.registerForm2 = this.formBuilder.group({
+        
+      city:['', 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(pattern("name")),
+        ]),
+      ],
+      country:['', 
+        Validators.compose([
+        ]),
+      ],
+      email_about: [this.email_about, 
+        Validators.compose([
+          Validators.pattern(pattern("mail")),
+          Validators.maxLength(100),
+        ]),
+      ],
+      link_title:['', 
+        Validators.compose([
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+      link:['', 
+        Validators.compose([
+          Validators.minLength(5),
+          Validators.maxLength(60),
+          Validators.pattern(pattern("text_without_spaces")),
+        ]),
+      ],
+    });
+  }
 
-  add_link_to_the_list(){
-    if(this.links_titles.length>=5){
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 liens externes'},
-      });
-      return
-    }
+  //primary description 
+  edit_form_2(){
     this.registerForm2_activated=true;
   }
 
-  cancel_add_link_to_the_list(){
-    this.display_error_validator_2=false;
+  validate_form_2(){
+    //fonction backend
+    console.log()
+    if(this.registerForm2.invalid){
+      //this.display_error_validator_1=true;
+    }
+    else{
+      
+      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
+      
+      this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
+        console.log(l);
+        this.primary_description_extended=primary_description_extended;
+        this.registerForm3_activated=false;
+      });*/
+    }
+  }
+  cancel_form_2(){
     this.registerForm2_activated=false;
   }
 
 
+  //links
+  add_link_to_the_list(){
+    if(this.links_titles.length>=3){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 3 liens externes'},
+      });
+      return;
+    }
+    this.registerForm2_activated=true;
+  }
+
   add_link(){
-    if(this.links_titles.length>=5){
-      return
+    if(this.links_titles.length>=3){
+      return;
     }
     if( this.registerForm2.controls['link_title'].invalid || this.registerForm2.controls['link'].invalid ) {
-      this.display_error_validator_2=true;
       return;
     }
     if ( this.registerForm2.controls['link_title'].value == "" || this.registerForm2.controls['link'].value == "" ) {
-      this.display_error_validator_2=true;
       return;
     }
-    
-    this.display_error_validator_2=false;
     
     this.links_titles.push(this.registerForm2.value.link_title);
     this.links.push(this.registerForm2.value.link);
@@ -2645,7 +2881,7 @@ onSelect(data): void {
 
   remove_link(i){
    
-    this.Profile_Edition_Service.remove_link(this.id_user,this.registerForm2.value.link_title,this.registerForm2.value.link).subscribe(l=>{
+    this.Profile_Edition_Service.remove_link(this.id_user, this.links_titles[i] , this.links[i] ).subscribe(l=>{
       console.log(l[0])
       this.links.splice(i,1);
       this.links_titles.splice(i,1);
@@ -2654,6 +2890,89 @@ onSelect(data): void {
   }
 
 
+/********************************************************************************************** */
+/********************************************************************************************** */
+/*******************************************FORM 3********************************************* */
+/********************************************************************************************** */
+/********************************************************************************************** */
+
+  build_form_3() {
+    
+    if( this.type_of_profile != "Groupe" ) {
+      this.registerForm3 = this.formBuilder.group({
+        firstName: [this.firstName,
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(pattern("name")),
+            Validators.minLength(2),
+            Validators.maxLength(20),
+          ]),
+        ],
+        lastName: [this.lastName, 
+          Validators.compose([
+            Validators.pattern(pattern("name")),
+            Validators.minLength(2),
+            Validators.maxLength(20),
+          ]),
+        ],
+        birthday: ['', 
+          Validators.compose([
+            Validators.required
+          ]),
+        ],
+      });
+    }
+    else {
+      this.registerForm3 = this.formBuilder.group({
+        firstName: [this.firstName,
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(pattern("name")),
+            Validators.minLength(2),
+            Validators.maxLength(20),
+          ]),
+        ],
+        lastName: [this.lastName, 
+          Validators.compose([
+            Validators.pattern(pattern("name")),
+            Validators.minLength(2),
+            Validators.maxLength(20),
+          ]),
+        ],
+      });
+    }
+
+  }
+
+  //primary description 
+  edit_form_3(){
+    this.registerForm3_activated=true;
+  }
+
+  validate_form_3(){
+    //fonction backend
+    console.log()
+    if(this.registerForm3.invalid){
+      //this.display_error_validator_1=true;
+    }
+    else{
+      
+      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
+      
+      this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
+        console.log(l);
+        this.primary_description_extended=primary_description_extended;
+        this.registerForm3_activated=false;
+      });*/
+    }
+  }
+  cancel_form_3(){
+    this.registerForm3_activated=false;
+  }
+
+
+
+  /*
   //informations
 
   edit_information(){
@@ -2695,6 +3014,8 @@ onSelect(data): void {
     this.display_error_validator_3=false;
     this.registerForm3_activated=false;
   }
+
+  */
 
   find_age(birthday){
     var values=birthday.split('-');
@@ -2759,6 +3080,7 @@ onSelect(data): void {
 
 
 
+  
   //information privacy
   change_information_privacy_public(i){
     this.Profile_Edition_Service.change_information_privacy_public(this.id_user,i).subscribe(r=>{
@@ -2777,6 +3099,261 @@ onSelect(data): void {
 
 
 
+
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
+  scrollDown() {
+    window.scrollBy({
+      top: 200,
+      behavior : "smooth"
+    })
+  }
+
+
+  selected_country='Aucun pays';
+  list_of_countries=[
+    'Aucun pays',
+    "France",
+    "Afghanistan", 
+    "Afrique Centrale", 
+    "Afrique du sud", 
+    "Albanie", 
+    "Algerie", 
+    "Allemagne", 
+    "Andorre", 
+    "Angola", 
+    "Anguilla", 
+    "Arabie Saoudite", 
+    "Argentine", 
+    "Armenie", 
+    "Australie", 
+    "Autriche", 
+    "Azerbaidjan", 
+    "Bahamas", 
+    "Bangladesh", 
+    "Barbade", 
+    "Bahrein", 
+    "Belgique", 
+    "Belize", 
+    "Benin", 
+    "Bermudes", 
+    "Bielorussie", 
+    "Bolivie", 
+    "Botswana", 
+    "Bhoutan", 
+    "Boznie Herzegovine", 
+    "Bresil", 
+    "Brunei", 
+    "Bulgarie", 
+    "Burkina Faso", 
+    "Burundi", 
+    "Caiman", 
+    "Cambodge", 
+    "Cameroun", 
+    "Canada", 
+    "Canaries", 
+    "Cap vert", 
+    "Chili", 
+    "Chine", 
+    "Chypre", 
+    "Colombie", 
+    "Comores", 
+    "Congo", 
+    "Congo democratique", 
+    "Cook", 
+    "Coree du Nord", 
+    "Coree du Sud", 
+    "Costa Rica", 
+    "Cote d'Ivoire", 
+    "Croatie", 
+    "Cuba", 
+    "Danemark", 
+    "Djibouti", 
+    "Dominique", 
+    "Egypte", 
+    "Emirats Arabes Unis", 
+    "Equateur", 
+    "Erythree", 
+    "Espagne", 
+    "Estonie", 
+    "Etats-Unis", 
+    "Ethiopie", 
+    "Falkland", 
+    "Feroe", 
+    "Fidji", 
+    "Finlande", 
+    "France", 
+    "Gabon", 
+    "Gambie", 
+    "Georgie", 
+    "Ghana", 
+    "Gibraltar", 
+    "Grece", 
+    "Grenade", 
+    "Groenland", 
+    "Guadeloupe", 
+    "Guam", 
+    "Guatemala",
+    "Guernesey", 
+    "Guinee", 
+    "Guinee Bissau", 
+    "Guinee equatoriale", 
+    "Guyana", 
+    "Guyane Francaise ", 
+
+    "Haiti", 
+    "Hawaii", 
+    "Honduras", 
+    "Hong Kong", 
+    "Hongrie", 
+
+    "Inde", 
+    "Indonesie", 
+    "Iran", 
+    "Iraq", 
+    "Irlande", 
+    "Islande", 
+    "Israel", 
+    "Italie", 
+
+    "Jamaique", 
+    "Jan Mayen", 
+    "Japon", 
+    "Jersey", 
+    "Jordanie", 
+
+    "Kazakhstan", 
+    "Kenya", 
+    "Kirghizstan", 
+    "Kiribati", 
+    "Koweit", 
+
+    "Laos", 
+    "Lesotho", 
+    "Lettonie", 
+    "Liban", 
+    "Liberia", 
+    "Liechtenstein", 
+    "Lituanie", 
+    "Luxembourg", 
+    "Lybie", 
+
+    "Macao", 
+    "Macedoine", 
+    "Madagascar", 
+    "Madère", 
+    "Malaisie", 
+    "Malawi", 
+    "Maldives", 
+    "Mali", 
+    "Malte", 
+    "Man", 
+    "Mariannes du Nord", 
+    "Maroc", 
+    "Marshall", 
+    "Martinique", 
+    "Maurice", 
+    "Mauritanie", 
+    "Mayotte", 
+    "Mexique", 
+    "Micronesie", 
+    "Midway", 
+    "Moldavie", 
+    "Monaco", 
+    "Mongolie", 
+    "Montserrat", 
+    "Mozambique", 
+    "Namibie", 
+    "Nauru", 
+    "Nepal", 
+    "Nicaragua", 
+    "Niger", 
+    "Nigeria", 
+    "Niue", 
+    "Norfolk", 
+    "Norvege", 
+    "Nouvelle Caledonie", 
+    "Nouvelle Zelande", 
+    "Oman", 
+    "Ouganda", 
+    "Ouzbekistan", 
+    "Pakistan", 
+    "Palau", 
+    "Palestine", 
+    "Panama", 
+    "Papouasie Nouvelle Guinee", 
+    "Paraguay", 
+    "Pays Bas", 
+    "Perou", 
+    "Philippines", 
+    "Pologne", 
+    "Polynesie", 
+    "Porto Rico", 
+    "Portugal", 
+    "Qatar", 
+    "Republique Dominicaine", 
+    "Republique Tcheque", 
+    "Reunion", 
+    "Roumanie", 
+    "Royaume Uni", 
+    "Russie", 
+    "Rwanda", 
+    "Sahara Occidental",
+    "Sainte Lucie", 
+    "Saint Marin", 
+    "Salomon", 
+    "Salvador", 
+    "Samoa Occidentales",
+    "Samoa Americaine", 
+    "Sao Tome et Principe", 
+    "Senegal", 
+    "Seychelles", 
+    "Sierra Leone",
+    "Singapour", 
+    "Slovaquie", 
+    "Slovenie",
+    "Somalie", 
+    "Soudan", 
+    "Sri Lanka", 
+    "Suede", 
+    "Suisse", 
+    "Surinam", 
+    "Swaziland", 
+    "Syrie", 
+    "Tadjikistan", 
+    "Taiwan", 
+    "Tonga", 
+    "Tanzanie", 
+    "Tchad", 
+    "Thailande", 
+    "Tibet", 
+    "Timor Oriental", 
+    "Togo", 
+    "Trinite et Tobago", 
+    "Tristan da cunha",
+    "Tunisie", 
+    "Turkmenistan", 
+    "Turquie", 
+    "Ukraine", 
+    "Uruguay", 
+    "Vanuatu", 
+    "Vatican", 
+    "Venezuela", 
+    "Vierges Americaines", 
+    "Vierges Britanniques", 
+    "Vietnam", 
+    "Wake", 
+    "Wallis et Futuma", 
+    "Yemen", 
+    "Yougoslavie", 
+    "Zambie", 
+    "Zimbabwe",
+  ]
 
 
 
