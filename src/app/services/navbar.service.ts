@@ -21,6 +21,9 @@ export class NavbarService {
     private connexionSubject: BehaviorSubject<boolean>;
     public connexion: Observable<boolean>;
 
+    private visibilitySubject: BehaviorSubject<boolean>;
+    public visibility_observer: Observable<boolean>;
+
     constructor(
         private httpClient: HttpClient,
     ) {
@@ -29,6 +32,9 @@ export class NavbarService {
 
         this.connexionSubject = new BehaviorSubject<boolean>(true);
         this.connexion = this.connexionSubject.asObservable();
+
+        this.visibilitySubject = new BehaviorSubject<boolean>(true);
+        this.visibility_observer = this.visibilitySubject.asObservable();
     }
 
     setActiveSection(i: number) { this.active_section = i; }
@@ -36,8 +42,16 @@ export class NavbarService {
     set_component_visible(){this.component_visible=true;}
     get_component_visibility(){return this.component_visible}
     getHeight() { return this.height; }
-    hide() { this.visible = false; }
-    show() { this.visible = true; }
+
+    hide() { 
+      this.visibilitySubject.next(false);
+      this.visible = false; 
+    }
+    show() {
+      this.visibilitySubject.next(true);
+      this.visible = true;
+     }
+     
     set_account_type(account){this.account=account}
     getAccount(){ return this.account; }
     

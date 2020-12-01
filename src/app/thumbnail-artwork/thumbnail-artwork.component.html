@@ -177,7 +177,7 @@
                 <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link() (click)="stop($event)"><span>Bande dessinée</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'"><span>One-shot</span></div>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'"><span>Série</span></div>
-                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
@@ -195,7 +195,7 @@
                 <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link() (click)="stop($event)"><span>Dessin</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='one-shot'"><span>One-shot</span></div>
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'"><span>Artbook</span></div>
-                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>

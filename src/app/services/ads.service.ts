@@ -170,4 +170,10 @@ export class Ads_service {
         return [information,compteur];
       }));
     }
+
+    send_email_for_ad_answer(user_name,ad_id,author_id,title){
+      return this.httpClient.post('routes/send_email_for_ad_answer', {user_name:user_name,ad_id:ad_id,author_id:author_id,title:title}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+    }
 }

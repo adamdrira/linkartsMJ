@@ -82,7 +82,7 @@ export class Profile_Edition_Service {
   }
 
  get_current_user(){
-    return this.httpClient.get('http://localhost:4600/api/userid',{withCredentials:true} ).pipe(map((information)=>{   
+    return this.httpClient.get('api/userid',{withCredentials:true} ).pipe(map((information)=>{   
       return information;
     }));
   }
@@ -160,8 +160,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  check_email(email,index){
-    return this.httpClient.post<any>('api/users/check_email', { email: email}).pipe(map(res => {
+  check_email(user,index){
+    return this.httpClient.post<any>('api/users/check_email', { user: user}).pipe(map(res => {
         return [res,index];
     }));
   }
@@ -298,6 +298,24 @@ export class Profile_Edition_Service {
 
   update_special_visitor(special_visitor_type){
     return this.httpClient.post('routes/update_special_visitor',{special_visitor_type:special_visitor_type},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  send_email_for_account_creation(id){
+    return this.httpClient.post('routes/send_email_for_account_creation',{id:id},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  send_email_for_group_creation(id){
+    return this.httpClient.post('routes/send_email_for_group_creation',{id:id},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  check_password_for_registration(id,password){
+    return this.httpClient.post('routes/check_password_for_registration',{id:id,password:password},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }

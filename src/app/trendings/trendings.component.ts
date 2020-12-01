@@ -127,7 +127,7 @@ export class TrendingsComponent implements OnInit {
   }
 
   
-  /*send_notification(category,item,rank){
+  send_notification(category,item,rank){
     let id=0;
     let format='';
     if(category=='comic'){
@@ -172,7 +172,7 @@ export class TrendingsComponent implements OnInit {
     })
 
     
-  }*/
+  }
  
 
  
@@ -380,23 +380,23 @@ export class TrendingsComponent implements OnInit {
           }
           if(type=="comic"){
             this.comics_trendings_sorted_confirmation=true;
-            /*for(let j=0;j<list.length;j++){
+            for(let j=0;j<list.length;j++){
               this.send_notification("comic",list[j],j+1)
-            }*/
+            }
             console.log(this.comics_trendings_sorted);
           }
           if(type=="drawings"){
             this.drawings_trendings_sorted_confirmation=true;
-            /*for(let j=0;j<list.length;j++){
+            for(let j=0;j<list.length;j++){
               this.send_notification("drawing",list[j],j+1)
-            }*/
+            }
             console.log(this.drawings_trendings_sorted);
           }
           if(type=="writings"){
             this.writings_trendings_sorted_confirmation=true;
-            /*for(let j=0;j<list.length;j++){
+            for(let j=0;j<list.length;j++){
               this.send_notification("writing",list[j],j+1)
-            }*/
+            }
             console.log(this.writings_trendings_sorted);
           }
           

@@ -46,10 +46,9 @@
             <div class="form-item">
                 <mat-form-field>
                     <mat-label>E-mail*</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" (input)="check_email()">
+                    <input matInput formControlName="email" autocomplete="off" >
                     <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide</mat-error>
-                    <div class="pseudo-found" *ngIf="!registerForm1.controls['email'].invalid && display_email_found_1">email déjà existant
-                    </div>
+                   
                 </mat-form-field>
             </div>
 
@@ -132,9 +131,17 @@
     
             </div>
 
+            <div class="warning" *ngIf="
+            registerForm2.value.type_of_account
+            && registerForm2.value.type_of_account!='Artiste professionnelle'  
+            && registerForm2.value.type_of_account!='Artiste professionnel'   
+            && registerForm2.value.type_of_account!='Artiste' 
+            && registerForm2.value.type_of_account!='Artistes' 
+            &&  registerForm2.value.type_of_account!='Artistes professionnels'">Attention ! L'option de rémunération n'est pas permise pour ce type de compte</div>
+
             <div class="warning" *ngIf="registerForm2.value.type_of_account=='Artiste professionnelle'  
             || registerForm2.value.type_of_account=='Artiste professionnel'   
-            || registerForm2.value.type_of_account=='Maison d\'édition' ||  registerForm2.value.type_of_account=='Artistes professionnels'">Attention ! Une vérification ultérieure vous sera demandée après avoir enregistré votre numéro SIRET</div>
+            || registerForm2.value.type_of_account=='Maison d\'édition' ||  registerForm2.value.type_of_account=='Artistes professionnels'">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
 
             <div class="form-item" *ngIf=" registerForm2.value.type_of_account=='Artiste professionnelle' 
                  || registerForm2.value.type_of_account=='Artiste professionnel'  
@@ -153,10 +160,10 @@
                 <mat-form-field>
                     <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom*</mat-label>
                     <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe*</mat-label>
-                    <input matInput formControlName="firstName" maxLength="20" autocomplete="off">
+                    <input matInput formControlName="firstName" maxLength="10" autocomplete="off">
                     <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Veuillez saisir un prénom valide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/20</div>
+                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/10</div>
                 </mat-form-field>
             </div>
 
@@ -177,7 +184,7 @@
                     <mat-datepicker-toggle matSuffix [for]="picker">
                       <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                     </mat-datepicker-toggle>
-                    <mat-error *ngIf="registerForm2.controls['birthday'].invalid">Veuillez saisir une date de naissance</mat-error>
+                    <mat-error *ngIf="registerForm2.controls['birthday'].invalid">Veuillez saisir une date de naissance valide</mat-error>
                     <mat-datepicker #picker disabled="false"></mat-datepicker>
 
                 </mat-form-field>

@@ -66,6 +66,14 @@ export class AuthenticationService {
     }
     
 
+    check_email_checked(username, password) {
+        return this.http.post<any>('api/users/check_email_checked', { mail_or_username: username, password: password }).pipe(map(res => {
+            console.log(res);
+            return res
+        }))
+
+    }
+
     login(username, password) {
         return this.http.post<any>('api/users/login', { mail_or_username: username, password: password })
             .pipe(map(res => {

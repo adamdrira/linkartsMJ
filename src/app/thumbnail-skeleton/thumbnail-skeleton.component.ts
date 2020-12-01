@@ -38,6 +38,7 @@ export class ThumbnailSkeletonComponent implements OnInit {
       }
       else{
          this.get_skeleton_size()
+        
         $('.skeleton-container').css({'width': '210px'});
       }
 
@@ -45,12 +46,12 @@ export class ThumbnailSkeletonComponent implements OnInit {
   }
 
   get_skeleton_size() {
-    return ($('.container-skeletons').width()-20)/this.skeletons_per_line();
+    return ($('.container-skeletons').width())/this.skeletons_per_line();
   }
 
   skeletons_per_line() {
     if(this.type_of_skeleton!="drawing"){
-      var width = $('.container-skeletons').width()-20;
+      var width = $('.container-skeletons').width();
       var n = Math.floor(width/250);
       if( width < 500 ) {
         this.send_number_of_skeletons.emit({number:1});
@@ -63,7 +64,7 @@ export class ThumbnailSkeletonComponent implements OnInit {
     }
     else{
       
-      var width = $('.container-skeletons').width()-20;
+      var width = $('.container-skeletons').width();
       var n = Math.floor(width/210);
       if( width < 420 ) {
         this.send_number_of_skeletons.emit({number:1});

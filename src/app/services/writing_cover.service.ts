@@ -25,11 +25,15 @@ export class Writing_CoverService {
   
 
   get_cover_name(){
-   return this.httpClient.get('routes/get_cookies_writing', {withCredentials:true}).pipe(map(information=>{
-       this.covername = information[0].name_cover_writing;
-       return this.covername
+   return this.httpClient.post('routes/get_covername_writing', {withCredentials:true}).pipe(map(information=>{
+       this.covername = information[0].covername;
+       return information
   }));
  };
+
+ get_cover_name2(){
+  return this.covername
+ }
   
 
   send_confirmation_for_addwriting(confirmation:boolean){

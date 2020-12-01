@@ -25,11 +25,16 @@ export class Bd_CoverService {
   
 
   get_cover_name(){
-   return this.httpClient.get('routes/get_cookies_cover_bd', {withCredentials:true}).pipe(map(information=>{
-       this.covername = information[0].name_cover_bd;
-       return this.covername
+   return this.httpClient.post('routes/get_covername_comic',{}, {withCredentials:true}).pipe(map(information=>{
+      this.covername = information[0].covername;
+      console.log(this.covername) 
+      return information 
   }));
  };
+
+ get_cover_name2(){
+  return this.covername
+ }
   
 
   send_confirmation_for_addartwork(confirmation:boolean){

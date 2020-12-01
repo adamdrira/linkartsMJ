@@ -153,7 +153,7 @@ export class SignupComponent implements OnInit {
           Validators.required,
           Validators.pattern(pattern("name")),
           Validators.minLength(2),
-          Validators.maxLength(20),
+          Validators.maxLength(10),
         ]),
       ],
       lastName: ['', 
@@ -500,10 +500,9 @@ export class SignupComponent implements OnInit {
   display_email_found_1=false;
   display_email_found_2=false;
   index_check_email=0
-  check_email(){
+  /*check_email(){
     this.index_check_email++;
     this.Profile_Edition_Service.check_email(this.registerForm1.value.email, this.index_check_email).subscribe(r=>{
-      console.log(r)
       if(r[0][0].msg=="found"){
         console.log("display found")
         this.display_email_found_1=true;
@@ -515,15 +514,11 @@ export class SignupComponent implements OnInit {
         this.cd.detectChanges()
       }
     })
-  }
+  }*/
 
 
   current_profile='';
   change_profile(event){
-    console.log(event);
-    console.log(this.registerForm1.value.gender);
-    console.log(event.value);
-    console.log(this.step)
     
     if(event.value!=this.current_profile){
       console.log("reseting")
@@ -1035,14 +1030,24 @@ export class SignupComponent implements OnInit {
       this.user.siret=null;
     }
     this.user.firstname = this.capitalizeFirstLetter( this.registerForm2.value.firstName.toLowerCase() );
-    if(this.registerForm2.controls['lastname'] && this.registerForm2.controls['lastname'].valid){
+    console.log(this.registerForm2.value.lastName)
+    if(this.registerForm2.controls['lastName'] && this.registerForm2.value.lastName){
       this.user.lastname = this.capitalizeFirstLetter( this.registerForm2.value.lastName.toLowerCase() );
     }
     else{
       this.user.lastname = '';
     }
     if(this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid){
-      this.user.birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
+      console.log(this.registerForm2.value.birthday._i.date)
+      if(this.registerForm2.value.birthday._i.date){
+        this.user.birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
+      }
+      else{
+        this.user.birthday = this.registerForm2.value.birthday._i;
+        this.user.birthday = this.user.birthday.replace(/\//g, "-");
+        
+      }
+     
     }
     else{
       if( (this.registerForm2.value.type_of_account=='Artistes' 
@@ -1054,7 +1059,7 @@ export class SignupComponent implements OnInit {
       }
       
     }
-  
+    console.log(this.user.birthday);
     
     //form3
     this.user.nickname = this.registerForm3.value.nickname;
@@ -1111,9 +1116,9 @@ export class SignupComponent implements OnInit {
       else{
         console.log(this.user)
         console.log(this.links)
-        this.Profile_Edition_Service.check_email(this.user.email,0).subscribe(r=>{
+        this.Profile_Edition_Service.check_email(this.user,0).subscribe(r=>{
           console.log(r)
-          if(r[0][0].msg=="found"){
+          if(r[0][0].msg=="found" && r[0][0].type=="user"){
             this.display_email_found_2=true;
             this.cd.detectChanges()
           }
@@ -1154,11 +1159,26 @@ export class SignupComponent implements OnInit {
                                 comment_id:0,
                               }
                               this.ChatService.messages.next(message_to_send);
-                              location.reload();
+                              if(!this.user.type_of_account.includes("Artiste")){
+                                this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
+                                  console.log(m)
+                                  //location.reload();
+                                })
+                              }
+                              else{
+                                this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
+                                  console.log(m)
+                                  //location.reload();
+                                })
+                              }
+                              
                             }) 
                         }
                         else{
-                          location.reload();
+                          this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
+                            console.log(m)
+                            //location.reload();
+                          })
                         } 
                       }
                     })
@@ -1186,11 +1206,25 @@ export class SignupComponent implements OnInit {
                         comment_id:0,
                       }
                       this.ChatService.messages.next(message_to_send);
-                      location.reload();
+                      if(!this.user.type_of_account.includes("Artiste")){
+                        this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
+                          console.log(m)
+                          //location.reload();
+                        })
+                      }
+                      else{
+                        this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
+                          console.log(m)
+                          //location.reload();
+                        })
+                      }
                     }) 
                   }
                   else{
-                    location.reload();
+                    this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
+                      console.log(m)
+                          //location.reload();
+                    })
                   }
                  
                 }

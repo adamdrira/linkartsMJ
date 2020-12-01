@@ -76,8 +76,12 @@ export class PopupAdWriteResponsesComponent implements OnInit {
         this.chatService.messages.next(message_to_send);
         console.log("response sent");
         console.log(message_to_send)
-        this.display_loading=false;
-        location.reload();
+        this.Ads_service.send_email_for_ad_answer(visitor_name,this.data.item.id,this.data.item.id_user,this.data.item.title).subscribe(l=>{
+          console.log(l);
+          this.display_loading=false;
+          location.reload();
+        })
+        
       })
     })
     
