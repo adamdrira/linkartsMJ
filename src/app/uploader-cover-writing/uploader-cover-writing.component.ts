@@ -190,20 +190,33 @@ export class UploaderCoverWritingComponent implements OnInit {
       this.confirmation = true; 
       if(this.for_edition){
         this.Writing_CoverService.get_cover_name().subscribe(r=>{
-          this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
-            this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
-              this.cover_loading=false;
-              location.reload();
-              
+
+          if(r[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
+          }
+          else{
+            this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
+              this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                this.cover_loading=false;
+                location.reload();
+                
+              });
             });
-          });
+          }
+          
         });
           
       }
       else{
         this.Writing_CoverService.get_cover_name().subscribe(r=>{
-          this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
-          this.cover_loading=false;
+          if(r[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
+          }
+          else{
+            this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation);
+            this.cover_loading=false;
+          }
+         
         });
       }
       

@@ -73,6 +73,7 @@ const routes: Routes = [
 
   
   {path:'recommendations', component:HomeLinkartsComponent,  data: {category: 0}, canActivate: [TempAuthGuard]},
+  {path:'registration/:id/:password', component:HomeLinkartsComponent,  data: {category: 4}, canActivate: [TempAuthGuard]},
   {path:'trendings', component:HomeLinkartsComponent,  data: {category: 1,section:0},canActivate: [TempAuthGuard]},
   {path:'trendings/comics', component:HomeLinkartsComponent,  data: {category: 1,section:0},canActivate: [TempAuthGuard]},
   {path:'trendings/drawings', component:HomeLinkartsComponent,  data: {category: 1,section:1},canActivate: [TempAuthGuard]},

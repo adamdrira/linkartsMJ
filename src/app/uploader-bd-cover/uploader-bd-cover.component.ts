@@ -177,30 +177,43 @@ export class UploaderBdCoverComponent implements OnInit {
       console.log(file._file.name)
       if(this.for_edition){
         this.Bd_CoverService.get_cover_name().subscribe(r=>{
-          if ( this.format == "one-shot" ) {
-            this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).subscribe(r=>{
-              this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
-                this.cover_loading=false;
-               location.reload();
-              });
-            });
+
+          if(r[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
           }
-      
-          else if (this.format == "serie" ) {
-            this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).subscribe(r=>{
-              this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
-                this.cover_loading=false;
-                location.reload();
+          else{
+            if ( this.format == "one-shot" ) {
+              this.Bd_CoverService.add_covername_to_sql2("One-shot",this.bd_id).subscribe(r=>{
+                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                  this.cover_loading=false;
+                 location.reload();
+                });
               });
-            });
+            }
+        
+            else if (this.format == "serie" ) {
+              this.Bd_CoverService.add_covername_to_sql2("Série",this.bd_id).subscribe(r=>{
+                this.Bd_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
+                  this.cover_loading=false;
+                  location.reload();
+                });
+              });
+            }
           }
         });
        
       }
       else{
+       
         this.Bd_CoverService.get_cover_name().subscribe(r=>{
-          this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
-          this.cover_loading=false;
+          if(r[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
+          }
+          else{
+            this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation);
+            this.cover_loading=false;
+          }
+         
         });
       }
      
