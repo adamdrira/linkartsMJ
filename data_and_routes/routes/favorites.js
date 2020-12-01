@@ -57,7 +57,10 @@ pool.connect((err, client, release) => {
       order: [
           ['rank', 'ASC']
         ],
-    }).then(resu=>{
+    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(resu=>{
       if(resu[0]){
         return response.status(200).send([{favorites:resu}]);
       }
@@ -131,7 +134,10 @@ pool.connect((err, client, release) => {
             id:json.id[i],
             status:"account",
           }
-        }).then(user=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
           if(user){
             list_of_users[i]=user;
             compt++
@@ -169,7 +175,10 @@ pool.connect((err, client, release) => {
               "rank":ranking,
               "remuneration":remuneration,
               "type_of_account":list_of_users[i].type_of_account
-            }).then(favorites=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
               compteur_done++;
               if(compteur_done==list_of_users.length){
                 favorites_seq.favorites.findAll({
@@ -179,7 +188,10 @@ pool.connect((err, client, release) => {
                   order: [
                       ['rank', 'ASC']
                     ],
-                }).then(resu=>{
+                }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(resu=>{
                   if(resu[0]){
                     return response.status(200).send([{favorites:resu}]);
                   }
@@ -233,7 +245,10 @@ pool.connect((err, client, release) => {
             where:{
               id_group:user.id,
             }
-          }).then(members=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(members=>{
             
             if(members[0]){
               console.log("members_found")
@@ -248,7 +263,10 @@ pool.connect((err, client, release) => {
                 "remuneration":remuneration,
                 "type_of_account":list_of_users[i].type_of_account,
                 "shares":[shares],
-              }).then(favorites=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
                   favorites_seq.favorites.findAll({
@@ -258,7 +276,10 @@ pool.connect((err, client, release) => {
                     order: [
                         ['rank', 'ASC']
                       ],
-                  }).then(resu=>{
+                  }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(resu=>{
                     if(resu[0]){
                       return response.status(200).send([{favorites:resu}]);
                     }
@@ -273,7 +294,10 @@ pool.connect((err, client, release) => {
                 "rank":ranking,
                 "remuneration":remuneration,
                 "type_of_account":list_of_users[i].type_of_account,
-              }).then(favorites=>{
+              }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
                   favorites_seq.favorites.findAll({
@@ -283,7 +307,10 @@ pool.connect((err, client, release) => {
                     order: [
                         ['rank', 'ASC']
                       ],
-                  }).then(resu=>{
+                  }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(resu=>{
                     if(resu[0]){
                       return response.status(200).send([{favorites:resu}]);
                     }

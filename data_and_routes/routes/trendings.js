@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 var {spawn} = require("child_process")
 const usercontroller = require('../../authentication/user.controller');
 var Request = require('request');
+var fastcsv = require("fast-csv");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
@@ -14,6 +15,7 @@ const drawings_artbook_seq= require('../../drawings_artbook/models/sequelize');
 const writings_seq= require('../../writings/models/sequelize');
 const trendings_seq= require('../../p_trendings/model/sequelize');
 const Sequelize = require('sequelize');
+var nodemailer = require('nodemailer');
 const Pool = require('pg').Pool;
 const pool = new Pool({
   port: 5432,
@@ -37,9 +39,9 @@ pool.connect((err, client, release) => {
   })
 
   const get_trendings_for_tomorrow=(request,response) =>{
-    var today = new Date();
+  /*  var today = new Date();
     
-    let fastcsv = require("fast-csv");
+    
     let Path1=`/csvfiles_for_python/view_rankings.csv`;
     let Path2=`/csvfiles_for_python/likes_rankings.csv`;
     let Path3=`/csvfiles_for_python/loves_rankings.csv`
@@ -63,7 +65,8 @@ pool.connect((err, client, release) => {
 
     pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null ', [today,_before_before_yesterday], (error, results) => {
       if (error) {
-        throw error
+        console.log(error)
+        response.status(200).send([{"error":error}]); 
       }
       else{
         let json_view = JSON.parse(JSON.stringify(results.rows));
@@ -75,7 +78,8 @@ pool.connect((err, client, release) => {
         .on("finish", function() {
           pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
             if (error) {
-              throw error
+              console.log(error)
+              response.status(200).send([{"error":error}]); 
             }
             else{
               let json_view = JSON.parse(JSON.stringify(results.rows));
@@ -87,7 +91,8 @@ pool.connect((err, client, release) => {
               .on("finish", function() {
                 pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
                     if (error) {
-                      throw error
+                      console.log(error)
+                      response.status(200).send([{"error":error}]); 
                     }
                       else{
                       let json_loves = JSON.parse(JSON.stringify(results.rows));
@@ -121,7 +126,7 @@ pool.connect((err, client, release) => {
               })  
             })
           }
-      })
+      })*/
 
   }
 
@@ -131,7 +136,7 @@ pool.connect((err, client, release) => {
     
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 90);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 150);
   
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
@@ -143,33 +148,19 @@ pool.connect((err, client, release) => {
       where:{
         date:date
       }
-    }).then(result=>{
+    }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
       if(result){
         console.log("trendings exist");
-        /*fs.access(__dirname + `/python_files/comics_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-          if(err){
-            console.log('suppression already done');
-            response.status(200).send([{"comics_trendings":result.trendings}]);
-          }  
-          else{
-            fs.unlink(__dirname + `/python_files/comics_rankings_for_trendings-${date}.json`,function (err) {
-              if (err) {
-                throw err;
-              } 
-              else{
-                response.status(200).send([{"comics_trendings":result.trendings}]);
-              }
-            });  
-            
-          }
-          
-        })*/
+       
         response.status(200).send([{"comics_trendings":result.trendings}]);
       }
       else{
         // si les tendances n'ont pas déjà été chargé pour la journée on les charges
 
-        let fastcsv = require("fast-csv");
+       
         let Path1=`/csvfiles_for_python/view_rankings.csv`;
         let Path2=`/csvfiles_for_python/likes_rankings.csv`;
         let Path3=`/csvfiles_for_python/loves_rankings.csv`
@@ -181,7 +172,8 @@ pool.connect((err, client, release) => {
         
         pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
           if (error) {
-            throw error
+            console.log(error)
+            response.status(200).send([{"error":error}]); 
           }
           else{
             let json_view = JSON.parse(JSON.stringify(results.rows));
@@ -193,7 +185,8 @@ pool.connect((err, client, release) => {
             .on("finish", function() {
               pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
                   if (error) {
-                    throw error
+                    console.log(error)
+                    response.status(200).send([{"error":error}]); 
                   }
                   else{
 
@@ -207,7 +200,8 @@ pool.connect((err, client, release) => {
                   
                       pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
                           if (error) {
-                            throw error
+                            console.log(error)
+                            response.status(200).send([{"error":error}]); 
                           }
                           else{
                           let json_loves = JSON.parse(JSON.stringify(results.rows));
@@ -237,6 +231,9 @@ pool.connect((err, client, release) => {
                                         trendings_seq.trendings_comics.create({
                                           "trendings":json,
                                           "date":date
+                                        }).catch(err => {
+                                          console.log(err);	
+                                          res.status(500).json({msg: "error", details: err});		
                                         }).then(result=>{
                                           add_comics_trendings(json,date);
                                             return response.status(200).send([{comics_trendings:json}]); 
@@ -246,13 +243,17 @@ pool.connect((err, client, release) => {
                                     else{
                                       fs.unlink(files[i],function (err) {
                                         if (err) {
-                                          throw err;
+                                          console.log(error)
+                                          response.status(200).send([{"error":error}]); 
                                         } 
                                         if(i==files.length -1){
                                           let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`));
                                           trendings_seq.trendings_comics.create({
                                             "trendings":json,
                                             "date":date
+                                          }).catch(err => {
+                                            console.log(err);	
+                                            res.status(500).json({msg: "error", details: err});		
                                           }).then(result=>{
                                             add_comics_trendings(json,date);
                                               return response.status(200).send([{comics_trendings:json}]); 
@@ -298,7 +299,10 @@ const get_drawings_trendings = (request, response) => {
     where:{
       date:date
     }
-  }).then(result=>{
+  }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
     if(result){
       console.log("it exists rankings draw");
       /*fs.access(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
@@ -326,7 +330,10 @@ const get_drawings_trendings = (request, response) => {
       trendings_seq.trendings_drawings.create({
         "trendings":json,
         "date":date
-      }).then(result=>{
+      }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
            add_drawings_trendings(json,date)
           return response.status(200).send([{"drawings_trendings":json}]); 
       })
@@ -339,7 +346,10 @@ const get_drawings_trendings = (request, response) => {
             trendings_seq.trendings_drawings.create({
               "trendings":json,
               "date":date
-            }).then(result=>{
+            }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
                 return response.status(200).send([{"drawings_trendings":json}]); 
             })
            
@@ -365,7 +375,10 @@ const get_writings_trendings = (request, response) => {
     where:{
       date:date
     }
-  }).then(result=>{
+  }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
     if(result){
       response.status(200).send([{"writings_trendings":result.trendings}]);
       console.log("it exists");
@@ -375,7 +388,10 @@ const get_writings_trendings = (request, response) => {
       trendings_seq.trendings_writings.create({
         "trendings":json,
         "date":date
-      }).then(result=>{
+      }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(result=>{
           add_writings_trendings(json,date)
           return response.status(200).send([{"writings_trendings":json}]); 
       })
@@ -389,6 +405,7 @@ const get_writings_trendings = (request, response) => {
 
 
   function add_comics_trendings(json,date){
+    var list_of_users_for_email=[];
     console.log("add_comics_trendings")
     console.log(Object.keys(json.format).length)
     let list_of_comics=[];
@@ -401,6 +418,9 @@ const get_writings_trendings = (request, response) => {
             bd_id:json.publication_id[i],
             status:"public",
           }
+        }).catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
         }).then(bd=>{
           if(bd){
             list_of_comics[i]=bd;
@@ -424,6 +444,9 @@ const get_writings_trendings = (request, response) => {
             bd_id:json.publication_id[i],
             status:"public",
           }
+        }).catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
         }).then(bd=>{
           if(bd){
             list_of_comics[i]=bd;
@@ -445,13 +468,24 @@ const get_writings_trendings = (request, response) => {
 
     function add_to_data(){
       console.log("add_to_data")
+      
       for(let i=0;i<list_of_comics.length;i++){
+        if(list_of_comics[i] && list_of_users_for_email.indexOf(list_of_comics[i].authorid)<0){
+          list_of_users_for_email.push(list_of_comics[i].authorid)
+        }
+        if(i==list_of_comics.length-1){
+          send_email_to_users(list_of_users_for_email)
+        }
+        
         if(list_of_comics[i] && !list_of_comics[i].chaptersnumber){
           let ranking=get_ranking(i);
           authentification.users.findOne({
             where:{
               id:list_of_comics[i].authorid
             }
+          }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
             let remuneration= get_remuneration(user.subscribers.length,ranking);
             if(user.gender=='Groupe'){
@@ -478,7 +512,10 @@ const get_writings_trendings = (request, response) => {
             where:{
               id:list_of_comics[i].authorid
             }
-          }).then(user=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
             let remuneration= get_remuneration(user.subscribers.length,ranking);
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration)
@@ -524,8 +561,11 @@ const get_writings_trendings = (request, response) => {
           where:{
             id_group:user.id,
           }
+        }).catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
         }).then(members=>{
-          
+              
           if(members[0]){
             console.log("members_found")
             for(let j=0;j<members.length;j++){
@@ -559,6 +599,53 @@ const get_writings_trendings = (request, response) => {
         })
       }
 
+      function send_email_to_users(list_of_users){
+        console.log("send_email_to_users")
+        console.log(list_of_users)
+        for(let i=0;i<list_of_users.length;i++){
+          authentification.users.findOne({
+            where:{
+              id:list_of_users[i]
+            }
+          }).then(user=>{
+            if(user){
+              console.log("send email")
+              const transport = nodemailer.createTransport({
+                host: "pro2.mail.ovh.net",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                  user: "services@linkarts.fr", // compte expéditeur
+                  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                },
+                    tls:{
+                      ciphers:'SSLv3'
+                }
+              });
+        
+            var mailOptions = {
+                from: 'Linkarts <services@linkarts.fr>', // sender address
+                to:  user.email, // my mail
+                //cc:"adam.drira@etu.emse.fr",
+                subject: `Top tendances !`, // Subject line
+                //text: 'plain text', // plain text body
+                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Bandes dessinées"</p>
+                <p><a href="http://localhost:4200/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                // attachments: params.attachments
+            };
+        
+            /*transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error while sending mail: ' + error);
+                } else {
+                    console.log('Message sent: %s', info.messageId);
+                }
+            })*/
+            }
+          })
+        }
+      }
+
     }
    
   }
@@ -567,6 +654,7 @@ const get_writings_trendings = (request, response) => {
   function add_drawings_trendings(json,date){
     console.log("add_drawings_trendings")
     console.log(Object.keys(json.format).length)
+    let list_of_users_for_email=[]
     let list_of_drawings=[];
     let obj=Object.keys(json.format);
     let compt=0;
@@ -577,7 +665,10 @@ const get_writings_trendings = (request, response) => {
             drawing_id:json.publication_id[i],
             status:"public",
           }
-        }).then(drawing=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing=>{
           if(drawing){
             list_of_drawings[i]=drawing;
             compt++;
@@ -600,7 +691,10 @@ const get_writings_trendings = (request, response) => {
             drawing_id:json.publication_id[i],
             status:"public",
           }
-        }).then(drawing=>{
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(drawing=>{
           if(drawing){
             list_of_drawings[i]=drawing;
             compt++;
@@ -622,12 +716,22 @@ const get_writings_trendings = (request, response) => {
     function add_to_data(){
       console.log("add_to_data draw")
       for(let i=0;i<list_of_drawings.length;i++){
+        if(list_of_drawings[i] && list_of_users_for_email.indexOf(list_of_drawings[i].authorid)<0){
+          list_of_users_for_email.push(list_of_drawings[i].authorid)
+        }
+        if(i==list_of_drawings.length-1){
+          send_email_to_users(list_of_users_for_email)
+        }
+        
         if(list_of_drawings[i] && !list_of_drawings[i].pagesnumber){
           let ranking=get_ranking(i);
           authentification.users.findOne({
             where:{
               id:list_of_drawings[i].authorid
             }
+          }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
             let remuneration= get_remuneration(user.subscribers.length,ranking);
             trendings_seq.trendings_contents.create({
@@ -649,6 +753,9 @@ const get_writings_trendings = (request, response) => {
             where:{
               id:list_of_drawings[i].authorid
             }
+          }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
             let remuneration= get_remuneration(user.subscribers.length,ranking);
             if(user.gender=='Groupe'){
@@ -695,6 +802,9 @@ const get_writings_trendings = (request, response) => {
           where:{
             id_group:user.id,
           }
+        }).catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
         }).then(members=>{
           
           if(members[0]){
@@ -727,6 +837,54 @@ const get_writings_trendings = (request, response) => {
           
         })
       }
+
+
+      function send_email_to_users(list_of_users){
+        console.log("send_email_to_users")
+        console.log(list_of_users)
+        for(let i=0;i<list_of_users.length;i++){
+          authentification.users.findOne({
+            where:{
+              id:list_of_users[i]
+            }
+          }).then(user=>{
+            if(user){
+              console.log("send email")
+              const transport = nodemailer.createTransport({
+                host: "pro2.mail.ovh.net",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                  user: "services@linkarts.fr", // compte expéditeur
+                  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                },
+                    tls:{
+                      ciphers:'SSLv3'
+                }
+              });
+        
+            var mailOptions = {
+                from: 'Linkarts <services@linkarts.fr>', // sender address
+                to: user.email, // my mail
+                //cc:"adam.drira@etu.emse.fr",
+                subject: `Top tendances !`, // Subject line
+                //text: 'plain text', // plain text body
+                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Dessins"</p>
+                <p><a href="http://localhost:4200/trendings/drawings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                // attachments: params.attachments
+            };
+        
+            /*transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error while sending mail: ' + error);
+                } else {
+                    console.log('Message sent: %s', info.messageId);
+                }
+            })*/
+            }
+          })
+        }
+      }
     }
    
   }
@@ -737,6 +895,7 @@ const get_writings_trendings = (request, response) => {
     console.log("add_writings_trendings")
     console.log(Object.keys(json.format).length)
     let list_of_writings=[];
+    let list_of_users_for_email=[]
     let obj=Object.keys(json.format);
     let compt=0;
     for(let i=0;i<obj.length;i++){
@@ -745,7 +904,10 @@ const get_writings_trendings = (request, response) => {
           writing_id:json.publication_id[i],
           status:"public",
         }
-      }).then(writing=>{
+      }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(writing=>{
         if(writing){
           list_of_writings[i]=writing;
           compt++;
@@ -767,14 +929,22 @@ const get_writings_trendings = (request, response) => {
     function add_to_data(){
       console.log("add_to_data writing")
       for(let i=0;i<list_of_writings.length;i++){
-       
+        if(list_of_writings[i] && list_of_users_for_email.indexOf(list_of_writings[i].authorid)<0){
+          list_of_users_for_email.push(list_of_writings[i].authorid)
+        }
+        if(i==list_of_writings.length-1){
+          send_email_to_users(list_of_users_for_email)
+        }
         if(list_of_writings[i]){
           let ranking=get_ranking(i);
           authentification.users.findOne({
             where:{
               id:list_of_writings[i].authorid
             }
-          }).then(user=>{
+          }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
             let remuneration= get_remuneration(user.subscribers.length,ranking)
             if(user.gender='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration)
@@ -820,6 +990,9 @@ const get_writings_trendings = (request, response) => {
           where:{
             id_group:user.id,
           }
+        }).catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
         }).then(members=>{
           
           if(members[0]){
@@ -851,6 +1024,54 @@ const get_writings_trendings = (request, response) => {
 
           
         })
+      }
+
+      function send_email_to_users(list_of_users){
+        console.log("send_email_to_users")
+        console.log(list_of_users)
+        for(let i=0;i<list_of_users.length;i++){
+          authentification.users.findOne({
+            where:{
+              id:list_of_users[i]
+            }
+          }).then(user=>{
+            if(user){
+              console.log("send email")
+              const transport = nodemailer.createTransport({
+                host: "pro2.mail.ovh.net",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                  user: "services@linkarts.fr", // compte expéditeur
+                  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                },
+                    tls:{
+                      ciphers:'SSLv3'
+                }
+              });
+        
+            var mailOptions = {
+                from: 'Linkarts <services@linkarts.fr>', // sender address
+                to:  user.email, // my mail
+                //cc:"adam.drira@etu.emse.fr",
+                subject: `Top tendances !`, // Subject line
+                //text: 'plain text', // plain text body
+                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Ecrits"</p>
+                <p><a href="http://localhost:4200/trendings/writings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                // attachments: params.attachments
+            };
+        
+            /*transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error while sending mail: ' + error);
+                } else {
+                    console.log('Message sent: %s', info.messageId);
+                    
+                }
+            })*/
+            }
+          })
+        }
       }
     }
    

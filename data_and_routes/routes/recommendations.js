@@ -7,6 +7,7 @@ const usercontroller = require('../../authentication/user.controller');
 var Request = require('request');
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
+var fastcsv = require("fast-csv");
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 const pool = new Pool({
@@ -34,7 +35,7 @@ pool.connect((err, client, release) => {
 
 
 
-const get_view_table_by_user = (request, response) => {
+const generate_recommendations = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 230);
@@ -46,24 +47,23 @@ const get_view_table_by_user = (request, response) => {
       user=decoded.id;
     });
 
-  let fastcsv = require("fast-csv");
-  let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python-${user}.csv`);
+  
+
   pool.query('SELECT DISTINCT author_id_who_looks,publication_category,format, style, publication_id FROM list_of_views  WHERE author_id_who_looks = $1  AND "createdAt" ::date <=$2 AND "createdAt" ::date >= $3 limit 200', [user,_today,last_week], (error, results) => {
     if (error) {
       throw error
     }
     let jsonData = JSON.parse(JSON.stringify(results.rows));
     let fast = fastcsv.write(jsonData, { headers: true });
+    let ws = fs.createWriteStream(`./data_and_routes/routes/csvfiles_for_python/classement_python-${user}.csv`);
     fast.pipe(ws)
     .on('error', function(e){
      // console.log(e)
     })
     .on("finish", function() {
-       // console.log("csv successfully uploaded for python");
+        console.log("raady to load " + jsonData.length);
         if(jsonData.length>=1){
-         // console.log("calling python prog")
-          //let formdata = {csvfile: fs.createReadStream(__dirname + '/csvfiles_for_python/classement_python.csv')};
-         
+          
 
           const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
@@ -76,19 +76,52 @@ const get_view_table_by_user = (request, response) => {
             fs.access(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`, fs.F_OK, (err) => {
               if(err){
                // console.log('suppression already done');
-                return response.status(200).send([{"length":(jsonData.length).toString()}]); 
+                console.log(err)
               }  
               else{
                 fs.unlink(__dirname + `/csvfiles_for_python/classement_python-${user}.csv`,function (err) {
                   if (err) {
                     throw err;
                   } 
-                  response.status(200).send([{"length":(jsonData.length).toString()}]); 
                 });
-                
+              } 
+            })
+            var index_bd=-1;
+            var index_writing=-1;
+            var index_drawing=-1;
+            let json = fs.readFileSync( __dirname + `/python_files/recommendations-${user}.json`);
+            let styles_recommendation = JSON.parse(json);
+            console.log("styles_recommendation")
+            console.log(styles_recommendation)
+            for (let step=0; step <Object.keys(styles_recommendation).length;step++){
+              if(styles_recommendation.comic!= undefined){
+                if (styles_recommendation.comic[step]!=null){
+                  index_bd=step
+                };
               }
-                
-            })   
+              if(styles_recommendation.drawing!=undefined){
+                if (styles_recommendation.drawing[step]!=null){
+                  index_drawing=step
+                };
+              }
+              
+              if(styles_recommendation.writing!=undefined){
+                if (styles_recommendation.writing[step]!=null){
+                  index_writing=step
+                };
+              }
+              
+            }
+            var sorted_list_category = {
+              "comic": index_bd,
+              "writing": index_writing,
+              "drawing": index_drawing,
+            }
+
+            //let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`); 
+            //console.log("reading to send 1")
+            //console.log(JSON.parse(json2))
+            response.cookie("recommendations",[{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}]).send([{sorted_list_category:sorted_list_category,styles_recommendation:styles_recommendation}]);  
           });
 
           
@@ -104,11 +137,60 @@ const get_view_table_by_user = (request, response) => {
                                           {"0":null,"1":null,"2":null}         
                                         }
 
+
           fs.writeFile(PATH, JSON.stringify(array_to_convert_in_json), (err) => {
             if (err) throw err;
             fs.writeFile(PATH2, JSON.stringify(array_to_convert_in_json), (err) => {
-              if (err) throw err;
-              response.status(200).send([{"length":(jsonData.length).toString()}]); 
+              if (err){
+                console.log(err)
+                response.status(500).send([{error:err}])
+              } 
+              else{
+                var list_bd_os_to_send=[];
+                var list_bd_serie_to_send=[];
+                let compteur=0;
+                complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
+                  list_bd_os_to_send = req;
+                  complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
+                    list_bd_os_to_send = list_bd_os_to_send.concat(req);
+                    complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
+                      list_bd_os_to_send = list_bd_os_to_send.concat(req);           
+                      complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
+                        list_bd_os_to_send = list_bd_os_to_send.concat(req);
+                        compteur++;
+                        if(compteur==2){
+                          response.status(200).json([{
+                            "list_bd_os_to_send":list_bd_os_to_send,
+                            "list_bd_serie_to_send":list_bd_serie_to_send
+                          }])
+                        }
+                      })    
+                    });           
+                  })          
+                 });
+
+                complete_recommendation_bd(user,'Manga',"serie", (req)=>{
+                  list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                  complete_recommendation_bd(user,'Comics',"serie", (req)=>{
+                    list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                    complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
+                      list_bd_serie_to_send = list_bd_serie_to_send.concat(req);  
+                      complete_recommendation_bd(user,'BD',"serie", (req)=>{
+                        list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
+                        compteur++;
+                        if(compteur==2){
+                          response.status(200).json([{
+                            "list_bd_os_to_send":list_bd_os_to_send,
+                            "list_bd_serie_to_send":list_bd_serie_to_send
+                          }])
+                        }
+                      })    
+                    });           
+                  })          
+                });
+              }
+              
+              
             })
           }) 
         }
@@ -172,22 +254,16 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
                // console.log("in if first recomm bd one shot")
                // console.log(list_bd_os_to_send.length)
                 complete_recommendation_bd(user,'Manga',"one-shot", (req)=>{
-                 // console.log(req.length)
                   list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                 // console.log(list_bd_os_to_send.length)
                   complete_recommendation_bd(user,'Comics',"one-shot", (req)=>{
-                   // console.log(req.length)
                     list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                   // console.log(list_bd_os_to_send.length)
                     complete_recommendation_bd(user,'Webtoon',"one-shot", (req)=>{
-                     // console.log(req.length)
-                      list_bd_os_to_send = list_bd_os_to_send.concat(req);   
-                     // console.log(list_bd_os_to_send.length)        
+                      list_bd_os_to_send = list_bd_os_to_send.concat(req);     
                       complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
-                       // console.log(req.length)
                         list_bd_os_to_send = list_bd_os_to_send.concat(req);
-                       // console.log(list_bd_os_to_send.length)
-                        response.status(200).json([{
+                        console.log("list_bd_os_to_send")
+                        console.log(JSON.parse(JSON.stringify(list_bd_os_to_send)).length)
+                       response.status(200).send([{
                           "list_bd_os_to_send":list_bd_os_to_send}])
                       })    
                     });           
@@ -209,8 +285,10 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
             list_bd_os_to_send = list_bd_os_to_send.concat(req);           
             complete_recommendation_bd(user,'BD',"one-shot", (req)=>{
               list_bd_os_to_send = list_bd_os_to_send.concat(req);
-              response.status(200).json([{
-                "list_bd_os_to_send":list_bd_os_to_send}])
+              console.log("list_bd_os_to_send")
+              console.log(JSON.parse(JSON.stringify(list_bd_os_to_send)).length)
+              response.status(200).send([{
+                 "list_bd_os_to_send":list_bd_os_to_send}])
             })    
           });           
         })          
@@ -269,25 +347,16 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
   
               k++;
               if(k == compt){
-               // console.log("in if first recomm bd serie")
-               // console.log(list_bd_serie_to_send.length)
                 complete_recommendation_bd(user,'Manga',"serie", (req)=>{
-                 // console.log(req.length)
                   list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                 // console.log(list_bd_serie_to_send.length)
                   complete_recommendation_bd(user,'Comics',"serie", (req)=>{
-                   // console.log(req.length)
                   list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                 // console.log(list_bd_serie_to_send.length)
                   complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
-                   // console.log(req.length)
                     list_bd_serie_to_send = list_bd_serie_to_send.concat(req);  
-                   // console.log(list_bd_serie_to_send.length)         
                     complete_recommendation_bd(user,'BD',"serie", (req)=>{
-                     // console.log(req.length)
                       list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-                     // console.log(list_bd_serie_to_send.length)
-                       response.status(200).json([{
+                      console.log("list_bd_serie_to_send")
+                      response.status(200).send([{
                          "list_bd_serie_to_send":list_bd_serie_to_send}])
                      })    
                    });           
@@ -300,20 +369,16 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
       }
     }
     else{
-     // console.log("in else bd serie")
       complete_recommendation_bd(user,'Manga',"serie", (req)=>{
-       // console.log(req.length)
         list_bd_serie_to_send = req;
         complete_recommendation_bd(user,'Comics',"serie", (req)=>{
-         // console.log(req.length)
         list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
         complete_recommendation_bd(user,'Webtoon',"serie", (req)=>{
-         // console.log(req.length)
           list_bd_serie_to_send = list_bd_serie_to_send.concat(req);           
           complete_recommendation_bd(user,'BD',"serie", (req)=>{
-           // console.log(req.length)
             list_bd_serie_to_send = list_bd_serie_to_send.concat(req);
-             response.status(200).json([{
+            console.log("list_bd_serie_to_send")
+            response.status(200).send([{
                "list_bd_serie_to_send":list_bd_serie_to_send}])
            })    
          });           
@@ -378,7 +443,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
                   list_artbook_to_send = list_artbook_to_send.concat(req); 
                       complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
                         list_artbook_to_send = list_artbook_to_send.concat(req); 
-                        response.status(200).json([{
+                        response.status(200).send([{
                           "list_artbook_to_send":list_artbook_to_send}])
                       })    
                     });           
@@ -394,7 +459,7 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
         list_artbook_to_send = req;        
             complete_recommendation_drawing(user,'Digital',"artbook", (req)=>{
               list_artbook_to_send = list_artbook_to_send.concat(req);
-              response.status(200).json([{
+              response.status(200).send([{
                 "list_artbook_to_send":list_artbook_to_send}])
             })    
        });  
@@ -455,7 +520,7 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
                   list_drawing_os_to_send = list_drawing_os_to_send.concat(req);        
                       complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
                         list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
-                        response.status(200).json([{
+                        response.status(200).send([{
                           "list_drawing_os_to_send":list_drawing_os_to_send}])
                       })    
                     }); 
@@ -471,7 +536,7 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
         list_drawing_os_to_send = req;         
             complete_recommendation_drawing(user,'Digital',"one-shot", (req)=>{
               list_drawing_os_to_send = list_drawing_os_to_send.concat(req);
-              response.status(200).json([{
+              response.status(200).send([{
                 "list_drawing_os_to_send":list_drawing_os_to_send}])
             })    
       }); 
@@ -533,7 +598,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
                             list_writings_to_send = list_writings_to_send.concat(req);
                             complete_recommendation_writing(user,'Scenario', (req)=>{
                               list_writings_to_send = list_writings_to_send.concat(req);
-                                response.status(200).json([{
+                              response.status(200).send([{
                                   "list_writings_to_send":list_writings_to_send}])
                             })
                           })
@@ -557,7 +622,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
               list_writings_to_send = list_writings_to_send.concat(req);
               complete_recommendation_writing(user,'Scenario', (req)=>{
                 list_writings_to_send = list_writings_to_send.concat(req);
-                  response.status(200).json([{
+                response.status(200).send([{
                     "list_writings_to_send":list_writings_to_send}])
               })
             })
@@ -577,7 +642,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 170);
+  last_week.setDate(last_week.getDate() - 200);
 
 
   let list_to_send=[];
@@ -741,7 +806,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
     var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 170);
+  last_week.setDate(last_week.getDate() - 200);
   
     let list_to_send=[];
    
@@ -753,8 +818,7 @@ function complete_recommendation_bd(user,style,format,callback){
           const result1 = JSON.parse(JSON.stringify(results1.rows));
           let i=0;
           //AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2)
-          console.log("result complete drawings")
-          console.log(result1)
+
           if(format=="one-shot" && result1.length!=0){
             for (let item of result1){
               pool.query('SELECT * FROM liste_drawings_one_page WHERE drawing_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_drawings_one_page WHERE drawing_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
@@ -824,7 +888,7 @@ function complete_recommendation_bd(user,style,format,callback){
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 170);
+  last_week.setDate(last_week.getDate() - 200);
 
 
   let list_to_send=[];
@@ -898,7 +962,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 170);
+  last_week.setDate(last_week.getDate() - 200);
 
   let list_to_send=[];
  
@@ -953,7 +1017,7 @@ function complete_recommendation_bd(user,style,format,callback){
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 170);
+    last_week.setDate(last_week.getDate() - 200);
   
   
     let list_to_send=[];
@@ -1007,7 +1071,7 @@ function complete_recommendation_bd(user,style,format,callback){
 
 
 module.exports = {
-  get_view_table_by_user,
+  generate_recommendations,
   get_first_recommendation_bd_os_for_user,
   get_first_recommendation_bd_serie_for_user,
   get_first_recommendation_drawing_os_for_user,

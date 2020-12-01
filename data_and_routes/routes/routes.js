@@ -49,7 +49,7 @@ const authentification = require('../../authentication/db.config');
 
 // Cors
 const corsOptions = {
-   origin: ['http://localhost:4200', 'http://localhost:777'],
+   origin: ['http://localhost:4200'],
    optionsSuccessStatus: 200
  };
  router.use(cors(corsOptions));
@@ -70,7 +70,7 @@ router.get('/', (request, response) => {
 })
 
 //fonctions pour les recommendations et les trendings
-router.post('/view_table_by_author_to_python',recommendations.get_view_table_by_user)
+router.post('/generate_recommendations',recommendations.generate_recommendations)
 router.post('/get_first_recommendation_bd_os_for_user',recommendations.get_first_recommendation_bd_os_for_user)
 router.post('/get_first_recommendation_bd_serie_for_user',recommendations.get_first_recommendation_bd_serie_for_user)
 router.post('/see_more_recommendations_bd',recommendations.see_more_recommendations_bd)
@@ -205,38 +205,10 @@ controller_notifications(router,
   ads_seq.list_of_ads,
   ads_seq.list_of_ads_responses,
   );
-controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users,ads_seq.list_of_ads)
-
-router.get("/uploadedBdOneShot/:nomfichier", (req,res) => {
-  console.log('l\'artiste');
-  res.sendFile(__dirname + '/listeBdOneShot/' + req.params.nomfichier );
-});
+controller_navbar(router,navbar_seq.list_of_navbar_researches,subscribings_seq.list_of_subscribings,authentification.users,ads_seq.list_of_ads,subscribings_seq.list_of_contents)
 
 
 
-//GET POST
 
-router.get('/posts' , (req, res)=>{
-
-   axios.get(`${PostAPI}/posts`).then(posts =>{
-      res.status(200).json(posts.data);
-      //console.log(posts.data);
-   })
-     .catch(error =>{
-      res.status(500).send(error);
-   });
-});
-
-//GET contenu posté
-router.get('/posts' , (req, res)=>{
-
-  axios.get(`${PostAPI}/posts`).then(posts =>{
-     res.status(200).json(posts.data);
-     //console.log(posts.data);
-  })
-    .catch(error =>{
-     res.status(500).send(error);
-  });
-});
 
 module.exports = router;

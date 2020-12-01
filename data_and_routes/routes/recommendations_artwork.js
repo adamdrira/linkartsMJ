@@ -49,7 +49,7 @@ const get_comics_recommendations_by_author = (request, response) => {
             for (let i=0; i< result.length;i++){  
                 if (result[i].format=="one-shot"){
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                    pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=$1 AND bd_id=$2', [id_user,result[i].publication_id], (error, results2) => {
+                    pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                     if (error) {
                         throw error
                     }
@@ -65,7 +65,7 @@ const get_comics_recommendations_by_author = (request, response) => {
                 }
                 if (result[i].format=="serie"){
                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                        pool.query('SELECT * FROM liste_bd_serie WHERE authorid=$1 AND bd_id=$2', [id_user,result[i].publication_id], (error, results2) => {
+                        pool.query('SELECT * FROM liste_bd_serie WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
                             throw error
                         }
@@ -109,7 +109,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
             for (let i=0; i< result.length;i++){  
                 if (result[i].format=="one-shot"){
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                    pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid=$1 AND drawing_id=$2', [id_user,result[i].publication_id], (error, results2) => {
+                    pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
                     if (error) {
                         throw error
                     }
@@ -125,7 +125,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 }
                 if (result[i].format=="artbook"){
                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                        pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=$1 AND drawing_id=$2', [id_user,result[i].publication_id], (error, results2) => {
+                        pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
                             throw error
                         }
@@ -169,7 +169,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
               let j=0;
             for (let i=0; i< result.length;i++){ 
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                    pool.query('SELECT * FROM liste_writings WHERE authorid=$1 AND writing_id=$2', [id_user,result[i].publication_id], (error, results2) => {
+                    pool.query('SELECT * FROM liste_writings WHERE authorid=$1 AND writing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
                     if (error) {
                         throw error
                     }
@@ -257,8 +257,6 @@ const get_drawings_recommendations_by_author = (request, response) => {
     const style = request.body.style;
     const firsttag=request.body.firsttag;
     var list_to_send=[];
-    console.log("frmt");
-    console.log(format);
     pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$7 AND firsttag=$3  AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit,publication_category,format,publication_id], (error, results) => {
       if (error) {
         throw error
@@ -273,9 +271,6 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 else{
                     let result1 = JSON.parse(JSON.stringify(results1.rows));
                     result= result.concat(result1);
-                    console.log("rslt")
-                    console.log(result);
-                    console.log(format);
                     if(result.length>0){
                         let j=0;
                         if (publication_category=="comic"){ 
@@ -351,7 +346,6 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                                 }
                                                 j++
                                                 if(j==result.length){
-                                                    console.log(list_to_send);
                                                     response.status(200).send([{"list_to_send":list_to_send}]);
                                                 }
                                             }
