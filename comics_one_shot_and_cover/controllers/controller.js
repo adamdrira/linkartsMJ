@@ -27,7 +27,12 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
   router.post('/get_covername_comic', (req, res)=>{ 
     let current_user = get_current_user(req.cookies.currentUser);
     let covername=list_covers_by_id[current_user];
-    res.status(200).send([{covername:covername}]);
+    if(covername){
+      res.status(200).send([{covername:covername}]);
+    }
+    else{
+      res.status(200).send([{error:"cover_not_found"}]);
+    }
     }); 
       
 

@@ -6,7 +6,10 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
-
+var nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const algorithm = 'aes-256-ctr';
+const secretKey = 'vOVH6sdmpNWjRRIqCc78dJBL1awHzfr3';
 
 module.exports = (router, 
   users,
@@ -46,6 +49,18 @@ function get_current_user(token){
   });
   return user;
 };
+
+function genere_random_id(id){
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+  const encrypted = Buffer.concat([cipher.update(id.toString()), cipher.final()]);
+  let string_1=encrypted.toString('hex');
+  let string_2=iv.toString('hex');
+  
+  let string_3=Math.random().toString(36).slice(-8) 
+  return string_1 + string_2 + string_3;
+  
+}
 
 
 router.post('/add_profile_pic', function (req, res) {
@@ -2011,7 +2026,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/get_mailing_managment', function (req, res) {
-    //console.log("get_mailing_managment")
+    console.log("get_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
 
     const Op = Sequelize.Op;
@@ -2034,4 +2049,179 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
    
   });
+
+
+  
+
+  router.post('/check_password_for_registration', function (req, res) {
+    console.log("check_password_for_registration")
+    let id = req.body.id;
+    let password= req.body.password;
+    console.log(id);
+    console.log(password);
+    users.findOne({
+      where:{
+        id:id
+      }
+    }).then(user=>{
+      if(user){
+        if(user.password_registration==password){
+          console.log("match")
+          console.log(user.password_registration)
+          user.update({
+            "email_checked":true,
+            "password_registration":null,
+          })
+          res.status(200).send([{user_found:user}])
+        }
+        else{
+          res.status(200).send([{error:"error"}])
+        }
+      }
+      else{
+        res.status(200).send([{error:"error"}])
+      }
+
+    })
+  })
+
+  router.post('/send_email_for_account_creation', function (req, res) {
+    console.log("send_email_for_account_creation")
+    let id = req.body.id;
+    users.findOne({
+      where:{
+        id:id
+      }
+    }).then(user=>{
+      if(user){
+          let password=genere_random_id(user.id);
+          console.log(user.email)
+          console.log(password)
+          user.update({
+            "password_registration":password
+          })
+
+          const transport = nodemailer.createTransport({
+            host: "pro2.mail.ovh.net",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: "services@linkarts.fr", // compte expéditeur
+              pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+            },
+                tls:{
+                  ciphers:'SSLv3'
+            }
+          });
+    
+        var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', // sender address
+            to: user.email, // my mail
+            //cc:"adam.drira@etu.emse.fr",
+            subject: `Confirmation d'inscription`, // Subject line
+            //text: 'plain text', // plain text body
+            html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+            // attachments: params.attachments
+        };
+    
+        transport.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error while sending mail: ' + error);
+                res.status(200).send([{error:error}])
+            } else {
+                console.log('Message sent: %s', info.messageId);
+                res.status(200).send([{sent:'Message sent ' + info.messageId}])
+            }
+            
+
+        })
+
+      }
+      else{
+        res.status(200).send([{error:"error"}])
+      }
+
+    })
+   
+  });
+
+  
+  router.post('/send_email_for_group_creation', function (req, res) {
+    console.log("send_email_for_group_creation")
+    let id =req.body.id;
+    const transport = nodemailer.createTransport({
+      host: "pro2.mail.ovh.net",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "services@linkarts.fr", // compte expéditeur
+        pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+      },
+          tls:{
+            ciphers:'SSLv3'
+      }
+    });
+
+    users.findOne({
+      where:{
+        id:id
+      }
+    }).then(user=>{
+      if(user){
+          let list_of_members=user.list_of_members;
+          let compt=0;
+          for(let i=0; i<list_of_members.length;i++){
+            users.findOne({
+              where:{
+                id:list_of_members[i],
+                status:"account",
+              }
+            }).then(user_found=>{
+              var mailOptions = {
+                from: 'Linkarts <services@linkarts.fr>', // sender address
+                to: user_found.email, // my mail
+                //cc:"adam.drira@etu.emse.fr",
+                subject: `Création d'un groupe`, // Subject line
+                //text: 'plain text', // plain text body
+                html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
+                // attachments: params.attachments
+              };
+
+              transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error while sending mail: ' + error);
+                    compt++;
+                    if(compt==list_of_members.length){
+                      res.status(200).send([{error:error}])
+                    }
+                   
+                } else {
+                    console.log('Message sent: %s', info.messageId);
+                    compt++;
+                    if(compt==list_of_members.length){
+                      res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                    }
+                  
+                }
+            })
+            })
+          }
+
+        
+    
+        
+    
+      
+
+      }
+      else{
+        res.status(200).send([{error:"error"}])
+      }
+
+    })
+   
+  });
+
+
+ 
 }

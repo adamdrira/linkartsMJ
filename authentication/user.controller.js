@@ -14,7 +14,7 @@ const chat_seq = require('../chat/model/sequelize');
 const List_of_subscribings = require('../p_subscribings_archives_contents/model/sequelize').list_of_subscribings;
 const albums_seq = require('../albums_edition/model/sequelize');
 const crypto = require('crypto');
-
+var nodemailer = require('nodemailer');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
 
@@ -178,6 +178,12 @@ exports.create = (req, res) => {
 						"birthday":"public",
 						"job":"public",
 						"training":"public",
+						"profile_stats":"private",
+						"comics_stats":"private",
+						"drawings_stats":"private",
+						"writings_stats":"private",
+						"trendings_stats":"private",
+						"ads_stats":"private",
 					}).catch(err => {
 						console.log(err);	
 						res.status(500).json({msg: "error", details: err});		
@@ -352,13 +358,50 @@ exports.reset_password = (req, res) => {
 			}).catch(err => {
 			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+			}).then(user=>{
 				if(user.length>0){
 					const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
 					const decrypted = Buffer.concat([decipher.update(Buffer.from(user[0].content, 'hex')), decipher.final()]);
-					res.status(200).json([{password: decrypted.toString()}])
+					console.log(user_found.email)
+					console.log(decrypted.toString())
+					const transport = nodemailer.createTransport({
+						host: "pro2.mail.ovh.net",
+						port: 587,
+						secure: false, // true for 465, false for other ports
+						auth: {
+						  user: "services@linkarts.fr", // compte expéditeur
+						  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+						},
+							tls:{
+							  ciphers:'SSLv3'
+						}
+					  });
+				
+					var mailOptions = {
+						from: 'Linkarts <services@linkarts.fr>', // sender address
+						to: user_found.email, // my mail
+						//cc:"adam.drira@etu.emse.fr",
+						subject: `Confirmation d'inscription`, // Subject line
+						text: decrypted.toString(), // plain text body
+						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+						// attachments: params.attachments
+					};
+				
+					transport.sendMail(mailOptions, (error, info) => {
+						if (error) {
+							console.log('Error while sending mail: ' + error);
+							res.status(200).send([{error:error}])
+						} else {
+							console.log('Message sent: %s', info.messageId);
+							res.status(200).send([{sent:'Message sent ' + info.messageId}])
+						}
+						
+			
+					})
 				}
 				else{
+					//res.status(200).send([{error:"user not found"}])
+					
 					var pass= Math.random().toString(36).slice(-8) + "@8=(AM" + Math.random().toString(36).slice(-8) + "@$=)G";
 					var password;
 					bcrypt.hash(pass,10,function(err,hash){
@@ -380,7 +423,41 @@ exports.reset_password = (req, res) => {
 							"iv":password_hash.iv,
 							"content":password_hash.content,
 						})
-						res.status(200).send([{pass:pass}])
+
+						const transport = nodemailer.createTransport({
+							host: "pro2.mail.ovh.net",
+							port: 587,
+							secure: false, // true for 465, false for other ports
+							auth: {
+							  user: "services@linkarts.fr", // compte expéditeur
+							  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+							},
+								tls:{
+								  ciphers:'SSLv3'
+							}
+						  });
+					
+						var mailOptions = {
+							from: 'Linkarts <services@linkarts.fr>', // sender address
+							to: user_found.email, // my mail
+							//cc:"adam.drira@etu.emse.fr",
+							subject: `Confirmation d'inscription`, // Subject line
+							text: 'Votre nouveau mot de passe est : ' + pass, // plain text body
+							//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+							// attachments: params.attachments
+						};
+					
+						transport.sendMail(mailOptions, (error, info) => {
+							if (error) {
+								console.log('Error while sending mail: ' + error);
+								res.status(200).send([{error:error}])
+							} else {
+								console.log('Message sent: %s', info.messageId);
+								res.status(200).send([{sent:'Message sent ' + info.messageId}])
+							}
+							
+				
+						})
 					})
 				}
 			})
@@ -553,27 +630,52 @@ exports.check_pseudo=(req,res)=>{
 
 exports.check_email=(req,res)=>{
 	console.log("check_email")
-	let email = (req.body.email).toLowerCase();
+	let user = req.body.user;
+	let email = (user.email).toLowerCase();
 	const Op = Sequelize.Op;
 	
+
+	if(user.gender=='Groupe'){
+		User.findAll({
+			where:{
+				status:"account",
+				gender:'Groupe',
+				email:{[Op.iLike]: email},
+			}
+			}).catch(err => {
+				console.log(err);	
+				res.status(500).json({msg: "error", details: err});		
+			}).then(user=>{
+				console.log(user.email)
+				if(user.length==0){
+					res.status(200).send([{msg: "ok"}]);		
+				}
+				else{
+					res.status(200).send([{msg: "found", type:"groupe"}]);	
+				}
+			})
+	}
+	else{
+		User.findAll({
+			where:{
+				status:"account",
+				email:{[Op.iLike]: email},
+			}
+		}).catch(err => {
+				console.log(err);	
+				res.status(500).json({msg: "error", details: err});		
+			}).then(user=>{
+			console.log(user.email)
+			if(user.length==0){
+				res.status(200).send([{msg: "ok"}]);		
+			}
+			else{
+				res.status(200).send([{msg: "found", type:"user"}]);	
+			}
+		})
+	}
 	
-	User.findAll({
-		where:{
-			status:"account",
-			email:{[Op.iLike]: email},
-		}
-	}).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-		console.log(user.email)
-		if(user.length==0){
-			res.status(200).send([{msg: "ok"}]);		
-		}
-		else{
-			res.status(200).send([{msg: "found"}]);	
-		}
-	})
+	
 }
 
 
@@ -651,9 +753,6 @@ exports.login = async (req, res) => {
 	}
 	else{
 		console.log("check login")
-		console.log(user.gender)
-		console.log(user.list_of_members_validations)
-		console.log(user.list_of_members)
 		if(user.gender=="Groupe"){
 			if(!user.list_of_members_validations){
 				return res.status(200).json({msg: "error_group"});
@@ -667,7 +766,7 @@ exports.login = async (req, res) => {
 				}
 				if(similar){
 					const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
-					return res.status(200).json( { token:token } );
+					return res.status(200).json( { token:token,user:user } );
 				}
 				else{
 					return res.status(200).json({msg: "error_group"});	
@@ -677,7 +776,81 @@ exports.login = async (req, res) => {
 		}
 		else{
 			const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
-			return res.status(200).json( { token:token } );
+			return res.status(200).json( { token:token,user:user } );
+		}
+		
+	}
+
+	
+	
+};
+
+
+exports.check_email_checked = async (req, res) => {
+	const Op = Sequelize.Op;
+	const user = await User.findOne( {
+		 where: { 
+			[Op.or]:[{status:"account"},{status:"suspended"}],
+			email:{[Op.iLike]: req.body.mail_or_username},
+			} 
+		});
+	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
+
+	if( !user || !passwordCorrect ) {
+		
+		if(user){
+			const Op = Sequelize.Op;
+			var last_year = new Date();
+        	last_year.setDate(last_year.getDate() - 365);
+			User_passwords.findAll( {
+				where: { 
+					id_user:user.id,
+					createdAt: {[Op.gte]: last_year}
+				} ,
+				order: [
+					['createdAt', 'DESC']
+				],
+				}).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(pass=>{
+					if(pass.length>0){
+						let exist=false;
+						for(let i=0;i<pass.length;i++){
+							let decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(pass[i].iv, 'hex'));
+							let decrypted = Buffer.concat([decipher.update(Buffer.from(pass[i].content, 'hex')), decipher.final()]);
+							console.log("")
+							if(decrypted.toString()==req.body.password){
+								exist=true
+							}
+						}
+						if(exist){
+							return res.status(200).json({msg: "error_old_value"});
+						}
+						else{
+							return res.status(200).json({msg: "error"});
+						}
+						
+					}
+					else{
+						return res.status(200).json({msg: "error"});
+					}
+				})
+		}
+		else{
+			
+			return res.status(200).json({msg: "error"});
+		}
+		
+		
+	}
+	else{
+		console.log("check login")
+		if(user.email_checked){
+			return res.status(200).json({user: user});
+		}
+		else{
+			return res.status(200).json({error: "error"});
 		}
 		
 	}

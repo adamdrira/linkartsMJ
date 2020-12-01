@@ -22,8 +22,14 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
   router.get('/get_cookies_writing', (req, res)=>{ 
     let value = req.cookies
     let current_user = get_current_user(req.cookies.currentUser);
-
-    res.status(200).send([{covername:list_of_covers[current_user]}]);
+    let covername =list_of_covers[current_user]
+    if(covername){
+      res.status(200).send([{covername:covername}]);
+    }
+    else{
+      res.status(200).send([{error:"error_not_found"}]);
+    }
+   
     }); 
       
 

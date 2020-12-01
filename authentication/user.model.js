@@ -9,6 +9,7 @@ module.exports = (sequelize, Sequelize) => {
 		certified_account:{type: Sequelize.BOOLEAN},
 		email: {type: Sequelize.STRING},
 		email_about: {type: Sequelize.STRING},
+		email_checked:{type: Sequelize.BOOLEAN},
 		nickname: {type: Sequelize.STRING},
 		firstname: {type: Sequelize.STRING},
 		lastname: {type: Sequelize.STRING},
@@ -38,7 +39,8 @@ module.exports = (sequelize, Sequelize) => {
 		subscribings_number: {type: Sequelize.INTEGER},
 		subscribers:Sequelize.ARRAY(Sequelize.INTEGER),
 		subscribings:Sequelize.ARRAY(Sequelize.INTEGER),
-		status:{type: Sequelize.STRING}
+		status:{type: Sequelize.STRING},
+		password_registration:{type: Sequelize.STRING},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,

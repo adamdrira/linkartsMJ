@@ -21,7 +21,7 @@ exports.Bd_serie_Tables = (sequelize, DataTypes) => {
         lovesnumber: DataTypes.INTEGER,
         viewnumber: DataTypes.INTEGER,
         commentarynumbers:DataTypes.INTEGER,
-        highlight: DataTypes.STRING(500),
+        highlight: DataTypes.STRING(2000),
         tools: DataTypes.STRING,
         softwares: DataTypes.STRING,
         average_lecture_time:DataTypes.INTEGER,

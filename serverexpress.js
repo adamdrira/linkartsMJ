@@ -22,15 +22,15 @@ global.appRoot = __dirname;  //pour testdb
   //Réglage des headers
   app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200"); 
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader("Access-Control-Allow-Origin", ["http://localhost:4200"]); 
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     //pour l'upload de contenus
     next();
   });
   //Peut-être que cette partie est un doublons des headers précedents
   const corsOptions = {
-    origin: ['http://localhost:4200', 'http://localhost:777'],
+    origin: ['http://localhost:4200'],
     optionsSuccessStatus: 200
   };
   app.use(cors(corsOptions));

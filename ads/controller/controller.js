@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
-
+var nodemailer = require('nodemailer');
 
 
 module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
@@ -1046,4 +1046,68 @@ router.post('/get_number_of_ads_and_responses', function (req, res) {
     }); 
 });
 
+
+
+
+router.post('/send_email_for_ad_answer', function (req, res) {
+  console.log("send_email_for_ad_answer")
+  const user_name = req.body.user_name;
+  const ad_id = req.body.ad_id;
+  const author_id = req.body.author_id;
+  const title= req.body.title;
+  console.log(user_name)
+  console.log(ad_id)
+  console.log(author_id)
+  console.log(title)
+  list_of_users.findOne({
+    where:{
+      id:author_id
+    }
+  }).then(user=>{
+    if(user){
+        console.log("user found")
+        const transport = nodemailer.createTransport({
+          host: "pro2.mail.ovh.net",
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "services@linkarts.fr", // compte expéditeur
+            pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+          },
+              tls:{
+                ciphers:'SSLv3'
+          }
+        });
+  
+      var mailOptions = {
+          from: 'Linkarts <services@linkarts.fr>', // sender address
+          to: user.email, // my mail
+          //cc:"adam.drira@etu.emse.fr",
+          subject: `Réponse à une annonce`, // Subject line
+          //text: 'plain text', // plain text body
+          html:  `<p>${user_name} a répondu à votre annonce : ${title}</p>
+          <p><a href="http://localhost:4200/ad-page/${title}/${ad_id}"> Cliquer ici pour consulter l'annonce</a></p>`, // html body
+          // attachments: params.attachments
+      };
+  
+      transport.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log('Error while sending mail: ' + error);
+              res.status(200).send([{error:error}])
+          } else {
+              console.log('Message sent: %s', info.messageId);
+              res.status(200).send([{sent:'Message sent ' + info.messageId }])
+          }
+          
+
+      })
+
+    }
+    else{
+      res.status(200).send([{error:"error"}])
+    }
+
+  })
+ 
+});
 }
