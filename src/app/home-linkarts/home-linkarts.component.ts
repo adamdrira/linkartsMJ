@@ -1,10 +1,13 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
+import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginComponent } from '../login/login.component';
 
 
 declare var Swiper: any
@@ -22,6 +25,8 @@ export class HomeLinkartsComponent implements OnInit {
     private route: ActivatedRoute, 
     public navbar: NavbarService, 
     private location: Location,
+    public dialog: MatDialog,
+    private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
     private router: Router
     
@@ -84,6 +89,26 @@ export class HomeLinkartsComponent implements OnInit {
         this.display_selector();
         this.initialize_heights();
         this.category_index = this.route.snapshot.data['category'];
+        if(this.category_index==4){
+          let id = parseInt(this.route.snapshot.paramMap.get('id'));
+          let password = this.route.snapshot.paramMap.get('password');
+          console.log(id)
+          console.log(password)
+          
+          this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
+            console.log(r[0])
+            this.category_index=0;
+            if(r[0].user_found){
+              this.location.go('/recommendations')
+              const dialogRef = this.dialog.open(LoginComponent, {
+                data: {usage:"registration"}
+              });
+            }
+            else{
+              this.location.go('/recommendations')
+            }
+          })
+        }
       }
     })
     this.display_selector();
