@@ -60,56 +60,6 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
 
-  //Other
-  /*see_more(item) {
-    this.list_of_contents_sorted=false;
-    console.log(this.sorted_style_list);
-    console.log(item);
-    let index = this.sorted_style_list.indexOf(item);
-    console.log(index);
-    this.show_more[index]=true;
-    console.log(this.show_more)
-    this.list_of_contents_sorted=true;
-
-
-  }
-
-   //Artwooks functions
-
-   resize_artbooks() {
-
-    this.artbooks_per_line = this.get_artbooks_per_line();
-    $('.thumbnail-component-container').css({'width': this.get_artbook_size() +'px'});
-
-  }
-
-
-  get_artbook_size() {
-
-    return $('.container-homepage').width()/this.artbooks_per_line;
-
-  }
-
-
-  get_artbooks_per_line() {
-    var width = window.innerWidth;
-
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200) {
-      return 4;
-    }
-    else if( width > 1000) {
-      return 3;
-    }
-    else if( width > 700) {
-      return 2;
-    }
-    else {
-      return 1;
-    }
-  }*/
 
   open_research(item:any) {
     return "/main-research-style-and-tag/1/Drawing/"+item+"/all";
@@ -171,7 +121,6 @@ export class MediaDrawingsComponent implements OnInit {
   });
   
   $grid.on( 'layoutComplete', function() {
-    console.log("layout complete")
     
     $grid.masonry('reloadItems');
     THIS.compteur_visibility_drawings++;
@@ -201,7 +150,6 @@ export class MediaDrawingsComponent implements OnInit {
     let width =$('.media-container').width()-20;
     if(width>0 && !this.got_number_of_drawings_to_show){
   
-      //console.log("get get_number_of_ drawings_to_show")
       this.number_of_drawings_variable=Math.floor(width/210);
       this.got_number_of_drawings_to_show=true;
       this.number_of_lines_drawings=1;
@@ -211,7 +159,6 @@ export class MediaDrawingsComponent implements OnInit {
       this.number_of_drawings_to_show_by_category[1]=this.compteur_number_of_drawings;
 
 
-      console.log(this.number_of_drawings_variable)
       //console.log(this.number_of_lines_drawings)
       //console.log(this.number_of_drawings_to_show_by_category)
       //console.log(this.number_of_private_contents_drawings)
@@ -308,7 +255,6 @@ export class MediaDrawingsComponent implements OnInit {
   first_masonry_loaded=false;
   all_drawings_loaded=false;
   sendLoaded(event){
-    console.log("loaded")
     if(!this.updating_drawings_for_zoom){
       //console.log("loading")
       this.compteur_drawings_thumbnails++;
@@ -351,7 +297,6 @@ export class MediaDrawingsComponent implements OnInit {
   see_more_drawings(category_number){
     //console.log(category_number)
     this.updating_drawings_for_zoom=false;
-    console.log(this.prevent_see_more)
     this.prevent_shiny=true;
     if(this.prevent_see_more){
       return;

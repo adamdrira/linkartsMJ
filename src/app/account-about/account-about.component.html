@@ -1,14 +1,13 @@
 
+<div class="account-about" >
 
-<div class="account-about">
 
-
-    <div class="logos-container" [ngClass]="{'invisible':!visitor_mode_retrieved && !trendings_checked && !list_of_privacy_retrieved}" #target>
+    <div class="logos-container" *ngIf="profile_data_retrieved" #target>
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);">
             <mat-icon>account_circle</mat-icon>
             <span>Profil</span>
         </button>
-        <button class="logo" *ngIf="(profile_data_retrieved && !type_of_account.includes('Passionné')) && (show_stats || !visitor_mode)" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);">
+        <button class="logo" *ngIf="(!type_of_account.includes('Passionné') )" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);">
             <mat-icon>bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
@@ -17,7 +16,7 @@
     
 
 
-    <div *ngIf="opened_category==0" [ngClass]="{'invisible':!visitor_mode_retrieved || !profile_data_retrieved || !list_of_privacy_retrieved}">
+    <div *ngIf="opened_category==0" [ngClass]="{'invisible':  !list_of_privacy_retrieved}">
 
         <!-- Description principale -->
         <div class="account-title-container">
@@ -244,7 +243,7 @@
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
                         <mat-label *ngIf="!( training==undefined || training=='' )">{{training}}</mat-label>
-                        <mat-label *ngIf=" ( training==undefined || training=='' )"><i>Non renseignés</i></mat-label>
+                        <mat-label *ngIf=" ( training==undefined || training=='' )"><i>Non renseignées</i></mat-label>
                         <input matInput readonly>
                     </mat-form-field>
                 </div>
@@ -255,6 +254,10 @@
                 <mat-icon>done_all</mat-icon>
                 <span>Valider</span>
             </button>
+
+            <div *ngIf="display_error_validator_1">
+                Les informations saisies sont incorectes.
+            </div>
         </div>
 
 
@@ -518,10 +521,10 @@
             <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
                     <mat-label>Prénom</mat-label>
-                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off">
+                    <input matInput formControlName="firstName" maxLength="10" type="search" autocomplete="off">
                     <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                     </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/20</div>
+                    <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/10</div>
                 </mat-form-field>
             </div>
             <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
@@ -683,12 +686,12 @@
     <!-- ------------------------------------------------------STATISTIQUES ------------------------------------------------>
 
     
-    <div *ngIf="opened_category == 1" [ngClass]="{'invisible':!visitor_mode_retrieved}">
+    <div *ngIf="opened_category == 1" >
 
 
 
-        <ng-container *ngIf="!(   (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode && show_stats) || (!visitor_mode))   )">
-            <div class="stats-container" *ngIf="type_of_account.includes('Artiste');" [ngClass]="{'invisible':!sumo_ready,'really-invisible': (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+        <ng-container *ngIf="!(   (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+            <div class="stats-container" *ngIf="type_of_account.includes('Artiste');" [ngClass]="{'invisible':!sumo_ready,'really-invisible': (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode ) || (!visitor_mode)) }">
                 
                 
                 <!-- Title container -->
@@ -697,7 +700,7 @@
                     <div class="title">
                         <span>Tendances</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout3" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout3" *ngIf=" !visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[6]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[6]=='public'">visibility</mat-icon>
                         </button>
@@ -755,13 +758,13 @@
                     <!------------>
                     <div class="chart-container" *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
-                        [view]="view_trendings_1"
+                        [view]="view_size"
                         [scheme]="colorScheme"
                         [results]="multi_trendings_1"
                         [gradient]="gradient"
                         [xAxis]="showXAxis"
                         [yAxis]="showYAxis"
-                        [legend]="showLegend_trendings_1"
+                        [legend]="show_legends"
                         [showXAxisLabel]="showXAxisLabel"
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_trendings_1"
@@ -772,13 +775,13 @@
 
                     <div class="chart-container" *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
-                        [view]="view_trendings_2"
+                        [view]="view_size"
                         [scheme]="colorScheme"
                         [results]="multi_trendings_2"
                         [gradient]="gradient"
                         [xAxis]="showXAxis"
                         [yAxis]="showYAxis"
-                        [legend]="showLegend_trendings_2"
+                        [legend]="show_legends"
                         [showXAxisLabel]="showXAxisLabel"
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_trendings_2"
@@ -796,8 +799,8 @@
         <!-- ADS STATS -->
         <!-- ADS STATS -->
         <!-- ADS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[7]=='public'  && visitor_mode && show_stats) || (!visitor_mode))   )">
-            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[7]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+        <ng-container *ngIf="!(   !((list_of_privacy[7]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[7]=='public'  && visitor_mode ) || (!visitor_mode)) }">
             
             
                 <!-- Title container -->
@@ -806,7 +809,7 @@
                     <div class="title">
                         <span>Annonces</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout4" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout4" *ngIf="!visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[7]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[7]=='public'">visibility</mat-icon>
                         </button>
@@ -896,13 +899,13 @@
             
                         <div class="chart-container" *ngIf="single_ad_stats_retrieved">
                             <ngx-charts-line-chart
-                            [view]="view_profile_stats_nb_visitors"
+                            [view]="view_size"
                             [scheme]="colorScheme"
                             [results]="multi_ad_stats"
                             [gradient]="gradient"
                             [xAxis]="showXAxis"
                             [yAxis]="showYAxis"
-                            [legend]="showLegend_profile_stats_nb_visitors"
+                            [legend]="show_legends"
                             [showXAxisLabel]="showXAxisLabel"
                             [showYAxisLabel]="showYAxisLabel"
                             [xAxisLabel]="xAxis_profile_stats_nb_visitors"
@@ -922,8 +925,8 @@
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[8]=='public'  && visitor_mode && show_stats) || (!visitor_mode ))   )">
-            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[8]=='public'  && visitor_mode && show_stats) || (!visitor_mode )) }">
+        <ng-container *ngIf="!(   !((list_of_privacy[8]=='public'  && visitor_mode) || (!visitor_mode ))   )">
+            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[8]=='public'  && visitor_mode ) || (!visitor_mode )) }">
             
             
                 <!-- Title container -->
@@ -932,7 +935,7 @@
                     <div class="title">
                         <span>Bandes dessinées</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout5" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout5" *ngIf=" !visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[8]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[8]=='public'">visibility</mat-icon>
                         </button>
@@ -1019,13 +1022,13 @@
 
                     <div class="chart-container" *ngIf="single_comics_stats_retrieved">
                         <ngx-charts-line-chart
-                        [view]="view_profile_stats_nb_visitors"
+                        [view]="view_size"
                         [scheme]="colorScheme"
                         [results]="multi_comics_contents"
                         [gradient]="gradient"
                         [xAxis]="showXAxis"
                         [yAxis]="showYAxis"
-                        [legend]="showLegend_profile_stats_nb_visitors"
+                        [legend]="show_legends"
                         [showXAxisLabel]="showXAxisLabel"
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_profile_stats_nb_visitors"
@@ -1043,8 +1046,8 @@
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[9]=='public'  && visitor_mode && show_stats) || (!visitor_mode))   )">
-            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[9]=='public'  && visitor_mode && show_stats) || (!visitor_mode)) }">
+        <ng-container *ngIf="!(   !((list_of_privacy[9]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[9]=='public'  && visitor_mode ) || (!visitor_mode)) }">
 
                 
 
@@ -1054,7 +1057,7 @@
                     <div class="title">
                         <span>Dessins</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout6" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout6" *ngIf=" !visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[9]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[9]=='public'">visibility</mat-icon>
                         </button>
@@ -1142,13 +1145,13 @@
 
                         <div class="chart-container" *ngIf="single_drawings_stats_retrieved">
                             <ngx-charts-line-chart
-                            [view]="view_profile_stats_nb_visitors"
+                            [view]="view_size"
                             [scheme]="colorScheme"
                             [results]="multi_drawings_contents"
                             [gradient]="gradient"
                             [xAxis]="showXAxis"
                             [yAxis]="showYAxis"
-                            [legend]="showLegend_profile_stats_nb_visitors"
+                            [legend]="show_legends"
                             [showXAxisLabel]="showXAxisLabel"
                             [showYAxisLabel]="showYAxisLabel"
                             [xAxisLabel]="xAxis_profile_stats_nb_visitors"
@@ -1168,8 +1171,8 @@
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[10]=='public'  && visitor_mode && show_stats) || (!visitor_mode ))   )">
-            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[10]=='public'  && visitor_mode && show_stats) || (!visitor_mode )) }">
+        <ng-container *ngIf="!(   !((list_of_privacy[10]=='public'  && visitor_mode ) || (!visitor_mode ))   )">
+            <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[10]=='public'  && visitor_mode ) || (!visitor_mode )) }">
 
                 
 
@@ -1179,7 +1182,7 @@
                     <div class="title">
                         <span>Ecrits</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout7" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout7" *ngIf=" !visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[10]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[10]=='public'">visibility</mat-icon>
                         </button>
@@ -1268,13 +1271,13 @@
 
                     <div class="chart-container" *ngIf="single_writings_stats_retrieved">
                         <ngx-charts-line-chart
-                        [view]="view_profile_stats_nb_visitors"
+                        [view]="view_size"
                         [scheme]="colorScheme"
                         [results]="multi_writings_contents"
                         [gradient]="gradient"
                         [xAxis]="showXAxis"
                         [yAxis]="showYAxis"
-                        [legend]="showLegend_profile_stats_nb_visitors"
+                        [legend]="show_legends"
                         [showXAxisLabel]="showXAxisLabel"
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_profile_stats_nb_visitors"
@@ -1291,8 +1294,8 @@
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[11]=='public' && visitor_mode && show_stats) || !visitor_mode )   )">
-            <div  class="stats-container"  [ngClass]="{'invisible': !sumo_ready,'really-invisible': !((list_of_privacy[11]=='public' && visitor_mode && show_stats) || !visitor_mode )}">
+        <ng-container *ngIf="!(   !((list_of_privacy[11]=='public' && visitor_mode) || !visitor_mode )   )">
+            <div  class="stats-container"  [ngClass]="{'invisible': !sumo_ready,'really-invisible': !((list_of_privacy[11]=='public' && visitor_mode ) || !visitor_mode )}">
                 
 
                 <!-- Title container -->
@@ -1301,7 +1304,7 @@
                     <div class="title">
                         <span>Profil</span>
                         
-                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout8" *ngIf="visitor_mode_retrieved && !visitor_mode">
+                        <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout8" *ngIf="!visitor_mode">
                             <mat-icon *ngIf="list_of_privacy[11]=='private'">visibility_off</mat-icon>
                             <mat-icon *ngIf="list_of_privacy[11]=='public'">visibility</mat-icon>
                         </button>
@@ -1353,13 +1356,13 @@
 
                     <div class="chart-container" *ngIf="profile_stats_number_of_viewers_retrieved && profile_stats_nb_visitors_found">
                         <ngx-charts-line-chart
-                        [view]="view_profile_stats_nb_visitors"
+                        [view]="view_size"
                         [scheme]="colorScheme"
                         [results]="multi_profile_stats_nb_visitors"
                         [gradient]="gradient"
                         [xAxis]="showXAxis"
                         [yAxis]="showYAxis"
-                        [legend]="showLegend_profile_stats_nb_visitors"
+                        [legend]="show_legends"
                         [showXAxisLabel]="showXAxisLabel"
                         [showYAxisLabel]="showYAxisLabel"
                         [xAxisLabel]="xAxis_profile_stats_nb_visitors"
@@ -1374,12 +1377,12 @@
                             <span>Types de profil des 100 derniers visiteurs</span>
                         </div>
                         <ngx-charts-pie-chart
-                        [view]="view_viewers_stats"
+                        [view]="view_size"
                         [scheme]="colorScheme_viewers_stats"
                         [results]="single_viewers_profiles_stats"
                         [gradient]="gradient"
-                        [legend]="showLegend_viewers_stats"
-                        [legendPosition]="legendPosition_viewers_stats"
+                        [legend]="show_legends"
+                        [legendPosition]="legend_position"
                         [labels]="showLabels"
                         [doughnut]="isDoughnut_viewers_stats"
                         (select)="onSelect($event)"
@@ -1393,12 +1396,12 @@
                             <span>Types de compte des 100 derniers visiteurs</span>
                         </div>
                         <ngx-charts-pie-chart
-                        [view]="view_viewers_stats"
+                        [view]="view_size"
                         [scheme]="colorScheme_viewers_stats"
                         [results]="single_viewers_accounts_stats"
                         [gradient]="gradient"
-                        [legend]="showLegend_viewers_stats"
-                        [legendPosition]="legendPosition_viewers_stats"
+                        [legend]="show_legends"
+                        [legendPosition]="legend_position"
                         [labels]="showLabels"
                         [doughnut]="isDoughnut_viewers_stats"
                         (select)="onSelect($event)"
@@ -1412,12 +1415,12 @@
                             <span>Ages des 100 derniers visiteurs</span>
                         </div>
                         <ngx-charts-pie-chart
-                        [view]="view_viewers_stats"
+                        [view]="view_size"
                         [scheme]="colorScheme_viewers_stats"
                         [results]="single_viewers_age_stats"
                         [gradient]="gradient"
-                        [legend]="showLegend_viewers_stats"
-                        [legendPosition]="legendPosition_viewers_stats"
+                        [legend]="show_legends"
+                        [legendPosition]="legend_position"
                         [labels]="showLabels"
                         [doughnut]="isDoughnut_viewers_stats"
                         (select)="onSelect($event)"
@@ -1431,12 +1434,12 @@
                             <span>Localisations des 100 derniers visiteurs</span>
                         </div>
                         <ngx-charts-pie-chart
-                        [view]="view_viewers_stats"
+                        [view]="view_size"
                         [scheme]="colorScheme_viewers_stats"
                         [results]="single_viewers_locations_stats"
                         [gradient]="gradient"
-                        [legend]="showLegend_viewers_stats"
-                        [legendPosition]="legendPosition_viewers_stats"
+                        [legend]="show_legends"
+                        [legendPosition]="legend_position"
                         [labels]="showLabels"
                         [doughnut]="isDoughnut_viewers_stats"
                         (select)="onSelect($event)"
@@ -1465,7 +1468,7 @@
                     Statistiques des tendances
                 </div>
 
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>
@@ -1557,7 +1560,7 @@
                 </div>
 
             
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>
@@ -1650,7 +1653,7 @@
                     Statistiques des bandes dessinées
                 </div>
 
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>
@@ -1754,7 +1757,7 @@
                 </div>
 
             
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>
@@ -1861,7 +1864,7 @@
                 </div>
 
                 
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>
@@ -1969,7 +1972,7 @@
                     Statistiques du profil
                 </div>
 
-                <span class="options options-links" *ngIf="visitor_mode_retrieved && !visitor_mode " >
+                <span class="options options-links" *ngIf=" && !visitor_mode " >
                     <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
                         <mat-icon class="optionsButton">more_vert</mat-icon>
                     </button>

@@ -448,30 +448,30 @@
             <div class="logos-container">
                 <button class="logo" [ngClass]="{'opened': opened_category == 0 }" 
                 (click)="open_category(0);scroll(target);" #target
-                [matTooltip]="visible_number_of_comics==0 ? 'Aucune bande-dessinée' : null"
+                [matTooltip]="number_of_comics==0 ? 'Aucune bande-dessinée' : null"
                 matTooltipClass='tooltip-account-profile' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                     <div class="image1"></div>
-                    <span>Bandes dessinées ({{visible_number_of_comics}})</span>
+                    <span>Bandes dessinées ({{number_of_comics}})</span>
                 </button>
                 <button class="logo" [ngClass]="{'opened': opened_category == 1 }" 
                 (click)="open_category(1);scroll(target);" #target
-                [matTooltip]="visible_number_of_drawings==0 ? 'Aucun dessin' : null"
+                [matTooltip]="number_of_drawings==0 ? 'Aucun dessin' : null"
                 matTooltipClass='tooltip-account-profile' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                     <div class="image2"></div>
-                    <span>Dessins ({{visible_number_of_drawings}})</span>
+                    <span>Dessins ({{number_of_drawings}})</span>
                 </button>
                 <button class="logo" [ngClass]="{'opened': opened_category == 2 }" 
                 (click)="open_category(2);scroll(target);" #target
-                [matTooltip]="visible_number_of_writings==0 ? 'Aucun écrit' : null"
+                [matTooltip]="number_of_writings==0 ? 'Aucun écrit' : null"
                 matTooltipClass='tooltip-account-profile' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                     <div class="image3"></div>
-                    <span>Écrits ({{visible_number_of_writings}})</span>
+                    <span>Écrits ({{number_of_writings}})</span>
                 </button>
             </div>
 
@@ -1319,10 +1319,12 @@
             </div>
 
 
-            <ng-container *ngIf="opened_section==5">
+            <ng-container *ngIf="opened_section==5 ">
                 <app-account-about
                 [pseudo]=pseudo
                 [id_user]=user_id
+                [author]=author
+                [visitor_mode]=mode_visiteur
                 ></app-account-about>
             </ng-container>
 
@@ -1330,9 +1332,8 @@
                 <app-archives></app-archives>
             </ng-container>
 
-            <ng-container *ngIf="opened_section==7 && !mode_visiteur">
+            <ng-container *ngIf="opened_section==7 && !mode_visiteur ">
                 <app-account-my-account
-                [opened_category]=category_for_account_about
                 [pseudo]=pseudo
                 [id_user]=user_id
                 ></app-account-my-account>

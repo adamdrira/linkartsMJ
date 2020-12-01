@@ -145,7 +145,6 @@ export class AccountComponent implements OnInit {
 
   }*/
 
-  category_for_account_about=0;
 
   @ViewChild('profileHovered', {static: false}) profileHovered:ElementRef;
   showEditCoverPic:boolean = true;
@@ -191,6 +190,7 @@ export class AccountComponent implements OnInit {
   pseudo:string;
   user_id:number=0;
   gender:string;
+  author:any;
   author_name:string;
   firstName:string;
   lastName:string;
@@ -291,10 +291,7 @@ export class AccountComponent implements OnInit {
   number_of_comics:number;
   number_of_drawings:number;
   number_of_writings:number;
-
-  visible_number_of_comics:number=0;
-  visible_number_of_drawings:number=0;
-  visible_number_of_writings:number=0;
+  number_of_ads:number;
 
 
   number_of_artpieces_visitor=0;
@@ -519,11 +516,8 @@ export class AccountComponent implements OnInit {
             
           }
           console.log(this.user_id)
-          this.number_of_comics=r[0].number_of_comics;
-          this.number_of_drawings=r[0].number_of_drawings;
-          this.number_of_writings=r[0].number_of_writings;
 
-          
+          this.author=r[0];
           this.author_name = r[0].firstname + ' ' + r[0].lastname;
           this.gender=r[0].gender;
           this.firstName=r[0].firstname;
@@ -593,16 +587,25 @@ export class AccountComponent implements OnInit {
                 }
               });         
             };
-            if(!this.mode_visiteur){
-              this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
-                if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
-                }
-              })
-            }
-            else{
-              this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,"unknown","unknown","unknown","unknown", this.type_of_profile).subscribe();
-            } 
+
+            this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+              console.log(r[0]);
+              this.number_of_comics=r[0].number_of_comics;
+              this.number_of_drawings=r[0].number_of_drawings;
+              this.number_of_writings=r[0].number_of_writings;
+              this.number_of_ads=r[0].number_of_ads;
+              this.number_of_artpieces=this.number_of_comics+ this.number_of_drawings +  this.number_of_writings;
+              if(!this.mode_visiteur){
+                this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
+                  if(!p[0].value){
+                    this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+                  }
+                })
+              }
+              else{
+                this.navbar.add_main_research_to_history("Account","unknown",this.user_id,this.pseudo,this.author_name,"clicked",this.number_of_comics,this.number_of_drawings,this.number_of_writings,this.number_of_ads,this.type_of_account,"unknown","unknown","unknown", this.type_of_profile).subscribe();
+              } 
+            })
 
             console.log(this.route.snapshot.data['section'])
             if(this.type_of_profile=="suspended"){
@@ -787,21 +790,7 @@ export class AccountComponent implements OnInit {
             this.list_bd_albums_status[1]=info[1].status;
             this.BdOneShotService.retrieve_bd_by_userid( this.user_id ).subscribe( r => {
               this.list_bd_oneshot = r[0];
-              for(let i=0;i<this.list_bd_oneshot.length;i++){
-                if(this.list_bd_oneshot[i].status=="public"){
-                  this.number_of_artpieces+=1;
-                  this.visible_number_of_comics+=1;
-                }
-              }
-              if(this.list_bd_albums_status[0]!="hidden"){
-                for(let i=0;i<this.list_bd_oneshot.length;i++){
-                  if(this.list_bd_oneshot[i].status=='public'){
-                    this.number_of_artpieces_visitor+=1;
-                    this.number_of_comics_visitor+=1;
-                  }
-                }
-              }
-              
+          
               this.list_bd_oneshot_added=true;
               this.cd.detectChanges();
               this.update_background_position( this.opened_section );
@@ -809,20 +798,7 @@ export class AccountComponent implements OnInit {
               
               this.BdSerieService.retrieve_bd_by_userid( this.user_id ).subscribe( r => {
                 this.list_bd_series = r[0];
-                for(let i=0;i<this.list_bd_series.length;i++){
-                  if(this.list_bd_series[i].status=="public"){
-                    this.number_of_artpieces+=1;
-                    this.visible_number_of_comics+=1;
-                  }
-                }
-                if(this.list_bd_albums_status[1]!="hidden"){
-                  for(let i=0;i<this.list_bd_series.length;i++){
-                    if(this.list_bd_series[i].status=='public'){
-                      this.number_of_artpieces_visitor+=1;
-                      this.number_of_comics_visitor+=1;
-                    }
-                  }
-                }
+                
                 
                 this.list_bd_series_added=true;   
                 this.cd.detectChanges();
@@ -872,20 +848,7 @@ export class AccountComponent implements OnInit {
             this.list_drawing_albums_status[1]=info[1].status;
             this.Drawings_Onepage_Service.retrieve_drawings_information_by_userid( this.user_id ).subscribe( r => {
               this.list_drawings_onepage = r[0];
-              for(let i=0;i<this.list_drawings_onepage.length;i++){
-                if(this.list_drawings_onepage[i].status=="public"){
-                  this.number_of_artpieces+=1;
-                  this.visible_number_of_drawings+=1;
-                }
-              }
-              if(this.list_drawing_albums_status[0]!="hidden"){
-                for(let i=0;i<this.list_drawings_onepage.length;i++){
-                  if(this.list_drawings_onepage[i].status=='public'){
-                    this.number_of_artpieces_visitor+=1;
-                    this.number_of_drawings_visitor+=1;
-                  }
-                }
-              }
+             
             
               this.list_drawings_onepage_added=true;
               this.cd.detectChanges();
@@ -893,20 +856,7 @@ export class AccountComponent implements OnInit {
               
               this.Drawings_Artbook_Service.retrieve_drawing_artbook_info_by_userid( this.user_id ).subscribe( r => {
                 this.list_drawings_artbook = r[0];
-                for(let i=0;i<this.list_drawings_artbook.length;i++){
-                  if(this.list_drawings_artbook[i].status=="public"){
-                    this.number_of_artpieces+=1;
-                    this.visible_number_of_drawings+=1;
-                  }
-                }
-                if(this.list_drawing_albums_status[1]!="hidden"){
-                  for(let i=0;i<this.list_drawings_artbook.length;i++){
-                    if(this.list_drawings_artbook[i].status=='public'){
-                      this.number_of_artpieces_visitor+=1;
-                      this.number_of_drawings_visitor+=1;
-                    }
-                  }
-                }
+             
                 
                 this.list_drawings_artbook_added=true;
                 this.cd.detectChanges();
@@ -950,20 +900,7 @@ export class AccountComponent implements OnInit {
           //writings contents
           this.Writing_Upload_Service.retrieve_writings_information_by_user_id( this.user_id ).subscribe( r => {
             this.list_writings = r[0];
-            for(let i=0;i<this.list_writings.length;i++){
-              if(this.list_writings[i].status=="public"){
-                this.number_of_artpieces+=1;
-                this.visible_number_of_writings+=1;
-              }
-            }
-            if(this.list_writings_albums_status[0]!="hidden"){
-              for(let i=0;i<this.list_writings.length;i++){
-                if(this.list_writings[i].status=='public'){
-                  this.number_of_artpieces_visitor+=1;
-                  this.number_of_writings_visitor+=1;
-                }
-              }
-            }
+            
             
             this.list_writings_added=true;
             this.cd.detectChanges();
@@ -1116,14 +1053,13 @@ export class AccountComponent implements OnInit {
     this.opened_category = -1;
     this.opened_section=i;
 
-    
+    this.cd.detectChanges();
     if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
     else if( i == 1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); }
     else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
     else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
     else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
     else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
-    this.cd.detectChanges();
     this.update_background_position(i);
   }
 
@@ -1145,7 +1081,7 @@ export class AccountComponent implements OnInit {
   //For section 0 : Artworks
   open_category(i : number) {
 
-    if( this.opened_category == i || (i==0 && this.visible_number_of_comics==0) || (i==1 && this.visible_number_of_drawings==0) || (i==2 && this.visible_number_of_writings==0) ) {
+    if( this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
     this.contents_loading=false;
@@ -1168,7 +1104,7 @@ export class AccountComponent implements OnInit {
     this.add_album=-1;
     this.opened_album=-1;
     this.open_album( 0 );
-
+    this.cd.detectChanges();
   }
 
       

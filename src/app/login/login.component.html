@@ -13,9 +13,14 @@
                 <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
             </div>
         </div>
-        <div class="step-name">
+        <div *ngIf="show_welcome" class="step-name">
+            <span>Bienvenue ! Votre inscription a bient été confirmée. Vous pouvez dès à présent vous connecter</span>
+        </div>
+        <div  *ngIf="!show_welcome" class="step-name">
             <span>Connexion</span>
         </div>
+
+        
         <div class="step-form" [formGroup]="loginForm">
 
             <div class="form-item">
@@ -34,6 +39,8 @@
                     <div class="error" *ngIf="display_old_password">Ce mot de passe n'est plus d'actualité
                     </div>
                     <div class="error" *ngIf="display_error_group">La création de ce groupe n'a pas encore été validée par tous ses membres
+                    </div>
+                    <div class="error" *ngIf="display_email_not_checked">La création du compte n'a toujours pas été validé depuis votre boîte mail.
                     </div>
                     
                     <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
@@ -94,6 +101,8 @@
                     <input matInput formControlName="mail_recuperation" autocomplete="off">
                     <mat-error *ngIf="ResetPasswordForm.controls['mail_recuperation'].invalid">Veuillez faire une saisie valide
                     </mat-error>
+                    <div  class="error" *ngIf="password_reset_problem"> Un problème est survenu. Le mail entré est sûrement incorrecte</div>
+                    <div   class="error" *ngIf="password_reset_sent"> Un mail a été envoyé à l'adresse indiqué. Veuillez réessayer à nouveau s'il n'est pas reçu pas dans les minutes qui suivent</div>
                 </mat-form-field>
             </div>
             
@@ -146,6 +155,7 @@
                     </div>
                     <div class="error" *ngIf="display_error_group">La création de ce groupe n'a pas encore été validée par tous ses membres
                     </div>
+                    
                     
                     <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
                         <mat-icon class="item-icon" style="color: #162644;     font-size: 20px;"  (click)="change_password_type()" >remove_red_eye</mat-icon>

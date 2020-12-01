@@ -42,6 +42,7 @@
 
   .invisible{
     visibility:hidden ;
+    pointer-events: none;
   }
 
   ::ng-deep .grid {

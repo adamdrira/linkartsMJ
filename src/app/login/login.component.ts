@@ -40,10 +40,14 @@ export class LoginComponent implements OnInit {
       if(this.usage=="delete_account" || this.usage=="suspend_account"){
         this.delete_account=true;
       }
+      if(this.usage=="registration"){
+        this.show_welcome=true;
+      }
   }
 
   suspend_account=false;
   delete_account=false;
+  show_welcome=false;
   step_deletion=0;
   usage:string;
   loginForm: FormGroup;
@@ -53,6 +57,7 @@ export class LoginComponent implements OnInit {
   submitted_reset=false;
   returnUrl: string;
   display_wrong_data=false;
+  display_email_not_checked=false;
   display_old_password=false;
   display_error_group=false;
   wrong_email_reset_password=false;
@@ -89,6 +94,8 @@ export class LoginComponent implements OnInit {
     this.reset_password_menu=false;
   }
 
+  password_reset_sent=false;
+  password_reset_problem=false;
   onSubmitReset(){
       this.submitted_reset=true;
       if(this.ResetPasswordForm.invalid){
@@ -97,6 +104,14 @@ export class LoginComponent implements OnInit {
 
       this.authenticationService.reset_password(this.g.mail_recuperation.value).subscribe(r=>{
         console.log(r[0])
+        if(r[0].sent){
+          this.password_reset_sent=true;
+          this.password_reset_problem=false;
+        }
+        else{
+          this.password_reset_sent=false;
+          this.password_reset_problem=true;
+        }
         // crééer un mail pro pour gérer ça
       })
   }
@@ -138,18 +153,31 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+
+    
+  // check email_checked
+
+  this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
+      console.log(data)
+      if(data.user && data.user.email_checked && (data.user.gender!="Groupe" || ((data.user.email_checked && data.user.gender=="Groupe" && data.user.type_of_account!="Artistes" && data.user.type_of_account!="Artistes professionnels"))) ){
+
+        this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
          
          
           if(data.token){
+            console.log(data.user)
+            this.display_email_not_checked=false;
             this.Community_recommendation.delete_recommendations_cookies();
             this.Community_recommendation.generate_recommendations().subscribe(r=>{
-              
+                
                 location.reload();
             })
             
+            
+            
           }
           else{
+            this.display_email_not_checked=false;
             this.loading=false;
             if(data.msg=="error"){
               console.log("error");
@@ -165,16 +193,24 @@ export class LoginComponent implements OnInit {
             }
           }
           
+        },
+        error => {
+            this.loading = false;
+        });
+      }
+      else if (data.error){
+        console.log("not checked")
+        this.loading=false;
+        this.display_email_not_checked=true;
+      }
+    })
 
-          
-          
-      },
-      error => {
-          this.loading = false;
-      });
-    }
+    
+  }
 
 
+  /************************************* FOR ACCOUNT DELETION AND SUSPENSION  ***************************/
+  /************************************* FOR ACCOUNT DELETION AND SUSPENSION  ***************************/
   /************************************* FOR ACCOUNT DELETION AND SUSPENSION  ***************************/
 
   account_deletion(i){

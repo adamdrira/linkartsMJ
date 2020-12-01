@@ -58,7 +58,7 @@ export class AddArtworkComponent implements OnInit {
 
     ) {
 
-    this.navbar.setActiveSection(0);
+    //this.navbar.setActiveSection(0);
     this.navbar.hide();
 
     this.opened_category$ = this._upload.getCategoryObservable();

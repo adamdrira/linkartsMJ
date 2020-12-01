@@ -100,6 +100,7 @@
   
   .invisible{
     visibility:hidden !important;
+    pointer-events: none;
   }
   .invisible_without_height{
     opacity:0 !important;

@@ -102,8 +102,7 @@ export class AccountAboutComponent implements OnInit {
 
 
 
-  visitor_mode:boolean;
-  visitor_mode_retrieved=false;
+  
 
   date_format_trendings=3;
   date_format_ads=3;
@@ -116,7 +115,10 @@ export class AccountAboutComponent implements OnInit {
 
   @Input('pseudo') pseudo:string;
   @Input('id_user') id_user:number;
-
+  @Input('visitor_mode') visitor_mode:boolean;
+  @Input('author') author:any;
+  
+  
   opened_category=-1;
 
   category_to_open='Dessins';
@@ -139,10 +141,9 @@ export class AccountAboutComponent implements OnInit {
   sumo_ready=false;
   trendings_loaded=false;
   trendings_found=false; // after checked if there are trendings
-  trendings_checked=false;
   now_in_seconds:number=Math.trunc( new Date().getTime()/1000);
 
-
+  type_of_account:string;
   firstName:string;
   lastName:string;
   userLocation:string;
@@ -152,12 +153,10 @@ export class AccountAboutComponent implements OnInit {
 
   list_of_privacy=[];
   list_of_privacy_retrieved=false;
-  show_stats=false;
   links_titles:any[]=[];
   links:any[]=[];
   links_retrieved=false;
   
-  type_of_account:string;
   type_of_profile:string;
   birthday:string;
   job:string='';
@@ -166,6 +165,7 @@ export class AccountAboutComponent implements OnInit {
 
   registerForm1: FormGroup;
   registerForm1_activated=false;
+  display_error_validator_1=false;
 
   registerForm2: FormGroup;
   registerForm2_activated=false;
@@ -174,69 +174,60 @@ export class AccountAboutComponent implements OnInit {
   registerForm3_activated=false;
   maxDate: moment.Moment;
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if(this.opened_category==1){
+      console.log($('.chart-container').width())
+      if($('.chart-container').width()<=800){
+       
+        let width = Math.round($('.chart-container').width())
+        this.view_size=[width,(width)/2];
+        console.log(this.view_size)
+        this.show_legends=false;
+        this.cd.detectChanges();
+      }
+      else{
+        this.view_size=[800,400]
+        this.show_legends=true;
+        this.cd.detectChanges();
+      }
+    }
+  }
 
   ngOnInit(): void {
     
       console.log(this.id_user);
-      console.log(typeof(this.id_user));
+      console.log("open accout about");
       const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
+      console.log(this.author)
+      
+      this.firstName = this.author.firstname;
+      this.lastName =this.author.lastname;
+      this.primary_description =this.author.primary_description;
+      this.primary_description_extended =this.author.primary_description_extended;
+      this.userLocation =this.author.location;
+      this.type_of_profile =this.author.gender;
+      this.type_of_account = this.author.type_of_account;
+      this.birthday = this.find_age(this.author.birthday);
+      this.job = (this.author.job)?this.author.job:'';
+      this.training = (this.author.training)?this.author.training:'';
+      this.email_about = (this.author.email_about)?this.author.email_about:'';
+
+      this.build_form_1();
+      this.build_form_2();
+      this.build_form_3();
+
+      if( this.type_of_profile != "Groupe" ) {
+        let values=this.author.birthday.split('-');
+        let yy =parseInt(values[2]);
+        let mm =parseInt(values[1])-1
+        let dd =parseInt(values[0])
+        this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
+      }
 
       
-
-      /*this.registerForm2 = this.formBuilder.group({
-        link_title:['', 
-          Validators.compose([
-            Validators.minLength(3),
-            Validators.maxLength(30),
-            Validators.pattern(pattern("text")),
-          ]),
-        ],
-        link:['', 
-          Validators.compose([
-            Validators.minLength(5),
-            Validators.maxLength(60),
-            Validators.pattern(pattern("text_without_spaces")),
-          ]),
-        ],
-      });
-
-
-      this.registerForm3 = this.formBuilder.group({
-        email: ['', 
-          Validators.compose([
-            Validators.required,
-            Validators.pattern(pattern("mail")),
-            Validators.maxLength(100),
-          ]),
-        ],
-        birthday: ['', 
-          Validators.compose([
-            Validators.minLength(3)
-          ]),
-        ],
-      });*/
-
-
-     
-      
-
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        console.log(r[0]);
-        if(r[0].id==this.id_user){
-          this.visitor_mode=false;
-          this.visitor_mode_retrieved=true;
-        }
-        else{
-          this.visitor_mode=true;
-          this.visitor_mode_retrieved=true;
-          //this.NavbarService.add_about_check()
-        }
-        console.log( this.visitor_mode_retrieved)
-        
-      })
-
-
+      this.profile_data_retrieved=true;
 
       
       //open_category=0
@@ -269,91 +260,28 @@ export class AccountAboutComponent implements OnInit {
         this.list_of_privacy[5]=l[0].training;
 
         
-        this.list_of_privacy[6] = "private";
+        /*this.list_of_privacy[6] = "private";
         this.list_of_privacy[7] = "private";
         this.list_of_privacy[8] = "private";
         this.list_of_privacy[9] = "private";
         this.list_of_privacy[10] = "private";
-        this.list_of_privacy[11] = "private";
+        this.list_of_privacy[11] = "private";*/
 
-        if( l[0].trendings_stats ) {
-          this.list_of_privacy[6]=l[0].trendings_stats;
-        }
-        if( l[0].ads_stats ) {
-          this.list_of_privacy[7]=l[0].ads_stats;
-        }
-        if( l[0].comics_stats ) {
-          this.list_of_privacy[8]=l[0].comics_stats;
-        }
-        if( l[0].drawings_stats ) {
-          this.list_of_privacy[9]=l[0].drawings_stats;
-        }
-        if( l[0].writings_stats ) {
-          this.list_of_privacy[10]=l[0].writings_stats;
-        }
-        if( l[0].profile_stats ) {
-          this.list_of_privacy[11]=l[0].profile_stats;
-        }
-        
-        
-        let compt=0;
-        for(let i=6;i<12;i++){
-          if(this.list_of_privacy[i]=="private"){
-            compt++;
-          }
-        }
-        if(compt!=6){
-          this.show_stats=true;
-        }
-
+   
+        this.list_of_privacy[6]=(l[0].trendings_stats)?l[0].trendings_stats:"private";
+        this.list_of_privacy[7]=(l[0].ads_stats)?l[0].ads_stats:"private";
+        this.list_of_privacy[8]=(l[0].comics_stats)?l[0].comics_stats:"private";
+        this.list_of_privacy[9]=(l[0].drawings_stats)?l[0].drawings_stats:"private";
+        this.list_of_privacy[10]=(l[0].writings_stats)?l[0].writings_stats:"private";
+        this.list_of_privacy[11]=(l[0].profile_stats)?l[0].profile_stats:"private";
         
         this.list_of_privacy_retrieved=true;
+        console.log("information_privacy_retrieved")
+        this.cd.detectChanges();
       })
 
 
-      this.Profile_Edition_Service.retrieve_profile_data(this.id_user).subscribe(l=>{
-        //  a refaire
 
-
-        this.firstName = l[0].firstname;
-        this.lastName = l[0].lastname;
-        this.primary_description = l[0].primary_description;
-        this.primary_description_extended = l[0].primary_description_extended;
-        this.userLocation = l[0].location;
-        this.type_of_account = l[0].type_of_account;
-        this.type_of_profile = l[0].gender;
-        this.birthday = this.find_age(l[0].birthday);
-        this.job = (l[0].job)?l[0].job:'';
-        this.training = (l[0].training)?l[0].training:'';
-        this.email_about = (l[0].email_about)?l[0].email_about:'';
-
-        /*console.log(l[0]);
-        console.log(this.email);
-
-        this.registerForm1.controls['primary_description_extended'].setValue( this.primary_description_extended );
-        if(this.email){this.registerForm3.controls['email'].setValue( this.email );}
-        if(this.job){this.registerForm3.controls['job'].setValue( this.job );}
-        if(this.training){this.registerForm3.controls['training'].setValue( this.training );}
-        
-        
-        
-
-        */
-        this.build_form_1();
-        this.build_form_2();
-        this.build_form_3();
-
-        if( this.type_of_profile != "Groupe" ) {
-          let values=l[0].birthday.split('-');
-          let yy =parseInt(values[2]);
-          let mm =parseInt(values[1])-1
-          let dd =parseInt(values[0])
-          this.registerForm3.controls['birthday'].setValue(moment([yy, mm, dd]));
-        }
-
-
-        this.profile_data_retrieved=true;
-      })
 
 
 
@@ -374,7 +302,6 @@ export class AccountAboutComponent implements OnInit {
         else{
           this.trendings_loaded=true;
         }
-        this.trendings_checked=true;
         this.cd.detectChanges();
       })
 
@@ -388,11 +315,13 @@ export class AccountAboutComponent implements OnInit {
 
 
 
+
   open_category(i){
     if(i==this.opened_category){
       return;
     }
     if(i==1){
+        
         this.sumo_ready=false;
         this.sumo_for_ads_ready=false;
         this.opened_category=i;
@@ -444,12 +373,18 @@ export class AccountAboutComponent implements OnInit {
   }
 
 
-  /***************************************  SELECTORS STATS ******************************/
-  /***************************************  SELECTORS STATS ******************************/
-  /***************************************  SELECTORS STATS ******************************/
-  /***************************************  SELECTORS STATS ******************************/
+  /***************************************  STATISTICS ******************************/
+  /***************************************  STATISTICS ******************************/
+  /***************************************  STATISTICS ******************************/
+  /***************************************  STATISTICS ******************************/
 
 
+  /***************************************  SUMO SELECTORS ******************************/
+  /***************************************  SUMO SELECTORS ******************************/
+
+  view_size : any[] = [800, 400];
+  show_legends: boolean = true;
+  legend_position: string = 'right';
   selector_for_ads_initialized=false;
   selector_for_comics_initialized=false;
   selector_for_drawings_initialized=false;
@@ -471,10 +406,12 @@ export class AccountAboutComponent implements OnInit {
       $(".Sumo_comics_stats").SumoSelect({});
       $(".Sumo_drawings_stats").SumoSelect({});
       $(".Sumo_writings_stats").SumoSelect({});
+     
       /*$(".SelectBox2").SumoSelect({
       });  */ 
       THIS.sumo_ready=true;
       THIS.cd.detectChanges();
+      window.dispatchEvent(new Event('resize'))
       console.log("sumo ready")
     });
 
@@ -562,6 +499,7 @@ export class AccountAboutComponent implements OnInit {
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_comics){
+        console.log("get_comics_stats")
         THIS.get_comics_stats();
       }
       
@@ -716,15 +654,11 @@ export class AccountAboutComponent implements OnInit {
   };
   showLabels = true;
 
-  view_trendings_1: any[] = [800, 400];
-  showLegend_trendings_1 = true;
   xAxis_trendings_1 = "Date";
   yAxis_trendings_1 = "Meilleure classement";
   multi_trendings_1=[];
 
 
-  view_trendings_2: any[] = [800, 400];
-  showLegend_trendings_2 = true;
   xAxis_trendings_2 = "Date";
   yAxis_trendings_2 = "Nombre de tendances";
   multi_trendings_2=[];
@@ -944,6 +878,7 @@ export class AccountAboutComponent implements OnInit {
         }
         
         this.trendings_loaded=true;
+        
       }
       
       console.log(this.trendings_found)
@@ -1295,9 +1230,9 @@ export class AccountAboutComponent implements OnInit {
     if(list_of_comics_series.length>0 && list_of_comics_one_shot.length>0 ){
       this.list_of_comics=list_of_comics_series.concat(list_of_comics_one_shot);
       this.number_of_comics_views=list_of_notations_series.number_of_views+list_of_notations_one_shot.number_of_views;
-    this.number_of_comics_likes=list_of_notations_series.number_of_likes+list_of_notations_one_shot.number_of_likes;
-    this.number_of_comics_loves=list_of_notations_series.number_of_loves+list_of_notations_one_shot.number_of_loves;
-    this.number_of_comics_comments=list_of_notations_series.number_of_comments+list_of_notations_one_shot.number_of_comments;
+      this.number_of_comics_likes=list_of_notations_series.number_of_likes+list_of_notations_one_shot.number_of_likes;
+      this.number_of_comics_loves=list_of_notations_series.number_of_loves+list_of_notations_one_shot.number_of_loves;
+      this.number_of_comics_comments=list_of_notations_series.number_of_comments+list_of_notations_one_shot.number_of_comments;
       sort=true;
     }
     else if(list_of_comics_series.length>0 && list_of_comics_one_shot.length==0 ){
@@ -1489,7 +1424,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==1){
+    if(this.date_format_comics==1){
       console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
@@ -1523,7 +1458,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==2){
+    if(this.date_format_comics==2){
       console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
@@ -1557,7 +1492,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==3){
+    if(this.date_format_comics==3){
       console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
@@ -1910,7 +1845,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==1){
+    if(this.date_format_drawings==1){
       console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
@@ -1944,7 +1879,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==2){
+    if(this.date_format_drawings==2){
       console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
@@ -1978,7 +1913,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==3){
+    if(this.date_format_drawings==3){
       console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
@@ -2268,7 +2203,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==1){
+    if(this.date_format_writings==1){
       console.log("format 1")
       for(let i=0;i<30;i++){
         let date_i=new Date();
@@ -2302,7 +2237,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==2){
+    if(this.date_format_writings==2){
       console.log("format 2")
       for(let i=0;i<53;i++){
         let date_i=new Date();
@@ -2336,7 +2271,7 @@ export class AccountAboutComponent implements OnInit {
       
     }
 
-    if(this.date_format_ads==3){
+    if(this.date_format_writings==3){
       console.log("format 3")
       let date1 = new Date('08/01/2019');
       let date2 = new Date();
@@ -2389,8 +2324,8 @@ export class AccountAboutComponent implements OnInit {
 
 
 
-  view_profile_stats_nb_visitors : any[] = [800, 400];
-  showLegend_profile_stats_nb_visitors = true;
+
+
   xAxis_profile_stats_nb_visitors = "Date";
   yAxis_profile_stats_nb_visitors = "Nombre de visiteurs";
   profile_stats_number_of_viewers_retrieved=false;
@@ -2398,7 +2333,6 @@ export class AccountAboutComponent implements OnInit {
   profile_stats_nb_visitors_found=false;
 
 
-  view_viewers_stats: any[] = [800, 400];
 
   // options
   single_viewers_profiles_stats=[];
@@ -2406,9 +2340,9 @@ export class AccountAboutComponent implements OnInit {
   single_viewers_age_stats=[];
   single_viewers_locations_stats=[];
 
-  showLegend_viewers_stats: boolean = true;
+ 
   isDoughnut_viewers_stats: boolean = false;
-  legendPosition_viewers_stats: string = 'right';
+ 
   colorScheme_viewers_stats = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA','#9370DB', '#87CEFA', '#FA8072', '#FF7F50', '#90EE90', '#9370DB']
   };
@@ -2758,16 +2692,15 @@ export class AccountAboutComponent implements OnInit {
     //fonction backend
     console.log()
     if(this.registerForm1.invalid){
-      //this.display_error_validator_1=true;
+      this.display_error_validator_1=true;
     }
     else{
       
-      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
+      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;*/
       
-      this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
+      /*this.Profile_Edition_Service.edit_account_about_1(this.id_user, this.primary_description,this.primary_description_extended,this.job,this.training).subscribe(l=>{
         console.log(l);
-        this.primary_description_extended=primary_description_extended;
-        this.registerForm3_activated=false;
+        this.registerForm1_activated=false;
       });*/
     }
   }
@@ -2905,7 +2838,7 @@ export class AccountAboutComponent implements OnInit {
             Validators.required,
             Validators.pattern(pattern("name")),
             Validators.minLength(2),
-            Validators.maxLength(20),
+            Validators.maxLength(10),
           ]),
         ],
         lastName: [this.lastName, 

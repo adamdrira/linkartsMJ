@@ -75,14 +75,34 @@ export class NavbarLinkartsComponent implements OnInit {
         if(r!=this.connexion_status){
           this.connexion_status=r
           if(!r){
-            //console.log("not connected")
+            console.log("not connected")
           }
           if(r){
-            //console.log("connected")
-            this.reload_page();
+            console.log("connected")
+            //this.reload_page();
           }
         }
         
+      })
+
+      navbar.visibility_observer.subscribe(r=>{
+        console.log(r)
+        if(r!= this.visibility_navbar){
+          if(!this.visibility_navbar){
+            
+            if($('.NavbarSelectBox')[0]){
+              $('.NavbarSelectBox')[0].sumo.unload();
+            }
+            if($('.NavbarSelectBox2')[0]){
+              $('.NavbarSelectBox2')[0].sumo.unload();
+            }
+            if($('.NavbarSelectBox')[0] || $('.NavbarSelectBox2')[0]){
+              this.show_selector=false;
+              this.initialize_selectors();
+            }
+          }
+          this.visibility_navbar=r;
+        }
       })
   }
 
@@ -90,6 +110,7 @@ export class NavbarLinkartsComponent implements OnInit {
     location.reload();
   }
 
+  visibility_navbar:boolean;
   connexion_status=true;
   activated_search:boolean = false;
   activate_search() {
@@ -250,6 +271,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
     setInterval(() => {
       if(this.list_of_friends_retrieved){
+        console.log("getting connections status")
         this.get_connections_status();
       }
     }, 60000);
