@@ -26,11 +26,31 @@ import { pattern } from '../helpers/patterns';
 import { MustMatch } from '../helpers/must-match.validator';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { LoginComponent } from '../login/login.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
   templateUrl: './account-my-account.component.html',
-  styleUrls: ['./account-my-account.component.scss']
+  styleUrls: ['./account-my-account.component.scss'],
+  animations: [
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+      
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+  ],
 })
 export class AccountMyAccountComponent implements OnInit {
 
@@ -67,7 +87,7 @@ export class AccountMyAccountComponent implements OnInit {
   date_format=0;
   category='all';
 
-  @Input('opened_category') opened_category:number;
+  opened_category:number = 0;
   @Input('pseudo') pseudo:string;
   @Input('id_user') id_user:number;
 
@@ -124,7 +144,7 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   sumo_ready=false;
-  open_catgory(i){
+  open_category(i){
     if(i==this.opened_category){
       return;
     }
@@ -163,11 +183,9 @@ export class AccountMyAccountComponent implements OnInit {
   password='';
   registerForm: FormGroup;
   registerForm_activated=false;
-  display_error_validator=false;
 
   registerForm1: FormGroup;
   registerForm1_activated=false;
-  display_error_validator1=false;
 
   registerForm2: FormGroup;
   registerForm2_activated=false;
@@ -187,6 +205,8 @@ export class AccountMyAccountComponent implements OnInit {
   list_of_visitors_type=["Maison d'édition/Editeur/Editrice","Artiste vérifié(e)","Professionnel(le) vérifié(e)"];
   special_visitor_type:string;
   initialize_forms(){
+
+    
     this.registerForm = this.formBuilder.group({
       email: ['', 
         Validators.compose([
@@ -199,11 +219,11 @@ export class AccountMyAccountComponent implements OnInit {
 
     this.registerForm1 = this.formBuilder.group({
       old_password_real_value: ['',
-      Validators.compose([
-        Validators.pattern(pattern("password")),
-        Validators.maxLength(50),
-      ]),
-    ],
+        Validators.compose([
+          Validators.pattern(pattern("password")),
+          Validators.maxLength(50),
+        ]),
+      ],
       old_password: ['',
         Validators.compose([
           Validators.required,
@@ -365,19 +385,19 @@ export class AccountMyAccountComponent implements OnInit {
     this.registerForm1_activated=true;
   }
 
-  display_old_password=false;
-  display_current_password=false;
+  
   validate_edit_password(){
     console.log(this.registerForm1)
     if(this.registerForm1.invalid){
-      this.display_error_validator1=true;
+      
     }
     else{
       this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).subscribe(data => {
         if(data.token){
           console.log("current password");
-          this.display_current_password=true;
-          this.display_old_password=false;
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
+          });
         }
         if(data.msg=="error"){
           // le mot de passe n'est ni ancien ni existant
@@ -387,15 +407,22 @@ export class AccountMyAccountComponent implements OnInit {
             this.registerForm1.controls['confirmPassword'].setValue('')
             this.registerForm1.controls['old_password'].setValue('')
             this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
-            this.display_old_password=false;
-            this.display_current_password=false;
             this.registerForm1_activated=false;
             this.cd.detectChanges();
           })
         }
         if(data.msg=="error_old_value"){
-          this.display_current_password=false;
-          this.display_old_password=true;
+
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:true, text:'Ce mot de passe a déjà été utilisé par le passé. Continuer ?'},
+          });
+          dialogRef.afterClosed().subscribe(result => {
+            if( result ) {
+              this.validate_old_password();
+            }
+            else {
+            }
+          });
         }
         
       },
@@ -409,7 +436,7 @@ export class AccountMyAccountComponent implements OnInit {
 
   validate_old_password(){
     if(this.registerForm1.invalid){
-      this.display_error_validator1=true;
+      
     }
     else{
       this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
@@ -418,8 +445,6 @@ export class AccountMyAccountComponent implements OnInit {
         this.registerForm1.controls['confirmPassword'].setValue('')
         this.registerForm1.controls['old_password'].setValue('')
         this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
-        this.display_old_password=false;
-        this.display_current_password=false;
         this.registerForm1_activated=false;
         this.cd.detectChanges();
       })
@@ -428,9 +453,6 @@ export class AccountMyAccountComponent implements OnInit {
   }
   cancel_edit_password(){
     this.registerForm1.controls['password'].setValue(this.password);
-    this.display_error_validator1=false;
-    this.display_old_password=false;
-    this.display_current_password=false;
     this.registerForm1_activated=false;
     this.cd.detectChanges()
   }
@@ -485,7 +507,6 @@ export class AccountMyAccountComponent implements OnInit {
   validate_edit_email(){
     console.log(this.registerForm)
     if(this.registerForm.invalid){
-      this.display_error_validator=true;
     }
     else{
       this.Profile_Edition_Service.edit_email(this.registerForm.value.email).subscribe(r=>{
@@ -497,7 +518,6 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   cancel_edit_email(){
-    this.display_error_validator=false;
     this.registerForm_activated=false;
   }
 
@@ -710,7 +730,7 @@ export class AccountMyAccountComponent implements OnInit {
     console.log(this.registerForm2.controls['share'])
     if(this.registerForm2.invalid){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Répartition invalide'},
+        data: {showChoice:false, text:'Veuillez saisir une répartition valide (au moins 2 chiffres)'},
       });
       return
     }
@@ -917,7 +937,7 @@ export class AccountMyAccountComponent implements OnInit {
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter ce groupe ? Vous ne pourrez plus pouvoir le rejoindre ou bénéficier de gains supplémentaires reliés à ce groupe '},
+        data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter ce groupe ? Vous ne pourrez plus le rejoindre ni bénéficier de gains supplémentaires reliés à ce groupe '},
       });
     
       dialogRef.afterClosed().subscribe(result => {
@@ -1852,5 +1872,21 @@ export class AccountMyAccountComponent implements OnInit {
     })
   
   }
+
+  
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
+  scrollDown() {
+    window.scrollBy({
+      top: 200,
+      behavior : "smooth"
+    })
+  }
+
 
 }

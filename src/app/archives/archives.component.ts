@@ -21,13 +21,24 @@ import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import {get_date_to_show_chat} from '../helpers/dates';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any;
 
 @Component({
   selector: 'app-archives',
   templateUrl: './archives.component.html',
-  styleUrls: ['./archives.component.scss']
+  styleUrls: ['./archives.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class ArchivesComponent implements OnInit {
 
@@ -54,9 +65,15 @@ export class ArchivesComponent implements OnInit {
 
     ) {
 
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
+    
   }
 
-
+  get Math() {
+    return Math;
+  }
   
   //bd, dessins, écrits de l'auteur, etc.
   opened_category:number = -1;
@@ -451,6 +468,11 @@ export class ArchivesComponent implements OnInit {
   }
   
   open_category(i : number) {
+    
+    if( this.opened_category == i ) {
+      return;
+    }    
+
     this.compteur_drawings_thumbnails=0;
     this.compteur_comics_thumbnails=0;
     this.compteur_writings_thumbnails=0;
@@ -460,12 +482,37 @@ export class ArchivesComponent implements OnInit {
     this.display_comics=true;
     this.display_writings=true;
     this.opened_category=i;
-    this.opened_album=-1;
+
+    
+    this.cd.detectChanges();
+
+    if((this.opened_category == 0 && this.private_list_of_comics.length>0) || (this.opened_category == 1 && this.list_of_comics.length>0)) {
+      this.open_album(0);
+    }
+    else if((this.opened_category == 0 && this.private_list_of_drawings.length>0) || (this.opened_category == 1 && this.list_of_drawings.length>0)) {
+      this.open_album(1);
+    }
+    else if((this.opened_category == 0 && this.private_list_of_writings.length>0) || (this.opened_category == 1 && this.list_of_writings.length>0)) {
+      this.open_album(2);
+    }
+    else if(this.opened_category == 0 && this.list_of_stories_data.length>0) {
+      this.open_album(3);
+    }
+    else if(this.opened_category == 1 && this.list_of_ads.length>0) {
+      this.open_album(4);
+    }
+    else {
+      this.opened_album=-1;
+    }
   }
 
   contents_loading=false;
   open_album(i : number) {
    
+    if( this.opened_album == i ) {
+      return;
+    }    
+    
     this.compteur_drawings_thumbnails=0;
     this.compteur_comics_thumbnails=0;
     this.compteur_writings_thumbnails=0;
@@ -481,6 +528,8 @@ export class ArchivesComponent implements OnInit {
     this.reset_number_of_writings_to_show();
     this.opened_album=i;
     this.cd.detectChanges();
+
+    this.update_story_width();
   }
 
 /**************************************************STORIES ******************************* */
@@ -492,6 +541,8 @@ export class ArchivesComponent implements OnInit {
 
       this.list_of_stories_data = r[0];
       this.list_of_stories_data_received = true;
+      this.cd.detectChanges();
+      this.update_story_width();
 
       if (r[0].length>0){
         let compt=0
@@ -503,9 +554,16 @@ export class ArchivesComponent implements OnInit {
             compt++;
             if(compt==r[0].length){
               this.list_of_stories_received=true;
+              this.cd.detectChanges();
+              this.update_story_width();
             }
           });
         }
+      }
+      else {
+        this.list_of_stories_received=true;
+        this.cd.detectChanges();
+        this.update_story_width();
       }
 
       
@@ -613,6 +671,9 @@ onResize(event) {
   this.update_number_of_drawings_to_show();
   this.update_number_of_writings_to_show();
   this.update_number_of_stories_to_show();
+
+
+  this.update_story_width();
   this.cd.detectChanges();
 
 }
@@ -1029,5 +1090,21 @@ see_more_writings(category_number){
     })
   }
 
+  
+  @ViewChild("container_stories") container_stories2:ElementRef;
+  story_width:number = 400;
+  update_story_width() {
+    if( this.container_stories2 ) {
+      this.story_width = (this.container_stories2.nativeElement.offsetWidth-5) / Math.floor( (this.container_stories2.nativeElement.offsetWidth/240) );
+    }
+  }
+
+  openedMenu:string = "";
+  menuClosed() {
+    this.openedMenu="";
+  }
+  menuOpened(i:number, s:string) {
+    this.openedMenu=i+s;
+  }
 
 }
