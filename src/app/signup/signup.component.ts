@@ -63,7 +63,7 @@ export class SignupComponent implements OnInit {
     registerForm4: FormGroup;
     registerForm5: FormGroup;
     registerForm6: FormGroup;
-
+    registerForm7: FormGroup;
     
   
     //LinksGroup:FormGroup;
@@ -74,7 +74,7 @@ export class SignupComponent implements OnInit {
     links_titles:any[]=[];
     links:any[]=[];
     hide=true; // password
-
+    hide2=true;
   
     logo_is_loaded=false;
 
@@ -132,7 +132,23 @@ export class SignupComponent implements OnInit {
         validator: MustMatch('password', 'confirmPassword')
     });
 
-
+    this.registerForm7=  this.formBuilder.group({
+      email: ['', 
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(pattern("mail")),
+          Validators.maxLength(100),
+        ]),
+      ],
+      password: ['',
+        Validators.compose([
+          Validators.required,
+          //Au moins 1 majuscule, 1 minuscule, 1 caractère spécial et un nombre.
+          Validators.pattern(pattern("password")),
+          Validators.maxLength(50),
+        ]),
+      ]
+      });
     
     this.registerForm2 = this.formBuilder.group({      
       
@@ -482,9 +498,9 @@ export class SignupComponent implements OnInit {
   check_pseudo(){
     this.index_check++;
     this.Profile_Edition_Service.check_pseudo(this.registerForm3.value.nickname, this.index_check).subscribe(r=>{
-      console.log(r)
+      //console.log(r)
       if(r[0][0].msg=="found"){
-        console.log("display found")
+        //console.log("display found")
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
       }
@@ -497,24 +513,46 @@ export class SignupComponent implements OnInit {
   }
 
   display_email_or_pseudo_found=false;
-  display_email_found_1=false;
+  display_email_and_password_found_1=false;
   display_email_found_2=false;
+  display_email_found_1=false;
+  display_email_and_password_error=false;
   index_check_email=0
-  /*check_email(){
+  check_email_and_password(){
     this.index_check_email++;
-    this.Profile_Edition_Service.check_email(this.registerForm1.value.email, this.index_check_email).subscribe(r=>{
-      if(r[0][0].msg=="found"){
-        console.log("display found")
-        this.display_email_found_1=true;
-        this.cd.detectChanges()
-      }
-      else{
-        this.display_email_found_1=false;
-        this.display_email_found_2=false;
-        this.cd.detectChanges()
-      }
-    })
-  }*/
+    if(this.registerForm1.value.email && this.registerForm1.value.password){
+      this.Profile_Edition_Service.check_email_and_password(this.registerForm1.value.email,this.registerForm1.value.password, this.index_check_email).subscribe(r=>{
+        //console.log(r[0])
+        if(r[1]== this.index_check_email){
+          if(r[0].found){
+            //console.log("display found")
+            this.display_email_and_password_error=true;
+            if(r[0].email && this.registerForm1.value.gender && this.registerForm1.value.gender!='Groupe'){
+              this.display_email_found_1=true;
+            }
+            else{
+              this.display_email_found_1=false;
+            }
+            this.cd.detectChanges()
+          }
+          else{
+            if(r[0].email && this.registerForm1.value.gender && this.registerForm1.value.gender!='Groupe'){
+              this.display_email_found_1=true;
+              this.display_email_and_password_error=true;
+            }
+            else{
+              this.display_email_found_1=false;
+              this.display_email_and_password_error=false;
+            }
+            this.display_email_and_password_found_1=false;
+            this.cd.detectChanges()
+          }
+        }
+      
+      })
+    }
+    
+  }
 
 
   current_profile='';
@@ -536,8 +574,43 @@ export class SignupComponent implements OnInit {
   }
 
 
+  error_authentication=false; 
+  error_authentication_2=false; // form invalid
+  need_authentication=false; // need authentication if a group is created by an admin
+  cancel_authentication(){ 
+    this.error_authentication=false;
+    this.need_authentication=false;
+    this.step=3;
+    this.cd.detectChanges();
+  }
 
-
+  validate_authentication(){
+    if(this.registerForm7.valid){
+      this.Profile_Edition_Service.check_email_and_password(this.registerForm7.value.email,this.registerForm7.value.password,0).subscribe(r=>{
+        console.log(r[0])
+        console.log(this.list_of_ids[0])
+        console.log(r[0].user.id)
+          if(r[0].found && r[0].user.id==this.list_of_ids[0]){
+            console.log("ok")
+            this.display_email_and_password_found_1=false;
+            this.error_authentication=false;
+            this.need_authentication=false;
+            this.error_authentication_2=false;
+          }
+          else{
+            console.log("not ok ")
+            this.error_authentication=true;
+            
+          }
+          this.cd.detectChanges()
+      });
+    }
+    else{
+      this.error_authentication_2=true;
+    }
+    
+   
+  }
 
 
   
@@ -550,17 +623,28 @@ export class SignupComponent implements OnInit {
         if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<14)){
           console.log("siret prob")
           this.display_need_information=true;
+          this.display_email_and_password_found_1=false;
           return;
         }
     }
-    if( (this.step == 0 && this.registerForm1.valid && !this.display_email_found_1) || (this.step == 1 && this.registerForm2.valid)
+    else if( (this.step == 0 && this.registerForm1.valid && !this.display_email_and_password_error) || (this.step == 1 && this.registerForm2.valid)
     || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && ( (this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Artistes' || this.registerForm2.value.type_of_account=='Artistes professionels') ) || (this.registerForm1.value.gender!='Groupe') ))
     || (this.step==3 && this.registerForm1.value.gender=='Groupe' && this.list_of_pseudos.length>1 ) ) {
       if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
         console.log("cas 2")
+       
+        if( this.registerForm2.value.type_of_account.includes('Artiste')){
+        this.need_authentication=true;
+        }
+        else{
         this.input.nativeElement.value='';
-         this.registerForm5.value.fdSearchbar='';
+        this.registerForm5.value.fdSearchbar='';
+        this.display_email_and_password_found_1=false;
+        this.need_authentication=false;
+        }
+        
       }
+      
       this.display_need_members=false;
       this.display_need_information=false;
       this.step ++;
@@ -573,6 +657,7 @@ export class SignupComponent implements OnInit {
       this.display_need_members=false;
       this.display_need_information=false;
       this.step+=2; 
+      this.display_email_and_password_found_1=false;
       this.cd.detectChanges();
     }
     else if(this.step==3 && this.list_of_pseudos.length<2 ){
@@ -584,17 +669,38 @@ export class SignupComponent implements OnInit {
       console.log("cas 5")
       this.display_need_members=false;
       this.display_need_information=false;
+      this.display_email_and_password_found_1=false;
       this.step ++;
       this.cd.detectChanges();
     }
     else{
       console.log("cas 6")
       console.log(this.registerForm3);
-      this.display_need_information=true;
+      console.log(this.display_email_and_password_error)
+      console.log(this.display_email_and_password_found_1)
+      console.log(this.display_email_found_1)
+      if(this.display_email_and_password_error){
+        this.display_email_and_password_found_1=true;
+        if(this.registerForm1.value.gender && this.registerForm1.value.gender!="Groupe"){
+          this.display_email_found_1=true;
+        }
+        else{
+          this.display_email_found_1=false;
+        }
+      }
+      else{
+        this.display_email_and_password_found_1=false;
+        this.display_need_information=true;
+        this.display_email_found_1=false;
+      }
+     
+      this.cd.detectChanges()
     }
 
 
   }
+
+
 
   step_back() {
     if(this.step > 0) {
@@ -621,6 +727,10 @@ export class SignupComponent implements OnInit {
 
   change_password_type(){
     this.hide=!this.hide;
+  }
+
+  change_password_type2(){
+    this.hide2=!this.hide2;
   }
   
 

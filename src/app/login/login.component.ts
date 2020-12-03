@@ -159,8 +159,10 @@ export class LoginComponent implements OnInit {
 
   this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
       console.log(data)
-      if(data.user && data.user.email_checked && (data.user.gender!="Groupe" || ((data.user.email_checked && data.user.gender=="Groupe" && data.user.type_of_account!="Artistes" && data.user.type_of_account!="Artistes professionnels"))) ){
-
+      console.log(data.user)
+      console.log(data.user.email_checked)
+      if(data.user  && data.user.email_checked ){
+        console.log('first if')
         this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
          
          
@@ -169,7 +171,6 @@ export class LoginComponent implements OnInit {
             this.display_email_not_checked=false;
             this.Community_recommendation.delete_recommendations_cookies();
             this.Community_recommendation.generate_recommendations().subscribe(r=>{
-                
                 location.reload();
             })
             
@@ -198,10 +199,17 @@ export class LoginComponent implements OnInit {
             this.loading = false;
         });
       }
-      else if (data.error){
+      else if(data.error){
         console.log("not checked")
         this.loading=false;
         this.display_email_not_checked=true;
+        this.cd.detectChanges()
+      }
+      else{
+        this.loading=false;
+        this.display_email_not_checked=false;
+        this.display_wrong_data=true;
+        this.cd.detectChanges()
       }
     })
 

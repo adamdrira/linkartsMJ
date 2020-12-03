@@ -23,7 +23,9 @@
             <!--TITRE + BOUTON EDITER/CACHER-->
             <div class="title">
                 <span>Ma présentation</span>
-                
+                <button class="accountAboutAbsoluteButton" (click)="cancel_form_1()" *ngIf="registerForm1_activated && !visitor_mode">
+                    <mat-icon>cancel</mat-icon>
+                </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout0" *ngIf="!registerForm1_activated && !visitor_mode">
                     <mat-icon>more_vert</mat-icon>
                 </button>
@@ -39,21 +41,68 @@
 
         <div class="account-form-container" [formGroup]="registerForm1">
 
-
             <div class="form-title" [@enterAnimation]>
                 <span>Type de compte</span>
             </div>
-            <div class="form-item">
+            <div class="form-item" *ngIf="!registerForm1_activated">
                 <mat-form-field floatLabel='never'>
                     <mat-label>{{type_of_account}}</mat-label>
                     <input matInput readonly 
-                    [matTooltip]="registerForm1_activated ? 'Vous ne pouvez pas changer de type de compte' : null"
-                    matTooltipClass='tooltip-account-about-profile' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="0">
+                        [matTooltip]="null"
+                        matTooltipClass='tooltip-account-about-profile' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="0">
                 </mat-form-field>
             </div>
+            <div class="form-item" *ngIf="registerForm1_activated && (type_of_account.includes('Artiste') || type_of_account.includes('Passion'))" [@enterAnimation]>
+                <mat-form-field floatLabel='never'>
+                    <mat-select *ngIf="type_of_profile=='Groupe' && (!type_of_account.includes('Maison') && !type_of_account.includes('non '))"  disableOptionCentering formControlName="type_of_account">
+                        <mat-option  *ngFor="let obj of listOfAccounts_group_artists" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-select  *ngIf="type_of_profile=='Homme'  && (!type_of_account.includes('Editeur') && !type_of_account.includes('non '))"   disableOptionCentering formControlName="type_of_account">
+                        <mat-option  *ngFor="let obj of listOfAccounts_male_artists" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-select  *ngIf="type_of_profile=='Femme' && (!type_of_account.includes('Editrice') && !type_of_account.includes('non '))" disableOptionCentering formControlName="type_of_account">
+                        <mat-option  *ngFor="let obj of listOfAccounts_female_artists" [value]="obj">
+                            {{ obj }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+            </div>
 
+            <div class="warning" *ngIf="registerForm1_activated && (registerForm1.value.type_of_account.includes('professionnel'))  
+                && !type_of_account.includes('professionnel')">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
+
+
+          <!--<div class="form-item" *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('professionnel')  && !type_of_account.includes('professionnel') ">
+                    <mat-form-field>
+                    <input matInput formControlName="siret" maxLength="14" autocomplete="off">
+                    <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro de SIRET valide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/14</div>
+                </mat-form-field>
+                
+            </div>-->
+            <ng-container *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('professionnel')  && type_of_account.includes('Artiste') ">
+                <div class="form-title">
+                    <span>Numéro de SIRET</span>
+                </div>
+                <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Numéro de SIRET</mat-label>
+                        <input matInput formControlName="siret" maxLength="14" type="search" autocomplete="off">
+                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro de SIRET valide
+                        </mat-error>
+                        <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/14</div>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+           
 
             <div class="form-title" [@enterAnimation]>
                 <span>Bio</span>
@@ -251,12 +300,15 @@
 
 
             <button class="validate-form-button" *ngIf="registerForm1_activated && !visitor_mode" (click)="validate_form_1();" [@enterAnimation]>
-                <mat-icon>done_all</mat-icon>
-                <span>Valider</span>
+                <mat-icon *ngIf="!loading_validation_form_1">done_all</mat-icon>
+                <span *ngIf="!loading_validation_form_1">Valider</span>
+                <div *ngIf="loading_validation_form_1 " class="loading-page-form">
+                    <mat-spinner diameter="20"></mat-spinner>
+                </div>
             </button>
 
             <div *ngIf="display_error_validator_1">
-                Les informations saisies sont incorectes.
+                Les informations saisies sont incorectes ou manquantes.
             </div>
         </div>
 
@@ -269,6 +321,9 @@
             <div class="title">
                 <span>En savoir plus</span>
                 
+                <button class="accountAboutAbsoluteButton" (click)="cancel_form_2()" *ngIf="registerForm2_activated && !visitor_mode">
+                    <mat-icon>cancel</mat-icon>
+                </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout1" *ngIf="!registerForm2_activated && !visitor_mode">
                     <mat-icon>more_vert</mat-icon>
                 </button>
@@ -306,20 +361,21 @@
                 <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Ville</mat-label>
-                        <input matInput formControlName="city" maxLength="30" autocomplete="off">
+                        <input matInput formControlName="city" maxLength="30" autocomplete="off" (input)=adding_city()>
                         <mat-error *ngIf="registerForm2.controls['city'].invalid ">Veuillez faire une saisie valide
                         </mat-error>
                         <div class="length-indicator">{{registerForm2.controls['city'].value?.length || 0}}/30</div>
                     </mat-form-field>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Pays</mat-label>
-                        <mat-select [(value)]="selected_country" placeholder="Mode" panelClass="accountAboutSelectClass" disableOptionCentering formControlName="country">
+                        <mat-select [(value)]="selected_country" (selectionChange)="adding_country()" placeholder="Mode" panelClass="accountAboutSelectClass" disableOptionCentering formControlName="country">
                             <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
                                 {{ obj }}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="registerForm2.controls['country'].invalid ">Veuillez selectionner un pays</mat-error>
                     </mat-form-field>
+                    
                 </div>
             </ng-container>
 
@@ -381,7 +437,17 @@
             </ng-container>
 
 
+            <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
+                <mat-icon *ngIf="!loading_validation_form_2">done_all</mat-icon>
+                <span *ngIf="!loading_validation_form_2">Valider</span>
+                <div *ngIf="loading_validation_form_2 " class="loading-page-form">
+                    <mat-spinner diameter="20"></mat-spinner>
+                </div>
+            </button>
 
+            <div *ngIf="display_error_validator_2">
+                Les informations saisies sont incorectes ou manquantes.
+            </div>
             
             <ng-container *ngIf="visitor_mode && links.length>0">
                 <div class="form-title">
@@ -481,13 +547,7 @@
             </ng-container>
 
 
-
-
-
-            <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
-                <mat-icon>done_all</mat-icon>
-                <span>Valider</span>
-            </button>
+            
         </div>
 
 
@@ -500,7 +560,9 @@
             <!--TITRE + BOUTON EDITER/CACHER-->
             <div class="title">
                 <span>Mon identité</span>
-                
+                <button class="accountAboutAbsoluteButton" (click)="cancel_form_3()" *ngIf="registerForm3_activated && !visitor_mode">
+                    <mat-icon>cancel</mat-icon>
+                </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout2" *ngIf="!registerForm3_activated && !visitor_mode">
                     <mat-icon>more_vert</mat-icon>
                 </button>
@@ -665,12 +727,17 @@
             </ng-container>
 
 
-
-            <button class="validate-form-button" *ngIf="registerForm3_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
-                <mat-icon>done_all</mat-icon>
-                <span>Valider</span>
+            <button class="validate-form-button" *ngIf="registerForm3_activated && !visitor_mode" (click)="validate_form_3();" [@enterAnimation]>
+                <mat-icon *ngIf="!loading_validation_form_3">done_all</mat-icon>
+                <span *ngIf="!loading_validation_form_3">Valider</span>
+                <div *ngIf="loading_validation_form_3" class="loading-page-form">
+                    <mat-spinner diameter="20"></mat-spinner>
+                </div>
             </button>
 
+            <div *ngIf="display_error_validator_3">
+                Les informations saisies sont incorectes ou manquantes.
+            </div>
 
         </div>
 

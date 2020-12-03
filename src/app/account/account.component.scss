@@ -101,8 +101,8 @@
       margin:auto auto auto auto;
       border-radius: 50%;
       overflow:hidden;
-      box-shadow:0px 0px 2px 2px rgb(32,56,100);
-      border:1px solid rgb(24, 46, 90);
+      box-shadow: 0px 0px 2px 2px #4bc7ff;
+      border: 1px solid #4bc7ff;
 
       img {
         width:100%;
@@ -296,7 +296,8 @@
           -webkit-line-clamp: 3;
           
           mat-icon {    
-            color: #00f4ff;
+            //color: #00f4ff;
+            color: #4bc7ff;
             height: 24px;
             width: unset;
             vertical-align: middle;
@@ -306,7 +307,7 @@
 
           span {
             vertical-align: top;
-            background: #00f4ff;
+            background: #4bc7ff;
             color: rgb(32,56,100);
             font-weight: 800;
             font-size: 11px;
@@ -339,9 +340,9 @@
         margin-bottom: 2px;
         > mat-icon {
           cursor:default;
-          color:white;
+          color:#4bc7ff;
           margin:auto 4px auto 0px;
-          font-size: 16px;
+          font-size: 14px;
           width:unset;
           height:unset;
         }
@@ -350,7 +351,7 @@
           cursor:default;
           color:white;
           line-height: 20px;
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 600;
                 
           display: -webkit-box;

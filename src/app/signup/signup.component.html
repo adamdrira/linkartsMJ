@@ -46,7 +46,7 @@
             <div class="form-item">
                 <mat-form-field>
                     <mat-label>E-mail*</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" >
+                    <input matInput formControlName="email" autocomplete="off" (input)="check_email_and_password()">
                     <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide</mat-error>
                    
                 </mat-form-field>
@@ -56,7 +56,7 @@
             <div class="form-item">
                 <mat-form-field style="position:relative">
                     <mat-label>Mot de passe*</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="check_email_and_password()">
                     <mat-error *ngIf="registerForm1.controls['password'].invalid">Veuillez saisir au moins 8 caractères, dont une majuscule et un nombre
                     </mat-error>
                     <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
@@ -86,7 +86,9 @@
             <button mat-raised-button class="submit-button style0" (click)="validate_step();">
                 <span>Suivant</span>
             </button>
-            <div class="position2"  *ngIf="display_need_information">Veuillez remplir les champs obligatoires</div>
+            <div class="position2"  *ngIf="display_need_information">Veuillez remplir les champs obligatoires.</div>
+            <div class="position2"  *ngIf="!display_need_information && display_email_and_password_found_1 && !display_email_found_1 ">Attention, un compte avec les mêmes identifiants existe déjà. </div>
+            <div class="position2"  *ngIf="!display_need_information && display_email_and_password_found_1 && display_email_found_1 ">Attention, un compte avec la même adresse email existe déjà. </div>
         </div>
 
     </div>
@@ -133,19 +135,16 @@
 
             <div class="warning" *ngIf="
             registerForm2.value.type_of_account
-            && registerForm2.value.type_of_account!='Artiste professionnelle'  
-            && registerForm2.value.type_of_account!='Artiste professionnel'   
-            && registerForm2.value.type_of_account!='Artiste' 
-            && registerForm2.value.type_of_account!='Artistes' 
-            &&  registerForm2.value.type_of_account!='Artistes professionnels'">Attention ! L'option de rémunération n'est pas permise pour ce type de compte</div>
+            && !registerForm2.value.type_of_account.includes('Artiste') ">Attention ! L'option de rémunération n'est pas permise pour ce type de compte</div>
 
-            <div class="warning" *ngIf="registerForm2.value.type_of_account=='Artiste professionnelle'  
-            || registerForm2.value.type_of_account=='Artiste professionnel'   
-            || registerForm2.value.type_of_account=='Maison d\'édition' ||  registerForm2.value.type_of_account=='Artistes professionnels'">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
+            <div class="warning" *ngIf="(registerForm1.value.type_of_account.includes('Artiste') && registerForm1.value.type_of_account.includes('professionnel')) 
+            ||registerForm1.value.type_of_account.includes('Maison')">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
 
-            <div class="form-item" *ngIf=" registerForm2.value.type_of_account=='Artiste professionnelle' 
-                 || registerForm2.value.type_of_account=='Artiste professionnel'  
-                || registerForm2.value.type_of_account=='Maison d\'édition' || registerForm2.value.type_of_account=='Artistes professionnels'">
+            <div class="warning" *ngIf="registerForm1.value.type_of_account.includes('non professionnel')  ">Une vérification ultérieure sera réalisée avant l'obtention de votre status pro.</div>
+
+
+            <div class="form-item" *ngIf="registerForm1.value.type_of_account.includes('Artiste professionnel')  
+            ||registerForm1.value.type_of_account.includes('Maison')">
                     <mat-form-field>
                     <mat-label>Numéro SIRET*</mat-label>
                     <input matInput formControlName="siret" maxLength="14" autocomplete="off">
@@ -330,10 +329,13 @@
                             </div>
                             
                         </div>
-                        <div *ngIf="!display_no_pseudos_found">
-                            <div class="title-proposition" *ngIf="!pp_found_loaded">
+                        <ng-container *ngIf="!display_no_pseudos_found">
+                            <div class="title-proposition" *ngIf="!pp_found_loaded && registerForm5.value.fdSearchbar">
                                &nbsp; <span>.</span><span>.</span><span>.</span>
                             </div>
+                            <div class="display-message" *ngIf="!pp_found_loaded && !registerForm5.value.fdSearchbar">
+                                Rechercher un artiste
+                             </div>
                             <div class="author-container" [ngClass]="{'really-invisible':!pp_found_loaded}">
                                 <div class="left-container">
                                     <img [src]="profile_picture_found" (load)="pp_found_load()">
@@ -349,7 +351,7 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </ng-container>
                     </div>
         
                 </div>
@@ -398,8 +400,65 @@
 
     </div>
 
+    <div class="popup-step" *ngIf="step==4 && registerForm1.value.gender=='Groupe' &&  need_authentication">
 
-    <div class="popup-step" *ngIf="step==4 && (registerForm1.value.gender=='Groupe' )">
+        <div class="back-and-logo">
+            <div class="logo" style="width:40px">
+                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
+            </div>
+        </div>
+
+        <div class="step-name">
+            <span>Authentification de l'admin</span>
+        </div>
+
+        <div class="step-form" [formGroup]="registerForm7">
+
+            <div class="form-item">
+                <mat-form-field>
+                    <mat-label>E-mail</mat-label>
+                    <input matInput formControlName="email" autocomplete="off">
+                    <mat-error *ngIf="registerForm7.controls['email'].invalid">Veuillez saisir un e-mail valide</mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="form-item">
+                <mat-form-field style="position:relative">
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput formControlName="password" [type]="hide2 ? 'password' : 'text'" autocomplete="off">
+                    <div class="error" *ngIf="error_authentication">Le mot de passe ou l'email sont incorrectes
+                    </div>
+                    <div class="error" *ngIf="error_authentication_2">Les informations entrées sont incorrectes
+                    </div>
+                    <mat-error *ngIf="registerForm7.controls['password'].invalid">Veuillez saisir un mot de passe correcte</mat-error>
+                    
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
+                        <mat-icon class="item-icon" style="color: #162644;     font-size: 20px;"  (click)="change_password_type2()" >remove_red_eye</mat-icon>
+                    </div>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+
+        <div class="step-validation">
+
+            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="cancel_authentication();">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <span *ngIf="!loading" style=" font-size: 16px;">Annuler</span>
+            </button>
+
+            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="validate_authentication();">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                <span *ngIf="!loading" style=" font-size: 16px;">S'authentifier</span>
+            </button>
+
+        </div>
+
+    </div>
+        
+
+    <div class="popup-step" *ngIf="step==4 && registerForm1.value.gender=='Groupe' &&  !need_authentication">
 
         <div class="back-and-logo">
             <div class="logo" style="width:40px">

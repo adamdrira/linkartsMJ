@@ -118,7 +118,9 @@ export class AccountAboutComponent implements OnInit {
   @Input('visitor_mode') visitor_mode:boolean;
   @Input('author') author:any;
   
-  
+  listOfAccounts_group_artists = ["Artistes","Artistes professionnels"];
+  listOfAccounts_male_artists = ["Artiste","Artiste professionnel"];
+  listOfAccounts_female_artists = ["Artiste","Artiste professionnelle"];
   opened_category=-1;
 
   category_to_open='Dessins';
@@ -144,6 +146,7 @@ export class AccountAboutComponent implements OnInit {
   now_in_seconds:number=Math.trunc( new Date().getTime()/1000);
 
   type_of_account:string;
+  siret:number;
   firstName:string;
   lastName:string;
   userLocation:string;
@@ -169,9 +172,12 @@ export class AccountAboutComponent implements OnInit {
 
   registerForm2: FormGroup;
   registerForm2_activated=false;
+  display_error_validator_2=false;
 
   registerForm3: FormGroup;
   registerForm3_activated=false;
+  display_error_validator_3=false;
+
   maxDate: moment.Moment;
 
   @HostListener('window:resize', ['$event'])
@@ -183,12 +189,10 @@ export class AccountAboutComponent implements OnInit {
         let width = Math.round($('.chart-container').width())
         this.view_size=[width,(width)/2];
         console.log(this.view_size)
-        this.show_legends=false;
         this.cd.detectChanges();
       }
       else{
         this.view_size=[800,400]
-        this.show_legends=true;
         this.cd.detectChanges();
       }
     }
@@ -202,6 +206,7 @@ export class AccountAboutComponent implements OnInit {
       this.maxDate = moment([currentYear - 7, 11, 31]);
       console.log(this.author)
       
+      this.siret=this.author.siret;
       this.firstName = this.author.firstname;
       this.lastName =this.author.lastname;
       this.primary_description =this.author.primary_description;
@@ -280,12 +285,6 @@ export class AccountAboutComponent implements OnInit {
         this.cd.detectChanges();
       })
 
-
-
-
-
-
-      
       //open_category=1
       this.Trending_service.check_if_user_has_trendings(this.id_user).subscribe(r=>{
         console.log(r[0])
@@ -383,8 +382,8 @@ export class AccountAboutComponent implements OnInit {
   /***************************************  SUMO SELECTORS ******************************/
 
   view_size : any[] = [800, 400];
-  show_legends: boolean = true;
-  legend_position: string = 'right';
+  show_legends= false;
+  legend_position= 'right';
   selector_for_ads_initialized=false;
   selector_for_comics_initialized=false;
   selector_for_drawings_initialized=false;
@@ -2633,6 +2632,18 @@ export class AccountAboutComponent implements OnInit {
   build_form_1() {
     this.registerForm1 = this.formBuilder.group({
         
+      type_of_account: [this.type_of_account, 
+        Validators.compose([
+          Validators.required,
+        ]),
+      ],
+      siret: [this.siret, 
+        Validators.compose([
+          Validators.pattern(pattern("siret")),
+          Validators.minLength(14),
+          Validators.maxLength(14),
+        ]),
+      ],
       primary_description: [this.primary_description, 
         Validators.compose([
           Validators.required,
@@ -2688,44 +2699,88 @@ export class AccountAboutComponent implements OnInit {
     this.registerForm1_activated=true;
   }
 
+  loading_validation_form_1=false;
   validate_form_1(){
     //fonction backend
     console.log()
+    if(this.loading_validation_form_1){
+      return
+    }
     if(this.registerForm1.invalid){
       this.display_error_validator_1=true;
+      return
+    }
+
+    this.loading_validation_form_1=true;
+    this.display_error_validator_1=false;
+    let form =this.registerForm1.value;
+    if (this.registerForm1.value.type_of_account.includes('professionnel')){
+      console.log(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14))
+      if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14)){
+        console.log("in else if false")
+        this.display_error_validator_1=true;
+        this.loading_validation_form_1=false;
+      }
+      else{
+        console.log("in else if ok")
+        this.display_error_validator_1=false;
+        let siret = form.siret
+        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret, form.primary_description,form.primary_description_extended,form.job,form.training).subscribe(l=>{
+          console.log(l);
+          this.type_of_account=form.type_of_account;
+          this.primary_description=form.primary_description;
+          this.primary_description_extended=form.primary_description_extended
+          this.job=form.job;
+          this.training=form.training;
+          this.loading_validation_form_1=false;
+          this.registerForm1_activated=false;
+          this.cd.detectChanges();
+        });
+      }
+  
     }
     else{
-      
-      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;*/
-      
-      /*this.Profile_Edition_Service.edit_account_about_1(this.id_user, this.primary_description,this.primary_description_extended,this.job,this.training).subscribe(l=>{
+      //this.loading_validation_form_1=false;
+      this.display_error_validator_1=false;
+      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null, form.primary_description,form.primary_description_extended,form.job,form.training).subscribe(l=>{
         console.log(l);
+        this.type_of_account=form.type_of_account;
+        this.primary_description=form.primary_description;
+        this.primary_description_extended=form.primary_description_extended
+        this.job=form.job;
+        this.training=form.training;
+        this.loading_validation_form_1=false;
         this.registerForm1_activated=false;
-      });*/
+        this.cd.detectChanges();
+      })
+      
+      console.log(" in else ok")
     }
   }
   cancel_form_1(){
     this.registerForm1_activated=false;
+    this.loading_validation_form_1=false;
   }
 
 
   /********************************************************************************************** */
   /********************************************************************************************** */
-  /*******************************************FORM 1********************************************* */
+  /*******************************************FORM 2********************************************* */
   /********************************************************************************************** */
   /********************************************************************************************** */
 
   build_form_2() {
+    console.log(this.userLocation.split(','))
     this.registerForm2 = this.formBuilder.group({
-        
-      city:['', 
+      
+      city:[this.userLocation?this.userLocation.split(', ')[0]:'', 
         Validators.compose([
           Validators.minLength(3),
           Validators.maxLength(30),
           Validators.pattern(pattern("name")),
         ]),
       ],
-      country:['', 
+      country:[this.userLocation?this.userLocation.split(', ')[1]:'', 
         Validators.compose([
         ]),
       ],
@@ -2750,9 +2805,11 @@ export class AccountAboutComponent implements OnInit {
         ]),
       ],
     });
+    console.log(this.registerForm2.value)
   }
 
   //primary description 
+  loading_validation_form_2=false;
   edit_form_2(){
     this.registerForm2_activated=true;
   }
@@ -2760,24 +2817,45 @@ export class AccountAboutComponent implements OnInit {
   validate_form_2(){
     //fonction backend
     console.log()
-    if(this.registerForm2.invalid){
-      //this.display_error_validator_1=true;
+    if(this.loading_validation_form_2){
+      return
     }
-    else{
-      
-      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
-      
-      this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
-        console.log(l);
-        this.primary_description_extended=primary_description_extended;
-        this.registerForm3_activated=false;
-      });*/
+    if(this.registerForm2.invalid ){
+      this.display_error_validator_2=true;
+      return 
     }
+    this.loading_validation_form_2=true;
+    this.display_error_validator_2=false;
+    let form =this.registerForm2.value;
+    var userLocation;
+    if( form.city && !form.country){
+      userLocation =this.capitalizeFirstLetter( form.city.toLowerCase() )
+    }
+    else if(form.city && form.country){
+      userLocation=this.capitalizeFirstLetter( form.city.toLowerCase() ) + ", " + this.capitalizeFirstLetter( form.country.toLowerCase() );
+    }
+    else if(!form.city && form.country){
+     userLocation= this.capitalizeFirstLetter( form.country.toLowerCase() );
+    }
+    
+    this.Profile_Edition_Service.edit_account_about_2(userLocation,form.email_about).subscribe(l=>{
+      this.userLocation=userLocation;
+      this.email_about=form.email_about;
+      this.loading_validation_form_2=false;
+      this.registerForm2_activated=false;
+    });
+      
+    
+    
   }
   cancel_form_2(){
     this.registerForm2_activated=false;
+    this.loading_validation_form_2=false;
+    this.display_error_validator_2=false;
   }
-
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   //links
   add_link_to_the_list(){
@@ -2880,27 +2958,53 @@ export class AccountAboutComponent implements OnInit {
   //primary description 
   edit_form_3(){
     this.registerForm3_activated=true;
+    this.loading_validation_form_3=false;
+    this.display_error_validator_3=false;
   }
 
+  loading_validation_form_3=false;
   validate_form_3(){
     //fonction backend
     console.log()
-    if(this.registerForm3.invalid){
-      //this.display_error_validator_1=true;
+    if(this.loading_validation_form_3){
+      return
     }
-    else{
-      
-      /*let primary_description_extended=this.registerForm3.value.primary_description_extended;
-      
-      this.Profile_Edition_Service.edit_primary_description_extended(this.id_user,primary_description_extended).subscribe(l=>{
-        console.log(l);
-        this.primary_description_extended=primary_description_extended;
-        this.registerForm3_activated=false;
-      });*/
+    if(this.registerForm3.invalid ){
+      this.display_error_validator_3=true;
+      return 
     }
+    this.loading_validation_form_3=true;
+    this.display_error_validator_3=false;
+    let form =this.registerForm3.value;
+    console.log(this.registerForm3)
+    let birthday;
+    if(this.registerForm3.controls['birthday'] && this.registerForm3.controls['birthday'].valid){
+      console.log(this.registerForm3.value.birthday._i.date)
+      if(this.registerForm3.value.birthday._i.date){
+        birthday = this.registerForm3.value.birthday._i.date  + '-' + this.registerForm3.value.birthday._i.month  + '-' + this.registerForm3.value.birthday._i.year ;
+      }
+      else{
+        birthday = this.registerForm3.value.birthday._i;
+        birthday = birthday.replace(/\//g, "-");
+        
+      }
+     
+    }
+    this.Profile_Edition_Service.edit_account_about_3(form.firstName,form.lastName,birthday).subscribe(l=>{
+      this.firstName=form.firstName;
+      this.lastName=form.lastName;
+      this.birthday=this.find_age(birthday)
+      this.loading_validation_form_3=false;
+      this.registerForm3_activated=false;
+    });
+      
+  
+    
   }
   cancel_form_3(){
     this.registerForm3_activated=false;
+    this.loading_validation_form_3=false;
+    this.display_error_validator_3=false;
   }
 
 
@@ -3288,6 +3392,65 @@ export class AccountAboutComponent implements OnInit {
     "Zimbabwe",
   ]
 
+  adding_city(){
+    if(this.registerForm2.value.city && this.registerForm2.value.city.length>0){
+      console.log("required")
+      this.registerForm2.controls['country'].setValidators([
+        Validators.required,
+      ]);
+      this.registerForm2.controls['country'].markAsTouched();
+    }
+    else if(!this.registerForm2.value.country || this.registerForm2.value.country.length==0){
+      console.log("initi")
+        this.registerForm2.controls['country'].setValidators([
+        ]);
+        this.registerForm2.controls['city'].setValidators([
+          Validators.pattern(pattern("name")),
+          Validators.minLength(3),
+          Validators.maxLength(30)
+        ]);
+    }
+    this.registerForm2.controls['country'].updateValueAndValidity();
+    this.registerForm2.controls['city'].updateValueAndValidity();
+}
 
+adding_country(){
+    if(this.registerForm2.value.country && this.registerForm2.value.country.length>0){
+      if(this.registerForm2.value.country=="Aucun pays"){
+        this.registerForm2.controls['country'].setValue(null);
+        if(!this.registerForm2.value.city || this.registerForm2.value.city.length==0){
+          this.registerForm2.controls['country'].setValidators([
+          ]);
+          this.registerForm2.controls['city'].setValidators([
+            Validators.pattern(pattern("name")),
+            Validators.minLength(3),
+            Validators.maxLength(30)
+          ]);
+        }
+        this.registerForm2.controls['country'].updateValueAndValidity();
+        this.registerForm2.controls['city'].updateValueAndValidity();
+        return;
+      }
+      this.registerForm2.controls['city'].setValidators(
+       [Validators.required,
+        Validators.pattern(pattern("name")),
+        Validators.minLength(3),
+        Validators.maxLength(30)]);
+       this.registerForm2.controls['city'].markAsTouched();
+    }
+    else if(!this.registerForm2.value.city || this.registerForm2.value.city.length==0){
+      this.registerForm2.controls['country'].setValidators([
+      ]);
+      this.registerForm2.controls['city'].setValidators([
+        Validators.pattern(pattern("name")),
+        Validators.minLength(3),
+        Validators.maxLength(30)
+      ]);
+   }
+   this.registerForm2.controls['country'].updateValueAndValidity();
+   this.registerForm2.controls['city'].updateValueAndValidity();
+
+  
+}
 
 }

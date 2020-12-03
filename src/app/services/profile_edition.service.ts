@@ -166,27 +166,41 @@ export class Profile_Edition_Service {
     }));
   }
 
+  check_email_and_password(email,password,index){
+    console.log(email)
+    return this.httpClient.post<any>('api/users/check_email_and_password', { email: email,password:password}).pipe(map(res => {
+        return [res,index];
+    }));
+  }
+
 
   //edit user information
 
-  edit_bio(firstname,lastname,primary_description,location){
-    return this.httpClient.post('routes/edit_bio', {firstname:firstname, lastname:lastname, primary_description:primary_description, location:location},{withCredentials: true}  ).pipe(map((information)=>{
+
+  edit_account_about_1(type_of_account,siret,primary_description,primary_description_extended,job,training){
+    return this.httpClient.post('routes/edit_account_about_1', {type_of_account:type_of_account, siret:siret,primary_description:primary_description,primary_description_extended:primary_description_extended,training:training, job:job},{withCredentials: true}  ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  edit_account_about_2(location,email_about){
+    return this.httpClient.post('routes/edit_account_about_2', { email_about:email_about, location:location},{withCredentials: true}  ).pipe(map((information)=>{
       return information;
     }));
 
   }
 
-  edit_profile_information(id_user,email,birthday,job,training) {
-    return this.httpClient.post('routes/edit_profile_information',{id_user:id_user,email:email,birthday:birthday,job:job,training:training},{withCredentials:true} ).pipe(map((information)=>{
+  edit_account_about_3(firstname,lastname,birthday) {
+    return this.httpClient.post('routes/edit_account_about_3',{firstname:firstname,lastname:lastname,birthday:birthday},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
 
-  edit_primary_description_extended(id_user,primary_description_extended) {
+  /*edit_primary_description_extended(id_user,primary_description_extended) {
     return this.httpClient.post('routes/edit_primary_description_extended',{id_user:id_user,primary_description_extended:primary_description_extended},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
-  }
+  }*/
 
   //information privacy
 
