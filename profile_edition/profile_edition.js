@@ -431,15 +431,72 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   //
-  router.post('/edit_bio', function (req, res) {
+  router.post('/edit_account_about_1', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     
-   
+    const type_of_account=req.body.type_of_account;
     const primary_description= req.body.primary_description;
-    const firstname= req.body.firstname;
-    const lastname= req.body.lastname;
-    const location = req.body.location;
+    const primary_description_extended= req.body.primary_description_extended;
+    const training = req.body.training;
+    const job = req.body.job;
+    const siret = req.body.siret;
+    users.findOne({
+      where: {
+        id: current_user,
+      }
+    })
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
+      User.update({
+        "type_of_account":type_of_account,
+        "siret":siret,
+        "training":training,
+        "primary_description_extended":primary_description_extended,
+        "primary_description":primary_description,
+        "job":job,
+      }).catch(err => {
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+   
+  });
+
+  router.post('/edit_account_about_2', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
     
+    const email_about=req.body.location;
+    const location= req.body.location;
+    users.findOne({
+      where: {
+        id: current_user,
+      }
+    })
+    .catch(err => {
+			//console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(User =>  {
+      User.update({
+        "email_about":email_about,
+        "location":location,
+      }).catch(err => {
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
+    }); 
+
+   
+  });
+
+  router.post('/edit_account_about_3', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    
+    const firstname=req.body.firstname;
+    const lastname= req.body.lastname;
+    const birthday= req.body.birthday;
     users.findOne({
       where: {
         id: current_user,
@@ -452,12 +509,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       User.update({
         "firstname":firstname,
         "lastname":lastname,
-        "primary_description":primary_description,
-        "location":location,
+        "birthday":birthday,
       }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([User]))
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(res.status(200).send([User]))
     }); 
 
    
@@ -2113,8 +2169,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   ciphers:'SSLv3'
             }
           });
-    
-        var mailOptions = {
+
+        
+          var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
             to: user.email, // my mail
             //cc:"adam.drira@etu.emse.fr",
@@ -2122,7 +2179,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             //text: 'plain text', // plain text body
             html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
             // attachments: params.attachments
-        };
+          };
+      
+       
     
         transport.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -2177,15 +2236,36 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 status:"account",
               }
             }).then(user_found=>{
-              var mailOptions = {
-                from: 'Linkarts <services@linkarts.fr>', // sender address
-                to: user_found.email, // my mail
-                //cc:"adam.drira@etu.emse.fr",
-                subject: `Création d'un groupe`, // Subject line
-                //text: 'plain text', // plain text body
-                html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
-                // attachments: params.attachments
-              };
+
+              if(user.type_of_account.includes('Artiste')){
+                var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to: user_found.email, // my mail
+                  //cc:"adam.drira@etu.emse.fr",
+                  subject: `Création d'un groupe`, // Subject line
+                  //text: 'plain text', // plain text body
+                  html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
+                  // attachments: params.attachments
+                };
+              }
+              else{
+                let password=genere_random_id(user_found.id);
+                console.log(user.email)
+                console.log(password)
+                user_found.update({
+                  "password_registration":password
+                })
+                var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to: user_found.email, // my mail
+                  //cc:"adam.drira@etu.emse.fr",
+                  subject: `Confirmation d'inscription`, // Subject line
+                  //text: 'plain text', // plain text body
+                  html:  `<p><a href="http://localhost:4200/registration/${user_found.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+                  // attachments: params.attachments
+                };
+              }
+             
 
               transport.sendMail(mailOptions, (error, info) => {
                 if (error) {

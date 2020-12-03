@@ -356,8 +356,8 @@ exports.reset_password = (req, res) => {
 					['createdAt', 'DESC']
 				],
 			}).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
+				console.log(err);	
+				res.status(500).json({msg: "error", details: err});		
 			}).then(user=>{
 				if(user.length>0){
 					const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user[0].iv, 'hex'));
@@ -386,8 +386,8 @@ exports.reset_password = (req, res) => {
 						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 						// attachments: params.attachments
 					};
-				
-					transport.sendMail(mailOptions, (error, info) => {
+					res.status(200).send([{sent:decrypted.toString()}])
+					/*transport.sendMail(mailOptions, (error, info) => {
 						if (error) {
 							console.log('Error while sending mail: ' + error);
 							res.status(200).send([{error:error}])
@@ -397,7 +397,7 @@ exports.reset_password = (req, res) => {
 						}
 						
 			
-					})
+					})*/
 				}
 				else{
 					//res.status(200).send([{error:"user not found"}])
@@ -446,8 +446,8 @@ exports.reset_password = (req, res) => {
 							//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 							// attachments: params.attachments
 						};
-					
-						transport.sendMail(mailOptions, (error, info) => {
+						res.status(200).send([{sent:pass}])
+						/*transport.sendMail(mailOptions, (error, info) => {
 							if (error) {
 								console.log('Error while sending mail: ' + error);
 								res.status(200).send([{error:error}])
@@ -457,7 +457,7 @@ exports.reset_password = (req, res) => {
 							}
 							
 				
-						})
+						})*/
 					})
 				}
 			})
@@ -706,6 +706,7 @@ exports.login = async (req, res) => {
 	if( !user || !passwordCorrect ) {
 		
 		if(user){
+			//vérifier que le mdp n'est pas un ancier mdp et informer l'utilisateur
 			const Op = Sequelize.Op;
 			var last_year = new Date();
         	last_year.setDate(last_year.getDate() - 365);
@@ -786,9 +787,37 @@ exports.login = async (req, res) => {
 };
 
 
-exports.check_email_checked = async (req, res) => {
+
+exports.check_email_and_password = async (req, res) => {
 	const Op = Sequelize.Op;
 	const user = await User.findOne( {
+		 where: { 
+			[Op.or]:[{status:"account"},{status:"suspended"}],
+			email:{[Op.iLike]: req.body.email},
+			} 
+		});
+	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
+
+	if( !user || !passwordCorrect ) {
+		if(user && !passwordCorrect){
+			return res.status(200).json({ok: "ok_to_signup",email:"just_email_match"});
+		}
+		else {
+			return res.status(200).json({ok: "ok_to_signup"});
+		}
+		
+	}
+	else{
+		return res.status(200).json({found: "not_ok_to_signup",user:user});
+	}
+
+	
+	
+};
+
+exports.check_email_checked = async (req, res) => {
+	const Op = Sequelize.Op;
+	var user = await User.findOne( {
 		 where: { 
 			[Op.or]:[{status:"account"},{status:"suspended"}],
 			email:{[Op.iLike]: req.body.mail_or_username},
@@ -846,7 +875,14 @@ exports.check_email_checked = async (req, res) => {
 	}
 	else{
 		console.log("check login")
+		console.log(user.gender=='Groupe')
+		console.log(user.type_of_account.includes('Artiste'))
 		if(user.email_checked){
+			return res.status(200).json({user: user});
+		}
+		else if (user.gender=='Groupe' && user.type_of_account.includes('Artiste')){
+			console.log( "in else if")
+			user.email_checked=true;
 			return res.status(200).json({user: user});
 		}
 		else{
