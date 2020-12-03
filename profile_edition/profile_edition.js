@@ -468,7 +468,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/edit_account_about_2', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
     
-    const email_about=req.body.location;
+    const email_about=req.body.email_about;
     const location= req.body.location;
     users.findOne({
       where: {
