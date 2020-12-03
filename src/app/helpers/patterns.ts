@@ -16,7 +16,7 @@ export function pattern(type: string) {
     //Doit commencer par une lettre (avec accents), doit finir par une lettre.
     //Peut contenir au milieu un espace ou un tiret (max 1).
     if( type == "name" ) {
-        return "[a-zA-Z0-9"+accents+" ]\{1,}[ -]\{0,1}[a-zA-Z0-9"+accents+" ]\{1,}";
+        return "[a-zA-Z"+accents+"]\{1,}[a-zA-Z"+accents+" -]\{0,}[a-zA-Z"+accents+"]\{1,}";
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
@@ -28,7 +28,7 @@ export function pattern(type: string) {
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace + PAS D'ESPACES
     if( type == "text_without_spaces" ) {
-        return "^[http]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
+        return "[h][t][t][p]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
     }
 
     if( type == "siret" ) {
