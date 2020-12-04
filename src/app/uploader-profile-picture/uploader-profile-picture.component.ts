@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Cropper:any;
 declare var $:any;
@@ -16,7 +17,17 @@ declare var $:any;
 @Component({
   selector: 'app-uploader-profile-picture',
   templateUrl: './uploader-profile-picture.component.html',
-  styleUrls: ['./uploader-profile-picture.component.scss']
+  styleUrls: ['./uploader-profile-picture.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 
 
@@ -118,7 +129,8 @@ export class UploaderProfilePictureComponent implements OnInit {
       zoomOnTouch: false,
       cropBoxMovable: false,
       cropBoxResizable: false,
-      guides: false
+      guides: false,
+      fillColor: '#FFFFFF'
     });
 
 

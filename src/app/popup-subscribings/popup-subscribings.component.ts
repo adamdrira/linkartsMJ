@@ -8,13 +8,24 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any;
 
 @Component({
   selector: 'app-popup-subscribings',
   templateUrl: './popup-subscribings.component.html',
-  styleUrls: ['./popup-subscribings.component.scss']
+  styleUrls: ['./popup-subscribings.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupSubscribingsComponent implements OnInit {
 
@@ -84,5 +95,8 @@ export class PopupSubscribingsComponent implements OnInit {
     }
   }
 
+  get_user_link(i:number) {
+    return "/account/"+ this.list_of_subscribings_information[i].nickname +"/"+ this.list_of_subscribings_information[i].id;
+  }
 
 }

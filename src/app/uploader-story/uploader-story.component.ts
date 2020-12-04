@@ -8,6 +8,7 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatDialog } from '@angular/material/dialog';
 
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var Cropper:any;
@@ -19,7 +20,17 @@ const url = 'http://localhost:4600/routes/upload_story';
 @Component({
   selector: 'app-uploader-story',
   templateUrl: './uploader-story.component.html',
-  styleUrls: ['./uploader-story.component.scss']
+  styleUrls: ['./uploader-story.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class UploaderStoryComponent implements OnInit {
 
@@ -128,7 +139,8 @@ initialize_cropper(content: ElementRef) {
     zoomOnTouch: false,
     cropBoxMovable: false,
     //cropBoxResizable: false,
-    guides: false
+    guides: false,
+    fillColor: '#FFFFFF'
   });
 
 

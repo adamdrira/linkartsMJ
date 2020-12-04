@@ -1,193 +1,204 @@
 
-
-#uploader-profile-picture {
+#uploader-story-picture {
   overflow:hidden;
-  width:600px;
+  width:100%;
   height:400px;
 }
+      
 
 .thumbnail-container {
   display:flex;
   width:100%;
   height:100%;
+  .image-container {
+      display:flex;
+      width:100%;
+      height:100%;
+      .dropzone-container {
+          display:flex;
+          height:100%;
+          width:100%;
+          .dropzone {
+              display: flex;
+              border: dashed 8px #d4dbe4;
+              width: 80%;
+              height: 80%;
+              margin: auto auto;
+              border-radius: 50px;
+              .icon-container {
+                  margin:auto auto;
+                  display: flex;
+                  padding-left: 15px;
+                  padding-right: 15px;
+                  flex-direction: column;
+                  mat-icon {
+                      cursor:default;
+                      width:unset;
+                      height:unset;
+                      font-size: 55px;
+                      margin: auto auto 10px auto;
+                      color:rgb(32,56,100);
+                  }
+                  > span {
+                      cursor:default;
+                  }
+                  span {
+                      font-size:18px;
+                      color: rgb(32,56,100);
+                      opacity:1;
+                      transition:opacity 200ms;
+                      text-align: center;
+                  }
+              }
+          }
+          .nv-file-over {
+              border: dashed 8px #c5d2ee !important;
+              transition:border-color 200ms;
+              .upload-icon {
+                  transition:background-color 100ms;
+                  background:rgb(94, 133, 206) !important;
+              }                
+          }
+          
+      }
+      label {
+          display:flex;
+          margin:20px auto auto auto;
+          height:fit-content;
+          width:fit-content;
+      }
+      .upload-picture {
+          display:flex;
+          cursor:pointer;
+          margin:auto auto;
+          font-size: 17px;
+          background: white;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+          border-radius: 50px;
+          border: 1px solid rgb(32,56,100) !important;
+          outline: none !important;
+          padding: 15px 30px;
+          &:hover {
+              background:#eeeff3 !important;
+              box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+          }
+          &:active {
+              background: #e2e5eb !important;
+              box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+          }
+          span {
+              cursor:pointer;
+              margin: auto auto auto 10px;
+          }
+      }
+  }
 }
 
 
-.thumbnail-container .image-container {
-display:flex;
-width:100%;
-height:100%;
+@media (max-width:650px) {
+  .icon-container span {
+      font-size:13px !important;
+  }
+  .upload-picture {
+      padding:10px !important;
+  }
 }
 
 
-.thumbnail-container .image-container .dropzone-container {
-  display:flex;
-  height:100%;
-  width:100%;
-}
-
-
-.thumbnail-container .image-container .dropzone-container .dropzone {
-  display: flex;
-  border: dashed 7px #c7c7c7;
-  width: 80%;
-  height: 80%;
-  margin: auto auto;
-  border-radius: 5px;
-}
-
-
-.thumbnail-container .image-container .dropzone .icon-container {
-  margin:auto auto;
-  display:block
-}
-
-
-.thumbnail-container .image-container .dropzone .icon-container .upload-icon {
-  margin:auto auto 10px auto;
-  height:60px;
-  width:60px;
-  background:rgb(32,56,100);
-  -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
-  mask: url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
-}
-
-
-.thumbnail-container .image-container .dropzone .icon-container span {
-  font-size:18px;
-  color: rgb(32,56,100);
-  opacity:1;
-  transition:opacity 200ms;
-}
-
-
-.thumbnail-container .image-container .dropzone-container .nv-file-over {
-  border: dashed 4px rgb(94, 133, 206) !important;
-  transition:border-color 200ms;
-}
-
-
-.thumbnail-container .image-container .dropzone-container .nv-file-over .upload-icon {
-  transition:background-color 100ms;
-  background:rgb(94, 133, 206) !important;
-}
-
-.thumbnail-container .image-container .dropzone-container .nv-file-over .icon-container span,
-.thumbnail-container .image-container .dropzone-container .nv-file-over label {
-  
-}
-
-
-
-.thumbnail-container .image-container label {
-  display:flex;
-  margin:20px auto auto auto;
-  height:fit-content;
-  width:fit-content;
-}
-
-.thumbnail-container .image-container .upload-picture {
-  display:flex;
-  cursor:pointer;
-  margin:auto auto;
-  font-size: 17px;
-  background: white;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  border-radius: 50px;
-  box-shadow: 0px 0px 10px 1px #dae6ee !important;
-  border: 1px solid #85a1b3 !important;
-  outline: none !important;
-  padding: 15px 30px;
-}
-
-.thumbnail-container .image-container .upload-picture:hover {
-  background:rgb(246, 249, 253);
-}
-
-
-.thumbnail-container .image-container .upload-picture .add-logo {
-  cursor:pointer;
-  height: 20px;
-  margin: auto 10px auto auto;
-  width: 20px;
-  background-color: rgb(44, 44, 44);
-  -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
-  mask: url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
-}
-
-.thumbnail-container .image-container .upload-picture span {
-  cursor:pointer;
-  margin: auto auto auto 10px;
-}
-
-
-
+/*********************************/
+/*CROP*/
+/*********************************/
 .thumbnail-container .crop-container {
 width: 100%;
 height: 100%;
 display:flex;
+.img-container {
+  height:100%;
+  width:100%;
+  display:flex;
+  flex-direction: column;
+  margin:auto auto auto auto;
+  .full-crop {
+      height:85%;
+      width:100%;
+      margin:auto auto;
+      border-radius: 10px;
+      overflow: hidden;
+  }
+  .options {
+      width: 100%;
+      margin: auto auto;
+      display: flex;
+      background: white;
+      button {    
+          color:rgb(32,56,100);
+          margin: 5px auto 5px auto;
+          border-radius: 50px;
+          width: 160px;
+          height: 40px;
+          background: white;
+          outline: none;
+          justify-content: center;
+          text-align: center;
+          border: 1px solid rgb(32,56,100);
+          display: flex;
+
+          mat-icon {
+              width:unset;
+              height:unset;
+              color:rgb(32,56,100);
+              margin:auto 5px auto auto;
+          }
+          span {
+              font-size: 16px;
+              font-weight: 600;
+              margin:auto auto auto 0px;
+          }
+          &:hover {
+              background:#eeeff3 !important;
+              box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+          }
+          &:active {
+              background: #e2e5eb !important;
+              box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
+          }
+      }
+
+  }
+
 }
 
-
-.thumbnail-container .crop-container .img-container {
-height:100%;
-width:100%;
-display:flex;
-flex-direction: column;
-margin:auto auto auto auto;
-}
-
-.thumbnail-container .crop-container .img-container .full-crop {
-height:85%;
-width:100%;
-margin:auto auto;
-}
-
-
-.thumbnail-container .crop-container .img-container .options {
-height: 15%;
-width: 100%;
-margin: auto auto;
-display: flex;
-background: white;
-}
-
-
-.thumbnail-container .crop-container .img-container .options button {
-  width: 150px;
-  display: flex;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.thumbnail-container .crop-container .img-container .options button.cancel {
-  margin:auto auto 2px 2px;
-}
-
-.thumbnail-container .crop-container .img-container .options button.validate {
-  margin:auto 2px 2px auto;
 }
 
 
 //Cropper ng deep changes
-::ng-deep #uploader-profile-picture .cropper-crop-box,
-::ng-deep #uploader-profile-picture .cropper-view-box {
-  outline:none !important;
-}
-::ng-deep #uploader-profile-picture .cropper-face {
-  background-color:unset !important;
-}
-::ng-deep #uploader-profile-picture mat-slider {
-  margin: auto auto 0px auto;
-  width: calc(100% - 350px);
-}
-::ng-deep #uploader-profile-picture .mat-slider-track-fill {
-  background-color: rgb(59, 83, 128) !important;
-}
-::ng-deep #uploader-profile-picture .mat-slider-thumb {
-  background-color: rgb(32,56,100) !important;
+::ng-deep #uploader-story-picture {
+  
+  .cropper-wrap-box {
+      background:rgb(32,56,100);
+  }
+  .cropper-crop {
+      cursor:crosshair;
+  }
+
+  .cropper-crop-box,.cropper-view-box {
+      outline:none !important;
+  }
+  .cropper-face {
+      background-color:unset !important;
+  }
+  mat-slider {
+      margin:auto auto auto auto;
+      width: 300px;
+  }
+  .mat-slider-track-fill {
+      background-color: rgb(59, 83, 128) !important;
+  }
+  .mat-slider-thumb {
+      background-color: rgb(32,56,100) !important;
+  }
 }

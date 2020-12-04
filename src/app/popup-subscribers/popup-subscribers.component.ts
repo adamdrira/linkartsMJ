@@ -8,13 +8,24 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any;
 
 @Component({
   selector: 'app-popup-subscribers',
   templateUrl: './popup-subscribers.component.html',
-  styleUrls: ['./popup-subscribers.component.scss']
+  styleUrls: ['./popup-subscribers.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupSubscribersComponent implements OnInit {
 
@@ -35,6 +46,7 @@ export class PopupSubscribersComponent implements OnInit {
   }
 
   list_of_subscribers=this.data.subscribers;
+  
   list_of_subscribers_information:any[]=[];
   list_of_check_subscribtion:any[]=[];
   list_of_profile_pictures:SafeUrl[]=[];
@@ -44,6 +56,7 @@ export class PopupSubscribersComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.list_of_subscribers);
     let n=this.list_of_subscribers.length;
+
     for (let i=0;i<n;i++){
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_subscribers[i].id_user).subscribe(r=>{
         this.list_of_subscribers_information[i]=r[0];
@@ -83,6 +96,10 @@ export class PopupSubscribersComponent implements OnInit {
         this.list_of_check_subscribtion[i]=false;
       });
     }
+  }
+
+  get_user_link(i:number) {
+    return "/account/"+ this.list_of_subscribers_information[i].nickname +"/"+ this.list_of_subscribers_information[i].id;
   }
 
 

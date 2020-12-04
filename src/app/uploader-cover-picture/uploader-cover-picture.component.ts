@@ -9,6 +9,7 @@ import {Profile_Edition_Service} from '../services/profile_edition.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Cropper:any;
 declare var $:any;
@@ -17,7 +18,17 @@ declare var $:any;
 @Component({
   selector: 'app-uploader-cover-picture',
   templateUrl: './uploader-cover-picture.component.html',
-  styleUrls: ['./uploader-cover-picture.component.scss']
+  styleUrls: ['./uploader-cover-picture.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class UploaderCoverPictureComponent implements OnInit {
 
@@ -125,7 +136,8 @@ export class UploaderCoverPictureComponent implements OnInit {
       zoomOnTouch: false,
       cropBoxMovable: false,
       cropBoxResizable: false,
-      guides: false
+      guides: false,
+      fillColor: '#FFFFFF'
     });
 
 
