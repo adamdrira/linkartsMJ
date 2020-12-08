@@ -1,80 +1,53 @@
-<div class="container-fluid" >
-    <main role="main" class="main" >
-      
+<div class="home-linkarts" *ngIf="type_of_profile_retrieved">
 
-        
-
-        <div id="left-container-extended" *ngIf="type_of_profile_retrieved" [ngClass]="{'left-container-extended':type_of_profile=='visitor' }">
-
-            <div class="categories-container">
-                <div class="category-filter">
-                    <a class="content-action text-center" [routerLink]=get_category(0) [ngClass]="{'opened': category_index==0 }">
-                        <div class="title" [ngClass]="{'title-opened': category_index==0 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': category_index==0 }">
-                                </div>
-                            </div>
-                          Recommandations
-                        </div>
-                    </a>
-                    <a class="content-action text-center" [routerLink]=get_category(1) [ngClass]="{'opened': category_index==1 }">
-                        <div class="title" [ngClass]="{'title-opened': category_index==1 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': category_index==1 }">
-                                </div>
-                            </div>
-                          Tendances
-                        </div>
-                    </a>
-                    <a class="content-action text-center" [routerLink]=get_category(2) *ngIf="type_of_profile=='account'" [ngClass]="{'opened': category_index==2 }">
-                        <div class="title" [ngClass]="{'title-opened': category_index==2 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-newsfeed" [ngClass]="{'icon-clicked': category_index==2 }">
-                                </div>
-                            </div>
-                          Abonnements
-                        </div>
-                    </a>
-                    <a class="content-action text-center" [routerLink]=get_category(3) [ngClass]="{'opened': category_index==3 }">
-                        <div class="title" [ngClass]="{'title-opened': category_index==3 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': category_index==3 }">
-                                </div>
-                            </div>
-                          Coups de coeur
-                        </div>
-                    </a>
-                    <!--<div class="content-action text-center" (click)="open_category(3)">
-                        <span>Mode découverte</span> 
-                        <div class="bottom-border">
-                        </div>
-                    </div>-->
+    <div class="categories-container">
+        <a class="category" [routerLink]=get_category(0) [ngClass]="{'opened': category_index==0 }">
+            <div class="icon-container">
+                <div class="icon icon-recommendation">
                 </div>
             </div>
-    
-    
-            <div class="left-container-scrollable">
-                <ng-container *ngIf="category_index==0">
-                    <app-recommendations></app-recommendations>
-                </ng-container>
-                <ng-container *ngIf="category_index==1">
-                    <app-trendings></app-trendings>
-                </ng-container>
-                <ng-container *ngIf="category_index==2">
-                    <app-subscribings></app-subscribings>
-                </ng-container>
-                <ng-container *ngIf="category_index==3">
-                    <app-favorites></app-favorites>
-                </ng-container>
+            <span>Recommandations</span>
+        </a>
+        <a class="category" [routerLink]=get_category(1) [ngClass]="{'opened': category_index==1 }">
+            <div class="icon-container">
+                <div class="icon icon-trendings">
+                </div>
             </div>
+            <span>Tendances</span>
+        </a>
+        <a class="category" [routerLink]=get_category(2) *ngIf="type_of_profile=='account'" [ngClass]="{'opened': category_index==2 }">
+            <div class="icon-container">
+                <div class="icon icon-newsfeed">
+                </div>
+            </div>
+            <span>Abonnements</span>
+        </a>
+        <a class="category" [routerLink]=get_category(3) [ngClass]="{'opened': category_index==3 }">
+            <div class="icon-container">
+                <div class="icon icon-love">
+                </div>
+            </div>
+            <span>Coups de coeur</span>
+        </a>
+        <!--<div class="content-action text-center" (click)="open_category(3)">
+            <span>Mode découverte</span> 
+            <div class="bottom-border">
+            </div>
+        </div>-->
+    </div>
+
     
-        </div>
-
-
-
-        
-  
-
-
-    </main>
 </div>
+
+<ng-container *ngIf="category_index==0">
+    <app-recommendations></app-recommendations>
+</ng-container>
+<ng-container *ngIf="category_index==1">
+    <app-trendings></app-trendings>
+</ng-container>
+<ng-container *ngIf="category_index==2">
+    <app-subscribings></app-subscribings>
+</ng-container>
+<ng-container *ngIf="category_index==3">
+    <app-favorites></app-favorites>
+</ng-container>

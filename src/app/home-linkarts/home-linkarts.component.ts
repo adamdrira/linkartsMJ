@@ -62,6 +62,29 @@ export class HomeLinkartsComponent implements OnInit {
   }
 
   
+  open_category(i : number,event:any) {
+
+    event.preventDefault();
+    event.stopPropagation();
+    if( i==0 ) {
+      this.category_index = 0;
+      //return '/recommendations';
+    }
+    else if( i==1 ) {
+      this.category_index = 1;
+      //return '/trendings';
+    }
+    else if( i==2 ) {
+      this.category_index = 2;
+      //return '/subscribings';
+    }
+    else if( i==3 ) {
+      this.category_index = 3;
+      //return '/favorites';
+    }
+  }
+
+
   get_category(i : number) {
     if( i==0 ) {
       return '/recommendations';

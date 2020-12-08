@@ -30,6 +30,14 @@ declare var $: any
         ])
       ]
     ),
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
   ],
 })
 
@@ -49,11 +57,7 @@ export class RecommendationsComponent implements OnInit {
     ) { }
 
   
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.cd.detectChanges();
-    this.display_selector();
-  }
+  
   
   index_bd=0;
   sorted_style_list_bd:any[]=["Manga","Webtoon","BD","Comics"];
@@ -96,8 +100,7 @@ export class RecommendationsComponent implements OnInit {
  sorted_category_retrieved=false;
   ngOnInit() {
 
-    this.display_selector();
-    this.initializeselector();
+    
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     let recommendations_string = this.CookieService.get('recommendations');
     console.log(recommendations_string)
@@ -803,41 +806,7 @@ export class RecommendationsComponent implements OnInit {
 
 
 
-  little_screen=false;
-  initializeselector(){
-    let THIS=this;
-    $(document).ready(function () {
-      $('.f00select1').SumoSelect({});
-    });
   
-  
-    $(".f00select0").change(function(){
-      if($(this).val()=="1"){
-        THIS.open_subcategory(1);
-      }
-      if($(this).val()=="2"){
-        THIS.open_subcategory(2);
-      }
-      else{
-        THIS.open_subcategory(0);
-      }
-      THIS.cd.detectChanges();
-    })
-  }
-  
-  display_selector(){
-    let width = $(".container-fluid").width();
-    
-    if( width <= 825) {
-      this.little_screen=true;
-    }
-    else if(width>0){
-      this.little_screen=false;
-    }
-    
-  }
-  
-
 
   /************************************************* LODING PAGE ***********************************/
 

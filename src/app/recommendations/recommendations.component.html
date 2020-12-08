@@ -1,85 +1,84 @@
+<div class="recommendations">
 
 
-
-    <div class="panel-controller" [@enterAnimation]>
-        <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-            <div class="comic-bubble-icon"></div>
-            <span>Bandes dessinées</span>
+    <div class="panel-background">
+        <div class="logos-container" [@enterFromTopAnimation]>
+            <button class="logo" [ngClass]="{'opened': subcategory == 0 }" (click)="open_subcategory(0);">
+                <div class="image1"></div>
+                <span>Bandes dessinées</span>
+            </button>
+            <button class="logo" [ngClass]="{'opened': subcategory == 1 }" (click)="open_subcategory(1);">
+                <div class="image2"></div>
+                <span>Dessins</span>
+            </button>
+            <button class="logo" [ngClass]="{'opened': subcategory == 2 }" (click)="open_subcategory(2);">
+                <div class="image3"></div>
+                <span>Écrits</span>
+            </button>
         </div>
-        <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
-            <div class="pencil-icon"></div>
-            <span>Dessins</span>
-        </div>
-        <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
-            <div class="writing2-icon"></div>
-            <span>Écrits</span>
-        </div>
-
     </div>
 
 
 
-    <ng-container *ngIf=" (!bd_is_loaded && subcategory==0) || (!drawing_is_loaded && !show_media_drawing && subcategory==1 ) || (!writing_is_loaded && subcategory==2 ) " >
-        <div *ngFor="let item of categories_array; index as i1">
-            <div class="category">
-                <div class="category-title shiny"></div>
+
+    <div class="artworks">
+        <ng-container
+            *ngIf=" (!bd_is_loaded && subcategory==0) || (!drawing_is_loaded && !show_media_drawing && subcategory==1 ) || (!writing_is_loaded && subcategory==2 ) ">
+            <div *ngFor="let item of categories_array; index as i1">
+                <div class="category">
+                    <div class="category-title shiny"></div>
+                </div>
+                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            [type_of_skeleton]=type_of_skeleton></app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
+
             </div>
-            <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;" [@enterAnimation]>
-                <ng-container *ngFor="let item of skeleton_array; let i = index">
-                    <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
-                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                        [type_of_skeleton]=type_of_skeleton
-                    ></app-thumbnail-skeleton>
-                </ng-container>
-            </div>
-            
+        </ng-container>
+
+
+
+        <div class="media-container" *ngIf="bd_is_loaded && subcategory==0"
+            [ngClass]="{'invisible':!sorted_category_retrieved }">
+            <app-media-comics [sorted_style_list]=sorted_style_list_bd
+                [sorted_artpieces_manga_format]=sorted_artpieces_manga_format
+                [sorted_artpieces_manga]=sorted_artpieces_manga
+                [sorted_artpieces_comics_format]=sorted_artpieces_comics_format
+                [sorted_artpieces_comics]=sorted_artpieces_comics
+                [sorted_artpieces_webtoon_format]=sorted_artpieces_webtoon_format
+                [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
+                [sorted_artpieces_bd_format]=sorted_artpieces_bd_format [sorted_artpieces_bd]=sorted_artpieces_bd
+                [now_in_seconds]=now_in_seconds></app-media-comics>
         </div>
-    </ng-container>
-
-       
-
-    <div class="media-container" *ngIf="bd_is_loaded && subcategory==0" [ngClass]="{'invisible':!sorted_category_retrieved }">
-        <app-media-comics 
-        [sorted_style_list]=sorted_style_list_bd
-        [sorted_artpieces_manga_format]=sorted_artpieces_manga_format
-        [sorted_artpieces_manga]=sorted_artpieces_manga
-        [sorted_artpieces_comics_format]=sorted_artpieces_comics_format
-        [sorted_artpieces_comics]=sorted_artpieces_comics
-        [sorted_artpieces_webtoon_format]=sorted_artpieces_webtoon_format
-        [sorted_artpieces_webtoon]=sorted_artpieces_webtoon
-        [sorted_artpieces_bd_format]=sorted_artpieces_bd_format
-        [sorted_artpieces_bd]=sorted_artpieces_bd
-        [now_in_seconds]=now_in_seconds
-        ></app-media-comics>
-    </div>
-    <div class="media-container" *ngIf="drawing_is_loaded  && subcategory==1" [ngClass]="{'invisible':!sorted_category_retrieved }">
-        <app-media-drawings 
-        [sorted_style_list]=sorted_style_list_drawing
-        [sorted_artpieces_traditional]=sorted_artpieces_traditional
-        [sorted_artpieces_traditional_format]=sorted_artpieces_traditional_format
-        [sorted_artpieces_digital]=sorted_artpieces_digital
-        [sorted_artpieces_digital_format]=sorted_artpieces_digital_format
-        [now_in_seconds]=now_in_seconds
-        (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"
-        ></app-media-drawings>
-    </div>
-    <div class="media-container" *ngIf="writing_is_loaded  && subcategory==2" [ngClass]="{'invisible':!sorted_category_retrieved }">
-        <app-media-writings
-         
-         [sorted_style_list]=sorted_style_list_writing
-         [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
-         [sorted_artpieces_roman]=sorted_artpieces_roman
-         [sorted_artpieces_scenario]=sorted_artpieces_scenario
-         [sorted_artpieces_article]=sorted_artpieces_article
-         [sorted_artpieces_poetry]=sorted_artpieces_poetry
-         [now_in_seconds]=now_in_seconds
-         ></app-media-writings>
+        <div class="media-container" *ngIf="drawing_is_loaded  && subcategory==1"
+            [ngClass]="{'invisible':!sorted_category_retrieved }">
+            <app-media-drawings [sorted_style_list]=sorted_style_list_drawing
+                [sorted_artpieces_traditional]=sorted_artpieces_traditional
+                [sorted_artpieces_traditional_format]=sorted_artpieces_traditional_format
+                [sorted_artpieces_digital]=sorted_artpieces_digital
+                [sorted_artpieces_digital_format]=sorted_artpieces_digital_format [now_in_seconds]=now_in_seconds
+                (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"></app-media-drawings>
+        </div>
+        <div class="media-container" *ngIf="writing_is_loaded  && subcategory==2"
+            [ngClass]="{'invisible':!sorted_category_retrieved }">
+            <app-media-writings [sorted_style_list]=sorted_style_list_writing
+                [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
+                [sorted_artpieces_roman]=sorted_artpieces_roman [sorted_artpieces_scenario]=sorted_artpieces_scenario
+                [sorted_artpieces_article]=sorted_artpieces_article [sorted_artpieces_poetry]=sorted_artpieces_poetry
+                [now_in_seconds]=now_in_seconds></app-media-writings>
+        </div>
     </div>
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
 
+</div>
