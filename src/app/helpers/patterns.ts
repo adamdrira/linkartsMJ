@@ -26,6 +26,10 @@ export function pattern(type: string) {
     if( type == "text" ) {
         return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9 "+accents+special_characters+"]+(?<![ ])$";
     }
+    //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
+    if( type == "text_with_linebreaks" ) {
+        return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9 "+accents+special_characters+"|\n]+([a-zA-Z0-9"+accents+special_characters+"])$";
+    }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace + PAS D'ESPACES
     if( type == "text_without_spaces" ) {
         return "[h][t][t][p]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
