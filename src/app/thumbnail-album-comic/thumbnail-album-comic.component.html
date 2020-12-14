@@ -1,13 +1,13 @@
-
 <div class="component-container album-comic" [ngClass]="{ 'selected' : selected, 'album' : state == 'album' }">
-    
-    <div class="element-book border-recto">
+
+    <div class="thumbnail-skeleton" *ngIf="!loaded_thumbnail">
+    </div>
+
+    <div class="element-book border-recto" *ngIf="loaded_thumbnail" [@enterAnimation]>
 
         <div class="miniature">
-            
             <img [src]="thumbnail_picture">
         </div>
-
 
         <div #thumbnailRecto class="absolute-thumbnail-data">
             <!--********************-->
@@ -53,27 +53,21 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
-    
-    <!--<div class="add-button" *ngIf="!selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
-        <span>Ajouter</span>
-    </div>
-    <div class="remove-button" *ngIf="selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
-        <span>Retirer</span>
-    </div>-->
 
-    
-    <button mat-raised-button class="add-button" *ngIf="state=='swiper'"
-    (click)="add_or_remove(); $event.stopPropagation();"
-    [ngClass]="{ 'style0' : selected, 'style1' : !selected }">
-        <span *ngIf="!selected">
-            Ajouter
-        </span>
-        <span *ngIf="selected">
-            Retirer
-        </span>
+    <div class="button-skeleton" *ngIf="state=='swiper' && !loaded_thumbnail">
+    </div>
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>done_all</mat-icon>
+        <span>Sélectionné</span>
+    </button>
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && !selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>add</mat-icon>
+        <span>Sélectionner</span>
     </button>
 
-</div>    
+</div>

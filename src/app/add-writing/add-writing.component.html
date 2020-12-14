@@ -97,8 +97,12 @@
 
             
                 <div class="form-item input-multiple-lines" style="height:unset !important;">
-                    <mat-form-field floatLabel='never'>
-                        <mat-label>Description - Seuls les 290 premiers charactères seront affichés sur les miniatures</mat-label>
+                    <mat-form-field floatLabel='never'
+                    matTooltip="Seuls les 300 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
+                    matTooltipClass='tooltip-add-artwork' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-label>Description</mat-label>
                     
                         <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="2000" autocomplete="off"></textarea>
                         <mat-error *ngIf="fw.controls['fwDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)

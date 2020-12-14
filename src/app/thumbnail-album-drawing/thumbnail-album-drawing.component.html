@@ -1,14 +1,70 @@
 
-<div class="component-container album-drawing" [ngClass]="{ 'album' : state == 'album', 'swiper' : state == 'swiper' }">
+<div class="component-container add-album-drawing" [ngClass]="{ 'album' : state == 'album', 'swiper' : state == 'swiper' }">
     
-    <div class="final-thumbnail" [ngClass]="{ 'selected' : selected }" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+    <div class="thumbnail-skeleton" *ngIf="!loaded_thumbnail">
+    </div>
+
+    <div class="final-thumbnail" [ngClass]="{ 'selected' : selected }" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" *ngIf="loaded_thumbnail" [@enterAnimation]>
 
         <img [src]="thumbnail_picture">
         <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}">
-            
+        
             <!--********************-->
             <!--Title container-->
             <!--********************-->
+            <div class="title-container">
+                <span class="title">{{title}}</span>
+                <div class="artbook" *ngIf="pagesnumber && pagesnumber>=0">
+                    <mat-icon style="color:white;font-size:20px">photo_library</mat-icon>
+                </div>
+            </div>
+            
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="author-container">
+                <div class="left-container"  [ngClass]="{ 'invisible':!pp_is_loaded}">
+                    <img [src]="profile_picture" (load)="pp_loaded()">
+                </div>
+                <div class="right-container">
+                    <span class="author-name">{{author_name}}</span>
+                    <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                </div>
+            </div>
+            <!--********************-->
+            <!--Data container-->
+            <!--********************-->
+            <div class="stats-container">
+                <div class="figure-container views">
+                    <div  >
+                        <span>{{viewnumber}}</span>
+                        <mat-icon>visibility</mat-icon>
+                        <!--<div class="view-logo"></div>-->
+                    </div>
+                </div>
+                <div class="figure-container likes">
+                    <div  >
+                        <span>{{likesnumber}}</span>
+                        <mat-icon>thumb_up</mat-icon>
+                    </div>
+                </div>
+                <div class="figure-container loves">
+                    <div  >
+                        <span>{{lovesnumber}}</span>
+                        <mat-icon>favorite</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <!--********************-->
+            <!--Date container-->
+            <!--********************-->
+            <div class="date-container">
+                <span>{{date_upload_to_show}}</span>
+            </div>
+
+            <!--********************-->
+            <!--Title container-->
+            <!--********************
             <div class="title-container">
                 <span class="title">{{title}}</span>
             </div>
@@ -17,11 +73,23 @@
             </div>
             <div class="remove-button" *ngIf="selected && state=='swiper'" (click)="add_or_remove(); $event.stopPropagation();">
                 <span>Retirer</span>
-            </div>
+            </div>-->
 
 
         </div>
-
     </div>
+    
+    <div class="button-skeleton" *ngIf="state=='swiper' && !loaded_thumbnail">
+    </div>
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>done_all</mat-icon>
+        <span>Sélectionné</span>
+    </button>
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && !selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>add</mat-icon>
+        <span>Sélectionner</span>
+    </button>
 
 </div>    

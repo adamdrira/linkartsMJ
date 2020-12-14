@@ -9,9 +9,11 @@ import { ThumbnailAlbumComicComponent } from '../thumbnail-album-comic/thumbnail
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Albums_service } from '../services/albums.service';
 
+import { pattern } from '../helpers/patterns';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var Swiper:any;
@@ -23,7 +25,17 @@ declare var $:any;
   selector: 'app-add-album-comic',
   templateUrl: './add-album-comic.component.html',
   styleUrls: ['./add-album-comic.component.scss'],
-  entryComponents: [ThumbnailAlbumComicComponent]
+  entryComponents: [ThumbnailAlbumComicComponent],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AddAlbumComicComponent implements OnInit {
 
@@ -52,7 +64,8 @@ export class AddAlbumComicComponent implements OnInit {
 
 
   //form variables
-  formName: FormControl = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
+
+  formName: FormControl = new FormControl('', [Validators.required, Validators.minLength(2),Validators.maxLength(15), Validators.pattern( pattern("text") ) ]);
   albumForm: FormGroup = new FormGroup({
     formName: this.formName,
   });
@@ -119,18 +132,27 @@ export class AddAlbumComicComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
+          slidesPerGroup: 1,
         },
         860: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
         },
         1150: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
         },
         1450: {
             slidesPerView: 4,
+            slidesPerGroup: 4,
         },
         1770: {
             slidesPerView: 5,
+            slidesPerGroup: 5,
+        },
+        2090: {
+            slidesPerView: 6,
+            slidesPerGroup: 6,
         }
       }
     });
@@ -303,6 +325,12 @@ export class AddAlbumComicComponent implements OnInit {
   }
 
 
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
 
 
 

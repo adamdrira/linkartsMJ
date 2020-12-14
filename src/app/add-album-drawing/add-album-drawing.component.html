@@ -1,135 +1,92 @@
-
-
-<div class="add-album-container">
+<div class="add-album-drawing-container">
         
-    <form [formGroup]="albumForm" novalidate>
-
-        <mat-form-field class="album-name-input">
-            <mat-label>Nom de l'album</mat-label>
-            <input matInput class="matInput" formControlName="formName" autocomplete="off" maxlength="30" required placeholder="Saisir un nom">
-        </mat-form-field>
-
-    </form>
-
-
-    <mat-form-field class="search-input">
-        <mat-label>Rechercher par nom</mat-label>
-        <input matInput placeholder="Nom de l'oeuvre" [(ngModel)]="searchText" (input)="resize_event();">
-    </mat-form-field>
+    <div class="form-container">
+        <form [formGroup]="albumForm" novalidate>
+            <div class="form-container-name">
+                <span>Nom de la section</span>
+            </div>
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Nom</mat-label>
+                    <input matInput formControlName="formName" maxLength="15" autocomplete="off">
+                    <mat-error *ngIf="albumForm.controls['formName'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                    </mat-error>
+                    <div class="length-indicator">{{albumForm.controls['formName'].value?.length || 0}}/15</div>
+                </mat-form-field>
+            </div>
+        </form>
+        
+        <div class="form-container-name" #scrollHere>
+            <span>Sélection des œuvres</span>
+        </div>
+        <div class="form-item" style="margin-bottom:0px;" (click)="scroll(scrollHere);">
+            <mat-form-field floatLabel='never'>
+                <mat-label>Rechercher par nom</mat-label>
+                <input matInput placeholder="Nom de l'oeuvre" autocomplete="off" [(ngModel)]="searchText">
+            </mat-form-field>
+        </div>
+    </div>
 
 
     <div class="artwork-selector">
-
-        <!--<div class="container-selection-drawings">
-            <div class="d-flex flex-wrap" >
-
-                <ng-container >
-                    <app-thumbnail-album-drawing #thumbnailAlbum class="thumbnail-drawing" 
-                    *ngFor="let item of list_drawings_onepage | filterAlbum : searchText; let i = index; let last = last"
-                        [primary_description]=primary_description
-                        [author_name]=author_name
-                        [item]=item
-                        format='one-shot'
-                        [now_in_seconds]=now_in_seconds
-                        state="swiper"
-                        
-                        (elementSelected)="add_to_album($event);"
-                        (elementRemoved)="remove_from_album($event);">
-
-                    </app-thumbnail-album-drawing>
-        
-                    <app-thumbnail-album-drawing #thumbnailAlbum class="thumbnail-drawing" 
-                    *ngFor="let item of list_drawings_artbook | filterAlbum : searchText; let i = index; let last = last"
-                        [primary_description]=primary_description
-                        [author_name]=author_name
-                        [item]=item
-                        format='artbook'
-                        [now_in_seconds]=now_in_seconds
-                        state="swiper"
-                        
-                        (elementSelected)="add_to_album($event);"
-                        (elementRemoved)="remove_from_album($event);">
-                        
-
-                    </app-thumbnail-album-drawing>
-                </ng-container>
-            </div>
-
-            <div #noResult class="no-result">
-                <span>Aucun résultat</span>
-            </div>
-        </div>-->
-
         <div class="swiper-container">
             <div class="swiper-wrapper">
-                
-
                 <app-thumbnail-album-drawing #thumbnailAlbum class="swiper-slide"
                     *ngFor="let item of list_drawings_onepage | filterAlbum : searchText; let i = index; let last = last"
-                        [primary_description]=primary_description
-                        [author_name]=author_name
-                        [pseudo]=pseudo
-                        [item]=item
-                        format='one-shot'
-                        [now_in_seconds]=now_in_seconds
-                        state="swiper"
-                        
-                        (elementSelected)="add_to_album($event);"
-                        (elementRemoved)="remove_from_album($event);">
-
-                    </app-thumbnail-album-drawing>
-        
-                    <app-thumbnail-album-drawing #thumbnailAlbum class="swiper-slide"
+                    [primary_description]=primary_description
+                    [author_name]=author_name
+                    [pseudo]=pseudo
+                    [item]=item
+                    format='one-shot'
+                    [now_in_seconds]=now_in_seconds
+                    state="swiper"
+                    
+                    (elementSelected)="add_to_album($event);"
+                    (elementRemoved)="remove_from_album($event);">
+                </app-thumbnail-album-drawing>
+                <app-thumbnail-album-drawing #thumbnailAlbum class="swiper-slide"
                     *ngFor="let item of list_drawings_artbook | filterAlbum : searchText; let i = index; let last = last"
-                        [primary_description]=primary_description
-                        [author_name]=author_name
-                        [pseudo]=pseudo
-                        [item]=item
-                        format='artbook'
-                        [now_in_seconds]=now_in_seconds
-                        state="swiper"
-                        
-                        (elementSelected)="add_to_album($event);"
-                        (elementRemoved)="remove_from_album($event);">
-                        
-
-                    </app-thumbnail-album-drawing>
-
+                    [primary_description]=primary_description
+                    [author_name]=author_name
+                    [pseudo]=pseudo
+                    [item]=item
+                    format='artbook'
+                    [now_in_seconds]=now_in_seconds
+                    state="swiper"
+                    (elementSelected)="add_to_album($event);"
+                    (elementRemoved)="remove_from_album($event);">
+                </app-thumbnail-album-drawing>
                 <div #noResult class="no-result">
+                    <mat-icon>info_outline</mat-icon>
                     <span>Aucun résultat</span>
                 </div>
-                
-
-
-                
             </div>
             <!-- Swiper -->
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
+            <!-- Add Scrollbar -->
+            <div class="swiper-scrollbar"></div>
         </div>
-
     </div>
 
 
     <div class="album-preview">
-
         <div class="album-name">{{albumForm.value.formName}}</div>
-        <div *ngIf="album_list.length == 0" class="no-artwork">
-            Aucune œuvre sélectionnée
+        <div class="album-tip" *ngIf="albumForm.value.formName && album_list.length!=0" [@enterAnimation]>
+            <span>(Vous pouvez glisser-déposer pour changer l'ordre des œuvres)</span>
         </div>
-
-        <div class="container-drawings d-flex flex-wrap gridAlbum">
+        <div *ngIf="album_list.length == 0" class="no-artwork" [@enterAnimation]>
+            <mat-icon>info_outline</mat-icon>
+            <span>Aucune œuvre sélectionnée</span>
+        </div>
+        <div class="container-drawings d-flex flex-wrap gridAddAlbum">
             <ng-template #target>
             </ng-template>
         </div>
-
     </div>
 
-
-    
-
-
-    <button mat-raised-button class="submit-button style1" (click)="get_solution();">
+    <button class="submit-button" (click)="get_solution();">
+        <mat-icon>done_all</mat-icon>
         <span>Valider</span>
     </button>
 

@@ -4,14 +4,27 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 
+import {date_in_seconds} from '../helpers/dates';
+import {get_date_to_show} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-album-drawing',
   templateUrl: './thumbnail-album-drawing.component.html',
-  styleUrls: ['./thumbnail-album-drawing.component.scss']
+  styleUrls: ['./thumbnail-album-drawing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class ThumbnailAlbumDrawingComponent implements OnInit {
 
@@ -23,15 +36,6 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     private sanitizer:DomSanitizer
     ) {
   }
-
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-
-    this.resize_drawing();
-  }
-
-
 
   cancelled: number;
 
@@ -77,6 +81,12 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
 
   @Output() pictureUploaded = new EventEmitter<string>();
 
+  loaded_thumbnail = false;
+
+  pp_is_loaded=false;
+  pp_loaded(){
+    this.pp_is_loaded=true;
+  }
 
   ngOnInit(): void {
 
@@ -101,6 +111,8 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
+
+      this.loaded_thumbnail = true;
     });
 
 
@@ -110,6 +122,8 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
         this.pictureUploaded.emit("done");
+        
+      this.loaded_thumbnail = true;
       });  
     };
 
@@ -119,147 +133,17 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
         this.pictureUploaded.emit("done");
+        
+        this.loaded_thumbnail = true;
       });  
     };
 
-    this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
-
+    this.date_upload_to_show = get_date_to_show( date_in_seconds( this.now_in_seconds, this.date_upload ) );
   }
-
-  ngAfterViewInit() {
-    
-    this.resize_drawing();
-    this.set_color();
-  }
-
-
 
 
 
   @ViewChild("thumbnail", {static:true}) thumbnail: ElementRef;
-  set_color() {
-
-
-    if( this.thumbnail_color == "Bleu" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(47, 87, 151, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Noir" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(59, 56, 56, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Vert" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(84, 130, 53, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Jaune" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(191, 144, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Rouge" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(160, 0, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Violet" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(148, 0, 148, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Rose" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(255, 153, 255, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Marron" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(102, 51, 0, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Orange" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(197, 90, 17, 0.7)" );
-      }
-    }
-    else if( this.thumbnail_color == "Gris" ) {
-      if( this.thumbnail ) {
-        this.rd.setStyle( this.thumbnail.nativeElement, "background", "rgba(166, 166, 166, 0.7)" );
-      }
-    }
-
-  }
-
-
-  date_in_seconds(){
-
-    var uploaded_date = this.date_upload.substring(0,this.date_upload.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-   // alert( now_in_seconds - uploaded_date_in_second );
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
-
 
 
 
@@ -271,42 +155,6 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     this.showDrawingDetails=false;
   }
 
-  
-  //Drawings functions
-
-  resize_drawing() {
-
-    var cwwithmargin = this.get_drawing_size()+60;
-
-    $('.element-drawing').css({'width': this.get_drawing_size() +'px'});
-    $('.element-drawing').css({'height': '240px'});
-    $('.col-drawing .empty').css({'width':cwwithmargin+'px'});
-    $('.col-drawing .empty').css({'height':cwwithmargin+'px'});
-  }
-
-  get_drawing_size() {
-    return $('.container-drawings').width()/this.drawings_per_line();
-  }
-
-  drawings_per_line() {
-    var width = window.innerWidth;
-
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200 ) {
-      return 5;
-    }
-    else if( width > 1000) {
-      return 4;
-    }
-    else if( width > 600) {
-      return 3;
-    }
-    else {
-      return 2;
-    }
-  }
 
   
       

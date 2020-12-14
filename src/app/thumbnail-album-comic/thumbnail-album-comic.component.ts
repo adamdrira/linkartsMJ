@@ -5,6 +5,7 @@ import { BdSerieService } from '../services/comics_serie.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $:any;
 
@@ -12,7 +13,17 @@ declare var $:any;
 @Component({
   selector: 'app-thumbnail-album-comic',
   templateUrl: './thumbnail-album-comic.component.html',
-  styleUrls: ['./thumbnail-album-comic.component.scss']
+  styleUrls: ['./thumbnail-album-comic.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class ThumbnailAlbumComicComponent implements OnInit {
 
@@ -42,6 +53,8 @@ export class ThumbnailAlbumComicComponent implements OnInit {
   @Output() elementRemoved = new EventEmitter<{format: string, id_key:number}>();
   action_in_progress:boolean = false;
   
+  loaded_thumbnail = false;
+
   constructor(
     private cd:ChangeDetectorRef,
     private sanitizer:DomSanitizer,
@@ -57,12 +70,6 @@ export class ThumbnailAlbumComicComponent implements OnInit {
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
 
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.resize_comic();
-  }
-
-
   ngOnInit(): void {
 
     this.viewnumber = number_in_k_or_m(this.bd_element.viewnumber)
@@ -75,6 +82,8 @@ export class ThumbnailAlbumComicComponent implements OnInit {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
+
+      this.loaded_thumbnail = true;
     });
     
     if(this.format=="one-shot"){
@@ -82,6 +91,8 @@ export class ThumbnailAlbumComicComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
+
+        this.loaded_thumbnail = true;
       });  
     };
 
@@ -90,6 +101,8 @@ export class ThumbnailAlbumComicComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.thumbnail_picture = SafeURL;
+
+        this.loaded_thumbnail = true;
       });  
     };
 
@@ -98,7 +111,6 @@ export class ThumbnailAlbumComicComponent implements OnInit {
   ngAfterViewInit() {
     this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
     this.cd.detectChanges();
-    this.resize_comic();
 
     /*
     if( this.bd_element.category == "BD" ) {
@@ -184,43 +196,6 @@ export class ThumbnailAlbumComicComponent implements OnInit {
     }
 
   }
-
-
-
-
-  //Comic functions
-  resize_comic() {
-    
-    if( this.state == 'album') {
-      $('.component-container.album-comic.album').css({'width': this.get_comic_size() +'px'});
-    }
-  }
-
-  get_comic_size() {
-    return ( $('.container-comics').width()/this.comics_per_line() - 2 );
-  }
-
-  comics_per_line() {
-    var width = window.innerWidth;
-
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200 ) {
-      return 4;
-    }
-    else if( width > 1000) {
-      return 3;
-    }
-    else if( width > 600) {
-      return 2;
-    }
-    else {
-      return 1;
-    }
-  }
-
-
 
 
   async add_or_remove() {
