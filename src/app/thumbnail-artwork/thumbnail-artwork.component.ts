@@ -109,6 +109,11 @@ export class ThumbnailArtworkComponent implements OnInit {
   @Input() subscribing_category: any;
   @Input() subscribing_format: any;
 
+
+  type_of_account:string;
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
+
   display_evenif_reported=false;
   data_retrieved=false;
   pdfSrc:SafeUrl;
@@ -188,6 +193,9 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.primary_description=r[0].primary_description;
         this.pseudo = r[0].nickname;
         this.author_id=r[0].id;
+        
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
       if(this.category=="comic"){
@@ -227,6 +235,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
 
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             
             });
 
@@ -266,7 +276,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
 
-             
+              this.initialize_swiper();
               window.dispatchEvent(new Event('resize'));
             });
 
@@ -311,6 +321,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
 
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             });
 
           });
@@ -350,6 +362,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
               
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             });
 
           });
@@ -433,6 +447,9 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.primary_description=r[0].primary_description;
         this.pseudo = r[0].nickname;
         this.author_id=r[0].id;
+        
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
       if(this.category=="comic"){
@@ -469,6 +486,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
               
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
               
             });
         }
@@ -505,6 +524,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
               
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             });
 
 
@@ -546,6 +567,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
               
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             });
         }
         else{
@@ -582,6 +605,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.thumbnail_picture = SafeURL;
               this.thumbnail_picture_received=true;
               
+              this.initialize_swiper();
+              window.dispatchEvent(new Event('resize'));
             });
 
 
@@ -711,36 +736,63 @@ export class ThumbnailArtworkComponent implements OnInit {
   initialize_swiper() {
     //console.log("swiper initialized " + this.item.bd_id + ' ' + this.item.chaptersnumber )
     let THIS = this;
-    
+
+
     this.cd.detectChanges();
     //console.log(this.swiperArtworkPreview )
-    if( this.subscribing_category!='writing' && this.swiperArtworkPreview ) {
+    if( this.subscribing_category!='writing' && this.swiperArtworkPreview && !this.swiper_initialized ) {
       this.swiper = new Swiper( this.swiperArtworkPreview.nativeElement, {
-        speed: 500,
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        speed: 800,
         initialSlide:0,
+        pagination: {
+          el: '.thumbnail-artwork-pagination',
+          type: 'bullets'
+        },
+        observer:true,
       })
       this.swiper_initialized=true;
       //console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
     };
 
-    if( this.subscribing_category!='writing' && this.swiperThumbnails ) {
-      this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
-        speed: 500,
-        initialSlide:0,
-        slidesPerView:1,
-      })
-      this.swiper2_initialized=true;
-    };
-
-    if( this.subscribing_category=='writing' && this.swiperThumbnails ) {
+    if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
+      
       this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
         speed: 500,
         initialSlide:0,
         slidesPerView:1,
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+          nextEl: '.swiper--button-next',
+          prevEl: '.swiper--button-prev',
         },
+        pagination: {
+          el: '.thumbnail-artwork-pagination',
+          type: 'bullets'
+        },
+        simulateTouch:true,
+        observer:true,
+        
+
+      })
+      this.swiper2_initialized=true;
+    };
+
+    if( this.subscribing_category=='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
+      this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
+        speed: 500,
+        initialSlide:0,
+        slidesPerView:1,
+        navigation: {
+          nextEl: '.swiper--button-next',
+          prevEl: '.swiper--button-prev',
+        },
+        pagination: {
+          el: '.thumbnail-artwork-pagination',
+          type: 'bullets'
+        },
+        simulateTouch:true,
+        observer:true,
         on: {
           slideChange: function () {
             THIS.load_pdf();
@@ -750,12 +802,11 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.swiper2_initialized=true;
     }
 
-   
-   
+    return;
   };
 
 
-  timeout = interval(1500);
+  timeout = interval(2000);
   subscription: Subscription;
   swiper_launched=false;
   launch_swiper() {
@@ -789,39 +840,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   
   };
 
-  timeout2 = interval(1500);
-  subscription2: Subscription;
-  swiper2_launched=false;
-  launch_swiper_2() {
-
-    if( this.subscribing_category=='writing' || !this.list_of_images_to_show_retrieved || !this.swiper2_initialized) {
-      return;
-    }
-    if(this.swiperThumbnails && !this.swiper2_initialized){
-      this.initialize_swiper();
-    }
-    this.swiper2.slideTo(0);
-    let THIS = this;
-    this.subscription2 = this.timeout2.subscribe( val => {
-      if( this.swiper2.isEnd ) {
-        this.swiper2.slideTo(0);
-      }
-      else {
-        this.swiper2.slideNext();
-      }
-    });
-    this.swiper2_launched=true;
-    //console.log("swiper launched " + this.item.bd_id + ' ' + this.item.chaptersnumber )
-  };
-  stop_swiper_2() {
-    if( this.subscribing_category=='writing' || this.swiper2_launched || !this.list_of_images_to_show_retrieved) {
-      return;
-    }
-    this.subscription2.unsubscribe();
-    
-    
-    //this.swiper2.slideTo(0);
-  };
+  
 
   show_absolute_cover=true;
   load_pdf() {

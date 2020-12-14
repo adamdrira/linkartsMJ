@@ -1,6 +1,3 @@
-
-
-
 //**********************************************************************
 //**********************************************************************
 //**********************************************************************
@@ -11,91 +8,142 @@
 //**********************************************************************
 //**********************************************************************
 
-
 .archives {
 
+  
+  .panel-background {
+    padding: 15px 10px;
+    background: #f9f9f9;
+    box-shadow: 0px 0px 5px 3px #9a9a9a1a;
+    overflow: hidden;
+    margin-top: 30px;
+    margin-bottom: 30px;
 
-  //Category filter
-  .logos-container {
-    display:flex;
-    justify-content: center;
-    height:120px;
-    margin-top:60px;
-    margin-bottom:60px;
-    width:100%;
-    .logo {
-
-      cursor: pointer;
-      outline:none;
-      border:none;
+    //Category filter
+    .logos-container {
       display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 20px 10px 10px 10px;
-      width: 230px;
-      margin-left: 15px;
-      margin-right: 15px;
-      transition: all 200ms;
-      border-radius: 65px;
-      box-shadow: 0px 0px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 5px 0px rgba(0, 0, 0, 0.12);
-      
-      background:rgb(250,250,252);
-
-      mat-icon {
-        font-size:50px;
-        height:unset;
-        width:unset;
-        margin:auto;
-        color:rgb(137, 137, 137);
-      }
-
-      span {
+      justify-content: center;
+      width: 100%;
+      .logo {
+        user-select: none;
+        cursor: pointer;
+        outline: none;
+        border: none;
         display: flex;
-        font-size: 15px;
-        width:100%;
-        height: 40px;
-        font-weight: 600;
-        color: #8a8a8a;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-      }
+        flex-direction: column;
+        padding: 10px 10px 10px 10px;
+        width: 160px;
+        height: 160px;
+        margin-left: 15px;
+        margin-right: 15px;
+        border-radius: 150px;
+        box-shadow: 0px 0px 1px -2px #00000026, 0px 2px 2px 0px #85869e38, 0px 0px 2px 0px #9090902b;
 
-      &:hover {
-        mat-icon {
-          color:rgb(32,56,100) !important;
-        }
+        transition: all 300ms;
+
+        background: white;
+
+        /*background: linear-gradient(to bottom, white 50%, rgb(240,242,250) 50%);
+        background-size: 100% 200%;
+        background-position:right top;*/
+
         span {
-          font-weight: bold;
-          color:rgb(32,56,100) !important;
-          transition: all 200ms;
+          display: flex;
+          font-size: 12px;
+          width: 100%;
+          height: 28px;
+          font-weight: 600;
+          color: #6286a4;
+          margin: 0px auto auto auto;
+          text-align: center;
+          align-items: center;
+          justify-content: center;
+
+          transition: all 300ms;
+        }
+
+        mat-icon {
+          color: #7891ad;
+          height: unset;
+          width: unset;
+          margin: auto auto 5px auto;
+          font-size: 55px;
+          transition: color 300ms;
+        }
+        &:hover {
+          box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+          mat-icon {
+            color: rgb(32, 56, 100);
+          }
+          span {
+            font-weight: bold;
+            color: rgb(32, 56, 100) !important;
+          }
+        }
+        &:active {
+          transform: scale(0.98);
+        }
+        &.opened {
+          background: linear-gradient(45deg, #f2f2f2, #f7f7f7, #ffffffe6);
+          box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
+          //background-position:right bottom;
+          //background:rgb(240,242,250);
+          mat-icon {
+            color: rgb(32, 56, 100);
+          }
+          span {
+            font-weight: bold;
+            color: rgb(32, 56, 100) !important;
+          }
         }
       }
-      &.opened {
-        background:rgb(246,246,249);
-        span {
-          font-weight: bold;
-          color:rgb(32,56,100) !important;
-          transition: all 200ms;
-        }
-        mat-icon {
-          color:rgb(32,56,100) !important;
+    }
+  }
+  @media (max-width: 700px) {
+    .panel-background {
+      .logos-container {
+        .logo {
+          width: 130px;
+          height: 130px;
+          mat-icon {
+            font-size: 45px;
+          }
+          span {
+            font-size: 12px;
+            height: 22px;
+          }
         }
       }
-      
+    }
+  }
+  @media (max-width: 500px) {
+    .panel-background {
+      .logos-container {
+        .logo {
+          width: 100px;
+          height: 100px;
+          margin-left: 5px;
+          margin-right: 5px;
+          mat-icon {
+            font-size: 40px;
+          }
+          span {
+            font-size: 9px;
+            height: 22px;
+          }
+        }
+      }
     }
   }
 
-
   .results {
-    min-height:1000px;
+    min-height: 1000px;
   }
   //Albums filter
   .albums-title-main {
-    
     overflow-x: auto;
 
-    .albums-title-container {    
+    .albums-title-container {
       width: max-content;
       margin-left: auto;
       margin-right: auto;
@@ -108,25 +156,25 @@
       .albums-title {
         margin: 5px 15px;
         border-radius: 50px;
-        position:relative;
+        position: relative;
         min-width: fit-content;
 
         .albums-title-button {
-          height:100%;
-          width:100%;
+          height: 100%;
+          width: 100%;
           display: flex;
           border-radius: 50px;
           padding: 10px 40px 10px 40px;
           outline: none;
           border: none;
-          box-shadow: 0px 0px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 5px 0px rgba(0, 0, 0, 0.12);
-          font-weight:600;
-          
+          box-shadow: 0px 0px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 5px 0px rgba(0, 0, 0, 0.12);
+          font-weight: 600;
+
           background-image: linear-gradient(0.02turn, #fafafc, #fafafc);
 
-          
           span {
-            color:rgb(32,56,100);
+            color: rgb(32, 56, 100);
           }
 
           &:hover {
@@ -134,45 +182,49 @@
           }
           &.opened {
             mat-icon {
-              color:white;
+              color: white;
             }
             span {
-              color:white;
+              color: white;
             }
-            background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+            background-image: linear-gradient(
+              0.02turn,
+              rgba(2, 18, 54, 0.9),
+              rgba(19, 51, 100, 0.9),
+              rgba(44, 114, 164, 0.9)
+            );
           }
         }
       }
     }
   }
 
-
   .text-lines {
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin:15px auto auto auto;
+    margin: 15px auto auto auto;
     color: rgb(25, 44, 80);
-  
+
     mat-icon {
       margin: 10px auto 0px auto;
       width: unset;
       height: unset;
       font-size: 26px;
-      cursor:default;
+      cursor: default;
     }
     span {
-      cursor:default;
+      cursor: default;
       padding-left: 10px;
       padding-right: 10px;
-      font-size:14px;
+      font-size: 14px;
     }
-  
+
     &.large {
       margin: 0px auto 80px auto !important;
       mat-icon {
-        font-size:36px !important;
+        font-size: 36px !important;
       }
       span {
         margin-top: 10px !important;
@@ -183,28 +235,28 @@
   }
 
   .artworks-container {
-    min-height:600px;
+    min-height: 600px;
   }
 
   .bd-container {
-    width:90%;
+    width: 90%;
     max-width: 1650px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
     .name-container {
       font-weight: bold;
-      margin:30px auto 0px 0px;
+      margin: 30px auto 0px 0px;
     }
     .bd-thumbnails-container {
-      width:100%;
+      width: 100%;
       display: flex;
       flex-wrap: wrap;
     }
-  
+
     .artwork-type-title {
       margin-top: 10px;
       span {
-        cursor:default;
+        cursor: default;
         font-size: 16px;
         color: #203864;
         font-weight: bold;
@@ -213,44 +265,42 @@
     }
   }
   .container-comics {
-    display:flex;
-    flex-wrap:wrap;
+    display: flex;
+    flex-wrap: wrap;
   }
   .container-drawings {
-    display:flex;
-    flex-wrap:wrap;
+    display: flex;
+    flex-wrap: wrap;
   }
   .container-writings {
-    display:flex;
-    flex-wrap:wrap;
+    display: flex;
+    flex-wrap: wrap;
   }
   .drawing-container {
-    margin:30px 0px 30px 0px;
-    width:80%;
+    margin: 30px 0px 30px 0px;
+    width: 80%;
   }
-  
+
   .ads-container {
-    margin-top:30px;
+    margin-top: 30px;
     max-width: 900px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
     padding-left: 10px;
     padding-right: 10px;
-  
+
     .ad {
-      margin-bottom:45px;
+      margin-bottom: 45px;
     }
   }
-
-
 
   .container-stories {
     display: flex;
     flex-wrap: wrap;
-  
+
     .thumbnail-story-container {
-      display:flex;
-  
+      display: flex;
+
       .thumbnail-story {
         position: relative;
         cursor: pointer;
@@ -260,19 +310,20 @@
         overflow: hidden;
         margin-top: 30px;
         margin-bottom: 10px;
-  
-        box-shadow: 0px 3px 2px 0px rgb(0,0,0,0.2), 0px 2px 10px 2px rgb(0,0,0,0.2), 0px 2px 5px 0px rgb(0,0,0,0.2);
+
+        box-shadow: 0px 3px 2px 0px rgb(0, 0, 0, 0.2), 0px 2px 10px 2px rgb(0, 0, 0, 0.2),
+          0px 2px 5px 0px rgb(0, 0, 0, 0.2);
         border-radius: 10px;
-    
+
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
         }
-    
+
         .story-bottom-container {
           position: absolute;
-          display:flex;
+          display: flex;
           flex-direction: column;
           bottom: 0px;
           height: 32px;
@@ -286,15 +337,14 @@
             font-weight: 600;
           }
         }
-            
-            
+
         &:hover {
           .button-mat-menu {
-            opacity:1;
+            opacity: 1;
           }
         }
-        .button-mat-menu {    
-          opacity:0;
+        .button-mat-menu {
+          opacity: 0;
 
           display: flex;
           position: absolute;
@@ -310,86 +360,71 @@
           border-radius: 50px;
           width: 28px;
           outline: none;
-          
+
           &:hover {
             background: #4a6691;
           }
           &:active {
             background: #506d97;
           }
-          mat-icon {    
+          mat-icon {
             font-size: 17px;
             margin: auto;
             height: unset;
             width: unset;
           }
         }
-        
       }
-  
     }
   }
-  
-
-
-
-
-
-
-
-
-
-
 
   .opacity1 {
-    opacity:1 !important;
+    opacity: 1 !important;
   }
-  .invisible{
-    visibility:hidden;
+  .invisible {
+    visibility: hidden;
     pointer-events: none;
   }
-  
-  .really-invisible{
-    visibility:hidden !important;
+
+  .really-invisible {
+    visibility: hidden !important;
     pointer-events: none;
   }
-     
+
   .see-more {
     display: flex;
     width: 90%;
     height: 40px;
     border-radius: 4px 4px 0px 0px;
-    border-top:unset;
-    border-left:unset;
-    border-right:unset;
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
     border-bottom: 4px solid rgb(230 230 230);
     text-align: center;
     margin: 10px auto 30px auto;
     cursor: pointer;
-    outline:none;
-    background:unset;
-    transition:background-color 100ms,border-color 100ms;
-  
+    outline: none;
+    background: unset;
+    transition: background-color 100ms, border-color 100ms;
+
     &:hover {
-      border-bottom:4px solid rgb(56, 81, 129);
-      background-color:rgb(235, 235, 235);
+      border-bottom: 4px solid rgb(56, 81, 129);
+      background-color: rgb(235, 235, 235);
       mat-icon {
-        color:rgb(56, 81, 129);
+        color: rgb(56, 81, 129);
       }
     }
     &:active {
-      background-color:rgb(228, 228, 228);
+      background-color: rgb(228, 228, 228);
     }
     mat-icon {
-      margin:auto;
-      width:unset;
-      height:unset;
-      font-size:36px;
+      margin: auto;
+      width: unset;
+      height: unset;
+      font-size: 36px;
       color: #b1b1b1;
     }
   }
-
-  
 
   @media (max-width: 900px) {
     .logos-container .logo {
@@ -425,14 +460,7 @@
       }
     }
   }
-
-  
-
-
 }
-
-
-
 
 //**********************************************************************
 //**********************************************************************
@@ -441,35 +469,35 @@
 //**********************************************************************
 ::ng-deep {
   .archive-mat-menu {
-    margin-top:3px !important;
+    margin-top: 3px !important;
     border-radius: 12px 10px 12px 12px !important;
-    min-height:unset !important;
-    min-width:unset !important;
+    min-height: unset !important;
+    min-width: unset !important;
     .mat-menu-content {
-      padding-top:unset !important;
-      padding-bottom:unset !important;
+      padding-top: unset !important;
+      padding-bottom: unset !important;
     }
     .archive-menu-item {
       display: flex !important;
-      font-size:12px !important;
+      font-size: 12px !important;
       line-height: 38px !important;
       height: 38px !important;
       font-weight: bold !important;
       padding: 0px 15px 0 10px !important;
-      color: rgb(32,56,100) !important;
+      color: rgb(32, 56, 100) !important;
       transition: all 200ms !important;
-      outline:none !important;
-  
-      transition:background-color 200ms;
-      
+      outline: none !important;
+
+      transition: background-color 200ms;
+
       mat-icon {
         margin: auto 10px auto 0px !important;
-        width:unset !important;
-        height:unset !important;
-        font-size:18px !important;
-        color:rgb(32,56,100) !important;
+        width: unset !important;
+        height: unset !important;
+        font-size: 18px !important;
+        color: rgb(32, 56, 100) !important;
       }
-  
+
       .mat-ripple {
         background: unset !important;
         * {
@@ -477,19 +505,14 @@
         }
       }
       &:hover {
-        background:#c9d4e2;
+        background: #c9d4e2;
       }
       &:active {
-        background:#aabed4;
+        background: #aabed4;
       }
     }
   }
 }
-
-
-
-
-
 
 //**********************************************************************
 //**********************************************************************
@@ -501,15 +524,12 @@
 //**********************************************************************
 //**********************************************************************
 
-
-
-
 ::ng-deep .grid {
-  margin:0 auto !important;
+  margin: 0 auto !important;
   //width:100% !important;
 }
 
 .grid-item {
-  margin-bottom:10px;
+  margin-bottom: 10px;
   min-width: 100px;
 }

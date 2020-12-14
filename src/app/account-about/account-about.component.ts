@@ -121,7 +121,7 @@ export class AccountAboutComponent implements OnInit {
   listOfAccounts_group_artists = ["Artistes","Artistes professionnels"];
   listOfAccounts_male_artists = ["Artiste","Artiste professionnel"];
   listOfAccounts_female_artists = ["Artiste","Artiste professionnelle"];
-  opened_category=-1;
+  opened_category=0;
 
   category_to_open='Dessins';
   list_of_categories=['Bandes dessinées','Dessins','Ecrits']
@@ -180,21 +180,14 @@ export class AccountAboutComponent implements OnInit {
 
   maxDate: moment.Moment;
 
+
+  @ViewChild("chartContainer") chartContainer:ElementRef;
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if(this.opened_category==1){
-      console.log($('.chart-container').width())
-      if($('.chart-container').width()<=800){
-       
-        let width = Math.round($('.chart-container').width())
-        this.view_size=[width,(width)/2];
-        console.log(this.view_size)
-        this.cd.detectChanges();
-      }
-      else{
-        this.view_size=[800,400]
-        this.cd.detectChanges();
-      }
+    if(this.opened_category==1 && this.chartContainer){
+      this.view_size=[ this.chartContainer.nativeElement.offsetWidth, this.chartContainer.nativeElement.offsetHeight - 15 ];
+      this.cd.detectChanges();
     }
   }
 
@@ -312,61 +305,59 @@ export class AccountAboutComponent implements OnInit {
       this.get_profile_stats()
   }
 
-
-
-
+  
   open_category(i){
     if(i==this.opened_category){
       return;
     }
     if(i==1){
-        
-        this.sumo_ready=false;
-        this.sumo_for_ads_ready=false;
-        this.opened_category=i;
-        this.cd.detectChanges();
-        this.initialize_selectors();
-        if(this.selector_for_ads_initialized){
-          if($('.Sumo_for_ads_2')[0] && $('.Sumo_for_ads_2')[0].sumo){
-            $('.Sumo_for_ads_2')[0].sumo.unload();
-            this.initialize_selectors_for_ads()
-          }
-          else{
-            this.initialize_selectors_for_ads()
-          }
+      
+      this.sumo_ready=false;
+      this.sumo_for_ads_ready=false;
+      this.opened_category=i;
+      this.cd.detectChanges();
+      this.initialize_selectors();
+      if(this.selector_for_ads_initialized){
+        if($('.Sumo_for_ads_2')[0] && $('.Sumo_for_ads_2')[0].sumo){
+          $('.Sumo_for_ads_2')[0].sumo.unload();
+          this.initialize_selectors_for_ads()
         }
-        if(this.selector_for_comics_initialized){
-          if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
-            $('.Sumo_for_comics_2')[0].sumo.unload();
-            this.initialize_selectors_for_comics()
-          }
-          else{
-            this.initialize_selectors_for_comics()
-          }
+        else{
+          this.initialize_selectors_for_ads()
         }
-        if(this.selector_for_drawings_initialized){
-          if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
-            $('.Sumo_for_drawings_2')[0].sumo.unload();
-            this.initialize_selectors_for_drawings()
-          }
-          else{
-            this.initialize_selectors_for_drawings()
-          }
+      }
+      if(this.selector_for_comics_initialized){
+        if($('.Sumo_for_comics_2')[0] && $('.Sumo_for_comics_2')[0].sumo){
+          $('.Sumo_for_comics_2')[0].sumo.unload();
+          this.initialize_selectors_for_comics()
         }
-        if(this.selector_for_writings_initialized){
-          if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
-            $('.Sumo_for_writings_2')[0].sumo.unload();
-            this.initialize_selectors_for_writings()
-          }
-          else{
-            this.initialize_selectors_for_writings()
-          }
+        else{
+          this.initialize_selectors_for_comics()
         }
-        
+      }
+      if(this.selector_for_drawings_initialized){
+        if($('.Sumo_for_drawings_2')[0] && $('.Sumo_for_drawings_2')[0].sumo){
+          $('.Sumo_for_drawings_2')[0].sumo.unload();
+          this.initialize_selectors_for_drawings()
+        }
+        else{
+          this.initialize_selectors_for_drawings()
+        }
+      }
+      if(this.selector_for_writings_initialized){
+        if($('.Sumo_for_writings_2')[0] && $('.Sumo_for_writings_2')[0].sumo){
+          $('.Sumo_for_writings_2')[0].sumo.unload();
+          this.initialize_selectors_for_writings()
+        }
+        else{
+          this.initialize_selectors_for_writings()
+        }
+      }
+      this.cd.detectChanges();
     }
     else{
       this.opened_category=i;
-        this.cd.detectChanges();
+      this.cd.detectChanges();
     }
     
   }
@@ -2770,7 +2761,7 @@ export class AccountAboutComponent implements OnInit {
   /********************************************************************************************** */
 
   build_form_2() {
-    console.log(this.userLocation.split(','))
+    
     this.registerForm2 = this.formBuilder.group({
       
       city:[this.userLocation?this.userLocation.split(', ')[0]:'', 
@@ -2793,7 +2784,7 @@ export class AccountAboutComponent implements OnInit {
       link_title:['', 
         Validators.compose([
           Validators.minLength(3),
-          Validators.maxLength(30),
+          Validators.maxLength(15),
           Validators.pattern(pattern("text")),
         ]),
       ],
@@ -2916,7 +2907,7 @@ export class AccountAboutComponent implements OnInit {
             Validators.required,
             Validators.pattern(pattern("name")),
             Validators.minLength(2),
-            Validators.maxLength(10),
+            Validators.maxLength(20),
           ]),
         ],
         lastName: [this.lastName, 

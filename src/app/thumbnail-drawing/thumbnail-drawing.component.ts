@@ -52,7 +52,9 @@ export class ThumbnailDrawingComponent implements OnInit {
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-
+    if( this.for_news == "yes" ) {
+      this.resize_drawing();
+    }
   }
 
 
@@ -162,7 +164,17 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   ngAfterViewInit() {
     if(!this.prevent_shiny){
-      this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+
+      if( this.for_news == "yes" ) {
+      this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
+      }
+      else {
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+      }
+    }
+
+    if( this.for_news == "yes" ) {
+      this.resize_drawing();
     }
   
   }
@@ -198,5 +210,30 @@ export class ThumbnailDrawingComponent implements OnInit {
     return "/artwork-drawing/"+this.format+"/"+this.title+"/"+this.drawing_id;
     //this.router.navigate([`/artwork-drawing/${this.format}/${this.title}/${this.drawing_id}`]);
   }
+
+  
+  resize_drawing() {
+    if( $('.container-drawings') ) {
+      //console.log("resize comics")
+      //console.log(this.get_comic_size() +'px')
+      $('.drawing-container').css({'width': this.get_drawing_size() +'px'});
+    }
+  }
+
+  get_drawing_size() {
+    return $('.container-drawings').width()/this.drawings_per_line();
+  }
+
+  drawings_per_line() {
+    var width = $('.container-drawings').width();
+    var n = Math.floor(width/250);
+    if( width < 500 ) {
+      return 1;
+    }
+    else if(width>0){
+      return n;
+    }
+  }
+
 
 }

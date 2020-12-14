@@ -1,138 +1,185 @@
 <div class="thumbnail-artwork">
 
-    <div class="hide-because-reported"  *ngIf="thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" [ngClass]="{'really-invisible':display_evenif_reported}">
-        <div style="  margin-right: 10px;"> Contenu masqué car signalé</div>
-        <div style=" cursor:pointer;"  (click)="see_reported_content()"> Cliquer pour tout de même voir</div>
+
+    <div class="hide-because-reported"
+        *ngIf="thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+        [ngClass]="{'really-invisible':display_evenif_reported}" [@enterAnimation]>
+        <mat-icon>flag</mat-icon>
+        <span>
+            Contenu masqué car signalé.
+            <span (click)="see_reported_content()">Cliquez pour tout de même voir.</span>
+        </span>
     </div>
-    
-    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings','avoid-clicks':!display_evenif_reported && thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)}" [@enterAnimation]>
+
+    <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork()
+        [ngClass]="{'subscribings-page':page=='subscribings','trendings-page':page=='trendings','avoid-clicks':!display_evenif_reported && thumbnail_picture_received && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)}"
+        [@enterAnimation]>
 
 
-        <div class="left-container" 
-        [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
-            
-            <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
-            
-        
-            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing' && list_of_images_to_show_retrieved"   (mouseenter)="launch_swiper_2();" (mouseleave)="stop_swiper_2();">
-                    <div class="swiper-wrapper" >
-                        <div class="swiper-slide" >
-                            <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
-                        </div>
-                        <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
-                            <img 
-                                (load)="load_image(i)"
-                                [src]="item"
-                                [ngClass]="{'invisible':!loaded_images[i]}">
-                        </div>
+        <div class="left-container"
+            [ngClass]="{'no-border-style':page=='subscribings', 'comic':subscribing_category=='comic', 'drawing':subscribing_category=='drawing', 'writing':subscribing_category=='writing'}">
+
+            <img #image [src]="thumbnail_picture" (load)="load_thumbnail()"
+                [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+
+
+            <div #swiperThumbnails class="swiper-thumbnails"
+                *ngIf="subscribing_category!='writing' && list_of_images_to_show_retrieved">
+                <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperThumbnails && swiper2_initialized && swiper2.slides.length==1}">
+                    <div class="swiper-slide">
+                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()"
+                            [ngClass]="{'invisible':!thumbnail_is_loaded}">
                     </div>
+                    <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
+                        <img (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}">
+                    </div>
+                </div>
                 
+                <div class="pagination-container">
+                    <div class="thumbnail-artwork-pagination"></div>
+                </div>
+
+                <div class="swiper--button-prev" (click)="stop($event)">
+                    <div>
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </div>
+                </div>
+                <div class="swiper--button-next" (click)="stop($event)">
+                    <div>
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </div>
+                </div>
             </div>
 
             <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category=='writing'">
-                <div class="swiper-wrapper">
+                <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperThumbnails && swiper2_initialized && swiper2.slides.length==1}">
                     <div class="swiper-slide">
-                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}">
+                        <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()"
+                            [ngClass]="{'invisible':!thumbnail_is_loaded}">
                     </div>
                     <div class="swiper-slide">
-                        <pdf-viewer
-                        class="pdf-document"
-                        [src]="pdfSrc"
-                        [autoresize]="true"
-                        [show-all]="true"
-                        [original-size]='true'
-                        [fit-to-page]='true'
-                        [render-text]='false'
-                        (after-load-complete)="afterLoadComplete($event)"
-                    ></pdf-viewer>
+                        <pdf-viewer class="pdf-document" [src]="pdfSrc" [autoresize]="true" [show-all]="true"
+                            [original-size]='true' [fit-to-page]='true' [render-text]='false'
+                            (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
+                    </div>
+                    
+                    <div class="pagination-container">
+                        <div class="thumbnail-artwork-pagination"></div>
+                    </div>
+
+                    <div class="swiper--button-prev" (click)="stop($event)">
+                        <div>
+                            <mat-icon>arrow_back_ios</mat-icon>
+                        </div>
+                    </div>
+                    <div class="swiper--button-next" (click)="stop($event)">
+                        <div>
+                            <mat-icon>arrow_back_ios</mat-icon>
+                        </div>
                     </div>
                 </div>
-                <div class="swiper-button-prev" (click)="stop($event)"></div>
-                <div class="swiper-button-next" (click)="stop($event)"></div>
             </div>
 
             <!--********************-->
             <!--Data container-->
             <!--********************-->
-            <div class="stats-container"  [ngClass]="{ 'invisible':!marks_retrieved}">
-                <div class="figure-container views">
-                    <div >
-                        <span>{{viewnumber}}</span>
-                        <mat-icon>visibility</mat-icon>
-                        <!--<div class="view-logo"></div>-->
+            <div class="bottom-container">
+                <div class="stats-container" [ngClass]="{ 'invisible':!marks_retrieved}">
+                    <div class="figure-container views">
+                        <div>
+                            <span>{{viewnumber}}</span>
+                            <mat-icon>visibility</mat-icon>
+                            <!--<div class="view-logo"></div>-->
+                        </div>
                     </div>
-                </div>
-                <div class="figure-container likes">
-                    <div >
-                        <span>{{likesnumber}}</span>
-                        <mat-icon>thumb_up</mat-icon>
+                    <div class="figure-container likes">
+                        <div>
+                            <span>{{likesnumber}}</span>
+                            <mat-icon>thumb_up</mat-icon>
+                        </div>
                     </div>
-                </div>
-                <div class="figure-container loves">
-                    <div >
-                        <span>{{lovesnumber}}</span>
-                        <mat-icon>favorite</mat-icon>
+                    <div class="figure-container loves">
+                        <div>
+                            <span>{{lovesnumber}}</span>
+                            <mat-icon>favorite</mat-icon>
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
 
 
-        <div *ngIf="type_of_profile=='account'" class="absolute-small-screen-selector"  [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved }">
-            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
-            <mat-icon class="optionsButton" style="
-            font-size:23px; 
-            color:rgb(32,56,100);
-            margin:auto;">more_vert</mat-icon>
+        <div *ngIf="type_of_profile=='account'" class="absolute-small-screen-selector"
+            [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved }">
+            <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
+                (click)="stop($event)">
+                <mat-icon>more_vert</mat-icon>
             </button>
-            <mat-menu  #options="matMenu" xPosition="before">
-                <button (click)="archive()" class="mat-menu-item" mat-menu-item *ngIf="visitor_mode && !content_archived"> 	
+            <mat-menu #options="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+                <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                    *ngIf="visitor_mode && !content_archived">
                     <mat-icon class="item-icon">save_alt</mat-icon>
                     <span>Archiver</span>
                 </button>
-                <button (click)="unarchive()" class="mat-menu-item" mat-menu-item *ngIf="visitor_mode && content_archived"> 	
+                <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                    *ngIf="visitor_mode && content_archived">
                     <mat-icon class="item-icon">unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
-                <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                    tabIndex="-1" class="thumbnail-artwork-menu-item" mat-menu-item (click)="report()">
                     <mat-icon class="item-icon">flag</mat-icon>
                     <span>Signaler</span>
                 </button>
-                <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                    tabIndex="-1" class="thumbnail-artwork-menu-item" mat-menu-item (click)="cancel_report()">
                     <mat-icon class="item-icon">flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
-                <button  *ngIf="!visitor_mode && category!='drawing'" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
+                <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
+                    (click)="edit_thumbnail()">
                     <mat-icon class="item-icon">flag</mat-icon>
                     <span>Editer la miniature</span>
                 </button>
-                
+
             </mat-menu>
         </div>
 
 
         <div class="right-container">
 
-            
-            <div *ngIf="type_of_profile=='account'" class="absolute-selector" [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved}">
-                <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
-                <mat-icon class="optionsButton" style="
-                font-size:23px; 
-                color:rgb(32,56,100);
-                margin:auto;">more_vert</mat-icon>
+
+            <div *ngIf="type_of_profile=='account'" class="absolute-selector"
+                [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved}">
+                <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
+                    (click)="stop($event)">
+                    <mat-icon>more_vert</mat-icon>
                 </button>
-                <mat-menu  #options="matMenu" xPosition="before">
-                    <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
+                <mat-menu #options="matMenu" xPosition="before" class="thumbnail-artwork-menu">
+                    <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                        *ngIf="visitor_mode && !content_archived">
+                        <mat-icon class="item-icon">save_alt</mat-icon>
+                        <span>Archiver</span>
+                    </button>
+                    <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
+                        *ngIf="visitor_mode && content_archived">
+                        <mat-icon class="item-icon">unarchive</mat-icon>
+                        <span>Désarchiver</span>
+                    </button>
+                    <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                        class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
                         <mat-icon class="item-icon">flag</mat-icon>
                         <span>Signaler</span>
                     </button>
-                    <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
+                    <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
+                        class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
                         <mat-icon class="item-icon">flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
-                    <button  *ngIf="!visitor_mode" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="edit_thumbnail()"> 	
+                    <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
+                        (click)="edit_thumbnail()">
                         <mat-icon class="item-icon">flag</mat-icon>
                         <span>Modifier la miniature</span>
                     </button>
@@ -143,7 +190,7 @@
                 <div class="absolute-shiny"></div>
                 <span>{{rank}}</span>
             </div>
-            
+
             <div class="name">
                 <span>{{title}}</span>
             </div>
@@ -174,10 +221,24 @@
                 <!--******************************************************-->
                 <!--************************COMICS************************-->
                 <!--******************************************************-->
-                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link() (click)="stop($event)"><span>Bande dessinée</span></a>
-                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'"><span>One-shot</span></div>
-                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'"><span>Série</span></div>
-                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>Bande dessinée</span></a>
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'">
+                    <span>One-shot</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'">
+                    <span>Série</span>
+                </div>
+                <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{style}}</span>
+                </a>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
@@ -192,10 +253,22 @@
                 <!--******************************************************-->
                 <!--************************DRAWING***********************-->
                 <!--******************************************************-->
-                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link() (click)="stop($event)"><span>Dessin</span></a>
-                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='one-shot'"><span>One-shot</span></div>
-                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'"><span>Artbook</span></div>
-                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>Dessin</span></a>
+                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='one-shot'">
+                    <span>One-shot</span></div>
+                <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
+                    <span>Artbook</span></div>
+                <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
@@ -204,8 +277,18 @@
                 <!--******************************************************-->
                 <!--************************WRITING***********************-->
                 <!--******************************************************-->
-                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>Ecrit</span></a>
-                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link() (click)="stop($event)"><span>{{style}}</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>Ecrit</span></a>
+                <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='writing'">
                     <span>{{total_pages_for_writing}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
@@ -213,76 +296,109 @@
             </div>
 
             <div class="verso-type">
-               
-                <a class="tag-container" [routerLink]=get_link_tags(firsttag) (click)="stop($event)"><span>{{firsttag}}</span></a>
-                <a class="tag-container" *ngIf="secondtag!=null" [routerLink]=get_link_tags(secondtag) (click)="stop($event)"><span>{{secondtag}}</span></a>
-                <a class="tag-container" *ngIf="thirdtag!=null" [routerLink]=get_link_tags(thirdtag) (click)="stop($event)"><span>{{thirdtag}}</span></a>
+
+                <a class="tag-container" [routerLink]=get_link_tags(firsttag)
+                matTooltip="Voir du contenu de ce style"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{firsttag}}</span></a>
+                <a class="tag-container" *ngIf="secondtag!=null" [routerLink]=get_link_tags(secondtag)
+                matTooltip="Voir du contenu de ce style"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{secondtag}}</span></a>
+                <a class="tag-container" *ngIf="thirdtag!=null" [routerLink]=get_link_tags(thirdtag)
+                matTooltip="Voir du contenu de ce style"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{thirdtag}}</span></a>
             </div>
 
             <!--********************-->
             <!--Author container-->
             <!--********************-->
             <div class="author-container">
-                <a [routerLink]=open_account() (click)="stop($event)" class="left-container">
-                    <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                <a [routerLink]=open_account() (click)="stop($event)" class="left-container"
+                matTooltip="Voir le profil"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
+                    <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'really-invisible':!pp_is_loaded}">
+                    <div *ngIf="!pp_is_loaded" class="shiny"></div>
                 </a>
                 <div class="right-container">
-                    <span class="author-name" *ngIf="pseudo!=''">
-                        <a [routerLink]=open_account() (click)="stop($event)">
+                    <span class="author-name" *ngIf="author_name!=''">
+                        <a [routerLink]=open_account() (click)="stop($event)"
+                        matTooltip="Voir le profil"
+                        matTooltipClass='tooltip-thumbnail-artwork' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">
                             {{author_name}}
                         </a>
+
+                        <mat-icon *ngIf="certified_account"
+                        matTooltip="Compte certifié" 
+                        matTooltipClass='tooltip-thumbnail-artwork' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">verified</mat-icon>
+
+                        <span *ngIf="type_of_account_checked" class="pro-logo"
+                        matTooltip="Compte professionnel" 
+                        matTooltipClass='tooltip-thumbnail-artwork'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">PRO</span>
+
                     </span>
                     <span class="author-description">{{primary_description}}</span>
                 </div>
             </div>
-            
+
             <!--********************-->
             <!--Date container-->
             <!--********************-->
             <div class="date-container">
-                <span>{{date_upload_to_show}}</span>
-                <span *ngIf="recent_chapter"> &nbsp; Nouveau chapitre !</span>
+                <span>{{date_upload_to_show}} <ng-container *ngIf="recent_chapter"> • Nouveau chapitre !</ng-container></span>
             </div>
 
 
         </div>
 
-        <div class="preview" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper();" (mouseleave)="stop_swiper();">
+        <div class="preview" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper();"
+            (mouseleave)="stop_swiper();">
             <div class="hover-to-preview fade-on-hover">
+                <mat-icon>play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
             </div>
-            <div class="loading-page"  *ngIf="!list_of_images_to_show_retrieved">
+            <div class="loading-page" *ngIf="!list_of_images_to_show_retrieved">
                 <mat-spinner diameter="20"></mat-spinner>
             </div>
             <div #swiperArtworkPreview style="height:100%;width:100%" *ngIf="list_of_images_to_show_retrieved">
-                    <div class="swiper-wrapper" >
-                        <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
-                            <img 
-                                (load)="load_image(i)"
-                                [src]="item"
-                                [ngClass]="{'invisible':!loaded_images[i]}">
-                        </div>
+                <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperArtworkPreview && swiper_initialized && swiper.slides.length==1}">
+                    <div class="swiper-slide" *ngFor="let item of list_of_images_to_show; let i=index">
+                        <img (load)="load_image(i)" [src]="item" [ngClass]="{'invisible':!loaded_images[i]}">
                     </div>
-                
+                    
+                    <div class="pagination-container">
+                        <div class="thumbnail-artwork-pagination"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing'" (mouseleave)="close_pdf();">
             <div class="hover-to-preview" *ngIf="show_absolute_cover" [@leaveAnimation] (mouseenter)="load_pdf();">
+                <mat-icon>play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
             </div>
-            <pdf-viewer
-                class="pdf-document"
-                [src]="pdfSrc"
-                [autoresize]="true"
-                [show-all]="true"
-                [original-size]='true'
-                [fit-to-page]='true'
-                [render-text]='false'
-                (after-load-complete)="afterLoadComplete($event)"
-            ></pdf-viewer>
+            <pdf-viewer class="pdf-document" [src]="pdfSrc" [autoresize]="true" [show-all]="true" [original-size]='true'
+                [fit-to-page]='true' [render-text]='false' (after-load-complete)="afterLoadComplete($event)">
+            </pdf-viewer>
         </div>
 
-        <div class="rank" *ngIf="page=='trendings' && rank" [ngClass]="{'gold':rank==1, 'silver':rank==2, 'bronze':rank==3,'other':rank>3}">
+        <div class="rank" *ngIf="page=='trendings' && rank"
+            [ngClass]="{'gold':rank==1, 'silver':rank==2, 'bronze':rank==3,'other':rank>3}">
             <div class="absolute-shiny"></div>
             <span>{{rank}}</span>
         </div>

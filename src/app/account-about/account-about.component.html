@@ -1,19 +1,19 @@
 
-<div class="account-about" >
-
-
-    <div class="logos-container" *ngIf="profile_data_retrieved" #target>
-        <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);">
+<div class="panel-background">
+    <div class="logos-container" *ngIf="profile_data_retrieved" #target [@enterFromTopAnimation]>
+        <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
             <mat-icon>account_circle</mat-icon>
             <span>Profil</span>
         </button>
-        <button class="logo" *ngIf="(!type_of_account.includes('Passionné') )" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);">
+        <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
             <mat-icon>bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
     </div>
+</div>
 
-    
+
+<div class="account-about" >
 
 
     <div *ngIf="opened_category==0" [ngClass]="{'invisible':  !list_of_privacy_retrieved}">
@@ -47,36 +47,35 @@
             <div class="form-item" *ngIf="!registerForm1_activated">
                 <mat-form-field floatLabel='never'>
                     <mat-label>{{type_of_account}}</mat-label>
-                    <input matInput readonly 
-                        [matTooltip]="null"
-                        matTooltipClass='tooltip-account-about-profile' 
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="0">
+                    <input matInput readonly>
                 </mat-form-field>
             </div>
             <div class="form-item" *ngIf="registerForm1_activated && (type_of_account.includes('Artiste') || type_of_account.includes('Passion'))" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
-                    <mat-select *ngIf="type_of_profile=='Groupe' && (!type_of_account.includes('Maison') && !type_of_account.includes('non '))"  disableOptionCentering formControlName="type_of_account">
+                    <mat-select *ngIf="type_of_profile=='Groupe' && (!type_of_account.includes('Maison') && !type_of_account.includes('non '))" panelClass="accountAboutSelectClass" disableOptionCentering formControlName="type_of_account">
                         <mat-option  *ngFor="let obj of listOfAccounts_group_artists" [value]="obj">
                             {{ obj }}
                         </mat-option>
                     </mat-select>
-                    <mat-select  *ngIf="type_of_profile=='Homme'  && (!type_of_account.includes('Editeur') && !type_of_account.includes('non '))"   disableOptionCentering formControlName="type_of_account">
+                    <mat-select  *ngIf="type_of_profile=='Homme'  && (!type_of_account.includes('Editeur') && !type_of_account.includes('non '))" panelClass="accountAboutSelectClass" disableOptionCentering formControlName="type_of_account">
                         <mat-option  *ngFor="let obj of listOfAccounts_male_artists" [value]="obj">
                             {{ obj }}
                         </mat-option>
                     </mat-select>
-                    <mat-select  *ngIf="type_of_profile=='Femme' && (!type_of_account.includes('Editrice') && !type_of_account.includes('non '))" disableOptionCentering formControlName="type_of_account">
+                    <mat-select  *ngIf="type_of_profile=='Femme' && (!type_of_account.includes('Editrice') && !type_of_account.includes('non '))" panelClass="accountAboutSelectClass" disableOptionCentering formControlName="type_of_account">
                         <mat-option  *ngFor="let obj of listOfAccounts_female_artists" [value]="obj">
                             {{ obj }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                
-            </div>
 
-            <div class="warning" *ngIf="registerForm1_activated && (registerForm1.value.type_of_account.includes('professionnel'))  
-                && !type_of_account.includes('professionnel')">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
+            </div>
+            
+            
+            <div class="warning_text" *ngIf="registerForm1_activated && (registerForm1.value.type_of_account.includes('professionnel'))  
+                && !type_of_account.includes('professionnel')" [@enterAnimation]>
+                <span>Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre statut pro.</span>
+            </div>
 
 
           <!--<div class="form-item" *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('professionnel')  && !type_of_account.includes('professionnel') ">
@@ -178,7 +177,7 @@
                             <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description_extended}}</textarea>
                         </ng-container>
                         <ng-container *ngIf=" ( primary_description_extended==undefined || primary_description_extended=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly"><i>Non renseignée</i></textarea>
+                            <textarea matInput cdkTextareaAutosize readonly class="readonly">Non renseignée</textarea>
                         </ng-container>
                     </mat-form-field>
                 </div>
@@ -307,8 +306,8 @@
                 </div>
             </button>
 
-            <div *ngIf="display_error_validator_1">
-                Les informations saisies sont incorectes ou manquantes.
+            <div *ngIf="display_error_validator_1" class="error_validator" [@enterAnimation]>
+                <span>Les informations saisies sont incorrectes ou manquantes.</span>
             </div>
         </div>
 
@@ -445,8 +444,8 @@
                 </div>
             </button>
 
-            <div *ngIf="display_error_validator_2">
-                Les informations saisies sont incorectes ou manquantes.
+            <div *ngIf="display_error_validator_2" class="error_validator" [@enterAnimation]>
+                <span>Les informations saisies sont incorrectes ou manquantes.</span>
             </div>
             
             <ng-container *ngIf="visitor_mode && links.length>0">
@@ -491,34 +490,39 @@
                 </div>
                 
                 <div class="form-item" *ngIf="links.length>0" [@enterAnimation]>
-                    <div class="form-item-flex" *ngFor="let item of links_titles;let i=index">
+                    <ng-container *ngFor="let item of links_titles;let i=index">
 
-                        <div class="left-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{item}}</mat-label>
-                                <input matInput readonly>
-                            </mat-form-field>
-                        </div>
-                        <div class="right-container">
-                            <mat-form-field floatLabel='never'>
-                                <mat-label>{{links[i]}}</mat-label>
-                                <a [href]="links[i]"><input matInput readonly style="cursor:pointer;"></a>
-                            </mat-form-field>
-                        </div>
-
-                        <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0" *ngIf="registerForm2_activated">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="account-title-mat-menu">
-                            <button class="account-title-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                <mat-icon>close</mat-icon>
-                                <span>Supprimer</span>
+                        <div class="form-item-flex">
+                            <div class="left-container">
+                                <mat-form-field floatLabel='never'>
+                                    <mat-label>{{item}}</mat-label>
+                                    <input matInput readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="right-container">
+                                <mat-form-field floatLabel='never'>
+                                    <mat-label>{{links[i]}}</mat-label>
+                                    <a [href]="links[i]"><input matInput readonly style="cursor:pointer;"></a>
+                                </mat-form-field>
+                            </div>
+    
+                            <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0" *ngIf="registerForm2_activated">
+                                <mat-icon>more_vert</mat-icon>
                             </button>
-                        </mat-menu>
+                            <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="account-title-mat-menu">
+                                <button class="account-title-menu-item" mat-menu-item (click)="remove_link(i)"> 	
+                                    <mat-icon>close</mat-icon>
+                                    <span>Supprimer</span>
+                                </button>
+                            </mat-menu>
+                        </div>
 
-                    </div>
+                    </ng-container>
                 </div>
 
+                <div class="form-title" *ngIf="registerForm2_activated" [@enterAnimation]>
+                    <span>Ajouter un lien</span>
+                </div>
                 <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                     <div class="form-item-flex">
                         <div class="left-container">
@@ -735,8 +739,8 @@
                 </div>
             </button>
 
-            <div *ngIf="display_error_validator_3">
-                Les informations saisies sont incorectes ou manquantes.
+            <div *ngIf="display_error_validator_3" class="error_validator" [@enterAnimation]>
+                <span>Les informations saisies sont incorrectes ou manquantes.</span>
             </div>
 
         </div>
@@ -768,8 +772,16 @@
                         <span>Tendances</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout3" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[6]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[6]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[6]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[6]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout3="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[6]=='private'" (click)="change_information_privacy_public(6)"> 	
@@ -823,7 +835,7 @@
                     <!------------>
                     <!--A TESTER-->
                     <!------------>
-                    <div class="chart-container" *ngIf="trendings_found && trendings_loaded">
+                    <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
                         [view]="view_size"
                         [scheme]="colorScheme"
@@ -840,7 +852,7 @@
                         </ngx-charts-line-chart>
                     </div>
 
-                    <div class="chart-container" *ngIf="trendings_found && trendings_loaded">
+                    <div class="chart-container" #chartContainer *ngIf="trendings_found && trendings_loaded">
                         <ngx-charts-line-chart
                         [view]="view_size"
                         [scheme]="colorScheme"
@@ -877,8 +889,16 @@
                         <span>Annonces</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout4" *ngIf="!visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[7]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[7]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[7]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[7]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout4="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[7]=='private'" (click)="change_information_privacy_public(7)"> 	
@@ -1003,8 +1023,16 @@
                         <span>Bandes dessinées</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout5" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[8]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[8]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[8]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[8]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout5="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[8]=='private'" (click)="change_information_privacy_public(8)"> 	
@@ -1087,7 +1115,7 @@
                         </div>
                     </div>
 
-                    <div class="chart-container" *ngIf="single_comics_stats_retrieved">
+                    <div class="chart-container" #chartContainer *ngIf="single_comics_stats_retrieved">
                         <ngx-charts-line-chart
                         [view]="view_size"
                         [scheme]="colorScheme"
@@ -1125,8 +1153,16 @@
                         <span>Dessins</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout6" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[9]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[9]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[9]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[9]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout6="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[9]=='private'" (click)="change_information_privacy_public(9)"> 	
@@ -1210,7 +1246,7 @@
                         </div>
                     </div>
 
-                        <div class="chart-container" *ngIf="single_drawings_stats_retrieved">
+                        <div class="chart-container" #chartContainer *ngIf="single_drawings_stats_retrieved">
                             <ngx-charts-line-chart
                             [view]="view_size"
                             [scheme]="colorScheme"
@@ -1250,8 +1286,16 @@
                         <span>Ecrits</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout7" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[10]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[10]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[10]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[10]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout7="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[10]=='private'" (click)="change_information_privacy_public(10)"> 	
@@ -1336,7 +1380,7 @@
                         </div>
                     </div>
 
-                    <div class="chart-container" *ngIf="single_writings_stats_retrieved">
+                    <div class="chart-container" #chartContainer *ngIf="single_writings_stats_retrieved">
                         <ngx-charts-line-chart
                         [view]="view_size"
                         [scheme]="colorScheme"
@@ -1372,8 +1416,16 @@
                         <span>Profil</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout8" *ngIf="!visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[11]=='private'">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[11]=='public'">visibility</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[11]=='private'"
+                            matTooltip="Information privée"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility_off</mat-icon>
+                            <mat-icon *ngIf="list_of_privacy[11]=='public'"
+                            matTooltip="Information publique"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">visibility</mat-icon>
                         </button>
                         <mat-menu #accountAbout8="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[11]=='private'" (click)="change_information_privacy_public(11)"> 	
@@ -1421,98 +1473,108 @@
                         </div>
                     </div>
 
-                    <div class="chart-container" *ngIf="profile_stats_number_of_viewers_retrieved && profile_stats_nb_visitors_found">
-                        <ngx-charts-line-chart
-                        [view]="view_size"
-                        [scheme]="colorScheme"
-                        [results]="multi_profile_stats_nb_visitors"
-                        [gradient]="gradient"
-                        [xAxis]="showXAxis"
-                        [yAxis]="showYAxis"
-                        [legend]="show_legends"
-                        [showXAxisLabel]="showXAxisLabel"
-                        [showYAxisLabel]="showYAxisLabel"
-                        [xAxisLabel]="xAxis_profile_stats_nb_visitors"
-                        [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                        (select)="onSelect($event)">
-                        </ngx-charts-line-chart>
-                    </div>
+                    <ng-container *ngIf="profile_stats_number_of_viewers_retrieved && profile_stats_nb_visitors_found">
+                        <div class="chart-container" #chartContainer>
+                            <ngx-charts-line-chart
+                            [view]="view_size"
+                            [scheme]="colorScheme"
+                            [results]="multi_profile_stats_nb_visitors"
+                            [gradient]="gradient"
+                            [xAxis]="showXAxis"
+                            [yAxis]="showYAxis"
+                            [legend]="show_legends"
+                            [showXAxisLabel]="showXAxisLabel"
+                            [showYAxisLabel]="showYAxisLabel"
+                            [xAxisLabel]="xAxis_profile_stats_nb_visitors"
+                            [yAxisLabel]="yAxis_profile_stats_nb_visitors"
+                            (select)="onSelect($event)">
+                            </ngx-charts-line-chart>
+                        </div>
+                    </ng-container>
 
-                    <div class="chart-container" *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
+                    <ng-container *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
                         <div class="title2">
                             <mat-icon>keyboard_arrow_right</mat-icon>
                             <span>Types de profil des 100 derniers visiteurs</span>
                         </div>
-                        <ngx-charts-pie-chart
-                        [view]="view_size"
-                        [scheme]="colorScheme_viewers_stats"
-                        [results]="single_viewers_profiles_stats"
-                        [gradient]="gradient"
-                        [legend]="show_legends"
-                        [legendPosition]="legend_position"
-                        [labels]="showLabels"
-                        [doughnut]="isDoughnut_viewers_stats"
-                        (select)="onSelect($event)"
-                        >
-                        </ngx-charts-pie-chart>
-                    </div>
+                        <div class="chart-container" #chartContainer>
+                            <ngx-charts-pie-chart
+                            [view]="view_size"
+                            [scheme]="colorScheme_viewers_stats"
+                            [results]="single_viewers_profiles_stats"
+                            [gradient]="gradient"
+                            [legend]="show_legends"
+                            [legendPosition]="legend_position"
+                            [labels]="showLabels"
+                            [doughnut]="isDoughnut_viewers_stats"
+                            (select)="onSelect($event)"
+                            >
+                            </ngx-charts-pie-chart>
+                        </div>
+                    </ng-container>
                     
-                    <div class="chart-container" *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
+                    <ng-container  *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
                         <div class="title2">
                             <mat-icon>keyboard_arrow_right</mat-icon>
                             <span>Types de compte des 100 derniers visiteurs</span>
                         </div>
-                        <ngx-charts-pie-chart
-                        [view]="view_size"
-                        [scheme]="colorScheme_viewers_stats"
-                        [results]="single_viewers_accounts_stats"
-                        [gradient]="gradient"
-                        [legend]="show_legends"
-                        [legendPosition]="legend_position"
-                        [labels]="showLabels"
-                        [doughnut]="isDoughnut_viewers_stats"
-                        (select)="onSelect($event)"
-                        >
-                        </ngx-charts-pie-chart>
-                    </div>
+                        <div class="chart-container" #chartContainer>
+                            <ngx-charts-pie-chart
+                            [view]="view_size"
+                            [scheme]="colorScheme_viewers_stats"
+                            [results]="single_viewers_accounts_stats"
+                            [gradient]="gradient"
+                            [legend]="show_legends"
+                            [legendPosition]="legend_position"
+                            [labels]="showLabels"
+                            [doughnut]="isDoughnut_viewers_stats"
+                            (select)="onSelect($event)"
+                            >
+                            </ngx-charts-pie-chart>
+                        </div>
+                    </ng-container>
         
-                    <div class="chart-container" *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
+                    <ng-container *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
                         <div class="title2">
                             <mat-icon>keyboard_arrow_right</mat-icon>
                             <span>Ages des 100 derniers visiteurs</span>
                         </div>
-                        <ngx-charts-pie-chart
-                        [view]="view_size"
-                        [scheme]="colorScheme_viewers_stats"
-                        [results]="single_viewers_age_stats"
-                        [gradient]="gradient"
-                        [legend]="show_legends"
-                        [legendPosition]="legend_position"
-                        [labels]="showLabels"
-                        [doughnut]="isDoughnut_viewers_stats"
-                        (select)="onSelect($event)"
-                        >
-                        </ngx-charts-pie-chart>
-                    </div>
+                        <div class="chart-container" #chartContainer>
+                            <ngx-charts-pie-chart
+                            [view]="view_size"
+                            [scheme]="colorScheme_viewers_stats"
+                            [results]="single_viewers_age_stats"
+                            [gradient]="gradient"
+                            [legend]="show_legends"
+                            [legendPosition]="legend_position"
+                            [labels]="showLabels"
+                            [doughnut]="isDoughnut_viewers_stats"
+                            (select)="onSelect($event)"
+                            >
+                            </ngx-charts-pie-chart>
+                        </div>
+                    </ng-container>
 
-                    <div class="chart-container" *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
+                    <ng-container *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
                         <div class="title2">
                             <mat-icon>keyboard_arrow_right</mat-icon>
                             <span>Localisations des 100 derniers visiteurs</span>
                         </div>
-                        <ngx-charts-pie-chart
-                        [view]="view_size"
-                        [scheme]="colorScheme_viewers_stats"
-                        [results]="single_viewers_locations_stats"
-                        [gradient]="gradient"
-                        [legend]="show_legends"
-                        [legendPosition]="legend_position"
-                        [labels]="showLabels"
-                        [doughnut]="isDoughnut_viewers_stats"
-                        (select)="onSelect($event)"
-                        >
-                        </ngx-charts-pie-chart>
-                    </div>
+                        <div class="chart-container" #chartContainer>
+                            <ngx-charts-pie-chart
+                            [view]="view_size"
+                            [scheme]="colorScheme_viewers_stats"
+                            [results]="single_viewers_locations_stats"
+                            [gradient]="gradient"
+                            [legend]="show_legends"
+                            [legendPosition]="legend_position"
+                            [labels]="showLabels"
+                            [doughnut]="isDoughnut_viewers_stats"
+                            (select)="onSelect($event)"
+                            >
+                            </ngx-charts-pie-chart>
+                        </div>
+                    </ng-container>
 
 
                 </div>

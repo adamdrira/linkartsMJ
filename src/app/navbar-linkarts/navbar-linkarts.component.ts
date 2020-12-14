@@ -36,12 +36,9 @@ declare var $: any;
       'enterAnimation', [
         transition(':enter', [
           style({opacity: 0}),
-          animate('400ms', style({opacity: 1}))
-        ]),
-        transition(':leave', [
-          style({opacity: 1})
+          animate('150ms', style({opacity: 1}))
         ])
-      ]
+      ],
     )
   ]
 })
@@ -447,20 +444,6 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
 
-  open_notifications(){
-    if(this.show_notifications){
-      this.show_notifications=false;
-      this.change_notifications_status_to_checked();
-      return
-    }
-    
-    else{
-      for(let i=0;i<this.list_of_notifications.length;i++){
-        this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
-      }
-      this.show_notifications=true;
-    }
-  }
 
   
   change_notifications_status_to_checked(){
@@ -1236,9 +1219,8 @@ export class NavbarLinkartsComponent implements OnInit {
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
-  
-  open_my_profile() {
-    this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+  get_my_profile() {
+    return "/account/" + this.pseudo + "/" + this.user_id;
   }
 
   /**************************************** SEARCHBAR NAVIGATION  ***********************************/
@@ -1265,8 +1247,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //WORDS
   open_research_style_and_tags(i: number) {
-    this.cancel_research()
-    this.router.navigate([`/main-research-style-and-tag/1/${this.list_of_real_categories[i]}/item/all`]);
+    return "/main-research-style-and-tag/1/"+ this.first_filters[this.indice_title_selected][i] + "/item/all";
   }
   open_main_research(s: string) {
     this.router.navigate([`/main-research/1/${s}/All`]);
@@ -1279,22 +1260,26 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let user =this.list_of_last_propositions[i]
     this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/account/${this.list_of_last_propositions[i].nickname}/${this.list_of_last_propositions[i].id}`]);
       this.loading_research=false;
       return
     })
-   
   }
+  get_account(i:number) {
+    return "/account/" + this.list_of_last_propositions[i].nickname +"/"+ this.list_of_last_propositions[i].id;
+  }
+
   open_history_account(i: number) {
     console.log("open_history_account")
     this.cancel_research()
     this.loading_research=true;
     let user =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/account/${this.list_of_last_propositions_history[i].nickname}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
     })
+  }
+  get_history_account(i: number) {
+    return "/account/" + this.list_of_last_propositions_history[i].nickname + "/" + this.list_of_last_propositions_history[i].id;
   }
 
   //ANNONCES
@@ -1303,12 +1288,15 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let ad =this.list_of_last_propositions[i];
     this.navbar.add_main_research_to_history("Ad",ad.remuneration,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/ad-page/${this.list_of_last_propositions[i].title}/${this.list_of_last_propositions[i].id}`]);
       this.loading_research=false;
       return
     })
-   
   }
+
+  get_ad_last_propositions(i:number) {
+    return "/ad-page/"+this.list_of_last_propositions[i].title +"/"+ this.list_of_last_propositions[i].id;
+  }
+
   open_ad_last_propositions_history(i: number) {
     this.cancel_research()
     this.loading_research=true;
@@ -1318,9 +1306,11 @@ export class NavbarLinkartsComponent implements OnInit {
       this.loading_research=false;
       return
     })
-   
-    
   }
+  get_ad_last_propositions_history(i: number) {
+    return "/ad-page/" + this.list_of_last_propositions_history[i].title + "/" + this.list_of_last_propositions_history[i].id;
+  }
+
 
   //ARTWORKS
   open_artwork_last_proposition(s:any, i:number) {
@@ -1330,7 +1320,6 @@ export class NavbarLinkartsComponent implements OnInit {
     console.log(s)
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
-        this.router.navigate([`/artwork-${s.publication_category.toLowerCase()}/${this.list_of_last_propositions[i].title}/${s.target_id}`]);
         this.loading_research=false;
         return
       })
@@ -1345,6 +1334,15 @@ export class NavbarLinkartsComponent implements OnInit {
       })
      
     }
+  }
+  get_artwork_last_proposition(s:any, i:number) {
+    if(s.publication_category=="Writing") {
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + this.list_of_last_propositions[i].title + "/" + s.target_id;
+    }
+    else {
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + this.list_of_last_propositions[i].title + "/" + s.target_id;
+    }
+
   }
 
   open_artwork_last_proposition_history(s:any, i:number) {
@@ -1370,6 +1368,15 @@ export class NavbarLinkartsComponent implements OnInit {
     }
   }
 
+  get_artwork_last_proposition_history(s:any, i:number) {
+    if(s.publication_category=="Writing") {
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + this.list_of_last_propositions_history[i].title + "/" + s.target_id;
+    }
+    else {
+      return "/artwork-" + s.publication_category.toLowerCase() + "/" + s.format + "/" + this.list_of_last_propositions_history[i].title + "/" + s.target_id;
+    }
+  }
+
 
   /******************************************** CHAT NAVIGATION  *************************************/
   /******************************************** CHAT NAVIGATION  *************************************/
@@ -1378,8 +1385,12 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_chat_2(i:number) {
     this.show_chat_messages=false;
-    this.router.navigate([`/chat/${this.get_chat_url(i)}`]);
   }
+  get_chat_2(i:number) {
+    return "/chat/" + this.get_chat_url(i);
+  }
+
+
   open_chat_main() {
     this.show_chat_messages=false;
     this.router.navigate([`/chat`]);
@@ -1403,19 +1414,27 @@ export class NavbarLinkartsComponent implements OnInit {
     if(this.show_notifications){
       this.close_notifications();
     }
+  }
+  get_my_account() {
+    return "/account/" + this.pseudo + "/" + this.user_id + "/my_account";
+  }
+
+  really_open_my_account() {
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
   }
 
   open_my_trending(category){
     this.close_notifications();
+  }
+  get_my_trending(category) {
     if(category=='comic'){
-      this.router.navigate([`/trendings/comics`]);
+      return "/trendings/comics"
     }
     if(category=='drawing'){
-      this.router.navigate([`/trendings/drawings`]);
+      return "/trendings/drawings"
     }
     if(category=='writing'){
-      this.router.navigate([`/trendings/writings`]);
+      return "/trendings/writings"
     }
   }
 
@@ -1424,23 +1443,33 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_comic(notif:any) {
     this.close_notifications();
-    this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  get_comic(notif:any) {
+    return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
   }
   open_comic_chapter(notif:any) {
     this.close_notifications();
-    this.router.navigate([`/artwork-comic/${notif.format}/${notif.publication_name}/${notif.publication_id}/${notif.chapter_number}`]);
+  }
+  get_comic_chapter(notif:any) {
+    return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any) {
     this.close_notifications();
-    this.router.navigate([`/artwork-drawing/${notif.format}/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  get_drawing(notif:any) {
+    return "/artwork-drawing/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
   }
   open_writing(notif:any) {
     this.close_notifications();
-    this.router.navigate([`/artwork-writing/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  get_writing(notif:any) {
+    return "/artwork-writing/" + notif.publication_name + "/" + notif.publication_id;
   }
   open_ad(notif:any) {
     this.close_notifications();
-    this.router.navigate([`/ad-page/${notif.publication_name}/${notif.publication_id}`]);
+  }
+  get_ad(notif:any) {
+    return "/ad-page/" + notif.publication_name + "/" + notif.publication_id;
   }
 
 
@@ -1472,11 +1501,15 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     let str=this.most_researched_propositions[i].research_string;
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
-      this.router.navigate([`/main-research/1/${str}/All`]);
       this.loading_research=false;
       this.activated_search=false;
-      return
+      return;
     })
+  }
+
+  get_trending_message(i) {
+    let str=this.most_researched_propositions[i].research_string;
+    return "/main-research/1/" + str + "/All";
   }
 
   add_clicked_after_research(i){
@@ -1491,7 +1524,9 @@ export class NavbarLinkartsComponent implements OnInit {
     this.navbar.add_main_research_to_history(lst.publication_category,lst.format,lst.target_id,lst.research_string,lst.research_string1,"clicked_after_research",lst2.number_of_comics,lst2.number_of_drawings,lst2.number_of_writings,lst2.number_of_ads,lst2.category,lst2.firsttag,lst2.secondtag,lst2.thirdtag,this.type_of_profile).subscribe()
   }
 
-  delete_from_history(i){
+  delete_from_history(i,event:any){
+    
+    event.stopPropagation();
     let str=this.list_of_first_propositions_history[i].research_string
     //console.log(str);
     this.navbar.delete_click_after_ressearch_from_history(str).subscribe(r=>{
@@ -1593,6 +1628,7 @@ initialize_selectors(){
   let THIS=this;
   $(document).ready(function () {
     $('.NavbarSelectBox').SumoSelect({});
+    
     $('.NavbarSelectBox2').SumoSelect({});
     
       
@@ -1672,7 +1708,12 @@ connections_status_retrieved=false;
 list_of_groups_retrieved=false;
 list_of_groups_ids=[];
 
+open_messages_notifs(event: any) {
+  event.stopPropagation();
+  this.open_messages();
+}
 open_messages(){
+  
   if(this.show_chat_messages){
     this.show_chat_messages=false;
     return;
@@ -1689,6 +1730,25 @@ open_messages(){
  
 }
 
+open_notifications_notifs(event: any){
+  event.stopPropagation();
+  this.open_notifications();
+}
+
+open_notifications(){
+  if(this.show_notifications){
+    this.show_notifications=false;
+    this.change_notifications_status_to_checked();
+    return
+  }
+  
+  else{
+    for(let i=0;i<this.list_of_notifications.length;i++){
+      this.list_of_notifications_dates[i]=this.get_date(this.list_of_notifications[i].createdAt,i);
+    }
+    this.show_notifications=true;
+  }
+}
 
 
 sort_friends_list() {
@@ -2243,7 +2303,6 @@ change_message_status(event){
         this.number_of_unseen_messages--;
       }*/
       this.number_of_unseen_messages=0;
-      this.show_chat_messages=false;
       return `group/${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
     else{
@@ -2251,7 +2310,6 @@ change_message_status(event){
         this.number_of_unseen_messages--;
       }*/
       this.number_of_unseen_messages=0;
-      this.show_chat_messages=false;
       return `${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
   }

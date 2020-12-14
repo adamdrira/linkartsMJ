@@ -123,6 +123,26 @@
                     </span>
                 </div>
 
+                <div class="profile-text profile-links" *ngIf="links.length>0">
+                    <mat-icon
+                    matTooltip='Liens externes' 
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">launch</mat-icon>
+
+                    <div>
+                        <ng-container *ngFor="let item of links_titles;let i=index">
+                            <span>
+                                <ng-container *ngIf="i>0">,&nbsp;</ng-container>
+                                <a [href]="links[i]">
+                                    {{item}}
+                                </a>
+                            </span>
+                        </ng-container>
+                    </div>
+                </div>
+                
+
             </div>
             
         </div>
@@ -144,10 +164,8 @@
     <!--------------------------------------------------------------------------------->
     <!--------------------------------------------------------------------------------->
     <div class="panel-controller" *ngIf="!user_blocked && user_blocked_retrieved && !profile_not_found">
-
         
         <div class="middle-container">
-
             <div class="absolute-background-color" #absoluteBackgroundColor></div>
 
             <div #buttonSection>
@@ -207,6 +225,94 @@
                     <span>Publier</span> 
                 </button>
             </a>
+        </div>
+
+            
+        <div class="small-screen-categories">
+            <mat-form-field floatLabel='never'>
+                <mat-select [compareWith]="compareObjects" panelClass="accountCategorySelectClass" [(value)]="opened_section" disableOptionCentering (selectionChange)="onCategoryChange($event)">
+                    
+                    <mat-select-trigger>
+                        <ng-container *ngIf="opened_section==0">
+                            <mat-icon>home</mat-icon>
+                            <span>Accueil</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==1">
+                            <mat-icon>palette</mat-icon>
+                            <span>Œuvres ({{number_of_artpieces}})</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==2">
+                            <mat-icon>announcement</mat-icon>
+                            <span>Annonces ({{list_of_ads.length}})</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==3">
+                            <mat-icon>group</mat-icon>
+                            <span>Abonnés ({{subscribed_users_list.length}})</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==4">
+                            <mat-icon>subscriptions</mat-icon>
+                            <span>Abonnements ({{users_subscribed_to_list.length}})</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==5">
+                            <mat-icon>help</mat-icon>
+                            <span>Qui suis-je</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==6">
+                            <mat-icon>bookmarks</mat-icon>
+                            <span>Archives</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==7">
+                            <div class="profile-picture">
+                                <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                            </div>
+                            <span>Mon compte</span>
+                        </ng-container>
+                        <ng-container *ngIf="opened_section==8">
+                            <mat-icon>add_circle_outline</mat-icon>
+                            <span>Publier</span>
+                        </ng-container>
+                    </mat-select-trigger>
+
+                    <mat-option [value]="0" *ngIf="!my_profile_is_suspended">
+                        <mat-icon>home</mat-icon>
+                        <span>Accueil</span>
+                    </mat-option>
+                    <mat-option [value]="1" *ngIf="!my_profile_is_suspended">
+                        <mat-icon>palette</mat-icon>
+                        <span>Œuvres ({{number_of_artpieces}})</span>
+                    </mat-option>
+                    <mat-option [value]="2">
+                        <mat-icon>announcement</mat-icon>
+                        <span>Annonces ({{list_of_ads.length}})</span>
+                    </mat-option>
+                    <mat-option [value]="3" *ngIf="!my_profile_is_suspended">
+                        <mat-icon>group</mat-icon>
+                        <span>Abonnés ({{subscribed_users_list.length}})</span>
+                    </mat-option>
+                    <mat-option [value]="4" *ngIf="!my_profile_is_suspended">
+                        <mat-icon>subscriptions</mat-icon>
+                        <span>Abonnements ({{users_subscribed_to_list.length}})</span>
+                    </mat-option>
+                    <mat-option [value]="5">
+                        <mat-icon>help</mat-icon>
+                        <span>Qui suis-je</span>
+                    </mat-option>
+                    <mat-option [value]="6" *ngIf="!mode_visiteur && !my_profile_is_suspended">
+                        <mat-icon>bookmarks</mat-icon>
+                        <span>Archives</span>
+                    </mat-option>
+                    <mat-option [value]="7" *ngIf="!mode_visiteur">
+                        <div class="profile-picture">
+                            <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
+                        </div>
+                        <span>Mon compte</span>
+                    </mat-option>
+                    <mat-option [value]="8" *ngIf="!my_profile_is_suspended && !mode_visiteur">
+                        <mat-icon>add_circle_outline</mat-icon>
+                        <span>Publier</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
     </div>
 
@@ -323,7 +429,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="new_drawing_contents_added" class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents || !(number_of_new_contents_to_show>0)}">
+                <div *ngIf="new_drawing_contents_added" #container_new_drawings class="bd-container" [ngClass]="{'invisible':!display_new_drawing_contents || !(number_of_new_contents_to_show>0)}">
                     <div class="artwork-type-title">
                         <span>Dessins</span>
                     </div>
@@ -366,7 +472,7 @@
             </ng-container >
             
 
-            <ng-container *ngIf="trendings_found">
+            <!--<ng-container *ngIf="trendings_found">
 
                 <div class="account-title large-icon">
                     <span>
@@ -431,7 +537,7 @@
                     </div>
                 </div>
 
-            </ng-container>
+            </ng-container>-->
         </div>
 
 
@@ -444,37 +550,35 @@
         <ng-container *ngIf="opened_section==1 && list_writings_added && list_drawings_artbook_added
         && list_drawings_onepage_added && list_bd_series_added && list_bd_oneshot_added && !profile_not_found && !my_profile_is_suspended">
             
-            
-            <div class="logos-container">
-                <button class="logo" [ngClass]="{'opened': opened_category == 0 }" 
-                (click)="open_category(0);scroll(target);" #target
-                [matTooltip]="number_of_comics==0 ? 'Aucune bande-dessinée' : null"
-                matTooltipClass='tooltip-account-profile' 
-                [matTooltipPosition]="'below'"
-                [matTooltipShowDelay]="200">
-                    <div class="image1"></div>
-                    <span>Bandes dessinées ({{number_of_comics}})</span>
-                </button>
-                <button class="logo" [ngClass]="{'opened': opened_category == 1 }" 
-                (click)="open_category(1);scroll(target);" #target
-                [matTooltip]="number_of_drawings==0 ? 'Aucun dessin' : null"
-                matTooltipClass='tooltip-account-profile' 
-                [matTooltipPosition]="'below'"
-                [matTooltipShowDelay]="200">
-                    <div class="image2"></div>
-                    <span>Dessins ({{number_of_drawings}})</span>
-                </button>
-                <button class="logo" [ngClass]="{'opened': opened_category == 2 }" 
-                (click)="open_category(2);scroll(target);" #target
-                [matTooltip]="number_of_writings==0 ? 'Aucun écrit' : null"
-                matTooltipClass='tooltip-account-profile' 
-                [matTooltipPosition]="'below'"
-                [matTooltipShowDelay]="200">
-                    <div class="image3"></div>
-                    <span>Écrits ({{number_of_writings}})</span>
-                </button>
+                    
+            <div class="panel-background">
+                <div class="logos-container" [@enterFromTopAnimation]>
+                    <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target
+                    [matTooltip]="number_of_comics==0 ? 'Aucune bande-dessinée' : null"
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="image1"></div>
+                        <span>Bandes dessinées ({{number_of_comics}})</span>
+                    </button>
+                    <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target
+                    [matTooltip]="number_of_drawings==0 ? 'Aucun dessin' : null"
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="image2"></div>
+                        <span>Dessins ({{number_of_drawings}})</span>
+                    </button>
+                    <button class="logo" [ngClass]="{'opened': opened_category == 2 }" (click)="open_category(2);scroll(target);" #target
+                    [matTooltip]="number_of_writings==0 ? 'Aucun écrit' : null"
+                    matTooltipClass='tooltip-account-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <div class="image3"></div>
+                        <span>Écrits ({{number_of_writings}})</span>
+                    </button>
+                </div>
             </div>
-
             
             <ng-container *ngIf="opened_category != -1">
 
@@ -525,7 +629,11 @@
 
 
                                         <button *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_bd[i-3] && list_albums_bd[i-3].length>0) ) && list_bd_albums_status[i-1]!='hidden' && list_bd_albums_status[i-1]!='private')"  class="albums-title-button" 
-                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]
+                                        [matTooltip]="add_album!=-1 ? 'Veuillez quitter l\'ajout de section avant de revenir aux autres sections' : null"
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">
 
                                             <mat-icon *ngIf="list_bd_albums_status[i-1]=='private'" class="visibility-off"
                                             matTooltip="Cet album est actuellement privé"
@@ -588,7 +696,11 @@
                                         
 
                                         <button *ngIf="!mode_visiteur || (mode_visiteur && (3>i || (list_albums_drawings[i-3] && list_albums_drawings[i-3].length>0) ) && list_drawing_albums_status[i-1]!='hidden' && list_drawing_albums_status[i-1]!='private')" class="albums-title-button" 
-                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+                                        (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]
+                                        [matTooltip]="add_album!=-1 ? 'Veuillez quitter l\'ajout de section avant de revenir aux autres sections' : null"
+                                        matTooltipClass='tooltip-account-profile' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">
                                             
                                             <mat-icon *ngIf="list_drawing_albums_status[i-1]=='private'" class="visibility-off"
                                             matTooltip="Cet album est actuellement privé"
@@ -634,7 +746,11 @@
                                     </ng-container>
 
                                     <button *ngIf="!mode_visiteur || (mode_visiteur && (1>i || (list_albums_writings[i-1] && list_albums_writings[i-1].length>0) ) && list_writings_albums_status[i-1]!=='hidden' && list_writings_albums_status[i-1]!=='private')"  class="albums-title-button" 
-                                    (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]>
+                                    (click)="open_album(i);" [ngClass]="{ 'opened' : opened_album == i }" [@enterAnimation]
+                                    [matTooltip]="add_album!=-1 ? 'Veuillez quitter l\'ajout de section avant de revenir aux autres sections' : null"
+                                    matTooltipClass='tooltip-account-profile' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">
                                     
                                         <mat-icon *ngIf="list_writings_albums_status[i-1]=='private'" class="visibility-off"
                                         matTooltip="Cet album est actuellement privé"
@@ -882,7 +998,7 @@
                                         <!--On affiche l'album-->
                                         <div *ngIf="!mode_visiteur" >
                                             <div class="bd-container"  #container_drawings>
-                                                <div class="artwork-type-title" >
+                                                <div class="artwork-type-title with-margin-bottom" >
                                                     <span>{{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}</span>
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
@@ -911,7 +1027,7 @@
 
                                         <div *ngIf="mode_visiteur && list_drawing_albums_status[list_titles_albums_drawings_added.length-i+1]=='public'">
                                             <div class="bd-container" #container_drawings>
-                                                <div class="artwork-type-title" *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>0" >
+                                                <div class="artwork-type-title with-margin-bottom" *ngIf="list_albums_drawings[list_titles_albums_drawings_added.length-i-1].length>0" >
                                                     <span>{{list_titles_albums_drawings_added[list_titles_albums_drawings_added.length-i-1]}}</span>
                                                 </div>
                                                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
@@ -946,7 +1062,7 @@
                                     <div *ngIf="mode_visiteur && list_drawing_albums_status[1]=='standard'">
                                         <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title with-margin-bottom">
                                                 <span>Artbooks</span>
                                             </div>
 
@@ -971,7 +1087,7 @@
                                     <div *ngIf="!mode_visiteur">
                                         <div *ngIf="list_drawings_artbook.length!=0" class="bd-container" #container_drawings>
                                             
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title with-margin-bottom">
                                                 <span>Artbooks</span>
                                             </div>
 
@@ -997,7 +1113,7 @@
                                     <div *ngIf=" mode_visiteur && list_drawing_albums_status[0]=='standard'" >
                                         <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
                                             
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title with-margin-bottom">
                                                 <span>One-shots</span>
                                             </div>
 
@@ -1021,7 +1137,7 @@
                                     <div *ngIf=" !mode_visiteur " >
                                         <div *ngIf="list_drawings_onepage.length!=0" class="bd-container" #container_drawings>
 
-                                            <div class="artwork-type-title">
+                                            <div class="artwork-type-title with-margin-bottom">
                                                 <span>One-shots</span>
                                             </div>
                                             <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' >
@@ -1033,11 +1149,6 @@
                                                         (sendLoaded)="sendLoaded( $event );"
                                                     ></app-thumbnail-drawing>
                                                 </div>
-
-                                    
-                                                
-                                                
-                                                
                                                 
                                                 
                                             </div>

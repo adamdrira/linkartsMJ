@@ -31,12 +31,21 @@ declare var $: any;
   styleUrls: ['./archives.component.scss'],
   animations: [
     trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+      
+    ),
+    trigger(
       'enterAnimation', [
         transition(':enter', [
-          style({opacity: 0}),
-          animate('400ms', style({opacity: 1}))
+          style({transform: 'translateY(0%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
         ])
-      ]
+      ],
     ),
   ],
 })
@@ -76,7 +85,7 @@ export class ArchivesComponent implements OnInit {
   }
   
   //bd, dessins, écrits de l'auteur, etc.
-  opened_category:number = -1;
+  opened_category:number = 0;
   opened_album:number = -1;
   
   now_in_seconds= Math.trunc( new Date().getTime()/1000);

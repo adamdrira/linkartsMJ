@@ -94,6 +94,12 @@ export class ThumbnailAdComponent implements OnInit {
   @Input() item: any;
   @Input() now_in_seconds: number;
 
+  
+  type_of_account:string;
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
+
+
   date_to_show: string;
   thumbnail_picture:SafeUrl;
   list_of_attachments_name:any[]=[];
@@ -156,6 +162,9 @@ export class ThumbnailAdComponent implements OnInit {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.primary_description=r[0].primary_description;
       this.pseudo = r[0].nickname;
+      
+      this.type_of_account_checked=r[0].type_of_account_checked;
+      this.certified_account=r[0].certified_account;
     });
 
 

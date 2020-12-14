@@ -1,45 +1,42 @@
-
 <div class="thumbnail-ad">
-    
+
     <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
 
-        
+
         <div *ngIf="type_of_profile=='account' " class="absolute-selector" [ngClass]="{'invisible':!archive_retrieved}">
-            <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
-            <mat-icon class="optionsButton" style="
-            font-size:23px; 
-            color:rgb(32,56,100);
-            margin:auto;">more_vert</mat-icon>
+            <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
+                <mat-icon>more_vert</mat-icon>
             </button>
-            <mat-menu  #options="matMenu" xPosition="before">
-            <button mat-menu-item (click)="archive()" *ngIf="!ad_archived && visitor_mode">
-                <mat-icon>cloud_download</mat-icon>
-                <span>Archiver</span>
-            </button>
-            <button mat-menu-item (click)="unarchive()" *ngIf="ad_archived && visitor_mode">
-                <mat-icon>cloud_download</mat-icon>
-                <span>Désarchiver</span>
-            </button>
-            <button  *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
-                <mat-icon class="item-icon">flag</mat-icon>
-                <span>Signaler</span>
-            </button>
-            <button  *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
-                <mat-icon class="item-icon">flag</mat-icon>
-                <span>Annuler le signalement</span>
-            </button>
-            <button  *ngIf="!visitor_mode" mat-menu-item (click)="edit_thumbnail()" >
-                <mat-icon>cloud_download</mat-icon>
-                <span>Editer la miniature</span>
-            </button>
+            <mat-menu #options="matMenu" xPosition="before" class="thumbnail-ad-menu">
+                <button mat-menu-item (click)="archive()" *ngIf="!ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
+                    <mat-icon>cloud_download</mat-icon>
+                    <span>Archiver</span>
+                </button>
+                <button mat-menu-item (click)="unarchive()" *ngIf="ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
+                    <mat-icon>cloud_download</mat-icon>
+                    <span>Désarchiver</span>
+                </button>
+                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
+                    <mat-icon>flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+                <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
+                    <mat-icon>flag</mat-icon>
+                    <span>Annuler le signalement</span>
+                </button>
+                <button *ngIf="!visitor_mode" mat-menu-item (click)="edit_thumbnail()" class="thumbnail-ad-menu-item">
+                    <mat-icon>cloud_download</mat-icon>
+                    <span>Editer la miniature</span>
+                </button>
             </mat-menu>
         </div>
-        
-        
-        
+
+
+
 
         <div class="left-container no-border-style">
-            <img #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+            <img #image [src]="thumbnail_picture" (load)="load_thumbnail()"
+                [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
         </div>
 
 
@@ -52,22 +49,47 @@
             <div class="top-container-2">
                 <div class="author-container">
 
-                    <a [routerLink]=open_account() (click)="stop($event)" class="left-container">
-                        <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
+                    <a [routerLink]=open_account() (click)="stop($event)" class="left-container"
+                    matTooltip="Voir le profil"
+                    matTooltipClass='tooltip-thumbnail-ad' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'really-invisible':!pp_is_loaded}">
+                        <div *ngIf="!pp_is_loaded" class="shiny"></div>
                     </a>
-                    
+
                     <div class="right-container">
-                        <span class="author-name" *ngIf="pseudo!=''">
-                            <a [routerLink]=open_account() (click)="stop($event)">
-                                {{author_name}}
-                            </a>
-                        </span>
-                        <div class="author-description">
-                            <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
+                        
+                        <div class="author-description-container">
+                            <span class="author-description name" *ngIf="author_name!=''">
+                                <a [routerLink]=open_account() (click)="stop($event)"
+                                matTooltip="Voir le profil"
+                                matTooltipClass='tooltip-thumbnail-ad' 
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">
+                                    {{author_name}}
+                                </a>
+                                
+                                <mat-icon *ngIf="certified_account"
+                                matTooltip="Compte certifié" 
+                                matTooltipClass='tooltip-thumbnail-ad' 
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">verified</mat-icon>
+
+                                <span *ngIf="type_of_account_checked" class="pro-logo"
+                                matTooltip="Compte professionnel" 
+                                matTooltipClass='tooltip-thumbnail-ad'
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">PRO</span>
+                                
+                            </span>
+                        </div>
+                        <div class="author-description-container">
+                            <mat-icon>person</mat-icon>
                             <span class="author-description">{{item.my_description}}</span>
                         </div>
-                        <div class="author-description">
-                            <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">location_on</mat-icon>
+                        <div class="author-description-container">
+                            <mat-icon>location_on</mat-icon>
                             <span class="author-description">{{item.location}}</span>
                         </div>
                     </div>
@@ -75,20 +97,20 @@
                 </div>
 
                 <div class="cible-container" *ngIf="item.target_two == null">
-                    <span>Cible</span>
-                    <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
+                    <span class="cible-title">Cible</span>
+                    <div class="cible-description-container">
+                        <mat-icon>person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                 </div>
                 <div class="cible-container" *ngIf="item.target_two != null">
-                    <span>Cibles</span>
-                    <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
+                    <span class="cible-title">Cibles</span>
+                    <div class="cible-description-container">
+                        <mat-icon>person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
-                    <div class="cible-description">
-                        <mat-icon style="font-size: 20px;margin: 0px 0px 0px -2px;">person</mat-icon>
+                    <div class="cible-description-container">
+                        <mat-icon>person</mat-icon>
                         <span class="cible-description">{{item.target_two}}</span>
                     </div>
                 </div>
@@ -97,8 +119,8 @@
 
             <div class="middle-container">
                 <ng-container *ngIf="see_responses==0 && attachments_retrieved">
-                    
-                    
+
+
                     <!--<div #swiperAttachments class="swiper-attachments" *ngIf="list_of_pictures.length || list_of_attachments.length">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" *ngFor="let picture of list_of_pictures, let i=index">
@@ -119,30 +141,43 @@
                     </div>-->
 
                     <div class="categories">
-                        <div class="category" [ngClass]="{'opened': category_index == 0 }" (click)="open_category(0);stop($event);">
-                            <mat-icon>description</mat-icon>
+                        <div class="category" [ngClass]="{'opened': category_index == 0 }"
+                            (click)="open_category(0);stop($event);">
+                            <mat-icon>notes</mat-icon>
                             <span>Description</span>
                         </div>
-                        <div class="category" [ngClass]="{'opened': category_index == 1 }" (click)="open_category(1);stop($event);">
+                        <div class="category" [ngClass]="{'opened': category_index == 1 }"
+                            (click)="open_category(1);stop($event);">
                             <mat-icon>image</mat-icon>
                             <span>Images ({{list_of_pictures.length}})</span>
                         </div>
-                        <div class="category" [ngClass]="{'opened': category_index == 2 }" (click)="open_category(2);stop($event);">
-                            <mat-icon>picture_as_pdf</mat-icon>
+                        <div class="category" [ngClass]="{'opened': category_index == 2 }"
+                            (click)="open_category(2);stop($event);">
+                            <mat-icon>attachment</mat-icon>
                             <span>Fichiers ({{list_of_attachments.length}})</span>
                         </div>
 
-                        <div class="absolute-border-bottom" [ngClass]="{'c0': category_index == 0,'c1': category_index == 1,'c2': category_index == 2 }"></div>
+                        <div class="absolute-border-bottom"
+                            [ngClass]="{'c0': category_index == 0,'c1': category_index == 1,'c2': category_index == 2 }">
+                        </div>
                     </div>
 
-                    
+
                     <div *ngIf="category_index==0" class="section-container" [@enterAnimation]>
 
                         <span *ngIf="!item.remuneration">{{item.type_of_project}}</span>
-                        <span *ngIf="item.remuneration && item.price_value>0 && item.price_type==''">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€</span>
-                        <span *ngIf="item.remuneration && item.price_value>0 && item.price_type!=''">{{item.type_of_project}} • Rémunumation : {{item.price_value}}€ • {{item.price_type}}</span>
-                        <span *ngIf="item.remuneration && !(item.price_value>0) && item.price_type==''">{{item.type_of_project}} • Rémunéré</span>
-                        <span *ngIf="item.remuneration && !(item.price_value>0) && item.price_type!=''">{{item.type_of_project}} • Rémunéré • {{item.price_type}}</span>
+                        <span
+                            *ngIf="item.remuneration && item.price_value>0 && item.price_type==''">{{item.type_of_project}}
+                            • Rémunération : {{item.price_value}}€</span>
+                        <span
+                            *ngIf="item.remuneration && item.price_value>0 && item.price_type!=''">{{item.type_of_project}}
+                            • Rémunération : {{item.price_value}}€ • {{item.price_type}}</span>
+                        <span
+                            *ngIf="item.remuneration && !(item.price_value>0) && item.price_type==''">{{item.type_of_project}}
+                            • Rémunéré</span>
+                        <span
+                            *ngIf="item.remuneration && !(item.price_value>0) && item.price_type!=''">{{item.type_of_project}}
+                            • Rémunéré • {{item.price_type}}</span>
                         <!--<div class="verso-type">
                             <div class="type-container"><span>{{item.type_of_project}}</span></div>
                             <div class="tag-container" *ngIf="item.remuneration && item.price_value!='0'"><span>Rémunumation : {{item.price_value}}€</span></div>
@@ -155,15 +190,17 @@
                     </div>
 
                     <div *ngIf="category_index==1" class="attachments-container" [@enterAnimation]>
-                        <div *ngFor="let picture of list_of_pictures, let i=index" (click)="read_pictures(i);stop($event);" class="image-container">
+                        <div *ngFor="let picture of list_of_pictures, let i=index"
+                            (click)="read_pictures(i);stop($event);" class="image-container">
                             <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
                         </div>
                     </div>
                     <div *ngIf="category_index==2" class="attachments-container" [@enterAnimation]>
                         <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
-                            <div *ngIf="list_of_attachments[i]"class="attachment" (click)="read_attachment(i);stop($event);" >
+                            <div *ngIf="list_of_attachments[i]" class="attachment"
+                                (click)="read_attachment(i);stop($event);">
                                 <div class="attachment-logo">
-                                    <mat-icon>picture_as_pdf</mat-icon>
+                                    <mat-icon>attachment</mat-icon>
                                 </div>
                                 <span><i>{{list_of_attachments_name[i]}}</i></span>
                             </div>
@@ -172,7 +209,6 @@
 
                 </ng-container>
             </div>
-            
             <div class="date-container">
                 <span>{{date_to_show}} • </span>
                 <span *ngIf="item.number_of_responses==0">Aucun retour</span>
