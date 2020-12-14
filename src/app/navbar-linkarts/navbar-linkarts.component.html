@@ -762,6 +762,24 @@
 
 
                     <div class="author-container" *ngIf="notif">
+                       <!-- ---------------------------subscribtion----------------------------------->
+                      <!-- ---------------------------subscribtion----------------------------------->
+                      <ng-container *ngIf="notif.type=='subscribtion'">
+
+                        <a (click)="close_notifications();" [routerLink]="get_account_for_notification(notif)">
+                          <div class="left-container">
+                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              [ngClass]="{'invisible':!notification_loaded[i]}">
+                            <div class="notification-icon group">
+                              <mat-icon>person_add</mat-icon>
+                            </div>
+                          </div>
+                          <div class="right-container">
+                            <span><b>{{notif.id_user_name}}</b> a commencé à vous suivre</span>
+                            <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                          </div>
+                        </a>
+                      </ng-container>
                       <!-- ---------------------------trendings----------------------------------->
                       <!-- ---------------------------trendings----------------------------------->
                       <ng-container *ngIf="notif.type=='trendings'">

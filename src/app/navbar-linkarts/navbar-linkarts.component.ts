@@ -411,7 +411,8 @@ export class NavbarLinkartsComponent implements OnInit {
   sort_notifications(msg){
     //console.log("sorting notif")
     if(msg[0].for_notifications){
-      //console.log(msg[0].information)
+      console.log(msg[0].information)
+      console.log(this.list_of_notifications[0])
       if(msg[0].information!='remove'){
         this.list_of_notifications.splice(0,0,msg[0])
       }
@@ -1439,8 +1440,11 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
  
-
-
+  
+  
+  get_account_for_notification(notif:any) {
+    return "/account/" + notif.id_user_name + "/" + notif.id_user;
+  }
   open_comic(notif:any) {
     this.close_notifications();
   }
