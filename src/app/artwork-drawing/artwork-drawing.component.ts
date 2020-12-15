@@ -1362,16 +1362,72 @@ export class ArtworkDrawingComponent implements OnInit {
 
   }
 
+  loading_subscribtion=false;
   subscribtion(){
-    if(this.type_of_account=="account"){
+    if(this.type_of_account=='account' && this.loading_subscribtion){
+      this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
-          this.already_subscribed=true;
+          
+          console.log(information)
+          if(information[0].subscribtion){
+            this.already_subscribed=true;
+            this.loading_subscribtion=false;
+            this.cd.detectChanges();
+          }
+          else{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.authorid,this.authorid.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"subscribtion",
+                id_user_name:this.visitor_name,
+                id_user:this.visitor_id, 
+                id_receiver:this.authorid,
+                publication_category:this.authorid.toString(),
+                publication_name:'none',
+                format:'none',
+                publication_id:this.visitor_id,
+                chapter_number:0,
+                information:"add",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.already_subscribed=true;
+              this.loading_subscribtion=false;
+              this.chatService.messages.next(message_to_send);
+              this.cd.detectChanges();
+            })
+          }
+         
         });
       }
-      if(this.already_subscribed){
+      else{
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
-          this.already_subscribed=false;
+         
+          console.log(information)
+          this.NotificationsService.remove_notification('subscribtion',this.authorid.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"subscribtion",
+              id_user_name:this.visitor_name,
+              id_user:this.visitor_id, 
+              id_receiver:this.authorid,
+              publication_category:this.authorid.toString(),
+              publication_name:'none',
+              format:'none',
+              publication_id:this.visitor_id,
+              chapter_number:0,
+              information:"remove",
+              status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
+            }
+            this.already_subscribed=false;
+            this.loading_subscribtion=false;
+            this.chatService.messages.next(message_to_send);
+            this.cd.detectChanges();
+          })
         });
       }
     }
@@ -1380,7 +1436,7 @@ export class ArtworkDrawingComponent implements OnInit {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
       });
     }
-    
+  
   }
 
   archive(){
