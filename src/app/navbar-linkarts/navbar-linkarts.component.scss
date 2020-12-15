@@ -380,7 +380,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: auto 10px 15px 0px;
+    margin: auto 5px 15px 5px;
     transition: all 200ms;
 
     background: white;
@@ -1459,7 +1459,7 @@
   }
 
   .notification-icon.favorite {
-    background-image: linear-gradient(to right, rgb(255 79 79), rgb(255 193 193)) !important;
+    background-image: linear-gradient(to right, #cd0404, #f72c2c) !important;
   }
   .notification-icon.like {
     background-image: linear-gradient(90deg, #0088fd 0, #b9f1ff 100%) !important;
