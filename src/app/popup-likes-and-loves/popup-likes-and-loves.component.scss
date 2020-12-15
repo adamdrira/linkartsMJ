@@ -85,9 +85,31 @@
     font-size: 16px;
     line-height: 18px;
     font-weight:bold;
+    display: flex;
+    align-items: center;
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
+
+    .certifications-span{
+        cursor:default;
+        background: #00c7d0;
+        color: white;
+        font-weight: 800;
+        font-size: 11px;
+        border-radius: 4px;
+        margin: auto 2px auto 2px;
+        padding: 1px 3px 1px 3px;
+    }
+    
+    mat-icon {
+        cursor:default;
+        width: unset;
+        height:unset;
+        font-size: 20px;
+        margin: auto 2px auto 2px;
+        color: #00c7d0;
+    }
 }
 
 .author-container .right-container span.author-description {
@@ -132,6 +154,20 @@
     color:rgb(32,56,100) !important;
 }
 
+.shiny {
+    background-color: rgb(220, 220, 220);
+    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+    background-size: 300% 100%;
+    animation: shine 2s infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: right;
+    }
+  }
+
 .invisible{
-    visibility:hidden;
+    visibility: hidden;
+    pointer-events: none;
 }

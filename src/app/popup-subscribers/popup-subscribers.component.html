@@ -30,31 +30,33 @@
             <div class="subscriber">
                 <div class="user-container">
                     <a [routerLink]=get_user_link(i)>
-                        <div class="left-container">
-                            <img [src]="list_of_profile_pictures[i]">
+                        <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
+                            <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
                         </div>
                     </a>
                     <a [routerLink]=get_user_link(i)>
                         <div class="right-container">
-                            <span class="user-name">{{item.firstname}} {{item.lastname}}</span>
+                            <span class="user-name">{{item.firstname}} {{item.lastname}}
+                                    <span class="certifications-span" *ngIf="list_of_subscribers_information[i].type_of_account_checked">PRO</span>
+                                    <mat-icon *ngIf="list_of_subscribers_information[i].certified_account">verified</mat-icon>
+
+                            </span>
                             <span class="user-description">@{{item.nickname}}</span>
                         </div>
                     </a>
                 </div>
-                
-                <div class="certifications">
-                    <span *ngIf="item.type_of_account_checked">PRO</span>
-                    <mat-icon *ngIf="item.certified_account">verified</mat-icon>
-                </div>
+              
             </div>
 
-            <button *ngIf="!list_of_check_subscribtion[i]" class="subscribe-button" (click)="subscribtion(i)">
-                <mat-icon>add</mat-icon>
-                <span>S'abonner</span>
-            </button>
-            <button *ngIf="list_of_check_subscribtion[i]" class="unsubscribe-button" (click)="subscribtion(i)">
-                <span>Abonné</span>
-            </button>
+            <ng-container *ngIf="type_of_profile=='account' && list_of_subscribers[i].id_user!=visitor_id">
+                <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
+                    <mat-icon>add</mat-icon>
+                    <span>S'abonner</span>
+                </button>
+                <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
+                    <span>Abonné</span>
+                </button>
+            </ng-container>
 
         </div>
     </div>

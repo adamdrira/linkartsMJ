@@ -11,25 +11,32 @@
             <!--Author container-->
             <!--********************-->
             <div class="author-container" >
-                <div class="left-container" >
-                    <img [src]="list_of_profile_pictures[i]" (load)="pp_loaded(i)" [ngClass]="{'invisible': !pp_is_laoded[i] }">
+                <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
+                    <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
                 </div>
                 <a href="/account/{{item.nickname}}/{{item.id}}">
                     <div class="right-container">
-                        <span class="author-name">{{item.firstname}} {{item.lastname}} </span>
+                        <span class="author-name">{{item.firstname}} {{item.lastname}} 
+                            <span class="certifications-span" *ngIf="list_of_users_information[i].type_of_account_checked">PRO</span>
+                                <mat-icon *ngIf="list_of_users_information[i].certified_account">verified</mat-icon>
+                               
+                        </span>
                         <span class="author-description">@{{item.nickname}}</span>
                     </div>
                 </a>
 
             </div>
-            <button mat-raised-button *ngIf="!list_of_check_subscribtion[i]"  class="button style1 subscriptions" (click)="subscribtion(i)">
-                <mat-icon class="icon" >person_add</mat-icon>
-                <span>S'abonner</span>
-            </button>
-            <button mat-raised-button *ngIf="list_of_check_subscribtion[i]"  class="button style0 subscriptions" (click)="subscribtion(i)">
-                <mat-icon class="icon">person_add_disabled</mat-icon>
-                <span>Se désabonner</span>
-            </button>
+            <ng-container *ngIf="type_of_account=='account' && list_of_users_ids[i]!=visitor_id">
+                <button mat-raised-button *ngIf="!list_of_check_subscribtion[i]" [disabled]="loading_subscribtion" class="button style1 subscriptions" (click)="subscribtion(i)">
+                    <mat-icon class="icon" >person_add</mat-icon>
+                    <span>S'abonner</span>
+                </button>
+                <button mat-raised-button *ngIf="list_of_check_subscribtion[i]" [disabled]="loading_subscribtion" class="button style0 subscriptions" (click)="subscribtion(i)">
+                    <!--<mat-icon class="icon">person_add_disabled</mat-icon>-->
+                    <span>Abonné</span>
+                </button>
+            </ng-container>
+          
         </div>
     </div>
     <div class="subscribers-container" *ngIf="!list_of_users_ids[0]" style="display:flex;">

@@ -1,5 +1,22 @@
 .component-container {
 
+    .invisible{
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .shiny {
+        background-color: rgb(220, 220, 220);
+        background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+        background-size: 300% 100%;
+        animation: shine 2s infinite;
+      }
+    
+      @keyframes shine {
+        0% {
+          background-position: right;
+        }
+      }
     .title-no-data {
         height:200px;
         width:100%;
@@ -105,7 +122,6 @@
                         min-width:36px;
                         min-height:36px;
                         border-radius: 50px;
-                        border:1px solid rgb(32,56,100);
                         img {
                             height: 100%;
                             width:100%;
@@ -120,11 +136,14 @@
                         font-size: 14px;
                         font-weight: 600;
                         display: flex;
+                        
                         flex-direction: column;
                         span {
                             color: rgb(32,56,100);
-                            display: -webkit-box;
-                            -webkit-box-orient: vertical;
+                            display: flex;
+                            align-items: center;
+                            //display: -webkit-box;
+                            //-webkit-box-orient: vertical;
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: normal;
@@ -133,32 +152,32 @@
                             line-height: 18px;
                             font-size:13px;
                         }
+
+                        .certifications-span{
+                            cursor:default;
+                            background: #00c7d0;
+                            color: white;
+                            font-weight: 800;
+                            font-size: 11px;
+                            border-radius: 4px;
+                            margin: auto 2px auto 2px;
+                            padding: 1px 3px 1px 3px;
+                        }
+                        
+                        mat-icon {
+                            cursor:default;
+                            width: unset;
+                            height:unset;
+                            font-size: 20px;
+                            margin: auto 2px auto 2px;
+                            color: #00c7d0;
+                        }
                     }
                 }
             }
     
-            .certifications {
-                display: flex;
-                margin: auto 5px auto auto;
-    
-                span {
-                    cursor:default;
-                    background: #00c7d0;
-                    color: #203864;
-                    font-weight: 800;
-                    font-size: 11px;
-                    border-radius: 4px;
-                    margin: auto 2px auto auto;
-                    padding: 1px 3px 1px 3px;
-                }
-                mat-icon {
-                    cursor:default;
-                    width: unset;
-                    height:unset;
-                    font-size: 24px;
-                    color: #00c7d0;
-                }
-            }
+           
+
         }
 
         button {

@@ -1658,14 +1658,14 @@ export class ArtworkComicComponent implements OnInit {
     console.log(this.current_chapter)
     console.log(this.list_of_users_ids_likes)
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
-      data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter]},
+      data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
     });
 
   }
 
   show_loves(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
-      data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves[this.current_chapter]},
+      data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
     });
 
   }
@@ -1700,7 +1700,10 @@ export class ArtworkComicComponent implements OnInit {
 
   loading_subscribtion=false;
   subscribtion(){
-    if(this.type_of_account=='account' && this.loading_subscribtion){
+    if(this.type_of_account=='account' ){
+      if(this.loading_subscribtion){
+        return
+      }
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
