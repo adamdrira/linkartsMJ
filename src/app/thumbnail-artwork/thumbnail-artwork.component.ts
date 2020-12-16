@@ -120,6 +120,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   total_pages_for_writing:number;
   profile_picture:SafeUrl;
   author_name:string;
+  author_pseudo:string;
   primary_description:string;
   pseudo:string='';
   type_of_profile:string;
@@ -191,7 +192,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
-        this.pseudo = r[0].nickname;
+        this.author_pseudo = r[0].nickname;
         this.author_id=r[0].id;
         
         this.type_of_account_checked=r[0].type_of_account_checked;
@@ -445,7 +446,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
-        this.pseudo = r[0].nickname;
+        this.author_pseudo = r[0].nickname;
         this.author_id=r[0].id;
         
         this.type_of_account_checked=r[0].type_of_account_checked;
@@ -701,7 +702,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
   };
   open_account() {
-    return "/account/"+this.pseudo+"/"+this.item.authorid;
+    return "/account/"+this.author_pseudo+"/"+this.item.authorid;
     //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
   };
   get_link() {
