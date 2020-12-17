@@ -108,7 +108,7 @@
 
 
 
-        <div *ngIf="type_of_profile=='account' && marks_retrieved" class="absolute-small-screen-selector"
+        <div *ngIf="type_of_profile=='account' && data_retrieved" class="absolute-small-screen-selector"
             [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved }">
             <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
                 (click)="stop($event)">
@@ -145,7 +145,7 @@
         </div>
 
 
-        <div class="right-container">
+        <div class="right-container" *ngIf="data_retrieved">
 
 
             <div *ngIf="type_of_profile=='account' && marks_retrieved" class="absolute-selector"
@@ -219,7 +219,7 @@
                 <!--************************COMICS************************-->
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
@@ -230,28 +230,40 @@
                     <span>Série</span>
                 </div>
                 <a class="type-container" *ngIf="subscribing_category=='comic'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>{{style}}</span>
                 </a>
-                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'">
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='one-shot'"
+                matTooltip="Nombre de pages"
+                matTooltipClass='tooltip-thumbnail-artwork' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
                     <span>{{pagesnumber}}</span>
                     <mat-icon>insert_drive_file</mat-icon>
                 </div>
-                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'">
+                <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'"
+                >
                     <span>{{chaptersnumber}}</span>
-                    <mat-icon>import_contacts</mat-icon>
+                    <mat-icon matTooltip="Chapitres"
+                    matTooltipClass='tooltip-thumbnail-artwork' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">import_contacts</mat-icon>
                     <span>&nbsp; {{pagesnumber}}</span>
-                    <mat-icon>insert_drive_file</mat-icon>
+                    <mat-icon
+                    matTooltip="Pages par chapitre"
+                    matTooltipClass='tooltip-thumbnail-artwork' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">insert_drive_file</mat-icon>
                 </div>
 
                 <!--******************************************************-->
                 <!--************************DRAWING***********************-->
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
@@ -261,7 +273,7 @@
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
                     <span>Artbook</span></div>
                 <a class="type-container" *ngIf="subscribing_category=='drawing'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
@@ -275,13 +287,13 @@
                 <!--************************WRITING***********************-->
                 <!--******************************************************-->
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
                     (click)="stop($event)"><span>Ecrit</span></a>
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
-                matTooltip="Voir du contenu de ce genre"
+                matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"

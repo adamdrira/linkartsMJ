@@ -177,7 +177,7 @@
         position: relative;
         flex-direction: column;
         width: -webkit-fill-available;
-        padding: 10px 50px 6px 20px;
+        padding: 10px 10px 6px 10px;
         color: rgb(32, 56, 100);
         max-width: 900px;
     }
@@ -521,7 +521,7 @@
         right: 0;
         z-index: 2;
         background: #eeeeee;
-        opacity: 0.95;
+        opacity: 0.98;
         transition: opacity 100ms;
         mat-icon {
             font-size: 26px;
@@ -599,7 +599,7 @@
     }
     
 
-    @media (max-width: 700px) {
+    @media (max-width: 600px) {
         padding-left: unset !important;
         padding-right: unset !important;
 
@@ -646,7 +646,7 @@
         }
     }
 
-    @media (min-width: 700px) {
+    @media (min-width: 600px) {
         .global-container > .left-container img {
             width: 200px !important;
             height: 266.66px;
@@ -723,7 +723,7 @@
         width: 30px;
         height: 30px;
         outline: none;
-        background: #eff1f5;
+        background: rgb(239 241 245 / 30%);
         border: none;
         display: flex;
         border-radius: 50px;
@@ -751,7 +751,7 @@
         bottom: 40px;
         z-index: 1;
         left: 50%;
-        background: rgb(32, 56, 100, 0.6);
+        //background: rgb(32, 56, 100, 0.6);
         padding: 0px 2px;
         border-radius: 50px;
         transform: translateX(-50%);
