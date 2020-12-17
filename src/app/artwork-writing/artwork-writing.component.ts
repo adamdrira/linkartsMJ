@@ -147,6 +147,7 @@ export class ArtworkWritingComponent implements OnInit {
   highlight:string;
   title:string;
   style:string;
+  monetization:string;
   firsttag:string;
   secondtag:string;
   thirdtag:string;
@@ -252,6 +253,7 @@ export class ArtworkWritingComponent implements OnInit {
           this.highlight=r[0].highlight;
           this.title=r[0].title;
           this.style=r[0].category;
+          this.monetization=r[0].monetization
           this.firsttag=r[0].firsttag;
           this.secondtag=r[0].secondtag;
           this.thirdtag=r[0].thirdtag;
@@ -699,15 +701,18 @@ export class ArtworkWritingComponent implements OnInit {
  
   click_like() {
     if(this.type_of_account=="account"){
+      if(this.like_in_progress){
+        return
+      }
       if(this.list_of_users_ids_likes_retrieved){
         this.like_in_progress=true;
-        if(this.liked) {        
+        if(this.liked) {      
+          this.liked=false;  
             this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
               this.likesnumber-=1;
               if(this.authorid==this.visitor_id){
-                this.liked=false;
                 this.like_in_progress=false;
                 this.cd.detectChanges();
               }
@@ -729,7 +734,7 @@ export class ArtworkWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  this.liked=false;
+                 
                   this.like_in_progress=false;
                   this.cd.detectChanges();
                 })
@@ -738,12 +743,12 @@ export class ArtworkWritingComponent implements OnInit {
             });
         }
         else {
-          
+          this.liked=true;
             this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
               this.likesnumber+=1;
               if(this.authorid==this.visitor_id){
-                this.liked=true;
+                
                 this.like_in_progress=false;
                 this.cd.detectChanges();
               }
@@ -766,7 +771,6 @@ export class ArtworkWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  this.liked=true;
                   this.like_in_progress=false;
                   this.cd.detectChanges();
                 })
@@ -785,15 +789,19 @@ export class ArtworkWritingComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
+      if(this.love_in_progress){
+        return
+      }
       if(this.list_of_users_ids_loves_retrieved){
         this.love_in_progress=true;
-        if(this.loved) {      
+        if(this.loved) {    
+          this.loved=false;  
             this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{        
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
               this.lovesnumber-=1;
               if(this.authorid==this.visitor_id){
-                this.loved=false;
+               
                 this.love_in_progress=false;
                 this.cd.detectChanges();
               }
@@ -815,7 +823,6 @@ export class ArtworkWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  this.loved=false;
                   this.love_in_progress=false;
                   this.cd.detectChanges();
                 })
@@ -824,12 +831,13 @@ export class ArtworkWritingComponent implements OnInit {
             });
           
         }
-        else {      
+        else {  
+          this.loved=true;    
             this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
               this.lovesnumber+=1;     
               if(this.authorid==this.visitor_id){
-                this.loved=true;
+                
                 this.love_in_progress=false; 
                 this.cd.detectChanges();
               }
@@ -852,7 +860,6 @@ export class ArtworkWritingComponent implements OnInit {
                     comment_id:0,
                   }
                   this.chatService.messages.next(message_to_send);
-                  this.loved=true;
                   this.love_in_progress=false; 
                   this.cd.detectChanges();
                 }) 
@@ -911,11 +918,12 @@ export class ArtworkWritingComponent implements OnInit {
       }
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
+        this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
           
           console.log(information)
           if(information[0].subscribtion){
-            this.already_subscribed=true;
+        
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
@@ -937,7 +945,6 @@ export class ArtworkWritingComponent implements OnInit {
                 is_comment_answer:false,
                 comment_id:0,
               }
-              this.already_subscribed=true;
               this.loading_subscribtion=false;
               this.chatService.messages.next(message_to_send);
               this.cd.detectChanges();
@@ -947,6 +954,7 @@ export class ArtworkWritingComponent implements OnInit {
         });
       }
       else{
+        this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
          
           console.log(information)
@@ -967,7 +975,7 @@ export class ArtworkWritingComponent implements OnInit {
               is_comment_answer:false,
               comment_id:0,
             }
-            this.already_subscribed=false;
+            
             this.loading_subscribtion=false;
             this.chatService.messages.next(message_to_send);
             this.cd.detectChanges();

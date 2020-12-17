@@ -350,10 +350,6 @@
                     <mat-icon class="item-icon">trending_down</mat-icon>
                     <span>Annuler la mise en avant</span>
                 </button>
-                <button class="mat-menu-item" mat-menu-item> 	
-                    <mat-icon class="item-icon">monetization_on</mat-icon>
-                    <span>Monétiser l'œuvre</span>
-                </button>
                 <button *ngIf="status=='public'" class="mat-menu-item" mat-menu-item (click)="set_private();"> 
                     <mat-icon class="item-icon">save_alt</mat-icon>
                     <span>Archiver</span>
@@ -366,6 +362,10 @@
                     <mat-icon class="item-icon">clear</mat-icon>
                     <span>Supprimer</span>
                  </button>
+                <div class="mat-menu-item"  mat-menu-item *ngIf="monetization=='true'"> 	
+                    <mat-icon class="item-icon">monetization_on</mat-icon>
+                    <span>Oeuvre monétisée</span>
+                </div>
             </mat-menu>
 
             <!--options pour un visiteur -->
@@ -432,8 +432,8 @@
 
                 <div [ngClass]="{'invisible': !display_right_container }" *ngIf="mode_visiteur_added && mode_visiteur" class="d1-container-buttons">
                     <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
-                        <mat-icon class="item-icon" style=" color:#010119">person_remove</mat-icon> 
-                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Se désabonner</span>
+                        <mat-icon class="item-icon" style=" color:#010119" >notifications_active </mat-icon> 
+                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Abonné</span>
                       </button>
                     <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
                         <mat-icon class="item-icon" style=" color:#010119">person_add</mat-icon> 

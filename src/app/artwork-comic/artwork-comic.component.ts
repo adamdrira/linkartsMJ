@@ -163,6 +163,7 @@ export class ArtworkComicComponent implements OnInit {
   highlight:string;
   title:string;
   style:string;
+  monetization:string;
   list_of_reporters:any;
   firsttag:string;
   secondtag:string;
@@ -306,7 +307,8 @@ export class ArtworkComicComponent implements OnInit {
             this.status=r[0].status
             this.thumbnail_picture=r[0].name_coverpage;
             this.thumbnail_picture_retrieved=true;
-            
+            this.monetization=r[0].monetization
+            console.log( this.monetization)
             this.get_author_recommendations()
             this.get_recommendations_by_tag();
             
@@ -525,6 +527,7 @@ export class ArtworkComicComponent implements OnInit {
           this.highlight=r[0].highlight;
           this.title=r[0].title;
           this.style=r[0].category;
+          this.monetization=r[0].monetization
           this.firsttag=r[0].firsttag;
           this.secondtag=r[0].secondtag;
           this.thirdtag=r[0].thirdtag;
@@ -1323,19 +1326,20 @@ export class ArtworkComicComponent implements OnInit {
   click_like() {
     console.log("click like")
     if(this.type_of_account=="account"){
-      console.log("account")
+      if(this.like_in_progress){
+        return
+      }
       if(this.list_of_users_ids_likes_retrieved){
         console.log("list_of_users_ids_likes_retrieved")
         this.like_in_progress=true;
         if(this.liked) {    
-          console.log("liked") 
+          this.liked=false;
           if(this.type=='one-shot'){
             this.NotationService.remove_like("comic", 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
                     this.likesnumber-=1;
                     if(this.authorid==this.visitor_id){
-                      this.liked=false;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
                     }
@@ -1356,7 +1360,6 @@ export class ArtworkComicComponent implements OnInit {
                           comment_id:0,
                         }
                         this.chatService.messages.next(message_to_send);
-                        this.liked=false;
                         this.like_in_progress=false;
                         this.cd.detectChanges();
                       })
@@ -1371,7 +1374,6 @@ export class ArtworkComicComponent implements OnInit {
               this.list_of_users_ids_likes.splice(index,1);
                     this.likesnumber-=1;
                     if(this.authorid==this.visitor_id){
-                      this.liked=false;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
                     }
@@ -1392,7 +1394,7 @@ export class ArtworkComicComponent implements OnInit {
                           comment_id:0,
                         }
                         this.chatService.messages.next(message_to_send);
-                        this.liked=false;
+                        
                         this.like_in_progress=false;
                         this.cd.detectChanges();
                       })
@@ -1403,13 +1405,14 @@ export class ArtworkComicComponent implements OnInit {
           }
         }
         else {
-          console.log("not liked") 
+          this.liked=true;
           if(this.type=='one-shot'){  
+            
             this.NotationService.add_like('comic', 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
                   this.likesnumber+=1;
                   if(this.authorid==this.visitor_id){
-                    this.liked=true;
+                   
                     this.like_in_progress=false;
                     this.cd.detectChanges();
                   }
@@ -1432,7 +1435,6 @@ export class ArtworkComicComponent implements OnInit {
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.liked=true;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
                     })
@@ -1446,7 +1448,6 @@ export class ArtworkComicComponent implements OnInit {
               this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
                   this.likesnumber+=1;
                   if(this.authorid==this.visitor_id){
-                    this.liked=true;
                     this.like_in_progress=false;
                     this.cd.detectChanges();
                   }
@@ -1469,7 +1470,6 @@ export class ArtworkComicComponent implements OnInit {
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.liked=true;
                       this.like_in_progress=false;
                       this.cd.detectChanges();
                     }) 
@@ -1490,16 +1490,19 @@ export class ArtworkComicComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
+      if(this.love_in_progress){
+        return
+      }
       if(this.list_of_users_ids_loves_retrieved){
         this.love_in_progress=true;
-        if(this.loved) {     
+        if(this.loved) {   
+          this.loved=false;  
           if(this.type=='one-shot'){
             this.NotationService.remove_love("comic", 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
                     this.lovesnumber+=1;
                     if(this.authorid==this.visitor_id){
-                      this.loved=false;
                       this.love_in_progress=false;
                       this.cd.detectChanges();
                     }
@@ -1520,7 +1523,6 @@ export class ArtworkComicComponent implements OnInit {
                           comment_id:0,
                         }
                         this.chatService.messages.next(message_to_send);
-                        this.loved=false;
                         this.love_in_progress=false;
                         this.cd.detectChanges();
                       })
@@ -1534,7 +1536,6 @@ export class ArtworkComicComponent implements OnInit {
               this.list_of_users_ids_loves.splice(index,1);
                    this.lovesnumber-=1;
                     if(this.authorid==this.visitor_id){
-                      this.loved=false;
                       this.love_in_progress=false;
                       this.cd.detectChanges();
                     }
@@ -1555,7 +1556,6 @@ export class ArtworkComicComponent implements OnInit {
                           comment_id:0,
                         }
                         this.chatService.messages.next(message_to_send);
-                        this.loved=false;
                        this.love_in_progress=false;
                         this.cd.detectChanges();
                       })
@@ -1567,13 +1567,13 @@ export class ArtworkComicComponent implements OnInit {
           }
         }
         else {
+          this.loved=true;
           if(this.type=='one-shot'){  
             this.NotationService.add_love("comic", 'one-shot', this.style, this.bd_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
               this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
                   this.lovesnumber+=1;
                  
                   if(this.authorid==this.visitor_id){
-                    this.loved=true;
                     this.love_in_progress=false;
                     this.cd.detectChanges();
                   }
@@ -1596,7 +1596,6 @@ export class ArtworkComicComponent implements OnInit {
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.loved=true;
                       this.love_in_progress=false;
                       this.cd.detectChanges();
                     })
@@ -1611,7 +1610,6 @@ export class ArtworkComicComponent implements OnInit {
               this.lovesnumber+=1;
                              
                   if(this.authorid==this.visitor_id){
-                    this.loved=true;
                     this.love_in_progress=false; 
                     this.cd.detectChanges();
                   }
@@ -1634,7 +1632,6 @@ export class ArtworkComicComponent implements OnInit {
                         comment_id:0,
                       }
                       this.chatService.messages.next(message_to_send);
-                      this.loved=true;
                       this.love_in_progress=false; 
                       this.cd.detectChanges();
                     }) 
@@ -1706,11 +1703,11 @@ export class ArtworkComicComponent implements OnInit {
       }
       this.loading_subscribtion=true;
       if(!this.already_subscribed){
+        this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.authorid).subscribe(information=>{
           
           console.log(information)
           if(information[0].subscribtion){
-            this.already_subscribed=true;
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
@@ -1732,7 +1729,7 @@ export class ArtworkComicComponent implements OnInit {
                 is_comment_answer:false,
                 comment_id:0,
               }
-              this.already_subscribed=true;
+             
               this.loading_subscribtion=false;
               this.chatService.messages.next(message_to_send);
               this.cd.detectChanges();
@@ -1742,6 +1739,7 @@ export class ArtworkComicComponent implements OnInit {
         });
       }
       else{
+        this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.authorid).subscribe(information=>{
          
           console.log(information)
@@ -1762,7 +1760,7 @@ export class ArtworkComicComponent implements OnInit {
               is_comment_answer:false,
               comment_id:0,
             }
-            this.already_subscribed=false;
+           
             this.loading_subscribtion=false;
             this.chatService.messages.next(message_to_send);
             this.cd.detectChanges();
