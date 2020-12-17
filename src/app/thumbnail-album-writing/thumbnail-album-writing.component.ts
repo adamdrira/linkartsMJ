@@ -4,13 +4,24 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-album-writing',
   templateUrl: './thumbnail-album-writing.component.html',
-  styleUrls: ['./thumbnail-album-writing.component.scss']
+  styleUrls: ['./thumbnail-album-writing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class ThumbnailAlbumWritingComponent implements OnInit {
 
@@ -54,12 +65,8 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
     @ViewChild("titleElement", {static:false}) titleElement: ElementRef;
 
-    
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-      this.resize_writing();
-    }
 
+    loaded_thumbnail = false;
 
   
   ngOnInit(): void {
@@ -75,12 +82,14 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.thumbnail_picture = SafeURL;
+      this.loaded_thumbnail = true;
     }); 
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
+      this.loaded_thumbnail = true;
     });
 
 
@@ -89,10 +98,6 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
 
   
   ngAfterViewInit() {
-    this.date_upload_to_show = this.get_date_to_show( this.date_in_seconds() );
-    this.cd.detectChanges();
-    this.resize_writing();
-
     
     /*
     if( this.writing_element.category == "Illustrated novel" ) {
@@ -111,112 +116,6 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     }*/
 
 
-  }
-
-
-  date_in_seconds(){
-    var uploaded_date = this.writing_element.createdAt.substring(0,this.writing_element.createdAt.length - 5);
-    uploaded_date = uploaded_date.replace("T",' ');
-    uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
-    const uploaded_date_in_second = new Date(uploaded_date + ' GMT').getTime()/1000;
-
-   // alert( now_in_seconds - uploaded_date_in_second );
-    return ( this.now_in_seconds - uploaded_date_in_second );
-  }
-
-  get_date_to_show(s: number) {
-
-   
-    if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
-        return "Publié il y a 1 minute";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/60) + " minutes";
-      }
-    }
-    else if( s < 86400 ) {
-      if( Math.trunc(s/3600)==1 ) {
-        return "Publié il y a 1 heure";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/3600) + " heures";
-      }
-    }
-    else if( s < 604800 ) {
-      if( Math.trunc(s/86400)==1 ) {
-        return "Publié il y a 1 jour";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/86400) + " jours";
-      }
-    }
-    else if ( s < 2419200 ) {
-      if( Math.trunc(s/604800)==1 ) {
-        return "Publié il y a 1 semaine";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/604800) + " semaines";
-      }
-    }
-    else if ( s < 9676800 ) {
-      if( Math.trunc(s/2419200)==1 ) {
-        return "Publié il y a 1 mois";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/2419200) + " mois";
-      }
-    }
-    else {
-      if( Math.trunc(s/9676800)==1 ) {
-        return "Publié il y a 1 an";
-      }
-      else {
-        return "Publié il y a " + Math.trunc(s/9676800) + " ans";
-      }
-    }
-
-  }
-
-
-
-  //Drawings functions
-
-  //Comic functions
-  resize_writing() {
-    
-    if( this.state == 'album') {
-      $('.component-container.album-writing.album').css({'width': this.get_writing_size() +'px'});
-    }
-  }
-
-  get_comic_size() {
-    return ( $('.container-writings').width()/this.writings_per_line() - 2 );
-  }
-
-  get_writing_size() {
-    return $('.container-writings').width()/this.writings_per_line();
-  }
-
-
-  writings_per_line() {
-    var width = window.innerWidth;
-
-    if( width > 1600 ) {
-      return 5;
-    }
-    else if( width > 1200 ) {
-      return 5;
-    }
-    else if( width > 1000) {
-      return 4;
-    }
-    else if( width > 600) {
-      return 3;
-    }
-    else {
-      return 2;
-    }
   }
 
 

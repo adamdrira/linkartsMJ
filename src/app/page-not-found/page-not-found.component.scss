@@ -1,0 +1,105 @@
+.absolute-centered-message {
+    position: absolute;
+    user-select: none;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    flex-direction: column;
+    width: 98vw;
+    height: 98vh;
+
+    .animated-logo {
+        margin: auto auto 17px auto;
+        position:relative;
+        mat-icon.file {
+            width: unset;
+            height: unset;
+            color: #203864;
+            font-size: 110px;
+        }
+        div {
+            position: absolute;
+            height: 65px;
+            width: 65px;
+            padding-left: 4px;
+            display: flex;
+            bottom: -7px;
+            left: -9px;
+            box-shadow: 0px 3px 1px -2px #00000073, 0px 2px 2px 0px #00000052, 0px 1px 5px 0px #00000059;
+            background: #f9f9f9;
+            border-radius: 50px;
+            //animation: fade-in-and-out 3s infinite;
+        }
+        mat-icon.search {
+            width: unset;
+            height: unset;
+            color: #203864;
+            font-weight: bold;
+            margin: auto auto;
+            font-size: 38px;
+            animation: flip 1000ms cubic-bezier(0.55, 0.23, 0.29, 0.87) forwards;
+        }
+    }
+    span.text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #203864;
+        margin: 0px auto 30px auto;
+    }
+
+    a {
+        margin:0px auto auto auto;
+        button {
+            margin: auto 0px auto 0px;
+            border-radius: 50px;
+            background-color: unset;
+            outline: none !important;
+            border: unset;
+            display: flex;
+            padding: 14px 22px;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+            background-image: linear-gradient(0.02turn, rgba(7, 29, 80, 0.9), rgba(28, 65, 121, 0.9), rgba(64, 133, 182, 0.9));
+            color: white;
+            .icon-home {
+                margin: auto 10px auto auto;
+                width: 14px !important;
+                height: 14px !important;
+                background-color: #ffffff;
+                -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+                mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+            }
+            span {
+                font-size: 16px;
+                line-height: 14px;
+                font-weight: 600;
+                margin: auto auto auto 0px;
+            }
+
+            transition:transform 200ms,box-shadow 200ms;
+            &:hover {
+                box-shadow: 0px 3px 1px -2px #00000073, 0px 2px 2px 0px #00000052, 0px 1px 5px 0px #00000059;
+            }
+            &:active {
+                transform:scale(0.96);
+            }
+
+        }
+    }
+
+}
+
+@keyframes flip {
+    from {
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+    }
+    to {
+        -webkit-transform: rotateY(360deg);
+        transform: rotateY(360deg);
+    }
+}
+/*@keyframes fade-in-and-out {
+    0%   { opacity:1; }
+    50%  { opacity:0; }
+    100% { opacity:1; }
+}*/

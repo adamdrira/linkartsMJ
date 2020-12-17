@@ -12,6 +12,7 @@ import { Albums_service } from '../services/albums.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 declare var Swiper:any;
@@ -22,7 +23,17 @@ declare var $:any;
 @Component({
   selector: 'app-add-album-writing',
   templateUrl: './add-album-writing.component.html',
-  styleUrls: ['./add-album-writing.component.scss']
+  styleUrls: ['./add-album-writing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AddAlbumWritingComponent implements OnInit {
 
@@ -51,10 +62,11 @@ export class AddAlbumWritingComponent implements OnInit {
 
 
   //form variables
-  formName: FormControl = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
+  formName: FormControl = new FormControl('', [Validators.required, Validators.minLength(2),Validators.maxLength(15), Validators.pattern( pattern("text") ) ]);
   albumForm: FormGroup = new FormGroup({
     formName: this.formName,
   });
+
 
   
   //Liste des contenus SELECTIONNÉS
@@ -105,8 +117,6 @@ export class AddAlbumWritingComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    console.log(this.list_writings);
-
     this.swiper = new Swiper('.swiper-container', {
       scrollbar: {
         el: '.swiper-scrollbar',
@@ -119,18 +129,27 @@ export class AddAlbumWritingComponent implements OnInit {
       breakpoints: {
         580: {
           slidesPerView: 1,
+          slidesPerGroup: 1,
         },
         860: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
         },
         1150: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
         },
         1450: {
             slidesPerView: 4,
+            slidesPerGroup: 4,
         },
         1770: {
             slidesPerView: 5,
+            slidesPerGroup: 5,
+        },
+        2090: {
+            slidesPerView: 6,
+            slidesPerGroup: 6,
         }
       }
     });
@@ -284,6 +303,13 @@ export class AddAlbumWritingComponent implements OnInit {
     return res;
   }
 
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
 
 
 
@@ -292,12 +318,3 @@ export class AddAlbumWritingComponent implements OnInit {
 
 
 }
-
-
-/*
-280
-560
-840
-1120
-1400
-*/

@@ -24,7 +24,9 @@ import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
+
 declare var $: any;
+declare var Swiper: any;
 
 
 @Component({
@@ -101,6 +103,19 @@ export class NavbarLinkartsComponent implements OnInit {
           this.visibility_navbar=r;
         }
       })
+  }
+
+  
+  @ViewChild('navbarSelect') navbarSelect;
+  @ViewChild('navbarSelect2') navbarSelect2;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( this.navbarSelect ) {
+      this.navbarSelect.close();
+    }
+    if( this.navbarSelect2 ) {
+      this.navbarSelect2.close();
+    }
   }
 
   reload_page(){
@@ -695,6 +710,14 @@ export class NavbarLinkartsComponent implements OnInit {
         this.show_researches_propositions=true;
         this.most_researched_propositions=r[0][0];
         this.show_most_researched_propositions=true;
+
+        this.cd.detectChanges();
+        this.initialize_swiper();
+        this.initialize_swiper2();
+        //this.swiper.update();
+        //this.swiper2.update();
+        this.cd.detectChanges();
+        
         this.navbar.get_last_researched_navbar(this.publication_category,r[1]).subscribe(m=>{
           console.log(m[0][0]);
           if(m[1]==this.compteur_recent){
@@ -797,6 +820,14 @@ export class NavbarLinkartsComponent implements OnInit {
           if(m[1]==this.compteur_research){
             this.show_researches_propositions=true;
             this.list_of_first_propositions=m[0][0];
+            
+            this.cd.detectChanges();
+            this.initialize_swiper();
+            this.initialize_swiper2();
+            //this.swiper.update();
+            //this.swiper2.update();
+            this.cd.detectChanges();
+
             if(m[0][0].length<10){
               this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10-m[0].length,m[1]).subscribe(r=>{
                 //console.log(r[0][0]);
@@ -879,6 +910,13 @@ export class NavbarLinkartsComponent implements OnInit {
         this.show_other_propositions=false;
         this.show_first_propositions=true;
         this.show_most_researched_propositions=true;
+
+        this.cd.detectChanges();
+        this.initialize_swiper()
+        this.initialize_swiper2();
+        //this.swiper.update();
+        //this.swiper2.update();
+        this.cd.detectChanges();
       }
       
       
@@ -1626,14 +1664,14 @@ export class NavbarLinkartsComponent implements OnInit {
 
 display_style_and_tag_research=false;
 indice_title_selected=-1;
-indice_page_loading=0;
+
 initialize_selectors(){
 
   let THIS=this;
   $(document).ready(function () {
-    $('.NavbarSelectBox').SumoSelect({});
+    //$('.NavbarSelectBox').SumoSelect({});
     
-    $('.NavbarSelectBox2').SumoSelect({});
+    /*$('.NavbarSelectBox2').SumoSelect({});
     
       
     if( THIS.navbar.active_section==0 ) {
@@ -1647,13 +1685,13 @@ initialize_selectors(){
     }
     else {
       $(".NavbarSelectBox2")[0].sumo.selectItem('0');
-    }
+    }*/
 
     THIS.cd.detectChanges();
     THIS.show_selector=true;
   });
 
-  $(".NavbarSelectBox").change(function(){
+  /*$(".NavbarSelectBox").change(function(){
     //console.log($(this).val())
     THIS.input.nativeElement.value="";
     THIS.publication_category=$(this).val();
@@ -1665,9 +1703,9 @@ initialize_selectors(){
       THIS.display_style_and_tag_research=false;
       THIS.indice_title_selected=-1
     }
-  })
+  })*/
 
-  $(".NavbarSelectBox2").change(function(){
+  /*$(".NavbarSelectBox2").change(function(){
     if(THIS.indice_page_loading>0){
       if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
         THIS.go_to_section(0);
@@ -1680,10 +1718,26 @@ initialize_selectors(){
       }
     }
     THIS.indice_page_loading++;
-  })
+  })*/
 
 }
 
+sectionChange(e:any) {
+  this.input.nativeElement.value="";
+  this.publication_category=e;
+  if(this.publication_category=="Comic" || this.publication_category=="Drawing" || this.publication_category=="Writing"){
+    this.display_style_and_tag_research=true;
+    this.indice_title_selected=this.list_of_real_categories.indexOf(this.publication_category);
+  }
+  else{
+    this.display_style_and_tag_research=false;
+    this.indice_title_selected=-1
+  }
+}
+
+sectionChange2(e:any) {
+  this.go_to_section( e );
+}
 
 
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
@@ -2324,6 +2378,93 @@ change_message_status(event){
 
 
   
+  swiper:any;
+  @ViewChild("swiperCategories") swiperCategories:ElementRef;
+  initialize_swiper() {
+
+    if( this.swiper ) {
+      this.swiper.destroy(true,true);
+    }
+    if( this.swiperCategories ) {
+      this.swiper = new Swiper( this.swiperCategories.nativeElement, {
+        speed: 300,
+        initialSlide:0,
+
+        slidesPerView: 'auto',
+
+        breakpoints: {
+          // when window width is >= 320px
+          320: {
+            slidesPerGroup: 2,
+          },
+          // when window width is >= 480px
+          500: {
+            slidesPerGroup: 3,
+          },
+          // when window width is >= 640px
+          700: {
+            slidesPerGroup: 4,
+          },
+          // when window width is >= 640px
+          900: {
+            slidesPerGroup: 5,
+          }
+        },
+
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+
+        observer:'true',
+      })
+    }
+  }
+  
+  
+  
+  swiper2:any;
+  @ViewChild("swiperCategories2") swiperCategories2:ElementRef;
+  initialize_swiper2() {
+    
+    if( this.swiper2 ) {
+      this.swiper2.destroy(true,true);
+    }
+    if( this.swiperCategories2 ) {
+      this.swiper2 = new Swiper( this.swiperCategories2.nativeElement, {
+        speed: 300,
+        initialSlide:0,
+
+        slidesPerView: 'auto',
+
+        breakpoints: {
+          // when window width is >= 320px
+          320: {
+            slidesPerGroup: 2,
+          },
+          // when window width is >= 480px
+          500: {
+            slidesPerGroup: 3,
+          },
+          // when window width is >= 640px
+          700: {
+            slidesPerGroup: 4,
+          },
+          // when window width is >= 640px
+          900: {
+            slidesPerGroup: 5,
+          }
+        },
+
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+
+        observer:'true',
+      })
+    }
+  }
 
 
   

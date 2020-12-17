@@ -2,56 +2,56 @@
 <div class="component-container album-writing" [ngClass]="{ 'selected' : selected, 'album' : state == 'album' }">
 
 
+    <div class="thumbnail-skeleton" *ngIf="!loaded_thumbnail">
+    </div>
     
-    <!--Slide recto-->
-    <div class="writing-container">
-        <div class="element-writing border-recto">
 
-            <div class="miniature">
-                <img [src]="thumbnail_picture">
+    <div class="element-writing border-recto" *ngIf="loaded_thumbnail" [@enterAnimation]>
+
+        <div class="miniature">
+            <img [src]="thumbnail_picture">
+        </div>
+
+        <div #thumbnailRecto class="absolute-thumbnail-data">
+            <!--********************-->
+            <!--Title container-->
+            <!--********************-->
+            <div class="title-container">
+                <span class="title">{{writing_element.title}}</span>
             </div>
-
-            <div #thumbnailRecto class="absolute-thumbnail-data">
-                <!--********************-->
-                <!--Title container-->
-                <!--********************-->
-                <div class="title-container">
-                    <span class="title">{{writing_element.title}}</span>
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="author-container">
+                <div class="left-container">
+                    <img [src]="profile_picture">
                 </div>
-                <!--********************-->
-                <!--Author container-->
-                <!--********************-->
-                <div class="author-container">
-                    <div class="left-container">
-                        <img [src]="profile_picture">
-                    </div>
-                    <div class="right-container">
-                        <span class="author-name">{{author_name}}</span>
-                        <span class="author-description" *ngIf="pseudo!=null">{{pseudo}}</span>
+                <div class="right-container">
+                    <span class="author-name">{{author_name}}</span>
+                    <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                </div>
+            </div>
+            <!--********************-->
+            <!--Data container-->
+            <!--********************-->
+            <div class="stats-container">
+                <div class="figure-container views">
+                    <div>
+                        <span>{{viewnumber}}</span>
+                        <mat-icon>visibility</mat-icon>
+                        <!--<div class="view-logo"></div>-->
                     </div>
                 </div>
-                <!--********************-->
-                <!--Data container-->
-                <!--********************-->
-                <div class="stats-container">
-                    <div class="figure-container views">
-                        <div>
-                            <span>{{viewnumber}}</span>
-                            <mat-icon>visibility</mat-icon>
-                            <!--<div class="view-logo"></div>-->
-                        </div>
+                <div class="figure-container likes">
+                    <div>
+                        <span>{{likesnumber}}</span>
+                        <mat-icon>thumb_up</mat-icon>
                     </div>
-                    <div class="figure-container likes">
-                        <div>
-                            <span>{{likesnumber}}</span>
-                            <mat-icon>thumb_up</mat-icon>
-                        </div>
-                    </div>
-                    <div class="figure-container loves">
-                        <div>
-                            <span>{{lovesnumber}}</span>
-                            <mat-icon>favorite</mat-icon>
-                        </div>
+                </div>
+                <div class="figure-container loves">
+                    <div>
+                        <span>{{lovesnumber}}</span>
+                        <mat-icon>favorite</mat-icon>
                     </div>
                 </div>
             </div>
@@ -59,17 +59,16 @@
     </div>
 
 
-
-    
-    <button mat-raised-button class="add-button" *ngIf="state=='swiper'"
-    (click)="add_or_remove(); $event.stopPropagation();"
-    [ngClass]="{ 'style0' : selected, 'style1' : !selected }">
-        <span *ngIf="!selected">
-            Ajouter
-        </span>
-        <span *ngIf="selected">
-            Retirer
-        </span>
+    <div class="button-skeleton" *ngIf="state=='swiper' && !loaded_thumbnail">
+    </div>
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>done_all</mat-icon>
+        <span>Sélectionné</span>
     </button>
-
+    <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && !selected"
+        (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
+        <mat-icon>add</mat-icon>
+        <span>Sélectionner</span>
+    </button>
 </div>

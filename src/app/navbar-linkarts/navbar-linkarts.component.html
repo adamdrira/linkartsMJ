@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <div class="VISIBLE-ON-SMALL-SCREEN-1" [ngClass]="{'invisible': activated_search }">
+        <!--<div class="VISIBLE-ON-SMALL-SCREEN-1" [ngClass]="{'invisible': activated_search }">
           <select name="somename" class="NavbarSelectBox2" [ngClass]="{'really-invisible': !show_selector }">
             <option value="0">
               Accueil
@@ -52,10 +52,27 @@
             <option value="1">
               Collaborations
             </option>
-            <!--<option value="2">
-              Librairie
-            </option>-->
           </select>
+        </div>-->
+        <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search }">
+          <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector }">
+            <mat-select #navbarSelect2 panelClass="navbarSelectClass2" disableOptionCentering [(value)]="navbar.active_section" (selectionChange)="sectionChange2($event.value)">
+              
+              <mat-select-trigger>
+                <ng-container *ngIf="navbar.active_section==0">Accueil</ng-container>
+                <ng-container *ngIf="navbar.active_section==1">Collaborations</ng-container>
+              </mat-select-trigger>
+
+              <mat-option [value]="0" select>
+                <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+                Accueil
+              </mat-option>
+              <mat-option [value]="1">
+                <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+                Collaborations
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
 
@@ -78,7 +95,22 @@
 
           <div class="navbar-l1-searchbar-container"
             [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search}">
-            <div class="left-container" [ngClass]="{'invisible': !show_selector }">
+
+            
+            <div class="left-container first-selector" [ngClass]="{'invisible': !show_selector }">
+              <mat-form-field floatLabel='never'>
+                <mat-select #navbarSelect panelClass="navbarSelectClass" disableOptionCentering value="Tout" (selectionChange)="sectionChange($event.value)">
+                  <mat-option value="Tout" select>Tout</mat-option>
+                  <mat-option value="Compte">Compte</mat-option>
+                  <mat-option value="Ad">Annonce</mat-option>
+                  <mat-option value="Comic">Bande dessinée</mat-option>
+                  <mat-option value="Drawing">Dessin</mat-option>
+                  <mat-option value="Writing">Ecrit</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!--<div class="left-container" [ngClass]="{'invisible': !show_selector }">
               <select name="somename" class="NavbarSelectBox">
                 <option value="All">Tout</option>
                 <option value="Compte">Compte</option>
@@ -87,7 +119,7 @@
                 <option value="Drawing">Dessin</option>
                 <option value="Writing">Ecrit</option>
               </select>
-            </div>
+            </div>-->
 
             <div class="right-container">
               <div #propositions class="researches-propositions" *ngIf="show_researches_propositions" [@enterAnimation]>
@@ -97,15 +129,35 @@
                   <div class="title-proposition">
                     Rechercher par style et par genre
                   </div>
-                  <div class="first-block-container-2">
-                    <ng-container *ngFor="let item of first_filters[indice_title_selected];let i=index">
+                  <div class="first-block-container">
+                    
+                    <div class="swiper-container">
+                      <div #swiperCategories2 class="swiper-item">
+                          <div class="swiper-wrapper">
+                              <div class="swiper-slide" *ngFor="let item of first_filters[indice_title_selected];let i=index">
+                                  <a class="element" *ngIf="item!=''"
+                                    (click)="cancel_research()" [routerLink]="open_research_style_and_tags(i)">
+                                    <span>
+                                      {{item}}
+                                    </span>
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="button-prev-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isBeginning }"></div>
+                      <div class="button-next-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isEnd }"></div>
+                      <div class="swiper-button-prev" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+                      <div class="swiper-button-next" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+                    </div>
+
+                    <!--<ng-container *ngFor="let item of first_filters[indice_title_selected];let i=index">
                       <a class="string-proposition-container" *ngIf="item!=''" (click)="cancel_research();"
                         [routerLink]="open_research_style_and_tags(i)">
                         <span class="string-proposition">
                           {{item}}
                         </span>
                       </a>
-                    </ng-container>
+                    </ng-container>-->
                   </div>
                 </div>
 
@@ -115,14 +167,34 @@
                     Tendances
                   </div>
                   <div class="first-block-container">
-                    <ng-container *ngFor="let item of most_researched_propositions;let i=index">
+                    
+                    <!--<ng-container *ngFor="let item of most_researched_propositions;let i=index">
                       <a class="string-proposition-container" *ngIf="item.research_string!=''"
                         (click)="click_on_trending_message(i)" [routerLink]="get_trending_message(i)">
                         <span class="string-proposition">
                           {{item.research_string}}
                         </span>
                       </a>
-                    </ng-container>
+                    </ng-container>-->
+                                
+                    <div class="swiper-container">
+                      <div #swiperCategories class="swiper-item">
+                          <div class="swiper-wrapper">
+                              <div class="swiper-slide" *ngFor="let item of most_researched_propositions;let i=index">
+                                  <a class="element" *ngIf="item.research_string!=''"
+                                    (click)="click_on_trending_message(i)" [routerLink]="get_trending_message(i)">
+                                    <span>
+                                      {{item.research_string}}
+                                    </span>
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+                      <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+                      <div class="swiper-button-prev" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                      <div class="swiper-button-next" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+                    </div>
                   </div>
                 </div>
 
@@ -149,7 +221,7 @@
                     </div>
 
 
-                    <div class="title-proposition" *ngIf="0>=list_of_first_propositions.length && !loading_other">
+                    <div class="no-results" *ngIf="0>=list_of_first_propositions.length && !loading_other">
                       Aucun résultat
                     </div>
                     <div class="propositions-container"  *ngIf="!loading_other">
@@ -250,8 +322,10 @@
                     </div>
                     <div *ngIf="!loading_recent" style="display:block">
 
-                      <div *ngIf="list_of_first_propositions_history.length==0">
-                        Aucune proposition disponible pour le moment
+                      <div *ngIf="list_of_first_propositions_history.length==0" class="no-results">
+                        <span>
+                          Aucune proposition disponible pour le moment
+                        </span>
                       </div>
 
                       <div class="list-of-propositions"
@@ -273,7 +347,7 @@
                                 {{list_of_last_propositions_history[i].lastname}} </div>
                               <div class="nickname">@{{list_of_last_propositions_history[i].nickname}}</div>
                             </div>
-                            <div class="type-container">
+                            <div class="type-container" [ngClass]="{'with-close': first_option }">
                               <span>{{list_of_last_propositions_history[i].type_of_account}}</span>
                             </div>
                           </a>
@@ -300,7 +374,7 @@
                             <div class="name-container">
                               <span>{{list_of_last_propositions_history[i].title}}</span>
                             </div>
-                            <div class="type-container">
+                            <div class="type-container" [ngClass]="{'with-close': first_option }">
                               <span>Annonce</span>
                             </div>
                           </a>
@@ -328,7 +402,7 @@
                             <div class="name-container">
                               <span>{{list_of_last_propositions_history[i].title}}</span>
                             </div>
-                            <div class="type-container">
+                            <div class="type-container" [ngClass]="{'with-close': first_option }">
                               <span *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
                               <span *ngIf="item.publication_category=='Drawing'">Dessin</span>
                               <span *ngIf="item.publication_category=='Writing'">Ecrit</span>
@@ -2218,12 +2292,12 @@
 
               <div class="connexion" [ngClass]="{'disconnecting': disconnecting}"
                 *ngIf="type_of_profile=='account' || type_of_profile=='suspended'" (click)="logout()">
-                <mat-icon *ngIf="!disconnecting" class="connexion-icon">login</mat-icon>
+                <mat-icon *ngIf="!disconnecting" class="rotate-icon">login</mat-icon>
                 <span *ngIf="!disconnecting">Se déconnecter</span>
                 <mat-spinner *ngIf="disconnecting" diameter="20"></mat-spinner>
               </div>
               <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
-                <mat-icon class=" connexion-icon">login</mat-icon>
+                <mat-icon>login</mat-icon>
                 <span>Se connecter</span>
               </div>
 
