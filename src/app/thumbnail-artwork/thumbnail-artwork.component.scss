@@ -2,6 +2,9 @@
     position: relative;
     user-select: none;
 
+    
+  
+
     a {
         color: rgb(32, 56, 100);
         cursor: pointer;
@@ -20,6 +23,7 @@
 
     .global-container > .left-container {
         height: 100%;
+        width: 200px;
         width: fit-content;
         margin-left: auto;
         margin-right: auto;
@@ -27,6 +31,7 @@
         position: relative;
     }
     .global-container.trendings-page > .left-container {
+        width: 200px;
         margin-left: unset !important;
         margin-right: unset !important;
     }
@@ -102,7 +107,8 @@
         width: 100%;
         height: 35px;
         color: #3b3b3b;
-        background: rgb(32, 56, 100, 0.8);
+        //background: rgb(32, 56, 100, 0.8);
+        background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
         position: absolute;
         z-index: 1;
         bottom: 0px;
@@ -193,34 +199,67 @@
         }
     }
 
-    .global-container > .rank {
-        margin: auto 0px auto 0px;
-        padding-left: 10px;
-        display: flex;
-        opacity: 0.8;
-        font-size: 230px;
-        line-height: 200px;
-        min-width: 255px;
-        height: 220px;
-        border-radius: 5px;
-        position: relative;
+    @media (min-width: 1050px) {
+        .global-container > .rank {
+            margin: auto 0px auto 0px;
+            padding-left: 10px;
+            display: flex;
+            opacity: 0.8;
+            font-size: 230px;
+            line-height: 200px;
+            min-width: 255px;
+            height: 220px;
+            border-radius: 5px;
+            position: relative;
+        }
+    
+        .global-container > .rank .absolute-shiny {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-image: linear-gradient(to right, #ffffff00 33%, rgb(255 255 255 / 22%) 50%, transparent 66%);
+        }
+    
+        .global-container > .rank span {
+            margin: auto;
+            margin-top: 0px;
+            line-height: 205px;
+            color: #e6e6e6;
+            -webkit-text-stroke: 7px #dadada;
+        }
     }
-
-    .global-container > .rank .absolute-shiny {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-image: linear-gradient(to right, #ffffff00 33%, rgb(255 255 255 / 22%) 50%, transparent 66%);
-    }
-
-    .global-container > .rank span {
-        margin: auto;
-        margin-top: 0px;
-        line-height: 205px;
-        color: #e6e6e6;
-        -webkit-text-stroke: 7px #dadada;
+    @media (max-width: 1050px) {
+        .global-container > .rank {
+            margin: auto 0px auto 0px;
+            padding-left: 10px;
+            display: flex;
+            opacity: 0.8;
+            font-size: 160px !important;
+            min-width: 190px!important;
+            line-height: 200px;
+            height: 220px;
+            border-radius: 5px;
+            position: relative;
+        }
+    
+        .global-container > .rank .absolute-shiny {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-image: linear-gradient(to right, #ffffff00 33%, rgb(255 255 255 / 22%) 50%, transparent 66%);
+        }
+    
+        .global-container > .rank span {
+            margin: auto;
+            margin-top: 0px;
+            line-height: 205px;
+            color: #e6e6e6;
+            -webkit-text-stroke: 7px #dadada;
+        }
     }
 
     .global-container > .rank.gold span {
@@ -465,7 +504,8 @@
         box-shadow: 0 1px 6px 1px #ececec, 0px 2px 4px rgba(0, 0, 0, 0.2);
         //overflow: hidden;
         border-radius: 0px 20px 20px 0px;
-        background: rgb(32, 56, 100);
+        //background: rgb(32, 56, 100);
+        background:#fbfbfb;
     }
     .hover-to-preview {
         position: absolute;
@@ -546,7 +586,8 @@
         overflow: hidden;
         position: absolute;
         opacity: 0;
-        background: rgb(32, 56, 100);
+        //background: rgb(32, 56, 100);
+        background:#fbfbfb;
         .swiper-slide:not(:first-child) img {
             height: 100%;
             object-fit: contain;
@@ -604,6 +645,8 @@
             height: 266.66px !important;
         }
     }
+    
+  
     @media (max-width: 900px) {
         .rank {
             display: none !important;
@@ -859,10 +902,11 @@
 }
 
 .shiny {
-    background-color: rgb(220, 220, 220);
-    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
-    background-size: 300% 100%;
-    animation: shine 2s infinite;
+    background-color: gainsboro !important;
+    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%) !important;
+    background-size: 300% 100% !important;
+    -webkit-animation: shine 2s infinite !important;
+    animation: shine 2s infinite !important;
 }
 
 @keyframes shine {
