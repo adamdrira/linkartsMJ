@@ -656,5 +656,6 @@
         margin: auto 5px auto 5px;
         }
     .invisible{
-        visibility:hidden
+        visibility:hidden;
+        pointer-events: none;
     }
