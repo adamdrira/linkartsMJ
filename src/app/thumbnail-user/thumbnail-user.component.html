@@ -1,120 +1,58 @@
 
-<a class="thumbnail-user" *ngIf="display_thumbnail" [routerLink]=open_account() [@enterAnimation]>
+<div class="thumbnail-user shiny" *ngIf="!display_thumbnail || !loaded" [@enterAnimation]>
+</div>
 
-    <div class="left-container">
-        
+<a class="thumbnail-user" *ngIf="display_thumbnail && loaded" [routerLink]=open_account() [@enterAnimation]>
         
         <div class="cover-picture" [ngClass]="{'shiny':!cover_is_loaded}">
             <img [src]=cover_picture (load)="load_cover()" [ngClass]="{'invisible':!cover_is_loaded}">
         </div>
 
-        <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
-            <img [src]=profile_picture (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
-        </div>
-
-        <div class="profile-name">
-            <span>{{author_name}}</span>
-        </div>
-
-        <div class="profile-text">
-            <mat-icon>alternate_email</mat-icon>
-            <span>{{pseudo}}</span>
-        </div>
-
-        <div class="profile-text">
-            <mat-icon>portrait</mat-icon>
-            <span>{{type_of_account}}</span>
-        </div>
-        
-
-        <div class="profile-text" *ngIf="subscribers_number == 0">
-            <mat-icon>group</mat-icon>
-            <span>Aucun abonné</span>
-        </div>
-        <div class="profile-text" *ngIf="subscribers_number == 1">
-            <mat-icon>group</mat-icon>
-            <span>1 abonné</span>
-        </div>
-        <div class="profile-text" *ngIf="subscribers_number > 1">
-            <mat-icon>group</mat-icon>
-            <span>{{subscribers_number}} abonnés</span>
-        </div>
-
-        <ng-container *ngIf="subscribtion_retrieved">
-            <button  class="subscribe-button" (click)="subscribtion()" *ngIf="!subscribed_to_user && visitor_mode">
-                <span>S'abonner</span>
-            </button>
-            <button  class="subscribe-button" (click)="subscribtion()" *ngIf="subscribed_to_user && visitor_mode">
-                <span>Se désabonner</span>
-            </button>
-        </ng-container>
-       
-
-    </div>
-
-    <div class="right-container">
-
-        <div class="descriptions">
-            <div class="author-description">
-                <span>{{primary_description}}</span>
+        <div class="absolute-profile-data">
+            <div class="profile-picture" [ngClass]="{'shiny':!pp_is_loaded}">
+                <img [src]=profile_picture (load)="load_pp()" [ngClass]="{'invisible':!pp_is_loaded}">
             </div>
-            <div class="author-extended-description">
-                <span>{{extended_description}}</span>
+    
+            <div class="profile-name">
+                <span>{{author_name}}</span>
             </div>
-        </div>
-        <div class="preview">
-            <div class="preview-container">
-                <div class="container-title">
-                    <mat-icon>image</mat-icon>
-                    <span>Publications</span>
-                </div>
-                
-
-                <div class="data-container">
-                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
-                    matTooltip="Voir les bandes dessinées" 
-                    matTooltipClass='tooltip-thumbnail-user' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="200">
-                        <div class="icon icon-comic"></div>
-                        <span>{{number_of_comics}}</span>
-                    </a>
-
-                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
-                    matTooltip="Voir les dessins" 
-                    matTooltipClass='tooltip-thumbnail-user' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="200">
-                        <div class="icon icon-drawing"></div>
-                        <span>{{number_of_drawings}}</span>
-                    </a>
-                </div>
-
-                <div class="data-container">
-                    <a class="data" [routerLink]=open_artworks() (click)="stop($event)" 
-                    matTooltip="Voir les écrits" 
-                    matTooltipClass='tooltip-thumbnail-user' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="200">
-                        <div class="icon icon-writing"></div>
-                        <span>{{number_of_writings}}</span>
-                    </a>
-
-                    <a class="data" [routerLink]=open_announcements() (click)="stop($event)" 
-                    matTooltip="Voir les annonces" 
-                    matTooltipClass='tooltip-thumbnail-user' 
-                    [matTooltipPosition]="'below'"
-                    [matTooltipShowDelay]="200">
-                        <mat-icon>announcement</mat-icon>
-                        <span>{{number_of_ads}}</span>
-                    </a>
-                </div>
-            
+    
+            <div class="profile-text">
+                <mat-icon
+                matTooltip='Pseudonyme' 
+                matTooltipClass='tooltip-thumbnail-user' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">alternate_email</mat-icon>
+                <span>{{pseudo}}</span>
+            </div>
+    
+            <div class="profile-text">
+                <mat-icon
+                matTooltip='Profil' 
+                matTooltipClass='tooltip-thumbnail-user' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">account_circle</mat-icon>
+                <span>{{type_of_account}}</span>
             </div>
             
-
+            <div class="profile-text" *ngIf="subscribers_number == 1">
+                <mat-icon>group</mat-icon>
+                <span>1 abonné</span>
+            </div>
+            <div class="profile-text" *ngIf="subscribers_number > 1">
+                <mat-icon>group</mat-icon>
+                <span>{{subscribers_number}} abonnés</span>
+            </div>
+            <div class="profile-text" *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 0"
+            matTooltip="BD : {{number_of_comics}}&#13;Dessins : {{number_of_drawings}}&#13;Ecrits : {{number_of_writings}}&#13;Annonces : {{number_of_ads}}" 
+            matTooltipClass='tooltip-thumbnail-user' 
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="0">
+                <mat-icon>palette</mat-icon>
+                <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads == 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publication</span>
+                <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publications</span>
+            </div>
         </div>
-    </div>
 
 
 </a>

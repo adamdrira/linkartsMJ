@@ -102,6 +102,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   @Input() item: any;
+  @Input() skeleton: any;
   @Input() page: any;
   @Input() rank: any;
   @Input() now_in_seconds: number;
@@ -161,515 +162,512 @@ export class ThumbnailArtworkComponent implements OnInit {
   report_done=false;
 
   ngOnInit(): void {
-    if(this.emphasized){
-      //emphasized
-      console.log("in if")
-      this.type_of_thumbnail=0;
-      this.category=this.item.publication_category;
-      this.subscribing_category=this.item.publication_category;
-      this.format=this.item.format;
-      this.subscribing_format=this.format;
-      this.content_id=this.item.publication_id;
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        this.user_id=r[0].id;
-        this.user_name=r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-         this.pseudo = r[0].nickname;
-         this.type_of_profile=r[0].status;
-        if(r[0].id==this.item.id_user){
+
+    if( !this.skeleton ) {
+      
+      if(this.emphasized){
+        //emphasized
+        console.log("in if")
+        this.type_of_thumbnail=0;
+        this.category=this.item.publication_category;
+        this.subscribing_category=this.item.publication_category;
+        this.format=this.item.format;
+        this.subscribing_format=this.format;
+        this.content_id=this.item.publication_id;
+        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+          this.user_id=r[0].id;
+          this.user_name=r[0].firstname + ' ' + r[0].lastname;
+          this.primary_description=r[0].primary_description;
+          this.pseudo = r[0].nickname;
+          this.type_of_profile=r[0].status;
+          if(r[0].id==this.item.id_user){
+            
+            this.visitor_mode=false;
           
-          this.visitor_mode=false;
-         
-        }
-        else{
-          this.visitor_mode=true;
-        }
-        this.visitor_mode_retrieved=true;
-      })
-
-      this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-      });
-
-      this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.author_pseudo = r[0].nickname;
-        this.author_id=r[0].id;
-        
-        this.type_of_account_checked=r[0].type_of_account_checked;
-        this.certified_account=r[0].certified_account;
-      });
-
-      if(this.category=="comic"){
-        if(this.format=="one-shot"){
-         
-          this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
-            this.file_name = r[0].name_coverpage
-            
-            this.title = r[0].title
-            this.style = r[0].category
-            this.highlight = r[0].highlight.slice(0,290)
-            this.list_of_reporters=r[0].list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = r[0].firsttag
-            this.secondtag = r[0].secondtag
-            this.thirdtag = r[0].thirdtag
-            this.pagesnumber = r[0].pagesnumber
-            
-            this.chaptersnumber = r[0].chaptersnumber
-            this.date_upload = r[0].createdAt
-            this.data_retrieved=true;
-            
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-           
-
-            this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            
-            });
-
-          });
-          this.NotationService.get_content_marks("comic", 'one-shot', this.item.publication_id,0).subscribe(r=>{
-            //marks
-            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-            this.marks_retrieved=true;
-          })
-        
-          this.check_archive();
-          this.get_images_to_show();
-        }
-        else{
-          this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
-            this.file_name = r[0].name_coverpage
-            this.title = r[0].title
-            this.style = r[0].category
-            this.highlight = r[0].highlight.slice(0,290)
-            this.list_of_reporters=r[0].list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = r[0].firsttag
-            this.secondtag = r[0].secondtag
-            this.thirdtag = r[0].thirdtag
-            this.pagesnumber = r[0].pagesnumber
-            this.chaptersnumber = r[0].chaptersnumber
-            this.date_upload = r[0].createdAt
-            this.data_retrieved=true;
-            
-           
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-          });
-          this.NotationService.get_content_marks("comic", 'serie', this.item.publication_id,0).subscribe(r=>{
-            //marks
-            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-            this.marks_retrieved=true;
-          })
-          
-          this.check_archive()
-          this.get_images_to_show();
-        }
-      }
-
-      if(this.category=="drawing"){
-        if(this.format=="one-shot"){
-          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).subscribe(r=>{
-            this.file_name = r[0].name_coverpage
-            this.title = r[0].title
-            this.style = r[0].category
-            this.drawing_name=r[0].drawing_name;
-            this.highlight = r[0].highlight.slice(0,290)
-            this.list_of_reporters=r[0].list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = r[0].firsttag
-            this.secondtag = r[0].secondtag
-            this.thirdtag = r[0].thirdtag
-            this.pagesnumber = r[0].pagesnumber
-            this.chaptersnumber = r[0].chaptersnumber
-            this.date_upload = r[0].createdAt
-            this.data_retrieved=true;
-            
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-          });
-          this.NotationService.get_content_marks("drawing", 'one-shot', this.item.publication_id,0).subscribe(r=>{
-            //marks
-            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-            this.marks_retrieved=true;
-          })
-         
-          this.check_archive()
-          this.get_images_to_show();
-        }
-        else{
-          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
-            this.file_name = r[0].name_coverpage
-            this.title = r[0].title
-            this.style = r[0].category
-            this.highlight = r[0].highlight.slice(0,290)
-            this.list_of_reporters=r[0].list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = r[0].firsttag
-            this.secondtag = r[0].secondtag
-            this.thirdtag = r[0].thirdtag
-            this.pagesnumber = r[0].pagesnumber
-            this.chaptersnumber = r[0].chaptersnumber
-            this.date_upload = r[0].createdAt
-            
-            this.data_retrieved=true;
-           
-           
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-          });
-          this.NotationService.get_content_marks("drawing", 'artbook', this.item.publication_id,0).subscribe(r=>{
-            //marks
-            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-            this.marks_retrieved=true;
-          })
-         
-          this.check_archive()
-          this.get_images_to_show();
-        }
-      }
-
-      if(this.category=="writing"){
-        
-          this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
-            //console.log(r[0])
-            this.file_name = r[0].name_coverpage
-            this.title = r[0].title
-            this.style = r[0].category
-            this.highlight = r[0].highlight.slice(0,290)
-            this.total_pages_for_writing=r[0].total_pages;
-            //console.log(this.total_pages_for_writing)
-            this.short_highlight = this.highlight.slice(0,70);
-            this.list_of_reporters=r[0].list_of_reporters
-            this.firsttag = r[0].firsttag
-            this.secondtag = r[0].secondtag
-            this.thirdtag = r[0].thirdtag
-            this.pagesnumber = r[0].pagesnumber
-            this.chaptersnumber = r[0].chaptersnumber
-            this.date_upload = r[0].createdAt
-            this.data_retrieved=true;
-            
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-          });
-          this.NotationService.get_content_marks("writing", 'unknown', this.item.publication_id,0).subscribe(r=>{
-            //marks
-            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-            this.marks_retrieved=true;
-          })
-          this.check_archive()
-      }
-    }
-    else{
-      console.log("in else")
-      //trendings and subscribings
-      this.type_of_thumbnail=1;
-      this.category=this.subscribing_category;
-      this.format=this.subscribing_format;
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        this.user_id=r[0].id;
-        this.user_name=r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.pseudo = r[0].nickname;
-        this.type_of_profile=r[0].status;
-        if(r[0].id==this.item.authorid){
-          
-          //console.log(this.user_id)
-          this.visitor_mode=false;
-          
-        }
-        else{
-          this.visitor_mode=true;
-        }
-        this.visitor_mode_retrieved=true;
-      })
-      this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-      });
-
-      this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.author_pseudo = r[0].nickname;
-        this.author_id=r[0].id;
-        
-        this.type_of_account_checked=r[0].type_of_account_checked;
-        this.certified_account=r[0].certified_account;
-      });
-
-      if(this.category=="comic"){
-        if(this.format=="one-shot"){
-          this.content_id=this.item.bd_id;
-            this.file_name = this.item.name_coverpage
-            this.title = this.item.title
-            this.style = this.item.category
-            this.highlight = this.item.highlight.slice(0,290)
-            this.list_of_reporters=this.item.list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = this.item.firsttag
-            this.secondtag = this.item.secondtag
-            this.thirdtag = this.item.thirdtag
-            this.pagesnumber = this.item.pagesnumber
-            this.chaptersnumber = this.item.chaptersnumber
-            this.date_upload = this.item.createdAt
-            this.data_retrieved=true;
-            this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
-              //marks
-              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-              this.marks_retrieved=true;
-            })
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.check_archive()
-            this.get_images_to_show();
-            
-            this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-              
-            });
-        }
-        else{
-          this.content_id=this.item.bd_id;
-            this.file_name = this.item.name_coverpage
-            this.title = this.item.title
-            this.style = this.item.category
-            this.highlight = this.item.highlight.slice(0,290)
-            this.list_of_reporters=this.item.list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = this.item.firsttag
-            this.secondtag = this.item.secondtag
-            this.thirdtag = this.item.thirdtag
-            this.pagesnumber = this.item.pagesnumber
-            this.chaptersnumber = this.item.chaptersnumber
-            this.date_upload = this.item.createdAt
-            this.data_retrieved=true;
-            this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
-              //marks
-              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-              this.marks_retrieved=true;
-            })
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.check_archive()
-            this.get_images_to_show();
-            
-            this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-
-        }
-      }
-
-      if(this.category=="drawing"){
-        if(this.format=="one-shot"){
-            this.content_id=this.item.drawing_id;
-            this.file_name = this.item.name_coverpage
-            this.title = this.item.title
-            this.style = this.item.category
-            this.highlight = this.item.highlight.slice(0,290)
-            this.list_of_reporters=this.item.list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-            this.drawing_name=this.item.drawing_name;
-            this.firsttag = this.item.firsttag
-            this.secondtag = this.item.secondtag
-            this.thirdtag = this.item.thirdtag
-            this.pagesnumber = this.item.pagesnumber
-            this.chaptersnumber = this.item.chaptersnumber
-            this.date_upload = this.item.createdAt;
-            this.data_retrieved=true;
-            this.NotationService.get_content_marks("drawing", 'one-shot', this.item.drawing_id,0).subscribe(r=>{
-              //marks
-              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-              this.marks_retrieved=true;
-            })
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.check_archive()
-            this.get_images_to_show();
-            
-
-            this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-        }
-        else{
-          this.content_id=this.item.drawing_id;
-            this.file_name = this.item.name_coverpage
-            this.title = this.item.title
-            this.style = this.item.category
-            this.highlight = this.item.highlight.slice(0,290)
-            this.list_of_reporters=this.item.list_of_reporters
-            this.short_highlight = this.highlight.slice(0,70);
-
-            this.firsttag = this.item.firsttag
-            this.secondtag = this.item.secondtag
-            this.thirdtag = this.item.thirdtag
-            this.pagesnumber = this.item.pagesnumber
-            this.chaptersnumber = this.item.chaptersnumber
-            this.date_upload = this.item.createdAt
-            this.data_retrieved=true;
-            this.NotationService.get_content_marks("drawing", 'artbook', this.item.drawing_id,0).subscribe(r=>{
-              //marks
-              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-              this.marks_retrieved=true;
-            })
-            this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            this.check_archive()
-            this.get_images_to_show();
-
-            
-            this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.thumbnail_picture = SafeURL;
-              this.thumbnail_picture_received=true;
-              
-              this.initialize_swiper();
-              window.dispatchEvent(new Event('resize'));
-            });
-
-
-        }
-      }
-
-      if(this.category=="writing"){
-        
-        this.content_id=this.item.writing_id;
-        this.file_name = this.item.name_coverpage
-        this.title = this.item.title
-        this.style = this.item.category
-        this.highlight = this.item.highlight.slice(0,290)
-        this.total_pages_for_writing=this.item.total_pages;
-        this.short_highlight = this.highlight.slice(0,70);
-        this.list_of_reporters=this.item.list_of_reporters
-        this.firsttag = this.item.firsttag
-        this.secondtag = this.item.secondtag
-        this.thirdtag = this.item.thirdtag
-        this.pagesnumber = this.item.pagesnumber
-        this.chaptersnumber = this.item.chaptersnumber
-        this.date_upload = this.item.createdAt;
-        this.data_retrieved=true;
-        this.NotationService.get_content_marks("writing", 'unknown', this.item.writing_id,0).subscribe(r=>{
-          //marks
-          this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
-          this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
-          this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
-          this.marks_retrieved=true;
+          }
+          else{
+            this.visitor_mode=true;
+          }
+          this.visitor_mode_retrieved=true;
         })
-        this.check_archive()
-        this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-        
 
-        
-        this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.thumbnail_picture = SafeURL;
-          this.thumbnail_picture_received=true;
-          
-          this.initialize_swiper();
-          window.dispatchEvent(new Event('resize'));
+          this.profile_picture = SafeURL;
         });
+
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
+          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.primary_description=r[0].primary_description;
+          this.author_pseudo = r[0].nickname;
+          this.author_id=r[0].id;
+          
+          this.type_of_account_checked=r[0].type_of_account_checked;
+          this.certified_account=r[0].certified_account;
+        });
+
+        if(this.category=="comic"){
+          if(this.format=="one-shot"){
+          
+            this.BdOneShotService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+              this.file_name = r[0].name_coverpage
+              
+              this.title = r[0].title
+              this.style = r[0].category
+              this.highlight = r[0].highlight.slice(0,290)
+              this.list_of_reporters=r[0].list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = r[0].firsttag
+              this.secondtag = r[0].secondtag
+              this.thirdtag = r[0].thirdtag
+              this.pagesnumber = r[0].pagesnumber
+              
+              this.chaptersnumber = r[0].chaptersnumber
+              this.date_upload = r[0].createdAt
+              this.data_retrieved=true;
+              
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+            
+
+              this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              
+              });
+
+            });
+            this.NotationService.get_content_marks("comic", 'one-shot', this.item.publication_id,0).subscribe(r=>{
+              //marks
+              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+              this.marks_retrieved=true;
+            })
+          
+            this.check_archive();
+            this.get_images_to_show();
+          }
+          else{
+            this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
+              this.file_name = r[0].name_coverpage
+              this.title = r[0].title
+              this.style = r[0].category
+              this.highlight = r[0].highlight.slice(0,290)
+              this.list_of_reporters=r[0].list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = r[0].firsttag
+              this.secondtag = r[0].secondtag
+              this.thirdtag = r[0].thirdtag
+              this.pagesnumber = r[0].pagesnumber
+              this.chaptersnumber = r[0].chaptersnumber
+              this.date_upload = r[0].createdAt
+              this.data_retrieved=true;
+              
+            
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+            });
+            this.NotationService.get_content_marks("comic", 'serie', this.item.publication_id,0).subscribe(r=>{
+              //marks
+              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+              this.marks_retrieved=true;
+            })
+            
+            this.check_archive()
+            this.get_images_to_show();
+          }
+        }
+
+        if(this.category=="drawing"){
+          if(this.format=="one-shot"){
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.item.publication_id).subscribe(r=>{
+              this.file_name = r[0].name_coverpage
+              this.title = r[0].title
+              this.style = r[0].category
+              this.drawing_name=r[0].drawing_name;
+              this.highlight = r[0].highlight.slice(0,290)
+              this.list_of_reporters=r[0].list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = r[0].firsttag
+              this.secondtag = r[0].secondtag
+              this.thirdtag = r[0].thirdtag
+              this.pagesnumber = r[0].pagesnumber
+              this.chaptersnumber = r[0].chaptersnumber
+              this.date_upload = r[0].createdAt
+              this.data_retrieved=true;
+              
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+            });
+            this.NotationService.get_content_marks("drawing", 'one-shot', this.item.publication_id,0).subscribe(r=>{
+              //marks
+              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+              this.marks_retrieved=true;
+            })
+          
+            this.check_archive()
+            this.get_images_to_show();
+          }
+          else{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
+              this.file_name = r[0].name_coverpage
+              this.title = r[0].title
+              this.style = r[0].category
+              this.highlight = r[0].highlight.slice(0,290)
+              this.list_of_reporters=r[0].list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = r[0].firsttag
+              this.secondtag = r[0].secondtag
+              this.thirdtag = r[0].thirdtag
+              this.pagesnumber = r[0].pagesnumber
+              this.chaptersnumber = r[0].chaptersnumber
+              this.date_upload = r[0].createdAt
+              
+              this.data_retrieved=true;
+            
+            
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+            });
+            this.NotationService.get_content_marks("drawing", 'artbook', this.item.publication_id,0).subscribe(r=>{
+              //marks
+              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+              this.marks_retrieved=true;
+            })
+          
+            this.check_archive()
+            this.get_images_to_show();
+          }
+        }
+
+        if(this.category=="writing"){
+          
+            this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
+              //console.log(r[0])
+              this.file_name = r[0].name_coverpage
+              this.title = r[0].title
+              this.style = r[0].category
+              this.highlight = r[0].highlight.slice(0,290)
+              this.total_pages_for_writing=r[0].total_pages;
+              //console.log(this.total_pages_for_writing)
+              this.short_highlight = this.highlight.slice(0,70);
+              this.list_of_reporters=r[0].list_of_reporters
+              this.firsttag = r[0].firsttag
+              this.secondtag = r[0].secondtag
+              this.thirdtag = r[0].thirdtag
+              this.pagesnumber = r[0].pagesnumber
+              this.chaptersnumber = r[0].chaptersnumber
+              this.date_upload = r[0].createdAt
+              this.data_retrieved=true;
+              
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+            });
+            this.NotationService.get_content_marks("writing", 'unknown', this.item.publication_id,0).subscribe(r=>{
+              //marks
+              this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+              this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+              this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+              this.marks_retrieved=true;
+            })
+            this.check_archive()
+        }
       }
+      else{
+        console.log("in else")
+        //trendings and subscribings
+        this.type_of_thumbnail=1;
+        this.category=this.subscribing_category;
+        this.format=this.subscribing_format;
+        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+          this.user_id=r[0].id;
+          this.user_name=r[0].firstname + ' ' + r[0].lastname;
+          this.primary_description=r[0].primary_description;
+          this.pseudo = r[0].nickname;
+          this.type_of_profile=r[0].status;
+          if(r[0].id==this.item.authorid){
+            
+            //console.log(this.user_id)
+            this.visitor_mode=false;
+            
+          }
+          else{
+            this.visitor_mode=true;
+          }
+          this.visitor_mode_retrieved=true;
+        })
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.authorid).subscribe(r=> {
+          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.profile_picture = SafeURL;
+        });
 
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.authorid).subscribe(r=> {
+          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.primary_description=r[0].primary_description;
+          this.author_pseudo = r[0].nickname;
+          this.author_id=r[0].id;
+          
+          this.type_of_account_checked=r[0].type_of_account_checked;
+          this.certified_account=r[0].certified_account;
+        });
+
+        if(this.category=="comic"){
+          if(this.format=="one-shot"){
+            this.content_id=this.item.bd_id;
+              this.file_name = this.item.name_coverpage
+              this.title = this.item.title
+              this.style = this.item.category
+              this.highlight = this.item.highlight.slice(0,290)
+              this.list_of_reporters=this.item.list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = this.item.firsttag
+              this.secondtag = this.item.secondtag
+              this.thirdtag = this.item.thirdtag
+              this.pagesnumber = this.item.pagesnumber
+              this.chaptersnumber = this.item.chaptersnumber
+              this.date_upload = this.item.createdAt
+              this.data_retrieved=true;
+              this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
+                //marks
+                this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+                this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+                this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+                this.marks_retrieved=true;
+              })
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.check_archive()
+              this.get_images_to_show();
+              
+              this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+                
+              });
+          }
+          else{
+            this.content_id=this.item.bd_id;
+              this.file_name = this.item.name_coverpage
+              this.title = this.item.title
+              this.style = this.item.category
+              this.highlight = this.item.highlight.slice(0,290)
+              this.list_of_reporters=this.item.list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = this.item.firsttag
+              this.secondtag = this.item.secondtag
+              this.thirdtag = this.item.thirdtag
+              this.pagesnumber = this.item.pagesnumber
+              this.chaptersnumber = this.item.chaptersnumber
+              this.date_upload = this.item.createdAt
+              this.data_retrieved=true;
+              this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
+                //marks
+                this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+                this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+                this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+                this.marks_retrieved=true;
+              })
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.check_archive()
+              this.get_images_to_show();
+              
+              this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+
+          }
+        }
+
+        if(this.category=="drawing"){
+          if(this.format=="one-shot"){
+              this.content_id=this.item.drawing_id;
+              this.file_name = this.item.name_coverpage
+              this.title = this.item.title
+              this.style = this.item.category
+              this.highlight = this.item.highlight.slice(0,290)
+              this.list_of_reporters=this.item.list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+              this.drawing_name=this.item.drawing_name;
+              this.firsttag = this.item.firsttag
+              this.secondtag = this.item.secondtag
+              this.thirdtag = this.item.thirdtag
+              this.pagesnumber = this.item.pagesnumber
+              this.chaptersnumber = this.item.chaptersnumber
+              this.date_upload = this.item.createdAt;
+              this.data_retrieved=true;
+              this.NotationService.get_content_marks("drawing", 'one-shot', this.item.drawing_id,0).subscribe(r=>{
+                //marks
+                this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+                this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+                this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+                this.marks_retrieved=true;
+              })
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.check_archive()
+              this.get_images_to_show();
+              
+
+              this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+          }
+          else{
+            this.content_id=this.item.drawing_id;
+              this.file_name = this.item.name_coverpage
+              this.title = this.item.title
+              this.style = this.item.category
+              this.highlight = this.item.highlight.slice(0,290)
+              this.list_of_reporters=this.item.list_of_reporters
+              this.short_highlight = this.highlight.slice(0,70);
+
+              this.firsttag = this.item.firsttag
+              this.secondtag = this.item.secondtag
+              this.thirdtag = this.item.thirdtag
+              this.pagesnumber = this.item.pagesnumber
+              this.chaptersnumber = this.item.chaptersnumber
+              this.date_upload = this.item.createdAt
+              this.data_retrieved=true;
+              this.NotationService.get_content_marks("drawing", 'artbook', this.item.drawing_id,0).subscribe(r=>{
+                //marks
+                this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+                this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+                this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+                this.marks_retrieved=true;
+              })
+              this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+              this.check_archive()
+              this.get_images_to_show();
+
+              
+              this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                this.thumbnail_picture = SafeURL;
+                this.thumbnail_picture_received=true;
+                
+                this.initialize_swiper();
+                window.dispatchEvent(new Event('resize'));
+              });
+
+
+          }
+        }
+
+        if(this.category=="writing"){
+          
+          this.content_id=this.item.writing_id;
+          this.file_name = this.item.name_coverpage
+          this.title = this.item.title
+          this.style = this.item.category
+          this.highlight = this.item.highlight.slice(0,290)
+          this.total_pages_for_writing=this.item.total_pages;
+          this.short_highlight = this.highlight.slice(0,70);
+          this.list_of_reporters=this.item.list_of_reporters
+          this.firsttag = this.item.firsttag
+          this.secondtag = this.item.secondtag
+          this.thirdtag = this.item.thirdtag
+          this.pagesnumber = this.item.pagesnumber
+          this.chaptersnumber = this.item.chaptersnumber
+          this.date_upload = this.item.createdAt;
+          this.data_retrieved=true;
+          this.NotationService.get_content_marks("writing", 'unknown', this.item.writing_id,0).subscribe(r=>{
+            //marks
+            this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
+            this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);
+            this.lovesnumber = number_in_k_or_m(r[0].list_of_loves.length);
+            this.marks_retrieved=true;
+          })
+          this.check_archive()
+          this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
+          
+
+          
+          this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
+            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.thumbnail_picture = SafeURL;
+            this.thumbnail_picture_received=true;
+            
+            this.initialize_swiper();
+            window.dispatchEvent(new Event('resize'));
+          });
+        }
+
+      }
     }
-
-
-   
-
-   
-
-    
     
     
 

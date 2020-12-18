@@ -1,4 +1,10 @@
-<div class="thumbnail-artwork">
+
+<div class="thumbnail-artwork shiny" *ngIf="skeleton" [@enterAnimation]>
+    <a class="global-container">
+    </a>
+</div>
+
+<div class="thumbnail-artwork" *ngIf="!skeleton" [@enterAnimation]>
 
 
     <div class="hide-because-reported"
@@ -21,9 +27,9 @@
             <img *ngIf="thumbnail_picture_received" #image [src]="thumbnail_picture" (load)="load_thumbnail()" [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
 
 
-            <div class="skeleton swiper-thumbnails shiny" *ngIf="(!thumbnail_is_loaded) || ( (subscribing_category=='writing') || ( subscribing_category!='writing' && !list_of_images_to_show_retrieved) )" ></div>
+            <div class="skeleton swiper-thumbnails shiny" *ngIf="(!thumbnail_picture_received)"></div>
 
-            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing' && list_of_images_to_show_retrieved && thumbnail_is_loaded" [@enterAnimation]>
+            <div #swiperThumbnails class="swiper-thumbnails" *ngIf="subscribing_category!='writing' && thumbnail_picture_received" [@enterAnimation]>
                 <div class="swiper-wrapper" [ngClass]="{'only-one-slide': swiperThumbnails && swiper2_initialized && swiper2.slides.length==1}">
                     <div class="swiper-slide">
                         <img #image2 [src]="thumbnail_picture" (load)="load_thumbnail()"  [ngClass]="{'invisible':!thumbnail_is_loaded}">

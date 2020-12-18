@@ -8,13 +8,14 @@
     
 
     <ng-container *ngIf="!list_of_new_contents_sorted && !list_of_contents_sorted && !show_more">
-        <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="skeleton" [@enterAnimation]>
-            </div>
-        </ng-container>
+        <div class="highlighted_artwork" *ngFor="let item of skeleton_array; let i = index">
+            <app-thumbnail-artwork 
+            skeleton=true
+            ></app-thumbnail-artwork>
+        </div>
     </ng-container>
 
-    <ng-container *ngIf="list_of_new_contents_sorted" [@enterAnimation]>
+    <ng-container>
         <div *ngFor="let item of list_of_new_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
@@ -91,7 +92,7 @@
     
     </ng-container>
     
-    <ng-container *ngIf=" list_of_contents_sorted" [@enterAnimation]>
+    <ng-container>
         <div *ngFor="let item of list_of_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">

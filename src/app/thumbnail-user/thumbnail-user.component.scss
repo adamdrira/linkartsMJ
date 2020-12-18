@@ -1,7 +1,17 @@
 .thumbnail-user {
     position:relative;
     display:flex;
-    width:100%;
+    flex-direction: column;
+
+    user-select: none;
+
+    max-width: 900px;
+    width:90%;
+    height: 266.66px;
+    margin-left: auto;
+    margin-right: auto;
+
+
     cursor: pointer;
     border-radius: 25px;
     overflow: hidden;
@@ -13,70 +23,49 @@
         visibility:hidden;
     }
     
-    .shiny{
-        background-color: rgb(220, 220, 220);
-        background-image: linear-gradient(
-          to right,
-          transparent 33%,
-          rgba(255,255,255,0.3) 50%,
-          transparent 66%
-        );
-        background-size:300% 100%;
-        animation: shine 2s infinite;
-      }
-      
-      @keyframes shine {
-        0% {
-          background-position: right;    
-        }
-      }
-
-    .left-container {
+    
+    .cover-picture {
+        position:absolute;
+        overflow: hidden;
+        top:0;
+        left:0;
+        right:0;
 
         height: 100%;
-
-        width: 200px;
-        min-width: 200px;
-
-        height: 266.66px;
-
-        display:flex;
-        flex-direction: column;
-
-        margin-left: 0px;
-        margin-right: 0px;
-        position: relative;
-
-        background: rgb(247,247,247);
-        //border-right: 1px solid #e8e8e8;
-        box-shadow: 0 1px 6px 1px #ececec, 0px 0px 1px rgba(0, 0, 0, 0.2);
+        width:100%;
         
-        .cover-picture {
-            position:absolute;
-            overflow: hidden;
-            top:0;
-            left:0;
-            right:0;
-
-            height: 85px;
+        img {
+            height:100%;
             width:100%;
-            
-            img {
-                height:100%;
-                width:100%;
-                object-fit: cover;
-            }
+            object-fit: cover;
         }
-    
+    }
+
+    .absolute-profile-data {    
+        position: absolute;
+        display: flex;
+        background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+        box-shadow: 0px 1px 8px 0px #001c50;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        
+        flex-direction: column;
+        padding: 20px 20px 25px 20px;
+        border-radius: 45px;
+        min-width: 225px;
+        max-width: 300px;
+        
         .profile-picture {
             position: relative;
             height: 80px;
             width: 80px;
-            margin-top: 40px;
             margin-left: auto;
             margin-right: auto;
             border-radius: 100px;
             overflow: hidden;
+            box-shadow: 0px 0px 2px 2px #4bc7ff;
+            border: 1px solid #4bc7ff;
             img {
                 height:100%;
                 width:100%;
@@ -92,9 +81,9 @@
             cursor:pointer;
     
             span {
-                font-size:15px;
+                font-size:13px;
                 line-height: 19px;
-                color:rgb(32,56,100);
+                color:rgb(255, 255, 255);
                 font-weight:bold;
     
                 display: -webkit-box;
@@ -116,17 +105,17 @@
             display:flex;
     
             mat-icon {
-                margin:auto 5px auto auto;
+                margin:auto 4px auto auto;
                 width:unset !important;
                 height:unset !important;
                 font-size:14px;
-                color: #6d6d6d;
+                color: #4bc7ff;
             }
             span {
                 margin:auto auto auto 0px;
-                font-size: 13px;
+                font-size: 12px;
                 line-height: 16px;
-                color: #838383;
+                color: #ffffff;
     
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
@@ -135,264 +124,54 @@
                 white-space: normal;
                 -webkit-line-clamp: 1;
                 word-break: break-word;
+                text-align: left;
             }
         }
-
-        .subscribe-button {
-            margin:auto auto 8px auto;
-            border-radius:30px;
-            background-color:unset;
-            outline:none !important;
-            border:1px solid rgb(32,56,100);
-            background:white;
-            display:flex;
-            padding:0px 15px;
-            height:30px;
+    }
     
-            span {
-                margin: auto auto;
-                font-size: 13px;
-                color:rgb(32,56,100);
-                font-weight: bold;
-            }
-        }
-
-        .subscribe-button:hover {
-            background:#eeeff3 !important;
-            border:2px solid rgb(32,56,100) !important;
-        }
-
-        .subscribe-button:active {
-            background: #e2e5eb !important;
-            border:2px solid rgb(32,56,100) !important;
-        }
-    }
-
-
-    .right-container {
-        overflow: overlay;
-        display: flex;
-        position: relative;
-        width: -webkit-fill-available;
-        color: #203864;
-        max-width: 900px;
-
-
-        .descriptions {
-            width: -webkit-fill-available;
-            padding:10px 50px 6px 20px;
-            
-            .author-description {
-                position: relative;
-                display: flex;
-                font-size: 18px;
-                font-weight: bold;
-                text-align: left;
-                span {
-                    line-height: 22px;
-                    font-size: 16px;
-                    margin-right: 30px;
-                    word-break: break-word;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: normal;
-                    -webkit-line-clamp: 2;
-                }
-            }
-            .author-extended-description {
-                width: 100%;
-                margin-top: 5px;
-                margin-bottom: 3px;
-                overflow-y: auto;
-                text-align: left;
-                word-break: break-word;
-                span {
-                    margin: auto auto;
-                    font-size: 14px;
-                    line-height: 20px;
-                    display: -webkit-box;
-                    width: 100%;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: normal;
-                    -webkit-line-clamp: 8;
-                }
-            }
-        }
-        .preview {
-            position:relative;
-            display: flex;
-            height:100%;
-            width:266.66px;
-            min-width: 266.66px;
-            margin:auto 0px auto auto;
-            color:rgb(32,56,100);
-            background-image: linear-gradient(0.04turn, #050c3d, #183e70, #2b71a4);
-            box-shadow: 0 1px 6px 1px #ececec, 0px 0px 1px rgba(0, 0, 0, 0.2);
-
-            .preview-container {
-                width:100%;
-                margin: 35px auto auto auto;
-                display:flex;
-                flex-direction: column;
-
-                .container-title {
-                    display:flex;
-                    color: white;
-                    font-weight:bold;
-                    margin: auto auto 20px auto;
-                    mat-icon {
-                        font-size:23px;
-                        margin:auto 5px auto auto;
-                        height:unset;
-                        width:unset;
-                    }
-                    > span {
-                        margin:auto auto auto 3px;
-                    }
-                }
-
-                .data-container {
-                    display:flex;
-                    flex-wrap:wrap;
-                    margin: 0px auto auto auto;
-
-
-                    .data {
-                        display:flex;
-                        
-                        width: 118px;
-                        margin: 13px 5px 13px 5px;
-                        padding: 11px 3px 11px 3px;
-
-                        font-weight: 600;
-                        min-width: fit-content;
-                        color:rgb(32,56,100);
-
-                        border-radius: 20px;
-
-                        box-shadow: 0px 0px 4px #1b4577;
-                        border: 1px solid #242f77;
-                        
-                        text-shadow: -0.02ex 0 white, 0.02ex 0 !important;
-                        cursor:pointer;
-                    
-                        background-color:white;
-                        transition: background-color 200ms;
-
-                        mat-icon {
-                            color: rgb(32,56,100);
-                            margin-top: auto;
-                            margin-bottom: auto;
-                            margin-left: 15px;
-                            height:20px;
-                            width: 20px;
-                            font-size: 22px;
-                        }
-                    
-                        > span {
-                            margin: auto auto auto auto;
-                            font-size: 16px;
-                        }
-                    
-                        .icon {
-                            background:rgb(32,56,100);
-                            margin-top: auto;
-                            margin-bottom: auto;
-                            margin-left: 15px;
-                            height:20px;
-                            width: 20px;
-                            font-size: 20px;
-                        }
-                    
-                        .icon-artist {
-                            -webkit-mask:  url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
-                            mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
-                        }
-                        .icon-comic {
-                            -webkit-mask:  url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
-                            mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
-                        }
-                        .icon-drawing {
-                            -webkit-mask:  url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
-                            mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
-                        }
-                        .icon-writing {
-                            -webkit-mask:  url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
-                            mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
-                        }
-                    }
-                }
-            }
-            
-
-        }
-    }
-
-
-
-    @media (max-width: 800px) {
-        flex-direction: column !important;
-
-        .left-container {
-            width:100% !important;
-            min-width:unset !important;
-            height:unset !important;
-            .cover-picture {
-                height:150px !important;
-            }
-            .profile-picture {
-                height: 100px !important;
-                width: 100px !important;
-                margin-top: 95px !important;
-            }
-            .profile-name {
-                margin-top:10px !important;
-            }
-            .subscribe-button {
-                margin: 10px auto 10px auto !important;
-            }
-        }
-        .right-container {
-            flex-direction: column !important;
-            .descriptions {
-                padding: 15px 20px 10px 20px !important;
-                .author-extended-description span {
-                    -webkit-line-clamp: 4 !important;
-                }
-            }
-
-            .preview {
-                width: 100% !important;
-                .preview-container {
-                    margin:20px auto auto auto !important;
-                    .container-title {
-                        margin: auto auto 10px auto !important;
-                    }
-
-                    .data-container {
-                        .data {
-                            margin:0px 8px 12px 8px !important;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @media (max-width: 600px) {
+    @media (max-width: 900px) {
+        width:80%;
 
     }
+    @media (min-width: 400px) and (max-width: 599px) {
+        width:90%;
+    }
+    @media (max-width: 400px) {
+        width:100%;
+        border-radius:0px !important;
+    }
+
 }
 
+
+.shiny{
+    background-color: rgb(220, 220, 220);
+    background-image: linear-gradient(
+        to right,
+        transparent 33%,
+        rgba(255,255,255,0.3) 50%,
+        transparent 66%
+    );
+    background-size:300% 100%;
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% {
+        background-position: right;    
+    }
+}
 
 ::ng-deep .tooltip-thumbnail-user {
-    background-color: rgba(255, 255, 255, 0.92) !important;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
-    font-weight:600 !important;
-    font-size:12px !important;
-    color: rgb(15, 32, 63) !important;
-}
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgb(94, 121, 172) !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12) !important;
+    font-size: 11px !important;
+    color: rgb(32, 56, 100) !important;
+    padding: 6px !important;
+    white-space: pre-line;
+    text-align: center !important;
+  }

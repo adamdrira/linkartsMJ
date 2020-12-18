@@ -44,6 +44,7 @@ export class ThumbnailUserComponent implements OnInit {
 
   /*Inputs*/
   @Input() item:any;
+  @Input() loaded:any;
   @Input() format: string;
   @Input() now_in_seconds: number;
 
@@ -148,7 +149,8 @@ export class ThumbnailUserComponent implements OnInit {
   }
 
 
-  subscribtion(){
+
+  /*subscribtion(){
     if(this.type_of_profile=='account'){
       if(!this.subscribed_to_user){
         this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
@@ -167,7 +169,7 @@ export class ThumbnailUserComponent implements OnInit {
       });
     }
   
-  }
+  }*/
 
   stop(e: Event) {
     e.preventDefault();
