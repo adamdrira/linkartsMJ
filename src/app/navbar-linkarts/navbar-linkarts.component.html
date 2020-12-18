@@ -854,11 +854,30 @@
                           </div>
                         </a>
                       </ng-container>
+                      <!-- ---------------------------favorites----------------------------------->
+                      <!-- ---------------------------favorites----------------------------------->
+                      <ng-container *ngIf="notif.type=='favorites'">
+
+                        <a (click)="close_notifications();" [routerLink]="get_my_favorite()">
+                          <div class="left-container">
+                            <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
+                              [ngClass]="{'invisible':!notification_loaded[i]}">
+                            <div class="notification-icon trendings">
+                              <mat-icon>local_fire_department</mat-icon>
+                            </div>
+                          </div>
+                          <div class="right-container">
+                            <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour.</span>
+                          
+                            <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
+                          </div>
+                        </a>
+                      </ng-container>
                       <!-- ---------------------------trendings----------------------------------->
                       <!-- ---------------------------trendings----------------------------------->
                       <ng-container *ngIf="notif.type=='trendings'">
 
-                        <a (click)="open_my_trending(notif.publication_category);" [routerLink]="get_my_trending(notif.publication_category)">
+                        <a (click)="close_notifications();" [routerLink]="get_my_trending(notif.publication_category)">
                           <div class="left-container">
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">

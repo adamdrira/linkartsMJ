@@ -1462,7 +1462,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
   }
 
-  open_my_trending(category){
+  open_my_trending(){
     this.close_notifications();
   }
   get_my_trending(category) {
@@ -1478,7 +1478,9 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
  
-  
+  get_my_favorite() {
+      return "/favorites"
+  }
   
   get_account_for_notification(notif:any) {
     return "/account/" + notif.id_user_name + "/" + notif.id_user;
