@@ -76,7 +76,6 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   @ViewChild('image') image:ElementRef;
   @ViewChild('image2') image2:ElementRef;
-
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if( this.image ) {
@@ -102,7 +101,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   @Input() item: any;
-  @Input() skeleton: any;
+  @Input() skeleton: boolean;
   @Input() page: any;
   @Input() rank: any;
   @Input() now_in_seconds: number;
@@ -889,12 +888,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   list_of_images_to_show=[];
   list_of_images_to_show_retrieved=false;
   recent_chapter=false;
-  loaded_images_mobile=[]
   load_image(i){
     this.loaded_images[i]=true;
-  }
-  load_image_mobile(i){
-    this.loaded_images_mobile[i]=true;
   }
 
   convert_timestamp_to_number(timestamp){
