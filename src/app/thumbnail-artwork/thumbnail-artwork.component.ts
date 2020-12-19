@@ -82,6 +82,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       
 
       if(this.list_of_images_to_show_retrieved && this.image2){
+        console.log("resize rendered")
         let width2 = this.image2.nativeElement.width;
         let height2 = this.image2.nativeElement.height;
         if( window.innerWidth<=600 && this.category!="drawing" ) {
@@ -687,6 +688,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   };
 
   load_thumbnail(){
+    console.log("thumbnail_is_loaded")
     this.thumbnail_is_loaded=true;
     this.cd.detectChanges();
     this.initialize_swiper();
