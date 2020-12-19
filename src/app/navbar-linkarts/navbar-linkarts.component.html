@@ -56,11 +56,18 @@
         </div>-->
         <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search }">
           <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector }">
-            <mat-select #navbarSelect2 panelClass="navbarSelectClass2" disableOptionCentering [(value)]="navbar.active_section" (selectionChange)="sectionChange2($event.value)">
+            
+            <div class="arrow-container" [ngClass]="{'opened': navbarSelect2 && navbarSelect2.panelOpen }">
+              <mat-icon>arrow_back_ios_new</mat-icon>
+            </div>
+
+            <mat-select #navbarSelect2 panelClass="navbarSelectClass2" ng-animate-disabled
+            [(value)]="navbar.active_section"
+            (selectionChange)="sectionChange2($event.value)">
               
               <mat-select-trigger>
-                <ng-container *ngIf="navbar.active_section==0">Accueil</ng-container>
-                <ng-container *ngIf="navbar.active_section==1">Collaborations</ng-container>
+                <span *ngIf="navbar.active_section==0">Accueil</span>
+                <span *ngIf="navbar.active_section==1">Collaborations</span>
               </mat-select-trigger>
 
               <mat-option [value]="0" select>
@@ -99,7 +106,16 @@
             
             <div class="left-container first-selector" [ngClass]="{'invisible': !show_selector }">
               <mat-form-field floatLabel='never'>
-                <mat-select #navbarSelect panelClass="navbarSelectClass" disableOptionCentering value="Tout" (selectionChange)="sectionChange($event.value)">
+
+                <div class="arrow-container" [ngClass]="{'opened': navbarSelect && navbarSelect.panelOpen }">
+                  <mat-icon>arrow_back_ios_new</mat-icon>
+                </div>
+
+                <mat-select #navbarSelect 
+                panelClass="navbarSelectClass" 
+                disableOptionCentering value="Tout" 
+                (selectionChange)="sectionChange($event.value)">
+                
                   <mat-option value="Tout" select>Tout</mat-option>
                   <mat-option value="Compte">Compte</mat-option>
                   <mat-option value="Ad">Annonce</mat-option>

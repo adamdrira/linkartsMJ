@@ -106,17 +106,6 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   
-  @ViewChild('navbarSelect') navbarSelect;
-  @ViewChild('navbarSelect2') navbarSelect2;
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if( this.navbarSelect ) {
-      this.navbarSelect.close();
-    }
-    if( this.navbarSelect2 ) {
-      this.navbarSelect2.close();
-    }
-  }
 
   reload_page(){
     location.reload();
@@ -1724,8 +1713,23 @@ initialize_selectors(){
 
 }
 
+
+
+@ViewChild('navbarSelect') navbarSelect;
+@ViewChild('navbarSelect2') navbarSelect2;
+@HostListener('window:resize', ['$event'])
+onResize(event) {
+  if( this.navbarSelect ) {
+    this.navbarSelect.close();
+  }
+  if( this.navbarSelect2 ) {
+    this.navbarSelect2.close();
+  }
+}
+
 sectionChange(e:any) {
   this.input.nativeElement.value="";
+  
   this.publication_category=e;
   if(this.publication_category=="Comic" || this.publication_category=="Drawing" || this.publication_category=="Writing"){
     this.display_style_and_tag_research=true;
@@ -1736,11 +1740,9 @@ sectionChange(e:any) {
     this.indice_title_selected=-1
   }
 }
-
 sectionChange2(e:any) {
   this.go_to_section( e );
 }
-
 
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
