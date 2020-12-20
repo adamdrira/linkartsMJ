@@ -305,24 +305,7 @@ const get_drawings_trendings = (request, response) => {
 		}).then(result=>{
     if(result){
       console.log("it exists rankings draw");
-      /*fs.access(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(err){
-          console.log('suppression already done rankings draw');
-          response.status(200).send([{"drawings_trendings":result.trendings}]);
-        }  
-        else{
-          fs.unlink(__dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`,function (err) {
-            if (err) {
-              throw err;
-            } 
-            else{
-              response.status(200).send([{"drawings_trendings":result.trendings}]);
-            }
-          });  
-          
-        }
-        
-      })*/
+   
       response.status(200).send([{"drawings_trendings":result.trendings}]);
     }
     else{
@@ -337,24 +320,7 @@ const get_drawings_trendings = (request, response) => {
            add_drawings_trendings(json,date)
           return response.status(200).send([{"drawings_trendings":json}]); 
       })
-      /*fs.access( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`, fs.F_OK, (err) => {
-        if(err){
-          console.log(" no rankigns drawings anywhere");
-          }
-          else{
-            let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/drawings_rankings_for_trendings-${date}.json`));
-            trendings_seq.trendings_drawings.create({
-              "trendings":json,
-              "date":date
-            }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(result=>{
-                return response.status(200).send([{"drawings_trendings":json}]); 
-            })
-           
-          }
-        })*/
+     
     }
   })
 
@@ -389,9 +355,9 @@ const get_writings_trendings = (request, response) => {
         "trendings":json,
         "date":date
       }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(result=>{
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(result=>{
           add_writings_trendings(json,date)
           return response.status(200).send([{"writings_trendings":json}]); 
       })
@@ -1082,17 +1048,30 @@ const get_writings_trendings = (request, response) => {
     if(ranking>15){
       return '0'
     }
-    if(number<1000){
-      let num = 1/2+ (1/3)*(1/ranking)*((1/80)*number + 12.5);
+    if(number<100){
+      let num = 1/2+ (1/3)*(1/ranking)*((1/80)*number + 5);
       
       return num.toFixed(2)
     }
     if(number<1000){
-      let num = 2/5+ (1/3)*(1/ranking)*((3/1000)*number + 20);
+      let num = 1/2+ (1/3)*(1/ranking)*((2/1000)*number + 6.05);
+      
+      return num.toFixed(2)
+    }
+    if(number<10000){
+      let num = 2/5+ (1/3)*(1/ranking)*((3/10000)*number + 7.75);
       return num.toFixed(2)
     }
     if(number<100000){
-      let num = 1 + (1/3)*(1/ranking)*((6/10000)*number + 40);
+      let num = 1 + (1/3)*(1/ranking)*((6/1000000)*number + 6);
+      return num.toFixed(2)
+    }
+    if(number<1000000){
+      let num = 1 + (1/3)*(1/ranking)*((12/10000000)*number + 8);
+      return num.toFixed(2)
+    }
+    else{
+      let num = 1 + (1/3)*(1/ranking)*((24/100000000)*number + 6);
       return num.toFixed(2)
     }
   }

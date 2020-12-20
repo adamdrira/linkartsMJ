@@ -165,7 +165,7 @@ controller_subscribings(router,
    navbar_seq.list_of_navbar_researches
     );
 controller_albums(router, albums_seq.list_of_albums);
-controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views );
+controller_stories(router, stories_seq.list_of_stories, stories_seq.list_of_views,authentification.users,subscribings_seq.list_of_subscribings );
 controller_ads(router, ads_seq.list_of_ads,ads_seq.list_of_ads_responses,authentification.users);
 controller_chat(router,chat_seq.list_of_messages,
   chat_seq.list_of_chat_friends,

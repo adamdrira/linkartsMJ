@@ -62,6 +62,7 @@ pool.connect((err, client, release) => {
 			res.status(500).json({msg: "error", details: err});		
 		}).then(resu=>{
       if(resu[0]){
+        console.log("result favo ok")
         return response.status(200).send([{favorites:resu}]);
       }
       else{
@@ -73,8 +74,8 @@ pool.connect((err, client, release) => {
       console.log("generate favorites")
       pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels"], (error, results) => {
         if (error) {
-
-            throw error
+          console.log(err)
+          response.status(500).send([{error:err}])
         }
         else{
             let json_view = JSON.parse(JSON.stringify(results.rows));
@@ -105,7 +106,8 @@ pool.connect((err, client, release) => {
                     else{
                       fs.unlink(__dirname + Path1,function (err) {
                         if (err) {
-                          throw err;
+                          console.log(err)
+                          response.status(500).send([{error:err}])
                         } 
                         add_favorites(json,date);
                         
@@ -124,10 +126,12 @@ pool.connect((err, client, release) => {
 
     function add_favorites(json,date){
       console.log("add_favorites")
+      console.log(json)
       console.log(Object.keys(json.id).length)
       let obj=Object.keys(json.id);
       let compt=0;
       let list_of_users=[]
+      let list_of_rankings=[];
       for(let i=0;i<obj.length;i++){
         authentification.users.findOne({
           where:{
@@ -135,9 +139,9 @@ pool.connect((err, client, release) => {
             status:"account",
           }
         }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(user=>{
           if(user){
             list_of_users[i]=user;
             compt++
@@ -159,8 +163,11 @@ pool.connect((err, client, release) => {
      
       function add_to_date(){
         let compteur_done=0;
+        console.log("add_to_data")
+        console.log(list_of_users.length)
         for(let i=0;i<list_of_users.length;i++){
           let ranking=get_ranking(i);
+          list_of_rankings[i]=ranking;
           let remuneration= get_remuneration(list_of_users[i].subscribers.length,ranking);
           if(Number(dd)!=1){
             remuneration="0";
@@ -176,26 +183,14 @@ pool.connect((err, client, release) => {
               "remuneration":remuneration,
               "type_of_account":list_of_users[i].type_of_account
             }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(favorites=>{
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(favorites=>{
               compteur_done++;
               if(compteur_done==list_of_users.length){
-                favorites_seq.favorites.findAll({
-                  where:{
-                    date: date
-                  },
-                  order: [
-                      ['rank', 'ASC']
-                    ],
-                }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(resu=>{
-                  if(resu[0]){
-                    return response.status(200).send([{favorites:resu}]);
-                  }
-                })
+                
+                return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                  
               }
             })
           }
@@ -246,9 +241,9 @@ pool.connect((err, client, release) => {
               id_group:user.id,
             }
           }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(members=>{
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(members=>{
             
             if(members[0]){
               console.log("members_found")
@@ -264,26 +259,14 @@ pool.connect((err, client, release) => {
                 "type_of_account":list_of_users[i].type_of_account,
                 "shares":[shares],
               }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(favorites=>{
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
-                  favorites_seq.favorites.findAll({
-                    where:{
-                      date: date
-                    },
-                    order: [
-                        ['rank', 'ASC']
-                      ],
-                  }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(resu=>{
-                    if(resu[0]){
-                      return response.status(200).send([{favorites:resu}]);
-                    }
-                  })
+                
+                  return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                    
                 }
               })
             }
@@ -295,26 +278,14 @@ pool.connect((err, client, release) => {
                 "remuneration":remuneration,
                 "type_of_account":list_of_users[i].type_of_account,
               }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(favorites=>{
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
-                  favorites_seq.favorites.findAll({
-                    where:{
-                      date: date
-                    },
-                    order: [
-                        ['rank', 'ASC']
-                      ],
-                  }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(resu=>{
-                    if(resu[0]){
-                      return response.status(200).send([{favorites:resu}]);
-                    }
-                  })
+                
+                  return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                    
                 }
               })
             }

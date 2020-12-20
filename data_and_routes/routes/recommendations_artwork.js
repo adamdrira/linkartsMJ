@@ -40,7 +40,8 @@ const get_comics_recommendations_by_author = (request, response) => {
 
   pool.query('SELECT * FROM list_of_contents  WHERE id_user=$1 AND status=$4 AND  publication_category=$2 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 6', [id_user,"comic",publication_id,"ok"], (error, results) => {
     if (error) {
-      throw error
+        console.log(err)
+        response.status(500).send([{error:err}])
     }
     else{
         let result = JSON.parse(JSON.stringify(results.rows));
@@ -51,7 +52,8 @@ const get_comics_recommendations_by_author = (request, response) => {
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                     pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                     if (error) {
-                        throw error
+                        console.log(err)
+                        response.status(500).send([{error:err}])
                     }
                     else{
                         let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -67,7 +69,8 @@ const get_comics_recommendations_by_author = (request, response) => {
                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                         pool.query('SELECT * FROM liste_bd_serie WHERE authorid=$1 AND bd_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
-                            throw error
+                            console.log(err)
+                            response.status(500).send([{error:err}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -100,7 +103,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
   
     pool.query('SELECT * FROM list_of_contents WHERE id_user=$1 AND publication_category=$2 AND status=$4 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 6', [id_user,"drawing",publication_id,"ok"], (error, results) => {
       if (error) {
-        throw error
+        console.log(err)
+        response.status(500).send([{error:err}])
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
@@ -110,24 +114,26 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 if (result[i].format=="one-shot"){
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                     pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
-                    if (error) {
-                        throw error
-                    }
-                    else{
-                        let result2 = JSON.parse(JSON.stringify(results2.rows));
-                        list_to_send.push(result2);
-                        j++;
-                        if(j==result.length){
-                            response.status(200).send([{"list_to_send":list_to_send}]);
+                        if (error) {
+                            console.log(err)
+                            response.status(500).send([{error:err}])
                         }
-                    }
-                });
+                        else{
+                            let result2 = JSON.parse(JSON.stringify(results2.rows));
+                            list_to_send.push(result2);
+                            j++;
+                            if(j==result.length){
+                                response.status(200).send([{"list_to_send":list_to_send}]);
+                            }
+                        }
+                    });
                 }
                 if (result[i].format=="artbook"){
                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
-                        pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
+                    pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid=$1 AND drawing_id=$2 AND status=$3', [id_user,result[i].publication_id,"public"], (error, results2) => {
                         if (error) {
-                            throw error
+                            console.log(err)
+                            response.status(500).send([{error:err}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -139,13 +145,13 @@ const get_drawings_recommendations_by_author = (request, response) => {
                         }
                     });
                 }
-                }
             }
-            else {
-                response.status(200).send([{"list_to_send":list_to_send}]);
-            }
+        }
+        else {
+            response.status(200).send([{"list_to_send":list_to_send}]);
+        }
       }
-      })
+    })
   
   }
 
@@ -161,7 +167,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
   
     pool.query('SELECT * FROM list_of_contents WHERE id_user=$1 AND publication_category=$2 AND status=$4 AND id NOT IN (SELECT id FROM list_of_contents WHERE publication_category=$2 AND publication_id=$3) ORDER BY "createdAt" DESC limit 6', [id_user,"writing",publication_id,"ok"], (error, results) => {
       if (error) {
-        throw error
+        console.log(err)
+                        response.status(500).send([{error:err}])
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
@@ -171,7 +178,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                     pool.query('SELECT * FROM liste_writings WHERE authorid=$1 AND writing_id=$2 AND status=$3', [id_user,result[i].publication_id ,"public"], (error, results2) => {
                     if (error) {
-                        throw error
+                        console.log(err)
+                        response.status(500).send([{error:err}])
                     }
                     else{
                         let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -207,7 +215,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
      
         pool.query('  SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style=$6  AND id not in (SELECT id from list_of_navbar_researches where publication_category=$1 and format=$4 and target_id=$7) GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC LIMIT $3 ', [category,status,limit,format,second_filter,first_filter,target_id], (error, results) => {
             if (error) {
-                throw error
+                console.log(err)
+                        response.status(500).send([{error:err}])
             }
             else{
                 let result = JSON.parse(JSON.stringify(results.rows));
@@ -217,7 +226,8 @@ const get_drawings_recommendations_by_author = (request, response) => {
                  
                     pool.query('  SELECT  publication_category,format,target_id,research_string,count(*) occurences  FROM list_of_navbar_researches WHERE  publication_category=$1 AND status=$2 AND (firsttag=$5 OR secondtag=$5 OR thirdtag=$5) AND style!=$6  AND id not in (SELECT id from list_of_navbar_researches where publication_category=$1 and format=$4 and target_id=$7) GROUP BY publication_category,format,target_id,research_string  ORDER BY count(*) DESC LIMIT $3 '  , [category,status,new_limit,format,second_filter,first_filter,target_id], (error, results2) => {
                         if (error) {
-                            throw error
+                            console.log(err)
+                            response.status(500).send([{error:err}])
                         }
                         else{
                             let result2 = JSON.parse(JSON.stringify(results2.rows));
@@ -241,7 +251,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
     };
 
   const get_recommendations_by_tag = (request, response) => {
-
+    /*
     var last_week = new Date();
     last_week.setDate(last_week.getDate() - 40);
     const limit=6;
@@ -259,14 +269,16 @@ const get_drawings_recommendations_by_author = (request, response) => {
     var list_to_send=[];
     pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$7 AND firsttag=$3  AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit,publication_category,format,publication_id], (error, results) => {
       if (error) {
-        throw error
+        console.log(err)
+        response.status(500).send([{error:err}])
       }
       else{
           let result = JSON.parse(JSON.stringify(results.rows));
           
             pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1 AND view_time is not null AND style=$2 AND format=$7 AND firsttag!=$3 AND (secondtag=$3 OR thirdtag=$3) AND "createdAt" ::date >= $4 AND view_time IS NOT NULL AND (publication_category,format,publication_id) NOT IN (SELECT publication_category,format,publication_id FROM list_of_contents WHERE publication_category=$6 AND format=$7 AND publication_id=$8)) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit $5', [user,style,firsttag,last_week,limit2,publication_category,format,publication_id], (error, results1) => {
                 if (error) {
-                  throw error
+                    console.log(err)
+                    response.status(500).send([{error:err}])
                 }
                 else{
                     let result1 = JSON.parse(JSON.stringify(results1.rows));
@@ -279,10 +291,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                     pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid NOT IN ($1,$3) AND bd_id=$2', [user,result[i].publication_id,id_user], (error, results2) => {
                                     if (error) {
-                                        throw error
+                                        console.log(err)
+                                        response.status(500).send([{error:err}])
                                     }
                                     else{
-                                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                                        let result2 = JSON.parse(JSON.stringify(results2.rows));
                                         if(result2.length>0){
                                             list_to_send.push(result2);
                                         }
@@ -297,10 +310,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                         pool.query('SELECT * FROM liste_bd_serie WHERE authorid NOT IN ($1,$3) AND bd_id=$2', [user,result[i].publication_id,id_user], (error, results2) => {
                                         if (error) {
-                                            throw error
+                                            console.log(err)
+                                            response.status(500).send([{error:err}])    
                                         }
                                         else{
-                                            result2 = JSON.parse(JSON.stringify(results2.rows));
+                                            let result2 = JSON.parse(JSON.stringify(results2.rows));
                                             if(result2.length>0){
                                                 list_to_send.push(result2);
                                             }
@@ -319,10 +333,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                         pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid NOT IN ($1,$3) AND drawing_id=$2', [user,result[i].publication_id,id_user], (error, results2) => {
                                         if (error) {
-                                            throw error
+                                            console.log(err)
+                                             response.status(500).send([{error:err}])
                                         }
                                         else{
-                                            result2 = JSON.parse(JSON.stringify(results2.rows));
+                                            let result2 = JSON.parse(JSON.stringify(results2.rows));
                                             if(result2.length>0){
                                                 list_to_send.push(result2);
                                             }
@@ -337,10 +352,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                         // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                             pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid NOT IN ($1,$3) AND drawing_id=$2', [user,result[i].publication_id,id_user], (error, results2) => {
                                             if (error) {
-                                                throw error
+                                                console.log(err)
+                                                response.status(500).send([{error:err}])
                                             }
                                             else{
-                                                result2 = JSON.parse(JSON.stringify(results2.rows));
+                                                let result2 = JSON.parse(JSON.stringify(results2.rows));
                                                 if(result2.length>0){
                                                     list_to_send.push(result2);
                                                 }
@@ -357,10 +373,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                             for (let i=0; i< result.length;i++){
                                 pool.query('SELECT * FROM liste_writings WHERE authorid NOT IN ($1,$3) AND writing_id!=$2', [user,result[i].publication_id,id_user], (error, results2) => {
                                     if (error) {
-                                        throw error
+                                        console.log(err)
+                                         response.status(500).send([{error:err}])
                                     }
                                     else{
-                                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                                        let result2 = JSON.parse(JSON.stringify(results2.rows));
                                         if(result2.length>0){
                                             list_to_send.push(result2);
                                         }
@@ -378,10 +395,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                 // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                     pool.query('SELECT * FROM liste_bd_one_shot  WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
                                     if (error) {
-                                        throw error
+                                        console.log(err)
+                                        response.status(500).send([{error:err}])
                                     }
                                     else{
-                                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                                        let result2 = JSON.parse(JSON.stringify(results2.rows));
                                         if(result2.length>0){
                                             list_to_send.push(result2);
                                         }
@@ -393,10 +411,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                         pool.query('SELECT * FROM liste_bd_serie WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
                                         if (error) {
-                                            throw error
+                                            console.log(err)
+                                            response.status(500).send([{error:err}])
                                         }
                                         else{
-                                            result2 = JSON.parse(JSON.stringify(results2.rows));
+                                            let result2 = JSON.parse(JSON.stringify(results2.rows));
                                             if(result2.length>0){
                                                 list_to_send.push(result2);
                                             }
@@ -411,10 +430,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                     // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                         pool.query('SELECT * FROM liste_drawings_one_page  WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
                                         if (error) {
-                                            throw error
+                                            console.log(err)
+                                            response.status(500).send([{error:err}])
                                         }
                                         else{
-                                            result2 = JSON.parse(JSON.stringify(results2.rows));
+                                            let result2 = JSON.parse(JSON.stringify(results2.rows));
                                             if(result2.length>0){
                                                 list_to_send.push(result2);
                                             }
@@ -426,10 +446,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                                         // on récupère la liste des bd d'un artiste dont l'utilisateur a vue une des oeuvres, à l'exception des oeuvres qu'il a déjà vu
                                             pool.query('SELECT * FROM liste_drawings_artbook WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
                                             if (error) {
-                                                throw error
+                                                console.log(err)
+                                                response.status(500).send([{error:err}])
                                             }
                                             else{
-                                                result2 = JSON.parse(JSON.stringify(results2.rows));
+                                                let result2 = JSON.parse(JSON.stringify(results2.rows));
                                                 if(result2.length>0){
                                                     list_to_send.push(result2);
                                                 }
@@ -442,10 +463,11 @@ const get_drawings_recommendations_by_author = (request, response) => {
                         else if (publication_category=="writing"){
                                 pool.query('SELECT * FROM liste_writings WHERE authorid NOT IN ($1,$2) AND category=$4 AND (firsttag=$3 OR secondtag=$3 OR thirdtag=$3) ORDER BY "createdAt" DESC limit 6', [user,id_user,firsttag,style], (error, results2) => {
                                     if (error) {
-                                        throw error
+                                        console.log(err)
+                        response.status(500).send([{error:err}])
                                     }
                                     else{
-                                        result2 = JSON.parse(JSON.stringify(results2.rows));
+                                        let result2 = JSON.parse(JSON.stringify(results2.rows));
                                         if(result2.length>0){
                                             list_to_send.push(result2);
                                         }
@@ -458,7 +480,7 @@ const get_drawings_recommendations_by_author = (request, response) => {
           
           
       }
-      })
+      })*/
   
   }
   

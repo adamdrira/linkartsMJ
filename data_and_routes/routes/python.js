@@ -148,7 +148,8 @@ python_router.delete('/delete_recommendations_artpieces', function(req, res) {
     else{
       fs.unlink(__dirname + `/python_files/recommendations_artpieces-${user}.json`,function (err) {
         if (err) {
-          throw err;
+          console.log(err)
+                response.status(500).send([{error:err}])
         } 
         else{
           //console.log("suppression de fichier artpieces done")
