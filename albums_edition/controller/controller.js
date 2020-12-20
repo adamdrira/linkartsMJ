@@ -105,7 +105,7 @@ module.exports = (router, list_of_albums) => {
 
 
 
-    router.get('/get_albums_comics/:id_user', function (req, res) {
+    /*router.get('/get_albums_comics/:id_user', function (req, res) {
         let id_user = req.params.id_user;
         (async () => {
 
@@ -120,19 +120,17 @@ module.exports = (router, list_of_albums) => {
                 ],
             })
             .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(albums =>  {
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(albums =>  {
                 res.status(200).send(albums)
             }); 
         })();     
-    });
+    });*/
 
-    router.get('/get_standard_albums_comics/:id_user', function (req, res) {
+    router.get('/get_albums_comics/:id_user', function (req, res) {
         let id_user = req.params.id_user;
-        (async () => {
-
-            albums = await list_of_albums.findAll({
+        list_of_albums.findAll({
                 where: {
                     id_user:id_user,
                     album_category:"comics",
@@ -143,12 +141,26 @@ module.exports = (router, list_of_albums) => {
                 ],
             })
             .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(albums =>  {
-                res.status(200).send(albums)
-            }); 
-        })();     
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(standard_albums =>  {
+                list_of_albums.findAll({
+                    where: {
+                        id_user:id_user,
+                        album_category:"comics",
+                        status:["public","private"]
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ],
+                })
+                .catch(err => {
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(albums =>  {
+                        res.status(200).send([{standard_albums:standard_albums,albums:albums}])
+                }); 
+            });   
     });
 
     router.post('/change_comic_album_status', function (req, res) {
@@ -213,7 +225,7 @@ module.exports = (router, list_of_albums) => {
         })();     
     });
 
-    router.get('/get_albums_drawings/:id_user', function (req, res) {
+    /*router.get('/get_albums_drawings/:id_user', function (req, res) {
         let id_user = req.params.id_user;
         (async () => {
 
@@ -234,13 +246,11 @@ module.exports = (router, list_of_albums) => {
                 res.status(200).send(albums)
             }); 
         })();     
-    });
+    });*/
 
-    router.get('/standard_albums_drawings/:id_user', function (req, res) {
+    router.get('/get_albums_drawings/:id_user', function (req, res) {
         let id_user = req.params.id_user;
-        (async () => {
-
-            albums = await list_of_albums.findAll({
+        list_of_albums.findAll({
                 where: {
                     id_user:id_user,
                     album_category:"drawings",
@@ -251,12 +261,26 @@ module.exports = (router, list_of_albums) => {
                 ],
             })
             .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(albums =>  {
-                res.status(200).send(albums)
-            }); 
-        })();     
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(standard_albums =>  {
+                list_of_albums.findAll({
+                    where: {
+                        id_user:id_user,
+                        album_category:"drawings",
+                        status:["public","private"]
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ],
+                })
+                .catch(err => {
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(albums =>  {
+                        res.status(200).send([{standard_albums:standard_albums,albums:albums}])
+                }); 
+            });    
     });
 
     router.post('/change_drawing_album_status', function (req, res) {

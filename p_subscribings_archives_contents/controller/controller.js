@@ -176,6 +176,7 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
   
     router.post('/subscribe_to_a_user', function (req, res) {
+        console.log("subscribe_to_a_user")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user_to_subscribe = req.body.id_user_to_subscribe;
         list_of_users.findOne({
@@ -186,96 +187,126 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
+            
             if(us && us.status=="account"){
-                list_of_subscribings.create({
-                    "status":"public",
-                    "id_user": current_user,
-                    "id_user_subscribed_to":id_user_to_subscribe,
+                list_of_subscribings.findOne({
+                    where:{
+                        status:"public",
+                        id_user: current_user,
+                        id_user_subscribed_to:id_user_to_subscribe,
+                    }
+                    
+                }).catch(err => {
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(sub=>{
+                    
+                    if(sub){
+                        console.log(" found")
+                        res.status(200).send([{"subscribtion":"already sbscribed 0"}])  
+                    }
+                    else{
+                        console.log(" create_sub")
+                        create_sub()
+                    }
                 })
-                .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(subscribings=>{
-                    list_of_users.findOne({
-                        where:{
-                            id:id_user_to_subscribe,
-                        }
-                    }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-                        let list = user.subscribers;
-                        if(!list.includes(current_user)){
-                            let number=user.subscribers_number +1;
-                            user.update({
-                                'subscribers': Sequelize.fn('array_append', Sequelize.col('subscribers'), current_user),
-                                'subscribers_number':number,
-                            })
-                            .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+
+                function create_sub(){
+                    list_of_subscribings.create({
+                        "status":"public",
+                        "id_user": current_user,
+                        "id_user_subscribed_to":id_user_to_subscribe,
+                    })
+                    .catch(err => {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(subscribings=>{
+                        console.log("created sub")
+                        list_of_users.findOne({
+                            where:{
+                                id:id_user_to_subscribe,
+                            }
+                        }).catch(err => {
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(user=>{
+                            let list = user.subscribers;
+                            if(!list.includes(current_user)){
+                                let number=user.subscribers_number +1;
+                                list.push(current_user)
+                                user.update({
+                                    'subscribers': list,
+                                    'subscribers_number':number,
+                                })
+                                .catch(err => {
+                                    //console.log(err);	
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(user=>{
+                                    list_of_users.findOne({
+                                        where:{
+                                            id:current_user,
+                                        }
+                                    }).catch(err => {
+                                        //console.log(err);	
+                                        res.status(500).json({msg: "error", details: err});		
+                                    }).then(user1=>{
+                                        let list1 = user1.subscribings;
+                                        if(list1.includes(id_user_to_subscribe)){
+                                                res.status(200).send([{"subscribtion":"already sbscribed"}])
+                                        }
+                                        else{
+                                            let number1=user1.subscribings_number +1;
+                                            list1.push(id_user_to_subscribe)
+                                            user1.update( {
+                                                'subscribings': list1,
+                                                'subscribings_number':number1,
+                                            },
+                                            ).catch(err => {
+                                                //console.log(err);	
+                                                res.status(500).json({msg: "error", details: err});		
+                                            }).then(m=>{
+                                                res.status(200).send([subscribings])
+                                            })
+                                        }
+                                    
+                                    })
+                                })
+                            }
+                            else{
                                 list_of_users.findOne({
                                     where:{
                                         id:current_user,
                                     }
                                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user1=>{
+                                    //console.log(err);	
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(user1=>{
                                     let list1 = user1.subscribings;
                                     if(list1.includes(id_user_to_subscribe)){
-                                            res.status(200).send([{"subscribings":"already sbscribed"}])
+                                            res.status(200).send([{"subscribtion":"already sbscribed"}])
                                     }
                                     else{
                                         let number1=user1.subscribings_number +1;
+                                        list1.push(id_user_to_subscribe)
                                         user1.update( {
-                                            'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
+                                            'subscribings': list1,
                                             'subscribings_number':number1,
                                         },
                                         ).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(m=>{
+                                            //console.log(err);	
+                                            res.status(500).json({msg: "error", details: err});		
+                                        }).then(m=>{
                                             res.status(200).send([subscribings])
                                         })
                                     }
                                 
                                 })
-                            })
-                        }
-                        else{
-                            list_of_users.findOne({
-                                where:{
-                                    id:current_user,
-                                }
-                            }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user1=>{
-                                let list1 = user1.subscribings;
-                                if(list1.includes(id_user_to_subscribe)){
-                                        res.status(200).send([{"subscribings":"already sbscribed"}])
-                                }
-                                else{
-                                    let number1=user1.subscribings_number +1;
-                                    user1.update( {
-                                        'subscribings': Sequelize.fn('array_append', Sequelize.col('subscribings'), id_user_to_subscribe),
-                                        'subscribings_number':number1,
-                                    },
-                                    ).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(m=>{
-                                        res.status(200).send([subscribings])
-                                    })
-                                }
+                            }
                             
-                            })
-                        }
-                        
-                    })
-                })  
+                        })
+                    }) 
+                }
+                
             }
             else{
                 res.status(200).send([{error:"user_deleted"}])
@@ -307,44 +338,43 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
             if(subscribings){
                 subscribings.destroy({
                     truncate: false
-                    }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(subscribings=>{
+                }).catch(err => {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                }).then(subscribings=>{
                     list_of_users.findOne({
                         where:{
                             id:id_user_subscribed_to,
                         }
                     }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(user=>{
                         let number=user.subscribers_number -1;
                         user.update({
                             'subscribers': Sequelize.fn('array_remove', Sequelize.col('subscribers'), current_user),
                             'subscribers_number':number,
-                        },
-                            ).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+                        }).catch(err => {
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(user=>{
                             list_of_users.findOne({
                                 where:{
                                     id:current_user,
                                 }
                             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user1=>{
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(user1=>{
                                 let number1=user1.subscribings_number -1;
                                 user1.update( {
                                     'subscribings': Sequelize.fn('array_remove', Sequelize.col('subscribings'), id_user_subscribed_to),
                                     'subscribings_number':number1,
                                 },
                                     ).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(m=>{
+                                    //console.log(err);	
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(m=>{
                                     res.status(200).send([subscribings])
                                 })
                             })
@@ -359,6 +389,28 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         })
         
     });
+
+    router.post('/get_all_subscribings_by_user_id', function (req, res) {
+        let current_user = req.body.id_user;
+        const Op = Sequelize.Op;
+        list_of_subscribings.findAll({
+            where: {
+                status:"public",
+                id_user:current_user,
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        })
+        .catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+        }).then(users =>  {
+            res.status(200).send([users])
+        });
+     
+
+    })
 
     router.get('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
         let id_user = req.params.id_user;
@@ -828,18 +880,21 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_emphasized_content/:id_user', function (req, res) {
-    (async () => {    
+      
         const id_user = parseInt(req.params.id_user);
-        contents = await list_of_contents.findOne({
+        list_of_contents.findOne({
             where: {
                 id_user:id_user,
                 emphasize:"yes",
+                status:"ok",
             },
         }).catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(content => {res.status(200).send([content])})
-        })();
+		}).then(content => {
+            res.status(200).send([content])
+        })
+        
     });
 
     router.get('/get_new_comic_contents/:id_user', function (req, res) {
@@ -923,17 +978,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                 subscribings.destroy({
                     truncate: false
                     }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(subscribings=>{
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(subscribings=>{
                     list_of_users.findOne({
                         where:{
                             id:id_friend,
                         }
                     }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(user=>{
                         let number=user.subscribers_number;
                         let subscribers=user.subscribers;
                         if(subscribers && subscribers.indexOf(current_user)>=0){

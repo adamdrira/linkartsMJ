@@ -7,6 +7,7 @@ const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const Sequelize = require('sequelize');
 var list_of_covers={};
+var list_of_writings ={};
 
 module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
@@ -18,9 +19,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     return user;
   };
 
-
-  router.get('/get_cookies_writing', (req, res)=>{ 
-    let value = req.cookies
+  router.post('/get_covername_writing', (req, res)=>{ 
     let current_user = get_current_user(req.cookies.currentUser);
     let covername =list_of_covers[current_user]
     if(covername){
@@ -30,7 +29,23 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       res.status(200).send([{error:"error_not_found"}]);
     }
    
-    }); 
+  }); 
+
+  router.post('/get_writing_name', (req, res)=>{ 
+    let current_user = get_current_user(req.cookies.currentUser);
+    let name_writing =list_of_writings[current_user]
+    if(name_writing){
+      res.status(200).send([{name_writing:name_writing}]);
+    }
+    else{
+      res.status(200).send([{error:"error_not_found"}]);
+    }
+   
+  }); 
+
+
+
+  
       
 
 
@@ -312,14 +327,18 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       }).any();
 
       upload(req, res, function(err) {
+        console.log("upload writing")
+        console.log(file_name)
         if (err) {
-          //console.log("erreur");
+          console.log("erreur");
           return res.send({
             success: false
           });
       
         } else { 
-            res.cookie('name_writing', file_name).send([{file_name:file_name}]);
+          console.log(file_name)
+          list_of_writings[current_user]=file_name;
+            res.status(200).send([{file_name:file_name}]);
         }
       })
     });

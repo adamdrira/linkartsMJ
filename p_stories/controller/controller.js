@@ -9,7 +9,7 @@ const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 
 
-module.exports = (router, list_of_stories,list_of_views) => {
+module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribings) => {
 
     function get_current_user(token){
         var user = 0
@@ -90,6 +90,167 @@ module.exports = (router, list_of_stories,list_of_views) => {
 
     });
 
+    
+    router.post('/get_stories_and_list_of_users', function (req, res) {
+        console.log("get_stories_and_list_of_users")
+      
+        const current_user = get_current_user(req.cookies.currentUser);
+        let list_of_users=[current_user];
+        const Op = Sequelize.Op;
+        var today= new Date();
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        var last_week = new Date();
+        last_week.setDate(last_week.getDate() - 7);
+        let list_of_stories_s=[];
+        let list_of_states=[];
+        let list_of_number_of_views=[];
+        let compt=0;
+        let list_of_users_data=[];
+        
+        list_of_subscribings.findAll({
+            where: {
+                status:"public",
+                id_user:current_user,
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        })
+        .catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+        }).then(users =>  {
+
+            if(users.length>0){
+                for(let i=0;i<users.length;i++){
+                    list_of_users.push(users[i].id_user_subscribed_to);
+                }
+            }
+            
+            for(let i=0;i<list_of_users.length;i++){
+                let user_id= list_of_users[i];
+                console.log(user_id);
+                list_of_stories.findAll({
+                where: {
+                    id_user: user_id,
+                    status:"public",
+                    createdAt: {[Op.gte]: yesterday}
+                },
+                order: [
+                    ['createdAt', 'ASC']
+                    ],
+                })
+                .catch(err => {
+                    console.log(err);			
+                }).then(stories =>  {
+                    
+                    if(stories.length>0){
+                        (async () => {
+    
+                       
+    
+                            const user_data = await Users.findOne({
+                                where: {
+                                    id:user_id,
+                                },
+                            });
+                            list_of_users_data[i]=user_data;
+        
+                            const number_of_stories = await list_of_stories.count({
+                                where: {
+                                    status:"public",
+                                    id_user: user_id,
+                                    createdAt: {[Op.gte]: yesterday}
+                                },
+                            });
+                                
+                                
+                            const number_of_stories_seen = await list_of_views.count({
+                                where: {
+                                    status:"public",
+                                    authorid: user_id,
+                                    id_user_who_looks: current_user,
+                                    createdAt: {[Op.gte]: yesterday}
+                                },
+                            });
+        
+                            if ((number_of_stories==number_of_stories_seen && number_of_stories>0) || number_of_stories==0){
+                                
+                                list_of_views.count({
+                                    where: {
+                                        status:"public",
+                                        authorid: user_id,
+                                        id_user_who_looks: current_user,
+                                        [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
+                                            
+                                    },
+                                }).catch(err => {
+                                    console.log(err);		
+                                }).then(number=>{
+                                    list_of_stories_s[i]=stories;
+                                    list_of_states[i]=false;
+                                    list_of_number_of_views[i]=number;
+                                    compt++;
+                                    if(compt==list_of_users.length){
+                                        res.status(200).send([{list_of_users:list_of_users,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views,list_of_users_data:list_of_users_data}])
+                                    }
+                                   
+                                })
+                                
+                            }
+                            else{
+                                list_of_views.count({
+                                    where: {
+                                        status:"public",
+                                        authorid: user_id,
+                                        id_user_who_looks: current_user,
+                                        [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
+                                            
+                                    },
+                                    }).catch(err => {
+                                        console.log(err);		
+                                    }).then(number=>{
+                                        list_of_stories_s[i]=stories;
+                                        list_of_states[i]=true;
+                                        list_of_number_of_views[i]=number;
+                                        compt++;
+                                        if(compt==list_of_users.length){
+                                            res.status(200).send([{list_of_users:list_of_users,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views,list_of_users_data:list_of_users_data}])
+                                        }
+                                    })
+                            }
+                                
+                        })();
+                    }
+                    else{
+                        (async () => {
+                            const user_data = await Users.findOne({
+                                where: {
+                                    id:user_id,
+                                },
+                            });
+                            list_of_users_data[i]=user_data;
+                            list_of_stories_s[i]=stories;
+                            list_of_states[i]=false;
+                            list_of_number_of_views[i]=0;
+                            compt++;
+                            if(compt==list_of_users.length){
+                                res.status(200).send([{list_of_users:list_of_users,list_of_users_data:list_of_users_data,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views}])
+                            }
+                        })();
+                       
+                    }
+                    
+                }); 
+            }
+        });
+
+        
+       
+        
+    });
+
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
         
       
@@ -113,9 +274,9 @@ module.exports = (router, list_of_stories,list_of_views) => {
                 ],
             })
             .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(stories =>  {
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(stories =>  {
                 
                 (async () => {
                    const number_of_stories = await list_of_stories.count({
@@ -151,9 +312,9 @@ module.exports = (router, list_of_stories,list_of_views) => {
                                   
                             },
                           }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(number=>{
+                            console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(number=>{
                             res.status(200).send([{stories:stories,state_of_views:false,number_of_views:number}])
                         })
                        
@@ -168,9 +329,9 @@ module.exports = (router, list_of_stories,list_of_views) => {
                                   
                             },
                           }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(number=>{
+                                console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(number=>{
                                 res.status(200).send([{stories:stories,state_of_views:true,number_of_views:number}])
                         })
                     }

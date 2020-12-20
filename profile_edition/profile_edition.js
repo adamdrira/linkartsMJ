@@ -192,6 +192,40 @@ router.post('/add_cover_pic', function (req, res) {
     });
 });
 
+router.get('/retrieve_profile_and_cover_pictures/:user_id', function (req, res) {
+ console.log("retrieve_profile_and_cover_pictures")
+
+  const user_id = parseInt(req.params.user_id);
+
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .catch(err => {
+    //console.log(err);	
+    res.status(500).json({msg: "error", details: err});		
+  }).then(User =>  {
+    if(User){
+      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+      fs.readFile( path.join(process.cwd(),filename), function(e,data){
+        //blob = data.toBlob('application/image');
+        let filename2 = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+        fs.readFile( path.join(process.cwd(),filename2), function(e,data2){
+          //blob = data.toBlob('application/image');
+          res.status(200).send([data,data2]);
+        } );
+      } );
+    }
+    else{
+      res.status(500).send({error:"user not found"});
+    }
+    
+  }); 
+
+
+
+});
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
@@ -208,7 +242,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
-      if(User){
+      if(User && User.profile_pic_file_name){
         let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
           //blob = data.toBlob('application/image');
@@ -216,7 +250,7 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
         } );
       }
       else{
-        res.status(500).send({error:"user not found"});
+        res.status(200).send([{error:"error"}]);
       }
       
     }); 
@@ -240,11 +274,17 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
-      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        res.status(200).send(data);
-      } );
+      if(User && User.cover_pic_file_name  ){
+        let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          //blob = data.toBlob('application/image');
+          res.status(200).send(data);
+        } );
+      }
+      else{
+        res.status(200).send([{error:"error"}]);
+      }
+     
     }); 
 
   })();
@@ -629,30 +669,32 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   router.post('/get_pseudos_who_match_for_signup', function (req, res) {
     //console.log("get_pseudos_who_match_for_signup")
-    let pseudo = (req.body.pseudo).toLowerCase();
+    let pseudo = req.body.pseudo;
     const Op = Sequelize.Op;
     users.findOne({
       where: {
-        nickname:{[Op.iLike]: pseudo },
+        nickname:pseudo ,
         status:"account",
-        type_of_account:["Artiste professionel","Artiste professionelle","Artiste"],
-        gender:{[Op.ne]:'Groupe'}
+        type_of_account:["Artiste professionnel","Artiste professionnelle","Artiste"],
       }
     })
     .catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(User =>  {
-      //console.log("result one")
-      //console.log(User)
+      console.log("result one")
+      
+     
       if(User){
+        console.log(User.nickname + ' - ' + User.email)
         res.status(200).send([User])
       }
       else{
+        console.log("in else")
         users.findOne({
           where: {
             nickname:{[Op.iLike]:'%'+ pseudo + '%'},
-            type_of_account:["Artiste professionel","Artiste professionelle","Artiste"],
+            type_of_account:["Artiste profession,el","Artiste professionnelle","Artiste"],
             status:"account",
             gender:{[Op.ne]:'Groupe'}
           }
@@ -1015,6 +1057,68 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
 
+    
+  router.post('/add_artist_in_a_group', function (req, res) {
+    let current_user = get_current_user(req.cookies.currentUser);
+    console.log("add_artist_in_a_group")
+    const list_of_ids=req.body.list_of_ids
+    const id_group = req.body.id_group;
+    const list_of_shares=req.body.list_of_shares;
+    console.log(list_of_ids)
+    console.log(id_group)
+    console.log(list_of_shares)
+    let compt=0;
+    users.findOne({
+      where:{
+        id:id_group,
+      }
+    }).catch(err => {
+			res.status(500).json({msg: "error", details: err});		
+		}).then(user=>{
+      if(user){
+        let list_of_members=user.list_of_members;
+        list_of_members= list_of_members.concat(list_of_ids)
+        console.log("see members")
+        console.log(list_of_members)
+        user.update({
+          "list_of_members":list_of_members
+        });
+
+        for( let i=0;i<list_of_members.length;i++){
+          users_groups_managment.findOne({
+            where:{
+              id_group:id_group,
+              id_user:list_of_members[i],
+            }
+          }).catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user_found=>{
+            if(user_found){
+                user_found.update({
+                  "share":list_of_shares[i],
+                })
+            }
+            else{
+              users_groups_managment.create({
+                "id_group":id_group,
+                "id_user":list_of_members[i],
+                "share":list_of_shares[i],
+              })
+            }
+            compt++;
+            if(compt==list_of_members.length){
+              res.status(200).send([{user:user}])
+            }
+          })
+         
+        }
+      }
+      else{
+        res.status(200).send([{error:"not found"}])
+      }
+    })
+  })
   
   router.post('/validate_group_creation_and_shares', function (req, res) {
     //console.log("validate_group_creation_and_shares")
@@ -1056,9 +1160,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 id_user:list_of_ids[i],
               }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user_found=>{
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(user_found=>{
               if(user_found){
                 if(list_of_ids[i]==current_user){
                   user_found.update({
@@ -1176,14 +1280,14 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   router.post('/exit_group', function (req, res) {
     //console.log("exit_group")
-    let current_user = get_current_user(req.cookies.currentUser);
+    let id_user=req.body.id_user;
     let id_group=req.body.id_group;
     const Op = Sequelize.Op;
     
     users.findOne({
       where:{
         id:id_group,
-        list_of_members: { [Op.contains]: [current_user] },
+        list_of_members: { [Op.contains]: [id_user] },
       } 
     }).catch(err => {
 			//console.log(err);	
@@ -1199,11 +1303,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               id_user:list_of_members[i]
             },
           }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user_of_group=>{
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user_of_group=>{
             let num=list_of_members.length-1;
-            if(user_of_group.id_user && user_of_group.id_user==current_user){
+            if(user_of_group.id_user && user_of_group.id_user==id_user){
               user_of_group.destroy({
                 truncate: false
               })
@@ -1216,11 +1320,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             compt++;
             if(compt==list_of_members.length){
               let list_of_members_validations=user.list_of_members_validations;
-              let index_val=list_of_members_validations.indexOf(current_user);
+              let index_val=list_of_members_validations.indexOf(id_user);
               if(index_val>=0){
                 list_of_members_validations.splice(index_val,1)
               }
-              let index=list_of_members.indexOf(current_user)
+              let index=list_of_members.indexOf(id_user)
               list_of_members.splice(index,1);
               user.update({
                 "list_of_members":list_of_members,
@@ -1959,8 +2063,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/change_mailing_managment', function (req, res) {
     //console.log("change_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
-    let type=req.body.type;
-    let special_visitor_type=req.body.special_visitor_type;
     let value=req.body.value
     const Op = Sequelize.Op;
     users_mailing.findOne({
@@ -1974,16 +2076,11 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 		}).then(user =>  {
       if(user){
         user.update({
-          "trending_mail":(type=="trending_mail")?value:user.trending_mail,
-          "ads_answers":(type=="ads_answers")?value:user.ads_answers,
-          "special_visitor_type":special_visitor_type,
-          "special_visitor":(type=="special_visitor")?value:user.special_visitor,
-          "group_creation":(type=="group_creation")?value:user.group_creation,
-          "group_shares":(type=="group_shares")?value:user.group_shares,
+          "agreement":value,
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mailing=>{
+          //console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(mailing=>{
           res.status(200).send([mailing])
         })
       }
@@ -1993,22 +2090,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             id:current_user
           }
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(real_user=>{
+          //console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(real_user=>{
           if(real_user && real_user.status=='account'){
             users_mailing.create({
               "id_user":current_user,
-              "trending_mail":(type=="trending_mail")?value:true,
-              "ads_answers":(type=="ads_answers")?value:true,
-              "special_visitor_type":special_visitor_type,
-              "special_visitor":(type=="special_visitor")?value:true,
-              "group_creation":(type=="group_creation")?value:true,
-              "group_shares":(type=="group_shares")?value:true,
+              "agreement":value,
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mailing=>{
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(mailing=>{
               res.status(200).send([mailing])
             })
           }
@@ -2026,60 +2118,6 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
 
-  router.post('/update_special_visitor', function (req, res) {
-    //console.log("update_special_visitor")
-    let current_user = get_current_user(req.cookies.currentUser);
-    let special_visitor_type=req.body.special_visitor_type;
-    const Op = Sequelize.Op;
-    users_mailing.findOne({
-      where: {
-        id_user: current_user ,
-      }
-    })
-    .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user =>  {
-      if(user){
-        user.update({
-          "special_visitor_type":special_visitor_type,
-        }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mailing=>{
-          res.status(200).send([mailing])
-        })
-      }
-      else{
-        users.findOne({
-          where:{
-            id:current_user
-          }
-        }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(real_user=>{
-          if(real_user && real_user.status=='account'){
-            users_mailing.create({
-              "id_user":current_user,
-              "special_visitor_type":special_visitor_type,
-            }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(mailing=>{
-              res.status(200).send([mailing])
-            })
-          }
-          else{
-            res.status(200).send([{error:"not_found"}]);
-          }
-        })
-        
-      }
-    }); 
-
-   
-  });
 
   router.post('/get_mailing_managment', function (req, res) {
     console.log("get_mailing_managment")
@@ -2204,6 +2242,79 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
    
   });
 
+  router.post('/send_email_for_group_edition', function (req, res) {
+    console.log("send_email_for_group_edition")
+    let id =req.body.id;
+    const list_of_ids=req.body.list_of_ids
+    const transport = nodemailer.createTransport({
+      host: "pro2.mail.ovh.net",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "services@linkarts.fr", // compte expéditeur
+        pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+      },
+          tls:{
+            ciphers:'SSLv3'
+      }
+    });
+
+    users.findOne({
+      where:{
+        id:id
+      }
+    }).then(user=>{
+      if(user){
+          let compt=0;
+          for(let i=0; i<list_of_ids.length;i++){
+            users.findOne({
+              where:{
+                id:list_of_ids[i],
+                status:"account",
+              }
+            }).then(user_found=>{
+
+              var mailOptions = {
+                from: 'Linkarts <services@linkarts.fr>', // sender address
+                to: user_found.email, // my mail
+                //cc:"adam.drira@etu.emse.fr",
+                subject: `Adhésion à un groupe`, // Subject line
+                //text: 'plain text', // plain text body
+                html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter votre adhésion au groupe </a></p>`, // html body
+                // attachments: params.attachments
+              };
+              
+             
+
+              transport.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error while sending mail: ' + error);
+                    compt++;
+                    if(compt==list_of_ids.length){
+                      res.status(200).send([{error:error}])
+                    }
+                   
+                } else {
+                    console.log('Message sent: %s', info.messageId);
+                    compt++;
+                    if(compt==list_of_ids.length){
+                      res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                    }
+                  
+                }
+            })
+            })
+          }
+
+
+      }
+      else{
+        res.status(200).send([{error:"error"}])
+      }
+
+    })
+   
+  });
   
   router.post('/send_email_for_group_creation', function (req, res) {
     console.log("send_email_for_group_creation")

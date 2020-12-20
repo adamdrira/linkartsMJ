@@ -93,17 +93,17 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             bd_id: bd_id,
           }
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd=>{
+          //console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(bd=>{
           list_of_users.findOne({
             where:{
               id:current_user,
             }
           }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user=>{
             if(bd.status=="public"){
               let number_of_comics=user.number_of_comics-1;
               user.update({

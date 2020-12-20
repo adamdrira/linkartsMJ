@@ -71,13 +71,7 @@ module.exports = (sequelize, Sequelize) => {
 
 	const users_mailing = sequelize.define('users_mailing', {
 		id_user:{type: Sequelize.INTEGER},
-		trending_mail:{type: Sequelize.BOOLEAN},
-		ads_answers:{type: Sequelize.BOOLEAN},
-		special_visitor: {type: Sequelize.BOOLEAN},
-		special_visitor_type: {type: Sequelize.STRING},
-		group_creation:{type: Sequelize.BOOLEAN}, 
-		group_shares:{type: Sequelize.BOOLEAN}, 
-
+		agreement:{type: Sequelize.BOOLEAN},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,

@@ -145,27 +145,9 @@ exports.create = (req, res) => {
 			
 	
 			function after_creation(r){
-				let special_visitor_type=''
-				console.log(r.type_of_account)
-				if(r.type_of_account=="Artistes" || r.type_of_account=="Artiste" || r.type_of_account=="Artistes professionnels" || r.type_of_account=="Artiste professionnel" 
-				|| r.type_of_account=="Artiste professionnelle" ){
-				  special_visitor_type="Maison d'édition"
-				}
-				else if(r.type_of_account=="Maison d'édition" || r.type_of_account=="Editrice" || r.type_of_account=="Editeur"  ){
-				  special_visitor_type="Artiste"
-				}
-				else if(r.type_of_account=="Professionnels non artistes" || r.type_of_account=="Professionnelle non artiste" || r.type_of_account=="Professionnel non artiste"  ){
-				  special_visitor_type="Professionnel"
-				}
-				console.log(special_visitor_type)
 				users_mailing.create({
 					"id_user":r.id,
-					"special_visitor_type":special_visitor_type,
-					"trending_mail":true,
-					"ads_answers":true,
-					"special_visitor":true,
-					"group_creation":true,
-					"group_shares":true,
+					"agreement":true,
 				}).catch(err => {
 					console.log(err);	
 					res.status(500).json({msg: "error", details: err});		

@@ -99,7 +99,7 @@ module.exports = (router,
 
     
     router.post('/add_notification', function (req, res) {
-        //console.log("add_notification")
+        console.log("add_notification")
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
@@ -116,25 +116,56 @@ module.exports = (router,
         const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
         if(id_receiver){
-            list_of_notifications.create({
-                "type":type,
-                "id_user":current_user,
-                "id_user_name":id_user_name,
-                "publication_name":publication_name,
-                "id_receiver":id_receiver,
-                "publication_category":publication_category,
-                "format":format,
-                "publication_id":publication_id,
-                "chapter_number":chapter_number,
-                "is_comment_answer":is_comment_answer,
-                "information":information,
-                "comment_id":comment_id,
-                "status":"unchecked"
-            })
-            .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(notification=>{res.status(200).send([notification])})   
+            list_of_notifications.findOne({
+                where:{
+                    type:type,
+                    id_user:current_user,
+                    id_user_name:id_user_name,
+                    publication_name:publication_name,
+                    id_receiver:id_receiver,
+                    publication_category:publication_category,
+                    format:format,
+                    publication_id:publication_id,
+                    chapter_number:chapter_number,
+                    is_comment_answer:is_comment_answer,
+                    information:information,
+                    comment_id:comment_id,
+                    status:"unchecked"
+                }
+             
+            }).catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+		    }).then(notification_found=>{
+                if(notification_found){
+                    res.status(200).json({msg: "already_found"});	
+                }
+                else{
+                    list_of_notifications.create({
+                        "type":type,
+                        "id_user":current_user,
+                        "id_user_name":id_user_name,
+                        "publication_name":publication_name,
+                        "id_receiver":id_receiver,
+                        "publication_category":publication_category,
+                        "format":format,
+                        "publication_id":publication_id,
+                        "chapter_number":chapter_number,
+                        "is_comment_answer":is_comment_answer,
+                        "information":information,
+                        "comment_id":comment_id,
+                        "status":"unchecked"
+                    })
+                    .catch(err => {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(notification=>{
+                        res.status(200).send([notification])
+                    }) 
+                }
+            })   
+
+             
                 
         }
         else{
@@ -143,35 +174,62 @@ module.exports = (router,
                     id:current_user,
                 }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(user=>{
                 let subscribers=user.subscribers;
                 let compt=0;
                 if(subscribers.length>0){
                     for(let i=0;i<subscribers.length;i++){
-                        list_of_notifications.create({
-                            "type":type,
-                            "id_user":current_user,
-                            "publication_name":publication_name,
-                            "id_user_name":user.firstname + ' ' + user.lastname,
-                            "id_receiver":subscribers[i],
-                            "publication_category":publication_category,
-                            "format":format,
-                            "publication_id":publication_id,
-                            "chapter_number":chapter_number,
-                            "status":"unchecked"
-                        })
-                        .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(notification=>{
-                            compt++;
-                            if(compt==subscribers.length){
-                                res.status(200).send([notification])
+                        list_of_notifications.findOne({
+                            where:{
+                                type:type,
+                                id_user:current_user,
+                                publication_name:publication_name,
+                                id_user_name:user.firstname + ' ' + user.lastname,
+                                id_receiver:subscribers[i],
+                                publication_category:publication_category,
+                                format:format,
+                                publication_id:publication_id,
+                                chapter_number:chapter_number,
+                                status:"unchecked"
                             }
-                            
-                        })   
+                         
+                        }).catch(err => {
+                            console.log(err);		
+                        }).then(notification_found=>{
+                            if(notification_found){
+                                compt++;
+                                if(compt==subscribers.length){
+                                    res.status(200).send([notification])
+                                }
+                                
+                            }
+                            else{
+                                list_of_notifications.create({
+                                    "type":type,
+                                    "id_user":current_user,
+                                    "publication_name":publication_name,
+                                    "id_user_name":user.firstname + ' ' + user.lastname,
+                                    "id_receiver":subscribers[i],
+                                    "publication_category":publication_category,
+                                    "format":format,
+                                    "publication_id":publication_id,
+                                    "chapter_number":chapter_number,
+                                    "status":"unchecked"
+                                })
+                                .catch(err => {
+                                    console.log(err);		
+                                }).then(notification=>{
+                                    compt++;
+                                    if(compt==subscribers.length){
+                                        res.status(200).send([notification])
+                                    }
+                                    
+                                }) 
+                            }
+                        })
+                          
                     }
                 }
                 else{
