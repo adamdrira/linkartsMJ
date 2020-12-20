@@ -55,6 +55,7 @@
                     <span>S'abonner</span>
                 </button>
                 <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
+                    <mat-icon>notifications_active</mat-icon>
                     <span>Abonné</span>
                 </button>
             </ng-container>

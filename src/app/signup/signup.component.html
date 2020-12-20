@@ -133,18 +133,17 @@
     
             </div>
 
-            <div class="warning" *ngIf="
-            registerForm2.value.type_of_account
+            <div class="warning" *ngIf="registerForm2.value.type_of_account
             && !registerForm2.value.type_of_account.includes('Artiste') ">Attention ! L'option de rémunération n'est pas permise pour ce type de compte</div>
 
-            <div class="warning" *ngIf="(registerForm1.value.type_of_account.includes('Artiste') && registerForm1.value.type_of_account.includes('professionnel')) 
-            ||registerForm1.value.type_of_account.includes('Maison')">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
+            <div class="warning" *ngIf="registerForm1.value.type_of_account && (( registerForm1.value.type_of_account.includes('Artiste') && registerForm1.value.type_of_account.includes('professionnel')) 
+            ||registerForm1.value.type_of_account.includes('Maison'))">Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre status pro.</div>
 
-            <div class="warning" *ngIf="registerForm1.value.type_of_account.includes('non professionnel')  ">Une vérification ultérieure sera réalisée avant l'obtention de votre status pro.</div>
+            <div class="warning" *ngIf="registerForm1.value.type_of_account && registerForm1.value.type_of_account.includes('non professionnel')  ">Une vérification ultérieure sera réalisée avant l'obtention de votre status pro.</div>
 
 
-            <div class="form-item" *ngIf="registerForm1.value.type_of_account.includes('Artiste professionnel')  
-            ||registerForm1.value.type_of_account.includes('Maison')">
+            <div class="form-item" *ngIf="registerForm1.value.type_of_account && (registerForm1.value.type_of_account.includes('Artiste professionnel')  
+            ||registerForm1.value.type_of_account.includes('Maison'))">
                     <mat-form-field>
                     <mat-label>Numéro SIRET*</mat-label>
                     <input matInput formControlName="siret" maxLength="14" autocomplete="off">
@@ -159,10 +158,10 @@
                 <mat-form-field>
                     <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom*</mat-label>
                     <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe*</mat-label>
-                    <input matInput formControlName="firstName" maxLength="10" autocomplete="off">
+                    <input matInput formControlName="firstName" maxLength="20" autocomplete="off">
                     <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Veuillez saisir un prénom valide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/10</div>
+                    <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/20</div>
                 </mat-form-field>
             </div>
 
@@ -360,7 +359,7 @@
                     <div>-Ajouter jusqu'à 10 membres à commencer par l'administrateur.</div>
                     <div>-Seuls les artistes sont autorisés.</div>
                     <div>-Le compte ne sera valide qu'après confirmation de tous les membres du groupe.</div>
-                    <div *ngIf="registerForm2.value.type_of_account!='Maison d\'édition' ">-Les rémunérations sont réparties équitablement pour le moment puis modifiables ultérieurement par l'administrateur.</div>
+                    <div>-Les rémunérations sont réparties équitablement pour le moment puis modifiables ultérieurement par l'administrateur.</div>
                 </div>
 
     
@@ -444,8 +443,7 @@
         <div class="step-validation">
 
             <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="cancel_authentication();">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                <span *ngIf="!loading" style=" font-size: 16px;">Annuler</span>
+                <span tyle=" font-size: 16px;">Annuler</span>
             </button>
 
             <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="validate_authentication();">
@@ -684,8 +682,9 @@
             <button mat-raised-button class="submit-button style0" (click)="step_back();">
                 <span>Retour</span>
             </button>
-            <button mat-raised-button class="submit-button style0" (click)="register();">
-                <span>M'inscrire</span>
+            <button mat-raised-button [disabled]="loading_signup"  class="submit-button style0" (click)="register();">
+                <span *ngIf="loading_signup" class="spinner-border spinner-border-sm mr-1"></span>
+                <span *ngIf="!loading_signup" style=" font-size: 16px;">M'inscrire</span>
             </button>
             <div class="pseudo-found2" *ngIf="display_pseudo_found_2">Oups! Votre pseudonyme vient d'être validé par quelqu'un d'autre. Veuillez en choisir un nouveau.
             </div>

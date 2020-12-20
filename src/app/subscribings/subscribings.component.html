@@ -7,15 +7,22 @@
     </div>
     
 
-    <ng-container *ngIf="!list_of_new_contents_sorted && !list_of_contents_sorted && !show_more">
+    <ng-container *ngIf=" !display_contents && !show_more && !display_nothing_found">
         <div class="highlighted_artwork" *ngFor="let item of skeleton_array; let i = index">
             <app-thumbnail-artwork 
-            skeleton=true
+            [skeleton]="skeleton"
             ></app-thumbnail-artwork>
         </div>
     </ng-container>
 
-    <ng-container>
+    <ng-container *ngIf="display_nothing_found">
+        <div class="text-lines large" [@enterAnimation]>
+            <mat-icon>info_outline</mat-icon>
+            <span>Aucun contenu disponible pour le moment.</span>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="display_contents">
         <div *ngFor="let item of list_of_new_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
@@ -92,7 +99,7 @@
     
     </ng-container>
     
-    <ng-container>
+    <ng-container *ngIf="display_contents ">
         <div *ngFor="let item of list_of_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
@@ -170,7 +177,7 @@
     </ng-container>
     
     
-    <ng-container *ngIf="list_of_contents_sorted && list_of_new_contents_sorted">
+    <ng-container *ngIf="display_contents">
         <ng-container *ngIf="show_more">
             <app-subscribings-see-more
                 [list_of_users]=list_of_users

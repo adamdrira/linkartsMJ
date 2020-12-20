@@ -16,7 +16,8 @@ import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popu
 import { ActivatedRoute,Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import { NotificationsService } from '../services/notifications.service';
+import { ChatService } from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
@@ -34,7 +35,9 @@ declare var Swiper: any
 export class AdPageComponent implements OnInit {
   constructor(
     private Reports_service:Reports_service,
+    private chatService:ChatService,
     private router:Router,
+    private NotificationsService:NotificationsService,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     public navbar: NavbarService,
@@ -94,6 +97,7 @@ export class AdPageComponent implements OnInit {
   display=false;
 
   visitor_id:number;
+  visitor_name:string;
   visitor_mode=true;
   visitor_mode_added=false;
 
@@ -195,6 +199,7 @@ export class AdPageComponent implements OnInit {
       this.check_archive();
       this.Profile_Edition_Service.get_current_user().subscribe(r=>{
         this.visitor_id=r[0].id
+        this.visitor_name=r[0].nickname;
         if(r[0].id==this.item.id_user){
           this.visitor_mode=false;
         }
@@ -840,16 +845,77 @@ export class AdPageComponent implements OnInit {
 
 
 
+ 
+  loading_subscribtion=false;
   subscribtion(){
-    if(this.type_of_account=="account"){
+    if(this.type_of_account=='account' ){
+      if(this.loading_subscribtion){
+        return
+      }
+      this.loading_subscribtion=true;
       if(!this.already_subscribed){
+        this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.item.id_user).subscribe(information=>{
-          this.already_subscribed=true;
+          
+          console.log(information)
+          if(information[0].subscribtion){
+        
+            this.loading_subscribtion=false;
+            this.cd.detectChanges();
+          }
+          else{
+            this.NotificationsService.add_notification('subscribtion',this.visitor_id,this.visitor_name,this.item.id_user,this.item.id_user.toString(),'none','none',this.visitor_id,0,"add",false,0).subscribe(l=>{
+              let message_to_send ={
+                for_notifications:true,
+                type:"subscribtion",
+                id_user_name:this.visitor_name,
+                id_user:this.visitor_id, 
+                id_receiver:this.item.id_user,
+                publication_category:this.item.id_user.toString(),
+                publication_name:'none',
+                format:'none',
+                publication_id:this.visitor_id,
+                chapter_number:0,
+                information:"add",
+                status:"unchecked",
+                is_comment_answer:false,
+                comment_id:0,
+              }
+              this.loading_subscribtion=false;
+              this.chatService.messages.next(message_to_send);
+              this.cd.detectChanges();
+            })
+          }
+         
         });
       }
-      if(this.already_subscribed){
+      else{
+        this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.item.id_user).subscribe(information=>{
-          this.already_subscribed=false;
+         
+          console.log(information)
+          this.NotificationsService.remove_notification('subscribtion',this.item.id_user.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
+            let message_to_send ={
+              for_notifications:true,
+              type:"subscribtion",
+              id_user_name:this.visitor_name,
+              id_user:this.visitor_id, 
+              id_receiver:this.item.id_user,
+              publication_category:this.item.id_user.toString(),
+              publication_name:'none',
+              format:'none',
+              publication_id:this.visitor_id,
+              chapter_number:0,
+              information:"remove",
+              status:"unchecked",
+              is_comment_answer:false,
+              comment_id:0,
+            }
+            
+            this.loading_subscribtion=false;
+            this.chatService.messages.next(message_to_send);
+            this.cd.detectChanges();
+          })
         });
       }
     }
@@ -857,9 +923,8 @@ export class AdPageComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
       });
-
     }
-    
+  
   }
 
   new_comment() {

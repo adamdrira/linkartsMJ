@@ -62,26 +62,29 @@ export class HomeLinkartsComponent implements OnInit {
   }
 
   
-  open_category(i : number,event:any) {
-
-    event.preventDefault();
-    event.stopPropagation();
+  open_category(i : number) {
+    console.log("open cate")
     if( i==0 ) {
       this.category_index = 0;
+      this.location.go('/recommendations')
       //return '/recommendations';
     }
     else if( i==1 ) {
       this.category_index = 1;
+      this.location.go('/trendings')
       //return '/trendings';
     }
     else if( i==2 ) {
       this.category_index = 2;
+      this.location.go('/subscribings')
       //return '/subscribings';
     }
     else if( i==3 ) {
       this.category_index = 3;
+      this.location.go('/favorites')
       //return '/favorites';
     }
+    this.cd.detectChanges()
   }
 
 
@@ -98,6 +101,7 @@ export class HomeLinkartsComponent implements OnInit {
     else if( i==3 ) {
       return '/favorites';
     }
+    
   }
 
   change_profile_number=0;
@@ -113,6 +117,7 @@ export class HomeLinkartsComponent implements OnInit {
         this.initialize_heights();
         this.category_index = this.route.snapshot.data['category'];
         if(this.category_index==4){
+          //après le click du lien envoyé par mail pour confirmer inscription
           let id = parseInt(this.route.snapshot.paramMap.get('id'));
           let password = this.route.snapshot.paramMap.get('password');
           console.log(id)

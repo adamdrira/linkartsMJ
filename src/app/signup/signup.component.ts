@@ -67,8 +67,6 @@ export class SignupComponent implements OnInit {
     
   
     //LinksGroup:FormGroup;
-    loading = false;
-    submitted = false;
     links_submitted=false;
     user = new User();
     links_titles:any[]=[];
@@ -169,7 +167,7 @@ export class SignupComponent implements OnInit {
           Validators.required,
           Validators.pattern(pattern("name")),
           Validators.minLength(2),
-          Validators.maxLength(10),
+          Validators.maxLength(20),
         ]),
       ],
       lastName: ['', 
@@ -213,7 +211,7 @@ export class SignupComponent implements OnInit {
         Validators.compose([
           Validators.minLength(3),
           Validators.maxLength(1000),
-          Validators.pattern(pattern("text")),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
     });
@@ -578,13 +576,16 @@ export class SignupComponent implements OnInit {
   error_authentication_2=false; // form invalid
   need_authentication=false; // need authentication if a group is created by an admin
   cancel_authentication(){ 
+    this.loading=false;
     this.error_authentication=false;
     this.need_authentication=false;
     this.step=3;
     this.cd.detectChanges();
   }
 
+  loading=false;
   validate_authentication(){
+    this.loading=true;
     if(this.registerForm7.valid){
       this.Profile_Edition_Service.check_email_and_password(this.registerForm7.value.email,this.registerForm7.value.password,0).subscribe(r=>{
         console.log(r[0])
@@ -592,12 +593,14 @@ export class SignupComponent implements OnInit {
         console.log(r[0].user.id)
           if(r[0].found && r[0].user.id==this.list_of_ids[0]){
             console.log("ok")
+            this.loading=false;
             this.display_email_and_password_found_1=false;
             this.error_authentication=false;
             this.need_authentication=false;
             this.error_authentication_2=false;
           }
           else{
+            this.loading=false;
             console.log("not ok ")
             this.error_authentication=true;
             
@@ -606,6 +609,7 @@ export class SignupComponent implements OnInit {
       });
     }
     else{
+      this.loading=false;
       this.error_authentication_2=true;
     }
     
@@ -1105,13 +1109,15 @@ export class SignupComponent implements OnInit {
   /*********************************************** REGISTER FUNCTION  *********************************/
   /*********************************************** REGISTER FUNCTION  *********************************/
   /*********************************************** REGISTER FUNCTION  *********************************/
-  
+  loading_signup=false;
   register() {
     console.log("register")
     
-    this.submitted = true;
 
   
+    if(this.loading_signup){
+      return
+    }
     // stop here if form is invalid
     if ( this.registerForm1.invalid || this.registerForm3.invalid || (this.registerForm4.invalid && this.registerForm1.value.gender!='Groupe') ||  (this.registerForm1.value.gender=='Groupe' && this.registerForm6.invalid)  ) {
         console.log("something inbalid 1");
@@ -1176,6 +1182,7 @@ export class SignupComponent implements OnInit {
     this.user.primary_description = this.registerForm3.value.primary_description;
     this.user.primary_description_extended = this.registerForm3.value.primary_description_extended;
 
+    this.loading_signup=true;
 
     //form4 ou form5 et form6
     if(this.registerForm1.value.gender=='Groupe'){
@@ -1221,6 +1228,7 @@ export class SignupComponent implements OnInit {
       console.log(r)
       if(r[0][0].msg=="found"){
         this.display_pseudo_found_2=true;
+        this.loading_signup=false;
         this.cd.detectChanges()
       }
       else{
@@ -1230,6 +1238,7 @@ export class SignupComponent implements OnInit {
           console.log(r)
           if(r[0][0].msg=="found" && r[0][0].type=="user"){
             this.display_email_found_2=true;
+            this.loading_signup=false;
             this.cd.detectChanges()
           }
           else{
@@ -1272,13 +1281,15 @@ export class SignupComponent implements OnInit {
                               if(!this.user.type_of_account.includes("Artiste")){
                                 this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
                                   console.log(m)
-                                  //location.reload();
+                                  this.loading_signup=false;
+                                  location.reload();
                                 })
                               }
                               else{
                                 this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
                                   console.log(m)
-                                  //location.reload();
+                                  this.loading_signup=false;
+                                  location.reload();
                                 })
                               }
                               
@@ -1287,7 +1298,8 @@ export class SignupComponent implements OnInit {
                         else{
                           this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
                             console.log(m)
-                            //location.reload();
+                            this.loading_signup=false;
+                            location.reload();
                           })
                         } 
                       }
@@ -1318,14 +1330,14 @@ export class SignupComponent implements OnInit {
                       this.ChatService.messages.next(message_to_send);
                       if(!this.user.type_of_account.includes("Artiste")){
                         this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                          console.log(m)
-                          //location.reload();
+                          this.loading_signup=false;
+                          location.reload();
                         })
                       }
                       else{
                         this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                          console.log(m)
-                          //location.reload();
+                          this.loading_signup=false;
+                          location.reload();
                         })
                       }
                     }) 
@@ -1333,13 +1345,15 @@ export class SignupComponent implements OnInit {
                   else{
                     this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
                       console.log(m)
-                          //location.reload();
+                      this.loading_signup=false;
+                      location.reload();
                     })
                   }
                  
                 }
               }
               else{
+                this.loading_signup=false;
                 this.display_email_or_pseudo_found=true;
               }
              

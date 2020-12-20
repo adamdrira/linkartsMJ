@@ -409,11 +409,11 @@
                 </div>
 
                 <div  *ngIf="visitor_mode && visitor_mode_added" class="d1-container-buttons">
-                    <button (click)="subscribtion()" *ngIf="already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
-                        <mat-icon class="item-icon" style=" color:#010119">person_remove</mat-icon> 
-                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Se désabonner</span>
+                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
+                        <mat-icon class="item-icon" style=" color:#010119">notifications_active</mat-icon> 
+                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Abonné</span>
                       </button>
-                    <button (click)="subscribtion()" *ngIf="!already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
+                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
                         <mat-icon class="item-icon" style=" color:#010119">person_add</mat-icon> 
                         <span style="margin-left: 5px; color:#010119;font-size: 14px; " >S'abonner</span>
                       </button>

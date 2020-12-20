@@ -15,6 +15,62 @@
 
 <div class="account-about" >
 
+    <div *ngIf="(opened_category==0 && !list_of_privacy_retrieved)" >
+
+        <div class="account-title-container">
+            <!--TITRE + BOUTON EDITER/CACHER-->
+            <div class="category">
+                <div class="category-title shiny">
+                </div>
+            </div>
+        </div>
+
+        <div class="account-form-container height-loading" >
+
+            <div class="form-title " >
+                <div class="category1">
+                    <div class="category-title1 shiny">
+                    </div>
+                </div>
+            </div>
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-title " >
+                <div class="category1">
+                    <div class="category-title1 shiny">
+                    </div>
+                </div>
+            </div>
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-title " >
+                <div class="category1">
+                    <div class="category-title1 shiny">
+                    </div>
+                </div>
+            </div>
+            <div class="form-item " >
+                <div class="category2">
+                    <div class="category-title2 shiny">
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+
+    </div>
 
     <div *ngIf="opened_category==0" [ngClass]="{'invisible':  !list_of_privacy_retrieved}">
 
@@ -521,17 +577,18 @@
                 </div>
 
                 <div class="form-title" *ngIf="registerForm2_activated" [@enterAnimation]>
-                    <span>Ajouter un lien</span>
+                    <span *ngIf="3>links_titles.length">Ajouter un lien</span>
+                    <span *ngIf="links_titles.length==3">Vous avez atteint la limite de 3 liens externes</span>
                 </div>
-                <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
+                <div class="form-item" *ngIf="registerForm2_activated && 3>links_titles.length" [@enterAnimation]>
                     <div class="form-item-flex">
                         <div class="left-container">
                             <mat-form-field floatLabel='never'>
                                 <mat-label>Titre du lien</mat-label>
-                                <input matInput formControlName="link_title" maxLength="30" autocomplete="off">
+                                <input matInput formControlName="link_title" maxLength="15" autocomplete="off">
                                 <mat-error *ngIf="registerForm2.controls['link_title'].invalid">Veuillez faire une saisie valide
                                 </mat-error>
-                                <div class="length-indicator">{{registerForm2.controls['link_title'].value?.length || 0}}/30</div>
+                                <div class="length-indicator">{{registerForm2.controls['link_title'].value?.length || 0}}/15</div>
                             </mat-form-field>
                         </div>
                         <div class="right-container">
@@ -759,9 +816,22 @@
     
     <div *ngIf="opened_category == 1" >
 
+        <ng-container *ngIf="( (all_stats_private && trendings_private) || (all_stats_private && !trendings_found && trendings_loaded) ) && visitor_mode">
+            <div class="stats-container" >
+ 
+                <div class="account-form-container">
+                    <div class="no-data-container" >
+                            <mat-icon>info_outline</mat-icon>
+                            <span>
+                                Les statistiques de ce compte sont indisponibles pour le moment. 
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
 
 
-        <ng-container *ngIf="!(   (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+        <ng-container *ngIf="(trendings_found && trendings_loaded && visitor_mode && list_of_privacy[6]=='public') || !visitor_mode">
             <div class="stats-container" *ngIf="type_of_account.includes('Artiste');" [ngClass]="{'invisible':!sumo_ready,'really-invisible': (!trendings_found && trendings_loaded && visitor_mode) || !((list_of_privacy[6]=='public'  && visitor_mode ) || (!visitor_mode)) }">
                 
                 
@@ -809,7 +879,7 @@
                         <ng-container *ngIf="trendings_loaded && !visitor_mode">
                             <mat-icon>info_outline</mat-icon>
                             <span>
-                                Vous n'avez aucune œuvre en tendances sur cette période. Les autres utilisateurs ne verront pas cette partie.
+                                Vous n'avez aucune œuvre en tendances sur cette période. 
                             </span>
                         </ng-container>
                         <div *ngIf="!trendings_loaded ">
@@ -878,7 +948,7 @@
         <!-- ADS STATS -->
         <!-- ADS STATS -->
         <!-- ADS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[7]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+        <ng-container *ngIf="(list_of_privacy[7]=='public'  && visitor_mode ) || (!visitor_mode)">
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[7]=='public'  && visitor_mode ) || (!visitor_mode)) }">
             
             
@@ -928,8 +998,11 @@
                     <div class="no-data-container" *ngIf="!list_of_ads_loaded">
                         <ng-container *ngIf="list_of_ads_retrieved">
                             <mat-icon>info_outline</mat-icon>
-                            <span>
-                                Vous n'avez aucune annonce sur cette période.
+                            <span *ngIf="!visitor_mode">
+                                Vous n'avez publié aucune annonce sur cette période.
+                            </span>
+                            <span *ngIf="visitor_mode">
+                                Aucune annonce publiée sur cette période.
                             </span>
                         </ng-container>
                         <div *ngIf="!list_of_ads_retrieved ">
@@ -1012,7 +1085,7 @@
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
         <!-- COMICS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[8]=='public'  && visitor_mode) || (!visitor_mode ))   )">
+        <ng-container *ngIf="(list_of_privacy[8]=='public'  && visitor_mode) || (!visitor_mode )">
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready, 'really-invisible': !((list_of_privacy[8]=='public'  && visitor_mode ) || (!visitor_mode )) }">
             
             
@@ -1061,8 +1134,11 @@
                     <div class="no-data-container" *ngIf="!list_of_comics_loaded">
                         <ng-container *ngIf="list_of_comics_retrieved">
                             <mat-icon>info_outline</mat-icon>
-                            <span>
-                                Vous n'avez aucune bande dessinée sur cette période.
+                            <span *ngIf="!visitor_mode">
+                                Vous n'avez publié aucune bande dessinée sur cette période.
+                            </span>
+                            <span *ngIf="visitor_mode">
+                                Aucune bande dessinée publiée sur cette période.
                             </span>
                         </ng-container>
                         <div *ngIf="!list_of_comics_retrieved ">
@@ -1141,7 +1217,7 @@
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
         <!-- DRAWINGS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[9]=='public'  && visitor_mode ) || (!visitor_mode))   )">
+        <ng-container *ngIf="(list_of_privacy[9]=='public'  && visitor_mode ) || (!visitor_mode)">
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[9]=='public'  && visitor_mode ) || (!visitor_mode)) }">
 
                 
@@ -1191,8 +1267,11 @@
                     <div class="no-data-container" *ngIf="!list_of_drawings_loaded">
                         <ng-container *ngIf="list_of_drawings_retrieved">
                             <mat-icon>info_outline</mat-icon>
-                            <span>
-                                Vous n'avez aucun dessin sur cette période.
+                            <span *ngIf="!visitor_mode">
+                                Vous n'avez publié aucun dessin sur cette période.
+                            </span>
+                            <span *ngIf="visitor_mode">
+                                Aucun dessin publié sur cette période.
                             </span>
                         </ng-container>
                         <div *ngIf="!list_of_drawings_retrieved ">
@@ -1274,7 +1353,7 @@
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
         <!-- WRITINGS STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[10]=='public'  && visitor_mode ) || (!visitor_mode ))   )">
+        <ng-container *ngIf="(list_of_privacy[10]=='public'  && visitor_mode ) || (!visitor_mode )">
             <div class="stats-container "  [ngClass]="{'invisible':!sumo_ready,'really-invisible': !((list_of_privacy[10]=='public'  && visitor_mode ) || (!visitor_mode )) }">
 
                 
@@ -1324,8 +1403,11 @@
                     <div class="no-data-container" *ngIf="!list_of_writings_loaded">
                         <ng-container *ngIf="list_of_writings_retrieved">
                             <mat-icon>info_outline</mat-icon>
-                            <span>
-                                Vous n'avez aucun écrit sur cette période.
+                            <span *ngIf="!visitor_mode">
+                                Vous n'avez publié aucun écrit sur cette période.
+                            </span>
+                            <span *ngIf="visitor_mode">
+                                Aucun écrit publié sur cette période.
                             </span>
                         </ng-container>
                         <div *ngIf="!list_of_writings_retrieved ">
@@ -1405,7 +1487,7 @@
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
         <!-- PROFILE STATS -->
-        <ng-container *ngIf="!(   !((list_of_privacy[11]=='public' && visitor_mode) || !visitor_mode )   )">
+        <ng-container *ngIf="(list_of_privacy[11]=='public' && visitor_mode) || !visitor_mode  ">
             <div  class="stats-container"  [ngClass]="{'invisible': !sumo_ready,'really-invisible': !((list_of_privacy[11]=='public' && visitor_mode ) || !visitor_mode )}">
                 
 
@@ -1464,8 +1546,11 @@
                     <div class="no-data-container" *ngIf="!profile_stats_nb_visitors_found">
                         <ng-container *ngIf="profile_stats_number_of_viewers_retrieved && !visitor_mode">
                             <mat-icon>info_outline</mat-icon>
-                            <span>
-                                Vous n'avez reçu aucun visiteur sur cette période. Les autres utilisateurs ne verront pas cette partie.
+                            <span *ngIf="!visitor_mode">
+                                Vous n'avez reçu aucune visite sur cette période. 
+                            </span>
+                            <span *ngIf="visitor_mode">
+                                Aucune visite sur cette période. 
                             </span>
                         </ng-container>
                         <div *ngIf="!profile_stats_number_of_viewers_retrieved ">
@@ -1588,553 +1673,3 @@
 </div>
 
 
-
-<!--Torché-->
-
-            <!--<div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques des tendances
-                </div>
-
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[6]=='private'" (click)="change_information_privacy_public(6)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[6]=='public'" (click)="change_information_privacy_private(6)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-            <div class="panel-controller" >
-                <div class="dropdowns-container"  > 
-                    <select name="somename" class="Sumo_trendings"  style="height: 100%;    width: 200px;" >
-                        <option disabled selected value="none">Depuis toujours</option>
-                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
-                        <option label="Depuis 1 mois">Depuis 1 mois</option>
-                        <option label="Depuis 1 an">Depuis 1 an</option>
-                        <option label="Depuis toujours">Depuis toujours</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="!trendings_found">
-                <div class="loading-page" *ngIf="trendings_loaded && !visitor_mode">
-                    Vous n'avez aucune oeuvre en tendances pour l'instant. Les autres utilisateurs ne peuvent avoir accès à cette information.
-                </div>
-                <div class="loading-page" *ngIf="!trendings_loaded ">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="trendings_found && trendings_loaded">
-                <div>Total de nombre de bandes dessinées en tendances : <b>{{number_of_comics_trendings}}</b></div>
-                <div>Total de nombre de tendances dessins en tendances : <b>{{number_of_drawings_trendings}}</b></div>
-                <div>Total de nombre de tendances écrits en tendances : <b>{{number_of_writings_trendings}}</b></div>
-            </div>
-
-
-
-
-        
-            <div class="contents-trendings-container" *ngIf="trendings_found && trendings_loaded">
-                    <ngx-charts-line-chart
-                    [view]="view_trendings_1"
-                    [scheme]="colorScheme"
-                    [results]="multi_trendings_1"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="showLegend_trendings_1"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxis_trendings_1"
-                    [yAxisLabel]="yAxis_trendings_1"
-                    (select)="onSelect($event)">
-                    </ngx-charts-line-chart>
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="trendings_found && trendings_loaded ">
-
-                    <ngx-charts-line-chart
-                    [view]="view_trendings_2"
-                    [scheme]="colorScheme"
-                    [results]="multi_trendings_2"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="showLegend_trendings_2"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxis_trendings_2"
-                    [yAxisLabel]="yAxis_trendings_2"
-                    (select)="onSelect($event)">
-                    </ngx-charts-line-chart>
-                
-        
-            </div>-->
-
-            
-            <!--<div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques des annonces
-                </div>
-
-            
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[7]=='private'" (click)="change_information_privacy_public(7)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[7]=='public'" (click)="change_information_privacy_private(7)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-
-            <div class="panel-controller" >
-
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_ads_stats"  style="height: 100%;    width: 200px;" >
-                        <option disabled selected value="none">Depuis toujours</option>
-                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
-                        <option label="Depuis 1 mois">Depuis 1 mois</option>
-                        <option label="Depuis 1 an">Depuis 1 an</option>
-                        <option label="Depuis toujours">Depuis toujours</option>
-                    </select>
-                </div>
-            
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_ads_loaded">
-                <div *ngIf="list_of_ads_retrieved">
-                    aucune annonce
-                </div>
-                <div class="loading-page" *ngIf="!list_of_ads_retrieved ">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-            
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_ads_retrieved && list_of_ads_loaded">
-                <div>Total nombre d'annonces postées : <b>{{number_of_ads}}</b></div>
-                <div>Total nombre de réponses à ces annonces depuis toujours: <b>{{number_of_ads_answers}}</b></div>
-                <div>Total nombre de personnes ayant consultés ces annonces depuis toujours: <b>{{number_of_ads_views}}</b></div>
-                <div>Total nombre de commentaires postés sur ces annonces depuis toujours: <b>{{number_of_ads_comments}}</b></div>
-            </div>
-
-
-
-            <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_ads_ready || !list_of_ads_retrieved || !list_of_ads_loaded}">
-                <div class="title">
-                    Nombre de visiteurs par annonce 
-                </div>
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_for_ads_2"  style="height: 100%;    width: 200px;" >
-                        <option  value="" selected disabled>{{list_of_ads_names[0]}}</option>
-                        <option *ngFor="let section of list_of_ads_names;let i=index;" > {{section}}</option> 
-                    </select>
-                </div>
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_ad_stats_retrieved && list_of_ads_retrieved && list_of_ads_loaded">
-                <div class="loading-page" >
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="single_ad_stats_retrieved">
-                <ngx-charts-line-chart
-                [view]="view_profile_stats_nb_visitors"
-                [scheme]="colorScheme"
-                [results]="multi_ad_stats"
-                [gradient]="gradient"
-                [xAxis]="showXAxis"
-                [yAxis]="showYAxis"
-                [legend]="showLegend_profile_stats_nb_visitors"
-                [showXAxisLabel]="showXAxisLabel"
-                [showYAxisLabel]="showYAxisLabel"
-                [xAxisLabel]="xAxis_profile_stats_nb_visitors"
-                [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                (select)="onSelect($event)">
-                </ngx-charts-line-chart>
-            </div>-->
-
-            
-            <!--<div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques des bandes dessinées
-                </div>
-
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[8]=='private'" (click)="change_information_privacy_public(8)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[8]=='public'" (click)="change_information_privacy_private(8)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-
-            <div class="panel-controller" >
-
-                
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_comics_stats"  style="height: 100%;    width: 200px;" >
-                        <option disabled selected value="none">Depuis toujours</option>
-                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
-                        <option label="Depuis 1 mois">Depuis 1 mois</option>
-                        <option label="Depuis 1 an">Depuis 1 an</option>
-                        <option label="Depuis toujours">Depuis toujours</option>
-                    </select>
-                </div>
-            
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_comics_loaded">
-                <div *ngIf="list_of_comics_retrieved">
-                    aucune bande dessinée
-                </div>
-                <div class="loading-page" *ngIf="!list_of_comics_retrieved ">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-            
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_comics_retrieved && list_of_comics_loaded">
-                <div>Total nombre de B.D. postées : <b>{{number_of_comics}}</b></div>
-                <div>Total nombre de vues de ces B.D. depuis toujours: <b>{{number_of_comics_views}}</b></div>
-                <div>Total nombre de mentions j'aime de ces B.D. depuis toujours: <b>{{number_of_comics_likes}}</b></div>
-                <div>Total nombre de mentions j'adore de ces B.D. depuis toujours: <b>{{number_of_comics_loves}}</b></div>
-                <div>Total nombre de commentaires de ces B.D. depuis toujours: <b>{{number_of_comics_comments}}</b></div>
-            </div>
-
-            <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_comics_ready || !list_of_comics_retrieved || !list_of_comics_loaded}">
-
-                <div class="title">
-                    Statistiques par B.D.
-                </div>
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_for_comics_2"  style="height: 100%;    width: 200px;" >
-                        <option  value="" selected disabled>{{list_of_comics_names[0]}}</option>
-                        <option *ngFor="let section of list_of_comics_names;let i=index;" > {{section}}</option> 
-                    </select>
-                </div>
-            
-            
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_comics_stats_retrieved && list_of_comics_retrieved && list_of_comics_loaded">
-
-                <div class="loading-page" >
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="single_comics_stats_retrieved">
-                
-                
-
-                <ngx-charts-line-chart
-                [view]="view_profile_stats_nb_visitors"
-                [scheme]="colorScheme"
-                [results]="multi_comics_contents"
-                [gradient]="gradient"
-                [xAxis]="showXAxis"
-                [yAxis]="showYAxis"
-                [legend]="showLegend_profile_stats_nb_visitors"
-                [showXAxisLabel]="showXAxisLabel"
-                [showYAxisLabel]="showYAxisLabel"
-                [xAxisLabel]="xAxis_profile_stats_nb_visitors"
-                [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                (select)="onSelect($event)">
-                </ngx-charts-line-chart>
-
-            
-            </div>-->
-
-            
-            <!--<div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques des dessins
-                </div>
-
-            
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[9]=='private'" (click)="change_information_privacy_public(9)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[9]=='public'" (click)="change_information_privacy_private(9)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-
-            <div class="panel-controller" >
-
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_drawings_stats"  style="height: 100%;    width: 200px;" >
-                        <option disabled selected value="none">Depuis toujours</option>
-                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
-                        <option label="Depuis 1 mois">Depuis 1 mois</option>
-                        <option label="Depuis 1 an">Depuis 1 an</option>
-                        <option label="Depuis toujours">Depuis toujours</option>
-                    </select>
-                </div>
-            
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_drawings_loaded">
-                <div *ngIf="list_of_drawings_retrieved">
-                    aucun dessin
-                </div>
-                <div class="loading-page" *ngIf="!list_of_drawings_retrieved ">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-            
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_drawings_retrieved && list_of_drawings_loaded">
-                <div>Total nombre de dessins postées : <b>{{number_of_drawings}}</b></div>
-                <div>Total nombre de vues de ces dessins depuis toujours: <b>{{number_of_drawings_views}}</b></div>
-                <div>Total nombre de mentions j'aime de ces dessins depuis toujours: <b>{{number_of_drawings_likes}}</b></div>
-                <div>Total nombre de mentions j'adore de ces dessins depuis toujours: <b>{{number_of_drawings_loves}}</b></div>
-                <div>Total nombre de commentaires de ces dessins depuis toujours: <b>{{number_of_drawings_comments}}</b></div>
-            </div>
-
-            <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_drawings_ready || !list_of_drawings_retrieved || !list_of_drawings_loaded}">
-
-                <div class="title">
-                    Statistiques par dessin/artbook
-                </div>
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_for_drawings_2"  style="height: 100%;    width: 200px;" >
-                        <option  value="" selected disabled>{{list_of_drawings_names[0]}}</option>
-                        <option *ngFor="let section of list_of_drawings_names;let i=index;" > {{section}}</option> 
-                    </select>
-                </div>
-                
-                
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_drawings_stats_retrieved && list_of_drawings_retrieved && list_of_drawings_loaded">
-
-                <div class="loading-page" >
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="single_drawings_stats_retrieved">
-                
-                
-
-                <ngx-charts-line-chart
-                [view]="view_profile_stats_nb_visitors"
-                [scheme]="colorScheme"
-                [results]="multi_drawings_contents"
-                [gradient]="gradient"
-                [xAxis]="showXAxis"
-                [yAxis]="showYAxis"
-                [legend]="showLegend_profile_stats_nb_visitors"
-                [showXAxisLabel]="showXAxisLabel"
-                [showYAxisLabel]="showYAxisLabel"
-                [xAxisLabel]="xAxis_profile_stats_nb_visitors"
-                [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                (select)="onSelect($event)">
-                </ngx-charts-line-chart>
-
-                
-            </div>-->
-
-
-            
-
-
-            <!--<div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques des écrits
-                </div>
-
-                
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[10]=='private'" (click)="change_information_privacy_public(10)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[10]=='public'" (click)="change_information_privacy_private(10)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-
-
-            <div class="panel-controller" >
-
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_writings_stats"  style="height: 100%;    width: 200px;" >
-                        <option disabled selected value="none">Depuis toujours</option>
-                        <option label="Depuis 1 semaine">Depuis 1 semaine</option>
-                        <option label="Depuis 1 mois">Depuis 1 mois</option>
-                        <option label="Depuis 1 an">Depuis 1 an</option>
-                        <option label="Depuis toujours">Depuis toujours</option>
-                    </select>
-                </div>
-                
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!list_of_writings_loaded">
-                <div *ngIf="list_of_writings_retrieved">
-                    aucun écrit
-                </div>
-                <div class="loading-page" *ngIf="!list_of_writings_retrieved ">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-            
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="list_of_writings_retrieved && list_of_writings_loaded">
-                <div>Total nombre d'écrits postées : <b>{{number_of_writings}}</b></div>
-                <div>Total nombre de vues de ces écrits depuis toujours: <b>{{number_of_writings_views}}</b></div>
-                <div>Total nombre de mentions j'aime de ces dessins depuis toujours: <b>{{number_of_writings_likes}}</b></div>
-                <div>Total nombre de mentions j'adore de ces écrits depuis toujours: <b>{{number_of_writings_loves}}</b></div>
-                <div>Total nombre de commentaires de ces écrits depuis toujours: <b>{{number_of_writings_comments}}</b></div>
-            </div>
-
-            <div class="panel-controller" [ngClass]="{'invisible':!sumo_for_writings_ready || !list_of_writings_retrieved || !list_of_writings_loaded}">
-
-                <div class="title">
-                    Statistiques par écrit
-                </div>
-
-                <div class="dropdowns-container"  >
-                    <select name="somename" class="Sumo_for_writings_2"  style="height: 100%;    width: 200px;" >
-                        <option  value="" selected disabled>{{list_of_writings_names[0]}}</option>
-                        <option *ngFor="let section of list_of_writings_names;let i=index;" > {{section}}</option> 
-                    </select>
-                </div>
-                
-                
-            </div>
-
-            <div class="contents-trendings-container" style="min-height:unset" *ngIf="!single_writings_stats_retrieved && list_of_writings_retrieved && list_of_writings_loaded">
-
-                <div class="loading-page" >
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-                
-            </div>
-
-            <div class="contents-trendings-container" *ngIf="single_writings_stats_retrieved">
-                
-                
-
-                <ngx-charts-line-chart
-                [view]="view_profile_stats_nb_visitors"
-                [scheme]="colorScheme"
-                [results]="multi_writings_contents"
-                [gradient]="gradient"
-                [xAxis]="showXAxis"
-                [yAxis]="showYAxis"
-                [legend]="showLegend_profile_stats_nb_visitors"
-                [showXAxisLabel]="showXAxisLabel"
-                [showYAxisLabel]="showYAxisLabel"
-                [xAxisLabel]="xAxis_profile_stats_nb_visitors"
-                [yAxisLabel]="yAxis_profile_stats_nb_visitors"
-                (select)="onSelect($event)">
-                </ngx-charts-line-chart>
-
-                
-            </div>-->
-
-
-
-
-
-            <!--
-            <div class="panel-controller" >
-
-                <div class="title">
-                    Statistiques du profil
-                </div>
-
-                <span class="options options-links" *ngIf=" && !visitor_mode " >
-                    <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2" >
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
-                    </button>
-                    <mat-menu  #artworkOptions2="matMenu">
-                        <button *ngIf="list_of_privacy[11]=='private'" (click)="change_information_privacy_public(11)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Dévoiler</span>
-                        </button>
-                        <button *ngIf="list_of_privacy[11]=='public'" (click)="change_information_privacy_private(11)" class="mat-menu-item" mat-menu-item > 	
-                            <mat-icon class="item-icon">close</mat-icon>
-                            <span>Masquer</span>
-                        </button>
-                    </mat-menu>
-                </span>
-            </div>
-
-
-            <div class="contents-trendings-container" *ngIf="!profile_stats_nb_visitors_found">
-                <div *ngIf="profile_stats_number_of_viewers_retrieved && !visitor_mode">
-                    Vous n'avez reçu aucun visiteur pour le moment. Les autres utilisateurs ne peuvent avoir accès à cette information.
-                </div>
-                <div class="loading-page" *ngIf="!profile_stats_number_of_viewers_retrieved">
-                    <mat-spinner diameter="30"  ></mat-spinner>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-
-            -->

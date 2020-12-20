@@ -1,8 +1,8 @@
 <ng-container *ngIf="!list_of_contents_sorted">
-    <!--<button *ngIf="!show_more" >see_more_contents</button>-->
-    <div class="thumbnail-artwork-skeleton">
+    
+    <div class="loading-page">
+        <mat-spinner diameter="30" ></mat-spinner>
     </div>
-
 </ng-container>
 
 <ng-container *ngIf="list_of_contents_sorted">

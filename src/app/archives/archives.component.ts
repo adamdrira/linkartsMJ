@@ -85,7 +85,7 @@ export class ArchivesComponent implements OnInit {
   }
   
   //bd, dessins, écrits de l'auteur, etc.
-  opened_category:number = 0;
+  opened_category:number = -1;
   opened_album:number = -1;
   
   now_in_seconds= Math.trunc( new Date().getTime()/1000);
@@ -170,20 +170,10 @@ export class ArchivesComponent implements OnInit {
               if(info[0].status=="public"){
                 this.list_of_comics[j]=(info[0]);
               }
-              else{
-                this.list_of_comics[j]="delete";
-              }
               comics_compt+=1;
               if(comics_compt == r.length){
-                let length=this.list_of_comics.length
-                for(let i=0;i<length;i++){
-                  if(this.list_of_comics[i]=="delete"){
-                    this.list_of_comics.splice(i,1);
-                  }
-                  if(i==length-1){
-                    this.list_of_comics_added=true;
-                  }
-                }
+                this.delete_null_elements_of_a_list(this.list_of_comics)
+                this.list_of_comics_added=true;
               }
             })
           }
@@ -192,20 +182,10 @@ export class ArchivesComponent implements OnInit {
               if(info[0].status=="public"){
                 this.list_of_comics[j]=(info[0]);
               }
-              else{
-                this.list_of_comics[j]="delete";
-              }
               comics_compt+=1;
               if(comics_compt== r.length){
-                let length=this.list_of_comics.length
-                for(let i=0;i<length;i++){
-                  if(this.list_of_comics[i]=="delete"){
-                    this.list_of_comics.splice(i,1);
-                  }
-                  if(i==length-1){
-                    this.list_of_comics_added=true;
-                  }
-                }
+                this.delete_null_elements_of_a_list(this.list_of_comics)
+                this.list_of_comics_added=true;
               }
             })
           }
@@ -228,20 +208,11 @@ export class ArchivesComponent implements OnInit {
               if(info[0].status=="public"){
                 this.list_of_drawings[j]=(info[0]);
               }
-              else{
-                this.list_of_drawings[j]="delete";
-              }
               drawings_compt+=1;
               if(drawings_compt == l.length){
-                let length=this.list_of_drawings.length
-                for(let i=0;i<length;i++){
-                  if(this.list_of_drawings[i]=="delete"){
-                    this.list_of_drawings.splice(i,1);
-                  }
-                  if(i==length-1){
-                    this.list_of_drawings_added=true;
-                  }
-                }
+                this.delete_null_elements_of_a_list(this.list_of_drawings)
+                this.list_of_drawings_added=true;
+               
               }
             })
           }
@@ -255,15 +226,8 @@ export class ArchivesComponent implements OnInit {
               }
               drawings_compt+=1;
               if( drawings_compt== l.length){
-                let length=this.list_of_drawings.length
-                for(let i=0;i<length;i++){
-                  if(this.list_of_drawings[i]=="delete"){
-                    this.list_of_drawings.splice(i,1);
-                  }
-                  if(i==length-1){
-                    this.list_of_drawings_added=true;
-                  }
-                }
+                this.delete_null_elements_of_a_list(this.list_of_drawings)
+                this.list_of_drawings_added=true;
               }
             })
           }
@@ -285,20 +249,11 @@ export class ArchivesComponent implements OnInit {
               if(info[0].status=="public"){
                 this.list_of_writings[j]=(info[0]);
               }
-              else{
-                this.list_of_writings[j]="delete";
-              }
               writings_compt+=1;
               if( writings_compt== k.length){
-                let length=this.list_of_writings.length
-                for(let i=0;i<length;i++){
-                  if(this.list_of_writings[i]=="delete"){
-                    this.list_of_writings.splice(i,1);
-                  }
-                  if(i==length-1){
-                    this.list_of_writings_added=true;
-                  }
-                }
+                this.delete_null_elements_of_a_list(this.list_of_writings)
+                this.list_of_writings_added=true;
+                
               }
             })
           }
@@ -311,86 +266,74 @@ export class ArchivesComponent implements OnInit {
       
 
     // get private comics archived
-  
-      this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info=>{
-        if(Object.keys(info[0]).length>0){
-          for (let i=0;i<Object.keys(info[0]).length;i++){
-            this.private_list_of_comics.push(info[0][i]);
-            if(i==Object.keys(info[0]).length-1){
-              this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
-                if(Object.keys(inf[0]).length>0){
-                  for (let j=0;j<Object.keys(inf[0]).length;j++){
-                    this.private_list_of_comics.push(inf[0][j]);
-                    if(j==Object.keys(inf[0]).length-1){
-                      this.sort_list( this.private_list_of_comics,0);
-                    }
-                  }
-                }
-                else{
-                  this.sort_list( this.private_list_of_comics,0);
-                }
-              });
-            }
+    
+    this.BdOneShotService.retrieve_private_oneshot_bd().subscribe(info=>{
+      if(Object.keys(info[0]).length>0){
+        for (let i=0;i<Object.keys(info[0]).length;i++){
+          this.private_list_of_comics.push(info[0][i]);
+          if(i==Object.keys(info[0]).length-1){
+            this.private_comics_one_shot_retrieved=true;
+            this.manage_private_contents(0)
           }
         }
-        else{
-          this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
-            if(Object.keys(inf[0]).length>0){
-              for (let j=0;j<Object.keys(inf[0]).length;j++){
-                this.private_list_of_comics.push(inf[0][j]);
-                if(j==Object.keys(inf[0]).length-1){
-                  this.sort_list( this.private_list_of_comics,0);
-                }
-              }
-            }
-            else{
-              this.private_list_of_comics_sorted=true;
-            }
-            
-          });
-        }
-      });
+      }
+      else{
+        this.private_comics_one_shot_retrieved=true;
+        this.manage_private_contents(0)
+      }
+    })
 
-    // get private drawings archived
-      this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
-        if(Object.keys(info[0]).length>0){
-          for (let i=0;i<Object.keys(info[0]).length;i++){
-            this.private_list_of_drawings.push(info[0][i]);
-            if(i==Object.keys(info[0]).length-1){
-              this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
-                if(Object.keys(inf[0]).length>0){
-                  for (let j=0;j<Object.keys(inf[0]).length;j++){
-                    this.private_list_of_drawings.push(inf[0][j]);
-                    if(j==Object.keys(inf[0]).length-1){
-                      this.sort_list( this.private_list_of_drawings,1);
-                    }
-                  }
-                }
-                else{
-                  this.sort_list( this.private_list_of_drawings,1);
-                }
-              });
-            }
+    this.BdSerieService.retrieve_private_serie_bd().subscribe(inf=>{
+      if(Object.keys(inf[0]).length>0){
+        for (let j=0;j<Object.keys(inf[0]).length;j++){
+          this.private_list_of_comics.push(inf[0][j]);
+          if(j==Object.keys(inf[0]).length-1){
+            this.private_comics_serie_retrieved=true;
+            this.manage_private_contents(0)
           }
         }
-        else{
-          this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
-            
-            if(Object.keys(inf[0]).length>0){
-              for (let j=0;j<Object.keys(inf[0]).length;j++){
-                this.private_list_of_drawings.push(inf[0][j]);
-                if(j==Object.keys(inf[0]).length-1){
-                  this.sort_list( this.private_list_of_drawings,1);
-                }
-              }
-            }
-            else{
-              this.private_list_of_drawings_sorted=true;
-            }
-            
-          });
+      }
+      else{
+        this.private_comics_serie_retrieved=true;
+        this.manage_private_contents(0)
+       
+      }
+    });
+
+    this.Drawings_Onepage_Service.retrieve_private_oneshot_drawings().subscribe(info=>{
+      if(Object.keys(info[0]).length>0){
+        for (let i=0;i<Object.keys(info[0]).length;i++){
+          this.private_list_of_drawings.push(info[0][i]);
+          if(i==Object.keys(info[0]).length-1){
+            this.private_drawings_one_shot_retrieved=true;
+            this.manage_private_contents(1)
+          }
         }
-      });
+      }
+      else{
+        this.private_drawings_one_shot_retrieved=true;
+        this.manage_private_contents(1)
+      }
+    })
+
+    this.Drawings_Artbook_Service.retrieve_private_artbook_drawings().subscribe(inf=>{
+      if(Object.keys(inf[0]).length>0){
+        for (let j=0;j<Object.keys(inf[0]).length;j++){
+          this.private_list_of_drawings.push(inf[0][j]);
+          if(j==Object.keys(inf[0]).length-1){
+            this.private_drawings_artbook_retrieved=true;
+            this.manage_private_contents(1)
+          }
+        }
+      }
+      else{
+        this.sort_list( this.private_list_of_drawings,1);
+        this.private_drawings_artbook_retrieved=true;
+        this.manage_private_contents(1)
+      }
+    });
+
+   
 
     // get private writings archived
     this.Writing_Upload_Service.retrieve_private_writings().subscribe(info=>{
@@ -405,6 +348,34 @@ export class ArchivesComponent implements OnInit {
     this.get_ads();
 
 
+  }
+
+  private_comics_serie_retrieved=false;
+  private_comics_one_shot_retrieved=false;
+  private_drawings_artbook_retrieved=false;
+  private_drawings_one_shot_retrieved=false;
+  manage_private_contents(category){
+    if(category==0){
+      if(this.private_comics_serie_retrieved && this.private_comics_one_shot_retrieved){
+        this.sort_list( this.private_list_of_comics,0);
+      }
+    }
+    else{
+      if(this.private_drawings_artbook_retrieved && this.private_drawings_one_shot_retrieved){
+        this.sort_list( this.private_list_of_drawings,0);
+      }
+      
+    }
+  }
+
+  delete_null_elements_of_a_list(list){
+  
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(!list[len-i-1]){
+        list.splice(len-i-1,1);
+      }
+    }
   }
 
   ngAfterViewInit(){
@@ -486,7 +457,6 @@ export class ArchivesComponent implements OnInit {
     this.compteur_comics_thumbnails=0;
     this.compteur_writings_thumbnails=0;
     this.compteur_stories_thumbnails=0;
-    this.display_stories=false;
     this.list_visibility_albums_drawings=false;
     this.display_comics=true;
     this.display_writings=true;
@@ -515,7 +485,7 @@ export class ArchivesComponent implements OnInit {
     }
   }
 
-  contents_loading=false;
+
   open_album(i : number) {
    
     if( this.opened_album == i ) {
@@ -526,11 +496,9 @@ export class ArchivesComponent implements OnInit {
     this.compteur_comics_thumbnails=0;
     this.compteur_writings_thumbnails=0;
     this.compteur_stories_thumbnails=0;
-    this.display_stories=false;
     this.list_visibility_albums_drawings=false;
     this.display_comics=true;
     this.display_writings=true;
-    this.contents_loading=true;
     this.reset_number_of_comics_to_show();
     this.reset_number_of_drawings_to_show();
     this.reset_number_of_stories_to_show();
@@ -605,13 +573,13 @@ export class ArchivesComponent implements OnInit {
       if(m.length>0){
         let ad_compt=0;
         for (let j=0; j< m.length;j++){
-              this.Ads_service.retrieve_ad_by_id(m[j].publication_id).subscribe(info=>{
-                this.list_of_ads[j]=(info[0]);
-                ad_compt+=1;
-                if(ad_compt == m.length){
-                  this.list_of_ads_added=true;
-                }
-              })
+          this.Ads_service.retrieve_ad_by_id(m[j].publication_id).subscribe(info=>{
+            this.list_of_ads[j]=(info[0]);
+            ad_compt+=1;
+            if(ad_compt == m.length){
+              this.list_of_ads_added=true;
+            }
+          })
         }
       }
       else{
@@ -656,7 +624,6 @@ export class ArchivesComponent implements OnInit {
     $grid.on( 'layoutComplete', function() {
       
       $grid.masonry('reloadItems');
-      THIS.contents_loading=false;
       
       THIS.list_visibility_albums_drawings=true;
       THIS.cd.detectChanges();
@@ -701,7 +668,6 @@ container_drawings_rendred() {
   compteur_writings_thumbnails=0;
   display_writings=false;
   compteur_stories_thumbnails=0;
-  display_stories=false;
 
   detect_new_compteur_drawings=false;
   number_of_drawings_to_show_by_category=[];
@@ -713,9 +679,9 @@ container_drawings_rendred() {
   total_for_new_compteur=0;
   get_number_of_drawings_to_show(){
 
-    let width =$('.drawings-container').width();
+    let width =$('.drawings-container').width()*0.9;
     if(width>0 && !this.got_number_of_drawings_to_show){
-      this.number_of_drawings_variable=Math.floor(width/220);
+      this.number_of_drawings_variable=Math.floor(width/210);
       this.got_number_of_drawings_to_show=true;
       this.number_of_lines_drawings=2;
       
@@ -733,10 +699,10 @@ container_drawings_rendred() {
     this.total_for_new_compteur=0;
     this.updating_drawings=true;
     if(this.got_number_of_drawings_to_show){
-      let width =$('.drawings-container').width();
+      let width =$('.drawings-container').width()*0.9;
       console.log(width)
-      console.log(width*0.8)
-      let variable =Math.floor(width/220);
+      console.log(width*0.9)
+      let variable =Math.floor(width/210);
       if(variable!=this.number_of_drawings_variable){
         for(let i=0;i<2;i++){
           this.number_of_drawings_to_show_by_category[i]/=this.number_of_drawings_variable;
@@ -769,6 +735,7 @@ container_drawings_rendred() {
   }
 
 
+  prevent_shiny=false;
   see_more_drawings(category_number){
     this.updating_drawings=false;
     if(category_number==0 && this.number_of_drawings_to_show_by_category[0]>=this.private_list_of_drawings.length){
@@ -778,6 +745,8 @@ container_drawings_rendred() {
       return
     }
     else{
+      this.prevent_shiny=true;
+      this.cd.detectChanges();
       let num=this.number_of_drawings_to_show_by_category[category_number]
       this.number_of_drawings_to_show_by_category[category_number]+=this.number_of_drawings_variable*2;
       this.detect_new_compteur_drawings=true;
@@ -908,14 +877,12 @@ container_drawings_rendred() {
     if(this.opened_category==0){
       if(this.compteur_comics_thumbnails==this.private_list_of_comics.slice(0,this.number_of_comics_to_show_by_category[0]).length){
         this.compteur_comics_thumbnails=0;
-        this.contents_loading=false;
         this.display_comics=true;
       }
     }
     else{
       if(this.compteur_comics_thumbnails==this.list_of_comics.slice(0,this.number_of_comics_to_show_by_category[1]).length){
         this.compteur_comics_thumbnails=0;
-        this.contents_loading=false;
         this.display_comics=true;
       }
     }
@@ -999,14 +966,12 @@ see_more_writings(category_number){
     if(this.opened_category==0){
       if(this.compteur_writings_thumbnails==this.private_list_of_writings.slice(0,this.number_of_writings_to_show_by_category[0]).length){
         this.compteur_writings_thumbnails=0;
-        this.contents_loading=false;
         this.display_writings=true;
       }
     }
     else{
       if(this.compteur_writings_thumbnails==this.list_of_writings.slice(0,this.number_of_writings_to_show_by_category[1]).length){
         this.compteur_writings_thumbnails=0;
-        this.contents_loading=false;
         this.display_writings=true;
       }
     }
@@ -1075,12 +1040,6 @@ see_more_writings(category_number){
   list_display_stories=[];
   display_stories_thumbnails(i){
     this.list_display_stories[i]=true;
-    this.compteur_stories_thumbnails++;
-    if(this.compteur_stories_thumbnails==this.list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]).length){
-      this.compteur_stories_thumbnails=0;
-      this.contents_loading=false;
-      this.display_stories=true;
-    }
     
   }
 

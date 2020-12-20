@@ -45,7 +45,7 @@ export class SubscribingsComponent implements OnInit {
     ) { }
 
   skeleton_array = Array(15);
-
+  skeleton:boolean=true;
   subcategory: number = 0; 
   user_id:number=0;
 
@@ -83,189 +83,18 @@ export class SubscribingsComponent implements OnInit {
   ngOnInit() {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      console.log(r[0])
       this.user_id = r[0].id;
-      this.get_all_users_subscribed_to_today(this.get_all_users_subscribed_to_before_today);
+      this.get_all_users_subscribed_to_today();
+      this.get_all_users_subscribed_to_before_today()
     });
   }
 
-  sort_list_of_contents(list,period,callback){
-    console.log(list);
-    if(list.length>1){
-      for (let i=1; i<list.length; i++){
-        let time = this.convert_timestamp_to_number(list[i].createdAt);
-        for (let j=0; j<i;j++){
-          if(time > this.convert_timestamp_to_number(list[j].createdAt)){
-            list.splice(j, 0, list.splice(i, 1)[0]);
-            
-          }
-          if(j==list.length -2 && period=='old'){
-            console.log(this.list_of_contents)
-            this.list_of_contents_sorted=true;
-            this.last_timestamp=list[list.length-1].createdAt;
-          }
-          if(j==list.length -2 && period=='new'){
-            this.list_of_new_contents_sorted=true;
-            this.last_timestamp=list[list.length-1].createdAt;
-            callback(this);
-          }
-        }
-      }
-    }
-    else{
-      if(period=='old'){
-        this.list_of_contents_sorted=true;
-        this.last_timestamp=list[0].createdAt;
-      }
-      if(period=='new'){
-        this.list_of_new_contents_sorted=true;
-        this.cd.detectChanges();
-        callback(this);
-      }
-
-    }
-
-  }
-
-  
+ 
 
 
-  convert_timestamp_to_number(timestamp){
-    console.log(timestamp)
-    var uploaded_date = timestamp.substring(0,timestamp.length- 5);
-    uploaded_date=uploaded_date.replace("T",' ');
-    uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
-    let number = new Date(uploaded_date + ' GMT').getTime()/1000;
-    return number;
-  }
-
-  get_all_users_subscribed_to_before_today(THIS){
-    THIS.Subscribing_service.get_all_users_subscribed_to_before_today(THIS.user_id).subscribe(info=>{
-      console.log(info)
-      if(info[0].length>0){
-        for (let i=0; i< info[0].length;i++){         
-          THIS.list_of_users.push(info[0][i].id_user_subscribed_to);         
-          if(i==info[0].length-1){
-            THIS.Subscribing_service.get_all_subscribings_contents(THIS.list_of_users).subscribe(r=>{  
-              console.log(r[0])
-              let compt=0; 
-              if(r[0].length>0){
-                for (let j=0; j< r[0].length;j++){
-                  if(r[0][j].publication_category=="comic"){
-                    if(r[0][j].format=="one-shot"){
-                      THIS.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          THIS.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt == r[0].length){
-                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                        }
-                      })
-                    }
-                    if(r[0][j].format=="serie"){
-                      THIS.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          THIS.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++;
-                        }
-                        if(compt== r[0].length){
-                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                        }
-                      })
-                    }
-                  }
-  
-                  if(r[0][j].publication_category=="drawing"){
-                    if(r[0][j].format=="one-shot"){
-                      THIS.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          THIS.list_of_contents.push(info[0]);
-                          compt++;
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt== r[0].length){
-                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                        }
-                      })
-                    }
-                    if(r[0][j].format=="artbook"){
-                      THIS.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
-                        if(info[0].status="public"){
-                          THIS.list_of_contents.push(info[0]);
-                          compt++
-                        }
-                        else{
-                          compt++
-                        }
-                        if(compt== r[0].length){
-                          THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                        }
-                      })
-                    }
-                  }
-  
-                  if(r[0][j].publication_category=="writing"){
-                    THIS.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        compt++
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt== r[0].length){
-                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                      }
-                    })
-                  }    
-                  
-                  if(r[0][j].publication_category=="ad"){
-                    THIS.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
-                      if(info[0].status="public"){
-                        THIS.list_of_contents.push(info[0]);
-                        compt++
-                      }
-                      else{
-                        compt++
-                      }
-                      if(compt== r[0].length){
-                        THIS.sort_list_of_contents(THIS.list_of_contents,'old',()=>{});
-                      }
-                    })
-                  }   
-                }
-              } 
-              else{
-                console.log("no contents")
-              }      
-              
-
-            });
-          }
-        }
-      }
-      else{
-        console.log("put a message to say they need to subscribe to someone")
-        
-        THIS.list_of_contents_sorted=true;
-      }
-      
-    })
-  }
-
-  get_all_users_subscribed_to_today(callback){
-    console.log("get_all_users_subscribed_to_today")
+  get_all_users_subscribed_to_today(){
     this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
-      console.log(info)
+      //console.log(info)
       if(info[0].length>0){
         for (let i=0; i< info[0].length;i++){         
           this.list_of_new_users.push(info[0][i].id_user_subscribed_to);        
@@ -273,7 +102,7 @@ export class SubscribingsComponent implements OnInit {
             let compteur_user=0;
             for (let k=0;k<this.list_of_new_users.length;k++){
               this.Subscribing_service.get_last_contents_of_a_subscribing(this.list_of_new_users[k]).subscribe(r=>{
-                  console.log(r);
+                  //console.log(r);
                   let new_contents=[];
                   if(r[0].length>0){
                     let compt=0;
@@ -295,8 +124,8 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  console.log(this.list_of_new_contents);
-                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                  //console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
   
@@ -317,8 +146,8 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  console.log(this.list_of_new_contents);
-                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                 // console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
                             })
@@ -341,8 +170,8 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  console.log(this.list_of_new_contents);
-                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                  //console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
                             })
@@ -362,8 +191,8 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  console.log(this.list_of_new_contents);
-                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                  //console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
                             })
@@ -385,8 +214,8 @@ export class SubscribingsComponent implements OnInit {
                                   this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                                 }
                                 if(compteur_user==this.list_of_new_users.length){
-                                  console.log(this.list_of_new_contents);
-                                  this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                  //console.log(this.list_of_new_contents);
+                                  this.sort_list_of_contents(this.list_of_new_contents,'new');
                                 }
                               }
                             })
@@ -407,8 +236,8 @@ export class SubscribingsComponent implements OnInit {
                                 this.list_of_new_contents = this.list_of_new_contents.concat(new_contents);
                               }
                               if(compteur_user==this.list_of_new_users.length){
-                                console.log(this.list_of_new_contents);
-                                this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                                //console.log(this.list_of_new_contents);
+                                this.sort_list_of_contents(this.list_of_new_contents,'new');
                               }
                             }
                           })
@@ -418,8 +247,8 @@ export class SubscribingsComponent implements OnInit {
                   else{
                     compteur_user++;
                     if(compteur_user==this.list_of_new_users.length){
-                      console.log(this.list_of_new_contents);
-                      this.sort_list_of_contents(this.list_of_new_contents,'new',callback);
+                      //console.log(this.list_of_new_contents);
+                      this.sort_list_of_contents(this.list_of_new_contents,'new');
                     }
                   }
                 })
@@ -429,12 +258,212 @@ export class SubscribingsComponent implements OnInit {
         
       }
       else{
-        this.list_of_new_contents_sorted=true;
-        callback(this);
+        this.sort_list_of_contents(this.list_of_new_contents,'new');
       }
     })
   }
- 
+
+  get_all_users_subscribed_to_before_today(){
+    this.Subscribing_service.get_all_users_subscribed_to_before_today(this.user_id).subscribe(info=>{
+      //console.log(info)
+      if(info[0].length>0){
+        for (let i=0; i< info[0].length;i++){         
+          this.list_of_users.push(info[0][i].id_user_subscribed_to);         
+          if(i==info[0].length-1){
+            this.Subscribing_service.get_all_subscribings_contents(this.list_of_users).subscribe(r=>{  
+              //console.log(r[0])
+              let compt=0; 
+              if(r[0].length>0){
+                for (let j=0; j< r[0].length;j++){
+                  if(r[0][j].publication_category=="comic"){
+                    if(r[0][j].format=="one-shot"){
+                      this.BdOneShotService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          this.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt == r[0].length){
+                          this.sort_list_of_contents(this.list_of_contents,'old');
+                        }
+                      })
+                    }
+                    if(r[0][j].format=="serie"){
+                      this.BdSerieService.retrieve_bd_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          this.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++;
+                        }
+                        if(compt== r[0].length){
+                          this.sort_list_of_contents(this.list_of_contents,'old');
+                        }
+                      })
+                    }
+                  }
+  
+                  if(r[0][j].publication_category=="drawing"){
+                    if(r[0][j].format=="one-shot"){
+                      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          this.list_of_contents.push(info[0]);
+                          compt++;
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt== r[0].length){
+                          this.sort_list_of_contents(this.list_of_contents,'old');
+                        }
+                      })
+                    }
+                    if(r[0][j].format=="artbook"){
+                      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(r[0][j].publication_id).subscribe(info=>{
+                        if(info[0].status="public"){
+                          this.list_of_contents.push(info[0]);
+                          compt++
+                        }
+                        else{
+                          compt++
+                        }
+                        if(compt== r[0].length){
+                          this.sort_list_of_contents(this.list_of_contents,'old');
+                        }
+                      })
+                    }
+                  }
+  
+                  if(r[0][j].publication_category=="writing"){
+                    this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        this.list_of_contents.push(info[0]);
+                        compt++
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
+                        this.sort_list_of_contents(this.list_of_contents,'old');
+                      }
+                    })
+                  }    
+                  
+                  if(r[0][j].publication_category=="ad"){
+                    this.Ads_service.retrieve_ad_by_id(r[0][j].publication_id).subscribe(info=>{
+                      if(info[0].status="public"){
+                        this.list_of_contents.push(info[0]);
+                        compt++
+                      }
+                      else{
+                        compt++
+                      }
+                      if(compt== r[0].length){
+                        this.sort_list_of_contents(this.list_of_contents,'old');
+                      }
+                    })
+                  }   
+                }
+              } 
+              else{
+                //console.log("no contents")
+              }      
+              
+
+            });
+          }
+        }
+      }
+      else{
+        //console.log("put a message to say they need to subscribe to someone")
+        this.sort_list_of_contents(this.list_of_contents,'old');
+       
+      }
+      
+    })
+  }
+
+  display_contents=false;
+  display_nothing_found=false;
+  sort_list_of_contents(list,period){
+    //console.log(list);
+    if(list.length>1){
+      for (let i=1; i<list.length; i++){
+        let time = this.convert_timestamp_to_number(list[i].createdAt);
+        for (let j=0; j<i;j++){
+          if(time > this.convert_timestamp_to_number(list[j].createdAt)){
+            list.splice(j, 0, list.splice(i, 1)[0]);
+            
+          }
+          
+        }
+      }
+      if(period=='old'){
+        //console.log(this.list_of_contents)
+        this.list_of_contents_sorted=true;
+        this.last_timestamp=list[list.length-1].createdAt;
+      }
+      if(period=='new'){
+        this.list_of_new_contents_sorted=true;
+        this.last_timestamp=list[list.length-1].createdAt;
+      }
+
+      if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
+        if(this.list_of_contents.length>0){
+          this.last_timestamp=this.list_of_contents[this.list_of_contents.length-1].createdAt;
+        }
+        else if(this.list_of_new_contents.length>0){
+          this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
+        }
+        else{
+          this.display_nothing_found=true;
+        }
+        this.display_contents=true;
+        this.cd.detectChanges();
+      }
+    }
+    else{
+      if(period=='old'){
+        this.list_of_contents_sorted=true;
+        this.last_timestamp=list[0].createdAt;
+      }
+      if(period=='new'){
+        this.list_of_new_contents_sorted=true;
+       
+      }
+      if(this.list_of_contents_sorted && this.list_of_new_contents_sorted){
+        if(this.list_of_contents.length>0){
+          this.last_timestamp=this.list_of_contents[this.list_of_contents.length-1].createdAt;
+        }
+        else if(this.list_of_new_contents.length>0){
+          this.last_timestamp=this.list_of_new_contents[this.list_of_new_contents.length-1].createdAt;
+        }
+        else{
+          this.display_nothing_found=true;
+        }
+        this.display_contents=true;
+        this.cd.detectChanges();
+      }
+    }
+
+  }
+
+  
+
+
+  convert_timestamp_to_number(timestamp){
+    var uploaded_date = timestamp.substring(0,timestamp.length- 5);
+    uploaded_date=uploaded_date.replace("T",' ');
+    uploaded_date=uploaded_date.replace("-",'/').replace("-",'/');
+    let number = new Date(uploaded_date + ' GMT').getTime()/1000;
+    return number;
+  }
+
+
+
   stories_are_loaded:boolean = false;
   stories_loaded() {
     this.stories_are_loaded=true;

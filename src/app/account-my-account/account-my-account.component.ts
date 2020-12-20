@@ -27,6 +27,7 @@ import { MustMatch } from '../helpers/must-match.validator';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { SignupComponent } from '../signup/signup.component';
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
@@ -82,18 +83,17 @@ export class AccountMyAccountComponent implements OnInit {
 
 
 
-  visitor_mode:boolean;
-  visitor_mode_retrieved=false;
+
   date_format=0;
   category='all';
 
   opened_category:number = 0;
   @Input('pseudo') pseudo:string;
   @Input('id_user') id_user:number;
-
+  @Input('visitor_mode') visitor_mode:boolean;
+  @Input('author') author:any;
 
   email='';
-  data_retrieved=false;
   gender:string;
   status:string;
   type_of_account:string;
@@ -109,37 +109,53 @@ export class AccountMyAccountComponent implements OnInit {
   date_format_favorites=1;
   date_format_favorites_groups=1;
   concerned_by_favorites=false;
+
+  @ViewChild("chartContainer") chartContainer:ElementRef;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if(this.opened_category==1 && this.chartContainer){
+      this.view_size=[ this.chartContainer.nativeElement.offsetWidth, this.chartContainer.nativeElement.offsetHeight - 15 ];
+      this.cd.detectChanges();
+    }
+  }
+
+
+  /*onResize(event) {
+    if(this.opened_category==1){
+      console.log($('.chart-container').width())
+      if($('.chart-container').width()<=800){
+       
+        let width = Math.round($('.chart-container').width())
+        this.view_size=[width,(width)/2];
+        console.log(this.view_size)
+        this.cd.detectChanges();
+      }
+      else{
+        this.view_size=[800,400]
+        this.cd.detectChanges();
+      }
+    }
+  }*/
+
   ngOnInit(): void {
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        console.log(r[0]);
-        this.status=r[0].status;
-        this.gender=r[0].gender;
-        this.type_of_account=r[0].type_of_account;
-        this.list_of_members=r[0].list_of_members;
-        if(r[0].id==this.id_user){
-          this.visitor_mode=false;
-          this.visitor_mode_retrieved=true;
-        }
-        else{
-          this.router.navigateByUrl('/page_not_found');
-          return
-        }
-        if(this.type_of_account=="Artistes" || this.type_of_account=="Artistes professionnels"
-        || this.type_of_account=="Artiste professionnelle" || this.type_of_account=="Artiste professionnel" || this.type_of_account=="Artiste"){
+        this.status=this.author.status;
+        this.gender=this.author.gender;
+        this.type_of_account=this.author.type_of_account;
+        this.list_of_members=this.author.list_of_members;
+        this.email=this.author.email;
+
+        if(this.type_of_account.includes('Artiste') ){
           this.concerned_by_favorites=true;
         }
-        console.log( this.visitor_mode_retrieved)
         
-        if(this.visitor_mode_retrieved){
-          this.email=r[0].email;
-          this.initialize_forms();
-
-          this.get_my_list_of_groups_from_users();
-          
-          this.data_retrieved=true;
-        }
+        
+        
+        this.initialize_forms();
+        this.get_my_list_of_groups_from_users();
+        
+        
        
-      })
     
   }
 
@@ -149,16 +165,16 @@ export class AccountMyAccountComponent implements OnInit {
       return;
     }
     if(i==0){
-      if(this.type_of_account!="Passionné" && this.type_of_account!="Passionnée"){
+      /*if(this.type_of_account!="Passionné" && this.type_of_account!="Passionnée"){
         this.sumo_visitor_ready=false;
         this.opened_category=i;
         this.cd.detectChanges();
         this.initialize_selector_special_visitor()
-      }
-      else{
+      }*/
+      
         this.opened_category=i;
         this.cd.detectChanges();
-      }
+      
      
     }
     if(i==1){
@@ -200,7 +216,7 @@ export class AccountMyAccountComponent implements OnInit {
 
   password_retrieved=false;
   mailing_retrieved=false;
-
+  email_agreement=false;
   list_of_real_visitors_type=["Maison d'édition","Artiste","Professionnel"];
   list_of_visitors_type=["Maison d'édition/Editeur/Editrice","Artiste vérifié(e)","Professionnel(le) vérifié(e)"];
   special_visitor_type:string;
@@ -281,7 +297,8 @@ export class AccountMyAccountComponent implements OnInit {
     if(this.type_of_account!="Passionné" && this.type_of_account!="Passionnée"){
       this.Profile_Edition_Service.get_mailing_managment().subscribe(r=>{
         console.log(r[0])
-        console.log(r[0].trending_mail)
+        this.email_agreement=r[0].agreement?r[0].agreement:false;
+        /*console.log(r[0].trending_mail)
         this.registerForm3.controls['trending_mail'].setValue(r[0].trending_mail)
      
         this.registerForm3.controls['ads_answers'].setValue(r[0].ads_answers)
@@ -304,26 +321,19 @@ export class AccountMyAccountComponent implements OnInit {
           else if(this.type_of_account=="Professionnels non artistes" || this.type_of_account=="Professionnelle non artiste" || this.type_of_account=="Professionnel non artiste"  ){
             this.special_visitor_type=this.list_of_visitors_type[1]
           }
-        }
+        }*/
         this.mailing_retrieved=true;
         console.log("mail retrieved")
-        this.initialize_selector_special_visitor()
-
-        console.log(this.mailing_retrieved)
-        console.log(this.sumo_visitor_ready)
-        console.log(this.password_retrieved)
-        console.log(this.groups_owned_found)
         
       })
     }
     else{
       this.mailing_retrieved=true;
-      this.sumo_visitor_ready=true;
     }
     
   }
 
-  sumo_visitor_ready=false;
+  /*sumo_visitor_ready=false;
   disable_sumo=false;
   initialize_selector_special_visitor(){
     console.log("initialize_selector_special_visitor")
@@ -365,7 +375,7 @@ export class AccountMyAccountComponent implements OnInit {
       this.loading_changes[2]=false;
       this.cd.detectChanges()
     })
-  }
+  }*/
 
   /********************************************** PASSWORDS **************************************/
   /********************************************** PASSWORDS **************************************/
@@ -462,11 +472,11 @@ export class AccountMyAccountComponent implements OnInit {
   /********************************************** MAILING **************************************/
   /********************************************** MAILING **************************************/
  
-  loading_changes=[];
-  change_mailing_option(i,type){
-    this.loading_changes[i]=true;
+  loading_email_changes=false;
+  change_mailing_agreement(){
+    this.loading_email_changes=true;
     let value=false;
-    if(i==0){
+    /*if(i==0){
       value=this.registerForm3.value.trending_mail;
       this.registerForm3.get('trending_mail').disable();
     }
@@ -486,17 +496,19 @@ export class AccountMyAccountComponent implements OnInit {
       value=this.registerForm3.value.group_shares
       this.registerForm3.get('group_shares').disable();
     }
-    console.log(this.registerForm3.value)
-    this.Profile_Edition_Service.change_mailing_managment(type,value,this.special_visitor_type).subscribe(r=>{
+    console.log(this.registerForm3.value)*/
+    this.Profile_Edition_Service.change_mailing_managment(!this.email_agreement).subscribe(r=>{
       console.log(r[0]);
-      this.loading_changes[i]=false;
-      this.registerForm3.get('trending_mail').enable();
+      this.email_agreement=!this.email_agreement;
+      this.loading_email_changes=false;
+      
+      /*this.registerForm3.get('trending_mail').enable();
       this.registerForm3.get('ads_answers').enable();
       this.registerForm3.get('special_visitor').enable();
       this.registerForm3.get('group_creation').enable();
       this.registerForm3.get('group_shares').enable();
       this.cd.detectChanges()
-      console.log( this.registerForm3.get('trending_mail'))
+      console.log( this.registerForm3.get('trending_mail'))*/
     })
   }
 
@@ -547,9 +559,8 @@ export class AccountMyAccountComponent implements OnInit {
   show_list_of_members=false;
   get_my_list_of_groups_from_users(){
 
-    if(this.type_of_account=="Artistes" || this.type_of_account=="Artiste" || this.type_of_account=="Artistes professionnels" || this.type_of_account=="Artiste professionnel" 
-    || this.type_of_account=="Artiste professionnelle"){
-      
+    if(this.type_of_account.includes("Artiste")){
+      console.log("getting tren 2")
       this.get_trendings();
       this.get_favorites();
 
@@ -701,6 +712,7 @@ export class AccountMyAccountComponent implements OnInit {
   }
     
   a_share_is_in_edition=false;
+  group_in_edition=[];
   edit_share(id_group,index){
     if( this.a_share_is_in_edition){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -711,16 +723,25 @@ export class AccountMyAccountComponent implements OnInit {
     this.registerForm2.controls['share'].setValue(this.list_of_members_shares_by_group[id_group][index]);
     this.a_share_is_in_edition=true;
     this.share_in_edition[id_group][index]=true;
+    
     this.cd.detectChanges();
   }
 
   edit_share_equity(id_group){
+    let edited=false;
     for(let i=0;i<this.list_of_members_ids_by_group[id_group].length;i++){
+      if(this.list_of_members_shares_by_group[id_group][i]!=(100/this.list_of_members_ids_by_group[id_group].length).toFixed(2)){
+        edited=true;
+      }
       this.list_of_members_shares_by_group[id_group][i]=(100/this.list_of_members_ids_by_group[id_group].length).toFixed(2);
+    }
+    if(edited){
+      this.group_in_edition[id_group]=true;
     }
     this.cd.detectChanges();
   }
   cancel_share(id_group,index){
+    this.group_in_edition[id_group]=false;
     this.a_share_is_in_edition=false;
     this.share_in_edition[id_group][index]=false;
   }
@@ -733,6 +754,9 @@ export class AccountMyAccountComponent implements OnInit {
         data: {showChoice:false, text:'Veuillez saisir une répartition valide (au moins 2 chiffres)'},
       });
       return
+    }
+    if( this.list_of_members_shares_by_group[id_group][index]!=this.registerForm2.value.share){
+      this.group_in_edition[id_group]=true;
     }
     this.list_of_members_shares_by_group[id_group][index]=this.registerForm2.value.share;
     this.a_share_is_in_edition=false;
@@ -757,7 +781,7 @@ export class AccountMyAccountComponent implements OnInit {
     console.log(compt);
     if(compt!=100){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'La somme des gains doit être égale à 100'},
+        data: {showChoice:false, text:'La somme des gains doit être égale à 100. Elle est actuellement égale à : ' + compt},
       });
     }
     else{
@@ -924,11 +948,7 @@ export class AccountMyAccountComponent implements OnInit {
                 this.cd.detectChanges()
               }
             }) 
-            if(!r[0].error){
-              /*this.Profile_Edition_Service.delete_everything_from_user(r[0].id).subscribe(l=>{
-
-              })*/
-            }
+           
           })
         }
         
@@ -942,7 +962,7 @@ export class AccountMyAccountComponent implements OnInit {
     
       dialogRef.afterClosed().subscribe(result => {
         if(result){
-          this.Profile_Edition_Service.exit_group(id_group).subscribe(r=>{
+          this.Profile_Edition_Service.exit_group(id_group,this.id_user).subscribe(r=>{
             let name=this.list_of_groups_names[index];
             this.list_of_groups_names.splice(index,1);
             this.list_of_groups_ids.splice(index,1);
@@ -986,6 +1006,78 @@ export class AccountMyAccountComponent implements OnInit {
     
   }
 
+  exit_user_from_the_group(id_group,index_user){
+    let exit_user = this.list_of_members_ids_by_group[id_group][index_user];
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer ce membre du groupe ?'},
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.loading_add_artist=true;
+        this.Profile_Edition_Service.exit_group(id_group,exit_user).subscribe(r=>{
+          console.log("exit 1")
+          this.loading_add_artist=true;
+          let index = this.list_of_groups_ids.indexOf(id_group);
+          this.list_of_groups_status[index]=false;
+          this.manage_group_activated[index]=false;
+          this.reset_groups();
+        })
+      }
+    })
+    
+  }
+
+
+  loading_add_artist=false;
+
+  add_artist(i,index){
+    console.log(i);
+    console.log(this.list_of_members_ids_by_group[i])
+    if(10>this.list_of_members_ids_by_group[i].length){
+      const dialogRef = this.dialog.open(PopupFormComponent, {
+        data: {type:"add_artist",id_group:i,members:this.list_of_members_ids_by_group[i],id_admin:this.id_user,pseudo:this.pseudo,group_name:this.list_of_groups_names[index]},
+        panelClass: 'popupUploadPictureClass',
+      });
+     
+    }
+    
+
+  }
+
+  reset_groups(){
+    console.log("rest")
+    this.list_of_groups_names=[];
+    this.list_of_groups_ids=[];
+    this.list_of_groups_admins_ids=[];
+    this.list_of_members_ids_by_group={};
+    this.list_of_groups_status=[];
+    this.Profile_Edition_Service.get_my_list_of_groups_from_users(this.id_user).subscribe(r=>{
+      console.log(r[0])
+      if(r[0].length>0){
+        for(let i=0;i<r[0].length;i++){
+          console.log(r[0][i])
+          this.list_of_groups_names.push(r[0][i].nickname)
+          this.list_of_groups_ids.push(r[0][i].id)
+          this.list_of_groups_admins_ids.push(r[0][i].id_admin)
+          this.list_of_members_ids_by_group[r[0][i].id]=r[0][i].list_of_members
+          console.log(this.list_of_members_ids_by_group)
+          if(!r[0][i].list_of_members_validations || (r[0][i].list_of_members_validations && r[0][i].list_of_members_validations.length!=r[0][i].list_of_members.length)){
+            this.list_of_groups_status.push(false)
+          }
+          else{
+            this.list_of_groups_status.push(true)
+          }
+        }
+        
+        this.loading_add_artist=false;
+      }
+    })
+  }
+  create_a_group(){
+    const dialogRef = this.dialog.open(SignupComponent, {});
+  }
+
 
 
   /******************************************** MAIL SETTINGS **********************************/
@@ -999,9 +1091,28 @@ export class AccountMyAccountComponent implements OnInit {
 
  suspend_account(){
 
-  const dialogRef = this.dialog.open(LoginComponent, {
-    data: {usage:"suspend_account"}
-  });
+  if(this.user_is_in_a_group){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Veillez à quitter tous les groupes auxquels vous appartenez avant la suspension de votre compte"},
+    });
+  }
+  else{
+     
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:"Etes-vous sûr de vouloir suspendre votre compte ? La suspension du compte entrainera l'invisibilité de vos oeuvres, annonces, commentaires, mentions j'aime et j'adore. Vous pourrez néanmoins le récupérer en tout temps"},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        const dialogRef = this.dialog.open(LoginComponent, {
+          data: {usage:"suspend_account",id_user:this.id_user}
+        });
+      }
+    })
+  }
+ 
+
+ 
 
   /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes-vous sûr de vouloir suspendre votre compte ?'},
@@ -1023,6 +1134,7 @@ export class AccountMyAccountComponent implements OnInit {
 
  get_back_suspended_account(){
    console.log("get_back_suspended_account")
+
     this.deletion_loading=true;
     this.Profile_Edition_Service.get_back_suspended_account().subscribe(r=>{
       console.log(r[0])
@@ -1034,9 +1146,27 @@ export class AccountMyAccountComponent implements OnInit {
  
  delete_account(){
 
-  const dialogRef = this.dialog.open(LoginComponent, {
-    data: {usage:"delete_account"}
-  });
+  if(this.user_is_in_a_group){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Veillez à quitter tous les groupes auxquels vous appartenez avant la suppression de votre compte"},
+    });
+  }
+  else{
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer votre compte ?'},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        const dialogRef = this.dialog.open(LoginComponent, {
+          data: {usage:"delete_account",id_user:this.id_user}
+        });
+      }
+    })
+
+    
+  }
+ 
 
   /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer votre compte ?'},
@@ -1100,6 +1230,7 @@ export class AccountMyAccountComponent implements OnInit {
       }
       THIS.cd.detectChanges();
       if(old_date!=THIS.date_format_trendings){
+        console.log("getting tren 1")
         THIS.get_trendings();
       }
         
@@ -1196,15 +1327,13 @@ export class AccountMyAccountComponent implements OnInit {
   };
   showLabels = true;
 
-  view_trendings_1: any[] = [800, 400];
-  showLegend_trendings_1 = true;
+  view_size: any[] = [800, 400];
+  show_legends=false;
   xAxis_trendings_1 = "Date";
   yAxis_trendings_1 = "Meilleur gain";
   multi_trendings_1=[];
 
 
-  view_trendings_2: any[] = [800, 400];
-  showLegend_trendings_2 = true;
   xAxis_trendings_2 = "Date";
   yAxis_trendings_2 = "Somme des gains";
   multi_trendings_2=[];
@@ -1263,7 +1392,15 @@ export class AccountMyAccountComponent implements OnInit {
               let timestamp= r[0][0].list_of_contents[i].createdAt
               let rank=r[0][0].list_of_contents[i].rank;
               let gain = Number(r[0][0].list_of_contents[i].remuneration);
+            
               this.total_gains+=gain;
+              if(i<10){
+                console.log(i)
+                console.log(r[0][0].list_of_contents[i].remuneration)
+                console.log(gain)
+                console.log(this.total_gains)
+              }
+           
               let uploaded_date = timestamp.substring(0,timestamp.length - 5);
               uploaded_date = uploaded_date.replace("T",' ');
               uploaded_date = uploaded_date.replace("-",'/').replace("-",'/');
@@ -1273,7 +1410,7 @@ export class AccountMyAccountComponent implements OnInit {
   
   
               if(index>=0){
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   
                   this.number_of_comics_gains+=gain;
                   if(this.multi_trendings_1[0].series[index].value>gain || this.multi_trendings_1[0].series[index].value==0){
@@ -1298,7 +1435,7 @@ export class AccountMyAccountComponent implements OnInit {
                 
               }
               else{
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   this.number_of_comics_gains+=gain;
                   this.multi_trendings_1[0].series.splice(0,0,
                     {
@@ -1524,7 +1661,7 @@ export class AccountMyAccountComponent implements OnInit {
   
   
               if(index>=0){
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   
                   this.number_of_comics_gains_groups+=gain*share;
                   if(this.multi_trendings_groups_1[0].series[index].value>gain*share || this.multi_trendings_groups_1[0].series[index].value==0){
@@ -1549,7 +1686,7 @@ export class AccountMyAccountComponent implements OnInit {
                 
               }
               else{
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   this.number_of_comics_gains_groups+=gain*share;
                   this.multi_trendings_groups_1[0].series.splice(0,0,
                     {
@@ -1701,8 +1838,6 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   
-  view_favorites_1: any[] = [800, 400];
-  showLegend_favorites_1 = true;
   xAxis_favorites_1 = "Date";
   yAxis_favorites_1 = "Coups de coeur";
   multi_favorites_1=[];

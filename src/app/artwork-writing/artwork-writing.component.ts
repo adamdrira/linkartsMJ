@@ -267,12 +267,12 @@ export class ArtworkWritingComponent implements OnInit {
     
           this.get_recommendations_by_tag();
           
-          this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"writing",this.writing_id,"writing",r[0].category,r[0].firsttag).subscribe(e=>{
+          /*this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"writing",this.writing_id,"writing",r[0].category,r[0].firsttag).subscribe(e=>{
             if(e[0].list_to_send.length >0){
               this.list_of_recommendations_by_tag=e[0].list_to_send;
               this.list_of_recommendations_by_tag_retrieved=true;
             }
-          });
+          });*/
     
           this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
             if(information[0].value){

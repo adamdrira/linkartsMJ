@@ -179,7 +179,8 @@ export class AccountAboutComponent implements OnInit {
   display_error_validator_3=false;
 
   maxDate: moment.Moment;
-
+  all_stats_private=false;
+  trendings_private=false;
 
   @ViewChild("chartContainer") chartContainer:ElementRef;
 
@@ -243,13 +244,7 @@ export class AccountAboutComponent implements OnInit {
       })
 
       this.Profile_Edition_Service.get_information_privacy(this.id_user).subscribe(l=>{
-        //  a refaire
-
-        console.log("#################################");
-        console.log(l);
-        console.log("#################################");
-
-
+        
         this.list_of_privacy[0]=l[0].primary_description_extended;
         this.list_of_privacy[1]=l[0].type_of_profile;
         this.list_of_privacy[2]=l[0].email_about;
@@ -258,12 +253,6 @@ export class AccountAboutComponent implements OnInit {
         this.list_of_privacy[5]=l[0].training;
 
         
-        /*this.list_of_privacy[6] = "private";
-        this.list_of_privacy[7] = "private";
-        this.list_of_privacy[8] = "private";
-        this.list_of_privacy[9] = "private";
-        this.list_of_privacy[10] = "private";
-        this.list_of_privacy[11] = "private";*/
 
    
         this.list_of_privacy[6]=(l[0].trendings_stats)?l[0].trendings_stats:"private";
@@ -274,6 +263,21 @@ export class AccountAboutComponent implements OnInit {
         this.list_of_privacy[11]=(l[0].profile_stats)?l[0].profile_stats:"private";
         
         this.list_of_privacy_retrieved=true;
+        let compt=0
+        for(let i=7;i<12;i++){
+          if(this.list_of_privacy[i]=='private'){
+            compt++
+          }
+        }
+        if(compt==5){
+          this.all_stats_private=true;
+        }
+        if(this.list_of_privacy[6]=='private'){
+          this.trendings_private=true;
+        }
+        console.log(compt)
+        console.log( this.all_stats_private)
+       
         console.log("information_privacy_retrieved")
         this.cd.detectChanges();
       })
@@ -711,7 +715,7 @@ export class AccountAboutComponent implements OnInit {
   
   
               if(index>=0){
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   if(this.multi_trendings_1[0].series[index].value>rank || this.multi_trendings_1[0].series[index].value==0){
                     this.multi_trendings_1[0].series[index].value=rank;
                   }
@@ -733,7 +737,7 @@ export class AccountAboutComponent implements OnInit {
                 
               }
               else{
-                if(r[0][0].list_of_contents[i].publication_category=="comics"){
+                if(r[0][0].list_of_contents[i].publication_category=="comic"){
                   this.multi_trendings_1[0].series.splice(0,0,
                     {
                       "name": date,
@@ -2647,7 +2651,7 @@ export class AccountAboutComponent implements OnInit {
         Validators.compose([
           Validators.minLength(3),
           Validators.maxLength(1000),
-          Validators.pattern(pattern("text")),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
       job:[this.job, 

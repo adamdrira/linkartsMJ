@@ -297,7 +297,7 @@ export class MediaDrawingsComponent implements OnInit {
   see_more_drawings(category_number){
     //console.log(category_number)
     this.updating_drawings_for_zoom=false;
-    this.prevent_shiny=true;
+    
     if(this.prevent_see_more){
       return;
     }
@@ -308,6 +308,7 @@ export class MediaDrawingsComponent implements OnInit {
       return
     }
     else{
+      this.prevent_shiny=true;
       this.new_contents_loading=true;
       //console.log("see_more_drawings");
       let num=this.number_of_drawings_to_show_by_category[category_number]

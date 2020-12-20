@@ -2,9 +2,20 @@
 
 <div class="archives">
     
+    <!--<div class="logos-container">
+        <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
+            <mat-icon>account_circle</mat-icon>
+            <span>Archives personnelles</span>
+        </button>
+        <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
+            <mat-icon>supervisor_account</mat-icon>
+            <span>Autres utilisateurs</span>
+        </button>
+    </div>-->
+
     <div class="panel-background">
-        <div class="logos-container" #target [@enterFromTopAnimation]>
-            <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
+        <div class="logos-container"  #target [@enterFromTopAnimation]>
+             <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
                 <mat-icon>account_circle</mat-icon>
                 <span>Archives personnelles</span>
             </button>
@@ -68,9 +79,25 @@
 
     <div class="artworks-container" *ngIf="opened_album>=0">
 
-        <!--<div style="display: flex;justify-content: center;" *ngIf="contents_loading && 4>opened_album">
+        <div class="center-spinner" *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
             <mat-spinner diameter="30" ></mat-spinner>
-        </div>-->
+        </div>
+
+        <div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>
+
+        <div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>
+
+        <div class="center-spinner" *ngIf="opened_album==3 && !list_of_stories_received">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>
+
+        <div class="center-spinner" *ngIf="opened_album==4 && !list_of_ads_added">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>
 
         <!--!!!!!!!!!!!!!!!!-->
         <!--bandes dessinées-->
@@ -117,7 +144,7 @@
         <!--!!!!!!!!!!!!!!!!-->
         <div *ngIf="opened_album==1 && private_list_of_drawings_sorted && list_of_drawings_added" class="drawings-container" #container_drawings [ngClass]="{'invisible':!list_visibility_albums_drawings }">
             <!--Mes archives-->
-            <div *ngIf="opened_category==0" class="drawing-container">
+            <div *ngIf="opened_category==0 && private_list_of_drawings.length>0" class="drawing-container">
 
                 <div  class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                     <div *ngFor="let item of private_list_of_drawings.slice(0,this.number_of_drawings_to_show_by_category[0])" class="grid-item">
@@ -125,49 +152,37 @@
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
                             format='one-shot'
+                            [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
                             format='artbook'
+                            [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
                     </div>
                 </div>
             </div>
             <!--Autres utilisateurs-->
-            <div *ngIf="opened_category==1" class="drawing-container">
+            <div *ngIf="opened_category==1 && list_of_drawings.length>0" class="drawing-container">
                 <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
                     <div *ngFor="let item of list_of_drawings.slice(0,this.number_of_drawings_to_show_by_category[1])" class="grid-item">
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
                             format='one-shot'
+                            [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
                             format='artbook'
+                            [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
-                    </div>
-                    <div class="grid-item" style="height:1px;width:100px;">
                     </div>
                 </div>
 
@@ -203,19 +218,19 @@
         <!--!!!!!!!!!!!!!!!!-->
         <!--stories-->
         <!--!!!!!!!!!!!!!!!!-->
-        <div *ngIf="opened_album==3 && list_of_stories_received && list_of_stories_data_received" class="bd-container" [ngClass]="{'invisible':!display_stories }"  [@enterAnimation]>
+        <div *ngIf="opened_album==3 && list_of_stories_received && list_of_stories_data_received" class="bd-container"   [@enterAnimation]>
             <div class="container-stories" #container_stories>
 
-                <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" [ngStyle]="{ 'width' : story_width + 'px' }" class="thumbnail-story-container" [ngClass]="{'invisible':!list_display_stories[i] }">
+                <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" [ngStyle]="{ 'width' : story_width + 'px' }" class="thumbnail-story-container" >
                     
-                    <div class="thumbnail-story">
-                        <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)">
+                    <div class="thumbnail-story" [ngClass]="{'shiny':!list_display_stories[i] }">
+                        <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)" [ngClass]="{'invisible':!list_display_stories[i] }">
 
-                        <div class="story-bottom-container">
+                        <div class="story-bottom-container" [ngClass]="{'invisible':!list_display_stories[i] }">
                             <span>Le {{get_date(item.createdAt)}}</span>
                         </div>
     
-                        <button class="button-mat-menu" [ngClass]="{'opacity1': openedMenu==i+'archive' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'archive');" [matMenuTriggerFor]="storyOptions">
+                        <button class="button-mat-menu" [ngClass]="{'opacity1': openedMenu==i+'archive' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'archive');" [matMenuTriggerFor]="storyOptions" [ngClass]="{'invisible':!list_display_stories[i] }">
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #storyOptions="matMenu" xPosition='before' class="archive-mat-menu">

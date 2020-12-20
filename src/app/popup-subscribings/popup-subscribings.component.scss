@@ -154,21 +154,23 @@
                         }
 
                         .certifications-span{
-                            cursor:default;
-                            background: #00c7d0;
+                            cursor: default;
+                            /* background: #00c7d0; */
+                            background-image: linear-gradient(0.125turn, rgb(3 142 148), rgb(0 183 191), rgb(0 199 208));
+                            /* background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%); */
                             color: white;
                             font-weight: 800;
-                            font-size: 11px;
-                            border-radius: 4px;
-                            margin: auto 2px auto 2px;
-                            padding: 1px 3px 1px 3px;
+                            font-size: 9px;
+                            border-radius: 5px;
+                            margin: auto 2px auto 4px;
+                            padding: 0px 3px 0px 3px;
                         }
                         
                         mat-icon {
                             cursor:default;
                             width: unset;
                             height:unset;
-                            font-size: 20px;
+                            font-size: 16px;
                             margin: auto 2px auto 2px;
                             color: #00c7d0;
                         }

@@ -90,6 +90,10 @@
     opacity: 0.5;
 }
 
+.invisible{
+    visibility:hidden;
+    pointer-events: none;
+}
 
 ::-webkit-scrollbar {
     width: 0px;  /* Remove scrollbar space */

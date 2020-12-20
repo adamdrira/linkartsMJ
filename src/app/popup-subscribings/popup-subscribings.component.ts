@@ -102,11 +102,12 @@ export class PopupSubscribingsComponent implements OnInit {
       if(!this.loading_subscribtion){
         this.loading_subscribtion=true;
         if(!this.list_of_check_subscribtion[i]){
+          this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribings_information[i].id).subscribe(information=>{
             
             console.log(information)
             if(information[0].subscribtion){
-              this.list_of_check_subscribtion[i]=true;
+              
               this.loading_subscribtion=false;
               this.cd.detectChanges();
             }
@@ -128,7 +129,6 @@ export class PopupSubscribingsComponent implements OnInit {
                   is_comment_answer:false,
                   comment_id:0,
                 }
-                this.list_of_check_subscribtion[i]=true;
                 this.loading_subscribtion=false;
                 this.chatService.messages.next(message_to_send);
                 this.cd.detectChanges();
@@ -138,6 +138,7 @@ export class PopupSubscribingsComponent implements OnInit {
           });
         }
         else{
+          this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_subscribings_information[i].id).subscribe(information=>{
            
             console.log(information)
@@ -158,7 +159,7 @@ export class PopupSubscribingsComponent implements OnInit {
                 is_comment_answer:false,
                 comment_id:0,
               }
-              this.list_of_check_subscribtion[i]=false;
+             
               this.loading_subscribtion=false;
               this.chatService.messages.next(message_to_send);
               this.cd.detectChanges();
