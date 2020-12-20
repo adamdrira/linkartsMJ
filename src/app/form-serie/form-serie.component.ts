@@ -281,32 +281,38 @@ value:string="add";
 
   add_series_chapter() {
     console.log("add chapitre");
-      if( this.chapter_creation_in_progress ) {
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
-          panelClass: 'dialogRefClassText'
-        });
-      }
-      else if(this.form_number==0){
-        this.chapter_creation_in_progress=true;
-        this.current_chapter = this.componentRef.length;
-        this.createComponent( this.componentRef.length );
-        this.set_edit_name( this.componentRef.length - 1, 'add');
+    if( (this.form_number==0 && this.componentRef.length==100) || (this.form_number==1 && this.list_of_chapters.length==100) ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 100 chapitres"},
+        panelClass: 'dialogRefClassText'
+      });
+    }
+    else if( this.chapter_creation_in_progress ) {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
+        panelClass: 'dialogRefClassText'
+      });
+    }
+    else if(this.form_number==0){
+      this.chapter_creation_in_progress=true;
+      this.current_chapter = this.componentRef.length;
+      this.createComponent( this.componentRef.length );
+      this.set_edit_name( this.componentRef.length - 1, 'add');
 
-        console.log("on ajoute le fichier : "  + this.componentRef.length );
-        console.log("on ajoute le fichier : "  + (this.componentRef.length -1) );
-      }
-      else if(this.form_number==1){
-          console.log(this.list_of_chapters.length);
-          this.chapter_creation_in_progress=true;
-          this.current_chapter = this.list_of_chapters.length;
-          this.list_of_chapters.push({title:"",chapter_number:this.current_chapter+1,bd_id:this.list_of_chapters[0].bd_id})
-          this.addChapter();
-          (<FormArray>this.form.get('chapters')).controls[this.current_chapter].setValue( "" );
-          this.list_of_chapters_validated[this.current_chapter ]=false;
-          this.list_of_new_chapters.push(true);
-          this.set_edit_name( this.current_chapter, 'add');
-      }
+      console.log("on ajoute le fichier : "  + this.componentRef.length );
+      console.log("on ajoute le fichier : "  + (this.componentRef.length -1) );
+    }
+    else if(this.form_number==1){
+        console.log(this.list_of_chapters.length);
+        this.chapter_creation_in_progress=true;
+        this.current_chapter = this.list_of_chapters.length;
+        this.list_of_chapters.push({title:"",chapter_number:this.current_chapter+1,bd_id:this.list_of_chapters[0].bd_id})
+        this.addChapter();
+        (<FormArray>this.form.get('chapters')).controls[this.current_chapter].setValue( "" );
+        this.list_of_chapters_validated[this.current_chapter ]=false;
+        this.list_of_new_chapters.push(true);
+        this.set_edit_name( this.current_chapter, 'add');
+    }
 
   }
 
@@ -370,18 +376,10 @@ value:string="add";
       }
   
       else {
-        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer la bande dessinée'},
-          panelClass: 'dialogRefClassText'
-        });
-  
-        dialogRef.afterClosed().subscribe(result => {
-          if( result ) {
-            this.bdSerieService.RemoveBdSerie(this.list_of_chapters[0].bd_id).subscribe()
-          }
-        });
-
-
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:'Vous devez conserver au moins un chapitre'},
+            panelClass: 'dialogRefClassText'
+          });
        
       }
     }

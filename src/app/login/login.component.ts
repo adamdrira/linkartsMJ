@@ -136,9 +136,14 @@ export class LoginComponent implements OnInit {
   }
   
   close_dialog(){
-    this.dialogRef.close();
+    if(!this.loading){
+      this.dialogRef.close();
+    }
+   
   }
 
+  login_validated=false;
+  recommendation_done=false;
   login() {
 
     if(this.loading) {
@@ -156,11 +161,9 @@ export class LoginComponent implements OnInit {
 
     
   // check email_checked
-
+  
   this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
       console.log(data)
-      console.log(data.user)
-      console.log(data.user.email_checked)
       if(data.user  && data.user.email_checked ){
         console.log('first if')
         this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
@@ -170,7 +173,9 @@ export class LoginComponent implements OnInit {
             console.log(data.user)
             this.display_email_not_checked=false;
             this.Community_recommendation.delete_recommendations_cookies();
+            this.login_validated=true;
             this.Community_recommendation.generate_recommendations().subscribe(r=>{
+                this.recommendation_done=true;
                 location.reload();
             })
             
@@ -224,28 +229,18 @@ export class LoginComponent implements OnInit {
   account_deletion(i){
     if(i==0){
       this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
         this.loading=false
-            console.log(data.msg);
-            if(data.token){
-              this.step_deletion=1;
-            }
-            if(data.msg=="error"){
-                console.log("error");
-                this.display_wrong_data=true;
-            }
-            if(data.msg=="error_old_value"){
-              console.log("error_old_value");
-              this.display_old_password=true;
-            }
-            if(data.msg=="error_group"){
-              console.log("error_group");
-              this.display_error_group=true;
-            }
-        },
-        error => {
-            this.loading = false;
-        });
+        if(data[0].found && data[0].user.id==this.data.id_user){
+          this.step_deletion=1;
+        
+        }
+        else {
+          console.log("error");
+          this.loading=false
+          this.display_wrong_data=true;
+        }
+      });
       
     }
     if(i==1 && this.usage!="suspend_account"){
@@ -255,10 +250,9 @@ export class LoginComponent implements OnInit {
       this.step_deletion=2
     }
     if(i==1 && this.usage=="suspend_account"){
-      this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
-            
-        console.log(data.msg);
-        if(data.token){
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
+
+        if(data[0].found && data[0].user.id==this.data.id_user){
             this.Profile_Edition_Service.suspend_account().subscribe(r=>{
               console.log(r[0])
               this.loading=false
@@ -267,32 +261,17 @@ export class LoginComponent implements OnInit {
               location.reload();
             })
         }
-        else if(data.msg=="error"){
+        else {
             console.log("error");
             this.loading=false
             this.display_wrong_data=true;
         }
-        else if(data.msg=="error_old_value"){
-          this.loading=false
-          console.log("error_old_value");
-          this.display_old_password=true;
-        }
-        else if(data.msg=="error_group"){
-          this.loading=false
-          console.log("error_group");
-          this.display_error_group=true;
-        }
-    },
-    error => {
-        this.loading = false;
     });
     }
     if(i==2){
       this.loading = true;
-      this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
-            
-            console.log(data.msg);
-            if(data.token){
+      this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
+            if(data[0].found && data[0].user.id==this.data.id_user){
                 this.Profile_Edition_Service.delete_account().subscribe(r=>{
                   console.log(r[0])
                   this.loading=false
@@ -301,26 +280,13 @@ export class LoginComponent implements OnInit {
                   location.reload();
                 })
             }
-            else if(data.msg=="error"){
+            else{
                 console.log("error");
                 this.loading=false
                 this.display_wrong_data=true;
             }
-            else if(data.msg=="error_old_value"){
-              this.loading=false
-              console.log("error_old_value");
-              this.display_old_password=true;
-            }
-            else if(data.msg=="error_group"){
-              this.loading=false
-              console.log("error_group");
-              this.display_error_group=true;
-            }
-        },
-        error => {
-            this.loading = false;
-        });
-    }
+        })
+      }
   }
 
 }

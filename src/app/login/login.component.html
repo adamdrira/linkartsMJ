@@ -55,13 +55,16 @@
         <div class="step-validation">
 
             <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="login();">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 <span *ngIf="!loading" style=" font-size: 16px;">Se connecter</span>
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             </button>
 
         </div>
-        
-        <div style="display: flex;height: 40px;width: 400px;">
+        <div *ngIf="loading" style="display: flex;height: 40px;width: 400px; justify-content:center">
+            <div  style="margin:auto ;     font-size: 12px;     color: #203864;">Connexion en cours</div>
+        </div>
+
+        <div *ngIf="!loading" style="display: flex;height: 40px;width: 400px;">
             <div (click)="signup()" class="btn btn-link" style="margin:auto auto auto 0px;cursor:pointer;     font-size: 12px;     color: #203864;">S'inscrire</div>
             <div (click)="open_reset_password()" class="btn btn-link" style="margin:auto 0px auto auto; cursor:pointer;font-size: 12px;     color: #203864;">Mot de passe oublié</div>
         </div>

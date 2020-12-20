@@ -60,25 +60,14 @@
                     <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();">
                         <mat-icon>done</mat-icon>
                     </button>  
-                    <!--<button mat-icon-button *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
-                        <mat-icon>clear</mat-icon>
-                    </button>-->
                     <button mat-icon-button *ngIf="edit_name==-1" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
                         <mat-icon>edit</mat-icon>
                     </button>         
-                    <button mat-icon-button *ngIf="edit_name==-1" (click)="openDeleteDialog(i);$event.stopPropagation();">
+                    <button mat-icon-button *ngIf="edit_name==-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();">
                         <mat-icon>delete_outline</mat-icon>
                     </button>
                     
-                    <!--<div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
-                        <div class="delete-icon"></div>
-                    </div>
-                    <button class="button" (click)="set_edit_name(i,'modify');" *ngIf="edit_name==-1">
-                        <div class="modify-icon"></div>
-                    </button>
-                    <button class="button" (click)="openDeleteDialog(i);" *ngIf="edit_name==-1">
-                        <div class="delete-icon"></div>
-                    </button>-->
+                  
                 </div>
 
             </div>
@@ -125,26 +114,13 @@
                                                 
                     <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();">
                         <mat-icon>done</mat-icon>
-                    </button>  
-                    <!--<button mat-icon-button *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
-                        <mat-icon>clear</mat-icon>
-                    </button>-->
-
+                    </button> 
                     <button mat-icon-button *ngIf="edit_name==-1 && list_of_new_chapters[i]" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
                         <mat-icon>edit</mat-icon>
                     </button>         
-                    <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1" (click)="openDeleteDialog(i);$event.stopPropagation();">
+                    <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();">
                         <mat-icon>delete_outline</mat-icon>
                     </button>
-                    <!--<div class="button" *ngIf="edit_name==i" (click)="cancel_add_chapter(i);">
-                        <div class="delete-icon"></div>
-                    </div>
-                    <button class="button" (click)="set_edit_name(i,'modify');" *ngIf="edit_name==-1">
-                        <div class="modify-icon"></div>
-                    </button>
-                    <button  class="button" (click)="openDeleteDialog(i);" *ngIf="edit_name==-1 && i==list_of_chapters.length-1">
-                        <div class="delete-icon"></div>
-                    </button>-->
                 </div>
 
             </div>
