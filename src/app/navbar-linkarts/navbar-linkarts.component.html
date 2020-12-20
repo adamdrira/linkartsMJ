@@ -55,7 +55,7 @@
           </select>
         </div>-->
         <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search }">
-          <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector }">
+          <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector, 'opened': navbarSelect2 && navbarSelect2.panelOpen }">
             
             <div class="arrow-container" [ngClass]="{'opened': navbarSelect2 && navbarSelect2.panelOpen }">
               <mat-icon>arrow_back_ios_new</mat-icon>
@@ -66,8 +66,15 @@
             (selectionChange)="sectionChange2($event.value)">
               
               <mat-select-trigger>
-                <span *ngIf="navbar.active_section==0">Accueil</span>
-                <span *ngIf="navbar.active_section==1">Collaborations</span>
+
+                <ng-container *ngIf="navbar.active_section==0">
+                  <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+                  <span>Accueil</span>
+                </ng-container>
+                <ng-container *ngIf="navbar.active_section==1">
+                  <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+                  <span>Collaborations</span>
+                </ng-container>
               </mat-select-trigger>
 
               <mat-option [value]="0" select>
@@ -94,10 +101,17 @@
           <!--Barre de recherche-->
 
 
-          <div class="navbar-l1-searchbar-container-activator" *ngIf="!activated_search">
-            <button mat-icon-button class="searchbar-activator" (click)="activate_search();">
+          <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search">
+            
+            <a routerLink="/" [ngClass]="{'invisible': activated_search }">
+              <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+            </a>
+            <a routerLink="/linkcollab" [ngClass]="{'invisible': activated_search }">
+              <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+            </a>
+            <a (click)="activate_search();">
               <mat-icon class="optionsButton">search</mat-icon>
-            </button>
+            </a>
           </div>
 
           <div class="navbar-l1-searchbar-container"
@@ -2341,7 +2355,7 @@
 
             <div class="options LARGE-SCREEN-OPTIONS" *ngIf="!activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
-                <mat-icon class="optionsButton more">more_vert</mat-icon>
+                <mat-icon class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">
@@ -2362,7 +2376,7 @@
             <div class="options SMALL-SCREEN-OPTIONS"
               *ngIf="type_of_profile!='account' && type_of_profile!='suspended' && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon class="optionsButton more">more_vert</mat-icon>
+                <mat-icon class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="login()">
@@ -2387,7 +2401,7 @@
             <div class="options SMALL-SCREEN-OPTIONS"
               *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon class="optionsButton more">more_vert</mat-icon>
+                <mat-icon class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
