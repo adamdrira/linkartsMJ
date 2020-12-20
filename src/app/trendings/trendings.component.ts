@@ -37,6 +37,14 @@ declare var $: any
         ])
       ]
     ),
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
   ],
 })
 export class TrendingsComponent implements OnInit {
@@ -62,7 +70,7 @@ export class TrendingsComponent implements OnInit {
   user_id:number=0;
 
   skeleton_array = Array(15);
-
+  skeleton:boolean=true;
   comics_trendings_sorted:any[]=[];
   list_of_comics_rankings:any[]=[];
   comics_trendings_length:number=0;
@@ -152,7 +160,7 @@ export class TrendingsComponent implements OnInit {
             for_notifications:true,
             type:"trendings",
             id_user_name:'Linkarts',
-            id_user:1, 
+            id_user:1, // id de linkarts
             id_receiver:item.authorid,
             publication_category:category,
             publication_name:item.title,

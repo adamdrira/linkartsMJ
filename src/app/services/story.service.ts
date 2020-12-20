@@ -22,6 +22,12 @@ export class Story_service {
   }
   
 
+  get_stories_and_list_of_users(){
+    return this.httpClient.post(`routes/get_stories_and_list_of_users`,{}, {withCredentials:true}).pipe(map(information=>{
+          return information
+      }));
+  };
+
   get_stories_by_user_id(id_user){
     return this.httpClient.get(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true}).pipe(map(information=>{
           return information

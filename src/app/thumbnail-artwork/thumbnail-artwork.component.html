@@ -1,10 +1,10 @@
 
-<div class="thumbnail-artwork shiny" *ngIf="skeleton" [@enterAnimation]>
+<div class="thumbnail-artwork shiny" [ngClass]="{'trendings-width':page=='trendings'}" *ngIf="skeleton" [@enterAnimation]>
     <a class="global-container">
     </a>
 </div>
 
-<div class="thumbnail-artwork" *ngIf="!skeleton" [@enterAnimation]>
+<div class="thumbnail-artwork" [ngClass]="{'trendings-width':page=='trendings'}" *ngIf="!skeleton" [@enterAnimation]>
 
 
     <div class="hide-because-reported"

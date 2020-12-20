@@ -45,6 +45,13 @@ export class Profile_Edition_Service {
 
   }
 
+  retrieve_profile_and_cover_pictures(user_id: number){
+    return this.httpClient.get(`routes/retrieve_profile_and_cover_pictures/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+
   retrieve_profile_picture(user_id: number){
     return this.httpClient.get(`routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
       return information;
@@ -273,8 +280,8 @@ export class Profile_Edition_Service {
     }));
   }
 
-  exit_group(id_group){
-    return this.httpClient.post('routes/exit_group',{id_group:id_group},{withCredentials:true} ).pipe(map((information)=>{
+  exit_group(id_group,id_user){
+    return this.httpClient.post('routes/exit_group',{id_group:id_group,id_user:id_user},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
@@ -297,8 +304,8 @@ export class Profile_Edition_Service {
   }
 
 
-  change_mailing_managment(type,value,special_visitor_type){
-    return this.httpClient.post('routes/change_mailing_managment',{type:type,value:value,special_visitor_type:special_visitor_type},{withCredentials:true} ).pipe(map((information)=>{
+  change_mailing_managment(value){
+    return this.httpClient.post('routes/change_mailing_managment',{value:value},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
@@ -310,11 +317,7 @@ export class Profile_Edition_Service {
     }));
   }
 
-  update_special_visitor(special_visitor_type){
-    return this.httpClient.post('routes/update_special_visitor',{special_visitor_type:special_visitor_type},{withCredentials:true} ).pipe(map((information)=>{
-      return information;
-    }));
-  }
+ 
 
   send_email_for_account_creation(id){
     return this.httpClient.post('routes/send_email_for_account_creation',{id:id},{withCredentials:true} ).pipe(map((information)=>{
@@ -328,8 +331,21 @@ export class Profile_Edition_Service {
     }));
   }
 
+  send_email_for_group_edition(id,list_of_ids){
+    return this.httpClient.post('routes/send_email_for_group_edition',{id:id,list_of_ids:list_of_ids},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
   check_password_for_registration(id,password){
     return this.httpClient.post('routes/check_password_for_registration',{id:id,password:password},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+
+  add_artist_in_a_group(id_group,list_of_ids,list_of_shares){
+    return this.httpClient.post('routes/add_artist_in_a_group',{id_group:id_group,list_of_ids:list_of_ids,list_of_shares:list_of_shares},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }

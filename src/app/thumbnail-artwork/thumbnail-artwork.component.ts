@@ -82,7 +82,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       
 
       if(this.list_of_images_to_show_retrieved && this.image2){
-        console.log("resize rendered")
+        //console.log("resize rendered")
         let width2 = this.image2.nativeElement.width;
         let height2 = this.image2.nativeElement.height;
         if( window.innerWidth<=600 && this.category!="drawing" ) {
@@ -167,7 +167,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       
       if(this.emphasized){
         //emphasized
-        console.log("in if")
+        //console.log("in if")
         this.type_of_thumbnail=0;
         this.category=this.item.publication_category;
         this.subscribing_category=this.item.publication_category;
@@ -427,7 +427,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         }
       }
       else{
-        console.log("in else")
+        //console.log("in else")
         //trendings and subscribings
         this.type_of_thumbnail=1;
         this.category=this.subscribing_category;
@@ -688,7 +688,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   };
 
   load_thumbnail(){
-    console.log("thumbnail_is_loaded")
+    //console.log("thumbnail_is_loaded")
     this.thumbnail_is_loaded=true;
     this.cd.detectChanges();
     this.initialize_swiper();
@@ -744,7 +744,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   swiper2_initialized=false;
   swiper_initialized=false;
   initialize_swiper() {
-    console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )
+    //console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )
     let THIS = this;
 
 
@@ -763,10 +763,10 @@ export class ThumbnailArtworkComponent implements OnInit {
       })
       this.swiper_initialized=true;
       this.cd.detectChanges()
-      //console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
+      ////console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
     };
-    console.log(this.swiperThumbnails )
-    console.log(this.swiper2_initialized )
+    //console.log(this.swiperThumbnails )
+    //console.log(this.swiper2_initialized )
     if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
       
       this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
@@ -904,14 +904,14 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   get_images_to_show(){
-    console.log("get_images_to_show")
-    console.log(this.format)
+    //console.log("get_images_to_show")
+    //console.log(this.format)
     if(this.category=="comic"){
       let bd_id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
 
       if(this.format=="serie"){
         this.BdSerieService.retrieve_chapters_by_id(bd_id).subscribe(s => {
-          console.log(s[0])
+          //console.log(s[0])
           let last_week=new Date();
           last_week.setDate(last_week.getDate() - 7);
           let num_last_week= Math.trunc( last_week.getTime()/1000);
@@ -933,8 +933,8 @@ export class ThumbnailArtworkComponent implements OnInit {
                 //this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
                 this.list_of_images_to_show_retrieved=true;
                 this.cd.detectChanges();
-                console.log(this.list_of_images_to_show)
-                console.log("list_of_images_to_show_retrieved" + bd_id + ' serie')
+                //console.log(this.list_of_images_to_show)
+                //console.log("list_of_images_to_show_retrieved" + bd_id + ' serie')
                 this.initialize_swiper();
                 window.dispatchEvent(new Event('resize'));
                
@@ -958,8 +958,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               //this.list_of_images_to_show_mobile=[0].concat( this.list_of_images_to_show)
               this.list_of_images_to_show_retrieved=true;
               this.cd.detectChanges();
-              console.log(this.list_of_images_to_show)
-              //console.log("list_of_images_to_show_retrieved" + bd_id + ' one shot')
+              //console.log(this.list_of_images_to_show)
+              ////console.log("list_of_images_to_show_retrieved" + bd_id + ' one shot')
                 this.initialize_swiper();
                 window.dispatchEvent(new Event('resize'));
              
@@ -985,8 +985,8 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.cd.detectChanges();
                 this.initialize_swiper();
                 window.dispatchEvent(new Event('resize'));
-              //console.log("list_of_images_to_show_retrieved" + drawing_id)
-              //console.log(this.list_of_images_to_show)
+              ////console.log("list_of_images_to_show_retrieved" + drawing_id)
+              ////console.log(this.list_of_images_to_show)
             }
           });
         };

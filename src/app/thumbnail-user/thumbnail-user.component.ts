@@ -44,10 +44,9 @@ export class ThumbnailUserComponent implements OnInit {
 
   /*Inputs*/
   @Input() item:any;
-  @Input() loaded:any;
   @Input() format: string;
   @Input() now_in_seconds: number;
-
+  @Input() skeleton: boolean;
   //author
   pseudo:string;
   author_name:string;
@@ -76,65 +75,69 @@ export class ThumbnailUserComponent implements OnInit {
   visitor_mode=true;
   display_thumbnail=false;
   date_retrieved=false;
+
   ngOnInit(): void {
-
-    console.log(this.item);
-    this.user_id = this.item.id;
-    
-    this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.profile_picture = SafeURL;
-    });
-
-    this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
-      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.cover_picture = SafeURL;
-    });
-
-    
-
-    this.Profile_Edition_Service.get_current_user().subscribe(s=>{
-      if(s[0].id==this.user_id){
-        this.visitor_mode=false;
-        this.type_of_profile=s[0].status
-      }
-      this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
-        if(information[0].value){
-          this.subscribed_to_user=true;
+    console.log(this.skeleton)
+    if(this.item && this.item.id){
+      console.log(this.item);
+      this.user_id = this.item.id;
+      
+      this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.profile_picture = SafeURL;
+      });
+  
+      this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        this.cover_picture = SafeURL;
+      });
+  
+      
+  
+      this.Profile_Edition_Service.get_current_user().subscribe(s=>{
+        if(s[0].id==this.user_id){
+          this.visitor_mode=false;
+          this.type_of_profile=s[0].status
         }
-        this.subscribtion_retrieved = true;
-      }); 
-    })
-
-    this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
-      this.author_name = r[0].firstname + ' ' + r[0].lastname;
-      this.pseudo=r[0].nickname;
-      this.occupation=r[0].job;
-      this.type_of_account=r[0].type_of_account;
-      this.primary_description=r[0].primary_description;
-      this.extended_description=r[0].primary_description_extended;
-      this.subscribers_number=r[0].subscribers_number;
-      this.date_retrieved=true;
-      if(this.date_retrieved && this.number_of_contents_retrieved){
-        this.display_thumbnail = true;
-      }
-     
-    });
-
-    this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
-      console.log(r[0]);
-      this.number_of_comics=r[0].number_of_comics;
-      this.number_of_drawings=r[0].number_of_drawings;
-      this.number_of_writings=r[0].number_of_writings;
-      this.number_of_ads=r[0].number_of_ads;
-      this.number_of_contents_retrieved=true;
-      if(this.date_retrieved && this.number_of_contents_retrieved){
-        this.display_thumbnail = true;
-      }
-    })
-
+        this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
+          if(information[0].value){
+            this.subscribed_to_user=true;
+          }
+          this.subscribtion_retrieved = true;
+        }); 
+      })
+  
+      this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
+        this.author_name = r[0].firstname + ' ' + r[0].lastname;
+        this.pseudo=r[0].nickname;
+        this.occupation=r[0].job;
+        this.type_of_account=r[0].type_of_account;
+        this.primary_description=r[0].primary_description;
+        this.extended_description=r[0].primary_description_extended;
+        this.subscribers_number=r[0].subscribers_number;
+        this.date_retrieved=true;
+        if(this.date_retrieved && this.number_of_contents_retrieved){
+          this.display_thumbnail = true;
+        }
+       
+      });
+  
+      this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+        console.log(r[0]);
+        this.number_of_comics=r[0].number_of_comics;
+        this.number_of_drawings=r[0].number_of_drawings;
+        this.number_of_writings=r[0].number_of_writings;
+        this.number_of_ads=r[0].number_of_ads;
+        this.number_of_contents_retrieved=true;
+        if(this.date_retrieved && this.number_of_contents_retrieved){
+          this.display_thumbnail = true;
+        }
+      })
+  
+    }
+    
   }
 
 

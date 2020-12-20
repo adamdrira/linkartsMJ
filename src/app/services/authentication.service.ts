@@ -75,9 +75,8 @@ export class AuthenticationService {
     }
 
     login(username, password) {
-        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password })
-            .pipe(map(res => {
-                //console.log(res);
+        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password }).pipe(map(res => {
+                console.log(res);
                 if(!res.msg){
                     //console.log("reset cookie")
                     this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');

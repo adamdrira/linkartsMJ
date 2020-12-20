@@ -4,30 +4,37 @@
 </div>-->
 
 
-<div class="panel-controller" [@enterAnimation]>
-    <div class="controller-category" [ngClass]="{'open' : subcategory==0}" (click)="open_subcategory(0);">
-        <div class="comic-bubble-icon"></div>
-        <span>Bandes dessinées</span>
-    </div>
-    <div class="controller-category" [ngClass]="{'open' : subcategory==1}" (click)="open_subcategory(1);">
-        <div class="pencil-icon"></div>
-        <span>Dessins</span>
-    </div>
-    <div class="controller-category" [ngClass]="{'open' : subcategory==2}" (click)="open_subcategory(2);">
-        <div class="writing2-icon"></div>
-        <span>Écrits</span>
+
+<div class="panel-background">
+    <div class="logos-container" [@enterFromTopAnimation]>
+        <button class="logo" [ngClass]="{'opened': subcategory == 0 }" (click)="open_subcategory(0);">
+            <div class="image1"></div>
+            <span>Bandes dessinées</span>
+        </button>
+        <button class="logo" [ngClass]="{'opened': subcategory == 1 }" (click)="open_subcategory(1);">
+            <div class="image2"></div>
+            <span>Dessins</span>
+        </button>
+        <button class="logo" [ngClass]="{'opened': subcategory == 2 }" (click)="open_subcategory(2);">
+            <div class="image3"></div>
+            <span>Écrits</span>
+        </button>
     </div>
 </div>
 
 <div class="trendings-global-container">
         
 
-    <ng-container *ngIf=" !comics_trendings_sorted_confirmation && subcategory==0">
-        <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="skeleton" [@enterAnimation]>
-            </div>
-        </ng-container>
+
+    <ng-container *ngIf=" (!comics_trendings_sorted_confirmation && subcategory==0) || (!drawings_trendings_sorted_confirmation && subcategory==1) || ( !writings_trendings_sorted_confirmation && subcategory==2)">
+        <div class="ranked-thumbnail-container" *ngFor="let item of skeleton_array; let i = index">
+            <app-thumbnail-artwork 
+            [skeleton]="skeleton"
+            page='trendings'
+            ></app-thumbnail-artwork>
+        </div>
     </ng-container>
+
 
     <ng-container *ngIf=" comics_trendings_sorted_confirmation && subcategory==0">
         <ng-container *ngFor="let item of comics_trendings_sorted; let i = index">
@@ -61,13 +68,6 @@
 
 
 
-    <ng-container *ngIf=" !drawings_trendings_sorted_confirmation && subcategory==1">
-        <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="skeleton" [@enterAnimation]>
-            </div>
-        </ng-container>
-    </ng-container>
-
     <ng-container *ngIf=" drawings_trendings_sorted_confirmation && subcategory==1">
         <div *ngFor="let item of drawings_trendings_sorted; let i = index">
             <div *ngIf="drawings_trendings_length > i" class="ranked-thumbnail-container" [@enterAnimation]>
@@ -97,13 +97,6 @@
         </div>
     </ng-container>
 
-
-    <ng-container *ngIf=" !writings_trendings_sorted_confirmation && subcategory==2">
-        <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="skeleton" [@enterAnimation]>
-            </div>
-        </ng-container>
-    </ng-container>
 
     <ng-container *ngIf=" writings_trendings_sorted_confirmation && subcategory==2">
         <div *ngFor="let item of writings_trendings_sorted; let i = index" class="ranked-thumbnail-container" [@enterAnimation]>

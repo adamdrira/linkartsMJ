@@ -298,6 +298,12 @@ export class SwiperUploadArtbookComponent implements OnInit {
       if( this.component_creation_in_progress ) {
           return;
       }
+      else if(this.componentRef.length==100){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 100 pages"},
+          panelClass: 'dialogRefClassText'
+        });
+      }
       else {
         this.component_creation_in_progress=true;
 

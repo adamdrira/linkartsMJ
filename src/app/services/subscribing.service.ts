@@ -52,7 +52,11 @@ export class Subscribing_service {
       }));
   };
 
-  
+  get_all_subscribings_by_user_id(id_user){
+    return this.httpClient.post(`routes/get_all_subscribings_by_user_id`,{id_user:id_user}, {withCredentials:true}).pipe(map(information=>{
+      return information;
+    }));
+  }
 
   get_all_subscribed_users(id_user){
     return this.httpClient.get(`routes/get_all_subscribed_users/${id_user}`, {withCredentials:true}).pipe(map(information=>{

@@ -82,7 +82,7 @@ public check_state(){
                       return THIS.connect(url)
                     }
                    
-                    },5000);
+                    },10000);
                }
                
               
