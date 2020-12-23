@@ -29,6 +29,12 @@
 // First section
    
 // First section
+
+.invisible {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .panel-controller {
   //margin-top:30px;
   width:100%;
@@ -226,6 +232,7 @@ mat-spinner {
 
 .trendings-global-container {
   margin-right:auto;
+  padding-bottom: 10px;
 }
 
 

@@ -1,30 +1,23 @@
 <div class="trendings-global-container">
         
 
-    <!--<ng-container *ngIf=" !favorites_retrieved">
+    <ng-container *ngIf="!favorites_retrieved">
         <ng-container *ngFor="let item of skeleton_array; let i = index">
-            <div class="skeleton" [@enterAnimation]>
+            <div class="ranked-thumbnail-container" [@enterAnimation]>
+                <app-thumbnail-user 
+                    [skeleton]="skeleton"
+                ></app-thumbnail-user> 
             </div>
         </ng-container>
     </ng-container>
 
+   
+    
     <ng-container *ngIf="favorites_retrieved">
         <ng-container *ngFor="let item of list_of_users; let i = index">
             <div class="ranked-thumbnail-container" [@enterAnimation]>
                 <app-thumbnail-user 
                     [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-user> 
-            </div>
-        </ng-container>
-    </ng-container>-->
-    
-    <ng-container>
-        <ng-container *ngFor="let item of list_of_users; let i = index">
-            <div class="ranked-thumbnail-container" [@enterAnimation]>
-                <app-thumbnail-user 
-                    [item]=item
-                    [loaded]="favorites_retrieved"
                     now_in_seconds={{now_in_seconds}}
                 ></app-thumbnail-user> 
             </div>
