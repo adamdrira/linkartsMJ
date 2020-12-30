@@ -9,7 +9,7 @@
   </div>
 
 
-  <div class="fixed-top" *ngIf="navbar.visible "
+  <div class="fixed-top" *ngIf="navbar.visible"
     [ngClass]="{'navbarBoxShadow': navbarBoxShadow,'really-invisible': !connexion_status}">
 
 
@@ -25,9 +25,10 @@
             <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
         </a>
 
-
+        
         <div class="HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search"
-          [ngClass]="{'invisible': !show_selector }">
+          [ngClass]="{'invisible': !show_selector || !logo_is_loaded}">
+          
           <div class="navbar2 flex-md-nowrap p-0">
             <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" routerLink="/">
                 <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
@@ -54,7 +55,9 @@
             </option>
           </select>
         </div>-->
-        <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search }">
+        
+        <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search || !logo_is_loaded}">
+          
           <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector, 'opened': navbarSelect2 && navbarSelect2.panelOpen }">
             
             <div class="arrow-container" [ngClass]="{'opened': navbarSelect2 && navbarSelect2.panelOpen }">
@@ -69,21 +72,21 @@
 
                 <ng-container *ngIf="navbar.active_section==0">
                   <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
-                  <span>Accueil</span>
+                  <span>ACCUEIL</span>
                 </ng-container>
                 <ng-container *ngIf="navbar.active_section==1">
                   <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-                  <span>Collaborations</span>
+                  <span>COLLABORATIONS</span>
                 </ng-container>
               </mat-select-trigger>
 
               <mat-option [value]="0" select>
                 <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
-                Accueil
+                ACCUEIL
               </mat-option>
               <mat-option [value]="1">
                 <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-                Collaborations
+                COLLABORATIONS
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -103,11 +106,11 @@
 
           <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search">
             
-            <a routerLink="/" [ngClass]="{'invisible': activated_search }">
-              <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+            <a routerLink="/" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==0 }">
+              <div class="icon-home"></div>
             </a>
-            <a routerLink="/linkcollab" [ngClass]="{'invisible': activated_search }">
-              <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+            <a routerLink="/linkcollab" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==1 }">
+              <div class="icon-collaboration"></div>
             </a>
             <a (click)="activate_search();">
               <mat-icon class="optionsButton">search</mat-icon>
@@ -117,7 +120,7 @@
           <div class="navbar-l1-searchbar-container"
             [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search}">
 
-            
+
             <div class="left-container first-selector" [ngClass]="{'invisible': !show_selector }">
               <mat-form-field floatLabel='never'>
 
@@ -2315,8 +2318,48 @@
                 <img [src]="profile_picture" (load)="pp_loaded()"
                   [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
               </div>
+
               <span [ngClass]="{'invisible': !data_retrieved}">Mon profil</span>
             </a>
+
+            <div class="profile-container SMALL-SCREEN-PP">
+              <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" tabIndex="-1" [matMenuTriggerFor]="options2">
+                <img [src]="profile_picture" (load)="pp_loaded()"
+                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
+
+                  <!--<div class="absolute-menu-logo">
+                    <mat-icon>menu</mat-icon>
+                  </div>-->
+              </div>
+
+              <!--<button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
+                <mat-icon class="optionsButton more">menu</mat-icon>
+              </button>-->
+              <mat-menu #options2="matMenu" class="navbar-mat-menu">
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_profile()">
+                  <img [src]="profile_picture" (load)="pp_loaded()"
+                    [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
+                  <span>Mon profil</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
+                  <mat-icon class="item-icon">settings</mat-icon>
+                  <span>Mon compte</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon class="item-icon">lock</mat-icon>
+                  <span>Crédits</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
+                  <mat-icon class="item-icon">login</mat-icon>
+                  <span>Se déconnecter</span>
+                </button>
+              </mat-menu>
+
+            </div>
 
 
           </div>
@@ -2398,7 +2441,7 @@
               </mat-menu>
             </div>
 
-            <div class="options SMALL-SCREEN-OPTIONS"
+            <div class="options SMALL-SCREEN-OPTIONS HIDE-OPTIONS-ON-SMALL-SCREEN"
               *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
                 <mat-icon class="optionsButton more">menu</mat-icon>

@@ -1447,6 +1447,9 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/account/" + this.pseudo + "/" + this.user_id + "/my_account";
   }
 
+  really_open_my_profile() {
+    this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
+  }
   really_open_my_account() {
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
   }
