@@ -1,546 +1,612 @@
-
-<div class="container-fluid artwork-comic">
-
+<div class="artwork">
     
 
-    <main role="main">
-        
+    <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    <!--!!!!!!!!!!! ARTWORK CONTAINER !!!!!!!!!!!!!!!!-->
+    <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    <div #leftContainer class="artwork-container">
 
-        <!--------------------------------------------------------------------------------->
-        <!--------------------------------------------------------------------------------->
-        <!--Left container : TOP CONTAINER (CONTROL BAR) and CONTENT-CONTAINER (CONTENTS)-->
-        <!--------------------------------------------------------------------------------->
-        <!--------------------------------------------------------------------------------->
-        <div id="left-container">
-
-          
-            <div #leftContainer class="first-div">
-
-
-                <div class="top-container">
-                    <div class="dropdowns-container">
-                        <div class="options-container">
-                            
-                            
-                            <mat-icon class="icon" *ngIf="type=='artbook'" (click)="click_thumbnails();">apps</mat-icon>
-                            <mat-icon class="icon" *ngIf="!fullscreen_mode" (click)="fullscreen_button();">fullscreen</mat-icon>
-                            <mat-icon class="icon" *ngIf="fullscreen_mode" (click)="fullscreen_button();">fullscreen_exit</mat-icon>
-                            <mat-icon class="icon" *ngIf="zoom_mode" (click)="zoom_button();">zoom_out</mat-icon>
-                            <mat-icon class="icon" *ngIf="!zoom_mode" (click)="zoom_button();">zoom_in</mat-icon>
-                            
-                            <div class="pages-controller-container" *ngIf="type=='artbook'" [ngClass]="{'invisible': !display_pages}">
-                                Page :
-                                <input type="text" aria-label="" role="navigation" size="5">
-                                <div class="total-pages">
-                                    <span></span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="content-container">
-
-                    
-                    <div class="thumbnails-container" *ngIf="thumbnails==true">
-                            
-                        <div class="thumbnails-name">
-                            <mat-icon class="thumbnails-icon">apps</mat-icon>
-                            <span>Vignettes</span>
-
-                            <mat-icon class="close-icon" (click)="click_thumbnails();">close</mat-icon>
-                        </div>
-                        <div class="thumbnails-contents" *ngIf="swiper">
-                            <ng-container *ngFor="let element of thumbnails_links; let i = index">
-                                <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);" [ngClass]="{'opened': i==swiper.activeIndex}">
-                                    <img [src]=element>
-                                </div>
-                                <span>Page {{i + 1}}</span>
-                            </ng-container>
-                        </div>
-                    </div>
-                    
-                                    
-                    <div #swiperContainer *ngIf="type=='artbook'" class="swiper-container">
-                        <div #swiperWrapper class="swiper-wrapper">
-                            <ng-container >
-                                <div #swiperSlide *ngFor="let item of list_drawing_pages; let i = index" class="swiper-slide">
-                                    <div class="loading-page">
-                                        <mat-spinner diameter="50"  *ngIf="!display_drawings[i] "></mat-spinner>
-                                    </div>
-                                    <div class="slide-container" 
-                                    [ngClass]="{'slide-container-ZM': zoom_mode}">
-
-                                        <img 
-                                        (load)="a_drawing_is_loaded(i)"
-                                        class="slide-container-img" 
-                                        [src]="item"
-                                        [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[i]}">
-                                    </div>
-
-                                </div>
-                        </ng-container>
-                        </div>
-                        
-                        <!-- Add Scrollbar -->
-                        <div class="swiper-scrollbar"></div>
-                        <!-- Add Arrows -->
-                        <div *ngIf="pagesnumber>1" class="swiper-button-prev"></div>
-                        <div  *ngIf="pagesnumber>1" class="swiper-button-next"></div>
-                    </div>
-                    <div *ngIf="type=='one-shot'" class="swiper-container">
-                        <div  class="swiper-wrapper">
-                            <ng-container >
-                            <div  class="swiper-slide">
-
-                                <div class="slide-container" 
-                                [ngClass]="{'slide-container-ZM': zoom_mode}">
-                                <div class="loading-page">
-                                    <mat-spinner diameter="50"  *ngIf="!display_drawings[0] "></mat-spinner>
-                                </div>
-                                    <img 
-                                    (load)="a_drawing_is_loaded(0)"
-                                    class="slide-container-img" 
-                                    [src]="drawing_one_shot"
-                                    [ngClass]="{'slide-container-img-ZM': zoom_mode}">
-                                </div>  
-                            </div>
-                        </ng-container>
-                        </div>
-                    </div>
-
-
-
-                </div>
-
-            </div>
-        
-
+        <div class="top-container">
             
+            <div class="buttons-container">
 
-            <div style="display:flex;justify-content: center;">
-                <div class="title" [ngClass]="{'opened': left_container_category_index==0 }"  (click)="open_left_container_category(0);">
-                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">account_circle</mat-icon>
-                    <span>Œuvres du même auteur</span>
-                </div>
-                <div class="title" [ngClass]="{'opened': left_container_category_index==1 }" (click)="open_left_container_category(1);">
-                    <mat-icon style="font-size: 25px;margin: auto 10px auto auto;">burst_mode</mat-icon>
-                    <span>Œuvres similaires</span>
-                </div>
-            </div>
+                <div class="left-options" [ngClass]="{'closed': optionOpened!=0}" (click)="openOption(0);">
 
+                    <mat-icon class="smallScreen" *ngIf="optionOpened!=0">
+                        video_settings
+                    </mat-icon>
 
-
-            <div class="recommendations" *ngIf="list_of_author_recommendations_retrieved">
-
-                <!--********************-->
-                <!--********************-->
-                <!--SAME AUTHOR ARTWORKS-->
-                <!--********************-->
-                <!--********************-->
-                <div class="cols" *ngIf="left_container_category_index==0">
-                    <div class="col2" *ngIf="list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved" >
-                        <div class="genre">
-                            <span>Dessins</span>
-                        </div>
-                        <div *ngFor="let item of list_of_author_recommendations_drawings; let i=index" >
-                            <app-thumbnail-artwork 
-                            *ngIf="item[0].pagesnumber >=0"
-                            [item]=item[0]
-                            page='subscribings'
-                            now_in_seconds={{now_in_seconds}}
-                            subscribing_category='drawing'
-                            subscribing_format="artbook"
-                            ></app-thumbnail-artwork>
-
-                            <app-thumbnail-artwork 
-                            *ngIf="item[0].pagesnumber == null"
-                            [item]=item[0]
-                            page='subscribings'
-                            now_in_seconds={{now_in_seconds}}
-                            subscribing_category='drawing'
-                            subscribing_format="one-shot"
-                            ></app-thumbnail-artwork>
-                            <!--<app-thumbnail-drawing *ngIf="item[0].pagesnumber == null"
-                                (sendLoaded)="sendLoadedDrawing( $event );"
-                                [item]=item[0]
-                                format='one-shot'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-drawing>
-                            <app-thumbnail-drawing *ngIf="item[0].pagesnumber >=0"
-                                (sendLoaded)="sendLoadedDrawing( $event );"
-                                [item]=item[0] 
-                                format='artbook'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-drawing>-->
+                    <div class="button" (click)="click_thumbnails();" *ngIf="type=='artbook'"
+                    matTooltip="Vignettes"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <mat-icon>apps</mat-icon>
+                    </div>
+                    <div class="button" *ngIf="!fullscreen_mode" [@enterAnimation] (click)="fullscreen_button();"
+                    matTooltip="Mode plein écran"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <mat-icon>fullscreen</mat-icon>
+                    </div>
+                    <div class="button" *ngIf="fullscreen_mode" [@enterAnimation] (click)="fullscreen_button();"
+                    matTooltip="Quitter le mode plein écran"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        <mat-icon>fullscreen_exit</mat-icon>
+                    </div>
+                    <div class="button" *ngIf="zoom_mode" [@enterAnimation] (click)="zoom_button();">
+                        <mat-icon>zoom_out</mat-icon>
+                    </div>
+                    <div class="button" *ngIf="!zoom_mode" [@enterAnimation] (click)="zoom_button();">
+                        <mat-icon>zoom_in</mat-icon>
+                    </div>
+    
+                    <div class="pages-controller-container" *ngIf="type=='artbook'" [ngClass]="{'invisible': !display_pages}">
+                        <span>Page :</span>
+                        <input type="text" aria-label="" role="navigation" size="5">
+                        <div class="total-pages" *ngIf="swiper && swiper.slides">
+                            <span>/ {{swiper.slides.length}}</span>
                         </div>
                     </div>
                     
-                    <div class="col1" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved"  >
-                        <div class="genre">
-                            <span>Bandes dessinées</span>
-                        </div>
-                        <div class="comic" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
-                            <app-thumbnail-artwork 
-                                *ngIf="item[0].chaptersnumber >=0"
-                                [item]=item[0]
-                                page='subscribings'
-                                now_in_seconds={{now_in_seconds}}
-                                subscribing_category='comic'
-                                subscribing_format='serie'
-                            ></app-thumbnail-artwork>
-                            <app-thumbnail-artwork 
-                                *ngIf="item[0].chaptersnumber == null"
-                                [item]=item[0]
-                                page='subscribings'
-                                now_in_seconds={{now_in_seconds}}
-                                subscribing_category='comic'
-                                subscribing_format='one-shot'
-                            ></app-thumbnail-artwork>
-                            
-                            <!--<app-thumbnail-comics *ngIf="item[0].chaptersnumber == null"
-                                (send_loaded)="sendLoadedComic( $event );"
-                                [item]=item[0]
-                                format='one-shot'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-comics>
-                            <app-thumbnail-comics *ngIf="item[0].chaptersnumber >=0"
-                                (send_loaded)="sendLoadedComic( $event );"
-                                [item]=item[0]
-                                format='serie'
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-comics>-->
-                        </div>
-                    </div>
-                    
-                    <div class="col3" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_retrieved" >
-                        <div class="genre">
-                            <span>Écrits</span>
-                        </div>
-                        <div *ngFor="let item of list_of_author_recommendations_writings; let i=index"  >
-                            <app-thumbnail-artwork 
-                            [item]=item[0]
-                            page='subscribings'
-                            now_in_seconds={{now_in_seconds}}
-                            subscribing_category='writing'
-                            ></app-thumbnail-artwork>
-                            <!--<app-thumbnail-writing
-                                (sendLoaded)="sendLoadedWriting( $event );"
-                                [item]=item[0]
-                                now_in_seconds={{now_in_seconds}}
-                            ></app-thumbnail-writing>-->
-                        </div>
+                    <div class="button close rotate" *ngIf="optionOpened==0" (click)="openOption(-1);stop($event);">
+                        <mat-icon>double_arrow</mat-icon>
                     </div>
                 </div>
-
-                <!--******************-->
-                <!--******************-->
-                <!--SAME TYPE ARTWORKS-->
-                <!--******************-->
-                <!--******************-->
-                <div style="display:flex;flex-wrap: wrap;min-height: 550px;" class="container-drawings" *ngIf="list_of_recommendations_by_tag_retrieved &&  left_container_category_index==1">
-                    <div *ngFor="let item of list_of_recommendations_by_tag; let i=index" >
-                        
-                        <app-thumbnail-artwork 
-                            *ngIf="item.pagesnumber >=0"
-                            [item]=item
-                            page='subscribings'
-                            now_in_seconds={{now_in_seconds}}
-                            subscribing_category='drawing'
-                            subscribing_format="artbook"
-                            ></app-thumbnail-artwork>
-
-                            <app-thumbnail-artwork 
-                            *ngIf="item.pagesnumber == null"
-                            [item]=item
-                            page='subscribings'
-                            now_in_seconds={{now_in_seconds}}
-                            subscribing_category='drawing'
-                            subscribing_format="one-shot"
-                        ></app-thumbnail-artwork>
-
-                        <!--<app-thumbnail-drawing *ngIf="item.pagesnumber>=0"
-                                (sendLoaded)="sendLoadedDrawingOthers( $event );"
-                                [item]=item
-                                format='artbook'
-                                now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-drawing>
-                        <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
-                                (sendLoaded)="sendLoadedDrawingOthers( $event );"
-                                [item]=item
-                                format='one-shot'
-                                now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-drawing>-->
-                    </div>
-                    <div style="    display: flex;
-                    justify-content: center;
-                    margin: auto;" *ngIf="list_of_recommendations_by_tag.length==0">
-                        Aucune recommendation n'est actuellement disponible pour cette oeuvre
-                    </div>
-                </div>
-
 
             </div>
-
-
-
         </div>
 
 
-        <!--------------------------------------------------------------------------------->
-        <!--------------------------------------------------------------------------------->
-        <!---------------RIGHT CONTAINER -------------------------------------------------->
-        <!--------------------------------------------------------------------------------->
-        <!--------------------------------------------------------------------------------->
-        <div #myScrollContainer id="right-container">
+        <div class="content-container">
+            <div class="thumbnails-container" *ngIf="thumbnails==true" [@enterFromLeft]>
+                <div class="thumbnails-name">
+                    <mat-icon class="thumbnails-icon">apps</mat-icon>
+                    <span>Vignettes</span>
+                    <mat-icon class="close-icon" (click)="click_thumbnails();">close</mat-icon>
+                </div>
+                
+                <div class="thumbnails-contents" *ngIf="swiper">
+                    <ng-container *ngFor="let element of thumbnails_links; let i = index">
+                        <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
+                            [ngClass]="{'opened': i==swiper.activeIndex}">
+                            <img [src]=element>
+                        </div>
+                        <span>Page {{i+1}}</span>
+                    </ng-container>
+                </div>
+            </div>
+            <div #swiperContainer class="swiper-container swiper-artwork-drawing">
+                <div #swiperWrapper class="swiper-wrapper">
+
+
+                    <ng-container *ngIf="type=='one-shot'">
+                        <div class="swiper-slide">
+                            <div class="slide-container" [ngClass]="{'slide-container-ZM': zoom_mode}">
+                                <div class="loading-page">
+                                    <mat-spinner diameter="50" *ngIf="!display_drawings[0]"></mat-spinner>
+                                </div>
+                                <img (load)="a_drawing_is_loaded(0)" class="slide-container-img" [src]="drawing_one_shot" (contextmenu)="onRightClick()"
+                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[0]}">
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="type=='artbook'">
+                        <div #swiperSlide
+                            *ngFor="let item of list_drawing_pages; let i = index" class="swiper-slide">
+
+                            <div class="slide-container" [ngClass]="{'slide-container-ZM': zoom_mode}">
+                                <div class="loading-page">
+                                    <mat-spinner diameter="50" *ngIf="!display_drawings[i]">
+                                    </mat-spinner>
+                                </div>
+                                <img (load)="a_drawing_is_loaded(i)" class="slide-container-img" [src]="item" (contextmenu)="onRightClick()"
+                                    [ngClass]="{'slide-container-img-ZM': zoom_mode,'invisible':!display_drawings[i]}">
+                            </div>
+
+                        </div>
+                    </ng-container>
+
+
+                </div>
+                <!-- Add Scrollbar -->
+                <div class="swiper-scrollbar"></div>
+                <!-- Add Arrows -->
+                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-prev"></div>
+                <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-next"></div>
+            </div>
+        </div>
+
+
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <!--!!!!!!!! RECOMMENDATIONS CONTAINER !!!!!!!!!!!-->
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div class="recommendations-container" *ngIf="list_of_author_recommendations_retrieved">
             
+            <div class="categories">
+                <button [ngClass]="{'opened': left_container_category_index==0 }"
+                    (click)="open_left_container_category(0);">
+                    <mat-icon>account_circle</mat-icon>
+                    <span>Œuvres du même auteur</span>
+                </button>
+                <button [ngClass]="{'opened': left_container_category_index==1 }"
+                    (click)="open_left_container_category(1);">
+                    <mat-icon>burst_mode</mat-icon>
+                    <span>Œuvres similaires</span>
+                </button>
+            </div>
+
+            <!--********************-->
+            <!--********************-->
+            <!--SAME AUTHOR ARTWORKS-->
+            <!--********************-->
+            <!--********************-->
+            <ng-container *ngIf="left_container_category_index==0">
+
+                <div class="recommendation-group" *ngIf=" list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved">
+                    <div class="title">Dessins</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
+                        </app-thumbnail-artwork>
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
+                        </app-thumbnail-artwork>
+                    </div>
+                </div>
+
+                <div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved">
+                    <div class="title">Bandes dessinées</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format="serie">
+                        </app-thumbnail-artwork>
+
+                        <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format="one-shot">
+                        </app-thumbnail-artwork>
+                    </div>
+                </div>
+
+                <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_writings_retrieved">
+                    <div class="title">Écrits</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
+                        <app-thumbnail-artwork [item]=item[0] page='subscribings' now_in_seconds={{now_in_seconds}}
+                            subscribing_category='writing'></app-thumbnail-artwork>
+                    </div>
+                </div>
+                
+                <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
+                    <div class="no-recommendation">
+                        <mat-icon>info_outline</mat-icon>
+                        <span>Aucune recommendation n'est actuellement disponible pour cette œuvre</span>
+                    </div>
+                </div>
+
+            </ng-container>
+
+            <!--******************-->
+            <!--******************-->
+            <!--SAME TYPE ARTWORKS-->
+            <!--******************-->
+            <!--******************-->
+            <ng-container *ngIf="left_container_category_index==1 && list_of_recommendations_by_tag_retrieved ">
+
+                <div class="recommendation-group">
+                    <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber >=0" [item]=item page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
+                        </app-thumbnail-artwork>
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber == null" [item]=item page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
+                        </app-thumbnail-artwork>
+        
+                    </div>
+                    <div class="no-recommendation" *ngIf="!list_of_recommendations_by_tag.length">
+                        <mat-icon>info_outline</mat-icon>
+                        <span>Aucune recommendation n'est actuellement disponible pour cette œuvre</span>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        
+    </div>
+        
 
 
-            <!--options pour l'utilisateur -->
-            <button *ngIf="mode_visiteur_added && !mode_visiteur" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                <mat-icon class="optionsButton">more_vert</mat-icon>
+    <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    <!--!!!!!!!!! INFORMATIONS CONTAINER !!!!!!!!!!!!!-->
+    <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    <div #myScrollContainer class="artwork-about-container">
+        
+        <div class="artwork-title">
+            
+            <span>{{title}}</span>
+            
+            <button *ngIf="mode_visiteur_added && !mode_visiteur" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+            <mat-icon class="optionsButton">more_vert</mat-icon>
             </button>
-            <mat-menu  #artworkOptions="matMenu">
-                <button class="mat-menu-item" mat-menu-item (click)="edit_information();"> 	
-                    <mat-icon class="item-icon">edit</mat-icon>
+            <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
+                <button class="artwork-button-menu-item" mat-menu-item (click)="edit_information();">
+                    <mat-icon>edit</mat-icon>
                     <span>Modifier les informations</span>
                 </button>
-                <button *ngIf="!content_emphasized" class="mat-menu-item" mat-menu-item (click)="emphasize()"> 	
-                    <mat-icon class="item-icon">trending_up</mat-icon>
+                <button *ngIf="!content_emphasized" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
+                    <mat-icon>trending_up</mat-icon>
                     <span>Mettre l'oeuvre en avant</span>
                 </button>
-                <button *ngIf="content_emphasized" class="mat-menu-item" mat-menu-item (click)="remove_emphasizing()"> 	
-                    <mat-icon class="item-icon">trending_down</mat-icon>
+                <button *ngIf="content_emphasized" class="artwork-button-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                    <mat-icon>trending_down</mat-icon>
                     <span>Annuler la mise en avant</span>
                 </button>
-                <button *ngIf="status=='public'" class="mat-menu-item" mat-menu-item (click)="set_private();"> 
-                    <mat-icon class="item-icon">save_alt</mat-icon>
+                <button *ngIf="status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="set_private();">
+                    <mat-icon>save_alt</mat-icon>
                     <span>Archiver</span>
-                 </button>
-                <button *ngIf="status=='private'" class="mat-menu-item" mat-menu-item (click)="set_public();"> 
-                    <mat-icon class="item-icon">unarchive</mat-icon>
+                </button>
+                <button *ngIf="status=='private'" class="artwork-button-menu-item" mat-menu-item (click)="set_public();">
+                    <mat-icon>unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
-                <button class="mat-menu-item" mat-menu-item (click)="remove_artwork();">
-                    <mat-icon class="item-icon">clear</mat-icon>
+                <button class="artwork-button-menu-item" mat-menu-item (click)="remove_artwork();">
+                    <mat-icon>clear</mat-icon>
                     <span>Supprimer</span>
-                 </button>
-                 <div class="mat-menu-item"  mat-menu-item *ngIf="monetization=='true'"> 	
-                    <mat-icon class="item-icon">monetization_on</mat-icon>
-                    <span>Oeuvre monétisée</span>
-                </div>
+                </button>
+                <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true'" disabled>
+                    <mat-icon>euro_symbol</mat-icon>
+                    <span>Œuvre monétisée</span>
+                </button>
             </mat-menu>
 
             <!--options pour un visiteur -->
-            <button *ngIf="mode_visiteur_added && mode_visiteur && archive_retrieved && type_of_account=='account'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions2">
+            <button *ngIf="mode_visiteur_added && mode_visiteur && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
                 <mat-icon class="optionsButton">more_vert</mat-icon>
             </button>
-            <mat-menu  #artworkOptions2="matMenu">
-                <button  *ngIf="mode_visiteur && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="report()"> 	
-                    <mat-icon class="item-icon">flag</mat-icon>
+            <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
+                <button *ngIf="mode_visiteur && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
+                    class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
+                    <mat-icon>flag</mat-icon>
                     <span>Signaler</span>
                 </button>
-                <button  *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="mat-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()"> 	
-                    <mat-icon class="item-icon">flag</mat-icon>
+                <button *ngIf="mode_visiteur && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)"
+                    class="artwork-button-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
+                    <mat-icon>flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
-                <button (click)="archive()" class="mat-menu-item" mat-menu-item *ngIf="!content_archived"> 	
-                    <mat-icon class="item-icon">save_alt</mat-icon>
+                <button (click)="archive()" class="artwork-button-menu-item" mat-menu-item *ngIf="!content_archived">
+                    <mat-icon>save_alt</mat-icon>
                     <span>Archiver</span>
                 </button>
-                <button (click)="unarchive()" class="mat-menu-item" mat-menu-item *ngIf="content_archived"> 	
-                    <mat-icon class="item-icon">unarchive</mat-icon>
+                <button (click)="unarchive()" class="artwork-button-menu-item" mat-menu-item *ngIf="content_archived">
+                    <mat-icon>unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
-                <button class="mat-menu-item" mat-menu-item> 	
-                    <mat-icon class="item-icon">create</mat-icon>
-                    <span>Ecrire</span>
+                <button class="artwork-button-menu-item" mat-menu-item (click)="open_chat_link()">
+                    <mat-icon>create</mat-icon>
+                    <span>Écrire</span>
                 </button>
             </mat-menu>
+        </div>
 
 
-            <div class="d0-title-container">
-                <span>{{title}}</span>
-            </div>
-            <!--Line 1 : AUTHOR INFORMATION-->
-            <div class="d1-profile-container">
-
-                
-                <!--<div class="icon-container">
-                    <img [src]="profile_picture">
-                </div>
-                <div class="d1-container">-->
-
-                
-                <!--********************-->
-                <!--Author container-->
-                <!--********************-->
-                <div class="author-container" [ngClass]="{'invisible': !display_right_container }">
-                    <div class="left-container" >
-                        <img (load)="profile_picture_loaded()" [src]="profile_picture">
-                    </div>
-                    <div class="right-container">
-                        <span class="author-name" *ngIf="pseudo!=''">
-                            <a href="/account/{{pseudo}}/{{authorid}}">
-                                {{user_name}}
-                            </a>
-                        </span>
-                        <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
-                    </div>
-                </div>
-
-                <div [ngClass]="{'invisible': !display_right_container }" *ngIf="mode_visiteur_added && mode_visiteur" class="d1-container-buttons">
-                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
-                        <mat-icon class="item-icon" style=" color:#010119">notifications_active </mat-icon> 
-                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >Abonné</span>
-                      </button>
-                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"  mat-raised-button  style="background-color:#4bacdd; border-radius: 30px;" tabIndex="-1" class="position style1">
-                        <mat-icon class="item-icon" style=" color:#010119">person_add</mat-icon> 
-                        <span style="margin-left: 5px; color:#010119;font-size: 14px; " >S'abonner</span>
-                      </button>
-                </div>
-                    
-            </div>
-            <!--Line 2 : LIKES-LOVES, NUMBER OF VIEWS/COMMENTS, DATE-->
-            <div class="d2-likes-container" >
-                <div class="line1" [ngClass]="{'invisible': !display_right_container }">
-                    <button mat-raised-button [disabled]="like_in_progress" class="d2-button like-background" [ngClass]="{'liked': liked }" (click)="click_like();">
-                        <mat-icon class="d2-button-icon">thumb_up</mat-icon>
-                        <span>J'aime</span>
-                    </button>
-                    <button mat-raised-button [disabled]="love_in_progress" class="d2-button love-background" [ngClass]="{'loved': loved }" (click)="click_love();">
-                        <mat-icon class="d2-button-icon">favorite</mat-icon>
-                        <span>J'adore</span>
-                    </button>
-                </div>
-                <div class="line2">
-                    <div class="d2-likes" (click)="show_likes()">
-                        <span [ngClass]="{'invisible': !display_right_container }"> {{likesnumber}}</span>
-                    </div>
-                    <div class="d2-loves" (click)="show_likes()">
-                        <span [ngClass]="{'invisible': !display_right_container }"> {{lovesnumber}}</span>
-                    </div>
-                </div>
-                <div class="line3">
-                    <div class="line-3-container">
-                        <mat-icon class="eye-icon">visibility</mat-icon>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber == 0">Aucune vue</span>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber == 1">1 vue</span>
-                        <span [ngClass]="{'invisible': !display_right_container }" *ngIf="viewsnumber > 1">{{viewsnumber}} vues</span>
-                    </div>
-                </div>
-                <div class="line4">
-                    <div class="line-4-container">
-                        <mat-icon class="comments-icon"  (click)="open_category(1);">comment</mat-icon>
-                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 0">Aucun commentaire</span>
-                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber == 1">{{commentariesnumber}} commentaire</span>
-                        <span  (click)="open_category(1);" [ngClass]="{'invisible': !display_right_container }" *ngIf="commentariesnumber > 1">{{commentariesnumber}} commentaires</span>
-                    </div>
-                </div>
-
-                <div class="line5">
-                    <span [ngClass]="{'invisible': !display_right_container }">
-                        {{date_upload_to_show}}
-                    </span>
-                </div>
-
-            </div>
-            <!--Line 3 : AD-->
-            <div class="d3-ad-container">
-                <div class="d3-ad">
-                </div>
-                <div class="d3-link">
-                    <span>Soutenez le site en faisant un don </span>
-                    <div class="d3-icon">
-                    </div>
-                </div>
-            </div>
-            <!--Line 4 : OPTIONAL VIDEO-->
-            <!--<div class="d4-video-container" id="scrollToComments">
-
-                <button mat-raised-button class="d4-button">
-                    <mat-icon class="video-icon">play_circle_filled</mat-icon>
-                    <span>Soutenir l'artiste</span>
+        
+        <div class="data-container">
+            <div class="likes-and-loves-buttons" [ngClass]="{'invisible': !display_right_container }">
+                <button [disabled]="like_in_progress" class="like-background"
+                    [ngClass]="{'liked': liked }" (click)="click_like();">
+                    <mat-icon>thumb_up</mat-icon>
+                    <span>J'aime</span>
                 </button>
-
-                <div class="d4-text">
-                    <span>Soutenir l’artiste en visualisant une courte publicité</span>
+                <button [disabled]="love_in_progress" class="love-background"
+                    [ngClass]="{'loved': loved }" (click)="click_love();">
+                    <mat-icon>favorite</mat-icon>
+                    <span>J'adore</span>
+                </button>
+            </div>
+            
+            <div class="likes-and-loves-numbers">
+                <div class="d2-likes" (click)="show_likes()">
+                    <span [ngClass]="{'invisible': !display_right_container }">{{likesnumber}}</span>
                 </div>
-            </div>-->
-            <!--Line 5 : DESCRIPTION OR COMMENTS : CHOICE-->
-            <div class="d5-category">
-                <div #category class="category-description opened" (click)="open_category(0);">
-                    <span>Description</span>
-                    <div class="bottom-border"></div>
-                </div>
-                <div #category class="category-comments" (click)="open_category(1);">
-                    <span>Commentaires</span>
-                    <div class="bottom-border"></div>
+                <div class="d2-loves" (click)="show_loves()">
+                    <span [ngClass]="{'invisible': !display_right_container }">{{lovesnumber}}</span>
                 </div>
             </div>
-            <!--Line 6 : DESCRIPTION OR COMMENTS-->
-            <div class="d6-category-content">
-                <div *ngIf="!display_right_container">
-                    <mat-spinner diameter="30" class="spinner"></mat-spinner>
-                </div>
-                <div *ngIf="category_index==0" class="description-container" [ngClass]="{'like-invisible': !display_right_container }">
-                    <div  class="categories-container"  >
-                        &bull;
-                        <div  class="tag-container">
-                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/all">
-                                <span>{{style}}</span>
-                            </a>
-                        </div>
-                        <div *ngIf="type=='artbook'"  class="tag-container"> <span>Artbook</span> </div>
-                        <div *ngIf="type=='one-shot'"  class="tag-container"><span>One-shot</span>  </div>
-                    </div>
-                    <div class="categories-container"  >  
-                        &bull;
-                        <div class="tag-container">
-                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{firsttag}}">
-                                <span >{{firsttag}}</span>
-                            </a>
-                        </div>
-                        <div  *ngIf="secondtag!=null" class="tag-container">
-                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{secondtag}}">
-                                <span >{{secondtag}}</span>
-                            </a>
-                        </div>
-                        <div  *ngIf="thirdtag!=null" class="tag-container">
-                            <a href="/main-research-style-and-tag/1/Drawing/{{style}}/{{thirdtag}}">
-                                <span >{{thirdtag}}</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div style="margin-left:20px">
-                        {{highlight}}
-                    </div>
-                </div>
-                <div class="comments-container" [ngClass]="{'like-invisible':!(category_index==1) || !display_right_container}">
-                    <app-comments 
-                    [type_of_account]=type_of_account
-                    [title]="title"
-                    category='drawing'
-                    [format]=type
-                    [style]=style
-                    [publication_id]=drawing_id
-                    chapter_number=0
-                    [authorid]=authorid
-                    [number_of_comments_to_show]=number_of_comments_to_show
-                    (new_comment)="new_comment();"
-                    (removed_comment)="removed_comment();"
 
-                    ></app-comments>
+
+            <div class="view-and-date-numbers">
+                <span>
+                    <ng-container *ngIf="viewsnumber == 0">Aucune vue</ng-container>
+                    <ng-container *ngIf="viewsnumber == 1">1 vue</ng-container>
+                    <ng-container *ngIf="viewsnumber > 1">{{viewsnumber}} vues</ng-container>
+                     • {{date_upload_to_show}}
+                </span>
+            </div>
+            
+        </div>
+
+        
+        <div class="category-container">
+            
+            <div class="verso-type">
+                <!--******************************************************-->
+                <!--************************COMICS************************-->
+                <!--******************************************************-->
+                <a class="type-container" [routerLink]=get_link()
+                matTooltip="Voir du contenu de ce genre"
+                matTooltipClass='linkarts-tooltip'
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"
+                    (click)="stop($event)"><span>{{style}}</span></a>
+                <div class="type-container" *ngIf="type=='one-shot'">
+                    <span>One-shot</span></div>
+                <div class="type-container" *ngIf="type=='artbook'">
+                    <span>Artbook</span>
                 </div>
+                
+                <a class="type-container open-description" (click)="see_description();">
+                    <mat-icon>add</mat-icon>
+                    <span>Voir plus</span>
+                </a>
             </div>
 
         </div>
 
+        <!--********************-->
+        <!--Author container-->
+        <!--********************-->
+        <div class="author-container">
+            <a [routerLink]=open_account() (click)="stop($event)" class="left-container"
+            matTooltip="Voir le profil"
+            matTooltipClass='linkarts-tooltip' 
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200">
+                <img [src]="profile_picture" (load)="profile_picture_loaded()" [ngClass]="{'really-invisible':!pp_loaded}">
+                <div *ngIf="!pp_loaded" class="dark-shiny"></div>
+            </a>
+            <div class="right-container">
+                <span class="author-name" *ngIf="user_name!=''">
+                    <a [routerLink]=open_account() (click)="stop($event)"
+                    matTooltip="Voir le profil"
+                    matTooltipClass='linkarts-tooltip' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">
+                        {{user_name}}
+                    </a>
+
+                    <mat-icon *ngIf="certified_account"
+                    matTooltip="Compte certifié" 
+                    matTooltipClass='linkarts-tooltip' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">verified</mat-icon>
+
+                    <span *ngIf="type_of_account_checked" class="pro-logo"
+                    matTooltip="Compte professionnel" 
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">PRO</span>
+
+                </span>
+                <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
+            </div>
+
+            <div [ngClass]="{'invisible': !display_right_container }" *ngIf="mode_visiteur_added && mode_visiteur" class="subscribing-container">
+                <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed" [@enterAnimation] class="opened"
+                tabIndex="-1">
+                    <mat-icon>notifications_active </mat-icon>
+                    <span>Abonné(e)</span>
+                </button>
+                <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed" [@enterAnimation]
+                tabIndex="-1">
+                    <mat-icon>person_add</mat-icon>
+                    <span>S'abonner</span>
+                </button>
+            </div>
+        </div>
 
 
+        <div class="comment-container" (click)="see_comments();">
+            <span>Commentaires</span>
+            <span class="second-span">&nbsp; ({{commentariesnumber}})</span>
+            
+            <div class="first-comment-container">
+                <ng-container *ngIf="!commentariesnumber">
+                    <div class="add-comment">
+                        <span>Ajouter un commentaire</span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="commentariesnumber">
+                    <div class="img-container">
+                        <img [src]="profile_picture">
+                    </div>
+                    <div class="comment">
+                        <span>gjioeh gopehsrg çpod hgoprd goped jgope jgoped jgoped jgopedg jdoprj gopgj oe jvopr</span>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        
+
+        <div class="ad-container">
+            <div class="ad">
+            </div>
+            <div class="ad-link">
+                <span>Soutenez le site en faisant un don </span>
+                <div class="ad-icon">
+                </div>
+            </div>
+        </div>
 
 
-    </main>
+        <div class="description-and-comments">
+            <div class="categories">
+                <button [ngClass]="{'opened': category_index==0 }"
+                    (click)="open_category(0);">
+                    <mat-icon>description</mat-icon>
+                    <span>Description</span>
+                </button>
+                <button [ngClass]="{'opened': category_index==1 }"
+                    (click)="open_category(1);">
+                    <mat-icon>comment</mat-icon>
+                    <span>Commentaires</span>
+                </button>
+            </div>
+
+            <ng-container *ngIf="category_index==0">
+                <div class="verso-type">
+                    <a class="type-container" [routerLink]=get_link()
+                    matTooltip="Voir du contenu de ce style"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                        (click)="stop($event)"><span>{{style}}</span></a>
+                    <div class="type-container" *ngIf="type=='one-shot'">
+                        <span>One-shot</span></div>
+                    <div class="type-container" *ngIf="type=='artbook'">
+                        <span>Artbook</span>
+                    </div>
+                </div>
+                <div class="verso-type">
+                    <a class="type-container style" [routerLink]=get_style_link(0)
+                    matTooltip="Voir du contenu de ce genre"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                    *ngIf="firsttag"
+                    (click)="stop($event)"><span>{{firsttag}}</span></a>
+                    <a class="type-container style" [routerLink]=get_style_link(1)
+                    matTooltip="Voir du contenu de ce genre"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                    *ngIf="secondtag"
+                    (click)="stop($event)"><span>{{secondtag}}</span></a>
+                    <a class="type-container style" [routerLink]=get_style_link(2)
+                    matTooltip="Voir du contenu de ce genre"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200"
+                    *ngIf="thirdtag"
+                    (click)="stop($event)"><span>{{thirdtag}}</span></a>
+                </div>
+                <div class="highlight">
+                    <span>
+                        {{highlight}}
+                    </span>
+                </div>
+            </ng-container>
+
+            
+            <ng-container *ngIf="category_index==1">
+                <app-comments [type_of_account]=type_of_account [title]="title" category='drawing' [format]=type
+                    [style]=style [publication_id]=drawing_id chapter_number=0 [authorid]=authorid
+                    [number_of_comments_to_show]=number_of_comments_to_show [commentariesnumber]=commentariesnumber (new_comment)="new_comment();"
+                    (removed_comment)="removed_comment();"></app-comments>
+            </ng-container>
+        </div>
+        
+        
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <!--!!!!!!!! RECOMMENDATIONS CONTAINER !!!!!!!!!!!-->
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div class="recommendations-container" *ngIf="list_of_author_recommendations_retrieved">
+            
+            <div class="categories">
+                <button [ngClass]="{'opened': left_container_category_index==0 }"
+                    (click)="open_left_container_category(0);">
+                    <mat-icon>account_circle</mat-icon>
+                    <span>Œuvres du même auteur</span>
+                </button>
+                <button [ngClass]="{'opened': left_container_category_index==1 }"
+                    (click)="open_left_container_category(1);">
+                    <mat-icon>burst_mode</mat-icon>
+                    <span>Œuvres similaires</span>
+                </button>
+            </div>
+
+            <!--********************-->
+            <!--********************-->
+            <!--SAME AUTHOR ARTWORKS-->
+            <!--********************-->
+            <!--********************-->
+            <ng-container *ngIf="left_container_category_index==0">
+
+                <div class="recommendation-group" *ngIf=" list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved">
+                    <div class="title">Dessins</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
+                        </app-thumbnail-artwork>
+                        <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
+                        </app-thumbnail-artwork>
+                    </div>
+                </div>
+
+                <div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved">
+                    <div class="title">Bandes dessinées</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format="serie">
+                        </app-thumbnail-artwork>
+
+                        <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" [item]=item[0] page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format="one-shot">
+                        </app-thumbnail-artwork>
+                    </div>
+                </div>
+
+                <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_writings_retrieved">
+                    <div class="title">Écrits</div>
+                    <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
+                        <app-thumbnail-artwork [item]=item[0] page='subscribings' now_in_seconds={{now_in_seconds}}
+                            subscribing_category='writing'></app-thumbnail-artwork>
+                    </div>
+                </div>
+                
+                <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
+                    <div class="no-recommendation">
+                        <mat-icon>info_outline</mat-icon>
+                        <span>Aucune recommendation n'est actuellement disponible pour cette œuvre</span>
+                    </div>
+                </div>
+
+            </ng-container>
+
+            <!--******************-->
+            <!--******************-->
+            <!--SAME TYPE ARTWORKS-->
+            <!--******************-->
+            <!--******************-->
+            <ng-container *ngIf="left_container_category_index==1 && list_of_recommendations_by_tag_retrieved ">
+
+                <div class="recommendation-group">
+                    <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
+
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber >=0" [item]=item page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='artbook'>
+                        </app-thumbnail-artwork>
+                        <app-thumbnail-artwork *ngIf="item.pagesnumber == null" [item]=item page='subscribings'
+                            now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format='one-shot'>
+                        </app-thumbnail-artwork>
+        
+                    </div>
+                    <div class="no-recommendation" *ngIf="!list_of_recommendations_by_tag.length">
+                        <mat-icon>info_outline</mat-icon>
+                        <span>Aucune recommendation n'est actuellement disponible pour cette œuvre</span>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+
+    </div>
 </div>

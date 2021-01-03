@@ -22,14 +22,46 @@ import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
+import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
+import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
+import { trigger, transition, style, animate } from '@angular/animations';
+
+
 declare var $: any
 declare var Swiper: any
 
 @Component({
   selector: 'app-ad-page',
   templateUrl: './ad-page.component.html',
-  styleUrls: ['./ad-page.component.scss']
+  styleUrls: ['./ad-page.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+    trigger(
+      'enterFromLeft', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 
 export class AdPageComponent implements OnInit {
@@ -107,6 +139,8 @@ export class AdPageComponent implements OnInit {
   list_of_dates:any[]=[];
   list_of_profile_pictures:any[]=[];
   list_of_authors_name:any[]=[];
+  list_of_type_of_account_checked:any[]=[];
+  list_of_certified_account:any[]=[];
   list_of_ids:any[]=[];
   list_of_pseudos:any[]=[];
   list_of_primary_descriptions:any[]=[];
@@ -241,6 +275,9 @@ export class AdPageComponent implements OnInit {
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
         this.pseudo = r[0].nickname;
+        
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
 
@@ -948,10 +985,13 @@ export class AdPageComponent implements OnInit {
     console.log("tentative de reponse")
     const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
       data: {item:this.item},
+      panelClass: 'popupAdWriteReponsesClass',
     });
   }
 
-  
+  get_response_author_link(i: number) {
+    return "/account/"+ this.list_of_pseudos[i] +"/" + this.list_of_ids[i];
+  }
 
   responses(){
     
@@ -969,6 +1009,10 @@ export class AdPageComponent implements OnInit {
             this.list_of_profile_pictures[i] = SafeURL;
             this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
               this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
+              
+              this.list_of_type_of_account_checked[i] = q[0].type_of_account_checked;
+              this.list_of_certified_account[i] = q[0].certified_account;
+
               this.list_of_ids[i]=q[0].id; 
               this.list_of_pseudos[i]=q[0].nickname; 
               this.list_of_primary_descriptions[i]=q[0].primary_description;
@@ -978,9 +1022,10 @@ export class AdPageComponent implements OnInit {
               }
             });
           });
-      
-          
         }
+      }
+      if(!r[0].length) {
+        this.answers_retrieved=true;
       }
     })
   }
@@ -1265,6 +1310,7 @@ export class AdPageComponent implements OnInit {
   edit_thumbnail(){
     const dialogRef = this.dialog.open(PopupEditCoverComponent, {
       data: {item:this.item,category:"ad"},
+      panelClass: 'popupEditCoverClass',
     });
   }
 
@@ -1280,27 +1326,56 @@ export class AdPageComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.item.id_user,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
+          panelClass:'popupReportClass'
         });
       }
     })
+  }
+
+  cancel_report() {
+
+
+    this.Reports_service.cancel_report("ad", this.item.id, this.item.type_of_project).subscribe(r => {
+      console.log(r)
+      if (this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id) >= 0) {
+        let i = this.list_of_reporters.indexOf(this.visitor_id)
+        this.list_of_reporters.splice(i, 1)
+        this.cd.detectChanges()
+      }
+    })
+  }
+
+
+  see_comments() {
+    
+    this.dialog.open(PopupCommentsComponent, {
+      data: {
+        type_of_account:this.type_of_account,
+        title:this.item.title,
+        category:'ad',
+        format:this.item.type_of_project,
+        style:this.item.remuneration,
+        publication_id:this.item.id,
+        chapter_number:0,
+        authorid:this.item.id_user,
+        number_of_comments_to_show:this.number_of_comments_to_show
+      }, 
+      panelClass: 'popupCommentsClass',
+    });
+
+  }
+
+  open_account() {
+    return "/account/" + this.pseudo + "/" + this.item.id_user;
+    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+  };
+
   
-  
-}
-
-cancel_report(){
-
-
-  this.Reports_service.cancel_report("ad",this.item.id,this.item.type_of_project).subscribe(r=>{
-    console.log(r)
-    if(this.list_of_reporters && this.list_of_reporters.indexOf(this.visitor_id)>=0){
-      let i=this.list_of_reporters.indexOf(this.visitor_id)
-      this.list_of_reporters.splice(i,1)
-      this.cd.detectChanges()
-    }
-  })
-}
-
-
-  
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
 }

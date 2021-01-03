@@ -1,9 +1,21 @@
-/*
-   * Content
-   */
-   
-   
+@import "../../artwork-styles.scss";
+@import "../../unsecured-ng-deeps.scss";
 
+
+.artwork {
+    .artwork-container {
+        height:unset !important;
+        .content-container {
+            height:unset !important;
+
+            .slide-container {
+                justify-content: center !important;
+            }
+        }
+    }
+}
+
+/*
    *{
     font-size: 1.10rem;
     scroll-behavior: smooth;
@@ -224,13 +236,6 @@
     color:white;
 }
 
-/*
-#left-container .recommendations .title:before, .title:after {
-    content: "";
-    flex: 1 1;
-    border-bottom: 2px solid white;
-    margin: auto;
-}*/
 
 
 #left-container .recommendations .cols {
@@ -392,5 +397,6 @@
     }
 
     
-    @import '../../artwork-left-container-thumbnails-styles.css';
-    @import '../../artwork-right-container-styles.css';
+
+    @import '../../artwork-styles.scss';
+    */

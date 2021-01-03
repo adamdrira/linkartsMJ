@@ -1542,35 +1542,6 @@
     text-align: center !important;
   }
 
-  .popupViewUsersClass {
-    max-width: unset !important;
-    width: 600px !important;
-  }
-  @media (max-width: 650px) {
-    .popupViewUsersClass {
-      //width: 85% !important;
-      width: 100% !important;
-      height: 100% !important;
-      border-radius: 0px !important;
-      position: absolute !important;
-
-      transition: bottom 200ms !important;
-
-      transform: translateY(100%);
-      animation: slideDown 600ms forwards 0s ease-in-out;
-    }
-    .mat-dialog-container {
-      padding: 24px 0px 0px 0px;
-    }
-  }
-  @keyframes slideDown {
-    0% {
-    }
-    100% {
-      transform: translateY(0%);
-    }
-  }
-
   .popupUploadPictureClass {
     max-width: unset !important;
     width: 700px !important;

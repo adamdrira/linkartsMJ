@@ -22,7 +22,11 @@ import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
+import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
+import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Swiper: any;
 declare var $: any;
@@ -31,14 +35,36 @@ declare var $: any;
 @Component({
   selector: 'app-artwork-writing',
   templateUrl: './artwork-writing.component.html',
-  styleUrls: ['./artwork-writing.component.scss']
+  styleUrls: ['./artwork-writing.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+    trigger(
+      'enterFromLeft', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class ArtworkWritingComponent implements OnInit {
 
-  @HostListener('window:beforeunload', ['$event'])
-  beforeUnload($event) { 
-    this.add_time_of_view();
-  }
 
 
 
@@ -61,6 +87,7 @@ export class ArtworkWritingComponent implements OnInit {
     public dialog: MatDialog,
     private NotationService:NotationService,
     private Emphasize_service:Emphasize_service,
+    private rd:Renderer2,
     ) { 
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
@@ -81,13 +108,12 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload($event) { 
+    this.add_time_of_view();
   }
 
 
-  @ViewChildren('category') categories:QueryList<ElementRef>;
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
@@ -241,6 +267,9 @@ export class ArtworkWritingComponent implements OnInit {
           this.authorid=r[0].authorid;
           this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
             this.pseudo = r[0].nickname;
+            
+            this.type_of_account_checked=r[0].type_of_account_checked;
+            this.certified_account=r[0].certified_account;
           });
           this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
             if (l[0]!=null && l[0]!=undefined){
@@ -263,8 +292,8 @@ export class ArtworkWritingComponent implements OnInit {
           this.thumbnail_picture=r[0].name_coverpage ;
           this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
           this.thumbnail_picture_retrieved=true;
+          
           this.get_author_recommendations();
-    
           this.get_recommendations_by_tag();
           
           /*this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"writing",this.writing_id,"writing",r[0].category,r[0].firsttag).subscribe(e=>{
@@ -378,6 +407,9 @@ export class ArtworkWritingComponent implements OnInit {
           this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
             this.user_name = r[0].firstname + ' ' + r[0].lastname;
             this.primary_description=r[0].primary_description;
+            
+            this.type_of_account_checked=r[0].type_of_account_checked;
+            this.certified_account=r[0].certified_account;
           });
         }
       }
@@ -542,23 +574,8 @@ export class ArtworkWritingComponent implements OnInit {
   /******************************************************* */
   ngAfterViewInit() {
 
-    let THIS = this;
     this.open_category(0);
-    $(".top-container .pages-controller-container input").keydown(function (e){
-      if(e.keyCode == 13){
-        THIS.setSlide( $(".top-container .pages-controller-container input").val() );
-      }
-    });
 
-    
-  }
-
-  
-  /******************************************************* */
-  /******************** AFTER VIEW CHECKED *************** */
-  /******************************************************* */
-  ngAfterViewChecked() {
-    this.initialize_heights();
     
   }
 
@@ -571,13 +588,120 @@ export class ArtworkWritingComponent implements OnInit {
   /******************************************************* */
   /******************************************************* */
 
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
+
+  optionOpened:number = -1;
+  openOption(i: number) {
+    this.optionOpened = i;
+  }
+
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.authorid;
+    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+  };
+
+  
+  get_french_style(s: string) {
+    if(s=='Poetry') {
+      return 'Poésie';
+    }
+    else if(s=='Illustrated novel') {
+      return 'Roman illustré';
+    }
+    else if(s=='Scenario') {
+      return 'Scénario';
+    }
+    else {
+      return s;
+    }
+  }
+
+  get_link() {
+    return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/all";
+  };
+
+  get_style_link(i: number) {
+    if( i == 0 ) {
+      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.firsttag;
+    }
+    if( i == 1 ) {
+      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.secondtag;
+    }
+    if( i == 2 ) {
+      return "/main-research-style-and-tag/1/Writing/" + this.get_french_style(this.style) + "/" + this.thirdtag;
+    }
+  }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.openOption(-1);
+  }
+
+
+  see_description() {
+    
+    this.dialog.open(PopupArtworkDataComponent, {
+      data: {
+        title:this.title,
+        highlight:this.highlight,
+        category:'Writing',
+        style:this.style,
+        type:null,
+        firsttag:this.firsttag,
+        secondtad:this.secondtag,
+        thirdtag:this.thirdtag,
+      }, 
+      panelClass: 'popupArtworkDataClass',
+    });
+
+  }
+
+  see_comments() {
+    
+    this.dialog.open(PopupCommentsComponent, {
+      data: {
+        type_of_account:this.type_of_account,
+        title:this.title,
+        category:'Writing',
+        format:null,
+        style:this.style,
+        publication_id:this.writing_id,
+        chapter_number:null,
+        authorid:this.authorid,
+        number_of_comments_to_show:this.number_of_comments_to_show
+      }, 
+      panelClass: 'popupCommentsClass',
+    });
+
+  }
+
+  open_chat_link() {
+    this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.authorid);
+  }
+
 
   initialize_swiper() {
-    
-    let THIS = this;
 
-    this.swiper = new Swiper('.swiper-container.artwork', {
+    var THIS = this;
+
+    if( this.swiper ) {
+      this.swiper.update();
+      return;
+    }
+
+    this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
+      spaceBetween: 100,
+      
+      simulateTouch: true,
+
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
@@ -592,31 +716,69 @@ export class ArtworkWritingComponent implements OnInit {
       keyboard: {
         enabled: true,
       },
+      observer: true,
       on: {
-        slideChange: function () {
-          THIS.refresh_controls_pagination();
+        observerUpdate: function () {
+          THIS.refresh_swiper_pagination();
+          window.dispatchEvent(new Event("resize"));
         },
+        slideChange: function () {
+          THIS.refresh_swiper_pagination();
+          THIS.swiperContainerRef.nativeElement.scrollIntoView({behavior: 'smooth'});
+        }
       },
     });
     
+    this.refresh_swiper_pagination();
+    $(".top-container .pages-controller-container input").keydown(function (e){
+      if(e.keyCode == 13){
+        THIS.setSlide( $(".top-container .pages-controller-container input").val() );
+      }
+    });
   }
 
 
+
+
+  refresh_swiper_pagination() {
+    if( this.swiper ) {
+      if( this.swiper.slides ) {
+        
+        
+        $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
+        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+      }
+    }
+  }
 
   
 
-  refresh_controls_pagination() {
-    $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-    $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+  open_category(i : number) {
+    this.category_index=i;
+  }
+  
+
+  left_container_category_index: number = 0;
+  open_left_container_category(i : number) {
+    if(i==1){
+      this.display_drawings_recommendations=false;
+      this.display_comics_recommendations=false;
+      this.display_comics_recommendations=false;
+    }
+    else{
+      this.display_writings_recommendations_others=false;
+    }
+    this.left_container_category_index=i;
   }
 
-
+  
   setSlide(i : any) {
     if( isNaN(i) ) {
+      this.refresh_swiper_pagination();
       return;
     }
-    else if ( (Number(i)<1) || (Number(i)> this.total_pages ) ) {
-      this.refresh_controls_pagination();
+    else if ( (Number(i)<1) || (Number(i)> this.swiper.slides.length) ) {
+      this.refresh_swiper_pagination();
       return;
     }
     else {
@@ -627,11 +789,35 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   click_thumbnails() {
-    this.thumbnails = !this.thumbnails;
 
-    this.cd.detectChanges();
-    window.dispatchEvent(new Event("resize"));
-    this.cd.detectChanges();
+    if( !this.thumbnails ) {
+      (async () => { 
+        const getCurrentCity = () => {
+        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
+        return Promise.resolve('Lyon');
+      };
+        await getCurrentCity();
+        this.swiper.update();
+      })();
+      this.thumbnails=true;
+    }
+    else {
+      (async () => { 
+        const getCurrentCity = () => {
+        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% )");
+        return Promise.resolve('Lyon');
+      };
+        await getCurrentCity();
+        this.swiper.update();
+
+      })();
+      this.thumbnails=false;
+    }
+  }
+
+
+  onRightClick() {
+    return false;
   }
 
   zoom_button() {
@@ -642,6 +828,7 @@ export class ArtworkWritingComponent implements OnInit {
       this.zoom = 1.3;
     }
   }
+
 
 
   fullscreen_button() {
@@ -669,29 +856,6 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   
-
-  open_category(i : number) {
-    this.category_index=i;
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("opened");
-    })
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
-
-  }
-  
-
-  left_container_category_index: number = 0;
-  open_left_container_category(i : number) {
-    if(i==1){
-      this.display_drawings_recommendations=false;
-      this.display_comics_recommendations=false;
-      this.display_comics_recommendations=false;
-    }
-    else{
-      this.display_writings_recommendations_others=false;
-    }
-    this.left_container_category_index=i;
-  }
 
   /******************************************************* */
   /******************************************************* */
@@ -1013,6 +1177,7 @@ export class ArtworkWritingComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'writing',publication_id:this.writing_id,format:"unknown",chapter_number:0},
+          panelClass:'popupReportClass'
         });
       }
     })
@@ -1048,6 +1213,7 @@ export class ArtworkWritingComponent implements OnInit {
   show_likes(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1055,6 +1221,7 @@ export class ArtworkWritingComponent implements OnInit {
   show_loves(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1115,7 +1282,7 @@ afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
   
   if( (i+1) == this.total_pages ) {
     this.initialize_swiper();
-    this.refresh_controls_pagination();
+    this.refresh_swiper_pagination();
     this.display_writing=true;
     this.display_pages=true;
   };
@@ -1142,7 +1309,7 @@ pdf_is_loaded(){
       writing_id: this.writing_id, 
       title: this.title, 
       highlight:this.highlight, 
-      style:this.style, 
+      style:this.get_french_style(this.style), 
       firsttag:this.firsttag,
       secondtag:this.secondtag, 
       thirdtag:this.thirdtag,
@@ -1150,6 +1317,7 @@ pdf_is_loaded(){
       primary_description: this.primary_description, 
       profile_picture: this.profile_picture
     },
+    panelClass: 'popupFormWritingClass',
     });
   }
 
@@ -1161,12 +1329,15 @@ pdf_is_loaded(){
       title: this.title,
       style:this.style, 
       firsttag:this.firsttag,
+      secondtag:this.secondtag,
+      thirdtag:this.thirdtag,
       author_name: this.user_name,
       primary_description: this.primary_description, 
       profile_picture: this.profile_picture,
       thumbnail_picture:this.thumbnail_picture,
       category:"writing"
     },
+    panelClass: 'popupEditCoverClass',
     }); 
 
   }

@@ -1,0 +1,57 @@
+
+<div class="title">
+    <span>{{title}}</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="scrollable-container">
+        
+    <div class="component-container">
+        
+        <div class="verso-type">
+            <a class="type-container" [routerLink]=get_link()
+            matTooltip="Voir du contenu de ce genre"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200"><span>{{style}}</span></a>
+            <div class="type-container" *ngIf="type=='one-shot'">
+                <span>One-shot</span></div>
+            <div class="type-container" *ngIf="type=='serie'">
+                <span>Série</span>
+            </div>
+        </div>
+        
+        <div class="verso-type">
+            <a class="type-container style" [routerLink]=get_style_link(0)
+            matTooltip="Voir du contenu de ce style"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200"
+            *ngIf="firsttag"><span>{{firsttag}}</span></a>
+            <a class="type-container style" [routerLink]=get_style_link(1)
+            matTooltip="Voir du contenu de ce style"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200"
+            *ngIf="secondtag"><span>{{secondtag}}</span></a>
+            <a class="type-container style" [routerLink]=get_style_link(2)
+            matTooltip="Voir du contenu de ce style"
+            matTooltipClass='linkarts-tooltip'
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="200"
+            *ngIf="thirdtag"><span>{{thirdtag}}</span></a>
+        </div>
+
+
+        <div class="highlight">
+            <span>
+                {{highlight}}
+            </span>
+        </div>
+
+
+    </div>
+
+</div>

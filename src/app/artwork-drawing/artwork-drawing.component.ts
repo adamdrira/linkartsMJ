@@ -28,7 +28,11 @@ import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
+import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
+import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Swiper: any;
 declare var $: any;
@@ -37,15 +41,35 @@ declare var $: any;
 @Component({
   selector: 'app-artwork-drawing',
   templateUrl: './artwork-drawing.component.html',
-  styleUrls: ['./artwork-drawing.component.scss']
+  styleUrls: ['./artwork-drawing.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+    trigger(
+      'enterFromLeft', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class ArtworkDrawingComponent implements OnInit {
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeUnload($event) { 
-    this.add_time_of_view();
-  }
-
 
 
   constructor(
@@ -91,10 +115,16 @@ export class ArtworkDrawingComponent implements OnInit {
     this.fullscreen_mode = false;
     this.navbar.setActiveSection(0);
     this.navbar.show();
+
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload($event) { 
+    this.add_time_of_view();
+  }
 
-  @ViewChildren('category') categories:QueryList<ElementRef>;
+  
+
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
@@ -430,6 +460,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
+
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
     });
@@ -572,6 +605,9 @@ export class ArtworkDrawingComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
+        
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
     });
@@ -735,19 +771,8 @@ export class ArtworkDrawingComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    this.open_recommendations(0);
     this.open_category(0);
-    this.initialize_swiper();
 
-  }
-
-
-
-  /******************************************************* */
-  /******************** AFTER VIEW CHECKED *************** */
-  /******************************************************* */
-  ngAfterViewChecked() {
-    this.initialize_heights();
   }
 
 
@@ -777,94 +802,149 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
   /******************************************************* */
 
+ 
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
 
-  initialize_heights() {
-    //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-
-
-    //}
+  optionOpened:number = -1;
+  openOption(i: number) {
+    this.optionOpened = i;
   }
 
- 
-  initialize_swiper() {
-    
-    if(this.type=="artbook"){
-      console.log("ini swiper artbook")
-      var THIS = this;
-      
-      this.swiper = new Swiper('.swiper-container', {
-        speed: 500,
-        scrollbar: {
-          el: '.swiper-scrollbar',
-          hide: true,
-        },
-        pagination: {
-          el: '.swiper-pagination',
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-        keyboard: {
-          enabled: true,
-        },
-        observer: true,
-        on: {
-          slideChange: function () {
-            THIS.refresh_swiper_pagination();
-          },
-          observerUpdate: function () {
-            THIS.refresh_swiper_pagination();
-            window.dispatchEvent(new Event("resize"));
-          }
-        },
-      });
-      
-      this.refresh_swiper_pagination();
-      $(".top-container .pages-controller-container input").keydown(function (e){
-        if(e.keyCode == 13){
-          THIS.setSlide( $(".top-container .pages-controller-container input").val() );
-        }
-      });
-
-      this.initialize_thumbnails();
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.authorid;
+    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+  };
+  get_link() {
+    return "/main-research-style-and-tag/1/Drawing/" + this.style + "/all";
+  };
+  get_style_link(i: number) {
+    if( i == 0 ) {
+      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.firsttag;
     }
+    if( i == 1 ) {
+      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.secondtag;
+    }
+    if( i == 2 ) {
+      return "/main-research-style-and-tag/1/Drawing/" + this.style + "/" + this.thirdtag;
+    }
+  }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.openOption(-1);
+  }
+
+  see_description() {
+    
+    this.dialog.open(PopupArtworkDataComponent, {
+      data: {
+        title:this.title,
+        highlight:this.highlight,
+        category:'Drawing',
+        style:this.style,
+        type:this.type,
+        firsttag:this.firsttag,
+        secondtad:this.secondtag,
+        thirdtag:this.thirdtag,
+      }, 
+      panelClass: 'popupArtworkDataClass',
+    });
+
+  }
+
+  see_comments() {
+    
+    this.dialog.open(PopupCommentsComponent, {
+      data: {
+        type_of_account:this.type_of_account,
+        title:this.title,
+        category:'drawing',
+        format:this.type,
+        style:this.style,
+        publication_id:this.drawing_id,
+        chapter_number:null,
+        authorid:this.authorid,
+        number_of_comments_to_show:this.number_of_comments_to_show
+      }, 
+      panelClass: 'popupCommentsClass',
+    });
+
+  }
+
+  open_chat_link() {
+    this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.authorid);
+  }
+
+  initialize_swiper() {
+
+    var THIS = this;
+
+    if( this.swiper ) {
+      this.swiper.update();
+      return;
+    }
+
+    this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
+      speed: 500,
+      spaceBetween: 100,
+      
+      simulateTouch: true,
+
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      keyboard: {
+        enabled: true,
+      },
+      observer: true,
+      on: {
+        observerUpdate: function () {
+          THIS.refresh_swiper_pagination();
+          window.dispatchEvent(new Event("resize"));
+        },
+        slideChange: function () {
+          THIS.refresh_swiper_pagination();
+        }
+      },
+    });
+    
+    this.refresh_swiper_pagination();
+    $(".top-container .pages-controller-container input").keydown(function (e){
+      if(e.keyCode == 13){
+        THIS.setSlide( $(".top-container .pages-controller-container input").val() );
+      }
+    });
   }
 
 
   refresh_swiper_pagination() {
-    console.log("refresh swiper pagination")
-    if(this.swiper && this.swiper.slides ){
-      
-      $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-      $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+    if( this.swiper ) {
+      if( this.swiper.slides ) {
+        
+        
+        $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
+        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+      }
     }
-      
   }
-
 
   
-  initialize_pages(){
-      for( var i=0; i< this.swiperWrapperRef.nativeElement.children.length; i++ ) {
-        $(".swiper-wrapper").html( "/ " );
-      }
-    
-  }
-
-
-  open_recommendations(i : number) {
-    this.recommendation_index = i;
-  }
-
   open_category(i : number) {
     this.category_index=i;
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("opened");
-    })
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
-
   }
 
 
@@ -873,13 +953,14 @@ export class ArtworkDrawingComponent implements OnInit {
     if(i==1){
       this.display_drawings_recommendations=false;
       this.display_comics_recommendations=false;
-      this.display_comics_recommendations=false;
+      this.display_writings_recommendations=false;
     }
     else{
       this.display_drawings_recommendations_others=false;
     }
     this.left_container_category_index=i;
   }
+
 
 
   initialize_thumbnails() {
@@ -920,7 +1001,7 @@ export class ArtworkDrawingComponent implements OnInit {
     if( !this.thumbnails ) {
       (async () => { 
         const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 310px )");
+        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
         return Promise.resolve('Lyon');
       };
         await getCurrentCity();
@@ -943,13 +1024,26 @@ export class ArtworkDrawingComponent implements OnInit {
 
   }
 
+  onRightClick() {
+    return false;
+  }
 
   zoom_button() {
     this.zoom_mode = !this.zoom_mode;
-    $("img.slide-container-img").each(function() {
-      $( this ).css("max-width",  $(this).prop("naturalWidth") * 1.3 + "px");
-    });
+    let THIS = this;
+    
+    if(this.zoom_mode) {
+      document.querySelectorAll('img.slide-container-img').forEach( function(e) {
+        THIS.rd.setStyle(e, "max-width", (e as HTMLImageElement).naturalWidth * 1.3 + "px");
+      });
+    }
+    if(!this.zoom_mode) {
+      document.querySelectorAll('img.slide-container-img').forEach( function(e) {
+        THIS.rd.setStyle(e, "max-width", "100%");
+      });
+    }
   }
+
 
 
   fullscreen_button() {
@@ -1323,6 +1417,7 @@ export class ArtworkDrawingComponent implements OnInit {
   show_likes(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1330,6 +1425,7 @@ export class ArtworkDrawingComponent implements OnInit {
   show_loves(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves,visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1467,6 +1563,7 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'drawing',publication_id:this.drawing_id,format:this.type,chapter_number:0},
+          panelClass:'popupReportClass'
         });
       }
     })
@@ -1557,6 +1654,8 @@ export class ArtworkDrawingComponent implements OnInit {
           compt+=1;
         }
         if(compt==this.list_drawing_pages.length){
+          this.initialize_swiper();
+          this.swiper.slideTo(0,false,false);
           this.display_pages=true;
         }
       }
@@ -1576,22 +1675,40 @@ export class ArtworkDrawingComponent implements OnInit {
   edit_information() {
     const dialogRef = this.dialog.open(PopupFormDrawingComponent, {
       data: {
-      format:this.type, 
-      drawing_id: this.drawing_id, 
-      title: this.title, 
-      highlight:this.highlight, 
-      style:this.style, 
-      firsttag:this.firsttag,
-      secondtag:this.secondtag, 
-      thirdtag:this.thirdtag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture
-      
-    },
+        format:this.type, 
+        drawing_id: this.drawing_id, 
+        title: this.title, 
+        highlight:this.highlight, 
+        style:this.style, 
+        firsttag:this.firsttag,
+        secondtag:this.secondtag, 
+        thirdtag:this.thirdtag,
+        author_name: this.user_name,
+        primary_description: this.primary_description, 
+        profile_picture: this.profile_picture
+      },
+      panelClass: 'popupFormDrawingClass',
     });
   }
 
+  edit_thumbnail() {
+      const dialogRef = this.dialog.open(PopupEditCoverComponent, {
+        data: {
+        format:this.type,
+        drawing_id: this.drawing_id, 
+        title: this.title,
+        style:this.style, 
+        firsttag:this.firsttag,
+        secondtag:this.secondtag,
+        thirdtag:this.thirdtag,
+        author_name: this.user_name,
+        primary_description: this.primary_description, 
+        profile_picture: this.profile_picture,
+        category:"drawing",
+      },
+      panelClass: 'popupEditCoverClass',
+    });     
+  }
 
   set_private() {
 

@@ -20,7 +20,6 @@ import { ChatService} from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormComicComponent } from '../popup-form-comic/popup-form-comic.component';
-import { PopupEditCoverComicComponent } from '../popup-edit-cover-comic/popup-edit-cover-comic.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -28,6 +27,11 @@ import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
+import { trigger, transition, style, animate } from '@angular/animations';
+
+import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
+import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
+
 declare var Swiper: any;
 declare var $: any;
 
@@ -37,7 +41,33 @@ declare var $: any;
 @Component({
   selector: 'app-artwork-comic',
   templateUrl: './artwork-comic.component.html',
-  styleUrls: ['./artwork-comic.component.scss']
+  styleUrls: ['./artwork-comic.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+    trigger(
+      'enterFromLeft', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class ArtworkComicComponent implements OnInit {
 
@@ -93,7 +123,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
 
-  @ViewChildren('category') categories:QueryList<ElementRef>;
+  
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
@@ -290,6 +320,9 @@ export class ArtworkComicComponent implements OnInit {
             this.authorid=r[0].authorid;
             this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
               this.pseudo = r[0].nickname;
+              
+              this.type_of_account_checked=r[0].type_of_account_checked;
+              this.certified_account=r[0].certified_account;
             });
             this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
               if (l[0]!=null && l[0]!=undefined){
@@ -309,7 +342,7 @@ export class ArtworkComicComponent implements OnInit {
             this.thumbnail_picture_retrieved=true;
             this.monetization=r[0].monetization
             console.log( this.monetization)
-            this.get_author_recommendations()
+            this.get_author_recommendations();
             this.get_recommendations_by_tag();
             
             
@@ -641,6 +674,9 @@ export class ArtworkComicComponent implements OnInit {
           this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
             this.user_name = r[0].firstname + ' ' + r[0].lastname;
             this.primary_description=r[0].primary_description;
+            
+            this.type_of_account_checked=r[0].type_of_account_checked;
+            this.certified_account=r[0].certified_account;
           });
         }
       }
@@ -661,7 +697,7 @@ export class ArtworkComicComponent implements OnInit {
       else{
         this.chapter_filter_bottom_to_top=true;
       }
-      this.chapter_name_to_show=`chapitre ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
+      this.chapter_name_to_show=`Chapitre ${this.chapterList[this.current_chapter].chapter_number} : ${this.chapterList[this.current_chapter].title}`
       console.log( this.chapter_name_to_show)
       $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
       this.initialize_chapter_selector();
@@ -729,6 +765,9 @@ export class ArtworkComicComponent implements OnInit {
       this.Profile_Edition_Service.retrieve_profile_data(r[0][this.current_chapter].author_id).subscribe(r=> {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
+        
+        this.type_of_account_checked=r[0].type_of_account_checked;
+        this.certified_account=r[0].certified_account;
       });
 
     });
@@ -746,18 +785,7 @@ export class ArtworkComicComponent implements OnInit {
 
     this.open_category(0);
 
-    //this.open_recommendations(0);
 
-
-  }
-
-
-
-  /******************************************************* */
-  /******************** AFTER VIEW CHECKED *************** */
-  /******************************************************* */
-  ngAfterViewChecked() {
-    this.initialize_heights();
   }
 
 
@@ -852,31 +880,100 @@ export class ArtworkComicComponent implements OnInit {
     
   
 
+  
+  type_of_account_checked:boolean;
+  certified_account:boolean;  
 
-
-  /******************************************************* */
-  /******************************************************* */
-  /******************* LEFT CONTROLLER ******************* */
-  /******************************************************* */
-  /******************************************************* */
-
-
-  initialize_heights() {
-    //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-
-
-    //}
+  optionOpened:number = -1;
+  openOption(i: number) {
+    this.optionOpened = i;
   }
 
- 
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.authorid;
+    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+  };
+  get_link() {
+    return "/main-research-style-and-tag/1/Comic/" + this.style + "/all";
+  };
+  get_style_link(i: number) {
+    if( i == 0 ) {
+      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.firsttag;
+    }
+    if( i == 1 ) {
+      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.secondtag;
+    }
+    if( i == 2 ) {
+      return "/main-research-style-and-tag/1/Comic/" + this.style + "/" + this.thirdtag;
+    }
+  }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.openOption(-1);
+  }
+
+  see_description() {
+    
+    this.dialog.open(PopupArtworkDataComponent, {
+      data: {
+        title:this.title,
+        highlight:this.highlight,
+        category:'Comic',
+        style:this.style,
+        type:this.type,
+        firsttag:this.firsttag,
+        secondtad:this.secondtag,
+        thirdtag:this.thirdtag,
+      }, 
+      panelClass: 'popupArtworkDataClass',
+    });
+
+  }
+
+  see_comments() {
+    
+    this.dialog.open(PopupCommentsComponent, {
+      data: {
+        type_of_account:this.type_of_account,
+        title:this.title,
+        category:'comic',
+        format:this.type,
+        style:this.style,
+        publication_id:this.bd_id,
+        chapter_number:this.current_chapter,
+        authorid:this.authorid,
+        number_of_comments_to_show:this.number_of_comments_to_show
+      }, 
+      panelClass: 'popupCommentsClass',
+    });
+
+  }
+
+  open_chat_link() {
+    this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.authorid);
+  }
+
   initialize_swiper() {
 
     var THIS = this;
-    
-    this.swiper = new Swiper('.swiper-container.swiper-artwork-comic', {
+
+    if( this.swiper ) {
+      this.swiper.update();
+      return;
+    }
+
+    this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
       speed: 500,
+      spaceBetween: 100,
+      
+      simulateTouch: true,
+
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
@@ -893,12 +990,12 @@ export class ArtworkComicComponent implements OnInit {
       },
       observer: true,
       on: {
-        slideChange: function () {
-          THIS.refresh_swiper_pagination();
-        },
         observerUpdate: function () {
           THIS.refresh_swiper_pagination();
           window.dispatchEvent(new Event("resize"));
+        },
+        slideChange: function () {
+          THIS.refresh_swiper_pagination();
         }
       },
     });
@@ -909,35 +1006,22 @@ export class ArtworkComicComponent implements OnInit {
         THIS.setSlide( $(".top-container .pages-controller-container input").val() );
       }
     });
-    
   }
 
 
   refresh_swiper_pagination() {
     if( this.swiper ) {
       if( this.swiper.slides ) {
+        
         $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-        $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
       }
-    }
-  }
-
-
-  initialize_pages(){
-    for( var i=0; i< this.swiperWrapperRef.nativeElement.children.length; i++ ) {
-      $(".swiper-wrapper").html( "/ " );
-      
     }
   }
 
 
   open_category(i : number) {
     this.category_index=i;
-    this.categories.toArray().forEach( (item, index) => {
-      item.nativeElement.classList.remove("opened");
-    })
-    this.categories.toArray()[this.category_index].nativeElement.classList.add("opened");
-
   }
 
 
@@ -995,8 +1079,6 @@ export class ArtworkComicComponent implements OnInit {
   
   
   click_thumbnails() {
-
-
     if( !this.thumbnails_links.length ) {
       this.initialize_thumbnails();
     }
@@ -1004,7 +1086,7 @@ export class ArtworkComicComponent implements OnInit {
     if( !this.thumbnails ) {
       (async () => { 
         const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 310px )");
+        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
         return Promise.resolve('Lyon');
         };
         await getCurrentCity();
@@ -1024,15 +1106,26 @@ export class ArtworkComicComponent implements OnInit {
       })();
       this.thumbnails=false;
     }
-
   }
 
+  onRightClick() {
+    return false;
+  }
 
   zoom_button() {
     this.zoom_mode = !this.zoom_mode;
-    $("img.slide-container-img").each(function() {
-      $( this ).css("max-width",  $(this).prop("naturalWidth") * 1.3 + "px");
-    });
+    let THIS = this;
+    
+    if(this.zoom_mode) {
+      document.querySelectorAll('img.slide-container-img').forEach( function(e) {
+        THIS.rd.setStyle(e, "max-width", (e as HTMLImageElement).naturalWidth * 1.3 + "px");
+      });
+    }
+    if(!this.zoom_mode) {
+      document.querySelectorAll('img.slide-container-img').forEach( function(e) {
+        THIS.rd.setStyle(e, "max-width", "100%");
+      });
+    }
   }
 
 
@@ -1102,7 +1195,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-    THIS.chapter_name_to_show=`chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+    THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
     this.chapter_name_control.reset();
     this.cd.detectChanges();
     $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
@@ -1176,7 +1269,7 @@ export class ArtworkComicComponent implements OnInit {
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
     
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-    THIS.chapter_name_to_show=`chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+    THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
     this.chapter_name_control.reset();
     this.cd.detectChanges();
     $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
@@ -1264,13 +1357,13 @@ export class ArtworkComicComponent implements OnInit {
       else{
         THIS.chapter_filter_bottom_to_top=true;
       }
+      
       THIS.cd.detectChanges();
       $('.chapterSelector')[0].sumo.reload();
-      
+
       THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
-      THIS.chapter_name_to_show=`chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`
-      
-      
+      THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
+
 
       if (THIS.mode_visiteur){
         THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
@@ -1656,6 +1749,7 @@ export class ArtworkComicComponent implements OnInit {
     console.log(this.list_of_users_ids_likes)
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"likes", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_likes[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1663,6 +1757,7 @@ export class ArtworkComicComponent implements OnInit {
   show_loves(){
     const dialogRef = this.dialog.open(PopupLikesAndLovesComponent, {
       data: {title:"loves", type_of_account:this.type_of_account,list_of_users_ids:this.list_of_users_ids_loves[this.current_chapter],visitor_name:this.visitor_name,visitor_id:this.visitor_id},
+      panelClass: 'popupLikesAndLovesClass',
     });
 
   }
@@ -1799,6 +1894,7 @@ export class ArtworkComicComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'comic',publication_id:this.bd_id,format:this.type,chapter_number:(this.type=='serie')?(this.current_chapter+1):0},
+          panelClass:'popupReportClass'
         });
       }
     })
@@ -1937,21 +2033,21 @@ export class ArtworkComicComponent implements OnInit {
   edit_information() {
     const dialogRef = this.dialog.open(PopupFormComicComponent, {
       data: {
-      format:this.type, 
-      bd_id: this.bd_id, 
-      title: this.title, 
-      highlight:this.highlight, 
-      style:this.style, 
-      firsttag:this.firsttag,
-      secondtag:this.secondtag, 
-      thirdtag:this.thirdtag,
-      author_name: this.user_name,
-      primary_description: this.primary_description, 
-      profile_picture: this.profile_picture,
-      chapterList: this.chapterList,
-      thumbnail_color:this.thumbnail_color
-      
-    },
+        format:this.type, 
+        bd_id: this.bd_id, 
+        title: this.title, 
+        highlight:this.highlight, 
+        style:this.style, 
+        firsttag:this.firsttag,
+        secondtag:this.secondtag, 
+        thirdtag:this.thirdtag,
+        author_name: this.user_name,
+        primary_description: this.primary_description, 
+        profile_picture: this.profile_picture,
+        chapterList: this.chapterList,
+        thumbnail_color:this.thumbnail_color
+      },
+      panelClass: 'popupFormComicClass',
     });
   }
   edit_thumbnail() {
@@ -1962,18 +2058,21 @@ export class ArtworkComicComponent implements OnInit {
         title: this.title,
         style:this.style, 
         firsttag:this.firsttag,
+        secondtag:this.secondtag,
+        thirdtag:this.thirdtag,
         author_name: this.user_name,
         primary_description: this.primary_description, 
         profile_picture: this.profile_picture,
         thumbnail_picture:this.thumbnail_picture,
         category:"comic",
       },
-      });     
+      panelClass: 'popupEditCoverClass',
+    });     
   }
 
   edit_chapters(){
     this.router.navigateByUrl( `handle-comics-chapter/${this.bd_id}`);
-    return
+    return;
   }
   
   set_private() {
