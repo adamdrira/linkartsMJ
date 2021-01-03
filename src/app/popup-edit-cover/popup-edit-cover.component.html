@@ -1,47 +1,60 @@
-<div class="form-container">
-    <div class="button-container-close">
-        <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
-            <mat-icon class="item-icon" >close</mat-icon>
-        </button>
-    </div>
+
+<div class="title">
+    <span>Edition de la miniature</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="scrollable-container">
+    <div class="component-container popupEditCover">
+
+        <div *ngIf="data.category=='ad'">
+
+            <app-uploader-thumbnail-ad
+                [for_edition]=for_edition
+                [item]=data.item
+            ></app-uploader-thumbnail-ad>
+        </div>
     
-
-    <div *ngIf="data.category=='ad'">
-
-        <app-uploader-thumbnail-ad
-            [for_edition]=for_edition
-            [item]=data.item
-        ></app-uploader-thumbnail-ad>
-    </div>
-
-    <div *ngIf="data.category=='comic'">
-        <app-uploader-bd-cover
-            [author_name]=data.author_name
-            [primary_description]=data.primary_description
-            [profile_picture]=data.profile_picture
-            [name]=data.title
-            [thumbnail_picture]=data.thumbnail_picture
-            [description]=data.primary_description
-            [category]=data.style
-            [format]=data.format
-            [for_edition]=for_edition
-            [bd_id]=data.bd_id
-        ></app-uploader-bd-cover>
-    </div>
-
-    <div *ngIf="data.category=='writing'">
-        <app-uploader-cover-writing
+        <div *ngIf="data.category=='comic'">
+            <app-uploader-bd-cover
                 [author_name]=data.author_name
                 [primary_description]=data.primary_description
                 [profile_picture]=data.profile_picture
                 [name]=data.title
+                [thumbnail_picture]=data.thumbnail_picture
                 [description]=data.primary_description
                 [category]=data.style
-                [thumbnail_picture]=data.thumbnail_picture
-                [writing_id]=data.writing_id
+                [format]=data.format
+                [firsttag]=data.firsttag
+                [secondtag]=data.secondtag
+                [thirdtag]=data.thirdtag
                 [for_edition]=for_edition
-            ></app-uploader-cover-writing>
-    </div>
+                [bd_id]=data.bd_id
+            ></app-uploader-bd-cover>
+        </div>
+    
+        <div *ngIf="data.category=='writing'">
+            <app-uploader-cover-writing
+                    [author_name]=data.author_name
+                    [primary_description]=data.primary_description
+                    [profile_picture]=data.profile_picture
+                    [name]=data.title
+                    [description]=data.primary_description
+                    [category]=data.style
+                    [firsttag]=data.firsttag
+                    [secondtag]=data.secondtag
+                    [thirdtag]=data.thirdtag
+                    [thumbnail_picture]=data.thumbnail_picture
+                    [writing_id]=data.writing_id
+                    [for_edition]=for_edition
+                ></app-uploader-cover-writing>
+        </div>
 
-   
+    </div>
 </div>
+
+
+
+

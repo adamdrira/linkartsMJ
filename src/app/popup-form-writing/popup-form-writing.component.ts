@@ -11,6 +11,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
 
+
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { pattern } from '../helpers/patterns';
+
 declare var $: any;
 
 @Component({
@@ -32,90 +40,39 @@ export class PopupFormWritingComponent implements OnInit {
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
+      this.filteredGenres = this.genreCtrl.valueChanges.pipe(
+        startWith(null),
+        map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
+
 
   }
+
+
+  onScroll(e: Event) {
+    window.dispatchEvent(new Event('resize'));
+ }
+
 
 
   ngOnInit(): void {
 
     this.createFormControlsWritings();
     this.createFormWritings();
-
-    
-
-    this.fw.controls['fwTitle'].setValue( this.data.title );
-    this.fw.controls['fwDescription'].setValue( this.data.highlight );
-
-    
-    if( this.data.style == "Illustrated novel") {
-      this.fw.controls['fwCategory'].setValue( "Roman illustré" );
-    }
-    else if( this.data.style == "Scenario") {
-      this.fw.controls['fwCategory'].setValue( "Scénario" );
-    }
-    else {
-      this.fw.controls['fwCategory'].setValue( this.data.style );
-    }
-
-  }
-
-  
-  ngAfterContentInit() {
-
-    this.initialize_selectors();
-    this.initialize_taginputs_fw();
-    this.cd.detectChanges();
-  }
-
-  ngAfterViewInit() {
-
   }
 
 
-  initialize_selectors() {
-
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.fwselect1').SumoSelect({});
-    });
-
-    this.cd.detectChanges();
-    
-    $(".fwselect1").change(function(){
-      THIS.fw.controls['fwCategory'].setValue( $(this).val() );
-      THIS.cd.detectChanges();
-    });
-
-  }
-
-
-  initialize_taginputs_fw() {
-
-    $('.multipleSelectfw').fastselect({
-      maxItems: 3
-    });
-    
-    this.cd.detectChanges();
-
-  }
-
-
-
-  fwDisplayErrors: boolean = false;
   fw: FormGroup;
   fwTitle: FormControl;
   fwDescription: FormControl;
   fwCategory: FormControl;
   fwTags: FormControl;
-  tags: string[];
-  tagsValidator:boolean = false;
   
+
   createFormControlsWritings() {
-    this.fwTitle = new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-    this.fwDescription = new FormControl('', [Validators.required, Validators.maxLength(500), Validators.pattern("^[^\\s]+.*") ]);
-    this.fwCategory = new FormControl('', Validators.required);
-    this.fwTags = new FormControl('');
+    this.fwTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fwDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fwCategory = new FormControl(this.data.style, Validators.required);
+    this.fwTags = new FormControl( this.genres, [Validators.required]);
   }
 
   createFormWritings() {
@@ -130,29 +87,12 @@ export class PopupFormWritingComponent implements OnInit {
 
 
 
-  validate_form_writing() {
+  validateForm00() {
     
-    this.tags = $(".multipleSelectfw").val();
-
-    if( this.tags.length == 0 ) {
-      this.fwDisplayErrors = true;
-      this.tagsValidator = false;
-    }
-    else {
-      this.tagsValidator = true;
-    }
-
-
-    if ( this.fw.valid && this.tagsValidator ) {
-
-      this.fwDisplayErrors = false;
-      this.tags = $(".multipleSelectfw").val();
-      console.log("ok");
-      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.tags, this.fw.value.fwDescription).subscribe(r=>{
+    if ( this.fw.valid ) {
+      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
           location.reload();
         });
-
-       this.fwDisplayErrors = false; 
     }
 
 
@@ -160,11 +100,103 @@ export class PopupFormWritingComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
       });
-      this.fwDisplayErrors = true;
     }
 
-
   }
+
+
+  listOfStyles = ["Roman illustré","Roman","Scénario","Article","Poésie"];
+  compareObjects(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
+  //GENRES
+  @ViewChild('genreInput') genreInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  
+  visible = true;
+  selectable = true;
+  removable = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  genreCtrl = new FormControl();
+  filteredGenres: Observable<string[]>;
+  genres: string[] = [];
+  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Satirique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+    add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if( this.genres.length >= 3 ) {
+      return;
+    }
+
+    let do_not_add:boolean = true;
+    let index:number;
+
+    // Add our genre
+    if ((value || '').trim()) {
+
+      for( let i=0; i<this.allGenres.length; i++ ) {
+        if( this.allGenres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=false;
+          index = i;
+        }
+      }
+      for( let i=0; i<this.genres.length; i++ ) {
+        if( this.genres[i].toLowerCase() == value.toLowerCase() ) {
+          do_not_add=true;
+        }
+      }
+
+      if( !do_not_add ) {
+        this.genres.push(this.allGenres[index].trim());
+      }
+    }
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+    this.genreCtrl.setValue(null);
+    this.fwTags.updateValueAndValidity();
+  }
+  remove(genre: string): void {
+    const index = this.genres.indexOf(genre);
+    if (index >= 0) {
+      this.genres.splice(index, 1);
+    }
+    this.fwTags.updateValueAndValidity();
+  }
+  selected(event: MatAutocompleteSelectedEvent): void {
+    
+    
+
+    if( this.genres.length >= 3 ) {
+      this.genreInput.nativeElement.value = '';
+      this.genreCtrl.setValue(null);  
+      return;
+    }      
+    for( let i=0; i<this.genres.length; i++ ) {
+      if( this.genres[i].toLowerCase() == event.option.viewValue.toLowerCase() ) {
+        this.genreInput.nativeElement.value = '';
+        this.genreCtrl.setValue(null);    
+        return;
+      }
+    }
+    this.genres.push(event.option.viewValue);
+    this.genreInput.nativeElement.value = '';
+    this.genreCtrl.setValue(null);
+    this.fwTags.updateValueAndValidity();
+
+    if( this.genres.length < 3) {
+      
+    }
+  }
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
 
 
 }

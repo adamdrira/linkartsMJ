@@ -128,21 +128,21 @@
 
                  
 
-                    <div class="d-flex" *ngIf="thirdtag==''">
-                        <div class="tag-container type" *ngIf="firsttag!=''"><span  class="categories" >{{firsttag}}</span></div>
-                        <div *ngIf="secondtag!=''" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
+                    <div class="d-flex" *ngIf="!thirdtag">
+                        <div class="tag-container type" *ngIf="firsttag"><span  class="categories" >{{firsttag}}</span></div>
+                        <div *ngIf="secondtag" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
                     </div>
-                    <div class="d-flex" *ngIf="thirdtag!=''">
+                    <div class="d-flex" *ngIf="thirdtag">
                         <div #swiperCategories class="swiper-categories">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
                                     <div class="tag-container type" style="width: fit-content; margin: auto;" ><span  class="categories" >{{firsttag}}</span></div>
                                 </div>
                                 <div class="swiper-slide">
-                                    <div  *ngIf="secondtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{secondtag}}</span></div>
+                                    <div *ngIf="secondtag" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{secondtag}}</span></div>
                                 </div>
                                 <div class="swiper-slide">
-                                    <div  *ngIf="thirdtag!=null" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{thirdtag}}</span></div>
+                                    <div *ngIf="thirdtag" class="tag-container type" style="width: fit-content; margin: auto;"><span  class="categories" >{{thirdtag}}</span></div>
                                 </div>
                             </div>
                             <div class="swiper-button-prev" (click)="stop($event)"></div>

@@ -1,68 +1,106 @@
-<form [formGroup]="fd" novalidate>
 
-    <div class="form-container">
+<div class="title">
+    <span>Edition des informations</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
-        <div class="form-container-flex">
-            <div class="flex-left-container">
 
-                <div class="form-group">
-                    <label for="artworkTitle">Titre</label>
-                    <input type="text" formControlName="fdTitle" class="form-control" placeholder="Nom de l'œuvre (30 caractères max)" autocomplete="off" required/>
-                    <p *ngIf="!fdTitle.valid  && fdDisplayErrors">Veuillez saisir un titre valide</p>
+
+<div class="scrollable-container" (scroll)="onScroll($event)">
+    <div class="component-container popupFormDrawing">
+        
+
+
+        <form [formGroup]="fd" novalidate>
+            <div class="form-container">
+
+                <div class="form-container-name">
+                    <span>Titre</span>
+                </div>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Titre</mat-label>
+                        <input matInput formControlName="fdTitle" maxLength="30" autocomplete="off">
+                        <mat-error *ngIf="fd.controls['fdTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdTitle'].value?.length || 0}}/30</div>
+                    </mat-form-field>
                 </div>
 
 
-                <div class="form-group">
-                    <label for="artworkCategory">Catégorie</label>
-                    <select formControlName="fdCategory" class="fdselect1" style="height: 100%;">
-                        <option value="" disabled="true">Sélectionner une catégorie</option>
-                        <option label="Traditionnel">Traditionnel</option>
-                        <option label="Digital">Digital</option>
-                    </select>
-                    <p *ngIf="fdCategory.value == '' && fdDisplayErrors">Veuillez sélectionner une catégorie</p>
+                <div class="form-container-name">
+                    <span>Style</span>
                 </div>
-
-                <div class="form-group">
-                    <label for="artworkTags">
-                        Genres
-                        <ng-container *ngIf=data.firsttag>( {{data.firsttag}} </ng-container>
-                        <ng-container *ngIf=data.secondtag>, {{data.secondtag}} </ng-container>
-                        <ng-container *ngIf=data.thirdtag>, {{data.thirdtag}} </ng-container>)
-                    </label>
-                    <select formControlName="fdTags" class="multipleSelectfd" placeholder="Sélectionner des genres (max : 3)" multiple name="language">
-                        <option value="Bangladesh">Bangladesh</option>
-                        <option value="Barbados">Barbados</option>
-                        <option value="Belarus1">Belarus1</option>
-                        <option value="Belgium2">Belgium2</option>
-                        <option value="Belarus3">Belarus3</option>
-                        <option value="Belgium4">Belgium4</option>
-                        <option value="Belarus5">Belarus5</option>
-                        <option value="Belgium6">Belgium6</option>
-                    </select>
-                    <p *ngIf="!tagsValidator && fdDisplayErrors">Veuillez sélectionner au moins un genre</p>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Style</mat-label>
+                        <mat-select [compareWith]="compareObjects" panelClass="popupFormDrawingSelectClass" disableOptionCentering formControlName="fdCategory">
+                            <mat-option  *ngFor="let obj of listOfStyles" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="fd.controls['fdCategory'].invalid">Veuillez sélectionner un style</mat-error>
+                    </mat-form-field>
                 </div>
 
 
-                <div class="form-group">
-                    <label for="artworkDescription">Description</label>
-                    <textarea type="text" formControlName="fdDescription" maxlength="500" style="height: 150px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
-                    </textarea>
-                    <p *ngIf="!fdDescription.valid && fdDisplayErrors">Veuillez saisir une description valide</p>
+                <div class="form-container-name">
+                    <span>Genres</span>
+                </div>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-chip-list #chipList formControlName="fdTags" aria-label="Genre selection">
+                          <mat-chip
+                            *ngFor="let genre of genres"
+                            [selectable]="selectable"
+                            [removable]="removable"
+                            (removed)="remove(genre)">
+                            {{genre}}
+                            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                          </mat-chip>
+                          <input
+                            placeholder="Genres (maximum : 3)"
+                            #genreInput
+                            [formControl]="genreCtrl"
+                            [matAutocomplete]="auto"
+                            matAutocompletePosition="below"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="add($event)">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" class="custom-scroll popupFormDrawingMatautocompleteClass" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                            {{genre}}
+                          </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
                 </div>
 
+
+                <div class="form-container-name">
+                    <span>Description</span>
+                </div>
+                <div class="form-item input-multiple-lines">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Description</mat-label>
+                    
+                        <textarea matInput cdkTextareaAutosize formControlName="fdDescription" maxLength="2000" autocomplete="off"></textarea>
+                        <mat-error *ngIf="fd.controls['fdDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fd.controls['fdDescription'].value?.length || 0}}/2000</div>
+                    </mat-form-field>
+                </div>
 
             </div>
 
+            <button class="submit-button" (click)="validateForm00();">
+                <mat-icon>done_all</mat-icon>
+                <span>Valider</span>
+            </button>
 
-
-
-        </div>
+        </form>
 
     </div>
-    
-
-    <button mat-raised-button class="validate-form-button style1" (click)="validate_form_drawings();">
-        <span>Valider</span>
-    </button>
-
-</form>
+</div>

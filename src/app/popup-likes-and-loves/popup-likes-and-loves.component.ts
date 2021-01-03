@@ -10,13 +10,24 @@ import { ChatService } from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any;
 
 @Component({
   selector: 'app-popup-likes-and-loves',
   templateUrl: './popup-likes-and-loves.component.html',
-  styleUrls: ['./popup-likes-and-loves.component.scss']
+  styleUrls: ['./popup-likes-and-loves.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupLikesAndLovesComponent implements OnInit {
 
@@ -184,5 +195,14 @@ export class PopupLikesAndLovesComponent implements OnInit {
   load_pp(i){
     this.pp_is_loaded[i]=true;
   }
+
+  get_user_link(i:number) {
+    return "/account/"+ this.list_of_users_information[i].nickname +"/"+ this.list_of_users_ids[i];
+  }
+  
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
 }

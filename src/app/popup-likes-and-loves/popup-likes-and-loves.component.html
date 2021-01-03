@@ -1,5 +1,78 @@
+<div class="title">
+    <span>{{title}}</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
-<div class="component-container">
+
+
+<div class="scrollable-container">
+    <div class="component-container">
+        
+
+        <div class="title-no-data" *ngIf="list_of_users_information.length==0  && subscribtion_info_added">
+            <mat-icon>info_outline</mat-icon>
+            <span *ngIf="data.title=='likes'">Aucune mention j'aime</span>
+            <span *ngIf="data.title=='loves'">Aucune mention j'adore</span>
+        </div>
+
+
+        <div class="subscribers-container" *ngIf="list_of_users_information.length>0 && !subscribtion_info_added">
+            <ng-container *ngFor="let item of list_of_users_information; let i=index">
+                <div *ngIf="5>i" class="subscriber-card-skeleton dark-shiny"></div>
+            </ng-container>
+        </div>
+
+        <div class="subscribers-container" *ngIf="subscribtion_info_added" [@enterAnimation]>
+            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card">
+                
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="subscriber">
+                    <div class="user-container">
+
+                            <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
+                                <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
+                            </div>
+                            <div class="right-container">
+                                <span class="user-name">{{item.firstname}} {{item.lastname}}
+                                        <span class="certifications-span" *ngIf="list_of_users_information[i].type_of_account_checked">PRO</span>
+                                        <mat-icon *ngIf="list_of_users_information[i].certified_account">verified</mat-icon>
+    
+                                </span>
+                                <span class="user-description">@{{item.nickname}}</span>
+                            </div>
+
+                    </div>
+                </div>
+    
+                <ng-container *ngIf="type_of_account=='account' && list_of_users_ids[i]!=visitor_id">
+                    <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
+                        <mat-icon>add</mat-icon>
+                        <span>S'abonner</span>
+                    </button>
+                    <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
+                        
+                        <mat-icon>notifications_active</mat-icon>
+                        <span>Abonné</span>
+                    </button>
+                </ng-container>
+    
+            </a>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+
+
+<!--<div class="component-container">
     <div class="title">
         <span>
             {{title}}
@@ -7,9 +80,9 @@
     </div>
     <div class="subscribers-container" *ngIf="subscribtion_info_added">
         <div *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card">
-            <!--********************-->
-            <!--Author container-->
-            <!--********************-->
+            <!- -********************- ->
+            <!- -Author container- ->
+            <!- -********************- ->
             <div class="author-container" >
                 <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
                     <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
@@ -44,3 +117,4 @@
         <span style="margin:auto;" *ngIf="data.title=='loves'">Aucune mention j'adore</span>
     </div>
 </div>
+-->

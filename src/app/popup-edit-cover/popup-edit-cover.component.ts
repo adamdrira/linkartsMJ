@@ -39,8 +39,7 @@ export class PopupEditCoverComponent implements OnInit {
     private Drawings_CoverService:Drawings_CoverService,
     public dialog: MatDialog,
 
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      dialogRef.disableClose = true;
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
 
@@ -49,10 +48,6 @@ export class PopupEditCoverComponent implements OnInit {
 
     console.log(this.data)
   
-  }
-
-  close_dialog(){
-    this.dialogRef.close();
   }
 
  
