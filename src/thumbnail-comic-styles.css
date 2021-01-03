@@ -110,7 +110,7 @@
   height: 29px;
   min-width: 29px !important;
   min-height: 29px !important;
-  margin: 3px 3px auto 0px;
+  margin: auto 3px auto 0px;
   }
   
   .author-container .left-container img {
@@ -162,7 +162,7 @@
     align-items: center;
     min-width: 52px;
     color:white;
-    border:1px solid white;
+    border-bottom:1px solid #4bc7ff;
   }
   
   
@@ -197,18 +197,27 @@
     height:unset;
     width:unset;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
+    color: #f9f9f9;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.likes mat-icon {
     height:unset;
     width:unset;
+    color: #7ed7ff;
     font-size: 14px;
+    max-width:14px;
+            overflow: hidden;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.loves mat-icon {
     height:unset;
     width:unset;
+    color: #e41919;
     font-size: 14px;
+    max-width:14px;
+            overflow: hidden;
     margin: 2px auto auto 4px;
   }
   
@@ -286,15 +295,17 @@
   margin: auto 4px 3px 0px;
   font-size:11px;
   line-height: 11px;
-  background:rgb(32,56,100);
-  border:1px solid rgb(32,56,100);
+  /*background:rgb(32,56,100);
+  border:1px solid rgb(32,56,100);*/
 }
 .verso-type .tag-container.type {
   background:unset !important;
-  border: solid 1px white;
+  border-bottom: solid 1px white;
 }
 .tag-container .mat-icon {
   font-size: 11px;
+  max-width:11px;
+            overflow: hidden;
   line-height: 11px;
   margin-top: 1px;
   margin-left: 3px;

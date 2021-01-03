@@ -6,13 +6,14 @@
   margin-right: auto;
 }
 
-.final-thumbnail {
-    position:relative;
-    width: 200px !important;
-    border-radius:12px;
-    box-shadow: 0px 0px 20px 3px #3055812e;
-    margin-left:auto;
-    margin-right:auto;
+
+  .final-thumbnail {
+      position:relative;
+      width: 200px ;
+      border-radius:12px;
+      box-shadow: 0px 0px 20px 3px #3055812e;
+      margin-left:auto;
+      margin-right:auto;
   }
   .final-thumbnail > img {
     width:100%;
@@ -21,7 +22,7 @@
     object-fit: cover;
     border-radius: 12px;
   }
-  
+
   
   
   .final-thumbnail .display-on-hover {
@@ -41,6 +42,9 @@
     border-radius:12px;
   }
 
+  .small-display-on-hover{
+    padding: 5px 5px 5px 5px !important;
+  }
 
   .display-on-hover .artbook-icon {
     position: absolute;
@@ -66,21 +70,41 @@
   .visible {
     opacity: 1 !important;
   }
+
   
+
+  .small-artbook  {
+    right: 0px !important;
+    top: 6px !important;
+  }
+  
+  .small-artbook mat-icon {
+    font-size: 11px !important;
+    height: 21px !important;
+    width: 21px !important;
+  }
   
   .final-thumbnail .display-on-hover .title-container {
     text-align: left;
     word-break: break-word;
     margin: 0px 30px 0px 0px;
-    font-size: 20px;
+    font-size: 14px;
     display: flex;
     width: calc(100% - 20px);
+  }
+
+
+  .small-title-container{
+    margin: 0px 15px 0px 0px !important;
+    font-size: 11px !important;
+    display: flex !important;
+    width: calc(100% - 15px) !important;
   }
   
    .title-container span.title {
     font-weight: bold;
     line-height: 17px;  
-    font-size: 14px;
+   
     -webkit-box-orient: vertical;
     overflow: hidden;
     display: -webkit-box;
@@ -90,26 +114,53 @@
     -webkit-line-clamp: 2;
     width: 90%;
   }
+
+  
+
+  .small-title {
+    font-weight: bold !important;
+    line-height: 12px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
   
   
   .author-container {
     display: flex;
+    
     margin-top:auto;
     width: 100%;
+  }
+
+  .small-author-container {
+    align-items: center !important;
   }
   
   .author-container .left-container {
     width: 29px;
     height: 29px;
-    min-width: 29px !important;
-    min-height: 29px !important;
-    margin: 3px 3px auto 0px;
+    min-width: 29px ;
+    min-height: 29px ;
+    margin: auto 3px auto 0px;
   }
   
   .author-container .left-container img {
     width: 100%;
     height: 100%;
     border-radius: 50px;
+  }
+
+  .small-left-container  {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    margin: unset !important;
+  }
+
+  .small-left-container img {
+    display:flex !important;
   }
   
   .author-container .right-container {
@@ -119,6 +170,12 @@
     width: calc( 100% - 40px );
     margin: 0px 10px auto 5px;
   }
+
+  .small-right-container {
+    width: calc( 100% - 30px ) !important;
+    margin: auto 5px auto 5px !important;
+  }
+
   .author-container .right-container span.author-name {
     font-size: 12px;
     line-height: 18px;
@@ -126,6 +183,12 @@
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis;
+  }
+
+  .small-author-name {
+    font-size: 9px !important;
+    line-height: 10px !important;
+    font-weight: 700 !important;
   }
   
   .author-container .right-container span.author-description {
@@ -137,6 +200,10 @@
   }
 
 
+  .small-author-description {
+    font-size: 8px !important;
+    line-height: 12px !important;
+  }
     
   .stats-container {    
     width: 100%;
@@ -146,19 +213,56 @@
     margin-top: 3px;
     /*font-size: 1rem;*/
     font-size: 12px;
+    font-weight: 700;
     justify-content: space-between;
   }
+
+  .small-stats-container {   
+    margin-top: 5px !important; 
+    height: 15px !important;
+    font-size: 9px !important;
+    border-radius: 6px!important;
+    border-bottom: 1px solid #4bc7ff!important;
+  }
   
-  .figure-container
-  {
+  .figure-container{
+    margin:auto;
     display: flex;
     border-radius: 16px;
     align-items: center;
     min-width: 52px;
     color:white;
-    border:1px solid white;
+    border-bottom:1px solid #4bc7ff;
   }
+
+
+  .figure-container span{
+    margin:auto 0px auto auto;
+    
+  }
+ 
   
+  .small-figure-container{
+    justify-content: center !important;
+    min-width: 34px !important;
+    border-bottom: unset !important;
+  }
+
+  .small-views mat-icon{
+    font-size: 10px !important;
+    max-width:10px;
+    overflow: hidden;
+    margin: 2px auto auto 3px !important;
+  }
+
+  .small-likes mat-icon{
+    
+    font-size: 9px !important;
+    max-width:9px;
+    overflow: hidden;
+    margin: 2px auto auto 3px !important;
+  }
+
   
   .figure-container.views {
     /*background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);*/
@@ -176,10 +280,7 @@
      /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
   }
   
-  .figure-container
-  {
-    margin:auto;
-  }
+
 
   .figure-container > div {
     display:flex;
@@ -191,18 +292,28 @@
     height:unset;
     width:unset;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
+    color: #f9f9f9;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.likes mat-icon {
+   
+    color: #7ed7ff;
     height:unset;
     width:unset;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.loves mat-icon {
     height:unset;
+    color: #e41919;
     width:unset;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
     margin: 2px auto auto 4px;
   }
   
@@ -238,6 +349,8 @@
 .tag-container .mat-icon {
   font-size: 18px;
   line-height: 18px;
+  max-width:18px;
+    overflow: hidden;
   margin-left: 3px;
   width:unset !important;
   height:unset !important;
@@ -247,10 +360,14 @@
   width:100%;
   line-height: 13px;
   text-align:left;
+  font-size:10px;
 }
 
-.date-container span {
-  font-size:10px;
+.small-date-container{
+  width: 100%;
+  line-height: 7px;
+  text-align: left;
+  font-size: 8px;
 }
 
 .artbook {

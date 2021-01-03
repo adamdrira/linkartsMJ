@@ -14,6 +14,7 @@
 
   .invisible{
     visibility: hidden;
+    pointer-events: none;
   }
   .element-writing {
 
@@ -119,7 +120,7 @@
     height: 32px;
     min-width: 32px !important;
     min-height: 32px !important;
-    margin: 3px 3px auto 0px;
+    margin: auto 3px auto 0px;
     }
     
     .author-container .left-container img {
@@ -171,7 +172,7 @@
     align-items: center;
     min-width: 52px;
     color:white;
-    border:1px solid white;
+    border-bottom:1px solid #4bc7ff;
   }
   
   
@@ -205,19 +206,28 @@
   .stats-container .figure-container.views mat-icon {
     height:unset;
     width:unset;
+    color: #f9f9f9;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.likes mat-icon {
     height:unset;
     width:unset;
+    color: #7ed7ff;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
     margin: 2px auto auto 5px;
   }
   .stats-container .figure-container.loves mat-icon {
     height:unset;
     width:unset;
+    color: #e41919;
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
     margin: 2px auto auto 4px;
   }
   
