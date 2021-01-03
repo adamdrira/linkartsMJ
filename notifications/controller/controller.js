@@ -261,8 +261,7 @@ module.exports = (router,
         const chapter_number = req.body.chapter_number;
         const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
-        //console.log(publication_category)
-        //console.log(publication_id)
+        
         list_of_notifications.findOne({
             where:{
                 type:type,
@@ -295,11 +294,13 @@ module.exports = (router,
                     "information":information,
                     "comment_id":comment_id,
                     "status":"unchecked"
-                })
-                .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(notification=>{res.status(200).send([notification])})   
+                }).catch(err => {
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(notification=>{
+                    console.log("send notif")
+                    res.status(200).send([notification])
+                })   
             }
         })
            

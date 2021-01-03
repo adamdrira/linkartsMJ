@@ -35,10 +35,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                ],
            })
            .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friends =>  {
-               res.status(200).send([friends])
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(friends =>  {
+               res.status(200).send([{friends:friends,current_user:current_user}])
            }); 
      });
 

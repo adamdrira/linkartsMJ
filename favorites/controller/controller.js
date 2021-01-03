@@ -52,6 +52,66 @@ module.exports = (router, favorites) => {
         
     });
  
+
+    router.post('/get_total_favorites_gains_by_user', function (req, res) {
+        console.log("get_total_favorites_gains_by_user")
+        
+        let current_user = get_current_user(req.cookies.currentUser);
+        let total_gains=0;
+        favorites.findAll({
+            where:{
+                id_user:current_user,
+            }
+            ,order: [
+                ['createdAt', 'DESC']
+            ]
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
+
+            if(favorites.length>0){
+                for( let i=0;i<favorites.length;i++){
+                    total_gains+= Number(favorites[i].remuneration);
+                        
+                }
+            }
+            res.status(200).json([{total:total_gains}]);	
+        })
+        
+    });
+
+    router.post('/get_total_favorites_gains_by_users_group', function (req, res) {
+        console.log("get_total_favorites_gains_by_users_group")
+        
+        let current_user = get_current_user(req.cookies.currentUser);
+        let list_of_ids=req.body.list_of_ids
+        let total_gains=0;
+        favorites.findAll({
+            where:{
+                id_user:list_of_ids,
+            }
+            ,order: [
+                ['createdAt', 'DESC']
+            ]
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(favorites=>{
+
+            if(favorites.length>0){
+                for( let i=0;i<favorites.length;i++){
+                    let gain = Number(favorites[i].remuneration);
+                    let share=Number(favorites[i].shares[0][current_user])/100;
+                    total_gains+=gain*share;   
+                }
+            }
+            res.status(200).json([{total:total_gains,favorites:favorites}]);	
+        })
+        
+    });
+    
+ 
     
 
 }

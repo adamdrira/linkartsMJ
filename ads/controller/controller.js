@@ -67,6 +67,9 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             const remuneration = req.body.remuneration;
             const price_value = req.body.price_value;
             const price_type = req.body.price_type;
+            const service = req.body.service;
+            const price_value_service = req.body.price_value_service;
+            const price_type_service = req.body.price_type_service;
             console.log(price_value);
 
             list_of_ads.create({
@@ -84,6 +87,9 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "remuneration":remuneration,
                   "price_value":price_value,
                   "price_type":price_type,
+                  "service":service,
+                  "price_value_service":price_value_service,
+                  "price_type_service":price_type_service,
                   "status":"public",
                   "refreshment_number":0,
                   "commentariesnumber":0,

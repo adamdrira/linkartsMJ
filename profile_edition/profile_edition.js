@@ -192,40 +192,6 @@ router.post('/add_cover_pic', function (req, res) {
     });
 });
 
-router.get('/retrieve_profile_and_cover_pictures/:user_id', function (req, res) {
- console.log("retrieve_profile_and_cover_pictures")
-
-  const user_id = parseInt(req.params.user_id);
-
-  users.findOne({
-    where: {
-      id: user_id,
-    }
-  })
-  .catch(err => {
-    //console.log(err);	
-    res.status(500).json({msg: "error", details: err});		
-  }).then(User =>  {
-    if(User){
-      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
-      fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        let filename2 = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
-        fs.readFile( path.join(process.cwd(),filename2), function(e,data2){
-          //blob = data.toBlob('application/image');
-          res.status(200).send([data,data2]);
-        } );
-      } );
-    }
-    else{
-      res.status(500).send({error:"user not found"});
-    }
-    
-  }); 
-
-
-
-});
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
@@ -260,12 +226,43 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 });
 
 
+
+router.post('/retrieve_my_profile_picture', function (req, res) {
+ 
+  const user_id = get_current_user(req.cookies.currentUser);
+
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .catch(err => {
+    //console.log(err);	
+    res.status(500).json({msg: "error", details: err});		
+  }).then(User =>  {
+    if(User && User.profile_pic_file_name){
+      let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
+      fs.readFile( path.join(process.cwd(),filename), function(e,data){
+        //blob = data.toBlob('application/image');
+        res.status(200).send(data);
+      } );
+    }
+    else{
+      res.status(200).send([{error:"error"}]);
+    }
+    
+  }); 
+
+
+
+});
+
+
 router.get('/retrieve_cover_picture/:user_id', function (req, res) {
-  (async () => {
 
     const user_id = req.params.user_id;
 
-    User = await users.findOne({
+    users.findOne({
       where: {
         id: user_id,
       }
@@ -287,7 +284,35 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
      
     }); 
 
-  })();
+
+});
+
+router.post('/retrieve_my_cover_picture', function (req, res) {
+ 
+  const user_id = get_current_user(req.cookies.currentUser);
+
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .catch(err => {
+    //console.log(err);	
+    res.status(500).json({msg: "error", details: err});		
+  }).then(User =>  {
+    if(User && User.cover_pic_file_name  ){
+      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+      fs.readFile( path.join(process.cwd(),filename), function(e,data){
+        //blob = data.toBlob('application/image');
+        res.status(200).send(data);
+      } );
+    }
+    else{
+      res.status(200).send([{error:"error"}]);
+    }
+   
+  }); 
+
 
 });
 
@@ -308,6 +333,36 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
 		}).then(User =>  {
         res.status(200).send([User]);
       } );
+
+
+});
+
+router.get('/retrieve_profile_data_and_check_visitor/:user_id', function (req, res) {
+
+  let current_user = get_current_user(req.cookies.currentUser);
+  const user_id = req.params.user_id;
+  users.findOne({
+    where: {
+      id: user_id,
+    }
+  })
+  .catch(err => {
+    //console.log(err);	
+    res.status(500).json({msg: "error", details: err});		
+  }).then(user =>  {
+    users.findOne({
+      where: {
+        id: current_user,
+      }
+    })
+    .catch(err => {
+      //console.log(err);	
+      res.status(500).json({msg: "error", details: err});		
+    }).then(visitor =>  {
+  
+      res.status(200).send([{user:user,visitor:visitor}]);
+    } );
+  } );
 
 
 });

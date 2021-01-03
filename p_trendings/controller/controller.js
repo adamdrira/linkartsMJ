@@ -122,9 +122,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                 ],
                 limit:6,
             }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(trendings=>{
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(trendings=>{
                 list_of_contents=trendings;
                 trendings_contents.findAll({
                     where:{
@@ -136,9 +136,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                     ],
                     limit:6,
                 }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(trendings_com=>{
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(trendings_com=>{
                     list_of_comics=trendings_com;
                     trendings_contents.findAll({
                         where:{
@@ -150,9 +150,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                         ],
                         limit:6,
                     }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(trendings_draw=>{
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(trendings_draw=>{
                         list_of_drawings=trendings_draw;
                         trendings_contents.findAll({
                             where:{
@@ -164,9 +164,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                             ],
                             limit:6,
                         }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(trendings_wri=>{
+                            console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(trendings_wri=>{
                             list_of_writings=trendings_wri;
                             res.status(200).send([{list_of_contents:list_of_contents,list_of_comics:list_of_comics,list_of_writings:list_of_writings,list_of_drawings:list_of_drawings}])
                         })
@@ -184,10 +184,11 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                     ['createdAt', 'DESC']
                 ]
             }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(trendings=>{
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(trendings=>{
                 let list_of_contents=trendings
+                
                 trendings_contents.findAll({
                     where:{
                         createdAt: (date_format<3)?{[Op.gte]: date}:{[Op.lte]: date},
@@ -198,9 +199,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                         ['createdAt', 'DESC']
                     ]
                 }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(comics=>{
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(comics=>{
                     let list_of_comics=comics
                     trendings_contents.findAll({
                         where:{
@@ -212,9 +213,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                             ['createdAt', 'DESC']
                         ]
                     }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawings=>{
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(drawings=>{
                         let list_of_drawings=drawings
                         trendings_contents.findAll({
                             where:{
@@ -226,9 +227,9 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
                                 ['createdAt', 'DESC']
                             ]
                         }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writings=>{
+                            console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(writings=>{
                             let list_of_writings=writings
                             res.status(200).send([{list_of_contents:list_of_contents,list_of_writings:list_of_writings,list_of_drawings:list_of_drawings,list_of_comics:list_of_comics}])
                                     
@@ -251,13 +252,69 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
 
     
 
+    router.post('/get_total_trendings_gains_by_user', function (req, res) {
+        console.log("get_total_trendings_gains_by_user")
+        
+        let current_user = get_current_user(req.cookies.currentUser);
+        let total_gains=0;
+        trendings_contents.findAll({
+            where:{
+                id_user:current_user,
+            }
+            ,order: [
+                ['createdAt', 'DESC']
+            ]
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings=>{
+
+            if(trendings.length>0){
+                for( let i=0;i<trendings.length;i++){
+                    total_gains+= Number(trendings[i].remuneration);
+                        
+                }
+            }
+            res.status(200).json([{total:total_gains}]);	
+        })
+        
+    });
+
+    router.post('/get_total_trendings_gains_by_users_group', function (req, res) {
+        console.log("get_total_trendings_gains_by_users_group")
+        
+        let current_user = get_current_user(req.cookies.currentUser);
+        let list_of_ids=req.body.list_of_ids
+        let total_gains=0;
+        trendings_contents.findAll({
+            where:{
+                id_user:list_of_ids,
+            }
+            ,order: [
+                ['createdAt', 'DESC']
+            ]
+        }).catch(err => {
+			console.log(err);	
+			res.status(500).json({msg: "error", details: err});		
+		}).then(trendings=>{
+
+            if(trendings.length>0){
+                for( let i=0;i<trendings.length;i++){
+                    let gain = Number(trendings[i].remuneration);
+                    let share=Number(trendings[i].shares[0][current_user])/100;
+                    total_gains+=gain*share;   
+                }
+            }
+            res.status(200).json([{total:total_gains,trendings:trendings}]);	
+        })
+        
+    });
     
 
     
 
     router.post('/get_date_of_trendings', function (req, res) {
         var today = new Date();
-        console.log("get_date_of_trendings")
   
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth()+1).padStart(2, '0'); 
