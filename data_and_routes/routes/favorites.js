@@ -46,9 +46,7 @@ pool.connect((err, client, release) => {
     
 
 
-    let fastcsv = require("fast-csv");
-    let Path1=`/csvfiles_for_python/favorites_ranking-${date}.csv`;
-    let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
+  
 
     favorites_seq.favorites.findAll({
       where:{
@@ -78,6 +76,10 @@ pool.connect((err, client, release) => {
           response.status(500).send([{error:err}])
         }
         else{
+            let fastcsv = require("fast-csv");
+            let Path1=`/csvfiles_for_python/favorites_ranking-${date}.csv`;
+            let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
+
             let json_view = JSON.parse(JSON.stringify(results.rows));
             console.log("favorites ")
             fastcsv.write(json_view, { headers: true })

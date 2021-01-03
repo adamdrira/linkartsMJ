@@ -216,11 +216,11 @@ pool.connect((err, client, release) => {
                               //console.log(pythonProcess)
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
-                                console.log("python res")
+                                console.log("python res tren")
                                 //console.log(data.toString())
                               });
                               pythonProcess.stdout.on("end", (data) => {
-                                console.log("end received data python: ");
+                                console.log("end received data python: trend");
                                 let files = [__dirname + Path1,__dirname + Path2,__dirname + Path3];
                                 for (let i=0;i<files.length;i++){
                                   fs.access(files[i], fs.F_OK, (err) => {
@@ -233,9 +233,11 @@ pool.connect((err, client, release) => {
                                           "date":date
                                         }).catch(err => {
                                           console.log(err);	
+                                          console.log("send tren err")
                                           res.status(500).json({msg: "error", details: err});		
                                         }).then(result=>{
                                           add_comics_trendings(json,date);
+                                          console.log("send tren ok")
                                             return response.status(200).send([{comics_trendings:json}]); 
                                         })
                                       } 
@@ -243,8 +245,7 @@ pool.connect((err, client, release) => {
                                     else{
                                       fs.unlink(files[i],function (err) {
                                         if (err) {
-                                          console.log(error)
-                                          response.status(200).send([{"error":error}]); 
+                                          console.log('suppression already done for first path'); 
                                         } 
                                         if(i==files.length -1){
                                           let json = JSON.parse(fs.readFileSync( __dirname + `/python_files/comics_rankings_for_trendings-${date}.json`));
@@ -253,6 +254,7 @@ pool.connect((err, client, release) => {
                                             "date":date
                                           }).catch(err => {
                                             console.log(err);	
+                                            console.log("send tren err")
                                             res.status(500).json({msg: "error", details: err});		
                                           }).then(result=>{
                                             add_comics_trendings(json,date);
