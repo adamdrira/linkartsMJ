@@ -13,6 +13,7 @@ import { pattern } from '../helpers/patterns';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 
@@ -20,6 +21,16 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
   selector: 'app-popup-report',
   templateUrl: './popup-report.component.html',
   styleUrls: ['./popup-report.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateY(0)', opacity: 0 }),
+        animate('400ms', style({ transform: 'translateX(0px)', opacity: 1 }))
+      ])
+    ]
+    ),
+  ],
 })
 export class PopupReportComponent implements OnInit {
   
@@ -69,8 +80,8 @@ export class PopupReportComponent implements OnInit {
       message_for_content: ['', 
         Validators.compose([
           Validators.minLength(3),
-          Validators.maxLength(2000),
-          Validators.pattern(pattern("text")),
+          Validators.maxLength(500),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ]
     });
@@ -81,8 +92,8 @@ export class PopupReportComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.minLength(3),
-          Validators.maxLength(2000),
-          Validators.pattern(pattern("text")),
+          Validators.maxLength(500),
+          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
     });

@@ -1,9 +1,232 @@
 
 /**** top container ********/
 
-@import '../../material-styles.css';
+::ng-deep .popupReportClass {
+  max-width:unset !important;
+}
+
+.popup-report {
+
+  display: flex;
+  flex-direction: column;
+  min-width: 30vw;
+  user-select: none;
+  
+  @media (max-width: 1100px) {
+    min-width: 50vw;
+  }
+  @media (max-width: 600px) {
+    min-width: 70vw;
+  }
+
+  .step-name {
+    font-weight: 600;
+    margin: 0px 50px 20px 0px;
+    color: rgb(32,56,100);
+    cursor:default;
+  }
+
+  button.motif {
+    outline:none;
+
+    width: 100%;
+    display: flex;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 6px 6px;
+    border-radius: 40px;
+    border: 1px solid #203864;
+    background-color: white;
+    outline: none;
+
+    span {
+      margin:auto auto auto 15px;
+      font-weight: 600;
+      color: #203864;
+    }
+    mat-icon {
+      margin:auto 5px auto auto;
+      width: unset;
+      height: unset;
+      font-size: 25px;
+      color: #203864;
+    }
+
+    &:hover {
+      background: #eeeff3 !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+    }
+    &:active {
+      background: #e2e5eb !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+      transform: scale(0.98);
+    }
+    transition:transform 200ms;
+  }
+
+  button.step-back {
+    display: flex !important;
+    width: fit-content;
+    font-size: 14px;
+    padding: 6px 6px !important;
+    border-radius: 40px;
+    border: 1px solid #203864;
+    background-color: white !important;
+    outline: none !important;
+    margin-bottom: 25px;
+
+    mat-icon {
+      width: unset;
+      height: unset;
+      font-size: 25px;
+      margin: auto 5px auto 0px;
+      color: #203864;
+    }
+    span {
+      font-weight: 600;
+      margin: auto 10px auto 0px;
+      color: #203864;
+    }
+
+    &:hover {
+      background: #eeeff3 !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+    }
+    &:active {
+      background: #e2e5eb !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+      transform: scale(0.98);
+    }
+    transition:transform 200ms;
+  }
 
 
+  button.submit-button {
+    display: flex !important;
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 6px !important;
+    border-radius: 40px;
+    border: 1px solid #203864;
+    background-color: white !important;
+    outline: none !important;
+
+    mat-icon {
+      width: unset;
+      height: unset;
+      font-size: 25px;
+      margin: auto 5px auto auto;
+      color: #203864;
+    }
+    span {
+      font-weight: 600;
+      margin: auto auto auto 0px;
+      color: #203864;
+    }
+
+    &:hover {
+      background: #eeeff3 !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+    }
+    &:active {
+      background: #e2e5eb !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+      transform: scale(0.98);
+    }
+    transition:transform 200ms;
+
+    mat-spinner {
+      margin:auto auto;
+      circle {
+        stroke:rgb(32,56,100);
+      }
+    }
+  }
+
+  ::ng-deep {
+    .form-item {
+      position: relative;
+      width: 100%;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      &.input-multiple-lines {
+          height: unset !important;
+          mat-form-field {
+              height: unset !important;
+              &.mat-form-field-wrapper {
+                  padding-bottom: 27px !important;
+              }
+          }
+      }
+      .mat-form-field {
+          width: 100%;
+          line-height: 1.4;
+          height: 80px;
+          .mat-form-field-flex {
+              background: rgb(255 255 255) !important;
+  
+              font-weight: 600;
+  
+              border: 1px solid #d2e0e6;
+              border-radius: 30px;
+              padding-right: 10px !important;
+              padding-left: 20px !important;
+              padding-bottom: 3px !important;
+              transition: box-shadow 200ms;
+          }
+          &.mat-focused .mat-form-field-flex {
+              box-shadow: 0px 0px 0px 2px rgb(204, 233, 251), 0px 0px 2px 4px rgb(179, 224, 251);
+              border: 1px solid #c3e6fb;
+          }
+          textarea {
+              max-height: 180px;
+              min-height: 100px;
+              &::-webkit-scrollbar {
+                  width: 6px;
+                  height: 6px;
+              }
+              &::-webkit-scrollbar-track {
+                  border-radius: 10px;
+                  background-color: rgba(255, 255, 255, 0.1);
+              }
+              &::-webkit-scrollbar-thumb {
+                  background-image: linear-gradient(0deg, #ffffff00, #76ccff, #ffffff00);
+                  border-radius: 20px;
+              }
+          }
+      }
+      .mat-form-field-underline {
+          display: none !important;
+      }
+      .mat-form-field-infix {
+          border-top: 5px solid transparent !important;
+      }
+      .mat-form-field-appearance-legacy .mat-form-field-subscript-wrapper {
+          margin-top: 0px;
+          padding-right: 20px !important;
+          padding-left: 20px !important;
+      }
+      .length-indicator {
+          position: absolute;
+          right: 15px;
+          color: grey;
+          font-size: 15px;
+          top: 8px;
+      }
+      mat-form-field .mat-form-field-wrapper {
+          padding-bottom: 25px !important;
+      }
+    }
+    .mat-input-element {
+        font-size: 14px;
+        line-height: 22px !important;
+        padding-right: 80px !important;
+    }
+  }
+}
+
+/*
 .status {
   position:absolute;
   height:7px;
@@ -217,4 +440,4 @@
 
 .invisible{
   visibility:hidden;
-}
+}*/
