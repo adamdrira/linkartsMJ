@@ -1,93 +1,239 @@
+$default-color: rgb(218,220,225);
+
+
+.blocked {
+    display:flex;
+    flex-direction: column;
+    text-align:center;
+    mat-icon {
+        margin: 30px auto 6px auto;
+        width: unset;
+        height: unset;
+        font-size: 33px;
+        color:$default-color;
+    }
+    span {
+        margin: 0px auto 30px auto;
+        font-weight: 600;
+        font-size: 12px;
+        color:$default-color;
+    }
+}
+
+.comment-skeleton {
+    margin-top: 40px;
+    display: flex;
+
+    .left-container {
+        .profile-picture {
+            margin:0px 5px auto 0px;
+            width:30px;
+            height:30px;
+            border-radius:50px;
+            overflow: hidden;
+        }
+    }
+    .right-container {
+        width: -webkit-fill-available;
+        height: 100px;
+        border-radius: 12px;
+    }
+
+    &.my-comment {
+        margin-top:20px;
+        .right-container {
+            height: 50px;
+        }
+    }
+}
+
 .comments-container {
     position: relative;
-    width:100%;
-    height:100%;
-    padding-bottom:50px;
+
+    .create-account {
+        text-align:center;
+        cursor:pointer;
+        span {
+            font-size:12px;
+            font-weight:600;
+        }
+
+        &:hover {
+            span {
+                text-shadow: -0.01ex 0 $default-color, 0.01ex 0 $default-color;
+            }
+        }
+    }
+
+    .add-comment {
+        margin-top: 20px;
+        display: flex;
+
+        .left-container {
+            .profile-picture {
+                margin:0px 5px auto 0px;
+                width:30px;
+                height:30px;
+                border-radius:50px;
+                overflow: hidden;
+                img {
+                    width:100%;
+                    height:100%;
+                }
+            }
+        }
+
+        .right-container {
+            width: -webkit-fill-available;
+            textarea {
+                //max-height: 180px;
+                min-height: 50px;
+                caret-color: white;
+                background: #203864;
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+                border-radius: 12px;
+                padding: 6px 12px;
+                font-size: 12px;
+                &::-webkit-scrollbar {
+                    width: 3px;
+                    height: 3px;
+                }
+                &::-webkit-scrollbar-track {
+                    border-radius: 10px;
+                    background-color: transparent;
+                }
+                &::-webkit-scrollbar-thumb {
+                    border-radius: 10px;
+                    background-color: #122951;
+                }
+            }
+        }
+    }
+
+    .comment {
+        display:flex;
+        margin-top: 40px;
+        .left-container {
+            width: -webkit-fill-available;
+        }
+        .right-container {
+            .optionsMenu {
+                outline: none;
+                border: none;
+                padding: unset;
+                display: flex;
+                background: unset;
+                outline: unset;
+                border-radius: 50px;
+                box-shadow: unset;
+                height: 26px;
+                width: 26px;
+                margin-left: 3px;
+                opacity: 0.8;
+            
+                mat-icon {
+                    margin: auto auto;
+                    height: unset;
+                    width: unset;
+                    font-size: 18px;
+                    color: #dadce1;
+                }
+                
+                &:hover {
+                    opacity:1;
+                    background: #030a162e;
+                }
+                &:active {
+                    background: #030a1654;
+                }
+            }
+        }
+    }
+
+    ::ng-deep {
+        .mat-spinner circle {
+            stroke: $default-color;
+        }
+    }
 }
 
-.comments {
-    width:100%;
-    padding-left: 7px;
-    padding-right: 7px;
-    margin-top:20px;
-    display:flex;
+
+
+::ng-deep {
+    .comments-mat-menu {
+        margin-top: 3px !important;
+        border-radius: 12px 10px 12px 12px !important;
+        min-height: unset !important;
+        min-width: unset !important;
+        .mat-menu-content {
+        padding-top: unset !important;
+        padding-bottom: unset !important;
+        }
+        .comments-button-menu-item {
+        display: flex !important;
+        font-size: 12px !important;
+        line-height: 38px !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        padding: 0px 15px 0 10px !important;
+        color: rgb(32, 56, 100) !important;
+        transition: all 200ms !important;
+        outline: none !important;
+
+        transition: background-color 200ms;
+
+        mat-icon {
+            margin: auto 10px auto 0px !important;
+            width: unset !important;
+            height: unset !important;
+            font-size: 18px !important;
+            color: rgb(32, 56, 100) !important;
+        }
+
+        img {
+            height: 24px;
+            width: 24px;
+            border-radius: 65px;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+            object-fit: cover;
+            margin: auto 8px auto -4px !important;
+        }
+        .mat-ripple {
+            background: unset !important;
+            * {
+            background: unset !important;
+            }
+        }
+        &:hover {
+            background: #c9d4e2;
+        }
+        &:active {
+            background: #aabed4;
+        }
+        }
+    }
 }
 
-.add-comment {
-    padding-top: 20px;
-    bottom: 0px;
-    display: flex;
-    padding-left: 5px;
-    padding-right: 10px;
-    width: 100%;
-    margin-right: auto;
-    border-top: 1px solid rgb(32, 56, 100);
-}
-
-
-.add-comment .left-container {
-    display:flex;
-    width:50px;
-}
-
-.add-comment .left-container .image-container {
-    margin:0px 5px auto 5px;
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    overflow: hidden;
-}
-
-.add-comment .left-container .image-container img {
-    object-fit:cover;
-    width:100%;
-    height:100%;
-}
-
-
-.add-comment .right-container {
-    width:calc( 100% - 50px );
-}
-
-.add-comment .right-container .textarea-add-comment {
-    outline:none;
-    height:42px;
-    width:100%;
-    background: rgb(100, 128, 179);
-    color: white;
-    border: 1px solid rgb(32, 56, 100);
-    border-radius: 8px;
-    padding: 5px 10px 5px 10px;
-    font-size: 15px;
-    line-height:20px;
-    transition: width 0.25s;
-    resize:none;
-    overflow:hidden;
-}
-
-::placeholder {
-    color:white;
-}
-
-::ng-deep .commentOptions.mat-icon-button {
-    outline:none;
-    width:28px !important;
-    height:28px !important;
-    line-height: 23px !important;
-}
-::ng-deep .commentOptions .mat-button-wrapper {
-    display:flex !important;
-}
-
-::ng-deep .commentOptions .optionsButton {
-    margin:auto auto !important;
-    font-size:23px !important;
-    width: unset !important;
-    height: unset !important;
-}
-
-
-.invisible{
+.invisible {
     visibility:hidden;
     pointer-events: none;
 }
+
+.dark-shiny {
+    background-color: #203864;
+    background-image: linear-gradient(to right, #00000000 33%, #162e58 50%, #00000000 66%);
+    background-size: 300% 100%;
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% {
+        background-position: right;
+    }
+}
+
+
+::placeholder {
+    color:$default-color;
+}
+

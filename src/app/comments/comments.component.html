@@ -1,137 +1,176 @@
-<div  *ngIf="user_blocked_retrieved && user_blocked">
-    <div *ngIf="user_who_blocked=='me'">
-        Vous avez bloqué cet utilisateur et ne pouvez donc pas commenter ses contenus
+<div class="blocked" *ngIf="!user_blocked_retrieved">
+
+    <div class="comment-skeleton my-comment">
+        <div class="left-container">
+            <div class="profile-picture dark-shiny">
+            </div>
+        </div>
+        <div class="right-container dark-shiny">
+        </div>
     </div>
-    <div *ngIf="user_who_blocked!='me'">
-        Vous avez été bloqué par cet utilisateur et ne pouvez donc pas commenter ses contenus
+    <div class="comment-skeleton" *ngFor="let element of skeleton_array">
+        <div class="left-container">
+            <div class="profile-picture dark-shiny">
+            </div>
+        </div>
+        <div class="right-container dark-shiny">
+        </div>
     </div>
+
 </div>
+
+
+
+<div class="blocked" *ngIf="user_blocked_retrieved && user_blocked">
+
+    <mat-icon>info_outline</mat-icon>
+    <span *ngIf="user_who_blocked=='me'">Vous avez bloqué cet utilisateur et ne pouvez plus commenter ses contenus</span>
+    <span *ngIf="user_who_blocked!='me'">Vous avez été bloqué par cet utilisateur et ne pouvez plus commenter ses contenus</span>
+</div>
+
 <div class="comments-container" *ngIf="user_blocked_retrieved && !user_blocked">
+
+    <div class="create-account" (click)="signup();" *ngIf="type_of_account=='visitor'">
+        <span>Créer un compte pour pouvoir commenter</span>
+    </div>
 
     <div class="add-comment" *ngIf="type_of_account=='account'">
 
-        <div class="left-container" [ngClass]="{'invisible':!pp_is_loaded}">
-
-            <div class="image-container">
-                <img [src]="profile_picture" (load)="load_pp()" >
+        <div class="left-container">
+            <div class="profile-picture" [ngClass]="{ 'dark-shiny': !pp_is_loaded }">
+                <img [src]="profile_picture" (load)="load_pp()"
+                [ngClass]="{'invisible': !pp_is_loaded}">
             </div>
-
         </div>
 
         <div [formGroup]="comment_container" class="right-container">
-
-            <textarea 
-            formControlName="comment"
-            type="text"
-            (keydown)="check_commentary($event)"
-             class="textarea-add-comment" 
-             style="resize:none;" 
-             autocomplete="off" 
-             placeholder="Ajouter un commentaire ..."></textarea>
-                                    
-        </div>
-
-    </div>
-
-    <div class="add-comment" *ngIf="type_of_account=='visitor'">
-        Crééer un compte pour pouvoir commenter
-        <span style="margin-left:5px"><a href="/signup">S'inscrire</a></span>
-    </div>
-
-    <div *ngIf='display_comments && visitor_mode_retrieved'>
-        <div class="comments">
-            <app-comment-element style="width:calc(100% - 28px);"
-                [visitor_id]="visitor_id"
-                [visitor_name]="visitor_name"
-                [title]="title"
-                [visitor_profile_picture]="profile_picture"
-                (changed)="comment_changed();"
-                [comment_id]=0
-                [editable_comment]=editable_comment
-                [now_in_seconds]=now_in_seconds
-                [comment_information]=comments_list[0]>
-            </app-comment-element>
-            <button  mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
-                <mat-icon class="optionsButton">more_vert</mat-icon>
-            </button>
-            <mat-menu  #commentOptions="matMenu">
-                <button class="mat-menu-item" mat-menu-item > 	
-                    <mat-icon class="item-icon">edit</mat-icon>
-                    <span>Signaler</span>
-                </button>
-                <button *ngIf="!visitor_mode && category!='ad'" class="mat-menu-item" (click)="remove_other_comment(0)" mat-menu-item > 	
-                    <mat-icon class="item-icon">view_carousel</mat-icon>
-                    <span>Supprimer</span>
-                </button>
-
-            </mat-menu>
+            
+            <textarea matInput cdkTextareaAutosize 
+            maxlength="1500"
+            formControlName="comment" 
+            type="text" 
+            (keydown)="keydown($event)"
+            (keyup)="keyup($event)"
+            placeholder="Ajouter un commentaire ..."
+            autocomplete="off"></textarea>
 
         </div>
     </div>
 
-    <div *ngIf='display_my_comments'>
-        <div *ngFor="let item of my_comments_list; let i = index" class="comments">
 
-            <app-comment-element style="width:calc(100% - 28px);"
-                [visitor_id]="visitor_id"
-                [visitor_name]="visitor_name"
-                [visitor_profile_picture]="profile_picture"
-                [title]="title"
-                (changed)="comment_changed();"
-                [comment_id]=i
-                [editable_comment]=editable_comment
-                [now_in_seconds]=now_in_seconds
-                [comment_information]=item>
-            </app-comment-element>
-            <button mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
-                <mat-icon class="optionsButton">more_vert</mat-icon>
-            </button>
-            <mat-menu  #commentOptions="matMenu">
-                <button class="mat-menu-item" (click)="edit_comment(i)" mat-menu-item > 	
-                    <mat-icon class="item-icon">edit</mat-icon>
-                    <span>Editer</span>
+    <ng-container *ngIf='display_comments && visitor_mode_retrieved'>
+        <div class="comment">
+
+            <div class="left-container">
+                <app-comment-element
+                    [visitor_id]="visitor_id"
+                    [visitor_name]="visitor_name"
+                    [title]="title"
+                    [type_of_account]="type_of_account"
+                    [visitor_profile_picture]="profile_picture"
+                    (changed)="comment_changed();"
+                    [comment_id]=0
+                    [now_in_seconds]=now_in_seconds
+                    [comment_information]=comments_list[0]>
+                </app-comment-element>
+            </div>
+
+            <div class="right-container">
+                <!--options pour un visiteur -->
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
                 </button>
-                <button class="mat-menu-item" (click)="remove_comment(i)" mat-menu-item > 	
-                    <mat-icon class="item-icon" >view_carousel</mat-icon>
-                    <span>Supprimer</span>
-                </button>
-            </mat-menu>
+                <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
+                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
+                        <mat-icon>flag</mat-icon>
+                        <span>Signaler</span>
+                    </button>
+                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
+                        <mat-icon>flag</mat-icon>
+                        <span>Annuler le signalement</span>
+                    </button>
+                    <button *ngIf="!visitor_mode && category!='ad'" (click)="remove_other_comment(0)" class="comments-button-menu-item" mat-menu-item>
+                        <mat-icon>close</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+                </mat-menu>
+            </div>
 
         </div>
-    </div>
+    </ng-container>
 
-    <div *ngIf='display_comments && visitor_mode_retrieved'>
-        <div *ngFor="let item of comments_list.slice(1,number_of_comments_to_show); let i = index" class="comments">
-
-            <app-comment-element style="width:calc(100% - 28px);"
-                [visitor_id]="visitor_id"
-                [visitor_name]="visitor_name"
-                [title]="title"
-                [visitor_profile_picture]="profile_picture"
-                (changed)="comment_changed();"
-                [comment_id]=i
-                [editable_comment]=editable_comment
-                [now_in_seconds]=now_in_seconds
-                [comment_information]=item>
-            </app-comment-element>
-            <button  mat-icon-button class="commentOptions" [matMenuTriggerFor]="commentOptions">
-                <mat-icon class="optionsButton">more_vert</mat-icon>
-            </button>
-            <mat-menu  #commentOptions="matMenu">
-                <button class="mat-menu-item" mat-menu-item > 	
-                    <mat-icon class="item-icon">edit</mat-icon>
-                    <span>Signaler</span>
+    <ng-container *ngIf='display_my_comments'>
+        <div *ngFor="let item of my_comments_list; let i = index" class="comment">
+            
+            <div class="left-container">
+                <app-comment-element
+                    [visitor_id]="visitor_id"
+                    [visitor_name]="visitor_name"
+                    [visitor_profile_picture]="profile_picture"
+                    [title]="title"
+                    [type_of_account]="type_of_account"
+                    (changed)="comment_changed();"
+                    [comment_id]=i
+                    [editable_comment]=editable_comment
+                    [now_in_seconds]=now_in_seconds
+                    [comment_information]=item>
+                </app-comment-element>
+            </div>
+            
+            <div class="right-container">
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
                 </button>
-                <button *ngIf="!visitor_mode && category!='ad'" class="mat-menu-item" (click)="remove_other_comment(i)" mat-menu-item > 	
-                    <mat-icon class="item-icon">view_carousel</mat-icon>
-                    <span>Supprimer</span>
-                </button>
-
-            </mat-menu>
+                <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
+                    <button class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
+                        <mat-icon>edit</mat-icon>
+                        <span>Editer</span>
+                    </button>
+                    <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment(i)" mat-menu-item>
+                        <mat-icon>close</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+                </mat-menu>
+            </div>
 
         </div>
-    </div>
+    </ng-container>
 
-    
+    <ng-container *ngIf='display_comments && visitor_mode_retrieved'>
+        <div *ngFor="let item of comments_list.slice(1,number_of_comments_to_show); let i = index" class="comment">
+
+            <div class="left-container">
+                <app-comment-element
+                    [visitor_id]="visitor_id"
+                    [visitor_name]="visitor_name"
+                    [title]="title"
+                    [type_of_account]="type_of_account"
+                    [visitor_profile_picture]="profile_picture"
+                    (changed)="comment_changed();"
+                    [comment_id]=i
+                    [now_in_seconds]=now_in_seconds
+                    [comment_information]=item>
+                </app-comment-element>
+            </div>
+            
+            <div class="right-container">
+                <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                </button>
+                <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
+                    <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
+                        <mat-icon>flag</mat-icon>
+                        <span>Signaler</span>
+                    </button>
+                    <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_other_comment(i)" mat-menu-item>
+                        <mat-icon>close</mat-icon>
+                        <span>Supprimer</span>
+                    </button>
+                </mat-menu>
+            </div>
+
+        </div>
+    </ng-container>
+
 
 </div>

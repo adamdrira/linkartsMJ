@@ -6,6 +6,7 @@ import { ChatService } from '../services/chat.service';
 import { NotificationsService } from '../services/notifications.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $:any;
 
@@ -21,7 +22,41 @@ export interface reponses {
 @Component({
   selector: 'app-comment-element',
   templateUrl: './comment-element.component.html',
-  styleUrls: ['./comment-element.component.scss']
+  styleUrls: ['./comment-element.component.scss'],
+  animations: [
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateY(0)', opacity: 1}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),,
+    trigger(
+      'enterFromTop', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+    trigger(
+      'enterFromLeft', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class CommentElementComponent implements OnInit {
 
@@ -51,6 +86,7 @@ export class CommentElementComponent implements OnInit {
   @Input() comment_information:any;
   @Input() visitor_name:string;
   @Input() visitor_id:number;
+  @Input() type_of_account:string;
   @Input() visitor_profile_picture:SafeUrl;
   @Input() title:string;
   @Input() now_in_seconds:any;
@@ -67,8 +103,7 @@ export class CommentElementComponent implements OnInit {
   pseudo:string;
   authorid:number;
   //à récupérer
-  truncated_comment:String;
-  show_see_more_button:boolean = false;
+  main_comment_see_more:boolean = false;
   //récupéré
   id:number;
   comment:string;
@@ -90,6 +125,7 @@ export class CommentElementComponent implements OnInit {
   profile_picture_list_loaded= [];
   visitor_mode_list:any[]=[];
   liked_list:any[]=[];
+
   pseudo_list:any[] = [];
   author_name_list:any[] = [];
   answers_retrieved=false;
@@ -129,6 +165,7 @@ export class CommentElementComponent implements OnInit {
               id:info[0][i].id,
               comment:info[0][i].commentary,
               likesnumber:info[0][i].number_of_likes,
+              see_more:false,
               date:get_date_to_show(date_in_seconds(this.now_in_seconds,info[0][i].createdAt))
             });
             this.Profile_Edition_Service.retrieve_profile_picture(info[0][i].author_id_who_replies ).subscribe(r=> {
@@ -205,12 +242,16 @@ export class CommentElementComponent implements OnInit {
       })
     })
 
-    if( this.comment.length > 150 ) {
-      this.truncated_comment = this.comment.substring(0,150);
-      this.show_see_more_button = true;
-    }
-    
+  }
 
+  see_more_response(i) {
+    this.responses_list[i].see_more = true;
+    this.cd.detectChanges();
+  }
+
+  see_more() {
+    this.main_comment_see_more = true;
+    this.cd.detectChanges();
   }
 
   
@@ -415,8 +456,6 @@ export class CommentElementComponent implements OnInit {
   show_responses() {
     this.see_responses = true;
     this.cd.detectChanges();
-    this.resize_textareas();
-
   }
 
  
@@ -442,76 +481,83 @@ export class CommentElementComponent implements OnInit {
   
  
 
+  SHIFT_1_CLICKED=false;
   onKeydown(event) {
     //edit a commentary
 
-    if (event.key == "Enter" && this.edit_comment) {
+    if(event.key=="Shift"){
+      this.SHIFT_1_CLICKED = true;
+    }
+    if (event.key == "Enter" && !this.SHIFT_1_CLICKED && this.edit_comment) {
       if(this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
         this.set_not_editable();
 
         this.changed.emit();
-        this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value,this.id)
+        this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
             .subscribe(l=>{
               this.comment=l[0].commentary;
         });
-        this.resize_textareas();
       }
       
     }
   }
+  onKeyup(event) {
+    if(event.key=="Shift"){
+      this.SHIFT_1_CLICKED = false;
+    }
+  }
 
 
-  number_of_shift=0;
+
+
+
+  SHIFT_2_CLICKED=false;
    //edit a response
   onKeydownResponse(event, i: number) {
-   
-
+    
     if(event.key=="Shift"){
-      this.number_of_shift=1;
+      this.SHIFT_2_CLICKED =true;
     }
-    else if(event.key!="Enter"){
-      this.number_of_shift=0;
-    }
-    else if(event.key=="Enter" && this.editable_response == i){
-      if(this.number_of_shift==0){
-        if(this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
-          this.set_not_editable_response();
-          this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value,this.responses_list[i].id).subscribe(l=>{
-                console.log(l[0].commentary);
-                this.responses_list.splice(i, 1,
-                  {
-                    author_id :l[0].author_id_who_replies,
-                    id:l[0].id,
-                    comment:l[0].commentary,
-                    likesnumber:l[0].number_of_likes,
-                    date:this.responses_list[i].date,
-                  });
-                this.resize_textareas();
-                this.cd.detectChanges();
-          });
-          
-        }
+    if(event.key=="Enter" && !this.SHIFT_2_CLICKED && this.editable_response == i){
+      if(this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
+        this.set_not_editable_response();
+        this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
+              console.log(l[0].commentary);
+              this.responses_list.splice(i, 1,
+                {
+                  author_id :l[0].author_id_who_replies,
+                  id:l[0].id,
+                  comment:l[0].commentary,
+                  see_more:false,
+                  likesnumber:l[0].number_of_likes,
+                  date:this.responses_list[i].date,
+                });
+              this.cd.detectChanges();
+        });
       }
-      this.number_of_shift=0;
     }
-
     
   }
 
+  onKeyupResponse(event, i: number) {
+    if(event.key=="Shift"){
+      this.SHIFT_2_CLICKED = false;
+    }
+  }
+
+
+  SHIFT_3_CLICKED=false;
 //respond to a commentary
   onKeydownResponseToComment(event) {
+
     if(event.key=="Shift"){
-      this.number_of_shift=1;
+      this.SHIFT_3_CLICKED =true;
     }
-    else if(event.key!="Enter"){
-      this.number_of_shift=0;
-    }
-    else if(event.key=="Enter" ){
-      if(this.number_of_shift==0){
+    else if(event.key=="Enter" && !this.SHIFT_3_CLICKED ){
         if(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value!='' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length>0){
           event.preventDefault();
 
-        this.NotationService.add_answer_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.textareaRESPONSEtoCOMMENT.nativeElement.value,this.id)
+        this.NotationService.add_answer_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
           .subscribe(l=>{
            
             if(this.visitor_id!=this.authorid){
@@ -529,6 +575,7 @@ export class CommentElementComponent implements OnInit {
                       author_id :l[0].author_id_who_replies,
                       id:l[0].id,
                       comment:l[0].commentary,
+                      see_more:false,
                       likesnumber:l[0].number_of_likes,
                       date:get_date_to_show(date_in_seconds(this.now_in_seconds,l[0].createdAt))
                     });
@@ -553,7 +600,6 @@ export class CommentElementComponent implements OnInit {
                     this.chatService.messages.next(message_to_send);
                     this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
                     this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
-                    this.resize_textareas();
                     this.cd.detectChanges()
                   })
                 });
@@ -566,62 +612,35 @@ export class CommentElementComponent implements OnInit {
                   this.author_name_list.splice(0, 0,s[0].firstname + ' ' + s[0].lastname);
 
                   this.liked_list.splice(0,0,false);
+
                   this.responses_list.splice(0, 0,
                     {
                       author_id :l[0].author_id_who_replies,
                       id:l[0].id,
                       comment:l[0].commentary,
+                      see_more:false,
                       likesnumber:l[0].number_of_likes,
                       date:get_date_to_show(date_in_seconds(this.now_in_seconds,l[0].createdAt))
                     });
                     this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
                     this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
-                    this.resize_textareas();
                     this.cd.detectChanges();
                 });
             }
               
           });
-        }
       }
-      this.number_of_shift=0;
     }
    
   }
 
-  see_more() {
-    this.show_see_more_button = false;
-    this.cd.detectChanges();
-    this.resize_textareas();
-  }
-
-  resize_textareas() {
-    
-    if( this.textareaREAD ) {
-      const textArea = this.textareaREAD.nativeElement;
-      textArea.style.overflow = 'hidden';
-      textArea.style.height = '0px';
-      textArea.style.height = textArea.scrollHeight + 'px';
+  onKeyupResponseToComment(event) {
+    if(event.key=="Shift"){
+      this.SHIFT_3_CLICKED = false;
     }
-
-    this.textareaRESPONSE.toArray().forEach(element => {
-      element.nativeElement.style.overflow = 'hidden';
-      element.nativeElement.style.height = '0px';
-      element.nativeElement.style.height = element.nativeElement.scrollHeight + 'px';
-    });;
-
-    if( this.textareaRESPONSEtoCOMMENT ) {
-      const textArea2 = this.textareaRESPONSEtoCOMMENT.nativeElement;
-      textArea2.style.overflow = 'hidden';
-      textArea2.style.height = '0px';
-      textArea2.style.height = textArea2.scrollHeight + 'px';
-    }
-
   }
-
   ngAfterViewInit() {
 
-    this.resize_textareas();
   }
 
   edit_response(i:number) {
@@ -642,7 +661,6 @@ export class CommentElementComponent implements OnInit {
       this.textareaRESPONSE.toArray()[i].nativeElement.setSelectionRange(this.textareaRESPONSE.toArray()[i].nativeElement.value.length,this.textareaRESPONSE.toArray()[i].nativeElement.value.length);
     },100);
 
-    this.resize_textareas();
   }
  
   set_not_editable_response() {
@@ -662,5 +680,13 @@ export class CommentElementComponent implements OnInit {
     this.profile_picture_list_loaded[i]=true;
   }
   
+
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.authorid;
+  };
+
+  open_response_account(i:number) {
+    return "/account/"+this.pseudo_list[i]+"/"+this.responses_list[i].authorid;
+  }
 
 }

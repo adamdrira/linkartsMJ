@@ -1,141 +1,168 @@
 
-<div class="comment">
+<div class="comment-element">
     
-    <div class="left-container" [ngClass]="{'invisible':!main_pp_is_loaded}">
-        <div class="img-container">
-            <img [src]=profile_picture (load)="load_main_pp()" >
+    
+    <div class="left-container">
+
+        <div class="profile-picture" [ngClass]="{ 'dark-shiny': !main_pp_is_loaded }">
+          <img [src]="profile_picture" (load)="load_main_pp()"
+            [ngClass]="{'invisible': !main_pp_is_loaded}">
         </div>
+
     </div>
+    
 
     <div class="right-container">
 
-        <div class="comment-container">
-            <a class="author-name" href='/account/{{pseudo}}/{{authorid}}'>{{user_name}}</a>&nbsp;
+        <div class="comment">
+            <a [routerLink]=open_account()>{{user_name}}</a>
 
-            <ng-container *ngIf="show_see_more_button">
 
-                <textarea #textareaREAD (keydown)="onKeydown($event);resize_textareas();" type="text" autocomplete="off" 
-                class="textarea" [ngClass]="{'read': !edit_comment, 'write': edit_comment}" [readonly]="!edit_comment">{{truncated_comment}}[...]</textarea>
+            <textarea matInput cdkTextareaAutosize #textareaREAD 
+            type="text" 
+            (keydown)="onKeydown($event);" 
+            (keyup)="onKeyup($event)"
+            [readonly]="!edit_comment"
+            autocomplete="off"
+            [ngClass]="{'read': !edit_comment, 'write': edit_comment}">{{ (comment && comment.length > 150 && !main_comment_see_more) ? (comment | slice:0:150) + '...' : comment}}</textarea>
 
-                <!--<span>{{truncated_comment}}[...]</span>&nbsp;-->
-                <br>
-                <span (click)="see_more();" class="see-more">Voir plus ...</span>
-            </ng-container>
-
-            <ng-container *ngIf="!show_see_more_button">
-                
-                <!--<span>{{comment}}</span>&nbsp;-->
-
-                <textarea #textareaREAD (keydown)="onKeydown($event);resize_textareas();" type="text" autocomplete="off" 
-                class="textarea" [ngClass]="{'read': !edit_comment, 'write': edit_comment}" [readonly]="!edit_comment">{{comment}}</textarea>
-
-            </ng-container>
-
+            <button (click)="see_more();" class="see-more" *ngIf="comment && comment.length > 150 && !main_comment_see_more">
+                <span>Voir plus</span>
+            </button>
 
         </div>
         
-        <div  class="options-container">
-            <ng-container *ngIf="likes_checked" >
-                <div class="action">Likes</div>
-                <div class="separator">•</div>
-
-                <button [disabled]="like_in_progress" (click)="add_or_remove_like()" class="action">
-                    <div class="likesnumber">{{number_of_likes}}</div>
-                    <div class="like-icon"></div>
+        <div class="options-container">
+            <ng-container *ngIf="likes_checked">
+                <button *ngIf="like_in_progress">
+                    <mat-spinner diameter="15"></mat-spinner>
                 </button>
+                <button *ngIf="!liked && !like_in_progress" (click)="add_or_remove_like()">J'aime</button>
+                <button *ngIf="liked && !like_in_progress" (click)="add_or_remove_like()">Je n'aime plus</button>
+                <span> • {{number_of_likes}}</span>
+                <mat-icon>thumb_up</mat-icon>
             </ng-container>
-            
 
-            <div class="date-container">
+            <span class="date">
                 {{date_upload_to_show}}
-            </div>
+            </span>
         </div>
 
-        <div *ngIf="answers_retrieved" class="options-container">
-            <ng-container *ngIf="responses_list.length && !see_responses">
-                <div class="action" (click)="show_responses();">Voir les réponses ({{responses_list.length}})</div>
-            </ng-container>
-            <ng-container *ngIf="!responses_list.length && !see_responses">
-                <div class="action" (click)="show_responses();">Répondre</div>
-            </ng-container>
-            <ng-container *ngIf="see_responses">
-                <div class="action" (click)="show_less_responses();">Voir moins</div>
-            </ng-container>
-        </div>
+        <ng-container *ngIf="answers_retrieved">
+            <button class="answers-button" (click)="show_responses();" *ngIf="responses_list.length && !see_responses" [@enterAnimation]>
+                <mat-icon>expand_more</mat-icon>
+                <span>Voir les réponses ({{responses_list.length}})</span>
+            </button>
+
+            <button class="answers-button" (click)="show_responses();" *ngIf="!responses_list.length && !see_responses" [@enterAnimation]>
+                <mat-icon>expand_more</mat-icon>
+                <span>Répondre</span>
+            </button>
+
+            <button class="answers-button" (click)="show_less_responses();" *ngIf="see_responses" [@enterAnimation]>
+                <mat-icon>expand_less</mat-icon>
+                <span>Voir moins</span>
+            </button>
+        </ng-container>
         
 
 
-        <ng-container *ngIf="see_responses">
-            <div *ngFor="let item of responses_list;let i=index" class="response">
-                <div class="left-container" [ngClass]="{'invisible':!profile_picture_list_loaded[i]}">
-                    <div class="img-container">
-                        <img [src]=profile_picture_list[i] (load)="load_pp_list(i)" >
+        <div *ngIf="see_responses" [@enterAnimation]>
+
+
+            <div *ngFor="let item of responses_list;let i=index" class="response-element">
+
+
+                <div class="left-container">
+                    <div class="profile-picture" [ngClass]="{ 'dark-shiny': !profile_picture_list_loaded[i] }">
+                      <img [src]=profile_picture_list[i] (load)="load_pp_list(i)"
+                        [ngClass]="{'invisible': !profile_picture_list_loaded[i]}">
                     </div>
-                </div>
-                <div class="right-container">
+                    
                     <div class="comment-container">
-                        <a class="author-name" href='/account/{{pseudo_list[i]}}/{{item.authorid}}'>{{author_name_list[i]}}</a>&nbsp;
-            
-                        <ng-container *ngIf="!show_see_more_button">
-                            <textarea #textareaRESPONSE (keydown)="onKeydownResponse($event, i);resize_textareas();" type="text" autocomplete="off" 
-                            class="textarea" [ngClass]="{'read': editable_response!=i, 'write': editable_response==i}" [readonly]="editable_response!=i">{{item.comment}}</textarea>
+                        <div class="comment">
+                            <a [routerLink]=open_response_account(i)>{{author_name_list[i]}}</a>
 
-                            <!--<span>{{item.comment}}</span>&nbsp;-->
-                        </ng-container>
+                                <textarea matInput cdkTextareaAutosize #textareaRESPONSE 
+                                type="text" 
+                                (keydown)="onKeydownResponse($event, i);" 
+                                (keyup)="onKeyupResponse($event, i);" 
+                                [readonly]="editable_response!=i"
+                                autocomplete="off"
+                                [ngClass]="{'read': editable_response!=i, 'write': editable_response==i}">{{ (item.comment && item.comment.length > 150 && !item.see_more) ? (item.comment | slice:0:150) + '...' : item.comment}}</textarea>
 
-                    </div>
-                    <div class="options-container">
-                        <div class="action">Likes</div>
-                        <div class="separator">•</div>
-            
-                        <button [disabled]="answer_like_in_progress" (click)="add_or_remove_answer_like(i)" class="action">
-                            <div  class="likesnumber">{{item.likesnumber}}</div>
-                            <div class="like-icon"></div>
-                        </button>
-            
-                        <div class="date-container">
-                            {{item.date}}
+                                <button (click)="see_more_response(i);" class="see-more" *ngIf="item.comment && item.comment.length > 150 && !item.see_more">
+                                    <span>Voir plus</span>
+                                </button>
+
+                        </div>
+                        <div class="options-container">
+                            <ng-container *ngIf="likes_checked">
+                                <button *ngIf="answer_like_in_progress">
+                                    <mat-spinner diameter="15"></mat-spinner>
+                                </button>
+                                <button *ngIf="!liked_list[i] && !answer_like_in_progress" (click)="add_or_remove_answer_like(i)">J'aime</button>
+                                <button *ngIf="liked_list[i] && !answer_like_in_progress" (click)="add_or_remove_answer_like(i)">Je n'aime plus</button>
+                                <span> • {{item.likesnumber}}</span>
+                                <mat-icon>thumb_up</mat-icon>
+                            </ng-container>
+        
+                            <span class="date">
+                                {{item.date}}
+                            </span>
                         </div>
                     </div>
+                    
                 </div>
 
-                <button *ngIf="!visitor_mode_list[i]" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
-                    <mat-icon class="optionsButton">more_vert</mat-icon>
-                </button>
-                <mat-menu  #commentOptions="matMenu">
-                    <button class="mat-menu-item" mat-menu-item (click)="edit_response(i);"> 	
-                        <mat-icon class="item-icon">edit</mat-icon>
-                        <span>Editer</span>
-                    </button>
-                    <button class="mat-menu-item" (click)="remove_comment_answer(i)" mat-menu-item > 	
-                        <mat-icon class="item-icon" >view_carousel</mat-icon>
-                        <span>Supprimer</span>
-                    </button>
-                </mat-menu>
-
-            </div>
-
-
-            <div  class="response-input">
-                
-                <div class="left-container" [ngClass]="{'invisible':!pp_is_loaded}">
-                    <div class="img-container">
-                        <img [src]=visitor_profile_picture (load)="load_pp()" >
-                    </div>
-                </div>
+                <!--mat menu ici-->
                 <div class="right-container">
-                    <div class="comment-container">
-                        <textarea #textareaRESPONSEtoCOMMENT (keydown)="onKeydownResponseToComment($event);resize_textareas();" type="text" autocomplete="off" 
-                        class="textarea" placeholder="Ajouter une réponse ..."></textarea>
-                    </div>
+                    <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
+                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
+                        <button class="comments-button-menu-item" tabIndex="-1" (click)="edit_response(i)" mat-menu-item>
+                            <mat-icon>edit</mat-icon>
+                            <span>Editer</span>
+                        </button>
+                        <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment_answer(i)" mat-menu-item>
+                            <mat-icon>close</mat-icon>
+                            <span>Supprimer</span>
+                        </button>
+                    </mat-menu>
                 </div>
 
             </div>
 
-        </ng-container>
 
+            
+            <div class="add-response" *ngIf="type_of_account=='account'">
+
+                
+                <div class="left-container">
+                    <div class="profile-picture" [ngClass]="{ 'dark-shiny': !pp_is_loaded }">
+                        <img [src]="profile_picture" (load)="load_pp()"
+                        [ngClass]="{'invisible': !pp_is_loaded}">
+                    </div>
+                </div>
+
+                <div class="right-container">
+                    
+                    <textarea matInput cdkTextareaAutosize #textareaRESPONSEtoCOMMENT
+                    maxlength="1500"
+                    type="text" 
+                    (keydown)="onKeydownResponseToComment($event)"
+                    (keyup)="onKeyupResponseToComment($event)"
+                    placeholder="Ajouter une réponse ..."
+                    autocomplete="off"></textarea>
+
+                </div>
+            </div>
+            
+            
+
+        </div>
     </div>
-
 
     <!--{{comment_id}}
     {{user_name}}

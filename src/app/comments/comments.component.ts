@@ -8,7 +8,9 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { convert_timestamp_to_number } from '../helpers/dates';
+import { SignupComponent } from '../signup/signup.component';
 
+import { MatDialog } from '@angular/material/dialog';
 
 declare var $: any;
 
@@ -34,6 +36,7 @@ export class CommentsComponent implements OnInit {
     private NotationService:NotationService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
+    public dialog: MatDialog,
   ) { 
 
   }
@@ -45,8 +48,10 @@ export class CommentsComponent implements OnInit {
   @Input() style:string;
   @Input() publication_id:number;
   @Input() chapter_number:number;
+  @Input() commentariesnumber:number;
   @Input() number_of_comments_to_show:number;
   
+  skeleton_array:any;
   pp_is_loaded=false;
   
   @Output() new_comment = new EventEmitter<any>();
@@ -80,14 +85,19 @@ export class CommentsComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if(changes.number_of_comments_to_show){
+
+      this.skeleton_array = Array(this.number_of_comments_to_show);
       this.cd.detectChanges();
     }
   }
 
+  ngAfterViewInit() {
+    this.skeleton_array = Array(this.number_of_comments_to_show);
+  }
   ngOnInit(): void {
 
     console.log(this.type_of_account);
-    this.comment = new FormControl('');
+    this.comment = new FormControl('', [Validators.required, Validators.maxLength(1500) ]);
     this.comment_container = new FormGroup({
       comment: this.comment,
     });
@@ -172,21 +182,22 @@ export class CommentsComponent implements OnInit {
   
 
     
-  number_of_shift=0;
-  check_commentary(event){
-    console.log(event)
+  SHIFT_CLICKED=false;
+  keyup(event) {
     if(event.key=="Shift"){
-      this.number_of_shift=1;
+      this.SHIFT_CLICKED = false;
     }
-    else if(event.key!="Enter"){
-      this.number_of_shift=0;
+  }
+  keydown(event) {
+    if(event.key=="Shift"){
+      this.SHIFT_CLICKED = true;
     }
     else if(event.key=="Enter"){
-      if(this.number_of_shift==0){
+      if( !this.SHIFT_CLICKED ){
         console.log(this.comment_container.value.comment)
-        if(this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
+        if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
 
-          this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment).subscribe(r=>{
+          this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
             console.log(r[0])
             if(this.visitor_id!=this.authorid){
               this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).subscribe(l=>{
@@ -214,8 +225,8 @@ export class CommentsComponent implements OnInit {
                 this.new_comment.emit();
                 this.comment.reset();
                 this.cd.detectChanges();
-                var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
-                $('textarea.textarea-add-comment').height(totalHeight + 10);
+                //var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
+                //$('textarea.textarea-add-comment').height(totalHeight + 10);
                 })
                 this.cd.detectChanges();
                 console.log(this.my_comments_list)
@@ -225,19 +236,16 @@ export class CommentsComponent implements OnInit {
               this.new_comment.emit();
               this.display_my_comments=true;
               this.comment.reset();
-              var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
-              $('textarea.textarea-add-comment').height(totalHeight + 10);
+              //var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
+              //$('textarea.textarea-add-comment').height(totalHeight + 10);
               console.log(this.my_comments_list)
               this.cd.detectChanges();
             }
-            
              
           });
-          
+
         }
-         
       }
-      this.number_of_shift=0;
     }
   }
 
@@ -346,11 +354,6 @@ export class CommentsComponent implements OnInit {
     }
             
   }
-
-  
- 
-
-
   
   load_pp(){
     this.pp_is_loaded=true;
@@ -358,5 +361,12 @@ export class CommentsComponent implements OnInit {
     this.cd.detectChanges;
   }
   
+
+
+
+  
+  signup(){
+    const dialogRef = this.dialog.open(SignupComponent, {});
+  }
 
 }
