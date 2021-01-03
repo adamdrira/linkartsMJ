@@ -10,7 +10,7 @@
     <div class="hide-because-reported"
         *ngIf=" (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
         [ngClass]="{'really-invisible':display_evenif_reported}" [@enterAnimation]>
-        <mat-icon>flag</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
         <span>
             Contenu masqué car signalé.
             <span (click)="see_reported_content()">Cliquez pour tout de même voir.</span>
@@ -45,12 +45,12 @@
 
                 <div class="swiper--button-prev" (click)="stop($event)">
                     <div>
-                        <mat-icon>arrow_back_ios</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios</mat-icon>
                     </div>
                 </div>
                 <div class="swiper--button-next" (click)="stop($event)">
                     <div>
-                        <mat-icon>arrow_back_ios</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios</mat-icon>
                     </div>
                 </div>
             </div>
@@ -72,12 +72,12 @@
 
                     <div class="swiper--button-prev" (click)="stop($event)">
                         <div>
-                            <mat-icon>arrow_back_ios</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios</mat-icon>
                         </div>
                     </div>
                     <div class="swiper--button-next" (click)="stop($event)">
                         <div>
-                            <mat-icon>arrow_back_ios</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios</mat-icon>
                         </div>
                     </div>
                 </div>
@@ -91,20 +91,20 @@
                     <div class="figure-container views">
                         <div>
                             <span>{{viewnumber}}</span>
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <!--<div class="view-logo"></div>-->
                         </div>
                     </div>
                     <div class="figure-container likes">
                         <div>
                             <span>{{likesnumber}}</span>
-                            <mat-icon>thumb_up</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                         </div>
                     </div>
                     <div class="figure-container loves">
                         <div>
                             <span>{{lovesnumber}}</span>
-                            <mat-icon>favorite</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                         </div>
                     </div>
                 </div>
@@ -118,32 +118,32 @@
             [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved }">
             <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
                 (click)="stop($event)">
-                <mat-icon>more_vert</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
             </button>
             <mat-menu #options="matMenu" xPosition="before" class="thumbnail-artwork-menu">
                 <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
                     *ngIf="visitor_mode && !content_archived">
-                    <mat-icon class="item-icon">save_alt</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
                     <span>Archiver</span>
                 </button>
                 <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
                     *ngIf="visitor_mode && content_archived">
-                    <mat-icon class="item-icon">unarchive</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">unarchive</mat-icon>
                     <span>Désarchiver</span>
                 </button>
                 <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                     tabIndex="-1" class="thumbnail-artwork-menu-item" mat-menu-item (click)="report()">
-                    <mat-icon class="item-icon">flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                     <span>Signaler</span>
                 </button>
                 <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                     tabIndex="-1" class="thumbnail-artwork-menu-item" mat-menu-item (click)="cancel_report()">
-                    <mat-icon class="item-icon">flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
                 <button *ngIf="!visitor_mode && category!='drawing'" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                     (click)="edit_thumbnail()">
-                    <mat-icon class="item-icon">flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                     <span>Editer la miniature</span>
                 </button>
 
@@ -158,32 +158,32 @@
                 [ngClass]="{'invisible':!visitor_mode_retrieved || !data_retrieved || !archive_retrieved}">
                 <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options"
                     (click)="stop($event)">
-                    <mat-icon>more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #options="matMenu" xPosition="before" class="thumbnail-artwork-menu">
                     <button (click)="archive()" class="thumbnail-artwork-menu-item" mat-menu-item
                         *ngIf="visitor_mode && !content_archived">
-                        <mat-icon class="item-icon">save_alt</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">save_alt</mat-icon>
                         <span>Archiver</span>
                     </button>
                     <button (click)="unarchive()" class="thumbnail-artwork-menu-item" mat-menu-item
                         *ngIf="visitor_mode && content_archived">
-                        <mat-icon class="item-icon">unarchive</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">unarchive</mat-icon>
                         <span>Désarchiver</span>
                     </button>
                     <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                         class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
-                        <mat-icon class="item-icon">flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Signaler</span>
                     </button>
                     <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(user_id)>=0)"
                         class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                        <mat-icon class="item-icon">flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
                     <button *ngIf="!visitor_mode" class="thumbnail-artwork-menu-item" tabIndex="-1" mat-menu-item
                         (click)="edit_thumbnail()">
-                        <mat-icon class="item-icon">flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">flag</mat-icon>
                         <span>Modifier la miniature</span>
                     </button>
                 </mat-menu>
@@ -248,17 +248,17 @@
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200">
                     <span>{{pagesnumber}}</span>
-                    <mat-icon>insert_drive_file</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                 </div>
                 <div class="type-container" *ngIf="subscribing_category=='comic' && format=='serie'"
                 >
                     <span>{{chaptersnumber}}</span>
-                    <mat-icon matTooltip="Chapitres"
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" matTooltip="Chapitres"
                     matTooltipClass='tooltip-thumbnail-artwork' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">import_contacts</mat-icon>
                     <span>&nbsp; {{pagesnumber}}</span>
-                    <mat-icon
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"
                     matTooltip="Pages par chapitre"
                     matTooltipClass='tooltip-thumbnail-artwork' 
                     [matTooltipPosition]="'below'"
@@ -286,7 +286,7 @@
                     (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='drawing' && format=='artbook'">
                     <span>{{pagesnumber}}</span>
-                    <mat-icon>insert_drive_file</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                 </div>
 
                 <!--******************************************************-->
@@ -297,7 +297,7 @@
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event)"><span>Ecrit</span></a>
+                    (click)="stop($event)"><span>Écrit</span></a>
                 <a class="type-container" *ngIf="subscribing_category=='writing'" [routerLink]=get_link()
                 matTooltip="Voir du contenu de ce style"
                 matTooltipClass='tooltip-thumbnail-artwork' 
@@ -306,7 +306,7 @@
                     (click)="stop($event)"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="subscribing_category=='writing'">
                     <span>{{total_pages_for_writing}}</span>
-                    <mat-icon>insert_drive_file</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                 </div>
             </div>
 
@@ -354,7 +354,7 @@
                             {{author_name}}
                         </a>
 
-                        <mat-icon *ngIf="certified_account"
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
                         matTooltip="Compte certifié" 
                         matTooltipClass='tooltip-thumbnail-artwork' 
                         [matTooltipPosition]="'below'"
@@ -384,7 +384,7 @@
         <div class="preview" *ngIf="subscribing_category!='writing'" (mouseenter)="launch_swiper();"
             (mouseleave)="stop_swiper();">
             <div class="hover-to-preview fade-on-hover">
-                <mat-icon>play_circle_outline</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
             </div>
             <div class="loading-page" *ngIf="!list_of_images_to_show_retrieved">
@@ -404,7 +404,7 @@
         </div>
         <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing'" (mouseleave)="close_pdf();">
             <div class="hover-to-preview" *ngIf="show_absolute_cover" [@leaveAnimation] (mouseenter)="load_pdf();">
-                <mat-icon>play_circle_outline</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
             </div>
             <pdf-viewer class="pdf-document" [src]="pdfSrc" [autoresize]="true" [show-all]="true" [original-size]='true'

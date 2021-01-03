@@ -7,6 +7,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {Subscribing_service} from '../services/subscribing.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
+declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-user',
@@ -77,9 +78,7 @@ export class ThumbnailUserComponent implements OnInit {
   date_retrieved=false;
 
   ngOnInit(): void {
-    console.log(this.skeleton)
     if(this.item && this.item.id){
-      console.log(this.item);
       this.user_id = this.item.id;
       
       this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
@@ -96,18 +95,7 @@ export class ThumbnailUserComponent implements OnInit {
   
       
   
-      this.Profile_Edition_Service.get_current_user().subscribe(s=>{
-        if(s[0].id==this.user_id){
-          this.visitor_mode=false;
-          this.type_of_profile=s[0].status
-        }
-        this.Subscribing_service.check_if_visitor_susbcribed(this.user_id).subscribe(information=>{
-          if(information[0].value){
-            this.subscribed_to_user=true;
-          }
-          this.subscribtion_retrieved = true;
-        }); 
-      })
+ 
   
       this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
         this.author_name = r[0].firstname + ' ' + r[0].lastname;
@@ -116,22 +104,29 @@ export class ThumbnailUserComponent implements OnInit {
         this.type_of_account=r[0].type_of_account;
         this.primary_description=r[0].primary_description;
         this.extended_description=r[0].primary_description_extended;
-        this.subscribers_number=r[0].subscribers_number;
+        //this.subscribers_number=r[0].subscribers_number;  // changer la fonction pour récupérer le bon nombre de subscribings
         this.date_retrieved=true;
-        if(this.date_retrieved && this.number_of_contents_retrieved){
+        if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
           this.display_thumbnail = true;
         }
        
       });
+
+      this.Subscribing_service.get_all_subscribings_by_user_id(this.user_id).subscribe(information=>{
+        this.subscribers_number= information[0].length;
+        this.subscribtion_retrieved=true;
+        if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
+          this.display_thumbnail = true;
+        }
+      });
   
       this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
-        console.log(r[0]);
         this.number_of_comics=r[0].number_of_comics;
         this.number_of_drawings=r[0].number_of_drawings;
         this.number_of_writings=r[0].number_of_writings;
         this.number_of_ads=r[0].number_of_ads;
         this.number_of_contents_retrieved=true;
-        if(this.date_retrieved && this.number_of_contents_retrieved){
+        if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
           this.display_thumbnail = true;
         }
       })
@@ -140,6 +135,14 @@ export class ThumbnailUserComponent implements OnInit {
     
   }
 
+
+  show_icon=false;
+  ngAfterViewInit() {
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
   load_pp(){
     this.pp_is_loaded=true;

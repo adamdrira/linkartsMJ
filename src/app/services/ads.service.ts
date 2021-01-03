@@ -25,8 +25,8 @@ export class Ads_service {
   
 
 
-  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value,price_type){  
-    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,my_description:my_description,targets:targets,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
+  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value,price_type,service,price_value_service,price_type_service){  
+    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,service:service,price_value_service:price_value_service,price_type_service:price_type_service,my_description:my_description,targets:targets,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
          return information;
        }));
    }

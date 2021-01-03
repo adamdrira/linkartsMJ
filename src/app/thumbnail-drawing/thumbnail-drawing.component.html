@@ -1,65 +1,58 @@
 
-<div class="drawing-container">
+<div class="drawing-container" #drawing_container>
         
     
     <a [routerLink]=get_artwork() [ngClass]="{ 'for_news':for_news=='yes'}">
         <div #final_thumbnail class="final-thumbnail" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();" [ngClass]="{'shiny':!show_picture && !prevent_shiny}">
 
             <img [src]="thumbnail_picture" (load)="dosomething()" [ngClass]="{ 'invisible':!show_picture,'for_news':for_news=='yes'}">
-            <div class="display-on-hover" [ngClass]="{'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>
+            <div class="display-on-hover" [ngClass]="{'small-display-on-hover':small_thumbnail,'visible':showDrawingDetails,'invisible':!marks_retrieved}" *ngIf="showDrawingDetails" [@enterAnimation]>
                 
                 <!--********************-->
                 <!--Title container-->
                 <!--********************-->
-                <div class="title-container">
-                    <span class="title">{{title}}</span>
-                    <div class="artbook" *ngIf="pagesnumber && pagesnumber>=0">
-                        <mat-icon style="color:white;font-size:20px">photo_library</mat-icon>
+                <div class="title-container" [ngClass]="{'small-title-container':small_thumbnail}">
+                    <span class="title" [ngClass]="{'small-title':small_thumbnail}">{{title}}</span>
+                    <div class="artbook" [ngClass]="{'small-artbook':small_thumbnail}" *ngIf="pagesnumber && pagesnumber>=0">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="color:white;font-size:20px" >photo_library</mat-icon>
                     </div>
                 </div>
                 
                 <!--********************-->
                 <!--Author container-->
                 <!--********************-->
-                <div class="author-container">
-                    <div class="left-container"  [ngClass]="{ 'invisible':!pp_is_loaded}">
-                        <img [src]="profile_picture" (load)="pp_loaded()">
+                <div class="author-container"  [ngClass]="{'small-author-container':small_thumbnail}">
+                    <div class="left-container"  [ngClass]="{ 'small-left-container':small_thumbnail,'invisible':!pp_is_loaded}">
+                        <img [src]="profile_picture" (load)="pp_loaded()" >
                     </div>
-                    <div class="right-container">
-                        <span class="author-name">{{author_name}}</span>
-                        <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                    <div class="right-container" [ngClass]="{'small-right-container':small_thumbnail}">
+                        <span class="author-name" [ngClass]="{'small-author-name':small_thumbnail}">{{author_name}}</span>
+                        <span class="author-description" *ngIf="pseudo!=null" [ngClass]="{'small-author-description':small_thumbnail}">@{{pseudo}}</span>
                     </div>
                 </div>
                 <!--********************-->
                 <!--Data container-->
                 <!--********************-->
-                <div class="stats-container">
-                    <div class="figure-container views">
-                        <div  >
+                <div class="stats-container" [ngClass]="{'small-stats-container':small_thumbnail}">
+                    <div class="figure-container views" [ngClass]="{'small-figure-container':small_thumbnail,'small-views':small_thumbnail}">
                             <span>{{viewnumber}}</span>
-                            <mat-icon>visibility</mat-icon>
-                            <!--<div class="view-logo"></div>-->
-                        </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }"  >visibility</mat-icon>
                     </div>
-                    <div class="figure-container likes">
-                        <div  >
+                    <div class="figure-container likes" [ngClass]="{'small-figure-container':small_thumbnail,'small-likes':small_thumbnail}">
                             <span>{{likesnumber}}</span>
-                            <mat-icon>thumb_up</mat-icon>
-                        </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" >thumb_up</mat-icon>
                     </div>
-                    <div class="figure-container loves">
-                        <div  >
+                    <div class="figure-container loves" [ngClass]="{'small-figure-container':small_thumbnail,'small-likes':small_thumbnail}">
                             <span>{{lovesnumber}}</span>
-                            <mat-icon>favorite</mat-icon>
-                        </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" >favorite</mat-icon>
                     </div>
                 </div>
                 <!--********************-->
                 <!--Date container-->
                 <!--********************-->
-                <div class="date-container">
+                <!--<div class="date-container" [ngClass]="{'really-invisible':small_thumbnail}">
                     <span>{{date_upload_to_show}}</span>
-                </div>
+                </div>-->
 
             </div>
 

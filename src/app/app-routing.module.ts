@@ -45,9 +45,9 @@ const routes: Routes = [
   {path:'account/:pseudo/:id', component:AccountComponent, data: {section: 0},canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1},canActivate: [TempAuthGuard]},
 
-  /*{path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
+  {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
   {path:'account/:pseudo/:id/artworks/drawings', component:AccountComponent,  data: {section: 1, category:1}},
-  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}},*/
+  {path:'account/:pseudo/:id/artworks/writings', component:AccountComponent,  data: {section: 1, category:2}},
 
   {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2},canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5},canActivate: [TempAuthGuard]},

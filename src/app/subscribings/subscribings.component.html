@@ -1,6 +1,6 @@
 
 
-<div class="subscribings-global-container">
+<div class="subscribings-global-container" >
 
     <div class="storiesbar">
         <app-stories (send_loaded)="stories_loaded();"></app-stories>
@@ -22,8 +22,8 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf="display_contents">
-        <div *ngFor="let item of list_of_new_contents; let i = index">
+    <div *ngIf="display_contents">
+        <div *ngFor="let item of list_of_new_contents; let i = index" >
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
                     <div class="highlighted_artwork">
@@ -97,9 +97,9 @@
         </div>
     
     
-    </ng-container>
+    </div>
     
-    <ng-container *ngIf="display_contents ">
+    <div *ngIf="display_contents " >
         <div *ngFor="let item of list_of_contents; let i = index">
             <div *ngIf="item.bd_id">
                 <div *ngIf="item.chaptersnumber > 0 ">
@@ -174,10 +174,10 @@
         </div>
     
     
-    </ng-container>
+    </div>
     
     
-    <ng-container *ngIf="display_contents">
+    <div *ngIf="display_contents" >
         <ng-container *ngIf="show_more">
             <app-subscribings-see-more
                 [list_of_users]=list_of_users
@@ -185,6 +185,6 @@
                 [last_timestamp]=last_timestamp
                 ></app-subscribings-see-more>
         </ng-container>
-    </ng-container>
+    </div>
 
 </div>

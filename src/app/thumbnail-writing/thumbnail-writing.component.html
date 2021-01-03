@@ -1,6 +1,6 @@
 
 
-<div class="writing-container">
+<div class="writing-container" #writing_container>
 
         <div class="col-writing text-center">
             
@@ -46,20 +46,20 @@
                                         <div class="figure-container views">
                                             <div  >
                                                 <span>{{viewnumber}}</span>
-                                                <mat-icon>visibility</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                                 <!--<div class="view-logo"></div>-->
                                             </div>
                                         </div>
                                         <div class="figure-container likes">
                                             <div >
                                                 <span>{{likesnumber}}</span>
-                                                <mat-icon>thumb_up</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                                             </div>
                                         </div>
                                         <div class="figure-container loves">
                                             <div  >
                                                 <span>{{lovesnumber}}</span>
-                                                <mat-icon>favorite</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                                             </div>
                                         </div>
                                     </div>
@@ -70,7 +70,7 @@
                         </div>
 
                         <!--Slide verso-->
-                        <div class="swiper-slide">
+                        <div class="swiper-slide" [ngClass]="{'invisible':!imageloaded}" >
 
                             <div #thumbnailVerso class="element-writing border-verso">
                             
@@ -103,9 +103,9 @@
                                 <!--********************-->
                                 
                                 <div class="verso-type" style="display:block">
-                                    <div style="display:flex" class="tag-container" style="width: fit-content;" >
+                                    <div style="display:flex" class="tag-container" style="width: fit-content;" #tags >
                                         <span>{{total_pages}}</span>
-                                        <mat-icon>insert_drive_file</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                     </div>
                                     <div style="display:flex" *ngIf="thirdtag==null">
                                         <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>
@@ -146,9 +146,9 @@
                                 <!--********************-->
                                 <!--Date container-->
                                 <!--********************-->
-                                <div class="date-container">
+                                <!--<div class="date-container">
                                     <span>{{date_upload_to_show}}</span>
-                                </div>
+                                </div>-->
 
                             </div>
 

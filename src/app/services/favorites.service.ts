@@ -32,10 +32,22 @@ export class Favorites_service {
   }
 
   get_all_favorites_by_user(date_format,id_user,compteur){
-    return this.httpClient.post('routes/get_all_favorites_by_user',{date_format:date_format,id_user:id_user}).pipe(map((information)=>{
+    return this.httpClient.post('routes/get_all_favorites_by_user',{date_format:date_format,id_user:id_user}, {withCredentials:true}).pipe(map((information)=>{
         return [information,compteur];
       }));
   }
 
+  get_total_favorites_gains_by_user(){
+    return this.httpClient.post('routes/get_total_favorites_gains_by_user',{}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+  }
+
+
+  get_total_favorites_gains_by_users_group(list_of_ids){
+    return this.httpClient.post('routes/get_total_favorites_gains_by_users_group',{list_of_ids:list_of_ids}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+  }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, ChangeDetectorRef, ViewChildren, QueryList } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
@@ -44,7 +44,7 @@ export class ThumbnailWritingComponent implements OnInit {
 
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
-
+  @ViewChild("tags") tags: ElementRef;
   
   @Output() send_number_of_thumbnails = new EventEmitter<object>();
   @Output() sendLoaded = new EventEmitter<boolean>();
@@ -81,7 +81,7 @@ export class ThumbnailWritingComponent implements OnInit {
 
   @Input() item:any;
   @Input() now_in_seconds: number;
- 
+  @Input() width: number;
 
 
   marks_retrieved=false;
@@ -158,31 +158,38 @@ export class ThumbnailWritingComponent implements OnInit {
   }
   
 
+  show_icon=false;
   ngAfterViewInit() {
-    
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
 
     if( this.category == "Illustrated novel" ) {
       //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
+      this.rd.setStyle( this.tags.nativeElement, "background", "#ee5842" );
+      this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #ee5842" );
     }
     else if( this.category == "Roman" ) {
-      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
+      this.rd.setStyle( this.tags.nativeElement, "background", "#1a844e" );
+      this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #1a844e" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
     }
     else if( this.category == "Scenario" ) {
-
-      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
+      this.rd.setStyle( this.tags.nativeElement, "background", "#8051a7" );
+      this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #8051a7" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
     }
     else if( this.category == "Article" ) {
-
-      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
+      this.rd.setStyle( this.tags.nativeElement, "background", "#044fa9" );
+      this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #044fa9" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
     }
 
     else if( this.category == "Poetry" ) {
-
-      //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
+      this.rd.setStyle( this.tags.nativeElement, "background", "#fd3c59" );
+      this.rd.setStyle( this.tags.nativeElement, "border", " 1px solid #fd3c59" );
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg, #fd3c59, #e6a483)" );
     }
 
@@ -213,11 +220,17 @@ export class ThumbnailWritingComponent implements OnInit {
 
 
   //Drawings functions
-
+  @ViewChild('writing_container', { read: ElementRef }) writing_container:ElementRef;
   resize_writing() {
 
-    if( $('.container-writings') ) {
-      $('.writing-container').css({'width': this.get_writing_size() +'px'});
+    if(this.width){
+      //console.log(this.width)
+      //$('.comic-container').css({'width': this.get_comic_size1() +'px'});
+      this.rd.setStyle(this.writing_container.nativeElement, "width", this.get_writing_size1() + "px");
+    }
+    else if( $('.container-writings') ) {
+      //$('.writing-container').css({'width': this.get_writing_size() +'px'});
+      this.rd.setStyle(this.writing_container.nativeElement, "width", this.get_writing_size() + "px");
     }
 
   }
@@ -226,6 +239,9 @@ export class ThumbnailWritingComponent implements OnInit {
     return $('.container-writings').width()/this.writings_per_line();
   }
 
+  get_writing_size1(){
+    return this.width/this.writings_per_line1();
+  }
 
   writings_per_line() {
     var width = $('.container-writings').width();
@@ -236,6 +252,20 @@ export class ThumbnailWritingComponent implements OnInit {
       return 1;
     }
     else if(width>0){
+      this.send_number_of_thumbnails.emit({number:n});
+      return n;
+    }
+
+  }
+
+
+  writings_per_line1() {
+    var n = Math.floor(this.width/250);
+    if( this.width < 500 ) {
+      this.send_number_of_thumbnails.emit({number:1});
+      return 1;
+    }
+    else if(this.width>0){
       this.send_number_of_thumbnails.emit({number:n});
       return n;
     }

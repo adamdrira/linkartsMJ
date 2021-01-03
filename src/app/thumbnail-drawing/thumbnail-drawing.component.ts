@@ -50,12 +50,6 @@ export class ThumbnailDrawingComponent implements OnInit {
   @Output() sendLoaded = new EventEmitter<boolean>();
 
   
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if( this.for_news == "yes" ) {
-      this.resize_drawing();
-    }
-  }
 
 
 
@@ -89,13 +83,46 @@ export class ThumbnailDrawingComponent implements OnInit {
   @Input() now_in_seconds: number;
   @Input() format: string;
   @Input() prevent_shiny: boolean;
-
+  @Input() width: number;
   
 
   tagsSplit: string;
   
   marks_retrieved=false;
   @ViewChild('final_thumbnail', { read: ElementRef }) final_thumbnail:ElementRef;
+  @ViewChild('drawing_container', { read: ElementRef }) drawing_container:ElementRef;
+  small_thumbnail=false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( this.for_news == "yes" ) {
+      this.resize_drawing();
+    }
+    else{
+      if(this.width<640){
+        this.small_thumbnail=true;
+        let width=(140*(this.width/640)>110)?140*(this.width/640):110
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", width + "px");
+        if( this.height) {
+          let height = Number(this.height)*(width/200);
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", height + "px");
+        }
+      }
+      else{
+        this.small_thumbnail=false;
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", 200 + "px");
+        if(this.height ) {
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+        }
+      }
+    }
+
+    
+    
+    
+  }
+
+
 
   ngOnInit(): void {
 
@@ -112,7 +139,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.drawing_id = this.item.drawing_id;
     this.height = this.item.height;
     
-    console.log(this.height)
+
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -162,21 +189,44 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.date_upload_to_show = get_date_to_show( date_in_seconds( this.now_in_seconds, this.date_upload ) );
   }
 
+  show_icon=false;
   ngAfterViewInit() {
+
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+
     if(!this.prevent_shiny){
 
       if( this.for_news == "yes" ) {
-      this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
       }
-      else {
+      else if(this.height){
         this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
       }
+    }
+    else{
+      this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
     }
 
     if( this.for_news == "yes" ) {
       this.resize_drawing();
     }
+    else{
+      if(this.width<640){
+        this.small_thumbnail=true;
+        let width=(140*(this.width/640)>110)?140*(this.width/640):110
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "width", width + "px");
+        if(this.height){
+          let height = Number(this.height)*(width/200);
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", height + "px");
+        }
+        
+      }
+    }
   
+   
   }
 
 
@@ -213,27 +263,27 @@ export class ThumbnailDrawingComponent implements OnInit {
 
   
   resize_drawing() {
-    if( $('.container-drawings') ) {
-      //console.log("resize comics")
-      //console.log(this.get_comic_size() +'px')
-      $('.drawing-container').css({'width': this.get_drawing_size() +'px'});
+    if(this.for_news=="yes"){
+      this.rd.setStyle(this.drawing_container.nativeElement, "width", this.get_drawing_size() + "px");
     }
+   
+    
   }
+
 
   get_drawing_size() {
-    return $('.container-drawings').width()/this.drawings_per_line();
+    return this.width/this.drawings_per_line();
   }
 
+
   drawings_per_line() {
-    var width = $('.container-drawings').width();
-    var n = Math.floor(width/250);
-    if( width < 500 ) {
+    var n = Math.floor(this.width/250);
+    if( this.width < 500 ) {
       return 1;
     }
-    else if(width>0){
+    else if(this.width>0){
       return n;
     }
   }
-
 
 }

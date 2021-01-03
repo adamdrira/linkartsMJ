@@ -48,6 +48,10 @@
   //overflow-y:auto;
 }
    
+.invisible {
+  visibility: hidden;
+  pointer-events: none;
+}
 // First section
 .panel-controller {
   margin-top:30px;
@@ -179,7 +183,6 @@ mat-spinner {
 
 
 .subscribings-global-container {
-  width:900px;
   margin-left:auto;
   margin-right:auto;
 }

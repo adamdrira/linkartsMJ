@@ -26,7 +26,7 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 declare var Swiper:any;
-
+declare var $:any;
 @Component({
   selector: 'app-thumbnail-artwork',
   templateUrl: './thumbnail-artwork.component.html',
@@ -881,6 +881,14 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
   }
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+
   /******************************************** SHOW IMAGES PREVIEW  *******************************************/
   /******************************************** SHOW IMAGES PREVIEW   *******************************************/
   /******************************************** SHOW IMAGES PREVIEW   *******************************************/
@@ -904,7 +912,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
   get_images_to_show(){
-    //console.log("get_images_to_show")
+    console.log("get_images_to_show")
     //console.log(this.format)
     if(this.category=="comic"){
       let bd_id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;

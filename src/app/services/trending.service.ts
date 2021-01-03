@@ -72,6 +72,15 @@ export class Trending_service {
   }
 
   
-
+  get_total_trendings_gains_by_user(){
+    return this.httpClient.post('routes/get_total_trendings_gains_by_user',{}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+  }
   
+  get_total_trendings_gains_by_users_group(list_of_ids){
+    return this.httpClient.post('routes/get_total_trendings_gains_by_users_group',{list_of_ids:list_of_ids}, {withCredentials:true}).pipe(map((information)=>{
+        return information;
+      }));
+  }
 }

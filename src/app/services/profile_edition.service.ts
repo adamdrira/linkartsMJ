@@ -45,15 +45,22 @@ export class Profile_Edition_Service {
 
   }
 
-  retrieve_profile_and_cover_pictures(user_id: number){
-    return this.httpClient.get(`routes/retrieve_profile_and_cover_pictures/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
-      return information;
-    }));
-  }
 
 
   retrieve_profile_picture(user_id: number){
     return this.httpClient.get(`routes/retrieve_profile_picture/${user_id}`, {responseType:'blob'} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  retrieve_my_profile_picture(){
+    return this.httpClient.post('routes/retrieve_my_profile_picture', {}, {responseType:'blob',withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  retrieve_my_cover_picture(){
+    return this.httpClient.post('routes/retrieve_my_cover_picture', {}, {responseType:'blob',withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
@@ -71,7 +78,13 @@ export class Profile_Edition_Service {
   }
 
   retrieve_profile_data(user_id: number){
-    return this.httpClient.get(`routes/retrieve_profile_data/${user_id}` ).pipe(map((information)=>{
+    return this.httpClient.get(`routes/retrieve_profile_data/${user_id}`, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+  }
+
+  retrieve_profile_data_and_check_visitor(user_id: number){
+    return this.httpClient.get(`routes/retrieve_profile_data_and_check_visitor/${user_id}`, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

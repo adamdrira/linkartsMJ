@@ -24,6 +24,9 @@ export class NavbarService {
     private visibilitySubject: BehaviorSubject<boolean>;
     public visibility_observer: Observable<boolean>;
 
+    private chatSubject: BehaviorSubject<boolean>;
+    public check_using_chat: Observable<boolean>;
+
     constructor(
         private httpClient: HttpClient,
     ) {
@@ -33,8 +36,11 @@ export class NavbarService {
         this.connexionSubject = new BehaviorSubject<boolean>(true);
         this.connexion = this.connexionSubject.asObservable();
 
-        this.visibilitySubject = new BehaviorSubject<boolean>(true);
+        this.visibilitySubject = new BehaviorSubject<boolean>(false);
         this.visibility_observer = this.visibilitySubject.asObservable();
+
+        this.chatSubject = new BehaviorSubject<boolean>(false);
+        this.check_using_chat = this.chatSubject.asObservable();
     }
 
     setActiveSection(i: number) { this.active_section = i; }
@@ -56,7 +62,14 @@ export class NavbarService {
     getAccount(){ return this.account; }
     
 
-    set_using_chat(){this.using_chat=true}
+    set_using_chat(){
+      this.using_chat=true;
+      this.chatSubject.next( this.using_chat)
+    }
+    set_not_using_chat(){
+      this.using_chat=false;
+      this.chatSubject.next( this.using_chat)
+    }
     get_using_chat(){ return this.using_chat}
 
     send_connextion_status(status){

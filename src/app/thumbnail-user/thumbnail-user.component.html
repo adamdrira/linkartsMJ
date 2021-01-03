@@ -21,7 +21,7 @@
                 </div>
         
                 <div class="profile-text"  *ngIf="display_thumbnail ">
-                    <mat-icon
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"
                     matTooltip='Pseudonyme' 
                     matTooltipClass='tooltip-thumbnail-user' 
                     [matTooltipPosition]="'below'"
@@ -30,7 +30,7 @@
                 </div>
         
                 <div class="profile-text" *ngIf="display_thumbnail " >
-                    <mat-icon
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"
                     matTooltip='Profil' 
                     matTooltipClass='tooltip-thumbnail-user' 
                     [matTooltipPosition]="'below'"
@@ -39,11 +39,11 @@
                 </div>
                 
                 <div class="profile-text" *ngIf="subscribers_number == 1 && display_thumbnail">
-                    <mat-icon>group</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                     <span>1 abonné</span>
                 </div>
                 <div class="profile-text" *ngIf="subscribers_number > 1 && display_thumbnail">
-                    <mat-icon>group</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                     <span>{{subscribers_number}} abonnés</span>
                 </div>
                 <div class="profile-text" *ngIf="display_thumbnail && (number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 0)"
@@ -51,7 +51,7 @@
                 matTooltipClass='tooltip-thumbnail-user' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="0">
-                    <mat-icon>palette</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
                     <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads == 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publication</span>
                     <span *ngIf="number_of_comics + number_of_drawings + number_of_writings + number_of_ads > 1">{{number_of_comics + number_of_drawings + number_of_writings + number_of_ads}} publications</span>
                 </div>

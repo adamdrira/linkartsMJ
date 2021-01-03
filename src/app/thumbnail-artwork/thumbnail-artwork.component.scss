@@ -97,6 +97,8 @@
             height:unset;
             color: rgb(32,56,100);
             font-size: 20px;
+            max-width:20px;
+        overflow: hidden;
             margin: auto auto 0px auto;
         }
         > span {
@@ -143,32 +145,32 @@
         align-items: center;
         min-width: 52px;
         color: white;
-
-        &.likes {
-            border: 1px solid white;
-        }
-        &.views {
-            border: 1px solid white;
-        }
-        &.loves {
-            border: 1px solid white;
-        }
+        border-bottom:1px solid #4bc7ff;
         &.views mat-icon {
             height: unset;
             width: unset;
             font-size: 14px;
+            max-width:14px;
+        overflow: hidden;
+            color: #f9f9f9;
             margin: 3px auto auto 5px;
         }
         &.likes mat-icon {
             height: unset;
             width: unset;
+            color: #7ed7ff;
             font-size: 14px;
+            max-width:14px;
+            overflow: hidden;
             margin: 3px auto auto 5px;
         }
         &.loves mat-icon {
             height: unset;
             width: unset;
             font-size: 14px;
+            max-width:14px;
+            overflow: hidden;
+            color: #e41919;
             margin: 3px auto auto 4px;
         }
         > div {
@@ -272,79 +274,7 @@
         }
     }
 
-    .global-container > .rank.gold span {
-        //color: linear-gradient(-280deg,#eee142,#ffbb23);
-        //text-shadow: 0px 0px 5px #906500;
-    }
-
-    .global-container > .rank.silver span {
-        //color: linear-gradient(-280deg, #e6e6e6, #a4a4a4);
-        //text-shadow: 0px 0px 5px #696969;
-    }
-
-    .global-container > .rank.bronze span {
-        //color: linear-gradient(-280deg, #ffb48a, #f27025);
-        //text-shadow: 0px 0px 5px #b96464;
-    }
-
-    .global-container > .rank.other span {
-        //color: linear-gradient(-280deg, #78b2ea, #203864);
-        //text-shadow: 0px 0px 5px #050e2d;
-        //background: -webkit-linear-gradient(45deg, #5b89de, #05235a 80%);
-        //-webkit-background-clip: text;
-        //-webkit-text-fill-color: transparent;
-    }
-    /*
-    .global-container > .right-container .name .buttons-container {
-        display: flex;
-        margin-left: auto;
-        align-items: center;
-    }
-
-    .global-container > .right-container .name .buttons-container button {
-        margin: 10px auto;
-        outline: none !important;
-        width: 150px;
-        min-width: 150px;
-        padding: 0px 18px;
-        color: #ffffff;
-        font-weight: bold;
-        border-radius: 30px !important;
-        background: #203864 !important;
-    }
-
-    .mat-menu-item {
-        outline:none !important;
-    }
-
-
-    .global-container > .right-container .name .buttons-container button mat-icon {
-        margin:auto 5px auto auto !important;
-        font-size: 32px;
-        width: unset;
-        height: unset;
-    }
-
-    .global-container > .right-container .name .buttons-container button > span {
-        margin:auto auto auto 5px;
-    }
-
-    .global-container > .right-container .name .button0 {
-        width: 24px;
-        height: 24px;
-        margin:auto auto;
-        background-color: black;
-        -webkit-mask:  url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
-        mask: url("../../assets/img/svg/paper-plane.svg") no-repeat 50% 50%;
-    }
-    .global-container > .right-container .name .button1 {
-        width: 24px;
-        height: 24px;
-        margin:auto auto;
-        background-color: black;
-        -webkit-mask:  url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
-        mask: url("../../assets/img/svg/dragdrop.svg") no-repeat 50% 50%;
-    }*/
+ 
 
     .author-container {
         display: flex;
@@ -390,6 +320,8 @@
                 mat-icon {
                     color: #4bc7ff;
                     height: 20px;
+                    max-width:18px;
+            overflow: hidden;
                     width: unset;
                     vertical-align: middle;
                     font-size: 18px;
@@ -444,6 +376,8 @@
             }
             mat-icon {
                 font-size: 12px;
+                max-width:12px;
+            overflow: hidden;
                 margin-left: 3px;
                 width: unset !important;
                 height: unset !important;
@@ -531,6 +465,8 @@
         transition: opacity 100ms;
         mat-icon {
             font-size: 26px;
+            max-width:26px;
+            overflow: hidden;
             color: #203864;
             width: unset;
             height: unset;
@@ -741,6 +677,8 @@
         }
         mat-icon {
             font-size: 20px;
+            max-width:20px;
+            overflow: hidden;
             width: unset;
             height: unset;
             color: rgb(32, 56, 100);
@@ -813,6 +751,8 @@
             margin: auto;
             color: #ffffffcc;
             font-size: 17px;
+            max-width:17px;
+            overflow: hidden;
             transform: rotate(180deg);
         }
         &.swiper-button-disabled {
@@ -820,6 +760,8 @@
                 background: #20386447;
                 mat-icon {
                     color: #ffffffba;
+                    max-width:24px;
+                    overflow: hidden;
                 }
             }
         }
@@ -855,6 +797,8 @@
             margin: auto;
             color: #ffffffcc;
             font-size: 17px;
+            max-width:17px;
+            overflow: hidden;
         }
         &.swiper-button-disabled {
             div {
@@ -895,6 +839,8 @@
                 }
                 mat-icon {
                     font-size: 12px;
+                    max-width:12px;
+                    overflow: hidden;
                     margin-left: 3px;
                     line-height: 9px;
                     width: unset !important;
@@ -951,6 +897,8 @@
                 width: unset !important;
                 height: unset !important;
                 font-size: 18px !important;
+                max-width:18px;
+            overflow: hidden;
                 color: rgb(32, 56, 100) !important;
             }
 

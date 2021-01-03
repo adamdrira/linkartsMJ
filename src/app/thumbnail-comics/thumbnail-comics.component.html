@@ -1,6 +1,6 @@
 
 
-<div class="comic-container">
+<div class="comic-container" #comic_container>
 
 
         <div class="col-book text-center" >
@@ -48,20 +48,20 @@
                                                 <div class="figure-container views">
                                                     <div>
                                                         <span>{{viewnumber}}</span>
-                                                        <mat-icon>visibility</mat-icon>
+                                                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                                         <!--<div class="view-logo"></div>-->
                                                     </div>
                                                 </div>
                                                 <div class="figure-container likes">
                                                     <div>
                                                         <span>{{likesnumber}}</span>
-                                                        <mat-icon>thumb_up</mat-icon>
+                                                        <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                                                     </div>
                                                 </div>
                                                 <div class="figure-container loves">
                                                     <div >
                                                         <span>{{lovesnumber}}</span>
-                                                        <mat-icon>favorite</mat-icon>
+                                                        <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                                                     </div>
                                                 </div>
                                             </div>
@@ -73,7 +73,7 @@
 
 
                             <!--Slide verso-->
-                            <div class="swiper-slide">
+                            <div class="swiper-slide" [ngClass]="{'invisible':!imageloaded}" >
                             
                                     <div #thumbnailVerso class="element-book border-verso">
                                     
@@ -98,19 +98,19 @@
                                         <div class="verso-type" style="display:block">
                                             <!--&bull;-->
                                             <div style="display:flex" *ngIf="format=='one-shot'">
-                                                <div class="tag-container"><span>One shot</span></div>
-                                                <div class="tag-container">
+                                                <div class="tag-container" #tags><span>One shot</span></div>
+                                                <div class="tag-container" #tags>
                                                     <span>{{pagesnumber}}</span>
-                                                    <mat-icon>insert_drive_file</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                                 </div>
                                             </div>
                                             <div style="display:flex" *ngIf="format!='one-shot'">
-                                                <div class="tag-container"><span>Série</span></div>
-                                                <div class="tag-container">
+                                                <div class="tag-container" #tags><span>Série</span></div>
+                                                <div class="tag-container" #tags>
                                                     <span>{{chaptersnumber}}</span>
-                                                    <mat-icon>import_contacts</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">import_contacts</mat-icon>
                                                     <span>&nbsp; {{pagesnumber}}</span>
-                                                    <mat-icon>insert_drive_file</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                                 </div>
                                             </div >
                                             
@@ -142,8 +142,8 @@
                                         <!--********************-->
                                         <!--Date container-->
                                         <!--********************-->
-                                        <div class="date-container" [ngClass]="{'invisible':!recent_chapter_retrieved && format=='serie'}">
-                                            <span>{{date_upload_to_show}}</span>
+                                        <div *ngIf="recent_chapter" class="date-container" [ngClass]="{'invisible':!recent_chapter_retrieved && format=='serie'}">
+                                            <!--<span>{{date_upload_to_show}}</span>-->
                                             <span *ngIf="recent_chapter"> &nbsp; Nouveau chapitre !</span>
                                         </div>
 

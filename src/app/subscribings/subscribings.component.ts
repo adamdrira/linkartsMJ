@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, HostListener, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
@@ -57,10 +57,9 @@ export class SubscribingsComponent implements OnInit {
   list_of_new_users:any[]=[];
   list_of_new_contents:any[]=[];
   list_of_new_contents_sorted:boolean=false;
-
+ 
   now_in_seconds:number;
   last_timestamp:string;
-
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
     if((this.list_of_new_contents_sorted && this.list_of_new_contents.length>0) || (this.list_of_contents_sorted && this.list_of_contents.length>0)){
@@ -79,6 +78,9 @@ export class SubscribingsComponent implements OnInit {
     }
     
   }
+
+ 
+ 
 
   ngOnInit() {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
