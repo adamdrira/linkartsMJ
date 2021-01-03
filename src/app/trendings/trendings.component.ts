@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, SimpleChange, ChangeDetectorRef } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
@@ -62,7 +62,8 @@ export class TrendingsComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
-    private Trending_service:Trending_service
+    private Trending_service:Trending_service,
+    private cd:ChangeDetectorRef,
 
     ) { }
 
@@ -83,10 +84,19 @@ export class TrendingsComponent implements OnInit {
   writings_trendings_sorted:any[]=[];
   writings_trendings_length:number=0;
   writings_trendings_sorted_confirmation:boolean=false;
-
   active_section=1;
   now_in_seconds:number= Math.trunc( new Date().getTime()/1000);
   section_chosen=false;
+
+  @Input('status') status: any;
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.status) {
+      console.log(this.status)
+      this.cd.detectChanges();
+    }
+  }
+  
+
   ngOnInit() {
 
     console.log(this.route.snapshot.data['section'])
@@ -388,6 +398,7 @@ export class TrendingsComponent implements OnInit {
           }
           if(type=="comic"){
             this.comics_trendings_sorted_confirmation=true;
+            this.cd.detectChanges();
             for(let j=0;j<list.length;j++){
               this.send_notification("comic",list[j],j+1)
             }
@@ -395,6 +406,7 @@ export class TrendingsComponent implements OnInit {
           }
           if(type=="drawings"){
             this.drawings_trendings_sorted_confirmation=true;
+            this.cd.detectChanges();
             for(let j=0;j<list.length;j++){
               this.send_notification("drawing",list[j],j+1)
             }
@@ -402,6 +414,7 @@ export class TrendingsComponent implements OnInit {
           }
           if(type=="writings"){
             this.writings_trendings_sorted_confirmation=true;
+             this.cd.detectChanges();
             for(let j=0;j<list.length;j++){
               this.send_notification("writing",list[j],j+1)
             }
