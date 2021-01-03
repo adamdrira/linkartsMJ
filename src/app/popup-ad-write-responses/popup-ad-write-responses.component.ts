@@ -1,11 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Ads_service} from '../services/ads.service';
 import {NotificationsService} from '../services/notifications.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {ChatService} from '../services/chat.service';
 import { Router } from '@angular/router';
+
+import { pattern } from '../helpers/patterns';
 
 @Component({
   selector: 'app-popup-ad-write-responses',
@@ -37,10 +39,10 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   id_ad_response:number=0;
   begin_download_attachments=false;
   display_loading=false;
-  show_error:boolean = false;
   
   createFormControlsAds() {
-    this.response = new FormControl('')}
+    this.response = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+  }
 
   createFormAd() {
     this.response_group = new FormGroup({
@@ -48,7 +50,6 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     });
   }
 
- 
 
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
@@ -91,11 +92,10 @@ export class PopupAdWriteResponsesComponent implements OnInit {
   send_response(){
 
     if( !this.response_group.valid ) {
-      this.show_error = true;
       return;
     }
     
-    this.Ads_service.add_ad_response(this.data.item.id,this.response_group.value.response).subscribe(r=>{
+    this.Ads_service.add_ad_response(this.data.item.id,this.response_group.value.response.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
       this.id_ad_response=r[0].id
       this.begin_download_attachments=true;
       this.display_loading=true;

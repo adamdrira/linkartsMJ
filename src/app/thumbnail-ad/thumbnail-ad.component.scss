@@ -101,19 +101,7 @@
     font-weight: bold;
     align-items: center;
     text-align: left;
-
-    > span {
-      line-height: 22px;
-      font-size: 15px;
-      margin-right: 30px;
-      word-break: break-word;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: normal;
-      -webkit-line-clamp: 1;
-    }
+    
   }
 
   .top-container-2 {

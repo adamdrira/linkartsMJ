@@ -1,108 +1,135 @@
-
+$default-color: rgb(218,220,225);
 @import '../../material-styles.css';
 
 
-.uplaoder-container{
-    position: relative;
-    margin: 40px auto 30px auto;
-}
-
-.my-drop-zone { border: dotted 3px lightgray; }
-    .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
-    .another-file-over-class { border: dotted 3px green; }
-
 .button-container {
     width:100%;
-    margin-bottom: 20px;
+    margin-top:20px;
+    margin-bottom:20px;
     display:flex;
+
 }
 
 .button-container label {
     width:100%;
-    height:50px;
+    position:relative;
+
+    transition:transform 200ms;
+    &:active {
+        transform: scale(0.98);
+    }
 }
 
-
-.upload-picture {
-    display:flex;
+.button-container label .uploader-absolute-number {
+    position: absolute;
     cursor:pointer;
-    margin:auto auto;
-    padding:10px 15px 10px 15px;
-    background:rgb(240, 240, 240);
-    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.26);
-    border-radius:10px;
-    border:1px solid rgb(219, 219, 219);
-}
-
-.upload-picture:hover {
-    background:rgb(236, 236, 236);
-    box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    right: 20px;
+    font-size: 16px;
+    top: 50%;
+    transform: translate(0, -50%);
+    color: #8392b5;
 }
 
 
-.upload-picture .add-logo {
-    cursor:pointer;
-    height: 20px;
-    margin: auto 10px auto auto;
-    width: 20px;
-    background-color: rgb(44, 44, 44);
-    -webkit-mask:  url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/more.svg") no-repeat 50% 50%;
+.select-button {    
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 18px;
+    justify-content: center;
+    align-items: center;
+    background: #203864;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    padding: 10px 50px 10px 50px;
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    color: #203864;
+    border-radius: 30px;
+    transition: background-color 200ms;
+
+    mat-icon {
+        width:unset;
+        height:unset;
+        font-size:28px;
+        color:$default-color;
+        margin-right: 10px;
+    }
+    span {
+        color:$default-color;
+        font-size: 14px;
+    }
 }
 
-.upload-picture span {
-    cursor:pointer;
-    margin: auto auto auto 10px;
-}
 
 .attachments {
     width:100%;
-    max-height:230px;
+    display:flex;
+    flex-wrap:wrap;
+    max-height:300px;
     overflow-y:auto;
 }
 
 .attachment-container {
-    display:flex;
-    justify-content: space-between;
-    width:100%;
-    height:60px;
-    margin-top:10px;
-    margin-bottom:10px;
-    padding-left: 10px;
-    padding-right: 10px;
+    width:95px;
+    position: relative;
+    margin: 25px 20px 10px 0px;
+    text-align: center;
 }
-
-.attachment-container .left-container {
-    width:200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: default;
-}
-
-.attachment-container span {
-    align-self: center;
-}
-
-.attachment-container > div {
-    place-self: center;
-}
-
 
 .attachment-container .attachment-picture {
-    height: 100%;
+    position:relative;
+    display: flex;
     width: 100%;
-    max-width: 100px;
-    margin-left: 10px;
-    margin-right: 10px;
+    height: 95px;
+    margin-bottom: 7px;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #203864;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+    overflow: hidden;
+}
+
+.attachment-container .attachment-picture > mat-icon {
+    margin:auto auto;
+    font-size: 35px;
+    color: $default-color;
+    width:unset !important;
+    height:unset !important;
 }
 
 .attachment-container .attachment-picture img {
-    vertical-align: middle;
-    border-style: none;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    border-radius: 5px;
-    border: 2px solid rgb(209, 224, 251);
+    object-fit: cover;
+    border-radius: 30px;
+}
+
+.attachment-container > button {
+    position:absolute;
+    z-index: 1;
+    right:-10px;
+    top:-10px;
+    outline:none !important;
+    background: rgb(71, 94, 136, 0.8);
+    border-radius: 50%;
+}
+
+.attachment-container > button mat-icon {
+    margin:auto auto;
+    color:white;
+}
+
+.attachment-container > span {
+    color:$default-color;
+    font-size: 12px;
+    margin: auto auto;
+    display: -webkit-box;
+    width: 100%;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 1;
+    word-break: break-all;
 }
