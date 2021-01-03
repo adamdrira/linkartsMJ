@@ -693,8 +693,6 @@
             //O.is_floating = true if window width is < specified float width
             O.is_floating = $(window).width() <= settings.floatWidth;
   
-            //set class isFloating
-            O.optDiv.toggleClass('isFloating', O.is_floating);
   
             //remove height if not floating
             if (!O.is_floating) O.optDiv.css('height', '');
