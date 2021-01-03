@@ -2,6 +2,16 @@
 @import '../../material-styles.css';
 
 
+.invisible{
+  visibility:hidden;
+}
+
+.material-icons{
+  transition:opacity 200ms;
+  max-width: 24px;
+  overflow: hidden;
+}
+
 .status {
   position:absolute;
   height:7px;

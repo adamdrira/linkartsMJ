@@ -2,11 +2,11 @@
 <div class="panel-background">
     <div class="logos-container" *ngIf="profile_data_retrieved" #target [@enterFromTopAnimation]>
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
-            <mat-icon>account_circle</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
             <span>Profil</span>
         </button>
         <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
-            <mat-icon>bar_chart</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">bar_chart</mat-icon>
             <span>Statistiques</span>
         </button>
     </div>
@@ -80,14 +80,14 @@
             <div class="title">
                 <span>Ma présentation</span>
                 <button class="accountAboutAbsoluteButton" (click)="cancel_form_1()" *ngIf="registerForm1_activated && !visitor_mode">
-                    <mat-icon>cancel</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
                 </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout0" *ngIf="!registerForm1_activated && !visitor_mode">
-                    <mat-icon>more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #accountAbout0="matMenu" xPosition='before' class="account-title-mat-menu">
                     <button (click)="edit_form_1()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon>create</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
                         <span>Modifier</span>
                     </button>
                 </mat-menu>
@@ -192,23 +192,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity2" *ngIf="!visitor_mode && list_of_privacy[1]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity2="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='private'" (click)="change_information_privacy_public(1)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='public'" (click)="change_information_privacy_private(1)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -251,23 +251,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity3" *ngIf="!visitor_mode && list_of_privacy[4]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity3="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[4]=='private'" (click)="change_information_privacy_public(4)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[4]=='public'" (click)="change_information_privacy_private(4)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -308,23 +308,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity4" *ngIf="!visitor_mode && list_of_privacy[5]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity4="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[5]=='private'" (click)="change_information_privacy_public(5)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[5]=='public'" (click)="change_information_privacy_private(5)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -355,7 +355,7 @@
 
 
             <button class="validate-form-button" *ngIf="registerForm1_activated && !visitor_mode" (click)="validate_form_1();" [@enterAnimation]>
-                <mat-icon *ngIf="!loading_validation_form_1">done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_1">done_all</mat-icon>
                 <span *ngIf="!loading_validation_form_1">Valider</span>
                 <div *ngIf="loading_validation_form_1 " class="loading-page-form">
                     <mat-spinner diameter="20"></mat-spinner>
@@ -377,14 +377,14 @@
                 <span>En savoir plus</span>
                 
                 <button class="accountAboutAbsoluteButton" (click)="cancel_form_2()" *ngIf="registerForm2_activated && !visitor_mode">
-                    <mat-icon>cancel</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
                 </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout1" *ngIf="!registerForm2_activated && !visitor_mode">
-                    <mat-icon>more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #accountAbout1="matMenu" xPosition='before' class="account-title-mat-menu">
                     <button (click)="edit_form_2()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon>create</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
                         <span>Modifier</span>
                     </button>
                 </mat-menu>
@@ -446,23 +446,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity5" *ngIf="!visitor_mode && list_of_privacy[2]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity5="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[2]=='private'" (click)="change_information_privacy_public(2)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[2]=='public'" (click)="change_information_privacy_private(2)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -493,7 +493,7 @@
 
 
             <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
-                <mat-icon *ngIf="!loading_validation_form_2">done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_2">done_all</mat-icon>
                 <span *ngIf="!loading_validation_form_2">Valider</span>
                 <div *ngIf="loading_validation_form_2 " class="loading-page-form">
                     <mat-spinner diameter="20"></mat-spinner>
@@ -563,11 +563,11 @@
                             </div>
     
                             <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0" *ngIf="registerForm2_activated">
-                                <mat-icon>more_vert</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                             </button>
                             <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="account-title-mat-menu">
                                 <button class="account-title-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                    <mat-icon>close</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                     <span>Supprimer</span>
                                 </button>
                             </mat-menu>
@@ -601,7 +601,7 @@
                             </mat-form-field>
                         </div>
                         <button class="aboutLinkButton" (click)="add_link();" *ngIf="registerForm2_activated">
-                            <mat-icon>add</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                         </button>
                     </div>
                 </div>
@@ -622,14 +622,14 @@
             <div class="title">
                 <span>Mon identité</span>
                 <button class="accountAboutAbsoluteButton" (click)="cancel_form_3()" *ngIf="registerForm3_activated && !visitor_mode">
-                    <mat-icon>cancel</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cancel</mat-icon>
                 </button>
                 <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout2" *ngIf="!registerForm3_activated && !visitor_mode">
-                    <mat-icon>more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                 </button>
                 <mat-menu #accountAbout2="matMenu" xPosition='before' class="account-title-mat-menu">
                     <button (click)="edit_form_3()" class="account-title-menu-item" mat-menu-item > 	
-                        <mat-icon>create</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">create</mat-icon>
                         <span>Modifier</span>
                     </button>
                 </mat-menu>
@@ -699,23 +699,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity0" *ngIf="!visitor_mode && list_of_privacy[1]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity0="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='private'" (click)="change_information_privacy_public(1)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[1]=='public'" (click)="change_information_privacy_private(1)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -744,23 +744,23 @@
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                     </button>
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity1" *ngIf="!visitor_mode && list_of_privacy[3]=='private'"
                     matTooltip="Information privée"
                     matTooltipClass='tooltip-account-about-profile' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="0">
-                        <mat-icon>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                     </button>
 
                     <mat-menu #accountAboutVisiblity1="matMenu" xPosition='before' class="account-title-mat-menu">
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[3]=='private'" (click)="change_information_privacy_public(3)"> 	
-                            <mat-icon>visibility</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                             <span>Rendre public</span>
                         </button>
                         <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[3]=='public'" (click)="change_information_privacy_private(3)"> 	
-                            <mat-icon>visibility_off</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                             <span>Rendre privé</span>
                         </button>
                     </mat-menu>
@@ -771,7 +771,7 @@
                         <mat-label>Date de naissance</mat-label>
                         <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
                         <mat-datepicker-toggle matSuffix [for]="picker">
-                        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                         </mat-datepicker-toggle>
                         <mat-error *ngIf="registerForm3.controls['birthday'].invalid">Veuillez saisir une date de naissance valide</mat-error>
                         <mat-datepicker #picker disabled="false" panelClass="account-about-datepicker" startView="multi-year"></mat-datepicker>
@@ -789,7 +789,7 @@
 
 
             <button class="validate-form-button" *ngIf="registerForm3_activated && !visitor_mode" (click)="validate_form_3();" [@enterAnimation]>
-                <mat-icon *ngIf="!loading_validation_form_3">done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_3">done_all</mat-icon>
                 <span *ngIf="!loading_validation_form_3">Valider</span>
                 <div *ngIf="loading_validation_form_3" class="loading-page-form">
                     <mat-spinner diameter="20"></mat-spinner>
@@ -821,7 +821,7 @@
  
                 <div class="account-form-container">
                     <div class="no-data-container" >
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>
                                 Les statistiques de ce compte sont indisponibles pour le moment. 
                             </span>
@@ -842,12 +842,12 @@
                         <span>Tendances</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout3" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[6]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[6]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[6]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[6]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -855,11 +855,11 @@
                         </button>
                         <mat-menu #accountAbout3="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[6]=='private'" (click)="change_information_privacy_public(6)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[6]=='public'" (click)="change_information_privacy_private(6)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -877,7 +877,7 @@
                     </div>
                     <div class="no-data-container" *ngIf="!trendings_found">
                         <ng-container *ngIf="trendings_loaded && !visitor_mode">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>
                                 Vous n'avez aucune œuvre en tendances sur cette période. 
                             </span>
@@ -889,15 +889,15 @@
         
                     <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de bandes dessinées en tendances : <b>{{number_of_comics_trendings}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de tendances dessins en tendances : <b>{{number_of_drawings_trendings}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total d'écrits en tendances : <b>{{number_of_writings_trendings}}</b></span>
                         </div>
                     </div>
@@ -959,12 +959,12 @@
                         <span>Annonces</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout4" *ngIf="!visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[7]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[7]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[7]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[7]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -972,11 +972,11 @@
                         </button>
                         <mat-menu #accountAbout4="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[7]=='private'" (click)="change_information_privacy_public(7)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[7]=='public'" (click)="change_information_privacy_private(7)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -997,7 +997,7 @@
                     </div>
                     <div class="no-data-container" *ngIf="!list_of_ads_loaded">
                         <ng-container *ngIf="list_of_ads_retrieved">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span *ngIf="!visitor_mode">
                                 Vous n'avez publié aucune annonce sur cette période.
                             </span>
@@ -1015,19 +1015,19 @@
 
                     <div class="stats-number-container" *ngIf="list_of_ads_retrieved && list_of_ads_loaded">
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total d'annonces publiées : <b>{{number_of_ads}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Réponses à ces annonces depuis toujours : <b>{{number_of_ads_answers}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Personnes ayant consulté ces annonces depuis toujours : <b>{{number_of_ads_views}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Commentaires publiés sur ces annonces depuis toujours : <b>{{number_of_ads_comments}}</b></span>
                         </div>
                     </div>
@@ -1039,7 +1039,7 @@
                     <div [ngClass]="{'invisible':!sumo_for_ads_ready || !list_of_ads_retrieved || !list_of_ads_loaded}">
                         
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre de visiteurs par annonce</span>
                         </div>
 
@@ -1096,12 +1096,12 @@
                         <span>Bandes dessinées</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout5" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[8]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[8]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[8]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[8]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -1109,11 +1109,11 @@
                         </button>
                         <mat-menu #accountAbout5="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[8]=='private'" (click)="change_information_privacy_public(8)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[8]=='public'" (click)="change_information_privacy_private(8)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -1133,7 +1133,7 @@
 
                     <div class="no-data-container" *ngIf="!list_of_comics_loaded">
                         <ng-container *ngIf="list_of_comics_retrieved">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span *ngIf="!visitor_mode">
                                 Vous n'avez publié aucune bande dessinée sur cette période.
                             </span>
@@ -1149,23 +1149,23 @@
 
                     <div class="stats-number-container" *ngIf="list_of_comics_retrieved && list_of_comics_loaded">
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de BD publiées : <b>{{number_of_comics}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de vues depuis toujours : <b>{{number_of_comics_views}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'aime depuis toujours : <b>{{number_of_comics_likes}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'adore depuis toujours : <b>{{number_of_comics_loves}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de commentaires depuis toujours : <b>{{number_of_comics_comments}}</b></span>
                         </div>
                     </div>
@@ -1176,7 +1176,7 @@
                     <!------------>
                     <div  [ngClass]="{'invisible':!sumo_for_comics_ready || !list_of_comics_retrieved || !list_of_comics_loaded}">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Statistiques par B.D.</span>
                         </div>
                         <div class="dropdowns-container"  >
@@ -1229,12 +1229,12 @@
                         <span>Dessins</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout6" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[9]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[9]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[9]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[9]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -1242,11 +1242,11 @@
                         </button>
                         <mat-menu #accountAbout6="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[9]=='private'" (click)="change_information_privacy_public(9)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[9]=='public'" (click)="change_information_privacy_private(9)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -1266,7 +1266,7 @@
 
                     <div class="no-data-container" *ngIf="!list_of_drawings_loaded">
                         <ng-container *ngIf="list_of_drawings_retrieved">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span *ngIf="!visitor_mode">
                                 Vous n'avez publié aucun dessin sur cette période.
                             </span>
@@ -1282,23 +1282,23 @@
 
                     <div class="stats-number-container" *ngIf="list_of_drawings_retrieved && list_of_drawings_loaded">
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de dessins publiés : <b>{{number_of_drawings}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de vues depuis toujours : <b>{{number_of_drawings_views}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'aime depuis toujours : <b>{{number_of_drawings_likes}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'adore depuis toujours : <b>{{number_of_drawings_loves}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de commentaires depuis toujours : <b>{{number_of_drawings_comments}}</b></span>
                         </div>
                     </div>
@@ -1310,7 +1310,7 @@
                     <!------------>
                     <div [ngClass]="{'invisible':!sumo_for_drawings_ready || !list_of_drawings_retrieved || !list_of_drawings_loaded}">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Statistiques par dessin et artbook</span>
                         </div>
                         <div class="dropdowns-container"  >
@@ -1362,15 +1362,15 @@
                 <div class="account-title-container">
                     <!--TITRE + BOUTON EDITER/CACHER-->
                     <div class="title">
-                        <span>Ecrits</span>
+                        <span>Écrits</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout7" *ngIf=" !visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[10]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[10]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[10]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[10]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -1378,11 +1378,11 @@
                         </button>
                         <mat-menu #accountAbout7="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[10]=='private'" (click)="change_information_privacy_public(10)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[10]=='public'" (click)="change_information_privacy_private(10)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -1402,7 +1402,7 @@
 
                     <div class="no-data-container" *ngIf="!list_of_writings_loaded">
                         <ng-container *ngIf="list_of_writings_retrieved">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span *ngIf="!visitor_mode">
                                 Vous n'avez publié aucun écrit sur cette période.
                             </span>
@@ -1418,23 +1418,23 @@
 
                     <div class="stats-number-container" *ngIf="list_of_writings_retrieved && list_of_writings_loaded">
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total d'écrits publiés : <b>{{number_of_writings}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de vues depuis toujours : <b>{{number_of_writings_views}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'aime depuis toujours : <b>{{number_of_writings_likes}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de mentions j'adore depuis toujours : <b>{{number_of_writings_loves}}</b></span>
                         </div>
                         <div>
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Nombre total de commentaires depuis toujours : <b>{{number_of_writings_comments}}</b></span>
                         </div>
                     </div>
@@ -1446,7 +1446,7 @@
                     <!------------>
                     <div [ngClass]="{'invisible':!sumo_for_writings_ready || !list_of_writings_retrieved || !list_of_writings_loaded}">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Statistiques par écrit</span>
                         </div>
                         
@@ -1498,12 +1498,12 @@
                         <span>Profil</span>
                         
                         <button class="accountAboutAbsoluteButton" [matMenuTriggerFor]="accountAbout8" *ngIf="!visitor_mode">
-                            <mat-icon *ngIf="list_of_privacy[11]=='private'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[11]=='private'"
                             matTooltip="Information privée"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">visibility_off</mat-icon>
-                            <mat-icon *ngIf="list_of_privacy[11]=='public'"
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_privacy[11]=='public'"
                             matTooltip="Information publique"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -1511,11 +1511,11 @@
                         </button>
                         <mat-menu #accountAbout8="matMenu" xPosition='before' class="account-title-mat-menu">
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[11]=='private'" (click)="change_information_privacy_public(11)"> 	
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>Rendre public</span>
                             </button>
                             <button class="account-title-menu-item" mat-menu-item *ngIf="list_of_privacy[11]=='public'" (click)="change_information_privacy_private(11)"> 	
-                                <mat-icon>visibility_off</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility_off</mat-icon>
                                 <span>Rendre privé</span>
                             </button>
                         </mat-menu>
@@ -1528,7 +1528,7 @@
                         
 
                     <div class="title2">
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Nombre de visiteurs</span>
                     </div>
 
@@ -1545,7 +1545,7 @@
 
                     <div class="no-data-container" *ngIf="!profile_stats_nb_visitors_found">
                         <ng-container *ngIf="profile_stats_number_of_viewers_retrieved && !visitor_mode">
-                            <mat-icon>info_outline</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span *ngIf="!visitor_mode">
                                 Vous n'avez reçu aucune visite sur cette période. 
                             </span>
@@ -1579,7 +1579,7 @@
 
                     <ng-container *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Types de profil des 100 derniers visiteurs</span>
                         </div>
                         <div class="chart-container" #chartContainer>
@@ -1600,7 +1600,7 @@
                     
                     <ng-container  *ngIf="viewers_stats_1_retrieved && !profile_and_account_stats_zero">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Types de compte des 100 derniers visiteurs</span>
                         </div>
                         <div class="chart-container" #chartContainer>
@@ -1621,7 +1621,7 @@
         
                     <ng-container *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Ages des 100 derniers visiteurs</span>
                         </div>
                         <div class="chart-container" #chartContainer>
@@ -1642,7 +1642,7 @@
 
                     <ng-container *ngIf="viewers_stats_retrieved && !age_and_locations_stats_zero">
                         <div class="title2">
-                            <mat-icon>keyboard_arrow_right</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                             <span>Localisations des 100 derniers visiteurs</span>
                         </div>
                         <div class="chart-container" #chartContainer>

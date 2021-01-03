@@ -1,4 +1,17 @@
+.really-invisible{
+  display:none;
+}
+
+.invisible-height{
+  visibility: hidden;
+  pointer-events: none;
+  height:0px !important;
+}
+
+
 .home-linkarts {
+
+
   .categories-container {
     display: flex;
     margin-top: 30px;

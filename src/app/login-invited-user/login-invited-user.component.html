@@ -27,8 +27,8 @@
                     <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
                     <div class="error" *ngIf="display_wrong_data">Le mot de passe ou l'identifiant sont incorrectes
                     </div>
-                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
-                        <mat-icon class="item-icon" style="color: #162644;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
+                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;"  >
+                        <mat-icon  class="item-icon " style="color: #162644;"  (click)="change_password_type()" [ngClass]="{ 'invisible' : !show_icon }" >remove_red_eye</mat-icon>
                     </div>
                 </mat-form-field>
             </div>

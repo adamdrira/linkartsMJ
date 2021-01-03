@@ -1,11 +1,11 @@
 <div class="panel-background">
     <div class="logos-container"  #target [@enterFromTopAnimation]>
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
-            <mat-icon>settings</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">settings</mat-icon>
             <span>Paramètres</span>
         </button>
         <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
-            <mat-icon>euro_symbol</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
             <span>Rémunération</span>
         </button>
     </div>
@@ -15,16 +15,6 @@
 <div class="account-my-account">
 
 
-    <!--<div class="logos-container" *ngIf="opened_category>=0 && " [ngClass]="{'invisible':!mailing_retrieved || !password_retrieved || !groups_owned_found}" #target>
-        <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);">
-            <mat-icon>settings</mat-icon>
-            <span>Paramètres</span>
-        </button>
-        <button class="logo" *ngIf="type_of_account.includes('Artiste');" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);">
-            <mat-icon>euro_symbol</mat-icon>
-            <span>Rémunération</span>
-        </button>
-    </div>-->
 
     <div *ngIf="(opened_category==0 && (!mailing_retrieved  || !password_retrieved || !groups_owned_found))" >
 
@@ -120,7 +110,7 @@
 
 
             <button class="validate-form-button" *ngIf="!registerForm1_activated && !visitor_mode" (click)="edit_password();" [@enterAnimation]>
-                <mat-icon>lock</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">lock</mat-icon>
                 <span>Changer mon mot de passe</span>
             </button>
 
@@ -132,7 +122,7 @@
                     <mat-error *ngIf="registerForm1.controls['old_password'].invalid ">Mot de passe incorrect
                     </mat-error>
                     <div class="length-indicator">
-                        <mat-icon (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
                     </div>
                 </mat-form-field>
 
@@ -142,7 +132,7 @@
                     <mat-error *ngIf="registerForm1.controls['password'].invalid ">Mot de passe incorrect
                     </mat-error>
                     <div class="length-indicator">
-                        <mat-icon (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
                     </div>
                 </mat-form-field>
 
@@ -152,17 +142,17 @@
                     <mat-error>Confirmation incorrecte
                     </mat-error>
                     <div class="length-indicator">
-                        <mat-icon (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" (click)="change_password_type();" style="cursor:pointer;">visibility</mat-icon>
                     </div>
                 </mat-form-field>
 
                 
                 <button class="validate-form-button" (click)="validate_edit_password();" [@enterAnimation]>
-                    <mat-icon>done_all</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                     <span>Changer mon mot de passe</span>
                 </button>
                 <button class="validate-form-button" (click)="cancel_edit_password();" [@enterAnimation]>
-                    <mat-icon>close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                     <span>Annuler</span>
                 </button>
 
@@ -173,7 +163,7 @@
             
             <button class="validate-form-button" *ngIf="status!='suspended'" (click)="suspend_account();" [@enterAnimation]>
                 <ng-container *ngIf="!deletion_loading">
-                    <mat-icon>pause_circle_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">pause_circle_outline</mat-icon>
                     <span>Suspendre mon compte</span>
                 </ng-container>
                 <ng-container *ngIf="deletion_loading">
@@ -183,7 +173,7 @@
             
             <button class="validate-form-button" *ngIf="status=='suspended'" (click)="get_back_suspended_account();" [@enterAnimation]>
                 <ng-container *ngIf="!deletion_loading">
-                    <mat-icon>play_circle_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                     <span>Réactiver mon compte</span>
                 </ng-container>
                 <ng-container *ngIf="deletion_loading">
@@ -193,7 +183,7 @@
 
             <button class="validate-form-button" (click)="delete_account();" [@enterAnimation]>
                 <ng-container *ngIf="!deletion_loading">
-                    <mat-icon>delete_forever</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete_forever</mat-icon>
                     <span>Supprimer mon compte</span>
                 </ng-container>
                 <ng-container *ngIf="deletion_loading">
@@ -218,7 +208,7 @@
             
 
             <button class="validate-form-button" *ngIf="!registerForm_activated" (click)="edit_email();" [@enterAnimation]>
-                <mat-icon>alternate_email</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
                 <span>Changer mon adresse mail</span>
             </button>
 
@@ -233,11 +223,11 @@
 
                     
                 <button class="validate-form-button" (click)="validate_edit_email();" [@enterAnimation]>
-                    <mat-icon>done_all</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                     <span>Valider</span>
                 </button>
                 <button class="validate-form-button" (click)="cancel_edit_email();" [@enterAnimation]>
-                    <mat-icon>close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                     <span>Annuler</span>
                 </button>
                 
@@ -248,15 +238,15 @@
 
 
             <button class="validate-form-button" *ngIf="!email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
-                <mat-icon>mail_outline</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
                 <span>Autoriser l'envoi de mails</span>
             </button>
             <button class="validate-form-button" *ngIf="email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
-                <mat-icon>block</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
                 <span>Ne plus autoriser l'envoi de mails</span>
             </button>
             <div class="text-lines"  [@enterAnimation]>
-                <mat-icon>info_outline</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                 <span>L'autorisation ou le refut de recevoir des emails ne concerne que les points suivants :  </span>
                 <span> &nbsp;  - réception des emails pour promouvoir un partenaire ou un produit commercial </span>
                
@@ -278,7 +268,7 @@
                 
     
                 <div class="text-lines" *ngIf="!user_is_in_a_group" [@enterAnimation]>
-                    <mat-icon>info_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                     <span>Vous ne faites partie d'aucun groupe d'artistes</span>
                    
                 </div>
@@ -287,7 +277,7 @@
                     <button class="validate-form-button" 
                     (click)="create_a_group()"
                     [@enterAnimation]>
-                        <mat-icon>add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                         <span>Créer un groupe</span>
                     </button>
                 </ng-container>
@@ -307,15 +297,15 @@
                     <div class="group-container" *ngFor="let group of list_of_groups_names; let i=index">
     
                         <div class="group">
-                            <mat-icon class="group-icon">group</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="group-icon">group</mat-icon>
     
                             <span>{{group}}</span>
-                            <mat-icon *ngIf="list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
                             matTooltip="Groupe créé"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
                             [matTooltipShowDelay]="0">done_all</mat-icon>
-                            <mat-icon *ngIf="!list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
                             matTooltip="Groupe en attente de validation"
                             matTooltipClass='tooltip-account-about-profile' 
                             [matTooltipPosition]="'below'"
@@ -323,11 +313,11 @@
     
                             <button *ngIf="!manage_group_activated[i]" (click)="manage_group(i)" [@enterAnimation]>
                                 <span>Gérer</span>
-                                <mat-icon>arrow_drop_down</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_drop_down</mat-icon>
                             </button>
                             <button *ngIf="manage_group_activated[i]"  (click)="cancel_manage_group(i)" [@enterAnimation]>
                                 <span>Revenir</span>
-                                <mat-icon>arrow_drop_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_drop_up</mat-icon>
                             </button>
                             
                         </div>
@@ -346,12 +336,12 @@
                                 <span>{{list_of_members_names_by_group[list_of_groups_ids[i]][k]}}</span>
     
                                 <div class="member-status-icon">
-                                    <mat-icon *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]=='validated'"
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]=='validated'"
                                     matTooltip="Validé"
                                     matTooltipClass='tooltip-account-about-profile' 
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="0" [@enterAnimation]>done</mat-icon>
-                                    <mat-icon *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]!='validated'"
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]!='validated'"
                                     matTooltip="En attente"
                                     matTooltipClass='tooltip-account-about-profile' 
                                     [matTooltipPosition]="'below'"
@@ -378,28 +368,28 @@
                                             </mat-form-field>
                                         </div>
                                         <button class="validate-shares-button validate" (click)="validate_share(list_of_groups_ids[i],k)">
-                                            <mat-icon>done</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                                         </button>
                                         <button class="validate-shares-button close" (click)="cancel_share(list_of_groups_ids[i],k)">
-                                            <mat-icon>close</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                         </button>
                                     </ng-container>
     
                                     <button [matMenuTriggerFor]="artworkOptions3" class="groupOptions" *ngIf="!share_in_edition[list_of_groups_ids[i]][k]" [@enterAnimation]>
-                                        <mat-icon>more_vert</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                                     </button>
                                     
                                     <mat-menu #artworkOptions3="matMenu" xPosition='before' class="account-title-mat-menu">
                                         <button class="account-title-menu-item" mat-menu-item (click)="edit_share_equity(list_of_groups_ids[i])"> 	
-                                            <mat-icon>call_split</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">call_split</mat-icon>
                                             <span>Répartir équitablement les gains</span>
                                         </button>
                                         <button class="account-title-menu-item" mat-menu-item (click)="edit_share(list_of_groups_ids[i],k)"> 	
-                                            <mat-icon>euro_symbol</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                                             <span>Editer la répartition</span>
                                         </button>
                                         <button class="account-title-menu-item" *ngIf="k>0" mat-menu-item (click)="exit_user_from_the_group(list_of_groups_ids[i],k)"> 	
-                                            <mat-icon>close</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                             <span>Retirer du groupe</span>
                                         </button>
                                     </mat-menu>
@@ -414,7 +404,7 @@
                                 *ngIf="list_of_groups_admins_ids[i]==id_user && list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated'"  
                                 (click)="abort_group(list_of_groups_ids[i])"
                                 [@enterAnimation]>
-                                    <mat-icon>close</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                     <span  >Annuler </span>
                                 </button>
 
@@ -422,7 +412,7 @@
                                 *ngIf="list_of_groups_admins_ids[i]!=id_user && list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated'"  
                                 (click)="exit_group(list_of_groups_ids[i])"
                                 [@enterAnimation]>
-                                    <mat-icon>close</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                     <span   >Refuser </span>
                                 </button>
                               
@@ -430,7 +420,7 @@
                                 *ngIf="group_in_edition[list_of_groups_ids[i]]"
                                 (click)="validate_all(list_of_groups_ids[i])"
                                 [@enterAnimation]>
-                                    <mat-icon>done</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                                     <span>Valider</span>
                                 </button>
                                 <button class="validate-form-button" 
@@ -438,14 +428,14 @@
                                 && 10>list_of_members_ids_by_group[list_of_groups_ids[i]].length" 
                                 (click)="add_artist(list_of_groups_ids[i],i)"
                                 [@enterAnimation]>
-                                    <mat-icon>add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                     <span >Ajouter un membre</span>
                                 </button>
                                 <button class="validate-form-button" 
                                 *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]=='validated'" 
                                 (click)="exit_group(list_of_groups_ids[i])"
                                 [@enterAnimation]>
-                                    <mat-icon>delete</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete</mat-icon>
                                     <span >Quitter le groupe</span>
                                 </button>
                             </div>
@@ -463,16 +453,92 @@
         <!--!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!-->
         <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <div class="category-container" *ngIf="show_list_of_members && gender=='Groupe'">
-            <div class="sub-category-title">
+            
+            
+            <div class="account-title-container">
+                <!--TITRE + BOUTON EDITER/CACHER-->
+                <div class="title">
+                    <span> Membres du groupe</span>
+                </div>
+            </div>
+
+            <!--<div class="sub-category-title">
                 <span class="title">
                     Membres du groupe
                 </span>
-            </div>
-            <div class="loading-page" *ngIf="!manage_group_activated[0]">
-                <mat-spinner diameter="30"  ></mat-spinner>
-            </div>
+            </div>-->
+            <div class="account-form-container" [@enterAnimation]>
+
+                    <div class="group-container" *ngFor="let group of list_of_groups_names; let i=index" >
     
-            <div class="category-container" *ngIf="manage_group_activated[0]" > 
+                        <div class="group">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="group-icon">group</mat-icon>
+    
+                            <span>{{group}}</span>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
+                            matTooltip="Groupe créé"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">done_all</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!list_of_groups_status[i]" class="group-status-icon" [@enterAnimation]
+                            matTooltip="Groupe en attente de validation"
+                            matTooltipClass='tooltip-account-about-profile' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="0">access_time</mat-icon>
+    
+                         
+                            
+                        </div>
+    
+                        <div class="loading-page" *ngIf="manage_group_loading[i] && !manage_group_activated[i]">
+                            <mat-spinner diameter="20"></mat-spinner>
+                        </div>
+    
+    
+                        <div class="members-container" *ngIf="manage_group_activated[i]" [@enterAnimation]>
+                            <div class="member" *ngFor="let member of list_of_members_ids_by_group[list_of_groups_ids[i]];let k=index">
+    
+                                <div class="image-container">
+                                    <img [src]="list_of_members_pictures_by_group[list_of_groups_ids[i]][k]" >
+                                </div>
+                                <span>{{list_of_members_names_by_group[list_of_groups_ids[i]][k]}}</span>
+    
+                                <div class="member-status-icon">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]=='validated'"
+                                    matTooltip="Validé"
+                                    matTooltipClass='tooltip-account-about-profile' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="0" [@enterAnimation]>done</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_members_status_by_group[list_of_groups_ids[i]][k]!='validated'"
+                                    matTooltip="En attente"
+                                    matTooltipClass='tooltip-account-about-profile' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="0" [@enterAnimation]>access_time</mat-icon>
+                                </div>
+    
+                                        
+                                <div class="form-item" *ngIf="!share_in_edition[list_of_groups_ids[i]][k]" [@enterAnimation]>
+                                    <mat-form-field floatLabel='never'>
+                                        <mat-label>{{list_of_members_shares_by_group[list_of_groups_ids[i]][k]}} %</mat-label>
+                                        <input matInput readonly>
+                                    </mat-form-field>
+                                </div>
+    
+    
+                            
+    
+                            </div>
+    
+    
+                        
+    
+                        </div>
+    
+                    </div>
+            </div>
+            
+    
+            <!--<div class="category-container" *ngIf="manage_group_activated[0]" > 
                 <div  style="display:block; margin:5px" *ngFor="let group of list_of_groups_names; let i=index">
                     <div style="display:flex">
                         <div style="margin:5px">
@@ -499,7 +565,7 @@
     
     
                 </div>
-            </div>
+            </div>-->
         </div>
 
 
@@ -533,7 +599,7 @@
                 </div>
                 <div class="no-data-container" *ngIf="!trendings_found">
                     <ng-container *ngIf="trendings_loaded">
-                        <mat-icon>info_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
                             Vous n'avez aucune œuvre en tendances sur cette période. 
                         </span>
@@ -546,19 +612,19 @@
 
                 <div class="stats-number-container" *ngIf="trendings_found && trendings_loaded">
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
-                        <span>Total des gains sur la période : <b>{{total_gains.toFixed(2)}} &euro; </b></span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
+                        <span>Total des gains sur la période : <b>{{total_gains_trendings.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux bandes dessinés : <b>{{number_of_comics_gains.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux dessins : <b>{{number_of_drawings_gains.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux écrits : <b>{{number_of_writings_gains.toFixed(2)}} &euro; </b></span>
                     </div>
                 </div>
@@ -626,7 +692,7 @@
                 </div>
                 <div class="no-data-container" *ngIf="!trendings_found_groups">
                     <ng-container *ngIf="trendings_loaded_groups">
-                        <mat-icon>info_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
                             Vous n'avez aucune œuvre en tendances sur cette période pour ce groupe. 
                         </span>
@@ -638,19 +704,19 @@
 
                 <div class="stats-number-container" *ngIf="trendings_found_groups && trendings_loaded_groups">
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains sur la période : <b>{{total_gains_groups.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux bandes dessinés : <b>{{number_of_comics_gains_groups.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux dessins : <b>{{number_of_drawings_gains_groups.toFixed(2)}} &euro; </b></span>
                     </div>
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains reliés aux écrits : <b>{{number_of_writings_gains_groups.toFixed(2)}} &euro; </b></span>
                     </div>
                 </div>
@@ -715,7 +781,7 @@
 
                 <div class="no-data-container" *ngIf="!favorites_found">
                     <ng-container *ngIf="favorites_loaded && !visitor_mode">
-                        <mat-icon>info_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
                             Vous n'avez encore jamais atteint pas atteint le top 15 des coups de cœur. 
                         </span>
@@ -727,7 +793,7 @@
 
                 <div class="stats-number-container" *ngIf="favorites_found && favorites_loaded">
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains sur la période : <b>{{total_gains_favorites.toFixed(2)}} &euro; </b></span>
                     </div>
                 </div>
@@ -780,7 +846,7 @@
 
                 <div class="no-data-container" *ngIf="!favorites_found_groups">
                     <ng-container *ngIf="favorites_loaded_groups">
-                        <mat-icon>info_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                         <span>
                             Vous n'avez encore jamais atteint pas atteint le top 15 des coups de cœur avec ce groupe. 
                         </span>
@@ -792,7 +858,7 @@
 
                 <div class="stats-number-container" *ngIf="favorites_found && favorites_loaded">
                     <div>
-                        <mat-icon>keyboard_arrow_right</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
                         <span>Total des gains sur la période : <b>{{total_gains_groups_favorites.toFixed(2)}} &euro; </b></span>
                     </div>
                 </div>
@@ -812,6 +878,40 @@
                     [yAxisLabel]="yAxis_favorites_groups_1">
                     </ngx-charts-line-chart>
                 </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="stats-container " >
+            
+            <!-- Title container -->
+            <div class="account-title-container">
+                <!--TITRE + BOUTON EDITER/CACHER-->
+                <div class="title">
+                    <span>Gestion des gains</span>
+                </div>
+            </div>
+
+            <div class="account-form-container">
+
+                <div class="no-data-container"  *ngIf="!display_all_gains">
+                    <mat-spinner diameter="20"></mat-spinner>
+                </div>
+
+                <div class="stats-number-container" *ngIf="display_all_gains">
+                    <div class="center-gains"> 
+                        <span>Total des gains : <b>{{total_gains.toFixed(2)}} &euro; </b></span>
+                    </div>
+                </div>
+
+                <button class="validate-form-button" *ngIf="display_all_gains" (click)="get_my_gains();" [@enterAnimation]>
+                    
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">monetization_on</mat-icon>
+                    <span>Réclamer mes gains</span>
+                </button>
+               
 
 
             </div>

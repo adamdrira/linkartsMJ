@@ -84,16 +84,19 @@ export class ChatRightContainerComponent implements OnInit {
         this.list_of_files_retrieved=false;
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
-        this.get_files_and_pictures(this.id_chat_section);
+       
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
           console.log(l[0][0])
           this.total_size_of_files[0]=Number(l[0][0].total);
-          this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-            console.log(r[0][0])
-            this.total_size_of_pictures[0]=Number(r[0][0].total);
-            this.get_files_and_pictures(this.id_chat_section);
-          })
+         
         })
+
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
+          console.log(r[0][0])
+          this.total_size_of_pictures[0]=Number(r[0][0].total);
+          //this.get_files_and_pictures(this.id_chat_section);
+        })
+        this.get_files_and_pictures(this.id_chat_section);
         this.change_number=0;
       }
       if(this.current_id_chat_section!=this.id_chat_section){
@@ -104,12 +107,14 @@ export class ChatRightContainerComponent implements OnInit {
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
           console.log(Number(l[0][0].total))
           this.total_size_of_files[0]=Number(l[0][0].total);
-          this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-            console.log(r[0][0])
-            this.total_size_of_pictures[0]=Number(r[0][0].total);
-            this.get_files_and_pictures(this.id_chat_section);
-          })
+         
         })
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
+          console.log(r[0][0])
+          this.total_size_of_pictures[0]=Number(r[0][0].total);
+          //this.get_files_and_pictures(this.id_chat_section);
+        })
+        this.get_files_and_pictures(this.id_chat_section);
         this.change_number=0;
       }
     }
@@ -131,13 +136,14 @@ export class ChatRightContainerComponent implements OnInit {
     this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
       console.log(l[0][0])
       this.total_size_of_files[0]=Number(l[0][0].total);
-      this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-        console.log(r[0][0])
-        this.total_size_of_pictures[0]=Number(r[0][0].total);
-        this.get_files_and_pictures(this.id_chat_section);
-      })
+      
     })
-    
+    this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
+      console.log(r[0][0])
+      this.total_size_of_pictures[0]=Number(r[0][0].total);
+      
+    })
+    this.get_files_and_pictures(this.id_chat_section);
 
     setInterval(() => {
       if(this.panelOpenState_0||this.panelOpenState_1){
@@ -234,16 +240,26 @@ export class ChatRightContainerComponent implements OnInit {
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
           console.log(l[0][0])
           this.total_size_of_files[0]=Number(l[0][0].total);
-          this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-            console.log(r[0][0])
-            this.total_size_of_pictures[0]=Number(r[0][0].total);
-            this.get_files_and_pictures(this.id_chat_section);
-          })
+          
         })
+        this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
+          console.log(r[0][0])
+          this.total_size_of_pictures[0]=Number(r[0][0].total);
+         
+        })
+        this.get_files_and_pictures(this.id_chat_section);
       }
     })
   }
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      console.log("load")
+      THIS.show_icon=true;
+    });
+  }
 
   get_files_and_pictures(id_chat_section){
     console.log("get_files_and_pictures")

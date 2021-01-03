@@ -9,7 +9,11 @@
 <!--******************************************************************************/
 
 
-
+.invisible {
+    visibility:hidden;
+    overflow: hidden;
+    pointer-events: none;
+}
 
 .swiper-container2 {
     height:200px;
@@ -18,6 +22,11 @@
 .monetization{
     margin-left: 10%;
     width: 90%;
+}
+
+.mat-icon{
+    max-width:24px;
+    overflow: hidden;
 }
 
 /******************************************************************************-->

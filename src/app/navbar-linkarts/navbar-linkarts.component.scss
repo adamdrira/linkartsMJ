@@ -60,6 +60,8 @@
         font-size: 21px !important;
         height: unset;
         width: unset;
+        max-width:21px;
+          overflow: hidden;
         font-weight: bold;
         padding-top: 1px;
         margin: auto;
@@ -77,6 +79,8 @@
         margin: auto 0px auto 7px;
         mat-icon {
           font-size: 18px !important;
+          max-width:18px !important;
+          overflow: hidden;
         }
       }
     }
@@ -291,7 +295,7 @@
         z-index:10;
         height:50px;
         width: 50px;
-        background-image: linear-gradient(to right, #ffffff,#ffffff, #ffffff6e,#ffffff17, #ffffff00);
+        background-image: linear-gradient(to right, #f9f9f9, #f9f9f9, #ffffff6e,#ffffff17, #ffffff00);
         //width:200px;
         //background-image:linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
       }
@@ -302,7 +306,7 @@
         z-index:10;
         height:50px;
         width: 50px;
-        background-image: linear-gradient(to right, #ffffff00, #ffffff17, #ffffff6e, #ffffff, #ffffff);
+        background-image: linear-gradient(to right, #ffffff00, #ffffff17, #ffffff6e, #f9f9f9, #f9f9f9);
         //width:200px;
         //background-image:linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
       }
@@ -544,7 +548,7 @@
       padding: 1px 7px 3px 7px;
       border: 1px solid rgb(32,56,100);
       border-radius: 50px;
-      background: rgb(255,255,255);
+      background: #f5f5f5;
     }
     &.with-close {
       margin: auto 50px auto auto !important;
@@ -577,6 +581,8 @@
       height: unset !important;
       width: unset !important;
       font-size: 14px;
+      max-width:14px;
+          overflow: hidden;
       line-height: 20px;
     }
   }
@@ -731,6 +737,8 @@
     mat-icon {
       color:#5b6b87;
       width:30px;
+      max-width:30px;
+      overflow: hidden;
       cursor:pointer;
     }
   }
@@ -974,6 +982,8 @@
       color: #203864;
       font-size: 19px !important;
       line-height: 24px !important;
+      max-width:19px;
+          overflow: hidden;
     }
     mat-icon.rotate-icon {
       transform: rotate(180deg);
@@ -1067,6 +1077,8 @@
             margin: auto auto;
             height: unset;
             width: 17px;
+            max-width:17px;
+          overflow: hidden;
             font-size: 17px;
             transform: rotate(-90deg);
             transition: transform 200ms;
@@ -1106,8 +1118,9 @@
         margin-top: auto;
         margin-bottom: auto;
         .mat-select-value-text {
-          font-size: 13px;
+          font-size: 12px;
           line-height: 18px;
+          font-weight:400 !important;
           color: rgb(32,56,100);
         }
         .mat-select-trigger {
@@ -1153,6 +1166,8 @@
             margin: auto auto;
             height: unset;
             width: 17px;
+            max-width:17px;
+          overflow: hidden;
             font-size: 17px;
             transform: rotate(-90deg);
             transition: transform 200ms;
@@ -1165,7 +1180,7 @@
 
         .mat-form-field-wrapper {
           color: #203864;
-          text-shadow: -0.04ex 0 #203864, 0.04ex 0 #203864;
+          //text-shadow: -0.04ex 0 #203864, 0.04ex 0 #203864;
           background: white;
           padding-bottom: unset !important;
           height: 100%;
@@ -1207,7 +1222,7 @@
             font-size: 11px;
             line-height: 19px;
             color: rgb(32,56,100);
-            font-weight: 300;
+            font-weight: 600;
             mat-select-trigger {
               display: flex;
             }
@@ -1454,6 +1469,8 @@
   ::ng-deep .mat-raised-button.button.subscriptions .mat-icon {
     height: 20px;
     width: 20px;
+    max-width:20px;
+    overflow: hidden;
   }
 
   .subscriber-card button.style1 span {
@@ -1472,14 +1489,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #dae8f5;
-    color: #203864;
+    //background: #dae8f5;
+    //color: #203864;
+    color:white;
+    background-image: linear-gradient( rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
     font-weight: 600;
     font-size: 13px;
   }
   .open-chat:hover {
-    background: #dcebf7;
-    text-shadow: -0.01ex 0 #203864, 0.01ex 0 #203864;
+    //background: #dcebf7;
+    background-image: linear-gradient( rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+    //text-shadow: -0.01ex 0 #203864, 0.01ex 0 #203864;
+    text-shadow: -0.01ex 0 white, 0.01ex 0 white;
   }
 
   .title-proposition span {
@@ -1540,7 +1561,7 @@
   @media (max-width: 1300px) {
     .disconnected-user {
       .HIDDEN-ON-SMALL-SCREEN-1 {
-        visibility: hidden !important;
+        visibility: hidden ;
         display: none !important;
       }
       .VISIBLE-ON-SMALL-SCREEN-1 {
@@ -1556,7 +1577,7 @@
     }
     .connected-user {
       .HIDDEN-ON-SMALL-SCREEN-1 {
-        visibility: hidden !important;
+        visibility: hidden ;
         display: none !important;
       }
       .VISIBLE-ON-SMALL-SCREEN-1 {
@@ -1592,7 +1613,7 @@
     }
     .disconnected-user {
       .HIDDEN-ON-SMALL-SCREEN-1 {
-        visibility: hidden !important;
+        visibility: hidden ;
         display: none !important;
       }
       .navbar-l1-searchbar-container .left-container {
@@ -1607,7 +1628,7 @@
     }
     .connected-user {
       .HIDDEN-ON-SMALL-SCREEN-1 {
-        visibility: hidden !important;
+        visibility: hidden ;
         display: none !important;
       }
       .navbar-l1-searchbar-container .left-container {
@@ -1632,12 +1653,12 @@
       }
     }
     .VISIBLE-ON-SMALL-SCREEN-1 {
-      visibility: hidden !important;
+      visibility: hidden ;
       display: none !important;
       margin-left: 10px !important;
     }
     .VISIBLE-ON-MORE-SMALL-SCREEN-1 {
-      visibility: visible !important;
+      visibility: visible ;
       display: flex !important;
       margin-right: auto !important;
       margin-left: 0px;
@@ -1794,13 +1815,19 @@
     height: unset;
     width: unset;
     font-size: 13px;
+    max-width:13px;
+    overflow: hidden;
     color: white;
   }
   .notification-icon.group mat-icon {
     font-size: 14px;
+    max-width:14px;
+          overflow: hidden;
   }
   .notification-icon.publication mat-icon {
     font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
   }
 
   .notification-date {
@@ -1854,7 +1881,8 @@
     .mat-option {
         color: rgb(32, 56, 100) !important;
         height: 33px;
-        font-size:12px;
+        font-size: 11px;
+        font-weight: 600;
     }
   }
 
@@ -1910,7 +1938,8 @@
     .mat-option {
         color: rgb(32, 56, 100) !important;
         height: 33px;
-        font-size:12px;
+        font-size: 11px;
+        font-weight: 600;
         padding-left: 10px;
         
         .mat-option-text {
@@ -1964,6 +1993,8 @@
         width: unset !important;
         height: unset !important;
         font-size: 18px !important;
+        max-width:18px !important;
+          overflow: hidden !important;
         color: rgb(32, 56, 100) !important;
       }
 

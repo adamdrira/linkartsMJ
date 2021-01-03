@@ -41,6 +41,7 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
 
   
   @Input() now_in_seconds: number;
+  @Input() width: number;
   
   //responsivity
   @Output() send_put_more_visible = new EventEmitter<boolean>();

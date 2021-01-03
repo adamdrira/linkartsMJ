@@ -11,6 +11,9 @@
 @import "../../material-styles.css";
 @import "../../unsecured-ng-deeps.scss";
 
+
+
+
 .container-fluid {
   padding-left: 0;
   padding-right: 0;
@@ -51,6 +54,8 @@
     mat-icon {
       margin: auto auto 3px auto;
       height: unset;
+      max-width:22px;
+      overflow: hidden;
       width: unset;
       font-size: 22px;
     }
@@ -157,6 +162,8 @@
         }
 
         mat-icon {
+          max-width:22px;
+          overflow: hidden;
           font-size: 22px;
           color: rgb(32, 56, 100);
           height: unset !important;
@@ -202,6 +209,8 @@
 
         mat-icon {
           font-size: 22px;
+          max-width:22px;
+          overflow: hidden;
           color: rgb(32, 56, 100);
           height: unset !important;
           width: unset !important;
@@ -248,6 +257,8 @@
       }
       mat-icon {
         font-size: 17px;
+        max-width:17px;
+        overflow: hidden;
         margin: auto;
         height: unset;
         width: unset;
@@ -306,6 +317,8 @@
             width: unset;
             vertical-align: middle;
             font-size: 16px;
+            max-width:16px;
+            overflow: hidden;
             margin: auto auto auto 3px;
           }
 
@@ -352,6 +365,8 @@
           color: #4bc7ff;
           margin: auto 4px auto 0px;
           font-size: 14px;
+          max-width:14px;
+          overflow: hidden;
           width: unset;
           height: unset;
         }
@@ -392,6 +407,8 @@
             width: unset;
             vertical-align: middle;
             font-size: 19px;
+            max-width:19px;
+          overflow: hidden;
             margin: auto auto auto 5px;
           }
         }
@@ -447,6 +464,8 @@
           width: unset !important;
           height: unset !important;
           font-size: 18px !important;
+          max-width:18px;
+          overflow: hidden;
           color: rgb(32, 56, 100) !important;
         }
         span {
@@ -527,6 +546,8 @@
                     width: unset;
                     height: unset;
                     font-size: 24px;
+                    max-width:24px;
+                    overflow: hidden;
                   }
                   span {
                     color: rgb(32, 56, 100);
@@ -606,6 +627,8 @@
       mat-icon {
         margin: auto 5px auto auto;
         font-size: 22px;
+        max-width:22px;
+          overflow: hidden;
         width: unset;
         height: unset;
       }
@@ -655,6 +678,8 @@
     width: unset;
     height: unset;
     font-size: 50px;
+    max-width:50px;
+    overflow: hidden;
   }
   span {
     margin: 0px auto auto auto;
@@ -691,7 +716,7 @@
 }*/
 
 .container-skeletons {
-  width: 90%;
+  width: 100%;
   max-width: 1650px;
   margin-left: auto;
   margin-right: auto;
@@ -702,6 +727,8 @@
   width: 80%;
   display: flex;
   font-size: 16px;
+  border-top: 2px solid #4bc7ff;
+  border-bottom: 2px solid #4bc7ff;
   background: #f9f9f9;
   justify-content: center;
   margin: 30px auto 50px auto;
@@ -753,7 +780,7 @@
 
       textarea {
         max-height:180px;
-        min-height:50px;
+        min-height:30px;
 
         &.readonly {
           font-size: 16px !important;
@@ -770,7 +797,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         &::-webkit-scrollbar-thumb {
-            background-image: linear-gradient(0deg, #ffffff00, #4bc7ff,#ffffff00);
+            background: #4bc7ff75;
             border-radius: 20px;
         }
       }
@@ -880,6 +907,8 @@
       margin: auto 5px auto auto !important;
       vertical-align: top !important;
       font-size: 30px !important;
+      max-width:30px;
+          overflow: hidden;
     }
   }
   
@@ -888,6 +917,8 @@
       margin: auto 5px auto auto !important;
       vertical-align: top !important;
       font-size: 24px !important;
+      max-width:24px;
+      overflow: hidden;
     }
   }
 
@@ -920,6 +951,8 @@
     width: unset;
     height: unset;
     font-size: 26px;
+    max-width:26px;
+    overflow: hidden;
     cursor: default;
   }
   span {
@@ -933,6 +966,8 @@
     margin: 80px auto !important;
     mat-icon {
       font-size: 36px !important;
+      max-width:36px;
+          overflow: hidden;
     }
     span {
       margin-top: 10px !important;
@@ -962,6 +997,8 @@
       margin: auto 2px auto auto;
       width: unset;
       height: unset;
+      max-width:20px;
+          overflow: hidden;
       font-size: 20px;
       font-weight: 600;
     }
@@ -1020,6 +1057,10 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
+.justify-content-left{
+  justify-content: left !important;
+}
 .container-drawings {
   display: flex;
   flex-wrap: wrap;
@@ -1035,15 +1076,62 @@
   flex-wrap: wrap;
   justify-content: center;
 
-  &.newDrawings div {
+  /*&.newWritings div {
     height: 300px;
-  }
+  }*/
 }
 .drawing-container {
   margin: 30px 0px 30px 0px;
-  width: 80%;
+  //width: 80%;
 }
 
+
+
+@media (max-width: 1135px) {
+
+  
+
+  .container-small-screen {
+    justify-content: left !important;
+    overflow-x: auto ;
+    flex-wrap: unset !important;
+
+    .see-more {
+      width: unset !important; 
+      height: unset !important;
+      border-bottom: unset  !important;
+    }
+  
+    .see-more:hover {
+      border-bottom:unset  !important;
+      background-color:rgb(235, 235, 235)  !important;
+    }
+  
+    .see-more .icon {
+      transform: rotate(270deg) !important;
+    }
+
+    &::-webkit-scrollbar {
+        height: 10px;
+        background-color: #f9f9f9;
+    }
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 11%);
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 11%);
+      background-color: #0a1c4d;
+    }
+  }
+
+  .thumbnail-component-container{
+    overflow: visible !important;
+  }
+  
+}
 .invisible {
   visibility: hidden;
   pointer-events: none;
@@ -1061,7 +1149,7 @@
 
 .panel-background {
   padding: 15px 10px;
-  background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+  background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
   box-shadow: 0px 3px 5px 3px #28436d4a;
   overflow: hidden;
   margin-top: 0px;
@@ -1080,14 +1168,14 @@
       display: flex;
       flex-direction: column;
       padding: 10px 10px 10px 10px;
-      width: 155px;
-      height: 155px;
+      width: 145px;
+      height: 145px;
       margin-left: 15px;
       margin-right: 15px;
       border-radius: 150px;
       box-shadow: 0px 0px 1px -2px #00000026, 0px 2px 2px 0px #85869e38, 0px 0px 2px 0px #9090902b;
 
-      transition: all 300ms;
+      //transition: all 300ms;
 
       //background: white;
       background: #f0f0f0;
@@ -1109,7 +1197,7 @@
         align-items: center;
         justify-content: center;
 
-        transition: all 300ms;
+        //transition: all 300ms;
       }
 
       .image1 {
@@ -1118,7 +1206,7 @@
         margin: auto auto 5px auto;
         //background: #7891ad;
         background:#a8b5c4;
-        transition: all 300ms;
+        //transition: all 300ms;
         -webkit-mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
       }
@@ -1128,7 +1216,7 @@
         margin: auto auto 5px auto;
         //background: #7891ad;
         background:#a8b5c4;
-        transition: all 300ms;
+        //transition: all 300ms;
         -webkit-mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
       }
@@ -1138,7 +1226,7 @@
         margin: auto auto 5px auto;
        //background: #7891ad;
        background:#a8b5c4;
-        transition: all 300ms;
+        //transition: all 300ms;
         -webkit-mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
       }
@@ -1258,6 +1346,8 @@
         mat-icon {
           color: rgb(32, 56, 100);
           font-size: 22px;
+          max-width:22px;
+          overflow: hidden;
           margin: auto 5px auto auto;
           height: unset;
           width: unset;
@@ -1319,6 +1409,8 @@
         }
         mat-icon {
           font-size: 22px;
+          max-width:22px;
+          overflow: hidden;
           margin: auto;
           height: unset;
           width: unset;
@@ -1359,6 +1451,8 @@
     width: unset;
     height: unset;
     font-size: 36px;
+    max-width:36px;
+          overflow: hidden;
     color: #b1b1b1;
   }
 }
@@ -1415,9 +1509,10 @@
     top: 40px;
     min-width: calc(100% + 23px) !important;
     left: -4px;
-    border-radius: 5px !important;
-    box-shadow: 0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
-
+    /*border-radius: 5px !important;
+    box-shadow: 0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;*/
+    border-radius: 0px !important;
+    box-shadow: 0px 0px 0px 2px #0b193c, 0px 0px 2px 4px #263e67;
     
     &::-webkit-scrollbar {
       width: 6px;
@@ -1428,7 +1523,7 @@
         background-color: rgba(255, 255, 255, 0.1);
     }
     &::-webkit-scrollbar-thumb {
-        background-image: linear-gradient(0deg, #ffffff00, #76ccff,#ffffff00);
+        background: #0c1b3d26;
         border-radius: 20px;
     }
 
@@ -1454,6 +1549,8 @@
           width: unset;
           height: unset;
           font-size: 24px;
+          max-width:24px;
+          overflow: hidden;
         }
         span {
           color: rgb(32, 56, 100);
@@ -1511,6 +1608,8 @@
         width: unset !important;
         height: unset !important;
         font-size: 18px !important;
+        max-width:18px!important;
+          overflow: hidden;
         color: rgb(32, 56, 100) !important;
       }
 
@@ -1540,6 +1639,35 @@
     color: rgb(32, 56, 100) !important;
     padding: 6px !important;
     text-align: center !important;
+  }
+
+  .popupViewUsersClass {
+    max-width: unset !important;
+    width: 600px !important;
+  }
+  @media (max-width: 650px) {
+    .popupViewUsersClass {
+      //width: 85% !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0px !important;
+      position: absolute !important;
+
+      transition: bottom 200ms !important;
+
+      transform: translateY(100%);
+      animation: slideDown 600ms forwards 0s ease-in-out;
+    }
+    .mat-dialog-container {
+      padding: 24px 0px 0px 0px;
+    }
+  }
+  @keyframes slideDown {
+    0% {
+    }
+    100% {
+      transform: translateY(0%);
+    }
   }
 
   .popupUploadPictureClass {

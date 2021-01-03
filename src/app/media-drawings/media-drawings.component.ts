@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, HostListener, ViewChildren, QueryList, ElementRef, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Renderer2, HostListener, ViewChildren, QueryList, ElementRef, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
 
 import { Router } from '@angular/router';
 
@@ -37,12 +37,14 @@ export class MediaDrawingsComponent implements OnInit {
 
   @Input() sorted_artpieces_traditional_format: string[];
   @Input() sorted_artpieces_digital_format: string[];
-
+  @Input() width: number;
 
   @Input() now_in_seconds: number;
   @Output() list_of_drawings_retrieved_emitter = new EventEmitter<object>();
   show_more=[false,false];
-
+  
+  
+  
   ngOnInit(){
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
@@ -55,9 +57,6 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
 
-  ngAfterViewInit() {
-
-  }
 
 
 
@@ -82,7 +81,6 @@ export class MediaDrawingsComponent implements OnInit {
   number_of_drawings_variable:number;
   got_number_of_drawings_to_show=false;
   number_of_lines_drawings:number;
-  number_of_private_contents_drawings:number[]=[0,0]
   detect_new_compteur_drawings=false;
   total_for_new_compteur=0;
   updating_drawings_for_zoom=false;
@@ -147,10 +145,17 @@ export class MediaDrawingsComponent implements OnInit {
 
 
   get_number_of_drawings_to_show(){
-    let width =$('.media-container').width()-20;
+    let width =this.width-20;
+    //console.log($('.media-container').width())
     if(width>0 && !this.got_number_of_drawings_to_show){
-  
-      this.number_of_drawings_variable=Math.floor(width/210);
+      let n =Math.floor(width/210)
+      if(n>3){
+        this.number_of_drawings_variable=(n<6)?n:6;
+      }
+      else{
+        this.number_of_drawings_variable=6;
+      }
+      
       this.got_number_of_drawings_to_show=true;
       this.number_of_lines_drawings=1;
 
@@ -158,7 +163,7 @@ export class MediaDrawingsComponent implements OnInit {
       this.number_of_drawings_to_show_by_category[0]=this.compteur_number_of_drawings;
       this.number_of_drawings_to_show_by_category[1]=this.compteur_number_of_drawings;
 
-
+      console.log(this.number_of_drawings_to_show_by_category)
       //console.log(this.number_of_lines_drawings)
       //console.log(this.number_of_drawings_to_show_by_category)
       //console.log(this.number_of_private_contents_drawings)
@@ -167,13 +172,20 @@ export class MediaDrawingsComponent implements OnInit {
 
 
   update_number_of_drawings_to_show(){
-    //console.log("update_number of drawings")
+    console.log("update_number of drawings")
     //console.log(this.got_number_of_drawings_to_show)
     
     if(this.got_number_of_drawings_to_show){
-      let width =$('.media-container').width()-20;
+      let width =this.width-20;
       //console.log(width)
-      let variable =Math.floor(width/210);
+      let n =Math.floor(width/210)
+      let variable;
+      if(n>3){
+        variable=(n<6)?n:6;
+      }
+      else{
+        variable=6;
+      }
       if(variable!=this.number_of_drawings_variable && variable>0){
         this.prevent_see_more=true;
         this.detect_new_compteur_drawings=false;
@@ -255,6 +267,7 @@ export class MediaDrawingsComponent implements OnInit {
   first_masonry_loaded=false;
   all_drawings_loaded=false;
   sendLoaded(event){
+    console.log("load")
     if(!this.updating_drawings_for_zoom){
       //console.log("loading")
       this.compteur_drawings_thumbnails++;

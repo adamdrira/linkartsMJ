@@ -45,6 +45,7 @@ export class MediaSeeMoreComicsComponent implements OnInit {
   //responsivity
   @Output() send_put_more_visible = new EventEmitter<boolean>();
   @Input() number_of_comics_to_show: number;
+  @Input() width: number;
   number_of_thumbnails=0;
   number_retrieved=false;
   number_of_loaded=0;

@@ -31,13 +31,13 @@
                 -->
                 <div class="options-container" *ngIf="spam=='false'">
                     <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_chat_section()"> 	
-                        <mat-icon class="item-icon">library_add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">library_add</mat-icon>
                     </button>
                     <button mat-button class="mat-icon-button" tabIndex="-1" (click)="add_chat_section_research()" > 	
-                        <mat-icon class="item-icon">search</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">search</mat-icon>
                     </button>
                     <button mat-button class="mat-icon-button" tabIndex="-1" (click)="delete_chat_section()"> 	
-                        <mat-icon class="item-icon">delete</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">delete</mat-icon>
                     </button>
                     <div class="dropdown-container"  [formGroup]="chat_section_group" >
                         <div  class="chat-section-container sumo" [ngClass]="{'really-invisible':activate_add_chat_section ||activate_research_chat_section}">
@@ -58,10 +58,10 @@
                                 onblur="this.placeholder = 'Titre de la conversation'"
                                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Titre de la conversation'">
                                 <button mat-button tabIndex="-1" style="margin:auto 0px" class="mat-icon-button" [ngStyle]="{'color':'green'}" (click)="add_chat_section_name()" >
-                                    <mat-icon class="item-icon">done</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">done</mat-icon>
                                 </button>
                                 <button mat-button tabIndex="-1" style="margin:auto 0px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="cancel_add_section()" >
-                                    <mat-icon class="item-icon">close</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">close</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
                                
                                 <button mat-button tabIndex="-1" style="margin:auto 0px" class="mat-icon-button" [ngStyle]="{'color':'red'}" (click)="close_chat_section_research()" >
-                                    <mat-icon class="item-icon">close</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">close</mat-icon>
                                 </button>
                             </div>
 
@@ -130,7 +130,7 @@
 
             <div #searchbartop *ngIf="show_pre_searchbar_top" class="mat-toolbar-tools" style="  margin: auto 0px auto auto;">
                 <button mat-button tabIndex="-1" class="mat-icon-button"  (click)="initiateSearch()" >
-                    <mat-icon class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">search</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">search</mat-icon>
                 </button>
             </div>
 
@@ -143,7 +143,7 @@
                 </form>
         
                 <button mat-button tabIndex="-1" class="mat-icon-button" (click)="endSearch()">
-                    <mat-icon  class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto;">close</mat-icon>
                 </button>
             </div>
 
@@ -154,19 +154,19 @@
             <!-- --------------------------------POUR LES UTILISATEURS--------------------------------- -->
             <ng-container *ngIf="friend_type=='user' && friend_id!=current_user_id">
                 <button  mat-icon-button tabIndex="-1" class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                    <mat-icon class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
                 </button>
                 <mat-menu  #artworkOptions="matMenu">
                     <button class="mat-menu-item" mat-menu-item > 	
-                        <mat-icon class="item-icon">edit</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                         <span>Mettre en sourdine</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item (click)="block_user()"> 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Bloquer l'utilisateur</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item > 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Retirer de mes contacts</span>
                     </button>
                 </mat-menu>
@@ -175,27 +175,27 @@
             </ng-container>
             <ng-container *ngIf="friend_type=='group'">
                 <button  mat-icon-button tabIndex="-1" class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                    <mat-icon class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton" style="font-size: 20px; width: 20px;margin:auto auto;">more_vert</mat-icon>
                 </button>
                 <mat-menu  #artworkOptions="matMenu">
                     <button class="mat-menu-item" mat-menu-item (click)="change_profile_picture()" > 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Modifier la photo de profile</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item (click)="add_a_friend()" > 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Ajouter un contact</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item  (click)="display_members_of_the_group()"> 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Liste des membres</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item > 	
-                        <mat-icon class="item-icon">edit</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                         <span>Mettre en sourdine</span>
                     </button>
                     <button class="mat-menu-item" mat-menu-item  (click)="exit_group()"> 	
-                        <mat-icon class="item-icon">view_carousel</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                         <span>Quitter le groupe</span>
                     </button>
                     
@@ -208,10 +208,10 @@
             <div *ngIf="show_research_results" class="top-container-for-reasearch" >
                 <ng-container *ngIf="number_of_messages_found>0">
                     <button mat-button tabIndex="-1" class="mat-icon-button" (click)="show_next_message_researched()">
-                        <mat-icon>keyboard_arrow_up</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_up</mat-icon>
                     </button>
                     <button mat-button tabIndex="-1" class="mat-icon-button" (click)="show_precedent_message_researched()">
-                        <mat-icon>keyboard_arrow_down</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
                     </button>
                     <div style="margin-left: 5px;">
                         {{number_click_top}} sur {{number_of_messages_found}} pour {{message_researched}}
@@ -219,7 +219,7 @@
                     
 
                     <button mat-icon-button class="cancel-response" style="margin: auto 0px auto auto;" (click)="cancel_show_research_results()">
-                        <mat-icon>close</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                     </button>
                     <!--<button (click)="cancel_show_research_results()" style="margin: auto 0px auto auto;">
                         Terminer
@@ -231,7 +231,7 @@
 
                     
                     <button mat-icon-button class="cancel-response" (click)="cancel_show_research_results()">
-                        <mat-icon>close</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                     </button>
                     <!--<button (click)="cancel_show_research_results()">
                         Terminer
@@ -326,19 +326,19 @@
                                             </div>
 
                                             <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                                                <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_horiz</mat-icon>
                                             </button>
                                             <mat-menu  #artworkOptions="matMenu">
                                                 <button class="mat-menu-item" mat-menu-item (click)="delete_message(list_of_messages.length -1 - i)" > 	
-                                                    <mat-icon class="item-icon">edit</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                                                     <span>Supprimer</span>
                                                 </button>
                                                 <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)"> 	
-                                                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                     <span>Répondre</span>
                                                 </button>
                                                 <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
-                                                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                     <span>Réagir</span>
                                                 </button>
                                             </mat-menu>
@@ -606,15 +606,15 @@
                                             </div>
 
                                             <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                                                <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_horiz</mat-icon>
                                             </button>
                                             <mat-menu  #artworkOptions="matMenu">
                                                 <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)" > 	
-                                                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                     <span>Répondre</span>
                                                 </button>
                                                 <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
-                                                    <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                     <span>Réagir</span>
                                                 </button>
                                             </mat-menu>
@@ -747,19 +747,19 @@
                                     </div>
 
                                     <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                                        <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_horiz</mat-icon>
                                     </button>
                                     <mat-menu  #artworkOptions="matMenu">
                                         <button class="mat-menu-item" mat-menu-item (click)="delete_message(list_of_messages.length -1 - i)" > 	
-                                            <mat-icon class="item-icon">edit</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                                             <span>Supprimer</span>
                                         </button>
                                         <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)"> 	
-                                            <mat-icon class="item-icon">view_carousel</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                             <span>Répondre</span>
                                         </button>
                                         <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
-                                            <mat-icon class="item-icon">view_carousel</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                             <span>Réagir</span>
                                         </button>
                                     </mat-menu>
@@ -1062,15 +1062,15 @@
                                         </div>
 
                                         <button *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" mat-icon-button class="optionsMenu" [matMenuTriggerFor]="artworkOptions">
-                                            <mat-icon class="optionsButton">more_horiz</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_horiz</mat-icon>
                                         </button>
                                         <mat-menu  #artworkOptions="matMenu">
                                             <button class="mat-menu-item" mat-menu-item (click)="respond_to_message(list_of_messages.length -1 - i)" > 	
-                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                 <span>Répondre</span>
                                             </button>
                                             <button class="mat-menu-item" mat-menu-item (click)="show_reactions(i,$event)" > 	
-                                                <mat-icon class="item-icon">view_carousel</mat-icon>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">view_carousel</mat-icon>
                                                 <span>Réagir</span>
                                             </button>
                                         </mat-menu>
@@ -1159,7 +1159,7 @@
 
                 <div *ngIf="spam!='false' && block_chat" class="add-to_contact">
                     <div *ngIf="who_blocked=='user'">
-                        vous avez été bloqué par l'utilisateur
+                        Utilisateur suspendu
                     </div>
                     <div *ngIf="who_blocked!='user'">
                         vous avez bloqué l'utilisateur
@@ -1195,7 +1195,7 @@
                             </div>
 
                             <button mat-icon-button class="cancel-response" (click)="cancel_response()">
-                                <mat-icon>close</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                             </button>
                             
                             <!--<button class="cancel-response" (click)="cancel_response()">can</button>-->
@@ -1209,7 +1209,7 @@
 
                                     
                                     <button mat-icon-button (click)="remove_attachment(i)">
-                                        <mat-icon>close</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                     </button>
                                     
                                     <!--<button (click)=remove_attachment(i)>remove</button>-->
@@ -1241,7 +1241,7 @@
                                 <div class="select-button">
                                     <label>
                                         <div style="margin: auto auto;display:flex;">
-                                            <mat-icon>insert_photo</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">insert_photo</mat-icon>
                                         </div>
                                         <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
                                     </label>
@@ -1259,7 +1259,7 @@
                             onblur="this.placeholder = 'Ecrivez un message...'"
                             class="form-control form-control-dark large-form" type="text" [placeholder]="'Ecrivez un message...'"></textarea>
                             <!--<button  mat-icon-button (click)="send_message()" class="send-button">
-                                <mat-icon >send</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" >send</mat-icon>
                             </button>-->
                         </div>
     

@@ -55,36 +55,41 @@
     min-width: 100px;
   }
   
-    
   .see-more {
     display: flex;
     width: 90%;
     height: 40px;
+    border-radius: 4px 4px 0px 0px;
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
     border-bottom: 4px solid rgb(230 230 230);
     text-align: center;
-    margin: 10px auto 10px auto;
+    margin: 10px auto 30px auto;
     cursor: pointer;
-    transition:background-color 200ms;
-    }
+    outline: none;
+    background: unset;
+    transition: background-color 100ms, border-color 100ms;
+    
   
-    .see-more:hover {
-      border-bottom:4px solid rgb(56, 81, 129);
-      background-color:rgb(235, 235, 235);
+    &:hover {
+      border-bottom: 4px solid rgb(56, 81, 129);
+      background-color: rgb(235, 235, 235);
+      mat-icon {
+        color: rgb(56, 81, 129);
+      }
     }
-  
-    .see-more .icon {
-    width:25px;
-    height:25px;
-    margin:auto auto;
-    mask-image: url("../../assets/img/svg/see-more.svg");
-    -webkit-mask-image: url("../../assets/img/svg/see-more.svg");
-    background-color: #203864;
+    &:active {
+      background-color: rgb(228, 228, 228);
     }
-  
-    .see-more:hover .icon {
-    background-color:rgb(56, 81, 129);
+    mat-icon {
+      margin: auto;
+      width: unset;
+      height: unset;
+      font-size: 36px;
+      color: #b1b1b1;
     }
-  
+  }
  
 
 

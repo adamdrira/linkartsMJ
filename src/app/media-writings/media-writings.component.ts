@@ -36,12 +36,14 @@ export class MediaWritingsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    var width = $('.media-container').width();
-    var n = Math.floor(width/250);
+    //var width = $('.media-container').width();
+    var n = Math.floor(this.width/250);
     this.number_of_writings_to_show=n;
     this.cd.detectChanges()
   }
   
+
+
   @Output() send_number_of_thumbnails2 = new EventEmitter<object>();
   @Output() list_of_writings_retrieved_emitter = new EventEmitter<object>();
   cancelled: number;
@@ -53,19 +55,20 @@ export class MediaWritingsComponent implements OnInit {
   @Input() sorted_artpieces_scenario: any[];
   @Input() sorted_artpieces_article: any[];
   @Input() sorted_artpieces_poetry: any[];
+  @Input() can_see_more_writings: any[];
   
-
+  @Input() width: number;
   @Input() now_in_seconds: number;
 
   number_of_writings_to_show=0;
   show_more=[false,false,false,false];
   list_of_contents_sorted:boolean=false;
   number_of_thumbnails=0;
-  
+ 
   ngOnInit() {
-    var width = $('.media-container').width();
-    var n = Math.floor(width/250);
-    this.number_of_writings_to_show=n;
+    //var width = $('.media-container').width();
+    var n = Math.floor(this.width/250);
+    this.number_of_writings_to_show=(n<6)?n:6;
     this.number_of_thumbnails=this.sorted_artpieces_illustrated_novel.length +
       this.sorted_artpieces_roman.length +
       this.sorted_artpieces_scenario.length +
@@ -74,72 +77,8 @@ export class MediaWritingsComponent implements OnInit {
 
   }
 
-  /*j=0;
-  number_retrieved=false;
-  send_number_of_thumbnails(object){
-    console.log("send_number_of_thumbnails")
-    if(object.number!=this.number_of_writings_to_show){
-      this.list_of_contents_sorted=false;
-      this.number_of_writings_to_show=object.number;
-      if(this.j>0){
-        this.update_lists(this.number_of_writings_to_show);
-      }
-    }
-    this.j++;
-  }*/
-
-  /*number_of_loaded=0;
-  sendLoaded(object){
-    this.number_of_loaded++;
-
-    if(this.number_of_loaded==this.number_of_thumbnails){
-      this.update_lists(this.number_of_writings_to_show);
-    }
-  }*/
-
-  /*list_of_more_contents_sorted=false;
-  send_put_more_visible(event){
-    this.list_of_more_contents_sorted=true;
-    this.cd.detectChanges();
-  }
-
   
-  skeleton_array = Array(20);
-  number_of_skeletons_per_line = 1;
-  send_number_of_skeletons(object) {
-    this.number_of_skeletons_per_line=object.number;
-    this.cd.detectChanges();
-  }
-
-  update_lists(number){
-    console.log("update list ")
-    if( number== 1 ) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-    }
-    else if( number== 2) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 3) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 4 ) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 5) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5)").css("display","block");
-      $(".thumbnail-component-container:nth-of-type(6)").css("display","none");
-    }
-    else if( number== 6) {
-      $(".thumbnail-component-container:nth-of-type(1), .thumbnail-component-container:nth-of-type(2), .thumbnail-component-container:nth-of-type(3), .thumbnail-component-container:nth-of-type(4), .thumbnail-component-container:nth-of-type(5), .thumbnail-component-container:nth-of-type(6)").css("display","block");
-    }
-    this.list_of_contents_sorted=true;
-    this.list_of_writings_retrieved_emitter.emit({retrieved:true})
-    this.cd.detectChanges();
-  }*/
-
+ 
 
 
 
@@ -151,21 +90,24 @@ export class MediaWritingsComponent implements OnInit {
   }
 
     
-  get_number_of_thumbnails(category){
-    if(category=='Roman illustré'){
-      return this.sorted_artpieces_illustrated_novel.length;
+  see_more_writings(category){
+    if(category=='Roman illustré' && this.can_see_more_writings[2]){
+      return true;
     }
-    else if(category=='Poésie'){
-      return this.sorted_artpieces_poetry.length;
+    else if(category=='Poésie' && this.can_see_more_writings[3]){
+      return true;
     }
-    else if(category=='Roman'){
-      return this.sorted_artpieces_roman.length;
+    else if(category=='Roman' && this.can_see_more_writings[1]){
+      return true;
     }
-    else if(category=='Scénario'){
-      return this.sorted_artpieces_scenario.length;
+    else if(category=='Scénario' && this.can_see_more_writings[4]){
+      return true;
     }
-    else if(category=='Article'){
-      return this.sorted_artpieces_article.length;
+    else if(category=='Article' && this.can_see_more_writings[0]){
+      return true;
+    }
+    else{
+      return false
     }
     
     

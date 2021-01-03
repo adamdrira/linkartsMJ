@@ -116,10 +116,13 @@ export class AddAlbumDrawingComponent implements OnInit {
 
   }
 
-
+  show_icon=false;
   ngAfterViewInit() {
 
-    
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
 
     this.swiper = new Swiper('.swiper-container', {
       scrollbar: {

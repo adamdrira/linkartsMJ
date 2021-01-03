@@ -98,20 +98,41 @@ export class AccountComponent implements OnInit {
     this.navbar.show();
   }
 
+  @HostListener('window:focus', ['$event'])
+  onFocus(event: any): void {
+    if(this.opened_section){
+      this.update_background_position(this.opened_section);
+    }
+    
+  }
+
+  @HostListener('window:blur', ['$event'])
+  onBlur(event: any): void {
+    if(this.opened_section){
+      this.update_background_position(this.opened_section);
+    }
+  }
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    
-    this.update_background_position(this.opened_section);
-
-    this.update_number_of_comics_to_show();
-    if(this.list_visibility_albums_drawings){
-      this.update_number_of_drawings_to_show();
+    console.log("resize")
+    if(this.width!=this.main_container.nativeElement.offsetWidth*0.9){
+      this.width=this.main_container.nativeElement.offsetWidth*0.9;
+      this.update_background_position(this.opened_section);
+  
+      this.update_number_of_comics_to_show();
+      if(this.list_visibility_albums_drawings){
+       
+        console.log(this.width);
+        this.prevent_shiny=true;
+        this.update_number_of_drawings_to_show();
+      }
+      this.update_new_contents();
     }
-    this.update_new_contents();
-    this.cd.detectChanges();
+   
   }
 
+  width:number;
   new_contents_loading=false;
   number_of_ads_to_show=5;
 
@@ -168,6 +189,7 @@ export class AccountComponent implements OnInit {
   /************* sections ************/
   //0 : artworks, 1 : posters, etc.
   opened_section:number=-1;
+  opened_section_small:number=-1;
   //bd, dessins, écrits de l'auteur, etc.
   opened_category:number = -1;
   //-1 : no album add, 1 : add comic, 2 : add drawing, 3 : add writing
@@ -314,38 +336,23 @@ export class AccountComponent implements OnInit {
 
   page_not_found=false;
 
+  list_of_sections_to_load=[];
   /******************************************* START ON INIT ********************************************/
   /******************************************* START ON INIT ********************************************/
   /******************************************* START ON INIT ********************************************/
 
 
   ngOnInit()  {
-    
+ 
    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     if(!(this.user_id && this.user_id>0) || !( this.pseudo && this.pseudo.length>0)){
+      console.log("1 not found")
       this.page_not_found=true;
       return
     }
 
-    this.Profile_Edition_Service.get_current_user().subscribe(u=>{
-      if(u[0] && u[0].status!='deleted'){
-        this.visitor_id=u[0].id
-        this.visitor_name=u[0].nickname;
-        this.type_of_profile=u[0].status;
-        this.type_of_profile_retrieved=true;
-        
-        this.cd.detectChanges()
-      }
-      else{
-        this.page_not_found=true;
-        return
-      }
-
-      
-
-    });
 
 
     this.Profile_Edition_Service.retrieve_profile_data_links(this.user_id).subscribe(l=>{
@@ -381,44 +388,50 @@ export class AccountComponent implements OnInit {
 
    
 
-    this.Profile_Edition_Service.retrieve_profile_data( this.user_id ).subscribe( r => {
-      if( r[0]  && this.visitor_id==r[0].id){
+    this.Profile_Edition_Service.retrieve_profile_data_and_check_visitor( this.user_id ).subscribe( s => {
+      console.log("data retrieved")
+      console.log(s)
+      let user=s[0].user;
+      this.visitor_id=s[0].visitor.id
+      this.type_of_profile=s[0].visitor.status;
+      this.type_of_profile_retrieved=true;
+      
+      if( user  && this.visitor_id==user.id){
+        console.log("visitor data retrieved")
         this.mode_visiteur = false;
-        this.mode_visiteur_added = true;
       }
-      else{
-        this.mode_visiteur = true;
-        this.mode_visiteur_added = true;
-      }
+      this.mode_visiteur_added = true;
 
-      if( !r[0] || r[0].status=="visitor") {
+      this.cd.detectChanges()
+      if( !user || user.status=="visitor") {
+        console.log("3 not found")
         this.page_not_found=true;
         return
       }
-      else if(r[0] && ((r[0].status=='suspended' && this.visitor_id!=r[0].id) || r[0].status=="deleted") ){
+      else if(user && ((user.status=='suspended' && this.visitor_id!=user.id) || user.status=="deleted") ){
         
         // if author suspended and visitor, if account doesn't exist or deleted
         this.profile_not_found=true;
 
-        this.cd.detectChanges();
+        
         //this.update_background_position( this.opened_section );;
 
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-
+        this.author_name = user.firstname + ' ' + user.lastname;
+        this.cd.detectChanges();
        
        
-        if(r[0].status=="suspended"){
-          this.gender=r[0].gender;
-          this.firstName=r[0].firstname;
-          this.lastName=r[0].lastname;
-          this.primary_description=r[0].primary_description;
+        if(user.status=="suspended"){
+          this.gender=user.gender;
+          this.firstName=user.firstname;
+          this.lastName=user.lastname;
+          this.primary_description=user.primary_description;
          
-          this.type_of_account=r[0].type_of_account;
+          this.type_of_account=user.type_of_account;
 
-          this.type_of_account_checked=r[0].type_of_account_checked;
-          this.certified_account=r[0].certified_account;
+          this.type_of_account_checked=user.type_of_account_checked;
+          this.certified_account=user.certified_account;
 
-          this.user_location=r[0].location;
+          this.user_location=user.location;
           this.profile_suspended=true;
          
         }
@@ -444,14 +457,15 @@ export class AccountComponent implements OnInit {
         return
       }
       
-      else if( this.pseudo != r[0].nickname ) {
+      else if( this.pseudo != user.nickname ) {
+        console.log("4 not found")
         this.page_not_found=true;
         return
       }
       
       else{
         // (not a visitor and account ok or suspended) or a visitor and account ok
-        if(r[0] && r[0].status=='suspended' && this.visitor_id==r[0].id){
+        if(user && user.status=='suspended' && this.visitor_id==user.id){
           this.my_profile_is_suspended=true;
 
           this.cd.detectChanges();
@@ -460,25 +474,25 @@ export class AccountComponent implements OnInit {
         }
         console.log(this.user_id)
 
-        this.author=r[0];
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-        this.gender=r[0].gender;
-        this.firstName=r[0].firstname;
-        this.lastName=r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.type_of_account=r[0].type_of_account;
-        this.primary_description_extended=r[0].primary_description_extended;
-        console.log(r[0])
+        this.author=user;
+        this.author_name = user.firstname + ' ' + user.lastname;
+        this.gender=user.gender;
+        this.firstName=user.firstname;
+        this.lastName=user.lastname;
+        this.primary_description=user.primary_description;
+        this.type_of_account=user.type_of_account;
+        this.primary_description_extended=user.primary_description_extended;
+        console.log(user)
         console.log(this.primary_description_extended)
-        this.type_of_account_checked=r[0].type_of_account_checked;
-        this.certified_account=r[0].certified_account;
+        this.type_of_account_checked=user.type_of_account_checked;
+        this.certified_account=user.certified_account;
 
-        this.user_location=r[0].location;
+        this.user_location=user.location;
         
 
         
           
-        if (this.visitor_id==r[0].id){
+        if (this.visitor_id==user.id){
           console.log("in thiiiiiiiiis")
           this.user_blocked=false;
           this.user_blocked_retrieved=true;
@@ -505,7 +519,7 @@ export class AccountComponent implements OnInit {
                         
             
             this.cd.detectChanges();
-            this.update_background_position( this.opened_section );;
+            this.update_background_position( this.opened_section );
 
           })
                   
@@ -518,6 +532,8 @@ export class AccountComponent implements OnInit {
           this.number_of_writings=r[0].number_of_writings;
           this.number_of_ads=r[0].number_of_ads;
           this.number_of_artpieces=this.number_of_comics+ this.number_of_drawings +  this.number_of_writings;
+          this.cd.detectChanges();
+          this.update_background_position(this.opened_section)
           if(!this.mode_visiteur){
             this.navbar.check_if_research_exists("Account","unknown",this.user_id,this.pseudo,"clicked").subscribe(p=>{
               if(!p[0].value){
@@ -531,30 +547,53 @@ export class AccountComponent implements OnInit {
         })
 
         if(this.type_of_profile=="suspended"){
-          this.open_section( 7 );
+          let cat = this.route.snapshot.data['category']
+          if(cat>=0){
+            this.opened_category=cat;
+            this.open_section( 7,false );
+          }
+          else{
+            this.open_section( 7,true );
+          }
+          
         }
         else if(this.route.snapshot.data['section']>5){
           if(this.mode_visiteur){
+            console.log("5 not found")
             this.page_not_found=true;
             return
           }
           else{
-            this.opened_section = this.route.snapshot.data['section'];
-      
-            this.open_section( this.opened_section );
-        
-            if( this.opened_section == 1 && this.route.snapshot.data['category'] != -1 ) {
-              this.open_category( this.route.snapshot.data['category'] );
+            this.list_of_sections_to_load[ this.route.snapshot.data['section']]=true;
+            let cat = this.route.snapshot.data['category']
+            if(cat>=0){
+              this.opened_category=cat;
+              this.open_section( this.route.snapshot.data['section'],false );
             }
+            else{
+              this.open_section( this.route.snapshot.data['section'],true );
+            }
+           
+            this.cd.detectChanges();
+            this.update_background_position(this.opened_section)
           }
 
         }
         else{
-          this.open_section( this.route.snapshot.data['section'] );
-      
-          if( this.opened_section == 1 && this.route.snapshot.data['category'] != -1 ) {
-            this.open_category( this.route.snapshot.data['category'] );
+          this.list_of_sections_to_load[ this.route.snapshot.data['section'] ]=true;
+          let cat = this.route.snapshot.data['category']
+          if(cat>=0){
+            this.opened_category=cat;
+            this.open_section( this.route.snapshot.data['section'],false );
           }
+          else{
+            this.open_section( this.route.snapshot.data['section'],true );
+          }
+         
+      
+          
+          this.cd.detectChanges();
+          this.update_background_position(this.opened_section)
         }
 
       }
@@ -570,10 +609,11 @@ export class AccountComponent implements OnInit {
         this.emphasized_artwork=r[0];
         this.emphasized_artwork_added=true;
       }
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
     });
 
     this.Subscribing_service.get_new_comic_contents(this.user_id).subscribe(r=>{
-      console.log(r[0])
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -590,6 +630,7 @@ export class AccountComponent implements OnInit {
                 this.display_new_comic_contents=true;
                 this.check_new_contents();
                 this.cd.detectChanges();
+                this.update_background_position(this.opened_section)
               }
             })
           }
@@ -606,6 +647,7 @@ export class AccountComponent implements OnInit {
                 this.display_new_comic_contents=true;
                 this.check_new_contents();
                 this.cd.detectChanges();
+                this.update_background_position(this.opened_section)
               }
             })
           }
@@ -615,6 +657,7 @@ export class AccountComponent implements OnInit {
         this.new_comic_contents_added=true;
         this.check_new_contents();
         this.cd.detectChanges();
+        this.update_background_position(this.opened_section)
       }
     });
 
@@ -634,6 +677,7 @@ export class AccountComponent implements OnInit {
                 this.display_new_drawing_contents=true;
                 this.check_new_contents();
                 this.cd.detectChanges();
+                this.update_background_position(this.opened_section)
               }
             })
           }
@@ -649,6 +693,7 @@ export class AccountComponent implements OnInit {
                 this.display_new_drawing_contents=true;
                 this.check_new_contents();
                 this.cd.detectChanges();
+                this.update_background_position(this.opened_section)
               }
             })
           }
@@ -657,6 +702,8 @@ export class AccountComponent implements OnInit {
       else{
         this.new_drawing_contents_added=true;
         this.check_new_contents();
+        this.cd.detectChanges();
+        this.update_background_position(this.opened_section)
       }
     });
 
@@ -665,7 +712,6 @@ export class AccountComponent implements OnInit {
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
           this.Writing_Upload_Service.retrieve_writing_information_by_id(r[0][i].publication_id).subscribe(s=>{
-            console.log(s[0]);
             if(s[0].status=="public"){
               this.new_writing_contents[i]=s[0];
             }
@@ -677,13 +723,17 @@ export class AccountComponent implements OnInit {
               this.display_new_writing_contents=true;
               this.check_new_contents();
               this.cd.detectChanges();
+              this.update_background_position(this.opened_section)
             }
           })
         }
+       
       }
       else{
         this.new_writing_contents_added=true;
         this.check_new_contents();
+        this.cd.detectChanges();
+        this.update_background_position(this.opened_section)
       }
     });
     
@@ -703,6 +753,8 @@ export class AccountComponent implements OnInit {
       else{
         this.list_of_ads_added=true;
       }
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
     })
 
     /**************************************  SUBSCRIBINGS  **********************************/
@@ -714,6 +766,7 @@ export class AccountComponent implements OnInit {
         this.subscribtion_checked=true;
         
         this.cd.detectChanges();
+        this.update_background_position(this.opened_section)
       }
     }); 
 
@@ -721,12 +774,15 @@ export class AccountComponent implements OnInit {
       if(Object.keys(information).length>0){
         this.subscribed_users_list=information[0];
       }
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
     });
 
     this.Subscribing_service.get_all_subscribings_by_user_id(this.user_id).subscribe(information=>{
 
       this.users_subscribed_to_list= information[0];
-      
+      this.cd.detectChanges();
+      this.update_background_position(this.opened_section)
     });
 
     /*********************************ALBUMS  ******************************************/
@@ -778,7 +834,7 @@ export class AccountComponent implements OnInit {
       this.list_writings = r[0];
       this.list_writings_added=true;
       this.cd.detectChanges();
-      this.update_background_position( this.opened_section );;
+      this.update_background_position( this.opened_section );
       this.Albums_service.get_albums_writings(this.user_id).subscribe(information=>{
         if(Object.keys(information).length!=0){
           for (let i=0; i <Object.keys(information).length;i++){
@@ -811,11 +867,15 @@ export class AccountComponent implements OnInit {
           this.list_albums_writings_added = true;
           this.get_number_of_writings_to_show();
         }
+        if( this.opened_section == 1 && this.route.snapshot.data['category']==2) {
+          console.log(this.route.snapshot.data['category'] )
+          this.open_category( this.route.snapshot.data['category'],true );
+        }
       })
     });
 
     
-    
+
       
   }
 
@@ -824,9 +884,12 @@ export class AccountComponent implements OnInit {
   display_new_comic_contents=false;
   display_new_writing_contents=false;
   display_new_drawing_contents=false;
- 
+  no_new_contents=false;
   check_new_contents(){
     if(this.new_drawing_contents_added && this.new_writing_contents_added && this.new_comic_contents_added){
+      if(!this.display_new_drawing_contents && !this.display_new_comic_contents && !this.display_new_writing_contents){
+        this.no_new_contents=true;
+      }
       this.new_contents_added=true;
       this.cd.detectChanges()
     }
@@ -865,6 +928,10 @@ export class AccountComponent implements OnInit {
         else{
           this.list_albums_bd_added = true;
           this.get_number_of_comics_to_show()
+        }
+        if( this.opened_section == 1 && this.route.snapshot.data['category']==0) {
+          console.log(this.route.snapshot.data['category'] )
+          this.open_category( this.route.snapshot.data['category'],true );
         }
       });
     }
@@ -913,6 +980,10 @@ export class AccountComponent implements OnInit {
           this.list_albums_drawings_added = true;
           this.get_number_of_drawings_to_show();
         }
+        if( this.opened_section == 1 && this.route.snapshot.data['category']==1) {
+          console.log(this.route.snapshot.data['category'] )
+          this.open_category( this.route.snapshot.data['category'],true);
+        }
       });
     }
     
@@ -946,39 +1017,43 @@ export class AccountComponent implements OnInit {
 
 
 
-  compareObjects(o1: any, o2: any): boolean {
-    return o1 === o2;
-  }
+ 
   onCategoryChange(e:any) {
+    console.log(e.value)
+    console.log(this.opened_section)
+    
     if( e.value == 3 ) {
-      this.open_section(0);
       this.see_subscribers();
     }
     else if ( e.value == 4 ) {
-      this.open_section(0);
       this.see_subscribings();
     }
     else if ( e.value == 8 ) {
       this.router.navigateByUrl('/add-artwork');
     }
     else {
-      this.open_section(e.value);
+      if(e.value==this.opened_section){
+        return
+      }
+      this.open_section(e.value,true);
     }
   }
 
   update_new_contents() {
     console.log("main_container")
-    console.log(this.main_container.nativeElement.offsetWidth)
+    console.log(this.main_container.nativeElement.offsetWidth*0.9)
     let width = this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
-    if(  width < 500 ) {
-      this.number_of_new_contents_to_show=6;
+    if(width>0){
+      let n=Math.floor(width/250);
+      if(n>3){
+        this.number_of_new_contents_to_show = (n<6)?n:6;
+      }
+      else{
+        this.number_of_new_contents_to_show = 6;
+      }
+      
       this.cd.detectChanges();
-    }
-    else if(width>0){
-      this.number_of_new_contents_to_show = Math.floor(width/250);
-      this.cd.detectChanges();
-      console.log(Math.floor(width/250))
     }
 
     console.log(this.number_of_new_contents_to_show)
@@ -1043,10 +1118,18 @@ export class AccountComponent implements OnInit {
   @ViewChild("main_container") main_container:ElementRef;
 
 
-
-
+  
+  show_icon=false;
   ngAfterViewInit() {
+    
+    let THIS=this;
+    $(window).ready(function () {
+      console.log("load")
+      THIS.show_icon=true;
+    })
 
+    this.update_background_position( this.opened_section );
+    this.width=this.main_container.nativeElement.offsetWidth*0.9;
     this.update_new_contents();
     this.profileHovered.nativeElement.addEventListener('mouseenter', e => {
       this.showEditCoverPic = false;
@@ -1073,36 +1156,37 @@ export class AccountComponent implements OnInit {
   }
 
 
-  open_section(i : number) {
+  open_section(i : number,not_first) {
     console.log("open section")
     console.log(i)
     console.log(this.opened_section)
+    console.log(not_first)
+    console.log(this.list_of_sections_to_load)
+    console.log(this.opened_category)
     if( this.opened_section == i ) {
       this.cd.detectChanges();
       this.update_background_position(i);
       return;
     }
-
-    if(i==0){
-      /*this.display_new_comic_contents=false;
-      this.display_new_writing_contents=false;
-      this.display_new_drawing_contents=false;*/
-      this.new_contents_added=false;
-    }
    
+    //this.opened_category = -1;
+    this.list_of_sections_to_load[i ]=true;
 
-    this.opened_category = -1;
     this.opened_section=i;
-    this.update_background_position(i);
+    this.opened_section_small=i;
     this.cd.detectChanges();
-    if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
-    else if( i == 1 ) { 
-      this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
+    this.update_background_position(i);
+    if(not_first){
+      if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
+      else if( i == 1 ) { 
+        this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
+      }
+      else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
+      else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
+      else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
+      else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
     }
-    else if( i == 2 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/ads`); }
-    else if( i == 5 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/about`); }
-    else if( i == 6 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/archives`); }
-    else if( i == 7 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/my_account`); }
+    
    
   }
 
@@ -1122,38 +1206,146 @@ export class AccountComponent implements OnInit {
   }
 
   //For section 0 : Artworks
-  open_category(i : number) {
-
-    if( this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
+  put_category_visible:boolean[]=[];
+  category_to_load:boolean[]=[];
+  add_album_to_load=[];
+  open_category(i : number,first) {
+    console.log("open cat ")
+    console.log(i)
+    console.log(this.category_to_load)
+    console.log(this.opened_category)
+    if( !first && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
     this.contents_loading=false;
    
     if(this.opened_section==1){
       if((this.mode_visiteur && this.number_of_comics==0 && i==0) || (!this.mode_visiteur && this.number_of_comics==0 && i==0)){
-        this.opened_category=-1;
+        this.opened_category=i;
         return;
       }
       if((this.mode_visiteur && this.number_of_drawings==0 && i==1) || (!this.mode_visiteur && this.number_of_drawings==0 && i==1)){
-        this.opened_category=-1;
+        this.opened_category=i;
         return;
       }
       if((this.mode_visiteur && this.number_of_writings==0 && i==2) || (!this.mode_visiteur && this.number_of_writings==0 && i==2)){
-        this.opened_category=-1;
+        this.opened_category=i;
         return;
       }
     }
-    this.prevent_shiny=false;
+    //this.prevent_shiny=false;
+    for(let j=0;j<this.put_album_visible.length;j++){
+      this.put_album_visible[j]=false;
+    }
+    /*this.put_category_visible[0]=false;
+    this.put_category_visible[1]=false;
+    this.put_category_visible[2]=false;*/
+    this.category_to_load[i]=true;
+    this.add_album_to_load[0]=true;
     this.opened_category=i;
+    if( this.opened_category==0 && this.opened_section==1) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); }
+    else if(this.opened_category==1 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); }
+    else if( this.opened_category==2 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); }
+   
+ 
+    console.log("category changed")
     this.add_album=-1;
     this.opened_album=-1;
-    this.open_album( 0 );
-    this.cd.detectChanges();
+   
+    this.open_album( 0,true);
+   
+   
+    console.log("end opened cat")
+    console.log(this.opened_category)
+    console.log(this.put_category_visible)
+    
+    
   }
 
-      
+  contents_loading=false;
+  put_album_visible=[false]
+  albums_to_show_comics=[false];
+  albums_to_show_drawings=[false];
+  albums_to_show_writings=[false];
+  albums_with_masonry_loaded=[];
+  open_album(i : number,from_category) {
+    console.log("open album " + i)
+    if( this.opened_album == i || this.add_album != -1 ) {
+      if(this.add_album!=-1){
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:true, text:'Voulez-vous quitter ce le mode création ?'},
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if(result){
+            this.start_add_album(this.add_album)
+          }
+        })
+      }
+      return;
+    }
 
- current_opened_album=-1;
+    if(this.opened_section==1){
+      this.contents_loading=true;
+    }
+    
+    if(!from_category && this.opened_category==1){
+      if($('.grid').masonry){
+        $('.grid').masonry().masonry('destroy')
+      }
+    }
+    
+  
+   
+    this.compteur_visibility_drawings=0;
+    this.compteur_drawings_thumbnails=0;  
+    this.opened_album=i;
+    for(let j=0;j<this.put_album_visible.length;j++){
+      this.put_album_visible[j]=false;
+    }
+    if(this.opened_category==0){
+      this.albums_to_show_comics[i]=true;
+    }
+    if(this.opened_category==1){
+      if(this.albums_to_show_drawings[i] && !this.albums_with_masonry_loaded[i]){
+        this.albums_to_show_drawings[i]=false;
+        this.cd.detectChanges();
+        this.albums_to_show_drawings[i]=true;
+      }
+      else{
+        this.albums_to_show_drawings[i]=true;
+      }
+     
+      
+      
+    }
+    if(this.opened_category==2){
+      this.albums_to_show_writings[i]=true;
+    }
+    console.log("detect changes")
+    this.cd.detectChanges();
+   
+    let interval = setInterval( () => {
+      console.log("interval")
+      if(this.opened_category==1){
+        if(this.albums_with_masonry_loaded[i]){
+          console.log("load masonry here")
+          this.ini_masonry();
+          
+        }
+      }
+      else{
+        this.put_album_visible[i]=true;
+      }
+     
+      clearInterval(interval);
+      this.cd.detectChanges();
+    },200)
+    console.log(this.opened_album)
+    console.log(this.put_album_visible)
+    console.log("end opened album")
+  }
+
+  current_opened_album=-1;
   start_add_album(i : number) {
     
     if(this.opened_category==0 && this.list_titles_albums_bd_added.length==10){
@@ -1178,16 +1370,19 @@ export class AccountComponent implements OnInit {
     if( this.add_album != -1 ) {
       this.add_album = -1;
       this.cd.detectChanges();
-      this.open_album( this.current_opened_album );
+      this.open_album( this.current_opened_album,true );
       return;
     }
+    
     this.current_opened_album=this.opened_album;
     this.opened_album=-1;
+    this.add_album_to_load[i]=true;
     this.add_album = i;
   }
 
   // number of grid/number of albums
   reload_masonry(){
+    console.log("reaload masonry")
      var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
       //columnWidth: 200,
@@ -1215,11 +1410,16 @@ export class AccountComponent implements OnInit {
       //horizontalOrder: true,
       
     });
-    
+
+    //console.log($grid)
+
     $grid.on( 'layoutComplete', function() {
+      //console.log($grid)
       console.log("layout complete")
       
       $grid.masonry('reloadItems');
+      
+      
       
       THIS.compteur_visibility_drawings+=1;
       let total=0;
@@ -1240,6 +1440,8 @@ export class AccountComponent implements OnInit {
         console.log("put drawing v")
         THIS.contents_loading=false;
         THIS.list_visibility_albums_drawings=true;
+        THIS.albums_with_masonry_loaded[THIS.opened_album]=true;
+        THIS.put_album_visible[THIS.opened_album]=true;
       }
       
       THIS.prevent_see_more=false;
@@ -1256,35 +1458,13 @@ export class AccountComponent implements OnInit {
 
   
  
-  contents_loading=false;
-  open_album(i : number) {
-    
-    if( this.opened_album == i || this.add_album != -1 ) {
-      return;
-    }
-    if(this.opened_section==1){
-      this.contents_loading=true;
-    }
-    console.log( $('.grid').masonry())
-    if($('.grid').masonry()){
-      $('.grid').masonry('destroy');
-    }
-   
-    this.prevent_shiny=false;
-    this.compteur_visibility_drawings=0;
-    this.compteur_drawings_thumbnails=0;  
-    this.list_visibility_albums_drawings=false;
-    this.opened_album=i;
-    this.reset_number_of_comics_to_show();
-    this.reset_number_of_drawings_to_show();
-    this.reset_number_of_writings_to_show();
-  }
+  
 
 
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
-      panelClass: 'popupAddStoryClass',
+      panelClass: 'popupUploadPictureClass',
     });
   }
 
@@ -1525,9 +1705,16 @@ export class AccountComponent implements OnInit {
     let width=this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
     console.log(this.list_titles_albums_bd)
-    if(this.list_albums_bd_added && !this.got_number_of_comics_to_show ){
+    if(this.list_albums_bd_added && !this.got_number_of_comics_to_show && this.list_titles_albums_bd_added.length>0){
       console.log("in it")
-      this.number_of_comics_variable=Math.floor(width/250);
+      let n=Math.floor(width/250);
+      if(n>3){
+        this.number_of_comics_variable = (n<6)?n:6;
+      }
+      else{
+        this.number_of_comics_variable = 6;
+      }
+      
       this.got_number_of_comics_to_show=true;
       if(this.list_titles_albums_bd.length-1>=6){
         this.number_of_lines_comics=1;
@@ -1552,7 +1739,15 @@ export class AccountComponent implements OnInit {
   update_number_of_comics_to_show(){
     if(this.got_number_of_comics_to_show){
       let width=this.main_container.nativeElement.offsetWidth*0.9;
-      let variable =Math.floor(width/250);
+      let variable;
+      let n=Math.floor(width/250);
+      if(n>3){
+        variable = (n<6)?n:6;
+      }
+      else{
+        variable= 6;
+      }
+      
       console.log(width)
       if(variable!=this.number_of_comics_variable && variable>0 ){
         for(let i=0;i<this.list_titles_albums_bd.length-1;i++){
@@ -1571,13 +1766,12 @@ export class AccountComponent implements OnInit {
       this.get_number_of_comics_to_show()
     }
     
-    
   }
 
   reset_number_of_comics_to_show(){
     console.log("rest number of comics")
     console.log("main_container")
-    console.log(this.main_container.nativeElement.offsetWidth)
+    console.log(this.main_container.nativeElement.offsetWidth*0.9)
     if(this.got_number_of_comics_to_show){
       if(this.opened_album>0){
         this.compteur_number_of_comics= this.number_of_comics_variable*2;
@@ -1605,105 +1799,7 @@ export class AccountComponent implements OnInit {
   }
 
  
-  /*display_albums_comics_thumbnails(){
-    this.compteur_comics_thumbnails++;
-    if(this.mode_visiteur){
-      if(this.opened_album==0){
-        let total=0;
-        if(this.list_bd_albums_status[0]!='hidden'){
-          total+=this.list_bd_oneshot.slice(0,this.number_of_comics_to_show_by_album[0]).length;
-        }
-        if(this.list_bd_albums_status[1]!='hidden'){
-          total+=this.list_bd_series.slice(0,this.number_of_comics_to_show_by_album[1]).length;
-        }
-        for(let i=0;i<this.list_albums_bd.length;i++){
-          if(this.list_bd_albums_status[i+2]!='private'){
-            total+=this.list_albums_bd[i].slice(0,this.number_of_comics_to_show_by_album[i+2]).length;
-          }
-        }
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.contents_loading=false;
-          this.display_comics_thumbnails=true;
-          console.log("display_comics_thumbnails")
-        }
-      }
-      if(this.opened_album==1){
-        let total=0;
-        if(this.list_bd_albums_status[0]!='hidden'){
-          total+=this.list_bd_oneshot.slice(0,this.number_of_comics_to_show_by_album[0]).length;
-        }
-        if(this.compteur_comics_thumbnails==total){
-          this.contents_loading=false;
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-        }
-      }
-      if(this.opened_album==2){
-        let total=0;
-        if(this.list_bd_albums_status[1]!='hidden'){
-          total+=this.list_bd_series.slice(0,this.number_of_comics_to_show_by_album[1]).length;
-        }
-        if(this.compteur_comics_thumbnails==total){
-          this.contents_loading=false;
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-        }
-      }
-      if(this.opened_album>2){
-        let total=0;
-        if(this.list_bd_albums_status[this.opened_album]!='private'){
-          total+=this.list_albums_bd[this.opened_album-3].slice(0,this.number_of_comics_to_show_by_album[this.opened_album-1]).length;
-        }
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.contents_loading=false;
-          this.display_comics_thumbnails=true;
-        }
-      }
-    }
-    else{
-      if(this.opened_album==0){
-        let total=this.list_bd_oneshot.slice(0,this.number_of_comics_to_show_by_album[0]).length  
-        +this.list_bd_series.slice(0,this.number_of_comics_to_show_by_album[1]).length;
-        
-        for(let i=0;i<this.list_albums_bd.length;i++){
-          total+=this.list_albums_bd[i].slice(0,this.number_of_comics_to_show_by_album[i+2]).length;
-        }
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-          console.log("display_comics_thumbnails")
-          this.contents_loading=false;
-        }
-      }
-      if(this.opened_album==1){
-        let total=this.list_bd_oneshot.slice(0,this.number_of_comics_to_show_by_album[0]).length;
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-          this.contents_loading=false;
-        }
-      }
-      if(this.opened_album==2){
-        let total=this.list_bd_series.slice(0,this.number_of_comics_to_show_by_album[1]).length;
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-          this.contents_loading=false;
-        }
-      }
-      if(this.opened_album>2){
-        let total=this.list_albums_bd[this.opened_album-3].slice(0,this.number_of_comics_to_show_by_album[this.opened_album-1]).length;;
-        if(this.compteur_comics_thumbnails==total){
-          this.compteur_comics_thumbnails=0;
-          this.display_comics_thumbnails=true;
-          this.contents_loading=false;
-        }
-      }
-    }
-    
-  }*/
+
 
 /**********************************************DISplay drawings thumbnails******************** */
 /**********************************************DISplay drawings thumbnails******************** */
@@ -1726,16 +1822,20 @@ export class AccountComponent implements OnInit {
   prevent_see_more=false;
   get_number_of_drawings_to_show(){
     console.log("get_number_of_drawings_to_show")
-    let width2 =$('.bd-container').width()*0.9;
-    console.log("width2")
-    console.log(width2)
-    let width=this.main_container.nativeElement.offsetWidth*0.9*0.9;
+    let width=this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
     console.log(this.list_albums_drawings_added)
     console.log(this.got_number_of_drawings_to_show)
-    if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show){
+    if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show && this.list_titles_albums_drawings_added.length>0){
       console.log("in it")
-      this.number_of_drawings_variable=Math.floor(width/210);
+      let n=Math.floor(width/210);
+      if(n>3){
+        this.number_of_drawings_variable = (n<6)?n:6;
+      }
+      else{
+        this.number_of_drawings_variable = 6;
+      }
+      
       this.got_number_of_drawings_to_show=true;
       if(this.list_titles_albums_drawings.length-1>=6){
         this.number_of_lines_drawings=1;
@@ -1764,9 +1864,16 @@ export class AccountComponent implements OnInit {
       console.log(this.got_number_of_drawings_to_show)
       console.log(this.main_container.nativeElement)
       
-        let width=this.main_container.nativeElement.offsetWidth*0.9*0.9;
+        let width=this.main_container.nativeElement.offsetWidth*0.9;
         console.log(width)
-        let variable =Math.floor(width/210);
+        let variable;
+        let n=Math.floor(width/210);
+        if(n>3){
+          variable = (n<6)?n:6;
+        }
+        else{
+          variable = 6;
+        }
         console.log(this.number_of_drawings_variable)
         console.log(variable)
         if(variable!=this.number_of_drawings_variable && variable>0){
@@ -1901,8 +2008,9 @@ export class AccountComponent implements OnInit {
     this.cd.detectChanges();
   }
 
- 
+  
   sendLoaded(event){
+    console.log("load")
     if(!this.updating_drawings_for_zoom){
       this.compteur_drawings_thumbnails++;
       if(this.detect_new_compteur_drawings){
@@ -2001,9 +2109,15 @@ export class AccountComponent implements OnInit {
     console.log("get number of writings to _show")
     let width=this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
-    if(this.list_albums_writings_added && !this.got_number_of_writings_to_show){
+    if(this.list_albums_writings_added && !this.got_number_of_writings_to_show && this.list_titles_albums_writings_added.length>0){
       console.log("in it")
-      this.number_of_writings_variable=Math.floor(width/250);
+      let n=Math.floor(width/250);
+      if(n>3){
+        this.number_of_writings_variable = (n<6)?n:6;
+      }
+      else{
+        this.number_of_writings_variable = 6;
+      }
       this.got_number_of_writings_to_show=true;
       if(this.list_titles_albums_writings.length-1>=6){
         this.number_of_lines_writings=1;
@@ -2030,7 +2144,14 @@ export class AccountComponent implements OnInit {
     if(this.got_number_of_writings_to_show){
       let width=this.main_container.nativeElement.offsetWidth*0.9;
       console.log(width)
-      let variable =Math.floor(width/250);
+      let variable;
+      let n=Math.floor(width/250);
+      if(n>3){
+        variable= (n<6)?n:6;
+      }
+      else{
+        variable = 6;
+      }
       console.log(variable)
       console.log(this.number_of_writings_variable)
       if(variable!=this.number_of_writings_variable && variable>0){
@@ -2261,14 +2382,13 @@ export class AccountComponent implements OnInit {
   }
 
   /***********************************************see more ddrawings*************************** */
-/***********************************************see more ddrawings*************************** */
-/***********************************************see more ddrawings*************************** */
+  /***********************************************see more ddrawings*************************** */
+  /***********************************************see more ddrawings*************************** */
 
-prevent_shiny=false;
+  prevent_shiny=false;
   see_more_drawings(album_number,album_section_number){
-    console.log("in see more drawings")
+  
     this.updating_drawings_for_zoom=false;
-    console.log(this.prevent_see_more)
     
     if(this.prevent_see_more){
       return;
@@ -2283,6 +2403,9 @@ prevent_shiny=false;
        return
     } 
     else{
+      console.log("in see more drawings")
+      console.log(this.list_drawings_onepage)
+      console.log(this.number_of_drawings_to_show_by_album)
       this.prevent_shiny=true;
       this.cd.detectChanges();
       this.new_contents_loading=true;
@@ -2306,6 +2429,10 @@ prevent_shiny=false;
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
+        if(this.opened_album>0){
+          this.total_for_new_compteur+= this.total_for_new_compteur;
+        }
+        
       }
       else if(album_number==1){
         console.log(this.list_drawings_artbook)
@@ -2315,6 +2442,9 @@ prevent_shiny=false;
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
+        if(this.opened_album>0){
+          this.total_for_new_compteur+= this.total_for_new_compteur;
+        }
       }
       else{
         console.log(this.list_albums_drawings[album_number-2])
@@ -2323,6 +2453,9 @@ prevent_shiny=false;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
+        }
+        if(this.opened_album>0){
+          this.total_for_new_compteur+= this.total_for_new_compteur;
         }
       }
       console.log(this.compteur_drawings_thumbnails)
@@ -2423,16 +2556,16 @@ unblock_user(){
       console.log(r[0].date)
       this.chatService.add_chat_friend(this.user_id,r[0].date).subscribe(r=>{
         console.log(r[0])
-        this.user_blocked=false;
+        location.reload()
       })
     }
     else{
-      this.user_blocked=false;
+      location.reload()
     }
 
 
     this.cd.detectChanges();
-    this.update_background_position( this.opened_section );;
+    //this.update_background_position( this.opened_section );;
     
     
   })
@@ -2449,7 +2582,6 @@ report(){
     else{
       const dialogRef = this.dialog.open(PopupReportComponent, {
         data: {from_account:true,id_receiver:this.user_id,publication_category:'account',publication_id:this.user_id,format:"unknown",chapter_number:0},
-        panelClass:'popupReportClass'
       });
     }
   })
@@ -2462,13 +2594,8 @@ report(){
 categories_array = Array(3);
 skeleton_array = Array(6);
 number_of_skeletons_per_line = 1;
-show_media_drawing=false;
 send_number_of_skeletons(object) {
-  console.log("skeleton response")
   this.number_of_skeletons_per_line=object.number;
-  //this.number_of_new_contents_to_show=this.number_of_skeletons_per_line;
-  this.new_contents_added=true;
-  console.log( this.number_of_skeletons_per_line)
   this.cd.detectChanges();
 }
 

@@ -1,6 +1,6 @@
 
 
-<div class="archives">
+<div class="archives" #main_container>
     
     <!--<div class="logos-container">
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
@@ -79,59 +79,134 @@
 
     <div class="artworks-container" *ngIf="opened_album>=0">
 
-        <div class="center-spinner" *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
+        <!--<div class="center-spinner" *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
             <mat-spinner diameter="30" ></mat-spinner>
-        </div>
+        </div>-->
 
-        <div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>
+        <ng-container *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
+            <div *ngFor="let item of categories_array; index as i1">
+                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            type_of_skeleton="drawing">
+                        </app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
 
-        <div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
-            <mat-spinner diameter="30" ></mat-spinner>
-        </div>
+            </div>
+        </ng-container>
 
-        <div class="center-spinner" *ngIf="opened_album==3 && !list_of_stories_received">
+        <!--<div class="center-spinner" *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
             <mat-spinner diameter="30" ></mat-spinner>
-        </div>
+        </div>-->
 
-        <div class="center-spinner" *ngIf="opened_album==4 && !list_of_ads_added">
+        <ng-container *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
+            <div *ngFor="let item of categories_array; index as i1">
+                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            type_of_skeleton="comic">
+                        </app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <!--<div class="center-spinner" *ngIf="opened_album==2 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
             <mat-spinner diameter="30" ></mat-spinner>
-        </div>
+        </div>-->
+
+        <ng-container *ngIf="opened_album==2 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
+            <div *ngFor="let item of categories_array; index as i1">
+                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            type_of_skeleton="writing">
+                        </app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
+            </div>
+        </ng-container>
+
+        <!--<div class="center-spinner" *ngIf="opened_album==3 && !list_of_stories_received">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>-->
+
+        <ng-container *ngIf="opened_album==3 && !list_of_stories_received">
+            <div *ngFor="let item of categories_array; index as i1">
+                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    [@enterAnimation]>
+                    <ng-container *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-skeleton class="thumbnail-component-container"
+                            *ngIf="number_of_skeletons_per_line>i"
+                            (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                            type_of_skeleton="story">
+                        </app-thumbnail-skeleton>
+                    </ng-container>
+                </div>
+
+            </div>
+        </ng-container>
+
+        <!--<div class="center-spinner" *ngIf="opened_album==4 && !list_of_ads_added">
+            <mat-spinner diameter="30" ></mat-spinner>
+        </div>-->
+
+        <ng-container *ngIf="opened_album==4 && !list_of_ads_added">
+            <div class="highlighted_artwork" *ngFor="let item of skeleton_array; let i = index">
+                <app-thumbnail-artwork 
+                [skeleton]="skeleton"
+                ></app-thumbnail-artwork>
+            </div>
+        </ng-container>
 
         <!--!!!!!!!!!!!!!!!!-->
         <!--bandes dessinées-->
         <!--!!!!!!!!!!!!!!!!-->
         <div *ngIf="opened_album==0 && private_list_of_comics_sorted && list_of_comics_added" class="bd-container" [ngClass]="{'invisible':!display_comics }">
             <!--Mes archives-->
-            <div *ngIf="opened_category==0" class="bd-thumbnails-container container-comics" #container_comics [@enterAnimation]>
+            <div *ngIf="opened_category==0" class="bd-thumbnails-container container-comics"  [@enterAnimation]>
                 <div *ngFor="let item of private_list_of_comics.slice(0,this.number_of_comics_to_show_by_category[0])">
                     <app-thumbnail-comics 
                     *ngIf="item.chaptersnumber == null" 
                     [item]=item 
+                    [width]=width
                     format='one-shot' 
                     now_in_seconds={{now_in_seconds}}
                     (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics> 
                     <app-thumbnail-comics 
                     *ngIf="item.chaptersnumber>=0"
                     [item]=item 
+                    [width]=width
                     format='serie' 
                     now_in_seconds={{now_in_seconds}}
                     (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics>
                 </div>
             </div>
             <!--Autres utilisateurs-->
-            <div *ngIf="opened_category==1" class="bd-thumbnails-container container-comics" #container_comics [@enterAnimation]>
+            <div *ngIf="opened_category==1" class="bd-thumbnails-container container-comics" [@enterAnimation]>
                 <div *ngFor="let item of list_of_comics.slice(0,this.number_of_comics_to_show_by_category[1])">
                     <app-thumbnail-comics 
                     *ngIf="item.chaptersnumber == null" 
                     [item]=item 
+                    [width]=width
                     format='one-shot' 
                     (send_loaded)="display_comics_thumbnails()"
                     now_in_seconds={{now_in_seconds}}></app-thumbnail-comics> 
                     <app-thumbnail-comics 
                     *ngIf="item.chaptersnumber>=0"
                     [item]=item 
+                    [width]=width
                     format='serie' 
                     now_in_seconds={{now_in_seconds}}
                     (send_loaded)="display_comics_thumbnails()"></app-thumbnail-comics>
@@ -142,7 +217,7 @@
         <!--!!!!!!!!!!!!!!!!-->
         <!--dessins-->
         <!--!!!!!!!!!!!!!!!!-->
-        <div *ngIf="opened_album==1 && private_list_of_drawings_sorted && list_of_drawings_added" class="drawings-container" #container_drawings [ngClass]="{'invisible':!list_visibility_albums_drawings }">
+        <div *ngIf="opened_album==1 && private_list_of_drawings_sorted && list_of_drawings_added" class="drawings-container"  [ngClass]="{'invisible':!list_visibility_albums_drawings }">
             <!--Mes archives-->
             <div *ngIf="opened_category==0 && private_list_of_drawings.length>0" class="drawing-container">
 
@@ -151,6 +226,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
+                            [width]=width
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -158,6 +234,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
+                            [width]=width
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -172,6 +249,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
+                            [width]=width
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -179,6 +257,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="display_drawings_thumbnails();"
                             [item]=item
+                            [width]=width
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -194,20 +273,22 @@
         <!--!!!!!!!!!!!!!!!!-->
         <div *ngIf="opened_album==2 && private_list_of_writings_sorted && list_of_writings_added" class="bd-container" [ngClass]="{'invisible':!display_writings }">
             <!--Mes archives-->
-            <div *ngIf="opened_category==0" class="writing-thumbnails-container container-writings" #container_writings [@enterAnimation]>
+            <div *ngIf="opened_category==0" class="writing-thumbnails-container container-writings"  [@enterAnimation]>
                 <div *ngFor="let item of private_list_of_writings.slice(0,this.number_of_writings_to_show_by_category[0]); let i = index">
                     <app-thumbnail-writing
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                         (sendLoaded)="display_writings_thumbnails();"
                     ></app-thumbnail-writing>
                 </div>
             </div>
             <!--Autres utilisateurs-->
-            <div *ngIf="opened_category==1" class="writing-thumbnails-container container-writings" #container_writings [@enterAnimation]>
+            <div *ngIf="opened_category==1" class="writing-thumbnails-container container-writings"  [@enterAnimation]>
                 <div *ngFor="let item of list_of_writings.slice(0,this.number_of_writings_to_show_by_category[1]); let i = index">
                     <app-thumbnail-writing
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                         (sendLoaded)="display_writings_thumbnails();"
                     ></app-thumbnail-writing>
@@ -219,11 +300,11 @@
         <!--stories-->
         <!--!!!!!!!!!!!!!!!!-->
         <div *ngIf="opened_album==3 && list_of_stories_received && list_of_stories_data_received" class="bd-container"   [@enterAnimation]>
-            <div class="container-stories" #container_stories>
+            <div class="container-stories" >
 
-                <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" [ngStyle]="{ 'width' : story_width + 'px' }" class="thumbnail-story-container" >
+                <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" [ngStyle]="{ 'width' : story_width + 'px' }" class="thumbnail-story-container"   >
                     
-                    <div class="thumbnail-story" [ngClass]="{'shiny':!list_display_stories[i] }">
+                    <div class="thumbnail-story" [ngClass]="{'shiny':!list_display_stories[i] }" #thumbnail_stories>
                         <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)" [ngClass]="{'invisible':!list_display_stories[i] }">
 
                         <div class="story-bottom-container" [ngClass]="{'invisible':!list_display_stories[i] }">
@@ -259,6 +340,7 @@
                 </div>
             </div>
         </div>
+
 
     </div>
 

@@ -96,8 +96,50 @@ export class RecommendationsComponent implements OnInit {
   
   now_in_seconds:number;
   subcategory: number = 0;
- // dropdowns = this._constants.filters;
- sorted_category_retrieved=false;
+  // dropdowns = this._constants.filters;
+  sorted_category_retrieved=false;
+  @Input('status') status: any;
+  media_status=[];
+
+
+
+  styles_with_contents_already_seen_comics_serie=[];
+  styles_with_contents_already_seen_comics_os=[];
+  styles_with_contents_already_seen_drawings_artbook=[];
+  styles_with_contents_already_seen_drawings_os=[];
+  styles_with_contents_already_seen_writings=[];
+
+  @ViewChild("artwork_container") artwork_container:ElementRef;
+  width:number;
+ 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.status) {
+      this.media_visibility=false;
+      this.cd.detectChanges();
+      if(this.status){
+        
+        this.cd.detectChanges();
+        let interval = setInterval( () => {
+          console.log("interval")
+          this.media_visibility=true;
+          clearInterval(interval);
+          this.cd.detectChanges();
+        },200)
+      }
+      
+    }
+  }
+
+
+ 
+  
+ 
+
   ngOnInit() {
 
     
@@ -109,12 +151,15 @@ export class RecommendationsComponent implements OnInit {
       let recommendations= JSON.parse(recommendations_string);
       let info=recommendations[0].sorted_list_category;
       let information=recommendations[0].styles_recommendation;
+      console.log(info)
+      console.log(information)
       this.manage_styles_recommendation(info,information)
       
       
      
     }
     else{
+      console.log("generate recommendation")
       this.Community_recommendation.generate_recommendations().subscribe(r=>{
         if(r[0].sorted_list_category){
           // normallement on entre ici que la première fois ou navigation privée première fois
@@ -136,10 +181,15 @@ export class RecommendationsComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
+  }
+
   
  
-
+  media_visibility=false;
   manage_styles_recommendation(info,information){
+    console.log("manage_styles_recommendation")
     this.index_bd= info.comic;
     this.index_drawing= info.drawing;
     this.index_writing= info.writing;
@@ -147,19 +197,7 @@ export class RecommendationsComponent implements OnInit {
       this.subcategory=0;
       window.dispatchEvent(new Event('resize'));
       this.cd.detectChanges()
-
-      /*let list_bd_serie_to_send_string= this.CookieService.get('list_bd_serie_to_send');
-      let list_bd_os_to_send_string = this.CookieService.get('list_bd_os_to_send');
-      if(list_bd_serie_to_send_string && list_bd_os_to_send_string){
-        list_bd_serie_to_send_string=list_bd_serie_to_send_string.substring(2);
-        list_bd_os_to_send_string=list_bd_os_to_send_string.substring(2);
-        let list_bd_serie_to_send= JSON.parse(list_bd_serie_to_send_string);
-        let list_bd_os_to_send= JSON.parse(list_bd_os_to_send_string);
-        this.manage_bd_recommendations(list_bd_os_to_send,list_bd_serie_to_send)
-      }*/
       this.load_bd_recommendations();
-      
-      
     } 
     if(this.index_drawing == 0){
       this.subcategory=1;
@@ -175,7 +213,12 @@ export class RecommendationsComponent implements OnInit {
       this.cd.detectChanges()
       this.load_writing_recommendations();
     }
-    
+    let interval = setInterval( () => {
+      console.log("interval")
+      this.media_visibility=true;
+      clearInterval(interval);
+      this.cd.detectChanges();
+    },200)
     
     //sort styles
     var i = 0;
@@ -221,31 +264,35 @@ export class RecommendationsComponent implements OnInit {
     }
   }
 
+  bd_os_is_loaded=false;
+  bd_serie_is_loaded=false;
+  comics_loading=false;
+  drawings_loading=false;
+  writings_loading=false;
 
+  
   open_subcategory(i) {
     if( this.subcategory==i ) {
       return;
     }
     else if(this.sorted_category_retrieved){
-      //console.log("open new subategory " + i)
+      console.log("open new subategory " + i)
+      this.media_visibility=false;
       if(i==0){
         this.subcategory=i;
         this.type_of_skeleton="comic";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
-        if(!this.bd_is_loaded){
+        if(!this.bd_is_loaded && !this.comics_loading){
             this.load_bd_recommendations();
-        }     
-        
-        
+        }  
       }
       else if(i==1){
-        this.show_media_drawing=false;
         this.subcategory=i;  
         this.type_of_skeleton="drawing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
-        if(!this.drawing_is_loaded ){
+        if(!this.drawing_is_loaded && !this.drawings_loading){
             this.load_drawing_recommendations()
         }
         
@@ -255,11 +302,19 @@ export class RecommendationsComponent implements OnInit {
         this.type_of_skeleton="writing";
         window.dispatchEvent(new Event('resize'));
         this.cd.detectChanges();
-        if(!this.writing_is_loaded){
+        if(!this.writing_is_loaded  && !this.writings_loading){
             this.load_writing_recommendations();
         }
        
       }
+
+      let interval = setInterval( () => {
+        console.log("interval")
+        this.media_visibility=true;
+        clearInterval(interval);
+        this.cd.detectChanges();
+      },200)
+
     }
    
     
@@ -268,18 +323,9 @@ export class RecommendationsComponent implements OnInit {
   
 
 
-  /*initialize_selectors() {
-    $(document).ready(function () {
-      $('.SelectBox').SumoSelect({
-        okCancelInMulti: true, 
-        selectAll: true,
-      });
-    });
-    $('.panel-controller .right-container').hide().delay(80).show('fast');
-  }*/
 
-  bd_os_is_loaded=false;
-  bd_serie_is_load=false;
+
+  
 
   manage_bd_recommendations(list_bd_os,list_bd_serie){
     console.log("manage_bd_recommendations")
@@ -289,61 +335,50 @@ export class RecommendationsComponent implements OnInit {
       for (let i=0; i<list_bd_os.length;i++){
         if(list_bd_os[i][0]){
           if(list_bd_os[i][0].category =="Manga"){
-            if( this.sorted_artpieces_manga.length<6 && list_bd_os[i][0].status=='public'){
+            if(  list_bd_os[i][0].status=='public'){
               this.sorted_artpieces_manga.push(list_bd_os[i][0]);
               this.sorted_artpieces_manga_format.push("one-shot");
             }                 
             if(i==list_bd_os.length-1){
               this.bd_os_is_loaded=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
-              }
+              this.load_all_comics(0)
             }
           }
           if(list_bd_os[i][0].category =="Comics" ){
-            if( this.sorted_artpieces_comics.length<6 && list_bd_os[i][0].status=='public'){
+            if(  list_bd_os[i][0].status=='public'){
               this.sorted_artpieces_comics.push(list_bd_os[i][0]);
               this.sorted_artpieces_comics_format.push("one-shot");
             }
             if(i==list_bd_os.length-1){
               this.bd_os_is_loaded=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
-              }
+              this.load_all_comics(0)
             }
           }
           if(list_bd_os[i][0].category =="Webtoon" ){
-            if( this.sorted_artpieces_webtoon.length<6 && list_bd_os[i][0].status=='public'){
+            if(  list_bd_os[i][0].status=='public'){
               this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
               this.sorted_artpieces_webtoon_format.push("one-shot");
             }
             if(i==list_bd_os.length-1){
               this.bd_os_is_loaded=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                //console.log("bd_is_loaded");
-                this.bd_is_loaded=true;
-              }
+              this.load_all_comics(0)
             }
           }
           if(list_bd_os[i][0].category =="BD" ){
-            if( this.sorted_artpieces_bd.length<6 && list_bd_os[i][0].status=='public'){
+            if(  list_bd_os[i][0].status=='public'){
               this.sorted_artpieces_bd.push(list_bd_os[i][0]);
               this.sorted_artpieces_bd_format.push("one-shot");
             }
             if(i==list_bd_os.length-1){
               this.bd_os_is_loaded=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
-              }
+              this.load_all_comics(0)
             }
           }
         }
         else{
           if(i==list_bd_os.length-1){
             this.bd_os_is_loaded=true;
-            if(this.bd_os_is_loaded && this.bd_serie_is_load){
-              this.bd_is_loaded=true;
-            }
+            this.load_all_comics(0)
           }
         }
         
@@ -351,9 +386,7 @@ export class RecommendationsComponent implements OnInit {
     }  
     else{
       this.bd_os_is_loaded=true;
-      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-        this.bd_is_loaded=true;
-      }
+      this.load_all_comics(0)
     }
 
     if(list_bd_serie.length>0){
@@ -362,61 +395,51 @@ export class RecommendationsComponent implements OnInit {
           
           if(list_bd_serie[i][0]){
             if(list_bd_serie[i][0].category =="Comics"){
-              if( this.sorted_artpieces_comics.length<6 && list_bd_serie[i][0].status=='public'){
+              if(  list_bd_serie[i][0].status=='public'){
                 this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
                 this.sorted_artpieces_comics_format.push("serie");
               }
               if(i==list_bd_serie.length-1){
-                this.bd_serie_is_load=true;
-                if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                  this.bd_is_loaded=true;
-                }
+                this.bd_serie_is_loaded=true;
+                this.load_all_comics(0)
               }
               
             }
             if(list_bd_serie[i][0].category =="Manga"){
-              if( this.sorted_artpieces_manga.length<6 && list_bd_serie[i][0].status=='public'){
+              if(  list_bd_serie[i][0].status=='public'){
                 this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
                 this.sorted_artpieces_manga_format.push("serie");
               }
               if(i==list_bd_serie.length-1){
-                this.bd_serie_is_load=true;
-                if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                  this.bd_is_loaded=true;
-                }
+                this.bd_serie_is_loaded=true;
+                this.load_all_comics(0)
               }
             }
             if(list_bd_serie[i][0].category =="Webtoon"){
-              if( this.sorted_artpieces_webtoon.length<6 && list_bd_serie[i][0].status=='public'){
+              if(  list_bd_serie[i][0].status=='public'){
                 this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
                 this.sorted_artpieces_webtoon_format.push("serie");
               }
               if(i==list_bd_serie.length-1){
-                this.bd_serie_is_load=true;
-                if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                  this.bd_is_loaded=true;
-                }
+                this.bd_serie_is_loaded=true;
+                this.load_all_comics(0)
               }
             }
             if(list_bd_serie[i][0].category =="BD"){
-              if( this.sorted_artpieces_bd.length<6 && list_bd_serie[i][0].status=='public'){
+              if(  list_bd_serie[i][0].status=='public'){
                 this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
                 this.sorted_artpieces_bd_format.push("serie");
               }
               if(i==list_bd_serie.length-1){
-                this.bd_serie_is_load=true;
-                if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                  this.bd_is_loaded=true;
-                }
+                this.bd_serie_is_loaded=true;
+                this.load_all_comics(0)
               }
             }
           }
           else{
             if(i==list_bd_serie.length-1){
-              this.bd_serie_is_load=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
-              }
+              this.bd_serie_is_loaded=true;
+              this.load_all_comics(0)
             }
           }
           
@@ -425,171 +448,224 @@ export class RecommendationsComponent implements OnInit {
       }
     }
     else{
-      this.bd_serie_is_load=true;
-      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-        this.bd_is_loaded=true;
-      }
+      this.bd_serie_is_loaded=true;
+      this.load_all_comics(0)
     }
   }
 
+
   load_bd_recommendations(){
     //console.log("load bd comic")
-    this.Community_recommendation.get_first_recommendation_bd_os_for_user(this.index_bd)
-          .subscribe(information=>{
-            var list_bd_os = information[0].list_bd_os_to_send;
-            if(list_bd_os.length>0){
-              for (let i=0; i<list_bd_os.length;i++){
-                if(list_bd_os[i][0]){
-                  if(list_bd_os[i][0].category =="Manga"){
-                    if( this.sorted_artpieces_manga.length<6 && list_bd_os[i][0].status=='public'){
-                      this.sorted_artpieces_manga.push(list_bd_os[i][0]);
-                      this.sorted_artpieces_manga_format.push("one-shot");
-                    }                 
-                    if(i==list_bd_os.length-1){
-                      this.bd_os_is_loaded=true;
-                      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        this.bd_is_loaded=true;
-                      }
-                    }
-                  }
-                  if(list_bd_os[i][0].category =="Comics" ){
-                    if( this.sorted_artpieces_comics.length<6 && list_bd_os[i][0].status=='public'){
-                      this.sorted_artpieces_comics.push(list_bd_os[i][0]);
-                      this.sorted_artpieces_comics_format.push("one-shot");
-                    }
-                    if(i==list_bd_os.length-1){
-                      this.bd_os_is_loaded=true;
-                      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        this.bd_is_loaded=true;
-                      }
-                    }
-                  }
-                  if(list_bd_os[i][0].category =="Webtoon" ){
-                    if( this.sorted_artpieces_webtoon.length<6 && list_bd_os[i][0].status=='public'){
-                      this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
-                      this.sorted_artpieces_webtoon_format.push("one-shot");
-                    }
-                    if(i==list_bd_os.length-1){
-                      this.bd_os_is_loaded=true;
-                      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        //console.log("bd_is_loaded");
-                        this.bd_is_loaded=true;
-                      }
-                    }
-                  }
-                  if(list_bd_os[i][0].category =="BD" ){
-                    if( this.sorted_artpieces_bd.length<6 && list_bd_os[i][0].status=='public'){
-                      this.sorted_artpieces_bd.push(list_bd_os[i][0]);
-                      this.sorted_artpieces_bd_format.push("one-shot");
-                    }
-                    if(i==list_bd_os.length-1){
-                      this.bd_os_is_loaded=true;
-                      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        this.bd_is_loaded=true;
-                      }
-                    }
-                  }
+    this.comics_loading=true;
+    this.Community_recommendation.get_first_recommendation_bd_os_for_user(this.index_bd).subscribe(information=>{
+      var list_bd_os = information[0].list_bd_os_to_send;
+      this.styles_with_contents_already_seen_comics_os=information[0].styles_with_contents_already_seen;
+      console.log(information)
+      console.log(list_bd_os)
+      if(list_bd_os.length>0){
+        for (let i=0; i<list_bd_os.length;i++){
+          if(list_bd_os[i][0]){
+            if(list_bd_os[i][0].category =="Manga"){
+              if(  list_bd_os[i][0].status=='public'){
+                this.sorted_artpieces_manga.push(list_bd_os[i][0]);
+                this.sorted_artpieces_manga_format.push("one-shot");
+              }                 
+              if(i==list_bd_os.length-1){
+                this.bd_os_is_loaded=true;
+                this.load_all_comics(1)
+              }
+            }
+            if(list_bd_os[i][0].category =="Comics" ){
+              if(  list_bd_os[i][0].status=='public'){
+                this.sorted_artpieces_comics.push(list_bd_os[i][0]);
+                this.sorted_artpieces_comics_format.push("one-shot");
+              }
+              if(i==list_bd_os.length-1){
+                this.bd_os_is_loaded=true;
+                this.load_all_comics(1)
+              }
+            }
+            if(list_bd_os[i][0].category =="Webtoon" ){
+              if(  list_bd_os[i][0].status=='public'){
+                this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
+                this.sorted_artpieces_webtoon_format.push("one-shot");
+              }
+              if(i==list_bd_os.length-1){
+                this.bd_os_is_loaded=true;
+                this.load_all_comics(1)
+              }
+            }
+            if(list_bd_os[i][0].category =="BD" ){
+              if(  list_bd_os[i][0].status=='public'){
+                this.sorted_artpieces_bd.push(list_bd_os[i][0]);
+                this.sorted_artpieces_bd_format.push("one-shot");
+              }
+              if(i==list_bd_os.length-1){
+                this.bd_os_is_loaded=true;
+                this.load_all_comics(1)
+              }
+            }
+          }
+          else{
+            if(i==list_bd_os.length-1){
+              this.bd_os_is_loaded=true;
+              this.load_all_comics(1)
+            }
+          }
+          
+        }
+      }  
+      else{
+        this.bd_os_is_loaded=true;
+        this.load_all_comics(1)
+      }
+    });
+
+    this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd).subscribe(information=>{
+      console.log(information)
+      this.styles_with_contents_already_seen_comics_serie=information[0].styles_with_contents_already_seen;
+      var list_bd_serie= information[0].list_bd_serie_to_send;
+      console.log(list_bd_serie)
+      if(list_bd_serie.length>0){
+        for (let i=0; i<list_bd_serie.length;i++){
+            if(list_bd_serie[i][0]){
+              if(list_bd_serie[i][0].category =="Comics"){
+                if(  list_bd_serie[i][0].status=='public'){
+                  this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
+                  this.sorted_artpieces_comics_format.push("serie");
                 }
-                else{
-                  if(i==list_bd_os.length-1){
-                    this.bd_os_is_loaded=true;
-                    if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                      this.bd_is_loaded=true;
-                    }
-                  }
+                if(i==list_bd_serie.length-1){
+                  this.bd_serie_is_loaded=true;
+                  this.load_all_comics(1)
                 }
                 
               }
-            }  
-            else{
-              this.bd_os_is_loaded=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
-              }
-            }
-          });
-
-          this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd)
-          .subscribe(information=>{
-            var list_bd_serie= information[0].list_bd_serie_to_send;
-            if(list_bd_serie.length>0){
-              for (let i=0; i<list_bd_serie.length;i++){
-                if (list_bd_serie[i].length>0){
-                  if(list_bd_serie[i][0]){
-                    if(list_bd_serie[i][0].category =="Comics"){
-                      if( this.sorted_artpieces_comics.length<6 && list_bd_serie[i][0].status=='public'){
-                        this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
-                        this.sorted_artpieces_comics_format.push("serie");
-                      }
-                      if(i==list_bd_serie.length-1){
-                        this.bd_serie_is_load=true;
-                        if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                          this.bd_is_loaded=true;
-                        }
-                      }
-                      
-                    }
-                    if(list_bd_serie[i][0].category =="Manga"){
-                      if( this.sorted_artpieces_manga.length<6 && list_bd_serie[i][0].status=='public'){
-                        this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
-                        this.sorted_artpieces_manga_format.push("serie");
-                      }
-                      if(i==list_bd_serie.length-1){
-                        this.bd_serie_is_load=true;
-                        if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                          this.bd_is_loaded=true;
-                        }
-                      }
-                    }
-                    if(list_bd_serie[i][0].category =="Webtoon"){
-                      if( this.sorted_artpieces_webtoon.length<6 && list_bd_serie[i][0].status=='public'){
-                        this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
-                        this.sorted_artpieces_webtoon_format.push("serie");
-                      }
-                      if(i==list_bd_serie.length-1){
-                        this.bd_serie_is_load=true;
-                        if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                          this.bd_is_loaded=true;
-                        }
-                      }
-                    }
-                    if(list_bd_serie[i][0].category =="BD"){
-                      if( this.sorted_artpieces_bd.length<6 && list_bd_serie[i][0].status=='public'){
-                        this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
-                        this.sorted_artpieces_bd_format.push("serie");
-                      }
-                      if(i==list_bd_serie.length-1){
-                        this.bd_serie_is_load=true;
-                        if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                          this.bd_is_loaded=true;
-                        }
-                      }
-                    }
-                  }
-                  else{
-                    if(i==list_bd_serie.length-1){
-                      this.bd_serie_is_load=true;
-                      if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                        this.bd_is_loaded=true;
-                      }
-                    }
-                  }
-                  
+              if(list_bd_serie[i][0].category =="Manga"){
+                if(  list_bd_serie[i][0].status=='public'){
+                  this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
+                  this.sorted_artpieces_manga_format.push("serie");
                 }
-
+                if(i==list_bd_serie.length-1){
+                  this.bd_serie_is_loaded=true;
+                  this.load_all_comics(1)
+                }
+              }
+              if(list_bd_serie[i][0].category =="Webtoon"){
+                if(  list_bd_serie[i][0].status=='public'){
+                  this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
+                  this.sorted_artpieces_webtoon_format.push("serie");
+                }
+                if(i==list_bd_serie.length-1){
+                  this.bd_serie_is_loaded=true;
+                  this.load_all_comics(1)
+                }
+              }
+              if(list_bd_serie[i][0].category =="BD"){
+                if(  list_bd_serie[i][0].status=='public'){
+                  this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
+                  this.sorted_artpieces_bd_format.push("serie");
+                }
+                if(i==list_bd_serie.length-1){
+                  this.bd_serie_is_loaded=true;
+                  this.load_all_comics(1)
+                }
               }
             }
             else{
-              this.bd_serie_is_load=true;
-              if(this.bd_os_is_loaded && this.bd_serie_is_load){
-                this.bd_is_loaded=true;
+              if(i==list_bd_serie.length-1){
+                this.bd_serie_is_loaded=true;
+                this.load_all_comics(1)
               }
             }
-              
-          });
+        }
+      }
+      else{
+        this.bd_serie_is_loaded=true;
+        this.load_all_comics(1)
+      }
+        
+    });
 
          
   }
+
+
+  can_see_more_comics=[true,true,true,true]; // Manga,comics,bd,webtoon
+  load_all_comics(j){
+    console.log(j);
+    console.log(this.bd_os_is_loaded)
+    console.log(this.bd_serie_is_loaded)
+    console.log(this.sorted_artpieces_manga)
+    console.log(this.sorted_artpieces_comics)
+    console.log(this.sorted_artpieces_bd)
+    console.log(this.sorted_artpieces_webtoon)
+    if(this.bd_os_is_loaded && this.bd_serie_is_loaded){
+      if(j==0){
+        if(this.sorted_artpieces_manga.length<7){
+          this.can_see_more_comics[0]=false;
+        }
+        if(this.sorted_artpieces_comics.length<7){
+          this.can_see_more_comics[1]=false;
+        }
+        if(this.sorted_artpieces_bd.length<7){
+          this.can_see_more_comics[2]=false;
+        }
+        if(this.sorted_artpieces_webtoon.length<7){
+          this.can_see_more_comics[3]=false;
+        }
+      }
+      else{
+        for( let i=0;i<4;i++){
+          if(this.styles_with_contents_already_seen_comics_serie && this.styles_with_contents_already_seen_comics_os[i]==0){
+            this.can_see_more_comics[i]=false;
+            console.log(-1)
+          }
+          if(i==0 && this.sorted_artpieces_manga.length<7){
+              this.can_see_more_comics[i]=false;
+              console.log(0)
+          }
+          if(i==1 && this.sorted_artpieces_comics.length<7){
+            this.can_see_more_comics[i]=false;
+            console.log(1)
+          }
+          if(i==2 && this.sorted_artpieces_bd.length<7){
+            this.can_see_more_comics[i]=false;
+            console.log(2)
+          }
+          if(i==3 && this.sorted_artpieces_webtoon.length<7){
+            this.can_see_more_comics[i]=false;
+            console.log(3)
+          }
+        }
+      }
+      console.log(this.can_see_more_comics)
+    
+      console.log("in if")
+      this.bd_is_loaded=true;
+      this.cd.detectChanges()
+      console.log($('.media-container').width())
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  /******************************************* LOAD DRAWINGS  **********************************************/
+  /******************************************* LOAD DRAWINGS  **********************************************/
+  /******************************************* LOAD DRAWINGS  **********************************************/
+  /******************************************* LOAD DRAWINGS  **********************************************/
+
+  
+
+
 
 
 
@@ -602,7 +678,7 @@ export class RecommendationsComponent implements OnInit {
   drawing_artbook_is_loaded=false;
   drawing_onepage_is_loaded=false;
   load_drawing_recommendations(){
-    //console.log("load  drawing")
+    this.drawings_loading=true;
     this.Community_recommendation.get_first_recommendation_drawing_artbook_for_user(this.index_drawing)
           .subscribe(information=>{
             var list_artbook= information[0].list_artbook_to_send;
@@ -614,7 +690,7 @@ export class RecommendationsComponent implements OnInit {
                 //console.log(list_artbook[i].length);
                 if (list_artbook[i].length>0){
                   if(list_artbook[i][0].category =="Traditionnel"){
-                    if( this.sorted_artpieces_traditional.length<6 && list_artbook[i][0].status=='public'){
+                    if(  list_artbook[i][0].status=='public'){
                       this.sorted_artpieces_traditional.push(list_artbook[i][0]);
                       this.sorted_artpieces_traditional_format.push("artbook");
                     }
@@ -625,11 +701,12 @@ export class RecommendationsComponent implements OnInit {
                         //console.log(this.sorted_artpieces_traditional);
                         //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
+                        this.cd.detectChanges()
                       }
                     }
                   }
                   if(list_artbook[i][0].category =="Digital"){
-                    if( this.sorted_artpieces_digital.length<6 && list_artbook[i][0].status=='public'){
+                    if(  list_artbook[i][0].status=='public'){
                       this.sorted_artpieces_digital.push(list_artbook[i][0]);
                       this.sorted_artpieces_digital_format.push("artbook");
                     }
@@ -640,6 +717,7 @@ export class RecommendationsComponent implements OnInit {
                         //console.log(this.sorted_artpieces_traditional);
                         //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
+                        this.cd.detectChanges()
                       }
                     }
                   }
@@ -653,6 +731,7 @@ export class RecommendationsComponent implements OnInit {
                       //console.log(this.sorted_artpieces_traditional);
                       //console.log("on valide tout dans artbook")
                       this.drawing_is_loaded=true;
+                      this.cd.detectChanges()
                     }
                   }
                 }
@@ -664,6 +743,7 @@ export class RecommendationsComponent implements OnInit {
                 //console.log("on valise artbook")
                 if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
                   this.drawing_is_loaded=true;
+                  this.cd.detectChanges()
                 }
             }
             
@@ -680,7 +760,7 @@ export class RecommendationsComponent implements OnInit {
                 //console.log(list_drawing_os[i][0]);
                 if (list_drawing_os[i].length>0){
                   if(list_drawing_os[i][0].category =="Traditionnel"){
-                    if( this.sorted_artpieces_traditional.length<6 && list_drawing_os[i][0].status=='public'){
+                    if(  list_drawing_os[i][0].status=='public'){
                       this.sorted_artpieces_traditional.push(list_drawing_os[i][0]);
                       this.sorted_artpieces_traditional_format.push("one-shot");
                     }
@@ -691,11 +771,12 @@ export class RecommendationsComponent implements OnInit {
                         //console.log(this.sorted_artpieces_traditional);
                         //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
+                        this.cd.detectChanges()
                       }
                     }
                   }
                   if(list_drawing_os[i][0].category =="Digital"){
-                    if( this.sorted_artpieces_digital.length<6 && list_drawing_os[i][0].status=='public'){
+                    if(  list_drawing_os[i][0].status=='public'){
                       this.sorted_artpieces_digital.push(list_drawing_os[i][0]);
                       this.sorted_artpieces_digital_format.push("one-shot");
                     }
@@ -706,6 +787,7 @@ export class RecommendationsComponent implements OnInit {
                         //console.log(this.sorted_artpieces_traditional);
                         //console.log("on valide tout dans artbook")
                         this.drawing_is_loaded=true;
+                        this.cd.detectChanges()
                       }
                     }
                   }
@@ -718,6 +800,7 @@ export class RecommendationsComponent implements OnInit {
                       //console.log(this.sorted_artpieces_traditional);
                       //console.log("on valide tout dans artbook")
                       this.drawing_is_loaded=true;
+                      this.cd.detectChanges()
                     }
                   }
                 }
@@ -729,85 +812,143 @@ export class RecommendationsComponent implements OnInit {
                 //console.log("on valise onepage")
                 if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
                   this.drawing_is_loaded=true;
+                  this.cd.detectChanges()
                 }
             }
           });
   }
-
-  load_writing_recommendations(){
-    //console.log("load  writing")
-    this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_writing).subscribe(information=>{
-      
-            var list_writings_to_send= information[0].list_writings_to_send;
-            //console.log(list_writings_to_send)
-            //console.log(list_writings_to_send[0])
-            this.compare_to_compteur_writing+= list_writings_to_send.length;
-            if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
-              for (let i=0;i<list_writings_to_send.length;i++){
-                ////console.log(list_writings_to_send[i][0])
-                if (list_writings_to_send[i].length>0){
-                  
-                  if(list_writings_to_send[i][0].category =="Illustrated novel"){
-                    if( this.sorted_artpieces_illustrated_novel.length<6 && list_writings_to_send[i][0].status=='public'){
-                      this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[i][0]);
-                    }
-                    if(i==list_writings_to_send.length-1){
-                      this.writing_is_loaded=true;
-                    }
-                  }
-                  if(list_writings_to_send[i][0].category =="Roman"){
-                    if( this.sorted_artpieces_roman.length<6 && list_writings_to_send[i][0].status=='public'){
-                      this.sorted_artpieces_roman.push(list_writings_to_send[i][0]);
-                    }
-                    if(i==list_writings_to_send.length-1){
-                      this.writing_is_loaded=true;
-                    }
-                  }
-                  if(list_writings_to_send[i][0].category =="Scenario"){
-                    if( this.sorted_artpieces_scenario.length<6 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_scenario.push(list_writings_to_send[i][0]);
-                    }
-                    if(i==list_writings_to_send.length-1){
-                      this.writing_is_loaded=true;
-                    }
-                  }
-                  if(list_writings_to_send[i][0].category =="Article"){
-                    if( this.sorted_artpieces_article.length<6 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_article.push(list_writings_to_send[i][0]);
-                    }
-                    if(i==list_writings_to_send.length-1){
-                      this.writing_is_loaded=true;
-                    }
-                  }
-                  if(list_writings_to_send[i][0].category =="Poetry"){
-                    if( this.sorted_artpieces_poetry.length<6 && list_writings_to_send[i][0].status=='public'){
-                       this.sorted_artpieces_poetry.push(list_writings_to_send[i][0]);
-                    }
-                    if(i==list_writings_to_send.length-1){
-                      this.writing_is_loaded=true;
-                    }
-                  }
-                }
-                else{
-                  if(i==list_writings_to_send.length-1){
-                    this.writing_is_loaded=true;
-                  }
-                }
-              }
-            }
-            else{
-              this.writing_is_loaded=true;
-            }
-            
-
-            
-          });
-  }
-
-
 
   
 
+
+
+
+
+
+  /******************************************* LOAD WRITINGS  **********************************************/
+  /******************************************* LOAD WRITINGS  **********************************************/
+  /******************************************* LOAD WRITINGS  **********************************************/
+  /******************************************* LOAD WRITINGS  **********************************************/
+
+  
+
+
+
+
+  load_writing_recommendations(){
+    this.writings_loading=true;
+    this.Community_recommendation.get_first_recommendation_writings_for_user(this.index_writing).subscribe(information=>{
+      console.log(information)
+      var list_writings_to_send= information[0].list_writings_to_send;
+      this.styles_with_contents_already_seen_writings=information[0].styles_with_contents_already_seen
+      this.compare_to_compteur_writing+= list_writings_to_send.length;
+      if(list_writings_to_send[0] && list_writings_to_send[0].length>0 ){
+        for (let i=0;i<list_writings_to_send.length;i++){
+          ////console.log(list_writings_to_send[i][0])
+          if (list_writings_to_send[i].length>0){
+            
+            if(list_writings_to_send[i][0].category =="Illustrated novel"){
+              if(  list_writings_to_send[i][0].status=='public'){
+                this.sorted_artpieces_illustrated_novel.push(list_writings_to_send[i][0]);
+              }
+              if(i==list_writings_to_send.length-1){
+                this.load_all_writings();
+                this.writing_is_loaded=true;
+                this.cd.detectChanges()
+              }
+            }
+            if(list_writings_to_send[i][0].category =="Roman"){
+              if(  list_writings_to_send[i][0].status=='public'){
+                this.sorted_artpieces_roman.push(list_writings_to_send[i][0]);
+              }
+              if(i==list_writings_to_send.length-1){
+                this.load_all_writings();
+                this.writing_is_loaded=true;
+                this.cd.detectChanges()
+              }
+            }
+            if(list_writings_to_send[i][0].category =="Scenario"){
+              if(  list_writings_to_send[i][0].status=='public'){
+                  this.sorted_artpieces_scenario.push(list_writings_to_send[i][0]);
+              }
+              if(i==list_writings_to_send.length-1){
+                this.load_all_writings();
+                this.writing_is_loaded=true;
+                this.cd.detectChanges()
+              }
+            }
+            if(list_writings_to_send[i][0].category =="Article"){
+              if(  list_writings_to_send[i][0].status=='public'){
+                  this.sorted_artpieces_article.push(list_writings_to_send[i][0]);
+              }
+              if(i==list_writings_to_send.length-1){
+                this.load_all_writings();
+                this.writing_is_loaded=true;
+                this.cd.detectChanges()
+              }
+            }
+            if(list_writings_to_send[i][0].category =="Poetry"){
+              if(  list_writings_to_send[i][0].status=='public'){
+                  this.sorted_artpieces_poetry.push(list_writings_to_send[i][0]);
+              }
+              if(i==list_writings_to_send.length-1){
+                this.load_all_writings();
+                this.writing_is_loaded=true;
+                this.cd.detectChanges()
+              }
+            }
+          }
+          else{
+            if(i==list_writings_to_send.length-1){
+              this.load_all_writings();
+              this.writing_is_loaded=true;
+              this.cd.detectChanges()
+            }
+          }
+        }
+      }
+      else{
+        this.load_all_writings();
+        this.writing_is_loaded=true;
+        this.cd.detectChanges()
+      }
+      
+
+      
+    });
+  }
+
+
+  can_see_more_writings=[true,true,true,true,true]; //Article,Roman,Illustrated novel,Poetry,Scenario
+  load_all_writings(){
+      for( let i=0;i<5;i++){
+        if(this.styles_with_contents_already_seen_writings[i]){
+          this.can_see_more_writings[i]=false;
+        }
+        if(i==0 && this.sorted_artpieces_article.length<7){
+            this.can_see_more_writings[i]=false;
+        }
+        if(i==1 && this.sorted_artpieces_roman.length<7){
+          this.can_see_more_writings[i]=false;
+        }
+        if(i==2 && this.sorted_artpieces_illustrated_novel.length<7){
+          this.can_see_more_writings[i]=false;
+        }
+        if(i==3 && this.sorted_artpieces_poetry.length<7){
+          this.can_see_more_writings[i]=false;
+        }
+        if(i==4 && this.sorted_artpieces_scenario.length<7){
+          this.can_see_more_writings[i]=false;
+        }
+      }
+      console.log(this.can_see_more_writings)
+  }
+
+  
+
+  /************************************************* LODING PAGE ***********************************/
+  /************************************************* LODING PAGE ***********************************/
+  /************************************************* LODING PAGE ***********************************/
   /************************************************* LODING PAGE ***********************************/
 
   categories_array = Array(4);
@@ -822,28 +963,14 @@ export class RecommendationsComponent implements OnInit {
   }
 
   list_of_drawings_retrieved_receiver(object){
+    console.log("list_of_drawings_retrieved_receiver")
+    console.log(this.show_media_drawing)
     if( this.subcategory==1){
       this.show_media_drawing=true;
       this.cd.detectChanges();
     }
   }
 
-  /*list_of_writings_retrieved_receiver(object){
-    //console.log(this.subcategory)
-    if( this.subcategory==2){
-      this.cd.detectChanges();
-    }
-      
-  }
-
   
-
-  list_of_comics_retrieved_receiver(object){
-    //console.log(this.subcategory)
-    if( this.subcategory==0){
-      this.cd.detectChanges();
-    }
-  }*/
-
  
 }

@@ -32,7 +32,7 @@ export function pattern(type: string) {
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace + PAS D'ESPACES
     if( type == "text_without_spaces" ) {
-        return "[h][t][t][p][s]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
+        return "[h][t][t][p]+([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9"+accents+special_characters+"]+$";
     }
 
     if( type == "siret" ) {

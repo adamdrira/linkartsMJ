@@ -472,22 +472,35 @@ export class ChatComponent implements OnInit  {
         let compt_user=0;
         let list_of_receivers_ids=info[0].list_of_receivers_ids;
         for(let i=0;i<list_of_receivers_ids.length;i++){
+          let data_retrieved=false;
+          let pp_retrieved=false;
           this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
             this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
-            this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
-              let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+            data_retrieved=true;
+            check_all(this)
+            
+          })
+
+          this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
+            let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
+            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+            pp_retrieved=true;
+            check_all(this)
+          })
+
+          function check_all(THIS){
+            if(pp_retrieved && data_retrieved){
               compt_user++;
               if(compt_user==list_of_receivers_ids.length){
                 console.log("list_of_users_names")
-                  console.log(this.list_of_users_names)
-                  console.log(this.list_of_users_profile_pictures)
-                this.list_of_users_names_retrieved=true;
+                console.log(THIS.list_of_users_names)
+                console.log(THIS.list_of_users_profile_pictures)
+                THIS.list_of_users_names_retrieved=true;
               }
-            })
-            
-          })
+            }
+           
+          }
         }
       })
     }
@@ -506,67 +519,67 @@ export class ChatComponent implements OnInit  {
     this.current_friend_type=this.friend_type;
     this.current_friend_id=this.friend_id;
     console.log(this.friend_type)
-      setInterval(() => {
-        
-        //scroll bar managment
-        if(this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
-          if(this.can_get_other_messages){
-            this.compteur_get_messages++;
-            this.can_get_other_messages=false;
-            this.show_spinner=true;
-            console.log("on est au bout")
-            this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).subscribe(r=>{
-              console.log(r[0][0]);
-              console.log(r[0][1].list_of_messages_reactions)
-              console.log(r[1])
-              if(r[0][0][0] && this.compteur_get_messages==r[1]){
-                let num=this.list_of_messages.length;
-                this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
-                for(let i=0;i<r[0][0].length;i++){
-                  this.list_of_messages.push(r[0][0][i]);
-                  this.list_of_messages_date.push(this.date_of_message(r[0][0][i].createdAt,0));
-                  if(this.friend_type=='user'){
-                    this.sort_pp(num-1+i);
-                  }
-                  this.get_picture_for_message(num-1+i);
-                  if(i==r[0][0].length-1){
-                    this.calculate_dates_to_show()
-                    this.show_spinner=false;
-                    this.cd.detectChanges();
-                    let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
-                    let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height
-                    this.myScrollContainer.nativeElement.scrollTop=offset-height;
-                    console.log("scroll dans interval")
-                    this.can_get_other_messages=true;
-                  }
+    setInterval(() => {
+      
+      //scroll bar managment
+      if(this.myScrollContainer.nativeElement.scrollTop==0 && this.put_messages_visible && !this.show_research_results && !this.trigger_no_more){
+        if(this.can_get_other_messages){
+          this.compteur_get_messages++;
+          this.can_get_other_messages=false;
+          this.show_spinner=true;
+          console.log("on est au bout")
+          this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).subscribe(r=>{
+            console.log(r[0][0]);
+            console.log(r[0][1].list_of_messages_reactions)
+            console.log(r[1])
+            if(r[0][0][0] && this.compteur_get_messages==r[1]){
+              let num=this.list_of_messages.length;
+              this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
+              for(let i=0;i<r[0][0].length;i++){
+                this.list_of_messages.push(r[0][0][i]);
+                this.list_of_messages_date.push(this.date_of_message(r[0][0][i].createdAt,0));
+                if(this.friend_type=='user'){
+                  this.sort_pp(num-1+i);
+                }
+                this.get_picture_for_message(num-1+i);
+                if(i==r[0][0].length-1){
+                  this.calculate_dates_to_show()
+                  this.show_spinner=false;
+                  this.cd.detectChanges();
+                  let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
+                  let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height
+                  this.myScrollContainer.nativeElement.scrollTop=offset-height;
+                  console.log("scroll dans interval")
+                  this.can_get_other_messages=true;
                 }
               }
-              else{
-                this.show_spinner=false;
-                this.can_get_other_messages=false;
-                this.trigger_no_more=true;
-                console.log("on cherche d'autres msg");
-              }
-            })
-          }
-          
+            }
+            else{
+              this.show_spinner=false;
+              this.can_get_other_messages=false;
+              this.trigger_no_more=true;
+              console.log("on cherche d'autres msg");
+            }
+          })
         }
-      }, 500);
+        
+      }
+    }, 500);
       
 
-      // retry managment
-      setInterval(() => {
-        if( this.friend_type=='user' && this.list_of_time.length>0){
-          for(let i=0;i<this.list_of_time.length;i++){
-            if(this.list_of_messages[i].status=='sent' && !this.display_retry[i]){
-              let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.list_of_time[i];
-              if(ending_time_of_view>25){
-                this.display_retry[i]=true;
-              }
+    // retry managment
+    setInterval(() => {
+      if( this.friend_type=='user' && this.list_of_time.length>0){
+        for(let i=0;i<this.list_of_time.length;i++){
+          if(this.list_of_messages[i].status=='sent' && !this.display_retry[i]){
+            let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.list_of_time[i];
+            if(ending_time_of_view>25){
+              this.display_retry[i]=true;
             }
           }
         }
-      }, 5000);
+      }
+    }, 5000);
     
     
     //uploader_managment
@@ -2815,7 +2828,14 @@ ngAfterViewChecked() {
 }
 
 
-
+show_icon=false;
+ngAfterViewInit(){
+  let THIS=this;
+  $(window).ready(function () {
+    console.log("load")
+    THIS.show_icon=true;
+  });
+}
 
 
 /*********************************************  GROUP FUNCTIONS ******************************/

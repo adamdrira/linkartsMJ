@@ -31,7 +31,7 @@
                 </div>
                 <mat-list *ngIf="list_of_files_retrieved" >
                   <mat-list-item *ngFor="let file of list_of_files,let i=index">
-                    <mat-icon mat-list-icon>folder</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" mat-list-icon>folder</mat-icon>
                     <div mat-line>
                       <a [href]="list_of_files_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
                     </div>

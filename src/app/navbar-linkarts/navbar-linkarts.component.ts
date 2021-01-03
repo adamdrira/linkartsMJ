@@ -84,31 +84,56 @@ export class NavbarLinkartsComponent implements OnInit {
         
       })
 
-      navbar.visibility_observer.subscribe(r=>{
-        console.log(r)
-        if(r!= this.visibility_navbar){
-          if(!this.visibility_navbar){
-            
-            if($('.NavbarSelectBox')[0]){
-              $('.NavbarSelectBox')[0].sumo.unload();
-            }
-            if($('.NavbarSelectBox2')[0]){
-              $('.NavbarSelectBox2')[0].sumo.unload();
-            }
-            if($('.NavbarSelectBox')[0] || $('.NavbarSelectBox2')[0]){
-              this.show_selector=false;
-              this.initialize_selectors();
-            }
-          }
-          this.visibility_navbar=r;
+
+
+      navbar.visibility_observer.subscribe(navbar_visibility=>{
+        console.log(navbar_visibility)
+        if( navbar_visibility) {
+          this.navbar_visible=true;
+          this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
+          this.initialize_selectors();
+         
+        }
+        else{
+          this.navbar_visible=false;
         }
       })
+
+      navbar.check_using_chat.subscribe(using_chat=>{
+        console.log(this.chatService)
+        console.log(this.navbar.visible)
+        console.log(using_chat)
+        this.using_chat_retrieved=true;
+        if(this.chatService.messages && !using_chat && this.navbar_visible){
+          //console.log("if not using chat")
+          
+          this.check_chat_service=true;
+          this.check_chat_service_func();
+          //clearInterval(chatinterval);
+          this.cd.detectChanges();
+        }
+        
+      })
+
+      
+    
   }
 
-  
+  navbar_visible=false;
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload($event) { 
+    this.chatService.close();
+  }
 
   reload_page(){
     location.reload();
+  }
+
+  not_using_chat(){
+    if( this.navbar.get_using_chat()){
+      this.navbar.set_not_using_chat();
+    }
+    
   }
 
   visibility_navbar:boolean;
@@ -188,6 +213,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
+    console.log("clickout")
     if(!this.user_present && !this.show_notifications && (this.type_of_profile=='account' || this.type_of_profile=='suspended')){
       this.user_present=true;
       this.list_of_friends_retrieved=false;
@@ -216,7 +242,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   
-
+  get_connection_interval:any;
   margin_is_not_set:boolean = true;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   @ViewChild('myScrollContainer_chat') private myScrollContainer_chat: ElementRef;
@@ -224,6 +250,7 @@ export class NavbarLinkartsComponent implements OnInit {
   @ViewChild('navbarMargin', { read: ElementRef }) navbarMargin:ElementRef;
     
   ngOnInit() {
+    console.log(this.navbar.visible)
     window.addEventListener('scroll', this.scroll, true);
     
     //this.setHeight();
@@ -242,51 +269,22 @@ export class NavbarLinkartsComponent implements OnInit {
       }
       //console.log("in constructor")
       this.type_of_profile_retrieved=true;
-      
+      this.initialize_selectors();
       
     });
 
     
 
-    //resize interval
-    let interval = setInterval( () => {
-      /*
-      if( this.margin_is_not_set ) {
-        this.setHeight();
-        this.define_margin_top();
-      }*/
-      if( this.navbar.visible ) {
-        this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
-        if(this.type_of_profile_retrieved){
-          //console.log("in else")
-          this.initialize_selectors();
-          clearInterval(interval);
-        }
-      }
-      else {
-        this.rd.setStyle(this.navbarMargin.nativeElement, "height", "0px");
-      }
-    },50);
-
     //connexion to chat service interval
 
-    setInterval(() => {
-      if(this.list_of_friends_retrieved){
+    this.get_connection_interval = setInterval(() => {
+      if(this.list_of_friends_retrieved && !this.navbar.get_using_chat()){
         console.log("getting connections status")
         this.get_connections_status();
       }
     }, 60000);
 
-    let chatinterval = setInterval(()=>{
-      if(this.chatService.messages && !this.navbar.get_using_chat()){
-        //console.log("if not using chat")
-        this.using_chat_retrieved=true;
-        this.check_chat_service=true;
-        this.check_chat_service_func();
-        clearInterval(chatinterval);
-        this.cd.detectChanges();
-      }
-    },50)
+ 
 
     //console.log("check_notifications_from_service_func");
     this.navbar.notification.subscribe(msg=>{
@@ -328,7 +326,7 @@ export class NavbarLinkartsComponent implements OnInit {
         }
       }
       if(this.show_chat_messages){
-        if((this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
+        if(this.myScrollContainer_chat && (this.myScrollContainer_chat.nativeElement.scrollTop + this.myScrollContainer_chat.nativeElement.offsetHeight >= this.myScrollContainer_chat.nativeElement.scrollHeight*0.8)){
           if(this.number_of_friends_to_show<this.list_of_friends_ids.length){
             this.number_of_friends_to_show+=10;
           }
@@ -369,37 +367,35 @@ export class NavbarLinkartsComponent implements OnInit {
         let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.profile_picture = SafeURL;
-        this.chatService.get_number_of_unseen_messages().subscribe(a=>{
-          //console.log(a);
-          if(a[0]){
-            this.number_of_unseen_messages=a[0].number_of_unseen_messages;
-          }
-          else{
-            this.number_of_unseen_messages=0
-          }
-          
-          this.NotificationsService.get_list_of_notifications().subscribe(r=>{
-            //console.log(r[0])
-            if(r[0].length>0){
-              for(let i=0;i<r[0].length;i++){
-                this.list_of_notifications[i]=r[0][i];
-                if(i==r[0].length-1){
-                  //console.log("end retrieve profile")
-                  this.get_final_list_of_notifications_to_show("initialize");
-                  this.sort_friends_list();
-                }
-              }
-            }
-            else{
-              this.data_retrieved=true;
-              this.number_of_unchecked_notifications=0;
-              this.sort_friends_list();
-            }
-          });
-          
-        })
+      });
 
-        
+      this.chatService.get_number_of_unseen_messages().subscribe(a=>{
+        //console.log(a);
+        if(a[0]){
+          this.number_of_unseen_messages=a[0].number_of_unseen_messages;
+        }
+        else{
+          this.number_of_unseen_messages=0
+        }
+        this.sort_friends_list();
+      })
+
+      this.NotificationsService.get_list_of_notifications().subscribe(r=>{
+        //console.log(r[0])
+        if(r[0].length>0){
+          for(let i=0;i<r[0].length;i++){
+            this.list_of_notifications[i]=r[0][i];
+            if(i==r[0].length-1){
+              //console.log("end retrieve profile")
+              this.get_final_list_of_notifications_to_show("initialize");
+            
+            }
+          }
+        }
+        else{
+          this.data_retrieved=true;
+          this.number_of_unchecked_notifications=0;
+        }
       });
     })
   }
@@ -673,11 +669,24 @@ export class NavbarLinkartsComponent implements OnInit {
     if(this.focus_activated){
       return
     };
-    this.get_trendings()
+    if(!this.display_first_propositions_triggered){
+      console.log("else if")
+      console.log(this.first_propositions_retrieved)
+      console.log(this.list_of_first_propositions_history)
+      this.get_trendings_and_first_propositions();
+    }
+    else{
+      console.log("autre")
+      this.focus_activated=true;
+      this.researches_propositions()
+    }
   }
 
-  get_trendings(){
-    console.log("getting tredings")
+  get_trendings_and_first_propositions(){
+    console.log("get_trendings_and_first_propositions")
+    console.log(this.publication_category)
+    console.log(this.first_propositions_retrieved)
+    this.first_propositions_retrieved=false;
     this.compteur_recent+=1;
     this.loading_other=false;
     this.pp_thumb_hist_is_loaded=[];
@@ -696,8 +705,8 @@ export class NavbarLinkartsComponent implements OnInit {
     this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"researched").subscribe(r=>{
       console.log(r[0][0])
       if(r[1]==this.compteur_recent){
-        this.show_researches_propositions=true;
         this.most_researched_propositions=r[0][0];
+        this.show_researches_propositions=true;
         this.show_most_researched_propositions=true;
 
         this.cd.detectChanges();
@@ -707,49 +716,72 @@ export class NavbarLinkartsComponent implements OnInit {
         //this.swiper2.update();
         this.cd.detectChanges();
         
-        this.navbar.get_last_researched_navbar(this.publication_category,r[1]).subscribe(m=>{
-          console.log(m[0][0]);
-          if(m[1]==this.compteur_recent){
-            //console.log(.log(m[0][0]);
-            this.list_of_first_propositions_history=m[0][0];
-            if(m[0][0].length>0){
-              this.first_option=true;
-              console.log("list_of_first_propositions_history")
-              console.log(this.list_of_first_propositions_history)
-              for(let i=0;i<m[0][0].length;i++){
-                this.get_first_propositions(i,m[1])
-              }
-              this.first_propositions_retrieved=true;
-            }
-            else{
-              this.first_option=false;
-              this.navbar.get_most_researched_navbar(this.publication_category,r[1],"clicked").subscribe(n=>{
-                if(n[1]==this.compteur_recent){
-                  console.log(n[0][0]);
-                  this.list_of_first_propositions_history=n[0][0];
-                  if(n[0][0].length>0){
-                    console.log("list_of_first_propositions_history")
-                    console.log(this.list_of_first_propositions_history)
-                    for(let i=0;i<n[0][0].length;i++){
-                      this.get_first_propositions(i,n[1])
-                    }
-                    this.first_propositions_retrieved=true;
-                  }
-                  else{
-                    this.loading_recent=false;
-                    this.first_propositions_retrieved=true;
-                  }
-                  
-                }
-              })
-            }
-            
-            
-          }
-        })
+        
       }
       
     });
+
+    let last_research_retrieved=false;
+    this.navbar.get_last_researched_navbar(this.publication_category,this.compteur_recent).subscribe(m=>{
+      console.log(m[0][0]);
+      if(m[1]==this.compteur_recent){
+        console.log(m[0][0]);
+        this.list_of_first_propositions_history=m[0][0];
+       
+        if(m[0][0].length>0){
+          this.first_option=true;
+          console.log("list_of_first_propositions_history")
+          console.log(this.list_of_first_propositions_history)
+          for(let i=0;i<m[0][0].length;i++){
+            this.get_first_propositions(i,m[1])
+          }
+          this.first_propositions_retrieved=true;
+          last_research_retrieved=true;
+        }
+        else{
+          this.first_option=false;
+          last_research_retrieved=true;
+          check_other_propositions(this);
+        }
+        
+      }
+    })
+
+    let most_researched_results;
+    let most_researched_retrieved=false;
+    this.navbar.get_most_researched_navbar(this.publication_category,this.compteur_recent,"clicked").subscribe(n=>{
+      most_researched_results=n[0][0];
+      console.log(most_researched_results)
+      if(n[1]==this.compteur_recent){
+        most_researched_retrieved=true;
+        check_other_propositions(this)
+        
+        
+      }
+    })
+
+    function check_other_propositions(THIS){
+      console.log(last_research_retrieved)
+      console.log(THIS.first_propositions_retrieved)
+      console.log(most_researched_retrieved)
+      if(last_research_retrieved && !THIS.first_propositions_retrieved && most_researched_retrieved){
+        console.log(most_researched_results);
+        THIS.list_of_first_propositions_history=most_researched_results;
+        if(most_researched_results.length>0){
+          console.log("list_of_first_propositions_history")
+          console.log(THIS.list_of_first_propositions_history)
+          for(let i=0;i<most_researched_results.length;i++){
+            THIS.get_first_propositions(i,THIS.compteur_recent)
+          }
+          THIS.first_propositions_retrieved=true;
+        }
+        else{
+          THIS.loading_recent=false;
+          THIS.first_propositions_retrieved=true;
+        }
+      }
+      
+    }
   }
   pp_thumb_hist_load(i){
     this.pp_thumb_hist_is_loaded[i]=true;
@@ -782,7 +814,7 @@ export class NavbarLinkartsComponent implements OnInit {
   /*************************************** RESEARCH AFTER TYPING A WORD ************************************/
 
 
-  researches_propositions(event){
+  researches_propositions(){
     //console.log(this.input.nativeElement.value);
     this.compteur_research+=1;
     this.compteur_recent+=1;
@@ -803,7 +835,10 @@ export class NavbarLinkartsComponent implements OnInit {
       if(this.input.nativeElement.value.replace(/\s/g, '').length>0){
         console.log(" if if ")
         this.show_most_researched_propositions=false;
-
+        let specific_retrieved=false;
+        let global_retrieved=false;
+        let tags_retrieved=false;
+        let run_tags=false;
         this.navbar.get_specific_propositions_navbar(this.publication_category,this.input.nativeElement.value,this.compteur_research).subscribe(m=>{
           console.log(m[0][0]);
           if(m[1]==this.compteur_research){
@@ -815,63 +850,11 @@ export class NavbarLinkartsComponent implements OnInit {
             this.initialize_swiper2();
             //this.swiper.update();
             //this.swiper2.update();
+            specific_retrieved=true;
             this.cd.detectChanges();
 
             if(m[0][0].length<10){
-              this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10-m[0].length,m[1]).subscribe(r=>{
-                //console.log(r[0][0]);
-                if(r[1]==this.compteur_research){
-                  if(r[0][0].length>0){
-                    this.list_of_first_propositions=this.list_of_first_propositions.concat(r[0][0]);
-                  }
-                  if(this.list_of_first_propositions.length<10){
-                    console.log(this.list_of_first_propositions.length)
-                    this.navbar.get_global_tags_propositions_navbar(this.publication_category,this.input.nativeElement.value,10-this.list_of_first_propositions.length,r[1]).subscribe(u=>{
-                      console.log(u[0][0]);
-                      if(u[1]==this.compteur_research){
-                        if(u[0][0].length>0){
-                          let len=this.list_of_first_propositions.length;
-                          if(len>0){
-                            for(let j=0;j<u[0][0].length;j++){
-                              let ok=true;
-                              for(let k=0;k<len;k++){
-                                if( this.list_of_first_propositions[k].publication_category==u[0][0][j].publication_category && this.list_of_first_propositions[k].format==u[0][0][j].format && this.list_of_first_propositions[k].target_id==u[0][0][j].target_id){
-                                  ok=false;
-                                }
-                                if(k==len-1){
-                                  if(ok){
-                                    this.list_of_first_propositions.push(u[0][0][j])
-                                  }
-                                }
-                              }
-                            }
-                          }
-                          else{
-                            this.list_of_first_propositions=this.list_of_first_propositions.concat(u[0][0]);
-                          }
-                        }
-                        if(this.list_of_first_propositions.length>0){
-                          console.log("this.list_of_first_propositions")
-                          console.log(this.list_of_first_propositions)
-                          for(let i=0;i<this.list_of_first_propositions.length;i++){
-                            this.get_other_propositions(i,u[1]);
-                          }
-                        }
-                        else{
-                          this.loading_other=false;
-                          this.show_other_propositions=true;
-                          this.cd.detectChanges();
-                        }
-                      }
-                    })
-                  }
-                  else{
-                    for(let i=0;i<this.list_of_first_propositions.length;i++){
-                      this.get_other_propositions(i,r[1]);
-                    }
-                  }
-                }
-              })
+              check_with_global(this)
             }
             else{
               for(let i=0;i<this.list_of_first_propositions.length;i++){
@@ -882,6 +865,85 @@ export class NavbarLinkartsComponent implements OnInit {
           
          
         })
+
+        let global_result:any;
+        this.navbar.get_global_propositions_navbar(this.publication_category,this.input.nativeElement.value,10,this.compteur_research).subscribe(r=>{
+          //console.log(r[0][0]);
+          global_result=r[0][0]
+          global_retrieved=true;
+          if(r[1]==this.compteur_research){
+            check_with_global(this)
+            
+          }
+        })
+
+        let tags_result:any;
+        this.navbar.get_global_tags_propositions_navbar(this.publication_category,this.input.nativeElement.value,5,this.compteur_research).subscribe(u=>{
+          console.log(u[0][0]);
+          tags_result=u[0][0];
+          tags_retrieved=true;
+          if(u[1]==this.compteur_research){
+            check_with_tags(this)
+           
+          }
+        })
+
+        
+        function check_with_global(THIS){
+          if(global_retrieved && specific_retrieved){
+            if(global_result.length>0){
+              THIS.list_of_first_propositions=THIS.list_of_first_propositions.concat(global_result);
+            }
+            if(THIS.list_of_first_propositions.length<10){
+              console.log(THIS.list_of_first_propositions.length)
+              run_tags=true;
+              check_with_tags(THIS)
+            }
+            else{
+              for(let i=0;i<THIS.list_of_first_propositions.length;i++){
+                THIS.get_other_propositions(i,THIS.compteur_research);
+              }
+            }
+          }
+        }
+
+        function check_with_tags(THIS){
+          if(global_retrieved && specific_retrieved && tags_retrieved && run_tags){
+            if(tags_result.length>0){
+              let len=THIS.list_of_first_propositions.length;
+              if(len>0){
+                for(let j=0;j<tags_result.length;j++){
+                  let ok=true;
+                  for(let k=0;k<len;k++){
+                    if( THIS.list_of_first_propositions[k].publication_category==tags_result[j].publication_category && THIS.list_of_first_propositions[k].format==tags_result[j].format && THIS.list_of_first_propositions[k].target_id==tags_result[j].target_id){
+                      ok=false;
+                    }
+                    if(k==len-1){
+                      if(ok){
+                        THIS.list_of_first_propositions.push(tags_result[j])
+                      }
+                    }
+                  }
+                }
+              }
+              else{
+                THIS.list_of_first_propositions=THIS.list_of_first_propositions.concat(tags_result);
+              }
+            }
+            if(THIS.list_of_first_propositions.length>0){
+              console.log("this.list_of_first_propositions")
+              console.log(THIS.list_of_first_propositions)
+              for(let i=0;i<THIS.list_of_first_propositions.length;i++){
+                THIS.get_other_propositions(i,THIS.compteur_research);
+              }
+            }
+            else{
+              THIS.loading_other=false;
+              THIS.show_other_propositions=true;
+              THIS.cd.detectChanges();
+            }
+          }
+        }
       }
       
     }
@@ -889,12 +951,13 @@ export class NavbarLinkartsComponent implements OnInit {
       console.log("else")
       if(!this.display_first_propositions_triggered){
         console.log("else if")
-        this.get_trendings();
+        console.log(this.first_propositions_retrieved)
+        console.log(this.list_of_first_propositions_history)
+        this.get_trendings_and_first_propositions();
       }
       else{
         console.log("else else")
-        console.log(this.list_of_first_propositions_history)
-        console.log(this.list_of_last_propositions_history)
+        this.show_researches_propositions=true;
         this.loading_other=false;
         this.show_other_propositions=false;
         this.show_first_propositions=true;
@@ -1285,6 +1348,7 @@ export class NavbarLinkartsComponent implements OnInit {
   open_account(i: number) {
     console.log("open_account")
     this.cancel_research()
+    this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions[i]
     this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
@@ -1298,7 +1362,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
   open_history_account(i: number) {
     console.log("open_history_account")
-    this.cancel_research()
+    this.cancel_research();
+    this.not_using_chat();
     this.loading_research=true;
     let user =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Account","unknown",user.id,user.nickname,user.firstname + ' ' + user.lastname,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
@@ -1314,6 +1379,7 @@ export class NavbarLinkartsComponent implements OnInit {
   open_ad_last_propositions(i: number) {
     this.cancel_research()
     this.loading_research=true;
+    this.not_using_chat();
     let ad =this.list_of_last_propositions[i];
     this.navbar.add_main_research_to_history("Ad",ad.remuneration,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.loading_research=false;
@@ -1328,6 +1394,7 @@ export class NavbarLinkartsComponent implements OnInit {
   open_ad_last_propositions_history(i: number) {
     this.cancel_research()
     this.loading_research=true;
+    this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
     this.navbar.add_main_research_to_history("Ad",ad.remuneration,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.router.navigate([`/ad-page/${this.list_of_last_propositions_history[i].title}/${this.list_of_last_propositions_history[i].id}`]);
@@ -1345,6 +1412,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions[i];
+    this.not_using_chat();
     console.log(s)
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
@@ -1377,6 +1445,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.cancel_research()
     this.loading_research=true;
     let artwork=this.list_of_last_propositions_history[i];
+    this.not_using_chat();
     console.log(s)
     if(s.publication_category=="Writing") {
       this.navbar.add_main_research_to_history(s.publication_category,"unknown",s.target_id,artwork.title, null,"clicked_after_research",0,0,0,0,artwork.style,artwork.firsttag,artwork.secondtag,artwork.thirdtag,this.type_of_profile).subscribe(r=>{
@@ -1411,7 +1480,7 @@ export class NavbarLinkartsComponent implements OnInit {
   /******************************************** CHAT NAVIGATION  *************************************/
 
 
-  open_chat_2(i:number) {
+  open_chat_2() {
     this.show_chat_messages=false;
   }
   get_chat_2(i:number) {
@@ -1439,6 +1508,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
 
   open_my_account() {
+    this.not_using_chat();
     if(this.show_notifications){
       this.close_notifications();
     }
@@ -1448,16 +1518,20 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   really_open_my_profile() {
+    this.not_using_chat();
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
   }
   really_open_my_account() {
+    this.not_using_chat();
     this.router.navigate([`/account/${this.pseudo}/${this.user_id}/my_account`]);
   }
 
   open_my_trending(){
+    this.not_using_chat();
     this.close_notifications();
   }
   get_my_trending(category) {
+    this.not_using_chat();
     if(category=='comic'){
       return "/trendings/comics"
     }
@@ -1478,30 +1552,36 @@ export class NavbarLinkartsComponent implements OnInit {
     return "/account/" + notif.id_user_name + "/" + notif.id_user;
   }
   open_comic(notif:any) {
+    this.not_using_chat();
     this.close_notifications();
   }
   get_comic(notif:any) {
     return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
   }
+
   open_comic_chapter(notif:any) {
+    this.not_using_chat();
     this.close_notifications();
   }
   get_comic_chapter(notif:any) {
     return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id + "/" + notif.chapter_number;
   }
   open_drawing(notif:any) {
+    this.not_using_chat();
     this.close_notifications();
   }
   get_drawing(notif:any) {
     return "/artwork-drawing/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
   }
   open_writing(notif:any) {
+    this.not_using_chat();
     this.close_notifications();
   }
   get_writing(notif:any) {
     return "/artwork-writing/" + notif.publication_name + "/" + notif.publication_id;
   }
   open_ad(notif:any) {
+    this.not_using_chat();
     this.close_notifications();
   }
   get_ad(notif:any) {
@@ -1521,7 +1601,8 @@ export class NavbarLinkartsComponent implements OnInit {
     if( this.input.nativeElement.value.trim().length == 0 ) {
       return;
     }
-    this.cancel_research()
+    this.cancel_research();
+    this.not_using_chat();
     this.loading_research=true;
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,this.input.nativeElement.value,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       //console.log(r);
@@ -1533,7 +1614,8 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   click_on_trending_message(i){
-    this.cancel_research()
+    this.cancel_research();
+    this.not_using_chat();
     this.loading_research=true;
     let str=this.most_researched_propositions[i].research_string;
     this.navbar.add_main_research_to_history(this.publication_category,this.format,this.target_id,str,null,"researched",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
@@ -1579,15 +1661,16 @@ export class NavbarLinkartsComponent implements OnInit {
       return
     }
     this.disconnecting=true;
+    clearInterval(this.get_connection_interval)
     this.AuthenticationService.logout();
       
-      this.Community_recommendation.generate_recommendations().subscribe(r=>{
-        this.disconnecting=false;
-        this.cd.detectChanges();
-        this.location.go('/')
-        location.reload();
-      })
-    
+    this.Community_recommendation.generate_recommendations().subscribe(r=>{
+      this.disconnecting=false;
+      this.cd.detectChanges();
+      this.location.go('/')
+      location.reload();
+    })
+  
     //this.type_of_profile="visitor";
     
   }
@@ -1607,23 +1690,31 @@ export class NavbarLinkartsComponent implements OnInit {
 /***************************************Style  **********************************/
 /***************************************Style  **********************************/
 
-  /*define_margin_top() {
-    if( this.navbar.visible ) {
-      console.log("navbar visible set margin top")
-      if( $(".fixed-top").css("position") == "fixed" ) {
-        $(".navbar-margin").css("height", $(".fixed-top").height() + "px" );
-      }
-      else {
-        $(".navbar-margin").css("height", "10px" );
-      }
-      this.margin_is_not_set=false;
-      console.log($(".navbar-margin").css("height"))
-    }
-  }*/
 
+
+  
   ngAfterViewChecked() {
+    
     this.setHeight();
   }
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      console.log("load")
+      THIS.show_icon=true;
+    });
+
+    console.log(this.navbar.visible)
+    if( this.navbar.visible ) {
+      this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
+        this.initialize_selectors();
+    }
+    else {
+      this.rd.setStyle(this.navbarMargin.nativeElement, "height", "0px");
+    }
+  }
+
   setHeight() {
     this.navbar.setHeight( $(".fixed-top").height() );
   }
@@ -1660,59 +1751,12 @@ display_style_and_tag_research=false;
 indice_title_selected=-1;
 
 initialize_selectors(){
-
-  let THIS=this;
-  $(document).ready(function () {
-    //$('.NavbarSelectBox').SumoSelect({});
+  if(this.type_of_profile_retrieved){
+    this.show_selector=true;
+    this.cd.detectChanges();
     
-    /*$('.NavbarSelectBox2').SumoSelect({});
+  }
     
-      
-    if( THIS.navbar.active_section==0 ) {
-      $(".NavbarSelectBox2")[0].sumo.selectItem('0');
-    }
-    else if( THIS.navbar.active_section==1 ) {
-      $(".NavbarSelectBox2")[0].sumo.selectItem('1');
-    }
-    else if( THIS.navbar.active_section==2 ) {
-      $(".NavbarSelectBox2")[0].sumo.selectItem('2');
-    }
-    else {
-      $(".NavbarSelectBox2")[0].sumo.selectItem('0');
-    }*/
-
-    THIS.cd.detectChanges();
-    THIS.show_selector=true;
-  });
-
-  /*$(".NavbarSelectBox").change(function(){
-    //console.log($(this).val())
-    THIS.input.nativeElement.value="";
-    THIS.publication_category=$(this).val();
-    if(THIS.publication_category=="Comic" || THIS.publication_category=="Drawing" || THIS.publication_category=="Writing"){
-      THIS.display_style_and_tag_research=true;
-      THIS.indice_title_selected=THIS.list_of_real_categories.indexOf(THIS.publication_category);
-    }
-    else{
-      THIS.display_style_and_tag_research=false;
-      THIS.indice_title_selected=-1
-    }
-  })*/
-
-  /*$(".NavbarSelectBox2").change(function(){
-    if(THIS.indice_page_loading>0){
-      if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='0' ) {
-        THIS.go_to_section(0);
-      }
-      else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='1' ) {
-        THIS.go_to_section(1);
-      }
-      else if( THIS.navbar.active_section!=$(this).val() && $(this).val()=='2' ) {
-        THIS.go_to_section(2);
-      }
-    }
-    THIS.indice_page_loading++;
-  })*/
 
 }
 
@@ -1744,6 +1788,7 @@ sectionChange(e:any) {
   }
 }
 sectionChange2(e:any) {
+  this.not_using_chat();
   this.go_to_section( e );
 }
 
@@ -1789,8 +1834,12 @@ open_messages(){
     });
   }
   else{
+    console.log("open message")
     this.show_chat_messages=true;
-    this.cd.detectChanges();
+    console.log(this.data_retrieved)
+    console.log(this.using_chat_retrieved)
+    console.log(this.data_retrieved)
+    console.log(this.list_of_friends_retrieved)
   }
  
 }
@@ -1837,57 +1886,84 @@ sort_friends_list() {
 
   //console.log("first sort friends list")
   this.chatService.get_list_of_users_I_talk_to().subscribe(r=>{
-    if(r[0].length>0){
+
+    let friends=r[0].friends;
+    if(friends.length>0){
       let compt=0;
-      //console.log(r[0])
-      for(let i=0;i<r[0].length;i++){
-        this.list_of_chat_friends_ids[i]=r[0][i].id;
-        if(r[0][i].id_user==this.user_id){
+      //console.log(friends)
+      for(let i=0;i<friends.length;i++){
+        this.list_of_chat_friends_ids[i]=friends[i].id;
+        let pp_retrieved=false;
+        let data_retrieved=false;
+        if(friends[i].id_user==this.user_id){
+            
             this.list_of_friends_types[i]='user';
-            this.list_of_friends_users_only[i]=r[0][i].id_receiver;
-            this.list_of_friends_ids[i]=r[0][i].id_receiver;
-            this.list_of_friends_date[i]=new Date(r[0][i].date).getTime()/1000;
-            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_receiver).subscribe(s=>{
+            this.list_of_friends_users_only[i]=friends[i].id_receiver;
+            this.list_of_friends_ids[i]=friends[i].id_receiver;
+            this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
+            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
-              this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_receiver ).subscribe(t=> {
-                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_friends_profile_pictures[i] = SafeURL;
+              pp_retrieved=true;
+              all_retrieved(this);
+            });
+
+            this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_friends_profile_pictures[i] = SafeURL;
+              data_retrieved=true;
+              all_retrieved(this);
+             
+            });
+
+            
+            function all_retrieved(THIS){
+              if(data_retrieved && pp_retrieved){
                 compt ++;
-                if(compt==r[0].length){
+                if(compt==friends.length){
                   //console.log(this.list_of_friends_ids)
-                  this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
-                    this.list_of_friends_last_message=u[0].list_of_friends_messages;
-                      this.sort_friends_groups_chats_list();
+                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
+                    THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
+                    THIS.sort_friends_groups_chats_list();
                   });
                 }
-              });
-            });
+              }
+            }
         }
         else{
             this.list_of_friends_types[i]='user';
-            this.list_of_friends_ids[i]=r[0][i].id_user;
-            this.list_of_friends_users_only[i]=r[0][i].id_user;
-            this.list_of_friends_date[i]=new Date(r[0][i].date).getTime()/1000;
-            this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(s=>{
+            this.list_of_friends_ids[i]=friends[i].id_user;
+            this.list_of_friends_users_only[i]=friends[i].id_user;
+            this.list_of_friends_date[i]=new Date(friends[i].date).getTime()/1000;
+            this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
-              this.Profile_Edition_Service.retrieve_profile_picture(  r[0][i].id_user ).subscribe(t=> {
-                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_friends_profile_pictures[i] = SafeURL;
+              pp_retrieved=true;
+              all_retrieved(this);
+            });
+
+            this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_friends_profile_pictures[i] = SafeURL;
+              data_retrieved=true;
+              all_retrieved(this);
+            });
+
+            function all_retrieved(THIS){
+              if(data_retrieved && pp_retrieved){
                 compt ++;
-                if(compt==r[0].length){
+                if(compt==friends.length){
                   //console.log(this.list_of_friends_ids)
-                  this.chatService.get_last_friends_message(this.list_of_friends_ids).subscribe(u=>{
-                    this.list_of_friends_last_message=u[0].list_of_friends_messages;
+                  THIS.chatService.get_last_friends_message(THIS.list_of_friends_ids).subscribe(u=>{
+                    THIS.list_of_friends_last_message=u[0].list_of_friends_messages;
                     //console.log(this.list_of_friends_last_message)
-                      this.sort_friends_groups_chats_list();
+                    THIS.sort_friends_groups_chats_list();
                   });
                 }
-              });
-            });
+              }
+            }
         }
       }
     }
@@ -2121,12 +2197,69 @@ change_message_status(event){
 
     }
     else{
-      //console.log("dans le else new sort")
-      //à compléter
-      //console.log(event);
       if(event.friend_type=='group'){
-        this.get_group_chat_name(event.friend_id,event.message,false);
+        this.get_group_chat_name(event.friend_id,event.message);
       }
+      else{
+        this.chatService.check_if_is_related(event.friend_id).subscribe(r=>{
+          if(r[0].value){
+            if(event.friend_id==this.user_id){
+              console.log("it s me")
+              this.list_of_friends_types.splice(0,0,'user');
+              this.list_of_friends_ids.splice(0,0,event.friend_id);
+                this.list_of_friends_last_message.splice(0,0,event.message);
+                this.list_of_friends_last_message[0].status="received";
+                this.list_of_friends_names.splice(0,0,this.author_name);
+                this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                this.list_of_friends_pseudos.splice(0,0,this.pseudo);
+                this.cd.detectChanges();
+            }
+            else{
+              console.log("related but not me")
+              let name;
+              let pseudo;
+              let picture;
+              let data_retrieved=false;
+              let pp_retrieved=false;
+              this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
+                console.log(s);
+                pseudo = s[0].nickname;
+                name =s[0].firstname + ' ' + s[0].lastname;
+                data_retrieved=true;
+                check_all(this)
+              });
+  
+              this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
+                console.log(t);
+                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                picture = SafeURL;
+                pp_retrieved=true;
+                check_all(this)
+              
+              })
+  
+              function check_all(THIS){
+                if(data_retrieved && pp_retrieved){
+                  THIS.list_of_friends_types.splice(0,0,'user');
+                  THIS.list_of_friends_ids.splice(0,0,event.friend_id);
+                  THIS.list_of_friends_last_message.splice(0,0,event.message);
+                  THIS.list_of_friends_last_message[0].status="received";
+                  THIS.list_of_friends_names.splice(0,0,name);
+                  THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                  THIS.list_of_friends_profile_pictures.splice(0,0,picture);
+                  THIS.list_of_friends_pseudos.splice(0,0,pseudo);
+                  THIS.cd.detectChanges();
+                }
+               
+              }
+            }
+          }
+        })
+      }
+
+     
       
     }
   }
@@ -2135,11 +2268,11 @@ change_message_status(event){
   add_group_to_contacts(event){
     //console.log("adding group to contacts")
     //console.log(event);
-    this.get_group_chat_name(event.friend_id,event.message,event.value)
+    this.get_group_chat_name(event.friend_id,event.message)
   }
   
 
-  get_group_chat_name(id,message,value){
+  get_group_chat_name(id,message){
     //console.log("get_group_chat_name")
     //console.log(id);
     //console.log(message)

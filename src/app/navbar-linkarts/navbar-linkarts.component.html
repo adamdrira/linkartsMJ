@@ -1,16 +1,9 @@
 <div class="navbar-component">
 
-  <div class="fixed-top" *ngIf="!connexion_status"
-    [ngClass]="{'navbarBoxShadow': navbarBoxShadow,'really-invisible': connexion_status }">
-    <div class="not-connected">
-      Une erreur de connexion est survenue. Etes-vous bien connecté à internet ?
-    </div>
-
-  </div>
-
+ 
 
   <div class="fixed-top" *ngIf="navbar.visible"
-    [ngClass]="{'navbarBoxShadow': navbarBoxShadow,'really-invisible': !connexion_status}">
+    [ngClass]="{'navbarBoxShadow': navbarBoxShadow}">
 
 
 
@@ -21,7 +14,7 @@
 
 
         <!--Logo-->
-        <a class="logoLinkarts" *ngIf="!activated_search" routerLink="/">
+        <a class="logoLinkarts" *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
             <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
         </a>
 
@@ -30,38 +23,25 @@
           [ngClass]="{'invisible': !show_selector || !logo_is_loaded}">
           
           <div class="navbar2 flex-md-nowrap p-0">
-            <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" routerLink="/">
+            <a class="category" [ngClass]="{'opened': navbar.active_section==0 }" (click)="not_using_chat()" routerLink="/">
                 <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
                 <span>ACCUEIL</span>
             </a>
-            <a class="category" [ngClass]="{'opened': navbar.active_section==1 }" routerLink="/linkcollab">
+            <a class="category" [ngClass]="{'opened': navbar.active_section==1 }"  (click)="not_using_chat()" routerLink="/linkcollab">
                 <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
                 <span>COLLABORATIONS</span>
             </a>
-            <!--<a class="category" [ngClass]="{'opened': navbar.active_section==2 }">
-                <div class="icon-shopping" [ngClass]="{'icon-clicked': navbar.active_section==2 }"></div>
-                <span>LIBRAIRIE</span>
-            </a>-->
           </div>
         </div>
 
-        <!--<div class="VISIBLE-ON-SMALL-SCREEN-1" [ngClass]="{'invisible': activated_search }">
-          <select name="somename" class="NavbarSelectBox2" [ngClass]="{'really-invisible': !show_selector }">
-            <option value="0">
-              Accueil
-            </option>
-            <option value="1">
-              Collaborations
-            </option>
-          </select>
-        </div>-->
+
         
         <div class="VISIBLE-ON-SMALL-SCREEN-1 second-selector" [ngClass]="{'invisible': activated_search || !logo_is_loaded}">
           
           <mat-form-field floatLabel='never' [ngClass]="{'really-invisible': !show_selector, 'opened': navbarSelect2 && navbarSelect2.panelOpen }">
             
             <div class="arrow-container" [ngClass]="{'opened': navbarSelect2 && navbarSelect2.panelOpen }">
-              <mat-icon>arrow_back_ios_new</mat-icon>
+              <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
             </div>
 
             <mat-select #navbarSelect2 panelClass="navbarSelectClass2" ng-animate-disabled
@@ -104,7 +84,7 @@
           <!--Barre de recherche-->
 
 
-          <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search">
+          <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search" [ngClass]="{'invisible':  !logo_is_loaded}">
             
             <a routerLink="/" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==0 }">
               <div class="icon-home"></div>
@@ -112,47 +92,38 @@
             <a routerLink="/linkcollab" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==1 }">
               <div class="icon-collaboration"></div>
             </a>
+            
             <a (click)="activate_search();">
-              <mat-icon class="optionsButton">search</mat-icon>
+              <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">search</mat-icon>
             </a>
           </div>
 
           <div class="navbar-l1-searchbar-container"
-            [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search}">
+            [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search, 'invisible':!logo_is_loaded}">
 
 
             <div class="left-container first-selector" [ngClass]="{'invisible': !show_selector }">
               <mat-form-field floatLabel='never'>
 
                 <div class="arrow-container" [ngClass]="{'opened': navbarSelect && navbarSelect.panelOpen }">
-                  <mat-icon>arrow_back_ios_new</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
                 </div>
 
                 <mat-select #navbarSelect 
                 panelClass="navbarSelectClass" 
-                disableOptionCentering value="Tout" 
+                disableOptionCentering value="All" 
                 (selectionChange)="sectionChange($event.value)">
                 
-                  <mat-option value="Tout" select>Tout</mat-option>
-                  <mat-option value="Compte">Compte</mat-option>
+                  <mat-option value="All" select>Tout</mat-option>
+                  <mat-option value="Account">Compte</mat-option>
                   <mat-option value="Ad">Annonce</mat-option>
                   <mat-option value="Comic">Bande dessinée</mat-option>
                   <mat-option value="Drawing">Dessin</mat-option>
-                  <mat-option value="Writing">Ecrit</mat-option>
+                  <mat-option value="Writing">Écrit</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
 
-            <!--<div class="left-container" [ngClass]="{'invisible': !show_selector }">
-              <select name="somename" class="NavbarSelectBox">
-                <option value="All">Tout</option>
-                <option value="Compte">Compte</option>
-                <option value="Ad">Annonce</option>
-                <option value="Comic">Bande dessinée</option>
-                <option value="Drawing">Dessin</option>
-                <option value="Writing">Ecrit</option>
-              </select>
-            </div>-->
 
             <div class="right-container">
               <div #propositions class="researches-propositions" *ngIf="show_researches_propositions" [@enterAnimation]>
@@ -169,7 +140,7 @@
                           <div class="swiper-wrapper">
                               <div class="swiper-slide" *ngFor="let item of first_filters[indice_title_selected];let i=index">
                                   <a class="element" *ngIf="item!=''"
-                                    (click)="cancel_research()" [routerLink]="open_research_style_and_tags(i)">
+                                    (click)="cancel_research();not_using_chat()" [routerLink]="open_research_style_and_tags(i)">
                                     <span>
                                       {{item}}
                                     </span>
@@ -183,19 +154,11 @@
                       <div class="swiper-button-next" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
                     </div>
 
-                    <!--<ng-container *ngFor="let item of first_filters[indice_title_selected];let i=index">
-                      <a class="string-proposition-container" *ngIf="item!=''" (click)="cancel_research();"
-                        [routerLink]="open_research_style_and_tags(i)">
-                        <span class="string-proposition">
-                          {{item}}
-                        </span>
-                      </a>
-                    </ng-container>-->
+             
                   </div>
                 </div>
 
-                <div class="first-block"
-                  *ngIf="show_most_researched_propositions && most_researched_propositions.length>0">
+                <div class="first-block" *ngIf="show_most_researched_propositions && most_researched_propositions.length>0">
                   <div class="title-proposition">
                     Tendances
                   </div>
@@ -322,7 +285,7 @@
                             <div class="type-container">
                               <span *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
                               <span *ngIf="item.publication_category=='Drawing'">Dessin</span>
-                              <span *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                              <span *ngIf="item.publication_category=='Writing'">Écrit</span>
                             </div>
                           </div>
 
@@ -361,8 +324,7 @@
                         </span>
                       </div>
 
-                      <div class="list-of-propositions"
-                        *ngFor="let item of list_of_first_propositions_history;let i=index">
+                      <div class="list-of-propositions" *ngFor="let item of list_of_first_propositions_history;let i=index">
 
                         <!-- ACCOUNT -->
                         <!-- ACCOUNT -->
@@ -386,7 +348,7 @@
                           </a>
 
                           <button *ngIf="first_option" (click)="delete_from_history(i,$event)">
-                            <mat-icon>close</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                           </button>
                         </div>
 
@@ -413,7 +375,7 @@
                           </a>
 
                           <button *ngIf="first_option" (click)="delete_from_history(i,$event)">
-                            <mat-icon>close</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                           </button>
 
                         </div>
@@ -438,12 +400,12 @@
                             <div class="type-container" [ngClass]="{'with-close': first_option }">
                               <span *ngIf="item.publication_category=='Comic'">Bande dessinée</span>
                               <span *ngIf="item.publication_category=='Drawing'">Dessin</span>
-                              <span *ngIf="item.publication_category=='Writing'">Ecrit</span>
+                              <span *ngIf="item.publication_category=='Writing'">Écrit</span>
                             </div>
                           </a>
 
                           <button *ngIf="first_option" (click)="delete_from_history(i,$event)">
-                            <mat-icon>close</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                           </button>
                         </div>
 
@@ -456,12 +418,12 @@
 
               </div>
 
-              <input #input (click)="activateFocus()" (input)="researches_propositions($event);"
+              <input #input (click)="activateFocus()" (input)="researches_propositions();"
                 (keydown)="keydown_researches_propositions($event);" onblur="this.placeholder = 'Rechercher'"
                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
 
               <div class="loupe-container" #searchicon>
-                <mat-icon *ngIf="!loading_research" (click)="click_on_research()">search</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_research" (click)="click_on_research()">search</mat-icon>
                 <mat-spinner *ngIf="loading_research" diameter="20"></mat-spinner>
               </div>
 
@@ -522,15 +484,15 @@
                   <div class="loading-page" *ngIf="!list_of_friends_retrieved ">
                     <mat-spinner diameter="20"></mat-spinner>
                   </div>
-                  <div *ngIf="list_of_friends_retrieved">
+                  <div *ngIf="list_of_friends_retrieved && list_of_friends_ids.length>0">
 
                     <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'invisible':!show_chat_messages}">
-                      <a class="author-container" (click)="open_chat_2(i);" [routerLink]="get_chat_2(i)">
+                      <a class="author-container" (click)="open_chat_2()" [routerLink]="get_chat_2(i)">
                         <div class="left-container">
                           <img [src]="list_of_friends_profile_pictures[i]">
                           <div class="connection-state-container" *ngIf="connections_status_retrieved">
                             <div *ngIf="list_of_friends_connected[i]">
-                              <mat-icon style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
                             </div>
                             <div *ngIf="!list_of_friends_connected[i]">
                               <div style="width: 40px; font-size: 12px;"
@@ -813,7 +775,7 @@
                   </div>
                 </div>
 
-                <a class="open-chat" routerLink="/chat" *ngIf="list_of_friends_retrieved">
+                <a class="open-chat" routerLink="/chat" (click)="open_chat_2()" *ngIf="list_of_friends_retrieved">
                   <span> Consulter la messagerie</span>
                 </a>
               </div>
@@ -873,12 +835,12 @@
                       <!-- ---------------------------subscribtion----------------------------------->
                       <ng-container *ngIf="notif.type=='subscribtion'">
 
-                        <a (click)="close_notifications();" [routerLink]="get_account_for_notification(notif)">
+                        <a (click)="close_notifications();not_using_chat()" [routerLink]="get_account_for_notification(notif)">
                           <div class="left-container">
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
-                              <mat-icon>person_add</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -891,12 +853,12 @@
                       <!-- ---------------------------favorites----------------------------------->
                       <ng-container *ngIf="notif.type=='favorites'">
 
-                        <a (click)="close_notifications();" [routerLink]="get_my_favorite()">
+                        <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_favorite()">
                           <div class="left-container">
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon trendings">
-                              <mat-icon>local_fire_department</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">local_fire_department</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -915,7 +877,7 @@
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon trendings">
-                              <mat-icon>local_fire_department</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">local_fire_department</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -941,7 +903,7 @@
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
-                              <mat-icon>group</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -960,7 +922,7 @@
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
-                              <mat-icon>group</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -980,7 +942,7 @@
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
-                              <mat-icon>group</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -997,7 +959,7 @@
                             <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                               [ngClass]="{'invisible':!notification_loaded[i]}">
                             <div class="notification-icon group">
-                              <mat-icon>group</mat-icon>
+                              <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                             </div>
                           </div>
                           <div class="right-container">
@@ -1019,7 +981,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
-                                <mat-icon>save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1037,7 +999,7 @@
                                 <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon publication">
-                                  <mat-icon>save_alt</mat-icon>
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                                 </div>
                               </div>
                               <div class="right-container">
@@ -1053,7 +1015,7 @@
                                 <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon publication">
-                                  <mat-icon>save_alt</mat-icon>
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                                 </div>
                               </div>
                               <div class="right-container">
@@ -1071,7 +1033,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
-                                <mat-icon>save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1088,7 +1050,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
-                                <mat-icon>save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1110,7 +1072,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon publication">
-                                <mat-icon>save_alt</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1134,7 +1096,7 @@
                                 <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon like">
-                                  <mat-icon>thumb_up</mat-icon>
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                                 </div>
                               </div>
                               <div class="right-container">
@@ -1186,7 +1148,7 @@
                                 <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                   [ngClass]="{'invisible':!notification_loaded[i]}">
                                 <div class="notification-icon like">
-                                  <mat-icon>thumb_up</mat-icon>
+                                  <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                                 </div>
                               </div>
                               <div class="right-container">
@@ -1240,7 +1202,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1290,7 +1252,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1346,7 +1308,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
-                                <mat-icon>favorite</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1396,7 +1358,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
-                                <mat-icon>favorite</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1446,7 +1408,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
-                                <mat-icon>favorite</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1496,7 +1458,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon favorite">
-                                <mat-icon>favorite</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1552,7 +1514,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1603,7 +1565,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1653,7 +1615,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1703,7 +1665,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1753,7 +1715,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1808,7 +1770,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1855,7 +1817,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1905,7 +1867,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -1955,7 +1917,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2005,7 +1967,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon comment">
-                                <mat-icon>mode_comment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">mode_comment</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2060,7 +2022,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2107,7 +2069,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2157,7 +2119,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2207,7 +2169,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2257,7 +2219,7 @@
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
                               <div class="notification-icon like">
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -2313,7 +2275,7 @@
             <!-- ---------------------------NOTIFICATIONS END----------------------------------->
             <!-- ---------------------------NOTIFICATIONS END----------------------------------->
 
-            <a class="profile-container" [routerLink]="get_my_profile()">
+            <a class="profile-container" [routerLink]="get_my_profile()"  (click)="not_using_chat()">
               <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
                 <img [src]="profile_picture" (load)="pp_loaded()"
                   [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
@@ -2328,12 +2290,12 @@
                   [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
 
                   <!--<div class="absolute-menu-logo">
-                    <mat-icon>menu</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">menu</mat-icon>
                   </div>-->
               </div>
 
               <!--<button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
               </button>-->
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_profile()">
@@ -2342,19 +2304,19 @@
                   <span>Mon profil</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
-                  <mat-icon class="item-icon">settings</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">help</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">lock</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
-                  <mat-icon class="item-icon">login</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
                   <span>Se déconnecter</span>
                 </button>
               </mat-menu>
@@ -2384,12 +2346,12 @@
 
               <div class="connexion" [ngClass]="{'disconnecting': disconnecting}"
                 *ngIf="type_of_profile=='account' || type_of_profile=='suspended'" (click)="logout()">
-                <mat-icon *ngIf="!disconnecting" class="rotate-icon">login</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!disconnecting" class="rotate-icon">login</mat-icon>
                 <span *ngIf="!disconnecting">Se déconnecter</span>
                 <mat-spinner *ngIf="disconnecting" diameter="20"></mat-spinner>
               </div>
               <div class="connexion" *ngIf="type_of_profile=='visitor'" (click)="login()">
-                <mat-icon>login</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">login</mat-icon>
                 <span>Se connecter</span>
               </div>
 
@@ -2398,19 +2360,19 @@
 
             <div class="options LARGE-SCREEN-OPTIONS" *ngIf="!activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
-                <mat-icon class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">
-                  <mat-icon class="item-icon">settings</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">help</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">lock</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
                 </button>
               </mat-menu>
@@ -2419,23 +2381,23 @@
             <div class="options SMALL-SCREEN-OPTIONS"
               *ngIf="type_of_profile!='account' && type_of_profile!='suspended' && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="login()">
-                  <mat-icon class="item-icon">exit_to_app</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">exit_to_app</mat-icon>
                   <span>Se connecter</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="signup()">
-                  <mat-icon class="item-icon">edit</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                   <span>S'inscrire</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">help</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">lock</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
                 </button>
               </mat-menu>
@@ -2444,23 +2406,23 @@
             <div class="options SMALL-SCREEN-OPTIONS HIDE-OPTIONS-ON-SMALL-SCREEN"
               *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
-                  <mat-icon class="item-icon">settings</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">help</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon class="item-icon">lock</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
                   <span>Crédits</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
-                  <mat-icon class="item-icon">login</mat-icon>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
                   <span>Se déconnecter</span>
                 </button>
               </mat-menu>
@@ -2468,7 +2430,7 @@
 
             <div class="options absolute-close" *ngIf="activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" (click)="cancel_search();">
-                <mat-icon class="optionsButton more">close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">close</mat-icon>
               </button>
             </div>
 

@@ -1,5 +1,5 @@
 
-<div *ngFor="let style of sorted_style_list; index as i1">
+<div *ngFor="let style of sorted_style_list; index as i1" >
 
     <ng-container *ngIf="(style==='Roman illustré' && sorted_artpieces_illustrated_novel.length>0)||(style==='Poésie' && sorted_artpieces_poetry.length>0)
         ||(style==='Roman' && sorted_artpieces_roman.length>0)||(style==='Scénario' && sorted_artpieces_scenario.length>0)||(style==='Article' && sorted_artpieces_article.length>0)">
@@ -11,20 +11,15 @@
         </div>
         
 
-        <!--<div class="container-homepage container-skeletons d-flex flex-wrap skeleton" *ngIf="!list_of_more_contents_sorted" [@enterAnimation]>
-            <ng-container *ngFor="let item of skeleton_array; let i = index">
-                <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i && !list_of_contents_sorted"
-                    (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                ></app-thumbnail-skeleton>
-            </ng-container>
-        </div>-->
+      
 
-        <div class="container-homepage container-writings d-flex flex-wrap" style="transition:opacity 1s;" >
+        <div class="container-homepage container-writings" style="transition:opacity 1s;" >
 
             <ng-container *ngIf="style==='Roman illustré'">
                 <ng-container *ngFor="let item of sorted_artpieces_illustrated_novel.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>
@@ -34,6 +29,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_poetry.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>
@@ -43,6 +39,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_roman.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>
@@ -53,6 +50,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_scenario.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>
@@ -62,6 +60,7 @@
                 <ng-container *ngFor="let item of sorted_artpieces_article.slice(0,number_of_writings_to_show); let i = index">
                     <app-thumbnail-writing class="thumbnail-component-container" 
                         [item]=item
+                        [width]=width
                         now_in_seconds={{now_in_seconds}}
                     ></app-thumbnail-writing>
                 </ng-container>
@@ -69,27 +68,22 @@
 
 
             <ng-container>
-                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && get_number_of_thumbnails(style)>=number_of_writings_to_show" class="see-more" (click)="see_more(style)">
-                    <div class="icon">
-                    </div>
+                <div *ngIf="!show_more[sorted_style_list.indexOf(style)] && see_more_writings(style)" class="see-more" (click)="see_more(style)">
+                    <mat-icon class="icon">expand_more</mat-icon>
                 </div>
                 <ng-container *ngIf="show_more[sorted_style_list.indexOf(style)]">
                     
-                    <!--<div *ngIf="!list_of_more_contents_sorted" [@enterAnimation] class="container-homepage container-writings d-flex flex-wrap">
-                        <ng-container *ngFor="let item of skeleton_array; let i = index">
-                            <app-thumbnail-skeleton class="thumbnail-component-container" *ngIf="number_of_skeletons_per_line>i"
-                                (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                            ></app-thumbnail-skeleton>
-                        </ng-container>
-                    </div>-->
+                   
 
                     <div  style="transition:opacity 1s;">
                         <app-media-see-more-writings
                             [style]=style
-                            [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel
-                            [sorted_artpieces_roman]=sorted_artpieces_roman
-                            [sorted_artpieces_scenario]=sorted_artpieces_scenario
-                            [sorted_artpieces_article]=sorted_artpieces_article
+                            [width]=width
+                            [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel.slice(0,6)
+                            [sorted_artpieces_roman]=sorted_artpieces_roman.slice(0,6)
+                            [sorted_artpieces_scenario]=sorted_artpieces_scenario.slice(0,6)
+                            [sorted_artpieces_article]=sorted_artpieces_article.slice(0,6)
+                            [number_of_writings_to_show]=number_of_writings_to_show
                             now_in_seconds={{now_in_seconds}}
                         ></app-media-see-more-writings>
                     </div>

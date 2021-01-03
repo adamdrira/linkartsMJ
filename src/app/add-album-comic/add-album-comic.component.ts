@@ -116,9 +116,15 @@ export class AddAlbumComicComponent implements OnInit {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
+
+  show_icon=false;
+
   ngAfterViewInit() {
 
-    
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
 
     this.swiper = new Swiper('.swiper-container', {
       scrollbar: {

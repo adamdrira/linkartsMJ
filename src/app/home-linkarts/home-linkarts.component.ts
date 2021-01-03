@@ -41,7 +41,6 @@ export class HomeLinkartsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
     onResize(event) {
       this.cd.detectChanges();
-      this.display_selector();
     }
     
   
@@ -49,60 +48,9 @@ export class HomeLinkartsComponent implements OnInit {
   type_of_profile_retrieved=false;
   type_of_profile:string="visitor";
 
+  status=[];
 
-
-
-
-  initialize_heights() {
-    //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      this.cd.detectChanges();
-    //}
-  }
-
-  
-  open_category(i : number) {
-    console.log("open cate")
-    if( i==0 ) {
-      this.category_index = 0;
-      this.location.go('/recommendations')
-      //return '/recommendations';
-    }
-    else if( i==1 ) {
-      this.category_index = 1;
-      this.location.go('/trendings')
-      //return '/trendings';
-    }
-    else if( i==2 ) {
-      this.category_index = 2;
-      this.location.go('/subscribings')
-      //return '/subscribings';
-    }
-    else if( i==3 ) {
-      this.category_index = 3;
-      this.location.go('/favorites')
-      //return '/favorites';
-    }
-    this.cd.detectChanges()
-  }
-
-
-  get_category(i : number) {
-    if( i==0 ) {
-      return '/recommendations';
-    }
-    else if( i==1 ) {
-      return '/trendings';
-    }
-    else if( i==2 ) {
-      return '/subscribings';
-    }
-    else if( i==3 ) {
-      return '/favorites';
-    }
-    
-  }
+  categories_to_load=[];
 
   change_profile_number=0;
   ngOnInit() {
@@ -110,12 +58,19 @@ export class HomeLinkartsComponent implements OnInit {
     this.authenticationService.currentUserType.subscribe(r=>{
       if(r!='' && this.change_profile_number<2){
         this.type_of_profile=r;
-        this.type_of_profile_retrieved=true;
+        
         this.change_profile_number++;
-        this.initializeselector();
-        this.display_selector();
         this.initialize_heights();
         this.category_index = this.route.snapshot.data['category'];
+        console.log(this.category_index)
+        this.status[this.category_index]=true;
+        this.categories_to_load[this.category_index]=true;
+        this.cd.detectChanges()
+        for(let j=0;j<4;j++){
+          if(j!=this.category_index){
+            this.status[j]=false;
+          }
+        }
         if(this.category_index==4){
           //après le click du lien envoyé par mail pour confirmer inscription
           let id = parseInt(this.route.snapshot.paramMap.get('id'));
@@ -137,46 +92,74 @@ export class HomeLinkartsComponent implements OnInit {
             }
           })
         }
+        this.type_of_profile_retrieved=true;
       }
     })
-    this.display_selector();
     
   }
 
-  little_screen=false;
-  initializeselector(){
-    let THIS=this;
-    /*$(document).ready(function () {
-      $('.f00select1').SumoSelect({});
-    });
-  
-  
-    $(".f00select0").change(function(){
-      if($(this).val()=="1"){
-        THIS.open_category(1);
-      }
-      if($(this).val()=="2"){
-        THIS.open_category(2);
-      }
-      else{
-        THIS.open_category(0);
-      }
-      THIS.cd.detectChanges();
-    })*/
-  }
-  
-  
-  display_selector(){
-    let width = $(".container-fluid").width();
-    
+ 
 
-    if( width <= 825) {
-      this.little_screen=true;
+  initialize_heights() {
+    //if( !this.fullscreen_mode ) {
+      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+      this.cd.detectChanges();
+    //}
+  }
+
+ 
+  open_category(i : number) {
+    console.log("open cate")
+    if( i==0 ) {
+      this.category_index = 0;
+      this.location.go('/recommendations');
     }
-    else{
-      this.little_screen=false;
+    else if( i==1 ) {
+      this.category_index = 1;
+      this.location.go('/trendings')
+    }
+    else if( i==2 ) {
+      this.category_index = 2;
+      this.location.go('/subscribings')
+    }
+    else if( i==3 ) {
+      this.category_index = 3;
+      this.location.go('/favorites')
+    }
+    this.status[i]=true;
+    this.categories_to_load[i]=true;
+    
+    for(let j=0;j<4;j++){
+      if(j!=i){
+        this.status[j]=false;
+      }
+    }
+    this.cd.detectChanges();
+    window.dispatchEvent(new Event('resize'))
+    
+  }
+
+ 
+
+  get_category(i : number) {
+    if( i==0 ) {
+      return '/recommendations';
+    }
+    else if( i==1 ) {
+      return '/trendings';
+    }
+    else if( i==2 ) {
+      return '/subscribings';
+    }
+    else if( i==3 ) {
+      return '/favorites';
     }
     
   }
+  
+  
+  
+  
   
 }

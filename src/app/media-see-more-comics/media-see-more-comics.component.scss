@@ -5,8 +5,24 @@
  
 
 
+  .container-homepage {
+    padding:0px;
+    flex-wrap: wrap ;
+    display:flex;
+  }
   .thumbnail-component-container {
     overflow:hidden;
+  }
+  
+  @media (max-width: 1135px) {
+    .container-homepage {
+      flex-wrap: unset !important;
+    }
+
+    .thumbnail-component-container{
+      overflow: visible !important;
+    }
+    
   }
   
   //CODE COMMUN

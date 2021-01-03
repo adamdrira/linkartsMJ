@@ -309,6 +309,14 @@ export class AccountAboutComponent implements OnInit {
       this.get_profile_stats()
   }
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+
   
   open_category(i){
     if(i==this.opened_category){

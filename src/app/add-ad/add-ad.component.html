@@ -12,7 +12,7 @@
 
             
             <button class="step-back-button" (click)="back_home();">
-                <mat-icon>keyboard_arrow_left</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
@@ -91,7 +91,7 @@
                                 [removable]="removable"
                                 (removed)="remove(genre)">
                                 {{genre}}
-                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                               </mat-chip>
                               <input
                                 placeholder="Descriptions des cibles préférentielles (maximum : 2)"
@@ -115,7 +115,7 @@
                     <div class="form-item" style="height:50px;">
                         <div class="monetisation-container">
                             <mat-slide-toggle [checked]="remuneration" (change)="setRemuneration( $event )" style="font-weight:bold;">
-                                Cette collaboration est rémunérée
+                                Recherche de collaborateurs à rémunérer
                             </mat-slide-toggle>
                         </div>
                     </div>
@@ -131,13 +131,43 @@
                     </div>
                     <div class="form-item monetization" *ngIf="remuneration" [@enterAnimation]>
                         <mat-form-field floatLabel='never'>
-                            <mat-label>Type de rémunération (optionnel)</mat-label>
+                            <mat-label>Type de promotion (optionnel)</mat-label>
                             <mat-select [compareWith]="compareObjects" (selectionChange)="change_price_type($event)" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type">
                                 <mat-option  *ngFor="let obj of listOfPriceTypes" [value]="obj">
                                     {{ obj }}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="fd.controls['fdPrice_type'].invalid">Veuillez sélectionner un type de rémunération</mat-error>
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="form-item" style="height:50px;">
+                        <div class="monetisation-container">
+                            <mat-slide-toggle [checked]="for_service" (change)="setService( $event )" style="font-weight:bold;">
+                                Promotion de produits ou services
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+
+                    <div class="form-item monetization"  *ngIf="for_service" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>Montant en € (optionnel)</mat-label>
+                            <input matInput formControlName="fdPrice1" maxLength="9" autocomplete="off">
+                            <mat-error *ngIf="fd.controls['fdPrice1'].invalid">Veuillez faire une saisie valide (votre saisie ne doit comporter que des chiffres et des points)
+                            </mat-error>
+                            <div class="length-indicator">{{fd.controls['fdPrice1'].value?.length || 0}}/9</div>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-item monetization" *ngIf="for_service" [@enterAnimation]>
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>Type de rémunération (optionnel)</mat-label>
+                            <mat-select [compareWith]="compareObjects" (selectionChange)="change_price_type_service($event)" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fdPrice_type1">
+                                <mat-option  *ngFor="let obj of listOfPriceTypes1" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="fd.controls['fdPrice_type1'].invalid">Veuillez sélectionner un type de rémunération</mat-error>
                         </mat-form-field>
                     </div>
 
@@ -181,7 +211,7 @@
                 
                 <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_ads();">
                     <ng-container *ngIf="!display_loading">
-                        <mat-icon>done_all</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                         <span>Valider </span>
                     </ng-container>
                     <ng-container *ngIf="display_loading">

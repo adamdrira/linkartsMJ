@@ -8,7 +8,7 @@
   //Category filter
   .panel-background {
     padding: 15px 10px;
-    background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+    background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
     box-shadow: 0px 3px 5px 3px #28436d4a;
     overflow: hidden;
     margin-top: 0px;
@@ -27,8 +27,8 @@
         display: flex;
         flex-direction: column;
         padding: 10px 10px 10px 10px;
-        width: 155px;
-        height: 155px;
+        width: 145px;
+        height: 145px;
         margin-left: 15px;
         margin-right: 15px;
         border-radius: 150px;
@@ -62,6 +62,8 @@
           width: unset;
           margin: auto auto 5px auto;
           font-size: 55px;
+          max-width:55px;
+          overflow: hidden;
           transition:color 300ms;
         }
         &:hover {
@@ -102,6 +104,8 @@
           height: 130px;
           mat-icon {
             font-size:45px;
+            max-width:45px;
+            overflow: hidden;
           }
           span {
             font-size:12px;
@@ -121,6 +125,8 @@
           margin-right: 5px;
           mat-icon {
             font-size:40px;
+            max-width:40px;
+            overflow: hidden;
           }
           span {
             font-size:9px;
@@ -148,6 +154,7 @@
   margin-left:auto;
   margin-right:auto;
   max-width:900px;
+  width:90%;
 
 
   .account-horizontal-divider {
@@ -169,6 +176,8 @@
       width: unset;
       height: unset;
       font-size: 28px;
+      max-width:28px;
+      overflow: hidden;
       cursor:default;
     }
     span {
@@ -217,6 +226,8 @@
 
         mat-icon {
           font-size: 24px;
+          max-width:24px;
+      overflow: hidden;
           margin: auto;
           height: unset;
           width: unset;
@@ -312,6 +323,8 @@
       display:flex;
       mat-icon {
         font-size:27px;
+        max-width:27px;
+      overflow: hidden;
         color: rgb(32,56,100);
         height:unset;
         width:unset;
@@ -356,6 +369,8 @@
       background: transparent;
       mat-icon {
         font-size: 20px;
+        max-width:20px;
+      overflow: hidden;
         margin: auto;
         height: unset;
         width: unset;
@@ -386,6 +401,8 @@
       transition: color 200ms;
       mat-icon {
         font-size: 22px;
+        max-width:22px;
+      overflow: hidden;
         margin: auto;
         height: unset;
         width: unset;
@@ -418,6 +435,8 @@
         width: unset;
         height: unset;
         font-size: 24px;
+        max-width:24px;
+      overflow: hidden;
         margin: auto 10px auto auto;
         color: #203864;
       }
@@ -467,6 +486,8 @@
               height:unset;
               color:rgb(32,56,100);
               cursor:default;
+              max-width:24px;
+              overflow: hidden;
             }
           }
           mat-icon {
@@ -475,6 +496,8 @@
               margin: auto 10px auto 0px;
               font-size: 25px;
             }
+            max-width:25px;
+           overflow: hidden;
           }
           
           button {
@@ -494,6 +517,8 @@
               width: unset;
               height: unset;
               font-size: 24px;
+              max-width:24px;
+              overflow: hidden;
               margin: auto auto auto 0px;
               color: #203864;
             }
@@ -552,6 +577,8 @@
           }
           mat-icon {
             font-size: 22px;
+            max-width:22px;
+            overflow: hidden;
             margin: auto;
             height: unset;
             width: unset;
@@ -585,6 +612,8 @@
             mat-icon {
               margin: auto auto;
               font-size: 18px;
+              max-width:18px;
+      overflow: hidden;
               color: #ffffff;
               padding: 4px;
               width: unset;
@@ -651,6 +680,8 @@
             }
             mat-icon {
               font-size: 22px;
+              max-width:22px;
+      overflow: hidden;
               margin: auto;
               height: unset;
               width: unset;
@@ -786,12 +817,19 @@
       display: flex;
       flex-direction: column;
 
+      mat-spinner{
+        margin-left: auto;
+        margin-right: auto;
+      }
+
       mat-icon {
         margin-left: auto;
         margin-right: auto;
         width: unset;
         height: unset;
         font-size: 30px;
+        max-width:30px;
+      overflow: hidden;
         color: #203864;
         cursor:default;
       }
@@ -811,6 +849,10 @@
       display: flex;
       flex-direction: column;
       margin-top: 20px;
+      .center-gains{
+        margin-left:auto;
+        margin-right:auto;
+      }
       div {
         display:flex;
         margin-bottom:5px;
@@ -819,6 +861,8 @@
           width: unset;
           height: unset;
           font-size: 22px;
+          max-width:22px;
+      overflow: hidden;
           color: #203864;
           margin:auto 3px auto 0px;
         }
@@ -912,13 +956,9 @@
     visibility:hidden;
     overflow: hidden;
     pointer-events: none;
-    height:0px !important;
   }
   .really-invisible{
-    visibility:hidden !important;
-    overflow: hidden;
-    pointer-events: none;
-    height:0px !important;
+    display:none;
   }
 
 
@@ -945,6 +985,25 @@
   }
 
   @media (max-width: 500px) {
+    .member {
+      > {
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
+        }
+      }
+    }
+   
+    
+    width: 95%!important;
+    
+    .account-form-container{
+      padding: 1px 10px 1px 10px!important;
+    }
+    .group-container{
+      padding: 16px 16px !important;
+    }
     .logos-container .logo {
       border-radius: 30px;
       margin-left: 5px;
@@ -1029,6 +1088,8 @@
         width:unset !important;
         height:unset !important;
         font-size:18px !important;
+        max-width:18px;
+      overflow: hidden;
         color:rgb(32,56,100) !important;
       }
   

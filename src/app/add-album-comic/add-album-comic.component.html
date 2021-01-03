@@ -43,7 +43,7 @@
                     (elementSelected)="add_to_album($event);" (elementRemoved)="remove_from_album($event);">
                 </app-thumbnail-album-comic>
                 <div #noResult class="no-result">
-                    <mat-icon>info_outline</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                     <span>Aucun résultat</span>
                 </div>
             </div>
@@ -61,7 +61,7 @@
             <span>(Vous pouvez glisser-déposer pour changer l'ordre des œuvres)</span>
         </div>
         <div *ngIf="album_list.length == 0" class="no-artwork" [@enterAnimation]>
-            <mat-icon>info_outline</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
             <span>Aucune œuvre sélectionnée</span>
         </div>
         <div class="container-comics d-flex flex-wrap grid">
@@ -71,7 +71,7 @@
     </div>
 
     <button class="submit-button" (click)="get_solution();">
-        <mat-icon>done_all</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider</span>
     </button>
 

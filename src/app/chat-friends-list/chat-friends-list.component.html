@@ -40,17 +40,17 @@
 
             <div class="button-container" *ngIf="!select_group_chat_contacts && !display_add_a_friend_to_a_group">
                 <button mat-button tabIndex="-1" class="mat-icon-button" (click)="create_group_chat()"> 	
-                    <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">group_add</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">group_add</mat-icon>
                 </button>
             </div>
             <div class="button-container" *ngIf="select_group_chat_contacts">
                 <button mat-button tabIndex="-1" class="mat-icon-button" (click)="cancel_create_group_chat()"> 	
-                    <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
                 </button>
             </div>
             <div class="button-container" *ngIf="display_add_a_friend_to_a_group">
                 <button mat-button tabIndex="-1" class="mat-icon-button" (click)="cancel_add_friend_group()"> 	
-                    <mat-icon class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
                 </button>
             </div>
 
@@ -63,7 +63,7 @@
             <div [ngClass]="{'hovered': display_first_propositions }">
                 
                 
-                <mat-icon class="item-icon" *ngIf="!display_first_propositions" 
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" *ngIf="!display_first_propositions" 
                 style="align-self: center;padding-left: 10px;color: #6c75a7;cursor:default;"
                 (click)="activateFocus()">search</mat-icon>
 
@@ -115,7 +115,7 @@
                 class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
                 
                 <button mat-button tabIndex="-1" class="mat-icon-button" *ngIf="display_first_propositions" (click)="delete_placeholder()">
-                    <mat-icon class="item-icon" *ngIf="display_first_propositions">close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" *ngIf="display_first_propositions">close</mat-icon>
                 </button>
 
 
@@ -142,7 +142,7 @@
                                 <img [src]="list_of_friends_profile_pictures[i]">
                                 <div class="connection-state-container" *ngIf="connections_status_retrieved">
                                     <div *ngIf="list_of_friends_connected[i]">
-                                        <mat-icon style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
                                     </div>
                                     <div *ngIf="!list_of_friends_connected[i]">
                                         <div style="width: 40px; font-size: 12px;" *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">{{list_of_last_connection_dates[i]}} </div>
@@ -474,7 +474,7 @@
                         
                         <div class="group-chat-container-button" >
                             <button mat-raised-button  (click)="group_chat_creation_done();" >
-                                <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
                                 Créer 
                             </button>
                         </div>
@@ -523,11 +523,11 @@
                                 </div>
                                 <div *ngIf="select_group_chat_contacts " class="group-chat-container-button" >
                                     <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,0);" *ngIf="!check_if_is_in_selected_ids(list_of_contacts_ids[i])">
-                                        <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                         Ajouter 
                                     </button>
                                     <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,0);" *ngIf="check_if_is_in_selected_ids(list_of_contacts_ids[i])">
-                                        <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add_disabled</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add_disabled</mat-icon>
                                         Retirer 
                                     </button>
                                 </div>
@@ -595,11 +595,11 @@
                                     </div>
                                     <div *ngIf="select_group_chat_contacts" class="group-chat-container-button" >
                                         <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,2);" *ngIf="!check_if_is_in_selected_ids(list_of_related_contacts_ids[i])">
-                                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                             Ajouter 
                                         </button>
                                         <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,2);" *ngIf="check_if_is_in_selected_ids(list_of_related_contacts_ids[i])">
-                                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                             Retirer 
                                         </button>
                                     </div>
@@ -637,11 +637,11 @@
                                     </div>
                                     <div *ngIf="select_group_chat_contacts" class="group-chat-container-button" >
                                         <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,4);" *ngIf="!check_if_is_in_selected_ids(list_of_all_contacts_ids[i])">
-                                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                             Ajouter 
                                         </button>
                                         <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,4);" *ngIf="check_if_is_in_selected_ids(list_of_all_contacts_ids[i])">
-                                            <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                             Retirer 
                                         </button>
                                     </div>
@@ -693,7 +693,7 @@
                         
                         <div class="group-chat-container-button" >
                             <button mat-raised-button  (click)="add_friend_done();" >
-                                <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
                                 Valider 
                             </button>
                         </div>
@@ -723,11 +723,11 @@
                             </div>
                             <div class="group-chat-container-button" >
                                 <button mat-raised-button style="color:black"  (click)="add_friend_to_group(i);" *ngIf="!check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                     Ajouter 
                                 </button>
                                 <button mat-raised-button style="color:black"  (click)="remove_friend_to_group(i);" *ngIf="check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                     Retirer 
                                 </button>
                             </div>
@@ -749,11 +749,11 @@
                             </div>
                             <div class="group-chat-container-button" >
                                 <button mat-raised-button style="color:black"  (click)="add_friend_to_group(i);" *ngIf="!check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                     Ajouter 
                                 </button>
                                 <button mat-raised-button style="color:black"  (click)="remove_friend_to_group(i);" *ngIf="check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
                                     Retirer 
                                 </button>
                             </div>

@@ -13,6 +13,7 @@ import { Albums_service } from '../services/albums.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { pattern } from '../helpers/patterns';
 
 
 declare var Swiper:any;
@@ -115,8 +116,14 @@ export class AddAlbumWritingComponent implements OnInit {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
+  show_icon=false;
   ngAfterViewInit() {
 
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+    
     this.swiper = new Swiper('.swiper-container', {
       scrollbar: {
         el: '.swiper-scrollbar',

@@ -158,10 +158,15 @@ a {
 ::ng-deep .mat-raised-button.button.subscriptions .mat-icon {
     height: 20px;
     width: 20px;
+    font-size:20px;
+    max-width:20px;
+    overflow: hidden;
 }
 
 ::ng-deep .mat-button-wrapper .mat-icon {
     margin: auto auto;
+    max-width:20px;
+    overflow: hidden;
 }
 
 ::ng-deep .mat-button-wrapper {

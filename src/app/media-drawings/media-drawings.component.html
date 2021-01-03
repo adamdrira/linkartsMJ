@@ -1,4 +1,4 @@
-<div *ngFor="let item of sorted_style_list; index as i1">
+<div *ngFor="let item of sorted_style_list; index as i1" >
 
     <ng-container *ngIf="(item==='Traditionnel' && sorted_artpieces_traditional.length>0)||(item==='Digital' && sorted_artpieces_digital.length>0)">
         
@@ -18,11 +18,13 @@
                             [item]=item
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
+                            [width]=width
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
+                            [width]=width
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -31,8 +33,7 @@
                 </div>
                 <div *ngIf="sorted_artpieces_traditional.length>number_of_drawings_to_show_by_category[0]" 
                     class="see-more" (click)="see_more_drawings(0)" [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <div class="icon">
-                    </div>
+                    <mat-icon class="icon">expand_more</mat-icon>
                 </div>
             </ng-container>
 
@@ -43,6 +44,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
+                            [width]=width
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -50,6 +52,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
+                            [width]=width
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -58,8 +61,7 @@
                 </div>
                 <div *ngIf="sorted_artpieces_digital.length>number_of_drawings_to_show_by_category[1]" 
                     class="see-more" (click)="see_more_drawings(1)" [ngClass]="{'invisible':!all_drawings_loaded}">
-                    <div class="icon">
-                    </div>
+                    <mat-icon class="icon">expand_more</mat-icon>
                 </div>
             </ng-container>
 

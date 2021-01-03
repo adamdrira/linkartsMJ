@@ -100,7 +100,12 @@ export class AddAdComponent implements OnInit {
 
   }
 
-  ngAfterContentInit() {
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
 
@@ -118,14 +123,20 @@ export class AddAdComponent implements OnInit {
   fdTitle: FormControl;
   fdDescription: FormControl;
   fdPrice:FormControl;
+  fdPrice_type: FormControl;
+  fdPrice1:FormControl;
+  fdPrice_type1: FormControl;
   price_value:string;
+  price_value1:string;
   price_type:string='';
+  price_type1:string='';
   fdMydescription: FormControl;
   fdTargets: FormControl;
   fdProject_type: FormControl;
-  fdPrice_type: FormControl;
+ 
   fdPreferential_location: FormControl;
   remuneration:boolean = false;
+  for_service:boolean = false;
   
   createFormControlsAds() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
@@ -133,6 +144,8 @@ export class AddAdComponent implements OnInit {
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
     this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
     this.fdPrice_type = new FormControl('');
+    this.fdPrice1 = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
+    this.fdPrice_type1 = new FormControl('');
     this.fdTargets = new FormControl( this.genres, [Validators.required]);
     this.fdProject_type = new FormControl('', [Validators.required]);
     this.fdPreferential_location = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("location") ) ]);
@@ -147,6 +160,8 @@ export class AddAdComponent implements OnInit {
       fdPreferential_location:this.fdPreferential_location,
       fdPrice: this.fdPrice,
       fdPrice_type: this.fdPrice_type,
+      fdPrice1: this.fdPrice1,
+      fdPrice_type1: this.fdPrice_type1,
       fdDescription:  this.fdDescription,
     });
   }
@@ -184,16 +199,34 @@ export class AddAdComponent implements OnInit {
 
   setRemuneration(e){
     if(e.checked){
+      
+      if(this.for_service){
+        this.for_service = false;
+      }
       this.remuneration = true;
-   }
-   else{
-    this.remuneration = false;
-   }
+    }
+    else{
+      this.remuneration = false;
+    }
+
   }
 
 
 
+ 
+  setService(e){
 
+    
+    if(e.checked){
+      this.for_service = true;
+      if(this.remuneration){
+        this.remuneration = false;
+      }
+    }
+    else{
+      this.for_service = false;
+    }
+  }
  
 
 
@@ -202,7 +235,7 @@ export class AddAdComponent implements OnInit {
   "Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
 
   listOfPriceTypes = ["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
-
+  listOfPriceTypes1 = ["Produits","Services","Réinitialiser"];
   listOfDescriptions = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
   
   compareObjects(o1: any, o2: any): boolean {
@@ -303,6 +336,18 @@ export class AddAdComponent implements OnInit {
     console.log(this.price_type)
   }
 
+  change_price_type_service(event){
+    if(this.fd.value.fdPrice_type1=="Réinitialiser"){
+      this.fd.controls['fdPrice_type1'].setValue(null);
+      this.fd.controls['fdPrice_type1'].updateValueAndValidity();
+      this.price_type1='';
+    }
+    else{
+      this.price_type1=this.fd.value.fdPrice_type1;
+    }
+    console.log(this.price_type1)
+  }
+
 
   validate_form_ads() {
 
@@ -323,16 +368,31 @@ export class AddAdComponent implements OnInit {
     }
     
 
-    if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() ) {
+    if(this.for_service && !this.fd.valid){
+      if(this.fd.value.fdPrice1.length==0){
+        this.price_value1 ="0";
+        console.log(this.price_value1);
+      }
+    }
+    else if(this.for_service && this.fd.valid){
+      this.price_value1 =this.fd.value.fdPrice1;
+    }
+    else if(!this.for_service){
+      this.price_value1 ="0";
+    }
+
+    if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() && !(this.remuneration && this.for_service)) {
         console.log(this.price_value);
+        console.log(this.price_value1);
         console.log(this.price_type);
+        console.log(this.price_type1);
         console.log("ok");
         console.log(this.fd.value.fdDescription);
 
         this.display_loading=true;
         this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).subscribe(r=>{
           if(r[0].result=="ok"){
-            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type)
+            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1)
             .subscribe((val)=> {
               this.ad_id=val[0].id;
               this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{

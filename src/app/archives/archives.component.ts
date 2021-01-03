@@ -379,22 +379,14 @@ export class ArchivesComponent implements OnInit {
   }
 
   ngAfterViewInit(){
-    this.container_comics.changes.subscribe(t => {
-      this.container_comics_rendred();
-    })
+    this.width=this.main_container.nativeElement.offsetWidth*0.9;
 
-    this.container_drawings.changes.subscribe(t => {
-      this.container_drawings_rendred();
-    })
-
-    this.container_writings.changes.subscribe(t => {
-      this.container_writings_rendred();
-    })
-
-    this.container_stories.changes.subscribe(t => {
-      this.container_stories_rendred();
-    })
-
+    this.get_number_of_comics_to_show();
+    this.get_number_of_drawings_to_show();
+    this.get_number_of_writings_to_show();
+    this.get_number_of_stories_to_show();
+    this.update_story_width();
+    
   }
 
   /**************************************************SORTING LISTS BY DATE******************* */
@@ -506,7 +498,7 @@ export class ArchivesComponent implements OnInit {
     this.opened_album=i;
     this.cd.detectChanges();
 
-    this.update_story_width();
+   
   }
 
 /**************************************************STORIES ******************************* */
@@ -519,7 +511,6 @@ export class ArchivesComponent implements OnInit {
       this.list_of_stories_data = r[0];
       this.list_of_stories_data_received = true;
       this.cd.detectChanges();
-      this.update_story_width();
 
       if (r[0].length>0){
         let compt=0
@@ -532,7 +523,6 @@ export class ArchivesComponent implements OnInit {
             if(compt==r[0].length){
               this.list_of_stories_received=true;
               this.cd.detectChanges();
-              this.update_story_width();
             }
           });
         }
@@ -540,7 +530,6 @@ export class ArchivesComponent implements OnInit {
       else {
         this.list_of_stories_received=true;
         this.cd.detectChanges();
-        this.update_story_width();
       }
 
       
@@ -641,16 +630,21 @@ export class ArchivesComponent implements OnInit {
 /**************************************DISPLAY THUMBNAILS **************************************** */
 /**************************************DISPLAY THUMBNAILS **************************************** */
 
+@ViewChild("main_container") main_container:ElementRef;
+width:number;
 @HostListener('window:resize', ['$event'])
 onResize(event) {
-  this.update_number_of_comics_to_show();
-  this.update_number_of_drawings_to_show();
-  this.update_number_of_writings_to_show();
-  this.update_number_of_stories_to_show();
 
-
-  this.update_story_width();
-  this.cd.detectChanges();
+  if(this.width!=this.main_container.nativeElement.offsetWidth*0.9){
+    this.width=this.main_container.nativeElement.offsetWidth*0.9;
+    this.update_number_of_comics_to_show();
+    this.update_number_of_drawings_to_show();
+    this.update_number_of_writings_to_show();
+    this.update_number_of_stories_to_show();
+    this.update_story_width();
+    this.cd.detectChanges();
+  }
+  
 
 }
 
@@ -658,10 +652,7 @@ onResize(event) {
 /**************************************DISPLAY DRAWINGS **************************************** */
 /**************************************DISPLAY DRAWINGS **************************************** */
 
-@ViewChildren('container_drawings') container_drawings: QueryList<any>;
-container_drawings_rendred() {
-  this.get_number_of_drawings_to_show();
-}
+
   compteur_drawings_thumbnails=0;
   compteur_comics_thumbnails=0;
   display_comics=false;
@@ -679,11 +670,11 @@ container_drawings_rendred() {
   total_for_new_compteur=0;
   get_number_of_drawings_to_show(){
 
-    let width =$('.drawings-container').width()*0.9;
+    let width =this.main_container.nativeElement.offsetWidth*0.9;
     if(width>0 && !this.got_number_of_drawings_to_show){
       this.number_of_drawings_variable=Math.floor(width/210);
       this.got_number_of_drawings_to_show=true;
-      this.number_of_lines_drawings=2;
+      this.number_of_lines_drawings=3;
       
       
       this.compteur_number_of_drawings= this.number_of_drawings_variable*this.number_of_lines_drawings;
@@ -699,11 +690,9 @@ container_drawings_rendred() {
     this.total_for_new_compteur=0;
     this.updating_drawings=true;
     if(this.got_number_of_drawings_to_show){
-      let width =$('.drawings-container').width()*0.9;
-      console.log(width)
-      console.log(width*0.9)
+      let width =this.main_container.nativeElement.offsetWidth*0.9;
       let variable =Math.floor(width/210);
-      if(variable!=this.number_of_drawings_variable){
+      if(variable>this.number_of_drawings_variable){
         for(let i=0;i<2;i++){
           this.number_of_drawings_to_show_by_category[i]/=this.number_of_drawings_variable;
           this.number_of_drawings_to_show_by_category[i]*=variable;
@@ -809,21 +798,18 @@ container_drawings_rendred() {
 /**************************************DISPLAY COMICS **************************************** */
 /**************************************DISPLAY COMICS **************************************** */
 
-  @ViewChildren('container_comics') container_comics: QueryList<any>;
-  container_comics_rendred() {
-    this.get_number_of_comics_to_show();
-  }
+  
   number_of_comics_to_show_by_category=[];
   compteur_number_of_comics=0;
   number_of_comics_variable:number;
   got_number_of_comics_to_show=false;
   number_of_lines_comics:number;
   get_number_of_comics_to_show(){
-    let width =$('.container-comics').width();
+    let width =this.main_container.nativeElement.offsetWidth*0.9;
     if(width>0 && !this.got_number_of_comics_to_show){
       this.number_of_comics_variable=Math.floor(width/320);
       this.got_number_of_comics_to_show=true;
-      this.number_of_lines_comics=2;
+      this.number_of_lines_comics=3;
       this.compteur_number_of_comics= this.number_of_comics_variable*this.number_of_lines_comics;
       this.number_of_comics_to_show_by_category[0]=this.compteur_number_of_comics;
       this.number_of_comics_to_show_by_category[1]=this.compteur_number_of_comics;
@@ -841,9 +827,9 @@ container_drawings_rendred() {
 
   update_number_of_comics_to_show(){
     if(this.got_number_of_comics_to_show){
-      let width =$('.container-comics').width();
-      let variable =Math.floor(width/320);
-      if(variable!=this.number_of_comics_variable && variable>0){
+      let width =this.main_container.nativeElement.offsetWidth*0.9;
+      let variable =Math.floor(width/250);
+      if(variable>this.number_of_comics_variable){
         for(let i=0;i<2;i++){
           this.number_of_comics_to_show_by_category[i]/=this.number_of_comics_variable;
           this.number_of_comics_to_show_by_category[i]*=variable;
@@ -897,10 +883,7 @@ container_drawings_rendred() {
 /**************************************DISPLAY WRITINGS **************************************** */
 /**************************************DISPLAY WRITINGS **************************************** */
 
-@ViewChildren('container_writings') container_writings: QueryList<any>;
-container_writings_rendred() {
-  this.get_number_of_writings_to_show();
-}
+
 number_of_writings_to_show_by_category=[];
 compteur_number_of_writings=0;
 number_of_writings_variable:number;
@@ -908,12 +891,12 @@ got_number_of_writings_to_show=false;
 number_of_lines_writings:number;
 get_number_of_writings_to_show(){
 
-  let width =$('.container-writings').width();
+  let width =this.main_container.nativeElement.offsetWidth*0.9;
 
   if(width>0 && !this.got_number_of_writings_to_show){
     this.number_of_writings_variable=Math.floor(width/320);
     this.got_number_of_writings_to_show=true;
-    this.number_of_lines_writings=2;
+    this.number_of_lines_writings=3;
     this.compteur_number_of_writings= this.number_of_writings_variable*this.number_of_lines_writings;
     this.number_of_writings_to_show_by_category[0]=this.compteur_number_of_writings;
     this.number_of_writings_to_show_by_category[1]=this.compteur_number_of_writings;
@@ -931,9 +914,9 @@ reset_number_of_writings_to_show(){
 
 update_number_of_writings_to_show(){
   if(this.got_number_of_writings_to_show){
-    let width =$('.container-writings').width();
-    let variable =Math.floor(width/320);
-    if(variable!=this.number_of_writings_variable){
+    let width =this.main_container.nativeElement.offsetWidth*0.9;
+    let variable =Math.floor(width/250);
+    if(variable>this.number_of_writings_variable){
       for(let i=0;i<2;i++){
         this.number_of_writings_to_show_by_category[i]/=this.number_of_writings_variable;
         this.number_of_writings_to_show_by_category[i]*=variable;
@@ -981,23 +964,19 @@ see_more_writings(category_number){
 /**************************************DISPLAY STORIES **************************************** */
 /**************************************DISPLAY STORIES **************************************** */
 /**************************************DISPLAY STORIES **************************************** */
-  @ViewChildren('container_stories') container_stories: QueryList<any>;
-  container_stories_rendred() {
-    this.get_number_of_stories_to_show();
-  }
+
   number_of_stories_to_show_by_category=[];
   compteur_number_of_stories=0;
   number_of_stories_variable:number;
   got_number_of_stories_to_show=false;
   number_of_lines_stories:number;
   get_number_of_stories_to_show(){
-
-    let width =$('.container-stories').width();
+    let width =this.main_container.nativeElement.offsetWidth*0.9;
   
     if(width>0 && !this.got_number_of_stories_to_show){
-      this.number_of_stories_variable=Math.floor(width/320);
+      this.number_of_stories_variable=Math.floor(width/250);
       this.got_number_of_stories_to_show=true;
-      this.number_of_lines_stories=2;
+      this.number_of_lines_stories=3;
       this.compteur_number_of_stories= this.number_of_stories_variable*this.number_of_lines_stories;
 
       this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
@@ -1009,14 +988,14 @@ see_more_writings(category_number){
       this.compteur_number_of_stories= this.number_of_stories_variable*2;
       this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
     }
-    
   }
 
   update_number_of_stories_to_show(){
     if(this.got_number_of_stories_to_show){
-      let width =$('.container-stories').width();
-      let variable =Math.floor(width/320);
-      if(variable!=this.number_of_stories_variable){
+      let width =this.main_container.nativeElement.offsetWidth*0.9;
+      let variable =Math.floor(width/250);
+      
+      if(variable>this.number_of_stories_variable){
         this.number_of_stories_to_show_by_category[0]/=this.number_of_stories_variable;
         this.number_of_stories_to_show_by_category[0]*=variable;
         this.number_of_stories_variable=variable;
@@ -1039,6 +1018,7 @@ see_more_writings(category_number){
 
   list_display_stories=[];
   display_stories_thumbnails(i){
+    this.update_story_width();
     this.list_display_stories[i]=true;
     
   }
@@ -1059,12 +1039,40 @@ see_more_writings(category_number){
   }
 
   
-  @ViewChild("container_stories") container_stories2:ElementRef;
+
   story_width:number = 400;
+  @ViewChildren("thumbnail_stories") thumbnail_stories: QueryList<ElementRef>;
   update_story_width() {
-    if( this.container_stories2 ) {
-      this.story_width = (this.container_stories2.nativeElement.offsetWidth-5) / Math.floor( (this.container_stories2.nativeElement.offsetWidth/240) );
+    var n = Math.floor(this.width/250);
+    if( n>2 ) {
+      this.story_width=this.width/n;
+      for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", 200 + "px");
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 12 + "px");
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", 266.66 + "px");
+      }
+      //this.story_width = (this.container_stories2.nativeElement.offsetWidth-5) / Math.floor( (this.container_stories2.nativeElement.offsetWidth/240) );
     }
+    else{
+        
+        //let width=(140*(this.width/750)>110)?140*(this.width/750):110
+        let width =this.width/3;
+        this.story_width=width;
+        let final_width=(width<=210)?width-10:200;
+        for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
+          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", final_width + "px");
+          if(width<10){
+            this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 11 + "px");
+          }
+         
+          let height = final_width*1.33;
+          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", height + "px");
+        }
+
+    }
+  
+    
+    this.cd.detectChanges()
   }
 
   openedMenu:string = "";
@@ -1075,4 +1083,13 @@ see_more_writings(category_number){
     this.openedMenu=i+s;
   }
 
+
+  categories_array = Array(3);
+  skeleton_array = Array(6);
+  skeleton=true;
+  number_of_skeletons_per_line = 1;
+  send_number_of_skeletons(object) {
+    this.number_of_skeletons_per_line=object.number;
+    this.cd.detectChanges();
+  }
 }
