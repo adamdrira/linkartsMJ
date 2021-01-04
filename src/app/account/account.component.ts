@@ -1705,7 +1705,10 @@ export class AccountComponent implements OnInit {
     let width=this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
     console.log(this.list_titles_albums_bd)
-    if(this.list_albums_bd_added && !this.got_number_of_comics_to_show && this.list_titles_albums_bd_added.length>0){
+    console.log(this.list_albums_bd_added)
+    console.log(!this.got_number_of_comics_to_show)
+    console.log(this.list_titles_albums_bd_added)
+    if(this.list_albums_bd_added && !this.got_number_of_comics_to_show ){
       console.log("in it")
       let n=Math.floor(width/250);
       if(n>3){
@@ -1727,9 +1730,12 @@ export class AccountComponent implements OnInit {
 
       this.number_of_comics_to_show_by_album[0]=this.compteur_number_of_comics;
       this.number_of_comics_to_show_by_album[1]=this.compteur_number_of_comics;
-      for(let i=0;i<this.list_titles_albums_bd_added.length;i++){
-        this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics;
+      if(this.list_titles_albums_bd_added.length>0){
+        for(let i=0;i<this.list_titles_albums_bd_added.length;i++){
+          this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics;
+        }
       }
+      
       this.display_comics_thumbnails=true;
       this.cd.detectChanges();
       console.log(this.number_of_comics_to_show_by_album)
@@ -1826,7 +1832,7 @@ export class AccountComponent implements OnInit {
     console.log(width)
     console.log(this.list_albums_drawings_added)
     console.log(this.got_number_of_drawings_to_show)
-    if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show && this.list_titles_albums_drawings_added.length>0){
+    if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show){
       console.log("in it")
       let n=Math.floor(width/210);
       if(n>3){
@@ -1847,9 +1853,12 @@ export class AccountComponent implements OnInit {
       this.compteur_number_of_drawings= this.number_of_drawings_variable*this.number_of_lines_drawings;
       this.number_of_drawings_to_show_by_album[0]=this.compteur_number_of_drawings;
       this.number_of_drawings_to_show_by_album[1]=this.compteur_number_of_drawings;
-      for(let i=0;i<this.list_titles_albums_drawings_added.length;i++){
-        this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings;
+      if(this.list_titles_albums_drawings_added.length>0){
+        for(let i=0;i<this.list_titles_albums_drawings_added.length;i++){
+          this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings;
+        }
       }
+      
       console.log(this.number_of_drawings_variable)
       console.log(this.number_of_lines_drawings)
       console.log(this.list_albums_drawings)
@@ -2109,7 +2118,7 @@ export class AccountComponent implements OnInit {
     console.log("get number of writings to _show")
     let width=this.main_container.nativeElement.offsetWidth*0.9;
     console.log(width)
-    if(this.list_albums_writings_added && !this.got_number_of_writings_to_show && this.list_titles_albums_writings_added.length>0){
+    if(this.list_albums_writings_added && !this.got_number_of_writings_to_show){
       console.log("in it")
       let n=Math.floor(width/250);
       if(n>3){
@@ -2129,9 +2138,12 @@ export class AccountComponent implements OnInit {
       this.compteur_number_of_writings= this.number_of_writings_variable*this.number_of_lines_writings;
       this.number_of_writings_to_show_by_album[0]=this.compteur_number_of_writings;
       console.log(this.list_titles_albums_writings_added.length)
-      for(let i=0;i<this.list_titles_albums_writings_added.length;i++){
-        this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings;
+      if(this.list_titles_albums_writings_added.length>0){
+        for(let i=0;i<this.list_titles_albums_writings_added.length;i++){
+          this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings;
+        }
       }
+      
       this.display_writings_thumbnails=true;
       this.cd.detectChanges()
       console.log(this.list_albums_writings)

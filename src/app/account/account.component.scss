@@ -727,8 +727,8 @@
   width: 80%;
   display: flex;
   font-size: 16px;
-  border-top: 2px solid #4bc7ff;
-  border-bottom: 2px solid #4bc7ff;
+  border-top: 2px solid #243b63;
+  border-bottom: 2px solid #243b63;
   background: #f9f9f9;
   justify-content: center;
   margin: 30px auto 50px auto;
@@ -1173,12 +1173,12 @@
       margin-left: 15px;
       margin-right: 15px;
       border-radius: 150px;
-      box-shadow: 0px 0px 1px -2px #00000026, 0px 2px 2px 0px #85869e38, 0px 0px 2px 0px #9090902b;
+      background-image: linear-gradient(0.0turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
-      //transition: all 300ms;
+      transition: all 200ms;
 
       //background: white;
-      background: #f0f0f0;
       //background: linear-gradient(45deg, #c7c7c7, #e6e6e6, #f3f3f3e6);
       /*background: linear-gradient(to bottom, white 50%, rgb(240,242,250) 50%);
       background-size: 100% 200%;
@@ -1236,11 +1236,11 @@
         .image1,
         .image2,
         .image3 {
-          background: rgb(32, 56, 100);
+          background:  #f9f9f9;
         }
         span {
           font-weight: bold;
-          color: rgb(32, 56, 100) !important;
+          color:  #f9f9f9 !important;
         }
       }
       &:active {
@@ -1255,11 +1255,11 @@
         .image1,
         .image2,
         .image3 {
-          background: rgb(32, 56, 100);
+          background: #f9f9f9;
         }
         span {
           font-weight: bold;
-          color: rgb(32, 56, 100) !important;
+          color: #f9f9f9 !important;
         }
       }
     }

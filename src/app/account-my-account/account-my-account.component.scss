@@ -32,10 +32,9 @@
         margin-left: 15px;
         margin-right: 15px;
         border-radius: 150px;
-        box-shadow: 0px 0px 1px -2px #00000026, 0px 2px 2px 0px #85869e38, 0px 0px 2px 0px #9090902b;
-  
-        transition: all 300ms;
-        background: #f0f0f0;
+        background-image: linear-gradient(0.0turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        transition: all 200ms;
         //background: white;
         /*background: linear-gradient(to bottom, white 50%, rgb(240,242,250) 50%);
         background-size: 100% 200%;
@@ -69,11 +68,11 @@
         &:hover {
           box-shadow: 0px 0px 1px -2px #000000ab, 0px 2px 2px 0px #85869e73, 0px 0px 2px 0px #90909057;
           mat-icon {
-            color: rgb(32,56,100);
+            color:  #f9f9f9;
           }
           span {
             font-weight: bold;
-            color: rgb(32, 56, 100) !important;
+            color:  #f9f9f9 !important;
           }
         }
         &:active {
@@ -86,11 +85,11 @@
           //background-position:right bottom;
           //background:rgb(240,242,250);
           mat-icon {
-            color: rgb(32,56,100);
+            color:  #f9f9f9;
           }
           span {
             font-weight: bold;
-            color: rgb(32, 56, 100) !important;
+            color:  #f9f9f9 !important;
           }
         }
       }
