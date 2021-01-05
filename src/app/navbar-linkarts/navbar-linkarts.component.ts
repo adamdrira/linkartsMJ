@@ -278,11 +278,13 @@ export class NavbarLinkartsComponent implements OnInit {
     //connexion to chat service interval
 
     this.get_connection_interval = setInterval(() => {
+      console.log(this.list_of_friends_retrieved)
+      console.log(!this.navbar.get_using_chat())
       if(this.list_of_friends_retrieved && !this.navbar.get_using_chat()){
         console.log("getting connections status")
         this.get_connections_status();
       }
-    }, 60000);
+    }, 5000);
 
  
 
@@ -2053,8 +2055,11 @@ sort_list_of_groups_and_friends(){
 }
 
 get_connections_status(){
+  console.log(this.list_of_friends_users_only)
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
-    r[0].list_of_users_connected;
+    console.log(r)
+    console.log(r[0].list_of_users_connected);
+    console.log(this.list_of_friends_types)
     let compt=0
     for(let i=0;i<this.list_of_friends_types.length;i++){
       
@@ -2071,7 +2076,8 @@ get_connections_status(){
           this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
         }
         compt++;
-        if(compt==this.list_of_groups_ids.length){
+        console.log(this.list_of_friends_types.length)
+        if(compt==this.list_of_friends_types.length){
           this.connections_status_retrieved=true;
           this.cd.detectChanges()
         }
@@ -2090,7 +2096,7 @@ get_connections_status(){
           }
           this.list_of_friends_connected[i]=value;
           compt++;
-          if(compt==this.list_of_groups_ids.length){
+          if(compt==this.list_of_friends_types.length){
             this.connections_status_retrieved=true;
             this.cd.detectChanges()
           }

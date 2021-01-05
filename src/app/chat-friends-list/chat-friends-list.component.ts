@@ -2538,7 +2538,7 @@ get_connections_status(){
             this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
           }
           compt++;
-          if(compt==this.list_of_groups_ids.length){
+          if(compt==this.list_of_friends_types.length){
             this.connections_status_retrieved=true;
             this.cd.detectChanges()
           }
@@ -2557,7 +2557,7 @@ get_connections_status(){
             }
             this.list_of_friends_connected[i]=value;
             compt++;
-            if(compt==this.list_of_groups_ids.length){
+            if(compt==this.list_of_friends_types.length){
               this.connections_status_retrieved=true;
               this.cd.detectChanges()
             }
