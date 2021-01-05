@@ -356,15 +356,15 @@
 
                         <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
                         matTooltip="Compte certifié" 
-                        matTooltipClass='tooltip-thumbnail-artwork' 
+                        matTooltipClass='linkarts-tooltip' 
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="200">verified</mat-icon>
 
-                        <span *ngIf="type_of_account_checked" class="pro-logo"
+                        <div *ngIf="type_of_account_checked" class="pro-logo"
                         matTooltip="Compte professionnel" 
-                        matTooltipClass='tooltip-thumbnail-artwork'
+                        matTooltipClass='linkarts-tooltip' 
                         [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="200">PRO</span>
+                        [matTooltipShowDelay]="200">PRO</div>
 
                     </span>
                     <span class="author-description">{{primary_description}}</span>

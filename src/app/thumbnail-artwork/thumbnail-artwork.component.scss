@@ -310,32 +310,39 @@
             width: calc(100% - 40px);
             margin: 0px 10px auto 5px;
             span.author-name {
-                font-size: 13px;
-                line-height: 19px;
-                font-weight: bold;
-                white-space: nowrap;
-                overflow: hidden !important;
+                cursor: default;
+                font-size: 14px;
+                line-height: 22px;
+                font-weight: 600;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
                 text-overflow: ellipsis;
+                white-space: normal;
+                -webkit-line-clamp: 3;
 
                 mat-icon {
-                    color: #4bc7ff;
-                    height: 20px;
-                    max-width:18px;
-            overflow: hidden;
-                    width: unset;
                     vertical-align: middle;
-                    font-size: 18px;
-                    margin: auto auto auto 0px;
+                    display: inline-block;
+                    margin: 3px 0px 5px 3px;
+                    color: #4bc7ff;
+                    height: 16px;
+                    width: unset;
+                    font-size: 16px;
                 }
                 .pro-logo {
-                    background: #4bc7ff;
-                    color: #203864;
+                    display: inline-block;
+                    vertical-align: middle;
+                    -webkit-text-stroke: 0.5px black;
+                    background-image: linear-gradient(0.125turn, #002d88, #0081b3, deepskyblue);
+                    color: #ffffff;
+                    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
                     font-weight: 800;
-                    font-size: 11.5px;
-                    border-radius: 4px;
-                    margin-left: 5px;
-                    padding: 0px 4px;
-                    line-height: 15px;
+                    font-size: 10px;
+                    border-radius: 7px;
+                    margin: 2px 0px 5px 3px;
+                    padding: 0px 3px 1px 5px;
+                    line-height: 16px;
                 }
             }
             span.author-description {
