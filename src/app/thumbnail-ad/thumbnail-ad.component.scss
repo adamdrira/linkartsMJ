@@ -34,6 +34,8 @@
     }
     mat-icon {
       font-size: 20px;
+      max-width:20px;
+            overflow: hidden;
       width: unset;
       height: unset;
       color: rgb(32, 56, 100);
@@ -166,6 +168,8 @@
         height: unset;
         width: unset;
         font-size: 18px;
+        max-width:18px;
+            overflow: hidden;
         line-height: 20px;
         margin-right: 2px;
       }
@@ -194,6 +198,8 @@
             width: unset;
             vertical-align: middle;
             font-size: 18px;
+            max-width:18px;
+            overflow: hidden;
             margin: auto auto auto 3px;
             
           }
@@ -232,6 +238,8 @@
         height: unset;
         width: unset;
         font-size: 18px;
+        max-width:18px;
+            overflow: hidden;
         line-height: 20px;
         margin-right: 2px;
       }
@@ -298,6 +306,8 @@
         width: unset !important;
         height: unset !important;
         font-size: 21px;
+        max-width:21px;
+            overflow: hidden;
       }
       span {
         margin: auto auto auto 5px;
@@ -373,6 +383,8 @@
         width: unset !important;
         height: unset !important;
         font-size: 35px;
+        max-width:35px;
+            overflow: hidden;
       }
       img {
         height: 25px;
@@ -470,10 +482,14 @@
         .author-description-container {
           mat-icon {
             font-size: 18px;
+            max-width:18px;
+            overflow: hidden;
             line-height: 20px;
           }
           .author-description {
             font-size: 11px;
+            max-width:11px;
+            overflow: hidden;
             &.name {
               font-size: 12px;
             }
@@ -485,10 +501,14 @@
         .cible-description-container {
           mat-icon {
             font-size: 18px;
+            max-width:18px;
+            overflow: hidden;
             line-height: 20px;
           }
           .cible-description {
             font-size: 11px;
+            max-width:11px;
+            overflow: hidden;
             line-height: 20px;
           }
         }
@@ -584,6 +604,8 @@
         font-size: 11px !important;
         mat-icon {
           font-size: 15px !important;
+          max-width:15px;
+            overflow: hidden;
         }
       }
     }
@@ -650,6 +672,8 @@
         width: unset !important;
         height: unset !important;
         font-size: 18px !important;
+        max-width:18px!important;
+            overflow: hidden;
         color: rgb(32, 56, 100) !important;
       }
 

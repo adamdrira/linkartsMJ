@@ -193,13 +193,13 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   
-  ngAfterViewInit() {
-
-
-    this.open_category(0);
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
-
   
 
  

@@ -167,7 +167,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       
       if(this.emphasized){
         //emphasized
-        //console.log("in if")
+        console.log("in if")
         this.type_of_thumbnail=0;
         this.category=this.item.publication_category;
         this.subscribing_category=this.item.publication_category;
@@ -229,7 +229,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.data_retrieved=true;
               
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
-            
+              this.get_images_to_show();
 
               this.BdOneShotService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -252,7 +252,7 @@ export class ThumbnailArtworkComponent implements OnInit {
             })
           
             this.check_archive();
-            this.get_images_to_show();
+            
           }
           else{
             this.BdSerieService.retrieve_bd_by_id(this.item.publication_id).subscribe(r=>{
@@ -271,7 +271,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.date_upload = r[0].createdAt
               this.data_retrieved=true;
               
-            
+              this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
               this.BdSerieService.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -293,7 +293,6 @@ export class ThumbnailArtworkComponent implements OnInit {
             })
             
             this.check_archive()
-            this.get_images_to_show();
           }
         }
 
@@ -315,7 +314,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = r[0].chaptersnumber
               this.date_upload = r[0].createdAt
               this.data_retrieved=true;
-              
+              this.get_images_to_show();
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
 
               this.Drawings_Onepage_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
@@ -338,10 +337,10 @@ export class ThumbnailArtworkComponent implements OnInit {
             })
           
             this.check_archive()
-            this.get_images_to_show();
           }
           else{
             this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.item.publication_id).subscribe(r=>{
+              console.log(r[0])
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -357,7 +356,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.date_upload = r[0].createdAt
               
               this.data_retrieved=true;
-            
+              this.get_images_to_show();
             
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
               this.Drawings_Artbook_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
@@ -380,7 +379,6 @@ export class ThumbnailArtworkComponent implements OnInit {
             })
           
             this.check_archive()
-            this.get_images_to_show();
           }
         }
 
@@ -585,6 +583,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               });
           }
           else{
+            console.log(this.item)
             this.content_id=this.item.drawing_id;
               this.file_name = this.item.name_coverpage
               this.title = this.item.title
@@ -913,6 +912,8 @@ export class ThumbnailArtworkComponent implements OnInit {
 
   get_images_to_show(){
     console.log("get_images_to_show")
+    console.log(this.category)
+    console.log(this.format)
     //console.log(this.format)
     if(this.category=="comic"){
       let bd_id=(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id;
@@ -981,6 +982,8 @@ export class ThumbnailArtworkComponent implements OnInit {
       if(this.format=="artbook"){
         let compteur=0;
         let total_pages=(this.pagesnumber<=3)?this.pagesnumber:3;
+        console.log(this.pagesnumber)
+        console.log(total_pages)
         for( var i=0; i< total_pages; i++ ) {
           this.Drawings_Artbook_Service.retrieve_drawing_page_ofartbook(drawing_id,i).subscribe(r=>{
             let url = (window.URL) ? window.URL.createObjectURL(r[0]) : (window as any).webkitURL.createObjectURL(r[0]);

@@ -5,27 +5,27 @@
 
         <div *ngIf="type_of_profile=='account' " class="absolute-selector" [ngClass]="{'invisible':!archive_retrieved}">
             <button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options" (click)="stop($event)">
-                <mat-icon>more_vert</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
             </button>
             <mat-menu #options="matMenu" xPosition="before" class="thumbnail-ad-menu">
                 <button mat-menu-item (click)="archive()" *ngIf="!ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
-                    <mat-icon>cloud_download</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
                     <span>Archiver</span>
                 </button>
                 <button mat-menu-item (click)="unarchive()" *ngIf="ad_archived && visitor_mode" class="thumbnail-ad-menu-item">
-                    <mat-icon>cloud_download</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
                     <span>Désarchiver</span>
                 </button>
                 <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="report()">
-                    <mat-icon>flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                     <span>Signaler</span>
                 </button>
                 <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(id_user)>=0)" class="thumbnail-ad-menu-item" tabIndex="-1" mat-menu-item (click)="cancel_report()">
-                    <mat-icon>flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                     <span>Annuler le signalement</span>
                 </button>
                 <button *ngIf="!visitor_mode" mat-menu-item (click)="edit_thumbnail()" class="thumbnail-ad-menu-item">
-                    <mat-icon>cloud_download</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
                     <span>Editer la miniature</span>
                 </button>
             </mat-menu>
@@ -70,7 +70,7 @@
                                     {{author_name}}
                                 </a>
                                 
-                                <mat-icon *ngIf="certified_account"
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
                                 matTooltip="Compte certifié" 
                                 matTooltipClass='tooltip-thumbnail-ad' 
                                 [matTooltipPosition]="'below'"
@@ -85,11 +85,11 @@
                             </span>
                         </div>
                         <div class="author-description-container">
-                            <mat-icon>person</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
                             <span class="author-description">{{item.my_description}}</span>
                         </div>
                         <div class="author-description-container">
-                            <mat-icon>location_on</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
                             <span class="author-description">{{item.location}}</span>
                         </div>
                     </div>
@@ -99,18 +99,18 @@
                 <div class="cible-container" *ngIf="item.target_two == null">
                     <span class="cible-title">Cible</span>
                     <div class="cible-description-container">
-                        <mat-icon>person</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                 </div>
                 <div class="cible-container" *ngIf="item.target_two != null">
                     <span class="cible-title">Cibles</span>
                     <div class="cible-description-container">
-                        <mat-icon>person</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                     <div class="cible-description-container">
-                        <mat-icon>person</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
                         <span class="cible-description">{{item.target_two}}</span>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                             </div>
                             <div class="swiper-slide" *ngFor="let attachment of list_of_attachments, let i=index">
                                 <div (click)="read_attachment(i);stop($event);" class="image-container">
-                                    <mat-icon>insert_drive_file</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                 </div>
                                 <span><i>{{list_of_attachments_name[i]}}</i></span>
                             </div>
@@ -143,17 +143,17 @@
                     <div class="categories">
                         <div class="category" [ngClass]="{'opened': category_index == 0 }"
                             (click)="open_category(0);stop($event);">
-                            <mat-icon>notes</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">notes</mat-icon>
                             <span>Description</span>
                         </div>
                         <div class="category" [ngClass]="{'opened': category_index == 1 }"
                             (click)="open_category(1);stop($event);">
-                            <mat-icon>image</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">image</mat-icon>
                             <span>Images ({{list_of_pictures.length}})</span>
                         </div>
                         <div class="category" [ngClass]="{'opened': category_index == 2 }"
                             (click)="open_category(2);stop($event);">
-                            <mat-icon>attachment</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
                             <span>Fichiers ({{list_of_attachments.length}})</span>
                         </div>
 
@@ -200,7 +200,7 @@
                             <div *ngIf="list_of_attachments[i]" class="attachment"
                                 (click)="read_attachment(i);stop($event);">
                                 <div class="attachment-logo">
-                                    <mat-icon>attachment</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
                                 </div>
                                 <span><i>{{list_of_attachments_name[i]}}</i></span>
                             </div>
