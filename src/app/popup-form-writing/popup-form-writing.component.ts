@@ -39,6 +39,8 @@ export class PopupFormWritingComponent implements OnInit {
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      
+      dialogRef.disableClose = true;
 
       this.filteredGenres = this.genreCtrl.valueChanges.pipe(
         startWith(null),

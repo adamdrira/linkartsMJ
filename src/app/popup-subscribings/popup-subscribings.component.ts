@@ -44,6 +44,7 @@ export class PopupSubscribingsComponent implements OnInit {
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      dialogRef.disableClose = true;
     
 
   }

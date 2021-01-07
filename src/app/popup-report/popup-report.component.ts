@@ -55,6 +55,7 @@ export class PopupReportComponent implements OnInit {
       @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // redirect to home if already logged in
+      dialogRef.disableClose = true;
     
     
   }
@@ -174,6 +175,11 @@ export class PopupReportComponent implements OnInit {
  
   logo_loaded(){
     this.logo_is_loaded=true;
+  }
+
+  
+  close_dialog(){
+    this.dialogRef.close();
   }
 
 }

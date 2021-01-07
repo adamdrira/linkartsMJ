@@ -226,6 +226,17 @@
   }
 }
 
+
+.button-container-close{
+  margin: auto 0px auto auto;
+  width: 30px;
+}
+
+.close-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 /*
 .status {
   position:absolute;

@@ -24,6 +24,7 @@
     <div class="subscribers-container" *ngIf="list_of_subscribings.length>0 && subscribtion_info_added" [@enterAnimation]>
         <div *ngFor="let item of list_of_subscribings_information; let i=index" class="subscriber-card">
             
+            
             <!--********************-->
             <!--Author container-->
             <!--********************-->
@@ -36,18 +37,28 @@
                     </a>
                     <a [routerLink]=get_user_link(i)>
                         <div class="right-container">
-                            <span class="user-name">{{item.firstname}} {{item.lastname}} 
-                                <span class="certifications-span" *ngIf="list_of_subscribings_information[i].type_of_account_checked">PRO</span>
-                                <mat-icon *ngIf="list_of_subscribings_information[i].certified_account">verified</mat-icon>
-                               
+                            
+                            
+                            <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                <mat-icon *ngIf="list_of_subscribings_information[i].certified_account"
+                                matTooltip="Compte certifié" 
+                                matTooltipClass='linkarts-tooltip' 
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">verified</mat-icon>
+        
+                                <div *ngIf="list_of_subscribings_information[i].type_of_account_checked" class="pro-logo"
+                                matTooltip="Compte professionnel" 
+                                matTooltipClass='linkarts-tooltip'
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">PRO</div>
                             </span>
                             <span class="user-description">@{{item.nickname}}</span>
                         </div>
                     </a>
                 </div>
-                
-               
+              
             </div>
+            
 
             <ng-container *ngIf="type_of_profile=='account' && list_of_subscribings[i].id_user_subscribed_to!=visitor_id">
                 <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
@@ -67,41 +78,3 @@
 
 </div>
 
-
-<!--
-<div class="component-container">
-    <div class="title">
-        <span>
-            Abonnements
-        </span>
-    </div>
-    <div class="subscribers-container" *ngIf="subscribtion_info_added">
-        <div *ngFor="let item of list_of_subscribings_information; let i=index" class="subscriber-card">
-            
-            <div class="author-container">
-                <div class="left-container">
-                    <img [src]="list_of_profile_pictures[i]">
-                </div>
-                <a href="/account/{{item.nickname}}/{{item.id}}">
-                    <div class="right-container">
-                        <span class="author-name">{{item.firstname}} {{item.lastname}} </span>
-                        <span class="author-description">@{{item.nickname}}</span>
-                    </div>
-                </a>
-
-            </div>
-            <button mat-raised-button *ngIf="!list_of_check_subscribtion[i]" class="button style1 subscriptions" (click)="subscribtion(i)">
-                <mat-icon class="icon">person_add</mat-icon>
-                <span>S'abonner</span>
-            </button>
-            <button mat-raised-button *ngIf="list_of_check_subscribtion[i]" class="button style0 subscriptions" (click)="subscribtion(i)">
-                <mat-icon class="icon">person_add_disabled</mat-icon>
-                <span>Se désabonner</span>
-            </button>
-        </div>
-    </div>
-    <div class="subscribers-container" *ngIf="!subscribtion_info_added" style="display:flex;">
-        <span style="margin:auto;">Aucun abonnement</span>
-    </div>
-</div>
--->

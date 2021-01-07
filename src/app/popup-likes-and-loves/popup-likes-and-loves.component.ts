@@ -45,8 +45,7 @@ export class PopupLikesAndLovesComponent implements OnInit {
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    
-
+      dialogRef.disableClose = true;
   }
 
   list_of_users_ids=this.data.list_of_users_ids;

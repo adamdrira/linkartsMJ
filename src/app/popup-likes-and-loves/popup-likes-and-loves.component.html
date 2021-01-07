@@ -36,11 +36,20 @@
                             <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
                                 <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
                             </div>
+
                             <div class="right-container">
-                                <span class="user-name">{{item.firstname}} {{item.lastname}}
-                                        <span class="certifications-span" *ngIf="list_of_users_information[i].type_of_account_checked">PRO</span>
-                                        <mat-icon *ngIf="list_of_users_information[i].certified_account">verified</mat-icon>
-    
+                                <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                    <mat-icon *ngIf="list_of_users_information[i].certified_account"
+                                    matTooltip="Compte certifié" 
+                                    matTooltipClass='linkarts-tooltip' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">verified</mat-icon>
+            
+                                    <div *ngIf="list_of_users_information[i].type_of_account_checked" class="pro-logo"
+                                    matTooltip="Compte professionnel" 
+                                    matTooltipClass='linkarts-tooltip'
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">PRO</div>
                                 </span>
                                 <span class="user-description">@{{item.nickname}}</span>
                             </div>

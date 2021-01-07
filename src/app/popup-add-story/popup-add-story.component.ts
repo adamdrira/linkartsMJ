@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-popup-add-story',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PopupAddStoryComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public dialogRef: MatDialogRef<PopupAddStoryComponent>,
+    ) { 
+    dialogRef.disableClose = true;
+  }
 
   ngOnInit(): void {
   }

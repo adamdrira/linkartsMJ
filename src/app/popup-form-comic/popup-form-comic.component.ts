@@ -43,6 +43,8 @@ export class PopupFormComicComponent implements OnInit {
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
+      dialogRef.disableClose = true;
+      
       this.filteredGenres = this.genreCtrl.valueChanges.pipe(
         startWith(null),
         map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));

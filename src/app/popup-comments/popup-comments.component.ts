@@ -36,6 +36,7 @@ export class PopupCommentsComponent implements OnInit {
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
     
+      dialogRef.disableClose = true;
 
   }
 
