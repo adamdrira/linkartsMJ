@@ -38,10 +38,21 @@ export class HomeLinkartsComponent implements OnInit {
     
   }
 
-  @HostListener('window:resize', ['$event'])
-    onResize(event) {
-      this.cd.detectChanges();
+  @ViewChild("homeLinkartsSelect") homeLinkartsSelect;
+
+  @HostListener('window:scroll', ['$event']) 
+  function(event) {
+    if( this.homeLinkartsSelect ) {
+      this.homeLinkartsSelect.close();
     }
+  };
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( this.homeLinkartsSelect ) {
+      this.homeLinkartsSelect.close();
+    }
+    this.cd.detectChanges();
+  };
     
   
   category_index:number = -1;
@@ -60,7 +71,6 @@ export class HomeLinkartsComponent implements OnInit {
         this.type_of_profile=r;
         
         this.change_profile_number++;
-        this.initialize_heights();
         this.category_index = this.route.snapshot.data['category'];
         console.log(this.category_index)
         this.status[this.category_index]=true;
@@ -93,20 +103,13 @@ export class HomeLinkartsComponent implements OnInit {
           })
         }
         this.type_of_profile_retrieved=true;
+        this.cd.detectChanges();
+        this.initialize_swiper();
       }
     })
     
   }
-
  
-
-  initialize_heights() {
-    //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      this.cd.detectChanges();
-    //}
-  }
 
  
   open_category(i : number) {
@@ -157,9 +160,101 @@ export class HomeLinkartsComponent implements OnInit {
     }
     
   }
+
+
+  swiper: any;
+  @ViewChild("swiperCategories") swiperCategories: ElementRef;
+  initialize_swiper() {
+
+    if (!this.swiper && this.swiperCategories) {
+
+
+      if (this.type_of_profile == 'account') {
+        this.swiper = new Swiper(this.swiperCategories.nativeElement, {
+          speed: 300,
+          initialSlide: 0,
+
+          breakpoints: {
+            300: {
+              slidesPerView: 2,
+              slidesPerGroup: 2,
+              spaceBetween: 10,
+              simulateTouch: true,
+              allowTouchMove: true,
+            },
+            400: {
+              slidesPerView: 2,
+              slidesPerGroup: 2,
+              spaceBetween: 20,
+              simulateTouch: true,
+              allowTouchMove: true,
+            },
+            500: {
+              slidesPerView: 3,
+              slidesPerGroup: 3,
+              spaceBetween: 20,
+              simulateTouch: true,
+              allowTouchMove: true,
+            },
+            600: {
+              slidesPerView: 4,
+              slidesPerGroup: 4,
+              spaceBetween: 15,
+              simulateTouch: false,
+              allowTouchMove: false,
+            }
+          },
+
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        })
+      }
+      else {
+        this.swiper = new Swiper(this.swiperCategories.nativeElement, {
+          speed: 300,
+          initialSlide: 0,
+
+          breakpoints: {
+            300: {
+              slidesPerView: 2,
+              slidesPerGroup: 2,
+              spaceBetween: 10,
+              simulateTouch: true,
+              allowTouchMove: true,
+            },
+            400: {
+              slidesPerView: 2,
+              slidesPerGroup: 2,
+              spaceBetween: 20,
+              simulateTouch: true,
+              allowTouchMove: true,
+            },
+            500: {
+              slidesPerView: 3,
+              slidesPerGroup: 3,
+              spaceBetween: 20,
+              simulateTouch: false,
+              allowTouchMove: false,
+            }
+          },
+
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        })
+      }
+
+
+    }
+  }
   
-  
-  
-  
+
+  sectionChange2(e:any) {
+    this.router.navigate([ this.get_category(e) ]);
+  }
+
   
 }

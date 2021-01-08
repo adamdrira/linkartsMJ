@@ -5,7 +5,8 @@
         <div class="logos-container" *ngIf="status" [@enterFromTopAnimation]>
             <button class="logo" [ngClass]="{'opened': subcategory == 0 }" (click)="open_subcategory(0);">
                 <div class="image1"></div>
-                <span>Bandes dessinées</span>
+                <span class="long-title">Bandes dessinées</span>
+                <span class="short-title">BD</span>
             </button>
             <button class="logo" [ngClass]="{'opened': subcategory == 1 }" (click)="open_subcategory(1);">
                 <div class="image2"></div>

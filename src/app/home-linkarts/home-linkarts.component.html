@@ -1,39 +1,134 @@
 <div class="home-linkarts" *ngIf="type_of_profile_retrieved">
 
-    <div class="categories-container">
-        <div class="category"  (click)="open_category(0)"  [ngClass]="{'opened': category_index==0 }">
-            <div class="icon-container">
-                <div class="icon icon-recommendation">
+    <div class="categories-container" [ngClass]="{'visitor': type_of_profile!='account' }">
+
+        <div class="select-container">
+            <mat-form-field floatLabel='never' [ngClass]="{'opened': homeLinkartsSelect && homeLinkartsSelect.panelOpen }">
+
+                <mat-select #homeLinkartsSelect panelClass="homeLinkartsSelect" ng-animate-disabled
+                [(value)]="category_index" disableOptionCentering
+                (selectionChange)="sectionChange2($event.value)">
+                    
+                    <mat-select-trigger>
+                        <ng-container *ngIf="category_index==0">
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation">
+                                </div>
+                            </div>
+                            <span>Recommandations</span>
+                        </ng-container>
+                        <ng-container *ngIf="category_index==1">
+                            <div class="icon-container">
+                                <div class="icon icon-trendings">
+                                </div>
+                            </div>
+                            <span>Tendances</span>
+                        </ng-container>
+                        <ng-container *ngIf="category_index==2">
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed">
+                                </div>
+                            </div>
+                            <span>Abonnements</span>
+                        </ng-container>
+                        <ng-container *ngIf="category_index==3">
+                            <div class="icon-container">
+                                <div class="icon icon-love">
+                                </div>
+                            </div>
+                            <span>Coups de cœur</span>
+                        </ng-container>
+                        
+                        <div class="arrow-container" [ngClass]="{'opened': homeLinkartsSelect && homeLinkartsSelect.panelOpen }">
+                            <mat-icon>arrow_back_ios_new</mat-icon>
+                        </div>
+                    </mat-select-trigger>
+
+                    
+
+
+                    <mat-option [value]="0">
+                        <div class="icon-container">
+                            <div class="icon icon-recommendation">
+                            </div>
+                        </div>
+                        <span>Recommandations</span>
+                    </mat-option>
+                    <mat-option [value]="1">
+                        <div class="icon-container">
+                            <div class="icon icon-trendings">
+                            </div>
+                        </div>
+                        <span>Tendances</span>
+                    </mat-option>
+                    <mat-option [value]="2" *ngIf="type_of_profile=='account'">
+                        <div class="icon-container">
+                            <div class="icon icon-newsfeed">
+                            </div>
+                        </div>
+                        <span>Abonnements</span>
+                    </mat-option>
+                    <mat-option [value]="3">
+                        <div class="icon-container">
+                            <div class="icon icon-love">
+                            </div>
+                        </div>
+                        <span>Coups de cœur</span>
+                    </mat-option>
+                </mat-select>
+
+            </mat-form-field>
+        </div>
+
+        <div class="swiper-container">
+            <div  #swiperCategories  class="swiper-item" >
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <a class="category" [routerLink]=get_category(0) [ngClass]="{'opened': category_index==0 }">
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation">
+                                </div>
+                            </div>
+                            <span>Recommandations</span>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a class="category" [routerLink]=get_category(1) [ngClass]="{'opened': category_index==1 }">
+                            <div class="icon-container">
+                                <div class="icon icon-trendings">
+                                </div>
+                            </div>
+                            <span>Tendances</span>
+                        </a>
+                    </div>
+                    <div class="swiper-slide" *ngIf="type_of_profile=='account'">
+                        <a class="category" [routerLink]=get_category(2) [ngClass]="{'opened': category_index==2 }">
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed">
+                                </div>
+                            </div>
+                            <span>Abonnements</span>
+                        </a>
+                    </div>
+                    <div class="swiper-slide">
+                        <a class="category" [routerLink]=get_category(3) [ngClass]="{'opened': category_index==3 }">
+                            <div class="icon-container">
+                                <div class="icon icon-love">
+                                </div>
+                            </div>
+                            <span>Coups de cœur</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
-            <span>Recommandations</span>
+            <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+            <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+            <div class="swiper-button-prev" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+            <div class="swiper-button-next" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
         </div>
-        <div class="category"  (click)="open_category(1)"  [ngClass]="{'opened': category_index==1 }">
-            <div class="icon-container">
-                <div class="icon icon-trendings">
-                </div>
-            </div>
-            <span>Tendances</span>
-        </div>
-        <div class="category" (click)="open_category(2)"  *ngIf="type_of_profile=='account'" [ngClass]="{'opened': category_index==2 }">
-            <div class="icon-container">
-                <div class="icon icon-newsfeed">
-                </div>
-            </div>
-            <span>Abonnements</span>
-        </div>
-        <div class="category"  (click)="open_category(3)" [ngClass]="{'opened': category_index==3 }">
-            <div class="icon-container">
-                <div class="icon icon-love">
-                </div>
-            </div>
-            <span>Coups de coeur</span>
-        </div>
-        <!--<div class="content-action text-center" (click)="open_category(3)">
-            <span>Mode découverte</span> 
-            <div class="bottom-border">
-            </div>
-        </div>-->
+
     </div>
 
    
