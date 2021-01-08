@@ -132,6 +132,7 @@ export class StoriesComponent implements OnInit {
     this.cd.detectChanges()
   }
 
+  my_index=-1;
   ngOnInit() {
 
     this.update_new_contents();
@@ -139,7 +140,7 @@ export class StoriesComponent implements OnInit {
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       console.log(r[0].id);
-      this.list_of_users.push(r[0].id);
+      //this.list_of_users.push(r[0].id);
       /*this.Subscribing_service.get_all_subscribings_for_stories(this.user_id).subscribe(info=>{
         let users= info[0];
         if(users.length>0){
@@ -170,16 +171,20 @@ export class StoriesComponent implements OnInit {
       console.log(this.list_of_users);
       list_of_users_length=r[0].list_of_users.length;
       for (let k =0;k<r[0].list_of_users.length;k++){
+        let itsme=false;
+        if(r[0].list_of_users[k]==this.user_id){
+          itsme=true;
+          this.my_index=k;
+        }
         this.list_of_users.push(r[0].list_of_users[k]);
-        console.log(r[0])
-        this.list_of_number_of_views[k]=r[0].list_of_number_of_views[k]
-        this.list_of_state[k]=r[0].list_of_states[k];
         // ajout des boolean false et true si toutes les stories ont étaient vues
         if(r[0].list_of_stories_s[k].length>0){
           compt_found_stories++;
           console.log(this.list_of_users[k])
+          this.list_of_number_of_views[k]=r[0].list_of_number_of_views[k]
+          this.list_of_state[k]=r[0].list_of_states[k];
           this.list_of_list_of_data[k]=r[0].list_of_stories_s[k];
-          this.final_list_of_users[k]=this.list_of_users[k];
+          this.final_list_of_users[k]=r[0].list_of_users[k];
           let pp_found=false;
           let cover_found=false;
           let data_retrieved=false;
@@ -189,7 +194,7 @@ export class StoriesComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_profile_pictures[k]=SafeURL;
             pp_found=true;
-            ready(this)
+            //ready(this)
           });
 
           this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
@@ -197,7 +202,7 @@ export class StoriesComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_cover_pictures[k]=SafeURL;
             cover_found=true;
-            ready(this)
+            //ready(this)
           });
 
           let index = r[0].list_of_users_data.findIndex(x => x.id === this.list_of_users[k])
@@ -211,8 +216,10 @@ export class StoriesComponent implements OnInit {
           });*/
 
           function ready(THIS){
-            console.log(THIS.list_of_author_names)
-            if(pp_found && cover_found && data_retrieved){
+            
+            if( data_retrieved){
+              console.log(k)
+              console.log(THIS.list_of_author_names)
               compt++;
               if(compt==list_of_users_length){ 
                 THIS.separate_users_in_two(THIS.final_list_of_users);
@@ -223,7 +230,7 @@ export class StoriesComponent implements OnInit {
         
         }
         else{
-          if(k==0){
+          if(itsme){
             console.log("k = 0, avec les utilsiateurs");
             console.log(this.list_of_users)
             this.do_I_have_stories=false;
@@ -233,12 +240,12 @@ export class StoriesComponent implements OnInit {
             let cover_found=false;
             let data_retrieved=false;
 
-            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).subscribe(t=> {
+            this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_profile_pictures[k]=SafeURL;
               pp_found=true;
-              ready(this)
+              //ready(this)
             });
 
             this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
@@ -246,7 +253,7 @@ export class StoriesComponent implements OnInit {
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_cover_pictures[k]=SafeURL;
               cover_found=true;
-              ready(this)
+              //ready(this)
             });
 
             let index = r[0].list_of_users_data.findIndex(x => x.id === this.list_of_users[k])
@@ -261,8 +268,9 @@ export class StoriesComponent implements OnInit {
             });*/
 
             function ready(THIS){
+              console.log(k)
               console.log(THIS.list_of_author_names)
-              if(pp_found && cover_found && data_retrieved){
+              if(data_retrieved){
                 compt++;
                 if(compt==list_of_users_length){ 
                   if(compt_found_stories==0){
@@ -307,92 +315,7 @@ export class StoriesComponent implements OnInit {
 
 
 
-    /*for (let k =0;k<this.list_of_users.length;k++){
-      this.Story_service.get_stories_by_user_id(this.list_of_users[k]).subscribe(r=>{
-        console.log(r[0])
-        this.list_of_number_of_views[k]=r[0].number_of_views
-        this.list_of_state[k]=r[0].state_of_views;
-        // ajout des boolean false et true si toutes les stories ont étaient vues
-        if(r[0].stories.length>0){
-          console.log(this.list_of_users[k])
-          this.list_of_list_of_data[k]=r[0].stories;
-          this.final_list_of_users[k]=this.list_of_users[k];
-          this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).subscribe(t=> {
-            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_profile_pictures[k]=SafeURL;
-            this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
-              let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_cover_pictures[k]=SafeURL;
-              this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
-                this.list_of_author_names[k]=(u[0].firstname + ' ' + u[0].lastname);
-                compt++;
-               
-                if(compt==this.list_of_users.length){ 
-                
-                  this.separate_users_in_two(this.final_list_of_users);
-                    //this.sort_list_of_users(this.final_list_of_users);
-                }
-              });
-            });
-          });
-        
-        }
-        else{
-          if(k==0){
-            console.log("k = 0, avec les utilsiateurs");
-            console.log(this.list_of_users)
-            this.do_I_have_stories=false;
-            this.final_list_of_users[k]=(this.list_of_users[k]);
-            this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_users[k]).subscribe(t=> {
-              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_profile_pictures[k]=SafeURL;
-              this.Profile_Edition_Service.retrieve_cover_picture( this.list_of_users[k] ).subscribe(v=> {
-                let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_cover_pictures[k]=SafeURL;
-                this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users[k]).subscribe(u=> {
-                  this.list_of_author_names[k]=(u[0].firstname + ' ' + u[0].lastname);
-                  compt++;
-                  if(compt==this.list_of_users.length){
-                    
-                    //this.users_retrieved=true;
-                    //this.send_loaded.emit();
-                    //this.cd.detectChanges();
-                    //this.sort_list_of_users(this.final_list_of_users);
-                    console.log(this.list_of_state)
-                    console.log(this.list_of_profile_pictures)
-                    console.log(this.final_list_of_users);
-                  console.log(this.list_of_author_names);
-                    this.separate_users_in_two(this.final_list_of_users);
-                  }
-                });
-              });
-            });
-          }
-          else{
-            compt++;
-            if(compt==this.list_of_users.length){
-              console.log(this.list_of_state)
-              console.log(this.final_list_of_users);
-                  console.log(this.list_of_author_names);
-              //this.sort_list_of_users(this.final_list_of_users);
-              this.separate_users_in_two(this.final_list_of_users);
-            }
-          }
-          
-          
-        }
-        
-      })
-    }*/
   };
-
-  /*watch_stories(i){
-    this.Router.navigate( [ `/test_stories/${this.list_of_users[i]}` ] )
-  }*/
 
  
 
@@ -401,8 +324,21 @@ export class StoriesComponent implements OnInit {
   /***************************************** SORT USERS BY OLD OR NEW STORIES ***************************/
   separate_users_in_two(list){
     console.log("first sorting")
+   
+    if(this.my_index>=0){
+      this.final_list_of_users.splice(0,0,this.final_list_of_users.splice(this.my_index,1)[0])
+      this.list_of_profile_pictures.splice(0,0,this.list_of_profile_pictures.splice(this.my_index,1)[0])
+      this.list_of_list_of_data.splice(0,0,this.list_of_list_of_data.splice(this.my_index,1)[0])
+      this.list_of_cover_pictures.splice(0,0,this.list_of_cover_pictures.splice(this.my_index,1)[0])
+      this.list_of_author_names.splice(0,0,this.list_of_author_names.splice(this.my_index,1)[0])
+      this.list_of_number_of_views.splice(0,0,this.list_of_number_of_views.splice(this.my_index,1)[0])
+      this.list_of_state.splice(0,0,this.list_of_state.splice(this.my_index,1)[0])
+    }
+  
+
     console.log(list);
     let len=list.length;
+
     for(let i=0;i<len;i++){
       if(!list[len-i-1]){
         console.log(len-i-1)
@@ -736,7 +672,7 @@ export class StoriesComponent implements OnInit {
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
-      autoFocus: false,
+      panelClass: 'popupAddStoryClass',
     });
   }
 

@@ -10,12 +10,7 @@
                 </div>
             </div>
 
-            <!--<div >
-                <select *ngIf="okvalue" #fdselector id="fdselector" class="fdselect" style="height: 40px;" >
-                    <option selected value="defaultValue" >Mes contacts</option>
-                    <option label="Autres">Autres</option>
-                </select>
-            </div>-->
+
 
             <div class="formdata-container">
                 <form [formGroup]="formData" style="align-self:center;padding:0 10px; margin: auto;">
@@ -583,7 +578,7 @@
 
                         <ng-container *ngIf="opened_category_for_research==0 || select_group_chat_contacts">
                             <div *ngIf="display_other_contacts "> 
-                                <div *ngFor="let item of list_of_related_contacts_names; let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_related_contacts_ids[i])}">
+                                <div *ngFor="let item of list_of_related_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_related_contacts_ids[i])}">
                                     <div class="author-container" (click)="open_new_contact_chat(3,i)">
                                         <div class="left-container">
                                             <img [src]="list_of_related_contacts_pictures[i]">
@@ -605,7 +600,7 @@
                                     </div>
                                 </div>
                                 <ng-container *ngIf="!select_group_chat_contacts">
-                                    <div *ngFor="let item of list_of_other_contacts_names; let i=index" class="subscriber-card">
+                                    <div *ngFor="let item of list_of_other_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card">
                                         <div class="author-container" (click)="open_new_contact_chat(4,i)">
                                             <div class="left-container">
                                                 <img [src]="list_of_other_contacts_pictures[i]">
@@ -621,9 +616,9 @@
                                 
                             </div>
                             
-                        <!-- -------------------- DISPLAY ALL PROPOSITIONS------------------------>
-                        <!-- --------------------DISPLAY ALL PROPOSITIONS------------------------>
-                        <!-- --------------------DISPLAY ALL PROPOSITIONS ------------------------>
+                            <!-- -------------------- DISPLAY ALL PROPOSITIONS------------------------>
+                            <!-- --------------------DISPLAY ALL PROPOSITIONS------------------------>
+                            <!-- --------------------DISPLAY ALL PROPOSITIONS ------------------------>
                             <div *ngIf="!display_other_contacts && display_all_searching_proppositions"> 
                                 <div *ngFor="let item of list_of_all_contacts_names; let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_all_contacts_ids[i])}">
                                     <div class="author-container" (click)="open_new_contact_chat(5,i)">

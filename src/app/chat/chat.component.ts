@@ -227,8 +227,12 @@ export class ChatComponent implements OnInit  {
   /*******************************************ON CHANGES ************************** */
   /*******************************************ON CHANGES ************************** */
   /*******************************************ON CHANGES ************************** */
+
+  compteur_user=0;
   ngOnChanges(changes: SimpleChanges) {
     console.log("change");
+    console.log(this.friend_id)
+    console.log(this.friend_type)
     if(changes.user_present ){
       if(this.user_present && this.spam=='false'){
         console.log(this.id_chat_section);
@@ -281,6 +285,7 @@ export class ChatComponent implements OnInit  {
           this.renderer.setStyle(item.nativeElement, 'background-color', 'white');
         });
       }
+      this.compteur_user++;
       if(this.friend_type=='user'){
           this.change_user();
       }
@@ -304,9 +309,11 @@ export class ChatComponent implements OnInit  {
   show_spinner=false;
   
   change_user(){
+    console.log("change_user");
     console.log(this.chat_friend_id)
+    console.log(this.friend_id)
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
-    console.log("getting messages");
+   
     this.list_of_users_names_retrieved=false;
     this.today_triggered=false;
     this.display_writing=false;
@@ -329,7 +336,8 @@ export class ChatComponent implements OnInit  {
     this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
     this.top_pp_loaded=false;
-    if($('.chat-section')[0]){
+    if($('.chat-section')[0] && $('.chat-section')[0].sumo){
+      console.log("sumo unloaded")
       $('.chat-section')[0].sumo.unload();
     }
     
@@ -400,7 +408,10 @@ export class ChatComponent implements OnInit  {
     this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
     this.top_pp_loaded=false;
-    $('.chat-section')[0].sumo.unload();
+    if($('.chat-section')[0] && $('.chat-section')[0].sumo ){
+      $('.chat-section')[0].sumo.unload();
+    }
+    
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,true);
     this.change_number=0;
@@ -408,22 +419,25 @@ export class ChatComponent implements OnInit  {
       let compt_user=0;
       let list_of_receivers_ids=info[0].list_of_receivers_ids;
       for(let i=0;i<list_of_receivers_ids.length;i++){
+        this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=false;
+        this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
+          let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
+         
+        })
         this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
           this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
-          this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
-            let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
-            compt_user++;
-            if(compt_user==list_of_receivers_ids.length){
-              console.log("list_of_users_names")
-                console.log(this.list_of_users_names)
-                console.log(this.list_of_users_profile_pictures)
-              this.list_of_users_names_retrieved=true;
-            }
-          })
+          compt_user++;
+          if(compt_user==list_of_receivers_ids.length){
+            console.log("list_of_users_names")
+            console.log(this.list_of_users_names)
+            console.log(this.list_of_users_profile_pictures)
+            this.list_of_users_names_retrieved=true;
+          }
           
         })
+       
       }
     })
     
@@ -473,7 +487,6 @@ export class ChatComponent implements OnInit  {
         let list_of_receivers_ids=info[0].list_of_receivers_ids;
         for(let i=0;i<list_of_receivers_ids.length;i++){
           let data_retrieved=false;
-          let pp_retrieved=false;
           this.Profile_Edition_Service.retrieve_profile_data(list_of_receivers_ids[i]).subscribe(r=>{
             this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
             data_retrieved=true;
@@ -485,12 +498,11 @@ export class ChatComponent implements OnInit  {
             let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=SafeURL;
-            pp_retrieved=true;
-            check_all(this)
+          
           })
 
           function check_all(THIS){
-            if(pp_retrieved && data_retrieved){
+            if(data_retrieved){
               compt_user++;
               if(compt_user==list_of_receivers_ids.length){
                 console.log("list_of_users_names")
@@ -714,6 +726,7 @@ export class ChatComponent implements OnInit  {
   compteur_selector=0;
   compteur_get_messages=0;
   get_messages(id_chat_section,bool){
+    console.log(this.friend_id)
     this.compteur_get_messages++;
     this.compteur_image=0;
     this.compteur_loaded=0;
@@ -769,8 +782,8 @@ export class ChatComponent implements OnInit  {
         
       })
     }
-    this.get_chat_sections();
     console.log(this.friend_id)
+    this.get_chat_sections();
     console.log(this.current_user_id)
     this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,bool,this.compteur_get_messages).subscribe(r=>{
       if(bool){
@@ -2142,83 +2155,92 @@ get_chat_sections(){
   console.log("getting chat sections")
   console.log(this.friend_id);
   console.log((this.friend_type=='user')?false:true)
-  this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true).subscribe(l=>{
-    console.log(l);
-    if(l[0][0]){
-      let compt =0;
-      for(let i=0;i<l[0].length;i++){
-        this.list_of_chat_sections[i+1]=(l[0][i].chat_section_name);
-        this.list_of_chat_sections_id[i+1]=(l[0][i].id_chat_section);
-        if(this.id_chat_section==l[0][i].id_chat_section && compt==0){
-          console.log(l[0][i].chat_section_name)
-          this.chat_section_to_open=l[0][i].chat_section_name;
-          console.log(this.chat_section_to_open)
-          compt+=1;
-        } 
-        if(i==l[0].length-1){
-          if(compt==0){
-            this.chat_section_to_open="Discussion principale"
-            console.log( this.chat_section_to_open)
-          }
-          let compt_sections=0;
-          for(let j=0;j<this.list_of_chat_sections.length;j++){
-            this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
-              this.list_of_chat_sections_notifications[j]=r[0].value;
-              compt_sections++;
-              if(compt_sections==this.list_of_chat_sections.length){
-                console.log(this.compteur_chat_section)
-                let compt_unseen=0;
-                for(let k=0;k<this.list_of_chat_sections_notifications.length;k++){
-                  if(this.list_of_chat_sections_notifications[k]){
-                    compt_unseen+=1;
-                  }
-                  if(k==this.list_of_chat_sections_notifications.length-1){
-                    if(compt_unseen>0){
-                      this.show_notification_message=true;
-                      this.number_of_sections_unseen=compt_unseen;
+  this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true,this.compteur_get_messages).subscribe(m=>{
+    let l=m[0];
+    if(this.compteur_get_messages==m[1]){
+      console.log(l[0]);
+      if(l[0][0]){
+        let compt =0;
+        for(let i=0;i<l[0].length;i++){
+          this.list_of_chat_sections[i+1]=(l[0][i].chat_section_name);
+          this.list_of_chat_sections_id[i+1]=(l[0][i].id_chat_section);
+          if(this.id_chat_section==l[0][i].id_chat_section && compt==0){
+            console.log(l[0][i].chat_section_name)
+            this.chat_section_to_open=l[0][i].chat_section_name;
+            console.log(this.chat_section_to_open)
+            compt+=1;
+          } 
+          if(i==l[0].length-1){
+            if(compt==0){
+              this.chat_section_to_open="Discussion principale"
+              console.log( this.chat_section_to_open)
+            }
+            let compt_sections=0;
+            for(let j=0;j<this.list_of_chat_sections.length;j++){
+              this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
+                if(this.compteur_get_messages==m[1]){
+                  this.list_of_chat_sections_notifications[j]=r[0].value;
+                  compt_sections++;
+                  if(compt_sections==this.list_of_chat_sections.length){
+                    console.log(this.compteur_chat_section)
+                    let compt_unseen=0;
+                    for(let k=0;k<this.list_of_chat_sections_notifications.length;k++){
+                      if(this.list_of_chat_sections_notifications[k]){
+                        compt_unseen+=1;
+                      }
+                      if(k==this.list_of_chat_sections_notifications.length-1){
+                        if(compt_unseen>0){
+                          this.show_notification_message=true;
+                          this.number_of_sections_unseen=compt_unseen;
+                        }
+                        else{
+                          this.show_notification_message=false;
+                          this.number_of_sections_unseen=0;
+                        }
+                      }
+                    }
+                    if(this.compteur_chat_section>0){
+                      this.activate_research_chat_section=false;
+                      this.activate_add_chat_section=false;
+                      console.log(this.chat_section_to_open)
+                      this.cd.detectChanges();
+                      console.log("realod sumo 1")
+                      console.log($('.chat-section')[0].sumo)
+                      $('.chat-section')[0].sumo.reload({placeholder: this.chat_section_to_open});
+                      this.cd.detectChanges();
                     }
                     else{
-                      this.show_notification_message=false;
-                      this.number_of_sections_unseen=0;
+                      //console.log("ini select")
+                      this.initialize_selectors();
                     }
+                    this.compteur_chat_section+=1;
+                    
                   }
                 }
-                if(this.compteur_chat_section>0){
-                  this.activate_research_chat_section=false;
-                  this.activate_add_chat_section=false;
-                  console.log(this.chat_section_to_open)
-                  this.cd.detectChanges();
-                  $('.chat-section')[0].sumo.reload({placeholder: this.chat_section_to_open});
-                  this.cd.detectChanges();
-                }
-                else{
-                  console.log("ini select")
-                  this.initialize_selectors();
-                }
-                this.compteur_chat_section+=1;
-                
-              }
-            })
+               
+              })
+            }
+            
           }
-          
         }
       }
-    }
-    else{
-      console.log("dans le else"); 
-      this.chat_section_to_open="Discussion principale";
-      this.cd.detectChanges();
-      this.activate_research_chat_section=false;
-      this.activate_add_chat_section=false;
-      if(this.compteur_chat_section>0 && $('.chat-section')[0].sumo){
-        $('.chat-section')[0].sumo.reload();
-      }
       else{
-        console.log("initi selector")
-        this.initialize_selectors();
+        console.log("dans le else"); 
+        this.chat_section_to_open="Discussion principale";
+        this.cd.detectChanges();
+        this.activate_research_chat_section=false;
+        this.activate_add_chat_section=false;
+        if(this.compteur_chat_section>0 && $('.chat-section')[0]  && $('.chat-section')[0].sumo){
+          $('.chat-section')[0].sumo.reload();
+        }
+        else{
+          console.log("initi selector")
+          this.initialize_selectors();
+        }
+        this.compteur_chat_section+=1;
       }
-      this.compteur_chat_section+=1;
     }
+ 
     
   })
 }
@@ -2910,13 +2932,25 @@ display_members_of_the_group(){
     let list_of_pictures=[]
     let compt=0
     for(let i=0;i<list_of_ids.length;i++){
+      let pp_retrieved=false;
+      let data_retrieved=false;
       this.Profile_Edition_Service.retrieve_profile_data(list_of_ids[i]).subscribe(l=>{
         list_of_pseudos[i]=l[0].nickname;
         list_of_names[i]=l[0].firstname + ' ' + l[0].lastname;
-        this.Profile_Edition_Service.retrieve_profile_picture(list_of_ids[i] ).subscribe(r=> {
-          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          list_of_pictures[i] = SafeURL;
+        data_retrieved=true;
+        check_all(this)
+      })
+
+      this.Profile_Edition_Service.retrieve_profile_picture(list_of_ids[i] ).subscribe(r=> {
+        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        list_of_pictures[i] = SafeURL;
+        pp_retrieved=true;
+        check_all(this)
+      });
+
+      function check_all(THIS){
+        if(pp_retrieved && data_retrieved){
           compt++;
           if(compt==list_of_ids.length){
             console.log(list_of_ids);
@@ -2925,8 +2959,8 @@ display_members_of_the_group(){
               data: {is_for_emojis:false,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
             });
           }
-        });
-      })
+        }
+      }
     }
   })
   
@@ -2944,13 +2978,24 @@ see_emoji_reaction_by_user(id_message){
     for(let i=0;i<r[0].length;i++){
       list_of_ids[i]=r[0][i].id_user;
       list_of_emojis[r[0][i].id_user]=r[0][i].emoji_reaction;
+      let data_retrieved=false;
+      let pp_retrieved=false;
       this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(l=>{
         list_of_pseudos[i]=l[0].nickname;
         list_of_names[i]=l[0].firstname + ' ' + l[0].lastname;
-        this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id_user).subscribe(t=> {
-          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          list_of_pictures[i] = SafeURL;
+        data_retrieved=true;
+        check_all(this)
+      })
+      this.Profile_Edition_Service.retrieve_profile_picture(r[0][i].id_user).subscribe(t=> {
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        list_of_pictures[i] = SafeURL;
+        pp_retrieved=true;
+        check_all(this)
+      });
+
+      function check_all(THIS){
+        if(pp_retrieved && data_retrieved){
           compt++;
           if(compt==r[0].length){
             console.log(list_of_ids);
@@ -2959,8 +3004,8 @@ see_emoji_reaction_by_user(id_message){
               data: {is_for_emojis:true,list_of_emojis:list_of_emojis,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
             });
           }
-        });
-      })
+        }
+      }
     }
   })
   

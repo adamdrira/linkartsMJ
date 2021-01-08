@@ -199,9 +199,9 @@ get_first_searching_propositions():Observable<any>{
       }));
 }
 
-get_chat_history():Observable<any>{
+get_chat_history(compteur):Observable<any>{
   return this.httpClient.get('routes/get_chat_history',{withCredentials:true}).pipe(map(information=>{
-      return information;   
+      return [information,compteur];   
     }));
 }
 
@@ -308,9 +308,9 @@ add_new_friends_to_a_group(friend_id,list_of_friends):Observable<any>{
     }));
 }
 
-get_chat_first_propositions_group():Observable<any>{
+get_chat_first_propositions_group(compteur):Observable<any>{
   return this.httpClient.get('routes/get_chat_first_propositions_group',{withCredentials:true}).pipe(map(information=>{
-        return information;   
+        return [information,compteur];   
       }));
 }
 
@@ -479,10 +479,11 @@ get_messages_around(id_message,id_chat_section,id_friend,friend_type){
 /********************************************** SECTIONS MANAGMENT ***************************************/
 
 
-get_chat_sections(id_friend,is_a_group_chat){
-  //console.log(is_a_group_chat)
+get_chat_sections(id_friend,is_a_group_chat,compteur){
+  console.log(id_friend)
+  console.log(is_a_group_chat)
   return this.httpClient.get(`routes/get_chat_sections/${id_friend}/${is_a_group_chat}`, {withCredentials:true} ).pipe(map((information)=>{
-    return information;
+    return [information,compteur];
   }));
 }
 
