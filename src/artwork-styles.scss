@@ -682,7 +682,7 @@ $default-color: rgb(218, 220, 225);
                 text-align: left;
                 width: calc(100% - 40px);
                 margin: 0px 10px auto 5px;
-                span.author-name {
+                /*span.author-name {
                     font-size: 12px;
                     line-height: 19px;
                     font-weight: bold;
@@ -704,14 +704,53 @@ $default-color: rgb(218, 220, 225);
                         margin: auto auto auto 0px;
                     }
                     .pro-logo {
-                        background: #4bc7ff;
-                        color: #203864;
+                        -webkit-text-stroke: 0.5px black;
+                        background-image: linear-gradient(0.125turn, rgb(0 45 136), rgb(0 129 179), rgb(0 191 255));
+                        color: #ffffff;
+                        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
                         font-weight: 800;
                         font-size: 10px;
-                        border-radius: 4px;
+                        border-radius: 7px;
                         margin-left: 3px;
-                        padding: 0px 2px;
-                        line-height: 15px;
+                        padding: 0px 3px 1px 5px;
+                        line-height: 16px;
+                    }
+                }*/
+                span.author-name {
+                    cursor: default;
+                    font-size: 16px;
+                    line-height: 22px;
+                    color: white;
+                    font-weight: 600;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: normal;
+                    -webkit-line-clamp: 3;
+        
+                    mat-icon {
+                    vertical-align: middle;
+                    display: inline-block;
+                    margin: 3px 0px 5px 3px;
+                    color: #4bc7ff;
+                    height: 16px;
+                    width: unset;
+                    font-size: 16px;
+                    }
+                    .pro-logo {
+                    display: inline-block;
+                    vertical-align: middle;
+                    -webkit-text-stroke: 0.5px black;
+                    background-image: linear-gradient(0.125turn, #002d88, #0081b3, deepskyblue);
+                    color: #ffffff;
+                    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+                    font-weight: 800;
+                    font-size: 10px;
+                    border-radius: 7px;
+                    margin: 2px 0px 5px 3px;
+                    padding: 0px 3px 1px 5px;
+                    line-height: 16px;
                     }
                 }
                 span.author-description {
