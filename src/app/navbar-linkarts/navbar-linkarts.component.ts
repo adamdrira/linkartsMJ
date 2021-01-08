@@ -1679,7 +1679,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
   login(){
     const dialogRef = this.dialog.open(LoginComponent, {
-      data: {usage:"login"}
+      data: {usage:"login"},
+      panelClass:"loginComponentClass"
     });
   }
 

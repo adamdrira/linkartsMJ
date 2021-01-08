@@ -490,19 +490,21 @@
                       <a class="author-container" (click)="open_chat_2()" [routerLink]="get_chat_2(i)">
                         <div class="left-container">
                           <img [src]="list_of_friends_profile_pictures[i]">
-                          <div class="connection-state-container" *ngIf="connections_status_retrieved">
-                            <div *ngIf="list_of_friends_connected[i]">
-                              <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
-                            </div>
-                            <div *ngIf="!list_of_friends_connected[i]">
-                              <div style="width: 40px; font-size: 12px;"
-                                *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
-                                {{list_of_last_connection_dates[i]}} 
-                              </div>
-                            </div>
-                          </div>
-                        </div>
 
+
+                          <ng-container *ngIf="connections_status_retrieved">
+                            <div *ngIf="list_of_friends_connected[i]" class="connected">
+                            </div>
+
+                            <div *ngIf="!list_of_friends_connected[i]" class="last-connection">
+                              <span *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
+                                {{list_of_last_connection_dates[i]}} 
+                              </span>
+                            </div>
+                          </ng-container>
+
+
+                        </div>
                         <div class="right-container">
                           <span class="author-name">{{list_of_friends_names[i]}} </span>
                           <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
