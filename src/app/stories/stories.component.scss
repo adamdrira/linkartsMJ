@@ -1,3 +1,4 @@
+@import "../../unsecured-ng-deeps.scss";
 
 .stories-bar {
     position: relative;
@@ -89,7 +90,6 @@
     object-fit: cover;
     opacity: 0.5;
 }
-
 .invisible{
     visibility:hidden;
     pointer-events: none;
@@ -102,48 +102,70 @@
 
 .stories-container {
  
+    position: relative;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+
     .swiper-slide {
         display:flex;
     }
+    .swiper-slide:first-of-type {
+        margin-left:auto !important;
+    }
+    .swiper-slide:last-of-type {
+        margin-right:auto !important;
+    }
 
+
+    .button-prev-shadow {
+        position:absolute;
+        left:-1px;
+        top:0px;
+        z-index:10;
+        height:110px;
+        width: 50px;
+        background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff99, #ffffff66, #ffffff00);
+        //width:200px;
+        //background-image:linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
+    }
+    .button-next-shadow {
+        position:absolute;
+        right:-1px;
+        top:0px;
+        z-index:10;
+        height:110px;
+        width: 50px;
+        background-image: linear-gradient(to right, #ffffff00, #ffffff66, #ffffff99, #ffffff, #ffffff);
+        //width:200px;
+        //background-image:linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 90%) ;
+    }
+    .swiper-button-prev,
     .swiper-button-next {
-        position: absolute;
-        right: 0px;
+
+        outline: none !important;
+        color: #203864 !important;
         width: 40px;
         height: 40px;
-        padding-left: 5px;
-        color: #53627db8;
-        background: white;
         border-radius: 50px;
-        border: 2px solid #53627d9c;
-        outline:none;
-        opacity:unset !important;
-        transition:color 200ms;
+        position: absolute;
+        top: 48%;
+        transition: scale 100ms;
+
+        &:not(.swiper-button-disabled):active {
+            transform: scale(0.96);
+        }
+        &:after {
+            font-size: 22px;
+        }
     }
     .swiper-button-prev {
-        position: absolute;
-        left: 0px;
-        width: 40px;
-        height: 40px;
+        left: 5px;
         padding-right: 5px;
-        color: #53627db8;
-        background: white;
-        border-radius: 50px;
-        border: 2px solid #53627d9c;
-        outline:none;
-        opacity:unset !important;
-        transition:color 200ms;
     }
-
-    .swiper-button-next:hover,.swiper-button-prev:hover {
-        color: #53627dcf;
-    }
-    .swiper-button-prev:after, .swiper-button-next:after {
-        font-size: 30px !important;
-    }
-    .swiper-button-prev.swiper-button-disabled, .swiper-button-next.swiper-button-disabled {
-        color: #eeeeee !important;
-        border: 2px solid #53627d26;
+    .swiper-button-next {
+        right: 5px;
+        padding-left: 5px;
     }
 }
 
@@ -170,6 +192,9 @@
 .skeletons-container {
     display:flex;
     flex-wrap: wrap;
+    max-width:900px;
+    margin-left:auto;
+    margin-right:auto;
 }
 .skeletons-container .skeleton-story {
     width:200px;
@@ -211,31 +236,11 @@
 }
 
 
-.new {
-    background:linear-gradient(0.2turn, #2e8edc, #95ffff);
-}
-
-.old {
-    background:linear-gradient(0.2turn,#95a2b9, #dff7f7);
-    //border: 3px solid rgb(209, 224, 251) !important;
-}
-
-.shiny {
-    background-color: rgb(220, 220, 220);
-    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
-    background-size: 300% 100%;
-    animation: shine 2s infinite;
-  }
-  
-
-.shiny-new {
-    background-color: rgb(220, 220, 220);
-    background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
-    background-size: 300% 100%;
-    animation: shine 2s infinite;
-}
 @keyframes shine {
-0% {
-    background-position: right;
-}
+    0% {
+        background-position: right;    
+    }
+    /*100% {
+        background-position: left; it's the default value, no need to define it
+    }*/
 }

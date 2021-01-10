@@ -4,7 +4,8 @@
     <div class="skeleton-story"></div>
 </div>
 
-<div style="position:relative;" class="stories-container" *ngIf="users_retrieved && list_of_profile_pictures.length>=4" [@enterAnimation]>
+
+<div class="stories-container" *ngIf="users_retrieved" [@enterAnimation]>
     <div class="stories-bar">
         <div class="story-swiper-container">
             <div class="swiper-wrapper">
@@ -12,7 +13,7 @@
                 <div class="swiper-slide" *ngFor="let item of list_of_profile_pictures;let i=index">
                     <div class="story" (click)="watch_story(i)">
                         <img class="background-image" [src]="list_of_cover_pictures[i]" (load)="load_cover(i)" [ngClass]="{'invisible': !cover_is_loaded[i]}">
-                        <div class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i],'shiny': !pp_is_loaded[i] }">
+                        <div class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i] }">
                                 <img class="img" [src]="item"  (load)="load_pp(i)"  [ngClass]="{'invisible': !pp_is_loaded[i]}" >
                         </div>
                         <div class="author"*ngIf="i==0" >
@@ -30,26 +31,8 @@
         
     </div>
     <!-- Add Arrows -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
+    <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+    <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+    <div class="swiper-button-next" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+    <div class="swiper-button-prev" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
 </div>
-
-<div style="position:relative;" *ngIf="users_retrieved && 4>list_of_profile_pictures.length" [@enterAnimation]>
-    <div class="stories-bar-no-swiper">
-        <div class="swiper-slide-no-swiper" *ngFor="let item of list_of_profile_pictures;let i=index">
-            <div class="story" >
-                <img   (click)="watch_story(i)"class="background-image"  [src]="list_of_cover_pictures[i]"  (load)="load_cover(i)" [ngClass]="{'invisible': !cover_is_loaded[i]}">
-                <div   (click)="watch_story(i)" class="img-container" [ngClass]="{'new': list_of_state[i],'old':!list_of_state[i],'shiny': !pp_is_loaded[i] }">
-                        <img class="img" [src]="item" (load)="load_pp(i)"  [ngClass]="{'invisible': !pp_is_loaded[i]}">
-                </div>
-                <div  (click)="add_story()" class="author"*ngIf="i==0" >
-                      Ma story
-                </div>
-                <div (click)="watch_story(i)" class="author" *ngIf="i>0">
-                    {{list_of_author_names[i]}}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-

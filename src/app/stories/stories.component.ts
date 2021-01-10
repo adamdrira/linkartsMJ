@@ -95,22 +95,34 @@ export class StoriesComponent implements OnInit {
   list_index_debut_updated:any[];
 
 
-  
   initialize_swiper() {
     
+    this.cd.detectChanges();
+
     this.swiper = new Swiper('.story-swiper-container', {
       speed: 500,
       slidesPerView: 1,
       breakpoints: {
-        650: {
+        0: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          spaceBetween: 50,
+          simulateTouch: true,
+          allowTouchMove: true,
+        },
+        600: {
           slidesPerView: 2,
           slidesPerGroup: 2,
           spaceBetween: 20,
+          simulateTouch: true,
+          allowTouchMove: true,
         },
-        900: {
+        800: {
           slidesPerView: 3,
           slidesPerGroup: 3,
           spaceBetween: 20,
+          simulateTouch: false,
+          allowTouchMove: false,
         },
       },
       scrollbar: {
@@ -125,12 +137,14 @@ export class StoriesComponent implements OnInit {
         prevEl: '.swiper-button-prev',
       },
       keyboard: {
-        enabled: true,
+        enabled: false,
       },
       observer: true,
     });
     this.cd.detectChanges()
   }
+
+
 
   my_index=-1;
   ngOnInit() {
@@ -684,6 +698,7 @@ export class StoriesComponent implements OnInit {
       const dialogRef = this.dialog.open(PopupAddStoryComponent, {
         data: {user_id:this.user_id},
         autoFocus: false,
+        panelClass: 'popupAddStoryClass',
       });
 
      
@@ -694,11 +709,7 @@ export class StoriesComponent implements OnInit {
       console.log(this.user_id)
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { list_of_users: this.final_list_of_users, index_id_of_user: i, list_of_data:this.list_of_list_of_data,current_user:this.user_id},
-        width: '100vw',
-        height: '100vh',
-        maxWidth: 'unset',
-        maxHeight: 'unset',
-        panelClass: 'custom-dialog-container'
+        panelClass: 'popupStoriesClass'
       });
 
       dialogRef.afterClosed().subscribe(result => {
