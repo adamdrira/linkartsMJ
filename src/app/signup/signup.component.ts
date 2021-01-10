@@ -635,8 +635,7 @@ export class SignupComponent implements OnInit {
   validate_step() {
     console.log("validate step")
     console.log(this.step)
-    if(this.step==1 && this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Professionnels non artistes' 
-      || this.registerForm2.value.type_of_account=='Maison d\'édition' || this.registerForm2.value.type_of_account=='Artistes professionnels')){
+    if(this.step==1 && this.registerForm1.value.gender=='Groupe' &&  this.registerForm2.value.type_of_account=='Artistes professionnels'){
         console.log(this.registerForm2.value.siret)
         if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<14)){
           console.log("siret prob")

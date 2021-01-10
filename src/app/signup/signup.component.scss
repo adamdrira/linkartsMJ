@@ -634,7 +634,7 @@
 
   mat-dialog-container {
     max-height: 96vh;
-    overflow: scroll;
+    overflow: auto;
     padding:0px;
   }
 }
