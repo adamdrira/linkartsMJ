@@ -73,6 +73,16 @@ export class LoginComponent implements OnInit {
   display_error_group=false;
   wrong_email_reset_password=false;
   
+
+  motifs:string[] = ["J'ai créé un second compte","Problème d'utilisation","Trop de publicités","Prend trop de temps","J'ai seulement besoin d'une pause","Je ne trouve aucun compte à suivre","Autre chose"];
+  selected_motif = -1;
+  select_motif(i:number) {
+    this.selected_motif=i;
+    this.display_select_motif = false;
+  }
+  display_select_motif:boolean = false;
+  deletionForm: FormGroup;
+
   hide=true;
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
@@ -94,8 +104,18 @@ export class LoginComponent implements OnInit {
             Validators.maxLength(100),
           ]),
         ],
-      
-    });
+      });
+
+      this.deletionForm=this.formBuilder.group({
+        description:['', 
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(20),
+            Validators.maxLength(1000),
+            Validators.pattern(pattern("text_with_linebreaks")),
+          ]),
+        ],
+      });
   }
 
   // convenience getter for easy access to form fields
@@ -147,7 +167,9 @@ export class LoginComponent implements OnInit {
 
   
   @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.login();
+    if( !this.reset_password_menu && !this.delete_account ) {
+      this.login();
+    }
   }
   
   close_dialog(){
@@ -241,7 +263,7 @@ export class LoginComponent implements OnInit {
   /************************************* FOR ACCOUNT DELETION AND SUSPENSION  ***************************/
   /************************************* FOR ACCOUNT DELETION AND SUSPENSION  ***************************/
 
-  account_deletion(i){
+  account_deletion(i) {
     if(i==0){
       this.loading = true;
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
@@ -256,15 +278,26 @@ export class LoginComponent implements OnInit {
           this.display_wrong_data=true;
         }
       });
-      
     }
-    if(i==1 && this.usage!="suspend_account"){
+    else if(i==1 && this.usage!="suspend_account"){
+
+      if(this.selected_motif == -1) {
+        this.display_select_motif = true;
+        return;
+      }
+
       // ajouter choix de motifs à valider et à vérifier 
       this.loginForm.controls['username'].setValue(null);
       this.loginForm.controls['password'].setValue(null);
       this.step_deletion=2
     }
-    if(i==1 && this.usage=="suspend_account"){
+    else if(i==1 && this.usage=="suspend_account"){
+      
+      if(this.selected_motif == -1) {
+        this.display_select_motif = true;
+        return;
+      }
+
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
 
         if(data[0].found && data[0].user.id==this.data.id_user){
@@ -281,9 +314,14 @@ export class LoginComponent implements OnInit {
             this.loading=false
             this.display_wrong_data=true;
         }
-    });
+      });
     }
-    if(i==2){
+    else if(i==2){
+      if(this.deletionForm.valid) {
+        this.step_deletion=3;
+      }
+    }
+    else if(i==3){
       this.loading = true;
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
             if(data[0].found && data[0].user.id==this.data.id_user){
@@ -302,6 +340,5 @@ export class LoginComponent implements OnInit {
             }
         })
       }
+    }
   }
-
-}

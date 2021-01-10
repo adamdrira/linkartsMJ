@@ -108,149 +108,177 @@
 
     </ng-container>
 
-</div>
 
+    
+    <ng-container *ngIf="delete_account && step_deletion==0">
 
-
-
-
-
-<div class="popup-container" *ngIf="delete_account">
-    <button mat-button class="mat-icon-button position" (click)="close_dialog()" tabIndex="-1">
-        <mat-icon class="item-icon" >close</mat-icon>
-    </button>
-
-    <div class="popup-step" *ngIf="step_deletion==0">
-
-        <div class="back-and-logo">
-            <div class="logo" style="width:40px">
-                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
-            </div>
-        </div>
         <div class="step-name">
             <span>Authentification</span>
         </div>
-        <div class="step-form" [formGroup]="loginForm">
 
+        <div class="step-form" [formGroup]="loginForm">
             <div class="form-item">
-                <mat-form-field>
+                <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="username" autocomplete="off">
+                    <input matInput formControlName="username" autocomplete="off" type="search">
+                    <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
+                    </mat-error>
                 </mat-form-field>
             </div>
-            
+
             <div class="form-item">
-                <mat-form-field style="position:relative">
+                <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
                     <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
-                    <div class="error" *ngIf="display_wrong_data">Le mot de passe ou l'email sont incorrectes
+
+                    <div class="remove-red-eye" (click)="change_password_type()"
+                    [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
-                    <div class="error" *ngIf="display_old_password">Ce mot de passe n'est plus d'actualité
-                    </div>
-                    <div class="error" *ngIf="display_error_group">La création de ce groupe n'a pas encore été validée par tous ses membres
-                    </div>
-                    
-                    
-                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
-                        <mat-icon class="item-icon" style="color: #162644;     font-size: 20px;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
-                    </div>
+
                 </mat-form-field>
             </div>
-
         </div>
 
-
-        <div class="step-validation">
-
-            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="account_deletion(0);">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                <span *ngIf="!loading" style=" font-size: 16px;">S'authentifier</span>
-            </button>
-
-        </div>
-
-
-    </div>
-
-
-    <div class="popup-step" *ngIf="step_deletion==1">
-
-        <div class="back-and-logo">
-            <div class="logo" style="width:40px">
-                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
+        <button [disabled]="loading" class="submit-button" (click)="account_deletion(0);">
+            <span *ngIf="!loading">S'authentifier</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
             </div>
-        </div>
-        <div class="step-name">
-            <span *ngIf="usage=='delete_account'">Veuillez selectionner un motif de suppression</span>
-            <span *ngIf="usage!='delete_account'">Veuillez selectionner un motif de suspension</span>
+        </button>
+
+        <div class="loading-span" *ngIf="loading">
+            <span>Authentification en cours</span>
         </div>
         
-
-        <div class="step-validation">
-
-            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="account_deletion(1);">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                <span *ngIf="!loading && usage=='delete_account'" style=" font-size: 16px;">Suivant</span>
-                <span *ngIf="!loading && usage!='delete_account'" style=" font-size: 16px;">Valider et suspendre mon compte</span>
-            </button>
-
+        <div class="error">
+            <span *ngIf="display_wrong_data" [@enterAnimation]>Le mot de passe ou l'e-mail sont incorrects</span>
+            <span *ngIf="display_old_password" [@enterAnimation]>Ce mot de passe n'est plus d'actualité</span>
+            <span *ngIf="display_error_group" [@enterAnimation]>La création de ce groupe n'a pas encore été validée par tous ses membres</span>
+            <span *ngIf="display_email_not_checked" [@enterAnimation]>La création du compte n'a toujours pas été validée depuis votre boîte mail</span>
         </div>
 
+    </ng-container>
 
-    </div>
- 
 
     
-    <div class="popup-step" *ngIf="step_deletion==2">
+    <ng-container *ngIf="delete_account && step_deletion==1">
 
-        <div class="back-and-logo">
-            <div class="logo" style="width:40px">
-                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
-            </div>
-        </div>
         <div class="step-name">
-            <span>Veuillez vous authentifier une dernière fois</span>
+            <span *ngIf="usage=='delete_account'">Motif de suppression</span>
+            <span *ngIf="usage!='delete_account'">Motif de suspension</span>
         </div>
-        <div class="step-form" [formGroup]="loginForm">
 
-            <div class="form-item">
-                <mat-form-field>
-                    <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="username" autocomplete="off">
+        <!--motifs de suspension-->
+        <!--motifs de suppression-->
+        <button class="motif" (click)="select_motif(i);" *ngFor="let item of motifs; let i=index" [ngClass]="{'opened': selected_motif==i}">
+            <span>{{item}}</span>
+        </button>
+
+        <button [disabled]="loading" class="submit-button" (click)="account_deletion(1);">
+            <span *ngIf="!loading && usage=='delete_account'">Suivant</span>
+            <span *ngIf="!loading && usage!='delete_account'">Suspendre mon compte</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+        </button>
+
+        <div class="error">
+            <span *ngIf="display_select_motif" [@enterAnimation]>Veuillez sélectionner un motif</span>
+        </div>
+        
+    </ng-container>
+
+
+    <ng-container *ngIf="delete_account && step_deletion==2">
+
+        <div class="step-name">
+            <span>Détails supplémentaires</span>
+        </div>
+        
+        <div class="step-form" [formGroup]="deletionForm">
+
+            <div class="form-item" style="height:unset !important;">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Détails</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="1000" autocomplete="off"></textarea>
+                    
+                    <mat-error *ngIf="deletionForm.controls['description'].invalid">Veuillez fournir un commentaire valide (minimum : 20 caractères)
+                    </mat-error>
+                    <div class="length-indicator">{{deletionForm.controls['description'].value?.length || 0}}/1000</div>
                 </mat-form-field>
             </div>
-            
+        </div>
+
+        <button [disabled]="loading" class="submit-button" (click)="account_deletion(2);">
+            <span *ngIf="!loading">Suivant</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+        </button>
+
+        <div class="loading-span" *ngIf="loading">
+            <span>Suppression en cours</span>
+        </div>
+        
+    </ng-container>
+
+    <ng-container *ngIf="delete_account && step_deletion==3">
+
+        <div class="step-name">
+            <span>Authentification finale</span>
+        </div>
+
+        <div class="step-form" [formGroup]="loginForm">
             <div class="form-item">
-                <mat-form-field style="position:relative">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>E-mail</mat-label>
+                    <input matInput formControlName="username" autocomplete="off" type="search">
+                    <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
                     <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
-                    <div class="error" *ngIf="display_wrong_data">Le mot de passe ou l'email sont incorrectes
+
+                    <div class="remove-red-eye" (click)="change_password_type()"
+                    [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
-                    <div class="error" *ngIf="display_old_password">Ce mot de passe n'est plus d'actualité
-                    </div>
-                    <div class="error" *ngIf="display_error_group">La création de ce groupe n'a pas encore été validée par tous ses membres
-                    </div>
-                    
-                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;">
-                        <mat-icon class="item-icon" style="color: #162644;     font-size: 20px;"  (click)="change_password_type()" >remove_red_eye</mat-icon>
-                    </div>
+
                 </mat-form-field>
             </div>
-
         </div>
 
+        <button [disabled]="loading" class="submit-button" (click)="account_deletion(2);">
+            <span *ngIf="!loading">Supprimer mon compte</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+        </button>
 
-        <div class="step-validation">
-
-            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="account_deletion(2);">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                <span *ngIf="!loading" style=" font-size: 16px;">Valider et supprimer mon compte</span>
-            </button>
-
+        <div class="loading-span" *ngIf="loading">
+            <span>Suppression en cours</span>
         </div>
-
-
-    </div>
-
+        
+        <div class="error">
+            <span *ngIf="display_wrong_data" [@enterAnimation]>Le mot de passe ou l'e-mail sont incorrects</span>
+            <span *ngIf="display_old_password" [@enterAnimation]>Ce mot de passe n'est plus d'actualité</span>
+            <span *ngIf="display_error_group" [@enterAnimation]>La création de ce groupe n'a pas encore été validée par tous ses membres</span>
+            <span *ngIf="display_email_not_checked" [@enterAnimation]>La création du compte n'a toujours pas été validée depuis votre boîte mail</span>
+        </div>
+        
+    </ng-container>
 
 </div>

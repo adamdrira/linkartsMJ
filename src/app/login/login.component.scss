@@ -26,6 +26,10 @@
 .popup-login {
 
   position: relative;
+  padding:24px 24px 24px 24px;
+  @media (max-width: 400px) {
+    padding:24px 5px 24px 5px;
+  }
   
   .step-name {
     display: flex;
@@ -45,6 +49,51 @@
     }
   }
   
+  button.motif {
+    width: calc(100% - 30px);
+    display: flex;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 6px 6px;
+    border-radius: 40px;
+    border: 1px solid #203864;
+    background-color: white;
+    outline: none;
+    transition: transform 200ms;
+
+    span {
+      margin:auto auto auto 15px;
+      font-weight: 600;
+      color: #203864;
+    }
+    mat-icon {
+      margin:auto 5px auto auto;
+      width: unset;
+      height: unset;
+      font-size: 25px;
+      color: #203864;
+    }
+
+
+    &:hover {
+      background: #eeeff3 !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+    }
+    &:active {
+      background: #e2e5eb !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+      transform: scale(0.98);
+    }
+    &.opened {
+      background: #e2e5eb !important;
+      box-shadow: 0px 0px 0px 1px #203864 !important;
+    }
+    transition:transform 200ms;
+  }
+
   .step-form {
     font-size: 14px;
     overflow-y:auto;
@@ -79,6 +128,15 @@
           color: #203864;     
           font-size: 20px;
         }
+      }
+
+      .length-indicator {
+        position: absolute;
+        right: 10px;
+        color: grey;
+        font-size: 13px;
+        font-weight: 400;
+        top: 5px;
       }
     }
 
@@ -343,21 +401,12 @@
 
 
 ::ng-deep .loginComponentClass {
-  width: 80vw !important;
-  max-width: 480px !important;
-}
+  width: 95vw !important;
+  max-width: 580px !important;
 
-
-.step0 {
-  left:0px;
+  mat-dialog-container {
+    max-height: 96vh;
+    overflow: auto;
+    padding:0px;
+  }
 }
-.step1 {
-  left:25%;
-}
-.step2 {
-  left:50%;
-}
-.step3 {
-  left:75%;
-}
-
