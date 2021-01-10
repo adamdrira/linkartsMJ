@@ -17,6 +17,7 @@ import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPT
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import * as moment from 'moment'; 
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-signup',
@@ -33,6 +34,16 @@ import * as moment from 'moment';
     },
     {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
   ],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('150ms', style({opacity: 1}))
+        ])
+      ],
+    )
+  ]
 })
 
 
@@ -290,7 +301,7 @@ export class SignupComponent implements OnInit {
       link_title:['', 
         Validators.compose([
           Validators.minLength(3),
-          Validators.maxLength(30),
+          Validators.maxLength(15),
           Validators.pattern(pattern("text")),
         ]),
       ],
@@ -462,10 +473,13 @@ export class SignupComponent implements OnInit {
       this.registerForm6.controls['link_title'].setValue("");
     }
     else{
+      console.log("###########################");
+      console.log( this.registerForm4.controls );
+
       if( this.registerForm4.controls['link_title'].invalid || this.registerForm4.controls['link'].invalid ) {
         return;
       }
-      if ( this.registerForm4.controls['link_title'].value == "" || this.registerForm4.controls['link'].value == "" ) {
+      if ( !this.registerForm4.controls['link_title'].value  || !this.registerForm4.controls['link'].value ) {
         return;
       }
       this.links_titles.push(this.registerForm4.value.link_title);
@@ -1180,7 +1194,7 @@ export class SignupComponent implements OnInit {
     //form3
     this.user.nickname = this.registerForm3.value.nickname;
     this.user.primary_description = this.registerForm3.value.primary_description;
-    this.user.primary_description_extended = this.registerForm3.value.primary_description_extended;
+    this.user.primary_description_extended = this.registerForm3.value.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
 
     this.loading_signup=true;
 

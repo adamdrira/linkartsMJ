@@ -10,12 +10,23 @@ import { SignupComponent } from '../signup/signup.component';
 import { Location } from '@angular/common';
 import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],  
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('150ms', style({opacity: 1}))
+        ])
+      ],
+    )
+  ]
 })
 export class LoginComponent implements OnInit {
   
@@ -61,22 +72,28 @@ export class LoginComponent implements OnInit {
   display_old_password=false;
   display_error_group=false;
   wrong_email_reset_password=false;
-  logo_is_loaded=false;
+  
   hide=true;
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
-          username: ['', Validators.required],
+          username: ['', 
+            Validators.compose([
+              Validators.required,
+              Validators.pattern(pattern("mail")),
+              Validators.maxLength(100),
+            ]),
+          ],
           password: ['', Validators.required]
       });
 
       this.ResetPasswordForm=this.formBuilder.group({
         mail_recuperation: ['', 
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(pattern("mail")),
-          Validators.maxLength(100),
-        ]),
-      ],
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(pattern("mail")),
+            Validators.maxLength(100),
+          ]),
+        ],
       
     });
   }
@@ -123,11 +140,9 @@ export class LoginComponent implements OnInit {
 
   signup() {
     this.dialog.closeAll();
-    const dialogRef = this.dialog.open(SignupComponent, {});
-  }
-
-  logo_loaded(){
-    this.logo_is_loaded=true;
+    const dialogRef = this.dialog.open(SignupComponent, {
+      panelClass:"signupComponentClass",
+    });
   }
 
   
