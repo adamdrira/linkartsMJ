@@ -89,7 +89,7 @@ export class StoriesComponent implements OnInit {
   list_of_state=[]; // true if there are new stories to watch
   list_of_number_of_views=[];
   list_of_state_true_length:number=0;
-  do_I_have_stories=true; // true si l'utilisateur a de nouvelles stories
+  do_I_have_stories=false; // true si l'utilisateur a de nouvelles stories
   
 
   list_index_debut_updated:any[];
@@ -196,6 +196,9 @@ export class StoriesComponent implements OnInit {
         // ajout des boolean false et true si toutes les stories ont étaient vues
         if(r[0].list_of_stories_s[k].length>0){
           compt_found_stories++;
+          if(r[0].list_of_users[k]==this.user_id){
+            this.do_I_have_stories=true;
+          }
           console.log(this.list_of_users[k])
           this.list_of_number_of_views[k]=r[0].list_of_number_of_views[k]
           this.list_of_state[k]=r[0].list_of_states[k];
@@ -208,6 +211,7 @@ export class StoriesComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_pictures_by_ids[this.list_of_users[k]]=SafeURL;
             compteur_pp_rerieved++;
+            console.log(compteur_pp_rerieved)
             console.log(compt_found_stories)
             if(compteur_pp_rerieved==compt_found_stories){
               this.sort_list_of_profile_pictures();
@@ -267,6 +271,7 @@ export class StoriesComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_profile_pictures[0]=SafeURL;
+              console.log(this.list_of_profile_pictures)
               pp_found=true;
               //ready(this)
             });
@@ -275,6 +280,7 @@ export class StoriesComponent implements OnInit {
               let url = (window.URL) ? window.URL.createObjectURL(v) : (window as any).webkitURL.createObjectURL(v);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               this.list_of_cover_pictures[0]=SafeURL;
+              console.log(this.list_of_cover_pictures)
               cover_found=true;
               //ready(this)
             });
@@ -621,10 +627,12 @@ export class StoriesComponent implements OnInit {
   sort_list_of_state(THIS){
     THIS.can_sort_list_of_profile_pictures=true;
     THIS.can_sort_list_of_covers=true;
-    if(THIS.list_of_pp_sorted){
+    console.log(THIS.sort_pp_tried)
+    console.log(THIS.sort_covers_tried)
+    if(THIS.sort_pp_tried){
       THIS.sort_list_of_profile_pictures()
     }
-    if(THIS.list_of_covers_sorted){
+    if(THIS.sort_covers_tried){
       THIS.sort_list_of_covers()
     }
     console.log("third sorting")
@@ -673,16 +681,30 @@ export class StoriesComponent implements OnInit {
   can_sort_list_of_profile_pictures=false;
   list_of_pictures_by_ids={};
   list_of_covers_by_ids={};
+  sort_pp_tried=false;
+  sort_covers_tried=false;
   sort_list_of_profile_pictures(){
+    console.log("ry sort pp")
     if(this.can_sort_list_of_profile_pictures){
       console.log("sort_listpp")
       console.log( this.list_of_pictures_by_ids)
       let length=this.final_list_of_users.length;
-      for(let i=1;i<length;i++){
+      if(this.do_I_have_stories){
+        for(let i=0;i<length;i++){
           this.list_of_profile_pictures[i]=this.list_of_pictures_by_ids[this.final_list_of_users[i]];
+        }
       }
+      else{
+        for(let i=1;i<length;i++){
+          this.list_of_profile_pictures[i]=this.list_of_pictures_by_ids[this.final_list_of_users[i]];
+        }
+      }
+      
       console.log(this.list_of_profile_pictures)
       this.list_of_pp_sorted=true;
+    }
+    else{
+      this.sort_pp_tried=true;
     }
     
   }
@@ -692,11 +714,22 @@ export class StoriesComponent implements OnInit {
       console.log("sort_list covers")
       console.log( this.list_of_covers_by_ids)
       let length=this.final_list_of_users.length;
-      for(let i=1;i<length;i++){
+      if(this.do_I_have_stories){
+        for(let i=0;i<length;i++){
           this.list_of_cover_pictures[i]=this.list_of_covers_by_ids[this.final_list_of_users[i]];
+        }
       }
+      else{
+        for(let i=1;i<length;i++){
+          this.list_of_cover_pictures[i]=this.list_of_covers_by_ids[this.final_list_of_users[i]];
+        }
+      }
+     
       console.log(this.list_of_cover_pictures)
       this.list_of_covers_sorted=true;
+    }
+    else{
+      this.sort_covers_tried=true;
     }
     
   }

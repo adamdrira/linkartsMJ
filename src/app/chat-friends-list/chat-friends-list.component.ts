@@ -634,6 +634,9 @@ export class ChatFriendsListComponent implements OnInit {
       console.log(this.list_of_friends_ids)
       console.log(this.list_of_friends_profile_pictures)
       this.friend_picture=this.list_of_friends_profile_pictures[ind];
+     
+    }
+    else{
       this.list_of_pp_sorted=true;
     }
     
