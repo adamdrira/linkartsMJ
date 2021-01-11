@@ -40,6 +40,8 @@ $default-color: rgb(218,220,225);
             width: unset;
             color: white;
             font-size: 24px;
+            max-width:24px ;
+          overflow: hidden;
         }
     }
 
@@ -87,6 +89,8 @@ $default-color: rgb(218,220,225);
                         height: 20px;
                         width: 20px;
                         font-size: 22px;
+                        max-width:22px ;
+          overflow: hidden;
                         margin: auto 10px auto auto;
                     }
                     span {
@@ -114,6 +118,8 @@ $default-color: rgb(218,220,225);
                         height: unset !important;
                         width: unset !important;
                         font-size: 20px;
+                        max-width:20px ;
+          overflow: hidden;
                         margin: auto 0px auto 0px;
                         cursor: default;
                         color: $default-color;
