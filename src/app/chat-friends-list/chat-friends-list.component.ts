@@ -602,33 +602,41 @@ export class ChatFriendsListComponent implements OnInit {
         }
       }
     }
-    //this.sort_list_of_profile_pictures()
+    this.can_sort_list_of_profile_pictures=true;
+    if(this.list_of_pp_sorted){
+      this.sort_list_of_profile_pictures()
+    }
+    
     this.get_connections_status();
     this.list_of_friends_retrieved=true;
     this.active_section_managment();
   }
 
   list_of_pp_sorted=false;
+  can_sort_list_of_profile_pictures=false;
   sort_list_of_profile_pictures(){
-    console.log("sort_listpp")
-    console.log( this.list_of_pictures_by_ids_users)
-    console.log(this.list_of_pictures_by_ids_groups)
-    let length=this.list_of_friends_ids.length;
-    let ind = this.list_of_friends_ids.indexOf(this.friend_id);
-    console.log(ind)
-    for(let i=0;i<length;i++){
-      if(this.list_of_friends_types[i]=='user'){
-        this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_users[this.list_of_friends_ids[i]]
+    if(this.can_sort_list_of_profile_pictures){
+      console.log("sort_listpp")
+      console.log( this.list_of_pictures_by_ids_users)
+      console.log(this.list_of_pictures_by_ids_groups)
+      let length=this.list_of_friends_ids.length;
+      let ind = this.list_of_friends_ids.indexOf(this.friend_id);
+      console.log(ind)
+      for(let i=0;i<length;i++){
+        if(this.list_of_friends_types[i]=='user'){
+          this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_users[this.list_of_friends_ids[i]]
+        }
+        else{
+          this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_groups[this.list_of_friends_ids[i]]
+        }
+       
       }
-      else{
-        this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_groups[this.list_of_friends_ids[i]]
-      }
-     
+      console.log(this.list_of_friends_ids)
+      console.log(this.list_of_friends_profile_pictures)
+      this.friend_picture=this.list_of_friends_profile_pictures[ind];
+      this.list_of_pp_sorted=true;
     }
-    console.log(this.list_of_friends_ids)
-    console.log(this.list_of_friends_profile_pictures)
-    this.friend_picture=this.list_of_friends_profile_pictures[ind];
-    this.list_of_pp_sorted=true;
+    
   }
 
   active_section_managment(){
