@@ -464,15 +464,6 @@
             <div class="step-name">
                 <span>Localisation du groupe</span>
             </div>
-            <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm6.controls['city'].invalid ">Veuillez faire une saisie valide
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
-                </mat-form-field>
-            </div>
             
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
@@ -486,6 +477,15 @@
                 </mat-form-field>
             </div>
 
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Ville</mat-label>
+                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
+                    <mat-error *ngIf="registerForm6.controls['city'].invalid ">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>
 
             <div class="form-title" [@enterAnimation]>
                 <span *ngIf="3>links_titles.length">Ajouter un lien</span>
@@ -550,6 +550,16 @@
 
         </div>
         
+        
+        <div class="form-item height-unset">
+            <div class="cgu-container">
+                <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
+                    J'accepte les conditions d'utilisation
+                </mat-slide-toggle>
+                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+            </div>
+        </div>
+
         <button [disabled]="loading_signup" class="submit-button" (click)="register();">
             <span *ngIf="!loading_signup">M'inscrire</span>
             <div class="loading-dots" *ngIf="loading_signup">
@@ -557,6 +567,10 @@
             </div>
         </button>
 
+        <div class="error">
+            <span *ngIf="display_cgu_error" [@enterAnimation]>Veuillez accepter les conditions d'utilisation</span>
+        </div>
+        
         <div class="loading-span" *ngIf="loading_signup">
             <span>Inscription en cours</span>
         </div>
@@ -604,16 +618,6 @@
             </div>
 
             <div class="form-item">
-                <mat-form-field floatLabel='never'>
-                    <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
-                    <mat-error *ngIf="registerForm4.controls['city'].invalid ">Veuillez faire une saisie valide
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
-                </mat-form-field>
-            </div>
-            
-            <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
                     <mat-label>Pays</mat-label>
                     <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectClass">
@@ -625,6 +629,15 @@
                 </mat-form-field>
             </div>
 
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Ville</mat-label>
+                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
+                    <mat-error *ngIf="registerForm4.controls['city'].invalid ">Veuillez faire une saisie valide
+                    </mat-error>
+                    <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
+                </mat-form-field>
+            </div>
 
             <div class="form-title" [@enterAnimation]>
                 <span *ngIf="3>links_titles.length">Ajouter un lien</span>
@@ -689,12 +702,26 @@
 
         </div>
 
+        
+        <div class="form-item height-unset">
+            <div class="cgu-container">
+                <mat-slide-toggle [checked]="cgu_accepted" (change)="setCgu( $event )" style="font-weight:bold;">
+                    J'accepte les conditions d'utilisation
+                </mat-slide-toggle>
+                <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+            </div>
+        </div>
+
         <button [disabled]="loading_signup" class="submit-button" (click)="register();">
             <span *ngIf="!loading_signup">M'inscrire</span>
             <div class="loading-dots" *ngIf="loading_signup">
                 &nbsp; <span>.</span><span>.</span><span>.</span>
             </div>
         </button>
+
+        <div class="error">
+            <span *ngIf="display_cgu_error" [@enterAnimation]>Veuillez accepter les conditions d'utilisation</span>
+        </div>
 
         <div class="loading-span" *ngIf="loading_signup">
             <span>Inscription en cours</span>

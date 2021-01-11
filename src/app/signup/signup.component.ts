@@ -12,12 +12,13 @@ import { MustMatch } from '../helpers/must-match.validator';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import * as moment from 'moment'; 
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 @Component({
   selector: 'app-signup',
@@ -63,50 +64,70 @@ export class SignupComponent implements OnInit {
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<SignupComponent,any>,
       private _adapter: DateAdapter<any>,
+      public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       dialogRef.disableClose = true;
       
+  }
+
+  registerForm1: FormGroup;
+  registerForm2: FormGroup;
+  registerForm3: FormGroup;
+  registerForm4: FormGroup;
+  registerForm5: FormGroup;
+  registerForm6: FormGroup;
+  registerForm7: FormGroup;
+  
+
+  //LinksGroup:FormGroup;
+  links_submitted=false;
+  user = new User();
+  links_titles:any[]=[];
+  links:any[]=[];
+  hide=true; // password
+  hide2=true;
+
+  logo_is_loaded=false;
+
+  display_no_pseudos_found=false;
+  research_member_loading=false;
+  list_of_ids=[];
+  list_of_birthdays=[];
+  birthday_found:string;
+  list_of_pseudos=[];
+  list_of_profile_pictures=[];
+  list_of_pp_found=[];
+
+  pseudo_found='';
+  id_found:number;
+  profile_picture_found:SafeUrl;
+  compteur_research=0;
+  pp_found_loaded=false;
+  display_max_length_members=false;
+  display_need_members=false;
+  display_need_information=false;
+
+  step=0;
+  maxDate: moment.Moment;
+
+  
+  cgu_accepted:boolean = false;
+  display_cgu_error:boolean = false;
+
+  setCgu(e){
+    if(e.checked){
+      this.cgu_accepted = true;
+    }else{
+    this.cgu_accepted = false;
     }
+  }
+  read_conditions() {
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, text:"Conditions en cours d'écriture"},
+      panelClass: 'dialogRefClassText'
+    });
+  }
 
-    registerForm1: FormGroup;
-    registerForm2: FormGroup;
-    registerForm3: FormGroup;
-    registerForm4: FormGroup;
-    registerForm5: FormGroup;
-    registerForm6: FormGroup;
-    registerForm7: FormGroup;
-    
-  
-    //LinksGroup:FormGroup;
-    links_submitted=false;
-    user = new User();
-    links_titles:any[]=[];
-    links:any[]=[];
-    hide=true; // password
-    hide2=true;
-  
-    logo_is_loaded=false;
-
-    display_no_pseudos_found=false;
-    research_member_loading=false;
-    list_of_ids=[];
-    list_of_birthdays=[];
-    birthday_found:string;
-    list_of_pseudos=[];
-    list_of_profile_pictures=[];
-    list_of_pp_found=[];
-
-    pseudo_found='';
-    id_found:number;
-    profile_picture_found:SafeUrl;
-    compteur_research=0;
-    pp_found_loaded=false;
-    display_max_length_members=false;
-    display_need_members=false;
-    display_need_information=false;
-
-    step=0;
-    maxDate: moment.Moment;
   
   ngOnInit() {
     const currentYear = moment().year();
@@ -630,18 +651,26 @@ export class SignupComponent implements OnInit {
    
   }
 
-
-  
   validate_step() {
     console.log("validate step")
     console.log(this.step)
-    if(this.step==1 && this.registerForm1.value.gender=='Groupe' &&  this.registerForm2.value.type_of_account=='Artistes professionnels'){
+    console.log(this.registerForm2)
+    if(this.step==1 && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
         console.log(this.registerForm2.value.siret)
         if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<14)){
           console.log("siret prob")
           this.display_need_information=true;
           this.display_email_and_password_found_1=false;
           return;
+        }
+        else if((this.registerForm2.valid && this.registerForm1.value.gender!='Groupe') || (this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID')){
+          console.log(this.registerForm2);
+          console.log("cas 5")
+          this.display_need_members=false;
+          this.display_need_information=false;
+          this.display_email_and_password_found_1=false;
+          this.step ++;
+          this.cd.detectChanges();
         }
     }
     else if( (this.step == 0 && this.registerForm1.valid && !this.display_email_and_password_error) || (this.step == 1 && this.registerForm2.valid)
@@ -661,7 +690,7 @@ export class SignupComponent implements OnInit {
         }
         
       }
-      
+      this.display_email_and_password_found_1=false;
       this.display_need_members=false;
       this.display_need_information=false;
       this.step ++;
@@ -681,7 +710,7 @@ export class SignupComponent implements OnInit {
       console.log("cas 4")
       this.display_need_members=true;
     }
-    else if(this.step==1 && this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID'){
+    else if(this.step==1 &&  this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID'){
       console.log(this.registerForm2);
       console.log("cas 5")
       this.display_need_members=false;
@@ -716,7 +745,6 @@ export class SignupComponent implements OnInit {
 
 
   }
-
 
 
   step_back() {
@@ -1127,6 +1155,10 @@ export class SignupComponent implements OnInit {
     console.log("register")
     
 
+    if( !this.cgu_accepted ) {
+      this.display_cgu_error = true;
+      return;
+    }
   
     if(this.loading_signup){
       return
