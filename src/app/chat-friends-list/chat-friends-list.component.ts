@@ -568,6 +568,10 @@ export class ChatFriendsListComponent implements OnInit {
       }
       else{
         this.friend_type='user';
+        this.can_sort_list_of_profile_pictures=true;
+        if(this.list_of_pp_sorted){
+          this.sort_list_of_profile_pictures()
+        }
         this.get_connections_status();
         this.list_of_friends_retrieved=true;
         this.active_section_managment();
