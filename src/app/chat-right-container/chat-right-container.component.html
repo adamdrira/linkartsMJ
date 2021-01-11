@@ -62,7 +62,10 @@
                 </div>
                 <mat-list *ngIf="list_of_pictures_retrieved">
                   <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
-                    <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i) [ngClass]="{'invisible':!list_of_images_loaded[i]}" >
+                    <div (click)="show_images(i)">
+                      <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i) [ngClass]="{'invisible':!list_of_images_loaded[i]}"  >
+                    </div>
+                   
                     <div mat-line>
                       <a [href]="list_of_pictures_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
                     </div>

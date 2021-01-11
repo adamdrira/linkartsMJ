@@ -5,8 +5,8 @@
 
         <div class="selector">
             <div class="author-container">
-                <div *ngIf="profile_picture_retrieved" class="left-container">
-                    <img [src]="profile_picture">
+                <div *ngIf="profile_picture_retrieved" class="left-container" [ngClass]="{'shiny': !my_pp_loaded }">
+                    <img [src]="profile_picture" (load)="load_my_pp()" [ngClass]="{'invisible': !my_pp_loaded }">
                 </div>
             </div>
 
@@ -133,8 +133,8 @@
 
                     <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened': list_of_friends_ids[i]== friend_id && list_of_friends_types[i]==friend_type}">
                         <div class="author-container" (click)="open_chat(i)">
-                            <div class="left-container">
-                                <img [src]="list_of_friends_profile_pictures[i]">
+                            <div class="left-container" [ngClass]="{'shiny': !friend_pp_loaded[i] }">
+                                <img [src]="list_of_friends_profile_pictures[i]" (load)="load_friend_pp(i)" [ngClass]="{'invisible': !friend_pp_loaded[i] }">
                                 <div class="connection-state-container" *ngIf="connections_status_retrieved">
                                     <div *ngIf="list_of_friends_connected[i]">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
@@ -393,8 +393,8 @@
             <ng-container *ngIf="list_of_spams_retrieved && get_spams && !get_propositions">
                     <div *ngFor="let item of list_of_spams_ids.slice(0,number_of_spams_to_show); let i=index" class="subscriber-card">
                         <div class="author-container" (click)="open_chat_spam(i)">
-                            <div class="left-container">
-                                <img [src]="list_of_spams_profile_pictures[i]">
+                            <div class="left-container" [ngClass]="{'shiny': !spam_pp_loaded[i] }">
+                                <img [src]="list_of_spams_profile_pictures[i]" (load)="load_spam_pp(i)" [ngClass]="{'invisible': !spam_pp_loaded[i] }">
                             </div>
                                 <div class="right-container">
                                     <span class="author-name">{{list_of_spams_names[i]}} </span>
@@ -507,8 +507,8 @@
                         <ng-container *ngIf="opened_category_for_research==0 || select_group_chat_contacts">
                             <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card"  [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_contacts_ids[i])}">
                                 <div class="author-container" (click)="open_new_contact_chat(1,i)">
-                                    <div class="left-container">
-                                        <img [src]="list_of_contacts_pictures[i]">
+                                    <div class="left-container"   [ngClass]="{'shiny': !contact_pp_loaded[i] }">
+                                        <img [src]="list_of_contacts_pictures[i]" (load)="load_contact_pp(i)" [ngClass]="{'invisible': !contact_pp_loaded[i] }">
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{list_of_contacts_names[i]}} </span>
@@ -539,8 +539,8 @@
                         <ng-container *ngIf="opened_category_for_research==1 && display_first_propositions_group">
                             <div *ngFor="let item of list_of_contacts_groups_names; let i=index" class="subscriber-card" >
                                 <div class="author-container" (click)="open_new_contact_chat(6,i)">
-                                    <div class="left-container">
-                                        <img [src]="list_of_contacts_groups_pictures[i]">
+                                    <div class="left-container" [ngClass]="{'shiny': !contact_group_pp_loaded[i] }">
+                                        <img [src]="list_of_contacts_groups_pictures[i]" (load)="load_contact_group_pp(i)" [ngClass]="{'invisible': !contact_group_pp_loaded[i] }">
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{list_of_contacts_groups_names[i]}} </span>
@@ -580,8 +580,8 @@
                             <div *ngIf="display_other_contacts "> 
                                 <div *ngFor="let item of list_of_related_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_related_contacts_ids[i])}">
                                     <div class="author-container" (click)="open_new_contact_chat(3,i)">
-                                        <div class="left-container">
-                                            <img [src]="list_of_related_contacts_pictures[i]">
+                                        <div class="left-container" [ngClass]="{'shiny': !related_contact_pp_loaded[i] }">
+                                            <img [src]="list_of_related_contacts_pictures[i]" (load)="load_related_contact_pp(i)" [ngClass]="{'invisible': !related_contact_pp_loaded[i] }">
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
@@ -602,8 +602,8 @@
                                 <ng-container *ngIf="!select_group_chat_contacts">
                                     <div *ngFor="let item of list_of_other_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card">
                                         <div class="author-container" (click)="open_new_contact_chat(4,i)">
-                                            <div class="left-container">
-                                                <img [src]="list_of_other_contacts_pictures[i]">
+                                            <div class="left-container" [ngClass]="{'shiny': !related_other_pp_loaded[i] }">
+                                                <img [src]="list_of_other_contacts_pictures[i]" (load)="load_other_contact_pp(i)" [ngClass]="{'invisible': !related_other_pp_loaded[i] }">
                                             </div>
                                             <div class="right-container">
                                                 <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
@@ -622,8 +622,8 @@
                             <div *ngIf="!display_other_contacts && display_all_searching_proppositions"> 
                                 <div *ngFor="let item of list_of_all_contacts_names; let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_all_contacts_ids[i])}">
                                     <div class="author-container" (click)="open_new_contact_chat(5,i)">
-                                        <div class="left-container">
-                                            <img [src]="list_of_all_contacts_pictures[i]">
+                                        <div class="left-container" [ngClass]="{'shiny': !all_contacts_loaded[i] }">
+                                            <img [src]="list_of_all_contacts_pictures[i]" (load)="load_all_contacts_pp(i)" [ngClass]="{'invisible': !all_contacts_loaded[i] }">
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{list_of_all_contacts_names[i]}} </span>
@@ -656,8 +656,8 @@
                         <ng-container *ngIf="opened_category_for_research==1 && display_propositions_groups">
                             <div *ngFor="let item of list_of_propositions_groups_names.slice(0,number_of_groups_to_show); let i=index" class="subscriber-card" >
                                 <div class="author-container" (click)="open_new_contact_chat(7,i)">
-                                    <div class="left-container">
-                                        <img [src]="list_of_propositions_groups_pictures[i]">
+                                    <div class="left-container" [ngClass]="{'shiny': !propositions_groups_loaded[i] }">
+                                        <img [src]="list_of_propositions_groups_pictures[i]"  (load)="load_propositions_groups_pp(i)" [ngClass]="{'invisible': !propositions_groups_loaded[i] }">
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{item}} </span>
@@ -707,8 +707,8 @@
                     <div *ngIf="display_first_propositions">
                         <div *ngFor="let item of list_of_new_friends_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card"  [ngClass]="{'opened':check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])}">
                             <div class="author-container" >
-                                <div class="left-container">
-                                    <img [src]="list_of_new_friends_pictures[i]">
+                                <div class="left-container"  [ngClass]="{'shiny': !new_friends_loaded[i] }">
+                                    <img [src]="list_of_new_friends_pictures[i]" (load)="load_new_friends_pp(i)" [ngClass]="{'invisible': !new_friends_loaded[i] }">
                                 </div>
                                 <div class="right-container">
                                     <span class="author-name">{{list_of_new_friends_names[i]}} </span>
@@ -734,8 +734,8 @@
                     <div *ngIf="display_other_contacts "> 
                         <div *ngFor="let item of list_of_new_friends_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])}">
                             <div class="author-container">
-                                <div class="left-container">
-                                    <img [src]="list_of_new_friends_pictures[i]">
+                                <div class="left-container" [ngClass]="{'shiny': !new_friends_loaded[i] }">
+                                    <img [src]="list_of_new_friends_pictures[i]" (load)="load_new_friends_pp(i)" [ngClass]="{'invisible': !new_friends_loaded[i] }">
                                 </div>
                                 <div class="right-container">
                                     <span class="author-name">{{list_of_new_friends_names[i]}} </span>

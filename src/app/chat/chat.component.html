@@ -426,10 +426,10 @@
                                                 {{list_of_messages[list_of_messages.length -1 - i].message}}
                                             </div>
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
-                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'" (click)="show_images(list_of_messages.length -1 - i)">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
-                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container"  (click)="show_images(list_of_messages.length -1 - i)">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='file_attachment'">
@@ -580,10 +580,10 @@
                                                     {{list_of_messages[list_of_messages.length -1 - i].message}}
                                                 </div>
                                                 <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
-                                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"  (click)="show_images(list_of_messages.length -1 - i)">
                                                         <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     </div> 
-                                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                                    <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container"  (click)="show_images(list_of_messages.length -1 - i)">
                                                         <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                        
                                                     </div> 
@@ -714,7 +714,7 @@
                                 <div class="user-profiles-who-saw" *ngIf=" list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1">
                                     <div *ngFor="let id of list_of_messages[list_of_messages.length- 1 - i].list_of_users_who_saw">
                                         <div class="user-profile-who-saw" *ngIf="id!=current_user_id && !has_user_saw_something_else_after(id,list_of_messages.length- i-1)">
-                                            <img  [src]="list_of_users_profile_pictures[id]">
+                                            <img  [src]="list_of_users_profile_pictures[id]" (load)="load_users_pp(id)" [ngClass]="{'invisible':users_pp_loaded[id]}">
                                             <div class="display-who-saw">
                                                 <span> vu par {{list_of_users_names[id]}}</span>
                                             </div>
@@ -854,10 +854,10 @@
                                     </div>
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
-                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"  (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                         </div> 
-                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                        <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container"  (click)="show_images(list_of_messages.length -1 - i)">
                                             <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                            
                                         </div> 
@@ -951,7 +951,7 @@
                                     || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2])"
                                     style="margin-left:15px;">
                                         <div class="friend-picture">
-                                            <img  [src]="list_of_users_profile_pictures[list_of_messages[list_of_messages.length- i-1].id_user]">
+                                            <img  [src]="list_of_users_profile_pictures[list_of_messages[list_of_messages.length- i-1].id_user]" (load)="load_users_pp(list_of_messages[list_of_messages.length- i-1].id_user)" [ngClass]="{'invisible':users_pp_loaded[list_of_messages[list_of_messages.length- i-1].id_user]}">
                                         </div>
                                     </div>
 
@@ -1039,10 +1039,10 @@
                                                 {{list_of_messages[list_of_messages.length -1 - i].message}}
                                             </div>
                                             <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment" >
-                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'">
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_message'"  (click)="show_images(list_of_messages.length -1 - i)">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" style="max-width:140px;max-height:140px;" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                 </div> 
-                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container">
+                                                <div *ngIf="list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'" class="image-container"  (click)="show_images(list_of_messages.length -1 - i)">
                                                     <img (load)="loaded_image(list_of_messages.length -1 - i)" [ngClass]="{'invisible':!list_of_images_loaded[list_of_messages.length -1 - i]}" [src]="list_of_messages_pictures[list_of_messages.length -1 - i]">
                                                     
                                                 </div> 
@@ -1079,7 +1079,7 @@
                                     <div class="user-profiles-who-saw-friend" *ngIf="list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1">
                                         <div *ngFor="let id of list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw">
                                             <div class="user-profile-who-saw-friend" *ngIf="id!=current_user_id && !has_user_saw_something_else_after(id,list_of_messages.length- i-1)">
-                                                <img  [src]="list_of_users_profile_pictures[id]">
+                                                <img  [src]="list_of_users_profile_pictures[id]" (load)="load_users_pp(id)" [ngClass]="{'invisible':users_pp_loaded[id]}">
                                                 <div class="display-who-saw">
                                                     <span> vu par {{list_of_users_names[id]}}</span>
                                                 </div>

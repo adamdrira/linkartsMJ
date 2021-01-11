@@ -15,6 +15,7 @@ import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.comp
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popup-chat-group-members.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 
 declare var $: any;
 var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
@@ -419,7 +420,6 @@ export class ChatComponent implements OnInit  {
       let compt_user=0;
       let list_of_receivers_ids=info[0].list_of_receivers_ids;
       for(let i=0;i<list_of_receivers_ids.length;i++){
-        this.list_of_users_profile_pictures[list_of_receivers_ids[i]]=false;
         this.Profile_Edition_Service.retrieve_profile_picture(list_of_receivers_ids[i]).subscribe(p=>{
           let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -975,6 +975,11 @@ export class ChatComponent implements OnInit  {
     }
     
     
+  }
+
+  users_pp_loaded={};
+  load_users_pp(id){
+    this.users_pp_loaded[id]=true;
   }
 /*************************************Partie envoie de message***********************************/
 /*************************************Partie envoie de message***********************************/
@@ -3764,6 +3769,36 @@ block_user(){
  
 }
 
+
+
+  /********************************************* SHOW IMAGES *****************************************/
+  /********************************************* SHOW IMAGES *****************************************/
+  /********************************************* SHOW IMAGES *****************************************/
+
+  show_images(indice){
+    console.log(indice)
+    console.log(this.list_of_messages)
+    console.log(this.list_of_messages[indice])
+    console.log(this.list_of_messages_pictures)
+    console.log(this.list_of_messages_pictures[indice])
+    let list =this.list_of_messages_pictures
+    let new_list=[]
+    let new_indice;
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(list[i] && (this.list_of_messages[i].attachment_type=='picture_attachment' || this.list_of_messages[i].attachment_type=='picture_message')){
+        if(i==indice){
+          new_indice=new_list.length;
+        }
+        new_list.push(list[i]);
+      }
+    }
+    console.log(new_indice)
+    console.log(new_list)
+    const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
+      data: {list_of_pictures:new_list,index_of_picture:new_indice},
+    });
+  }
 
 }
 

@@ -9,6 +9,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { ChatComponent } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
 import { getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
+import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 
 declare var $: any;
 
@@ -323,10 +324,10 @@ export class ChatRightContainerComponent implements OnInit {
   }
 
   /********************************************************loading thumbnails************* */
-/********************************************************loading thumbnails************* */
-/********************************************************loading thumbnails************* */
+  /********************************************************loading thumbnails************* */
+  /********************************************************loading thumbnails************* */
 
- pp_is_laoded=false;
+  pp_is_laoded=false;
   pp_loaded(){
     this.pp_is_laoded=true;
   }
@@ -334,5 +335,19 @@ export class ChatRightContainerComponent implements OnInit {
   list_of_images_loaded=[];
   image_loaded(i){
     this.list_of_images_loaded[i]=true;
+  }
+
+
+
+  /********************************************* SHOW IMAGES *****************************************/
+  /********************************************* SHOW IMAGES *****************************************/
+  /********************************************* SHOW IMAGES *****************************************/
+
+  show_images(indice){
+    console.log(indice)
+    console.log(this.list_of_pictures)
+    const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
+      data: {list_of_pictures:this.list_of_pictures_src,index_of_picture:indice},
+    });
   }
 }
