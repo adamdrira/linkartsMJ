@@ -430,7 +430,6 @@ export class SubscribingsComponent implements OnInit {
     else{
       if(period=='old'){
         this.list_of_contents_sorted=true;
-        this.last_timestamp=list[0].createdAt;
       }
       if(period=='new'){
         this.list_of_new_contents_sorted=true;

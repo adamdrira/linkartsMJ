@@ -27,7 +27,7 @@
       border: none;
       display: flex;
       flex-direction: column;
-      padding: 10px 10px 10px 10px;
+      padding: 10px 15px 10px 15px;
       width: 145px;
       height: 145px;
       margin-left: 15px;
@@ -748,6 +748,9 @@
     .form-item {
       .form-item-flex {
         flex-direction: column !important;
+        .left-container {
+          margin-right:0px !important;
+        }
       }
       .aboutLinkButton {
         background:white;

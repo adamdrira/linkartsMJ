@@ -7,13 +7,24 @@ import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmati
 import {PopupReportComponent} from '../popup-report/popup-report.component';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
+import { trigger, transition, style, animate } from '@angular/animations';
 declare var Swiper:any;
 declare var $: any;
 
 @Component({
   selector: 'app-story-view',
   templateUrl: './story-view.component.html',
-  styleUrls: ['./story-view.component.scss']
+  styleUrls: ['./story-view.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class StoryViewComponent implements OnInit {
 
@@ -54,6 +65,7 @@ export class StoryViewComponent implements OnInit {
   paused:boolean = false;
   visitor_mode=true;
   author_name:string;
+  pseudo:string;
   profile_picture: SafeUrl;
 
   index_of_story_to_show:number;
@@ -149,6 +161,7 @@ export class StoryViewComponent implements OnInit {
     
 
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
+      this.pseudo = r[0].nickname;
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
     });
 
@@ -173,6 +186,7 @@ export class StoryViewComponent implements OnInit {
         slidePerView:1,
         grabCursor: false,
         simulateTouch: false,
+        allowTouchMove: false,
         pagination: {
           el: '.swiper-pagination',
         },
@@ -257,6 +271,11 @@ export class StoryViewComponent implements OnInit {
   }
 
   clickPause() {
+
+    if(this.show_list_of_viewers) {
+      this.close_list_of_viewers();
+      return;
+    }
     this.paused = !this.paused;
     
     if( this.paused ) {
@@ -304,19 +323,23 @@ export class StoryViewComponent implements OnInit {
 }
 
 show_list_of_viewers=false;
+loading_list_of_viewers=false;
 viewers_found=false;
 list_of_viewers=[];
 list_of_check_subscribtion=[];
 list_of_profile_pictures:SafeUrl[]=[];
 list_of_pp_loaded=[];
 get_list_of_viewers(i){
-  this.paused=true;
-  clearInterval(this.interval);
   
+  this.clickPause();
+  
+  this.loading_list_of_viewers = true;
+
   console.log("list_of_viewers")
   if(this.viewers_found){
     this.show_list_of_viewers=true;
-    return
+    this.loading_list_of_viewers=false;
+    return;
   }
   this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
     console.log(r[0])
@@ -326,6 +349,7 @@ get_list_of_viewers(i){
         console.log(r[0][i].id_user_who_looks)
         this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user_who_looks).subscribe(l=>{
           this.list_of_viewers[i]=l[0];
+          
           this.Subscribing_service.check_if_visitor_susbcribed(r[0][i].id_user_who_looks).subscribe(information=>{
             if(information[0].value){
               this.list_of_check_subscribtion[i]=true;
@@ -340,6 +364,7 @@ get_list_of_viewers(i){
               if(i==n-1){
                 this.viewers_found=true;
                 this.show_list_of_viewers=true;
+                this.loading_list_of_viewers=false;
               }
             });
             
@@ -351,23 +376,38 @@ get_list_of_viewers(i){
   })
 }
 
+loading_subscribtion=false;
 subscribtion(i){
-  if(!this.list_of_check_subscribtion[i]){
-    this.Subscribing_service.subscribe_to_a_user(this.list_of_viewers[i].id).subscribe(information=>{
-      this.list_of_check_subscribtion[i]=true;
-    });
-  }
-  if(this.list_of_check_subscribtion[i]){
-    this.Subscribing_service.remove_subscribtion(this.list_of_viewers[i].id).subscribe(information=>{
-      this.list_of_check_subscribtion[i]=false;
-    });
+
+  
+  if(!this.loading_subscribtion) {
+    this.loading_subscribtion=true;
+    
+    if(!this.list_of_check_subscribtion[i]){
+      this.Subscribing_service.subscribe_to_a_user(this.list_of_viewers[i].id).subscribe(information=>{
+
+        this.list_of_check_subscribtion[i]=true;
+        this.loading_subscribtion=false;
+        this.cd.detectChanges();
+      });
+    }
+    else {
+      this.Subscribing_service.remove_subscribtion(this.list_of_viewers[i].id).subscribe(information=>{
+        
+        this.list_of_check_subscribtion[i]=false;
+        this.loading_subscribtion=false;
+        this.cd.detectChanges();
+      });
+    }
   }
 }
+
 load_list_of_pp(k){
   this.list_of_pp_loaded[k]=true;
 }
 close_list_of_viewers(){
   this.show_list_of_viewers=false;
+  this.clickPause();
 }
 
   report(i){
@@ -386,6 +426,24 @@ close_list_of_viewers(){
     })
     
   }
+
+  @Output() closePopup = new EventEmitter<any>();
+  close_stories() {
+    this.closePopup.emit();
+  }
+  open_account() {
+    return "/account/"+this.pseudo+"/"+this.user_id;
+    //this.router.navigate([`/account/${this.pseudo}/${this.item.id_user}`]);
+  };
+
+  get_viewer_link(i:number) {
+    return "/account/"+ this.list_of_viewers[i].nickname +"/"+ this.list_of_viewers[i].id;
+  }
+
+  stop(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
 
 }

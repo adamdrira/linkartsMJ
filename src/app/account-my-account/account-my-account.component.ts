@@ -1005,7 +1005,8 @@ export class AccountMyAccountComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         const dialogRef = this.dialog.open(LoginComponent, {
-          data: {usage:"suspend_account",id_user:this.id_user}
+          data: {usage:"suspend_account",id_user:this.id_user},
+          panelClass:"loginComponentClass"
         });
       }
     })
@@ -1059,7 +1060,8 @@ export class AccountMyAccountComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         const dialogRef = this.dialog.open(LoginComponent, {
-          data: {usage:"delete_account",id_user:this.id_user}
+          data: {usage:"delete_account",id_user:this.id_user},
+          panelClass:"loginComponentClass"
         });
       }
     })

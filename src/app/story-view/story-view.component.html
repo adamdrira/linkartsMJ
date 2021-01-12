@@ -1,67 +1,133 @@
 
 
     <div #swiperStory class="swiper-container-story">
+
+
+        <!--********************-->
+        <!--Partie 1-->
+        <!--********************-->
         <div class="header author-container">
-            <!--********************-->
-            <!--Author container-->
-            <!--********************-->
-            <img (load)='loaded_pp()' [src]="profile_picture" [ngClass]="{'invisible':!display_pp }">
+
+            <a [routerLink]=open_account() (click)="close_stories();">
+                <img (load)='loaded_pp()' [src]="profile_picture" [ngClass]="{'really-invisible':!display_pp }">
+                <div *ngIf="!display_pp" class="image-skeleton shiny"></div>
+            </a>
+
             <span class="author-name">{{author_name}}</span>
-    
+
             
-    
+            <button *ngIf="!visitor_mode && !show_list_of_viewers && !loading_list_of_viewers" (click)="get_list_of_viewers( swiper.activeIndex )" class="views-button"
+            matTooltip="Liste des vues"
+            matTooltipClass='linkarts-tooltip' 
+            [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="100">
+                <span>0</span><!--ngif liste vide-->
+                <!--<span>12</span> Coucou adam-->
+                <mat-icon>visibility</mat-icon>
+            </button>
+
+            <button [matMenuTriggerFor]="storyOptions">
+                <mat-icon >more_horiz</mat-icon>
+            </button>
+            <mat-menu  #storyOptions="matMenu" class="story-mat-menu">
+                <button *ngIf="!visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="delete_story( swiper.activeIndex )"> 	
+                    <mat-icon>close</mat-icon>
+                    <span>Supprimer la story</span>
+                </button>
+                <button *ngIf="visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="report( swiper.activeIndex )"> 	
+                    <mat-icon>flag</mat-icon>
+                    <span>Signaler</span>
+                </button>
+            </mat-menu>
+
+            <button class="close-button" (click)="close_stories()">
+                <mat-icon>close</mat-icon>
+            </button>
+
         </div>
+        
+
+        <!--********************-->
+        <!--Partie 2-->
+        <!--********************-->
         <div class="story-counter" *ngIf="swiper">
-    
             <div class="story-bar" *ngFor="let item of list_of_contents; let i = index"
             [ngClass]="{'opened': swiper.activeIndex > i }">
-        
                 <div #storyBarFill [ngStyle]="{'width': ( -10*(timeLeft-10) )+'%'}" *ngIf="swiper.activeIndex == i" class="story-bar-fill">
                 </div>
-    
             </div>
-            
         </div>
+
+
+        <!--********************-->
+        <!--Partie 3-->
+        <!--********************-->
         <div class="swiper-wrapper">
     
-            <div *ngFor="let item of list_of_contents; let i=index" class="swiper-slide">
+            <div *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}">
 
-                <button mat-button tabIndex="-1" class="mat-icon-button" *ngIf="!visitor_mode" (click)="get_list_of_viewers(i)">
-                    <mat-icon  class="item-icon" style="font-size: 25px; width: 25px;margin:auto auto; color:white">visibility</mat-icon>
+                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images,'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
+                
+                
+                <div class="loading-dots" *ngIf="loading_list_of_viewers">
+                    &nbsp; <span>.</span><span>.</span><span>.</span>
+                </div>
+
+
+                <button (click)="close_list_of_viewers()" class="close-list-of-views" *ngIf="!loading_list_of_viewers && show_list_of_viewers">
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                    <span>Retour</span>
                 </button>
-                <button mat-icon-button class="optionsMenu" [matMenuTriggerFor]="storyOptions">
-                    <mat-icon class="optionsButton">more_horiz</mat-icon>
-                </button>
-                <mat-menu  #storyOptions="matMenu">
-                    <button *ngIf="!visitor_mode" class="mat-menu-item" mat-menu-item (click)="delete_story(i)"> 	
-                        <mat-icon class="item-icon">edit</mat-icon>
-                        <span>Supprimer la story</span>
-                    </button>
+
+                <div class="no-viewers" *ngIf="!loading_list_of_viewers && show_list_of_viewers && !viewers_found">
+                    <span>Aucune vue</span>
+                </div>
+
+                <div class="subscribers-container" *ngIf="!loading_list_of_viewers && show_list_of_viewers && viewers_found" [@enterAnimation]>
+                    <a [routerLink]=get_viewer_link(k) *ngFor="let item of list_of_viewers; let k=index" class="subscriber-card">
+                
+                        
+                        <div class="subscriber">
+                            <div class="user-container">
+        
+                                    <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_loaded[k]}">
+                                        <img [src]="list_of_profile_pictures[k]" (load)="load_list_of_pp(k)"  [ngClass]="{ 'invisible':!list_of_pp_loaded[k]}">
+                                    </div>
+        
+                                    <div class="right-container">
+                                        <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                            <mat-icon *ngIf="list_of_viewers[k].certified_account"
+                                            matTooltip="Compte certifié" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">verified</mat-icon>
                     
-                    <button *ngIf="visitor_mode" class="mat-menu-item" mat-menu-item (click)="report(i)"> 	
-                        <mat-icon class="item-icon">report_problem</mat-icon>
-                        <span>Signaler</span>
-                    </button>
-                </mat-menu>
-    
-                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images,'really-invisible':show_list_of_viewers}">
-                <div class="subscribers-container" *ngIf="show_list_of_viewers && viewers_found">
-                    <button mat-raised-button (click)="close_list_of_viewers()" tabIndex="-1" class="position style1">
-                        <mat-icon class="item-icon" >close</mat-icon>
-                    </button>
-                    <div *ngFor="let item of list_of_viewers; let k=index" class="subscriber-card">
-                        <div class="author-container">
-                            <div class="left-container">
-                                <img [src]="list_of_profile_pictures[k]" (load)="load_list_of_pp[k]" [ngClass]="{'invisible':!list_of_pp_loaded[k]}">
+                                            <div *ngIf="list_of_viewers[k].type_of_account_checked" class="pro-logo"
+                                            matTooltip="Compte professionnel" 
+                                            matTooltipClass='linkarts-tooltip'
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">PRO</div>
+                                        </span>
+                                        <span class="user-description">@{{item.nickname}}</span>
+                                    </div>
+        
                             </div>
-                            <a href="/account/{{item.nickname}}/{{item.id}}">
-                                <div class="right-container">
-                                    <span class="author-name">{{item.firstname}} {{item.lastname}} </span>
-                                    <span class="author-description">@{{item.nickname}}</span>
-                                </div>
-                            </a>
-            
                         </div>
+            
+                        <button *ngIf="!list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                            <mat-icon>add</mat-icon>
+                            <span>S'abonner</span>
+                        </button>
+                        <button *ngIf="list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                            
+                            <mat-icon>notifications_active</mat-icon>
+                            <span>Abonné</span>
+                        </button>
+            
+                    </a>
+                </div>
+
+                <!--
                         <button mat-raised-button *ngIf="!list_of_check_subscribtion[k]" class="button style1 subscriptions" (click)="subscribtion(k)">
                             <mat-icon class="icon">person_add</mat-icon>
                             <span>S'abonner</span>
@@ -70,26 +136,21 @@
                             <mat-icon class="icon">person_add_disabled</mat-icon>
                             <span>Se désabonner</span>
                         </button>
-                    </div>
-                </div>
-                <div class="subscribers-container" *ngIf="show_list_of_viewers && !viewers_found">
-                    <div style="margin: auto">
-                        Aucune vue
-                    </div>
-                    
-                </div>
+                    -->
+
                 
-                <div class="left-absolute-container" (click)="previous_slide();"></div>
-                <div class="right-absolute-container" (click)="next_slide();"></div>
+                <div class="left-absolute-container" *ngIf="!loading_list_of_viewers && !show_list_of_viewers" (click)="previous_slide();"></div>
+                <div class="right-absolute-container" *ngIf="!loading_list_of_viewers && !show_list_of_viewers" (click)="next_slide();"></div>
     
             </div>
-    
-    
         </div>   
         
+        <!--********************-->
+        <!--Partie 4-->
+        <!--********************-->
         <div class="swiper-pause" (click)="clickPause();">
-            <div class="pause-text" *ngIf="!paused">Mettre en pause</div>
-            <div class="pause-text" *ngIf="paused">Reprendre</div>
+            <div *ngIf="!paused">Mettre en pause</div>
+            <div *ngIf="paused">Reprendre</div>
         </div>
         
     

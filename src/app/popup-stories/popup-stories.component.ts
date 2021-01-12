@@ -4,6 +4,7 @@ import { StoryViewComponent } from '../story-view/story-view.component';
 import { Story_service } from '../services/story.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Location } from '@angular/common';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var Swiper:any;
 declare var $:any;
@@ -12,7 +13,17 @@ declare var $:any;
   selector: 'app-popup-stories',
   templateUrl: './popup-stories.component.html',
   styleUrls: ['./popup-stories.component.scss'],
-  entryComponents: [StoryViewComponent]
+  entryComponents: [StoryViewComponent],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupStoriesComponent implements OnInit {
 
@@ -40,6 +51,7 @@ export class PopupStoriesComponent implements OnInit {
   list_index_debut=[];
   list_of_users_to_end=[];
  
+  story_loaded=false;
 
   ngOnInit() {
 
@@ -61,8 +73,8 @@ export class PopupStoriesComponent implements OnInit {
       
       speed: 500,
       effect: 'cube',
-      grabCursor: false,
-      simulateTouch: false,
+      //grabCursor: false,
+      //simulateTouch: false,
       cubeEffect: {
         shadow: true,
         slideShadows: true,
@@ -146,6 +158,8 @@ export class PopupStoriesComponent implements OnInit {
 
   createStory( user_id: number, index_debut: number,list_of_data:any) {
     
+    this.story_loaded = true;
+    
     let THIS = this;
 
     //Creating new component
@@ -158,6 +172,9 @@ export class PopupStoriesComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.current_user = this.data.current_user;
     this.componentRef[ this.componentRef.length - 1 ].instance.index_debut = index_debut;
 
+    this.componentRef[ this.componentRef.length - 1 ].instance.closePopup.subscribe( v => {
+      this.close_dialog();
+    });
 
     this.componentRef[ this.componentRef.length - 1 ].instance.show_next.subscribe( v => {
       console.log("end of a story")

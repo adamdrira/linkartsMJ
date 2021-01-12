@@ -150,19 +150,17 @@
                 <div class="profile-name">
                     <span class="author-name">{{author_name}} 
                         
-                        <span *ngIf="type_of_account_checked"
-                        matTooltip="Compte professionnel" 
-                        matTooltipClass='tooltip-account-profile'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="200">PRO</span>
-
                         <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
                         matTooltip="Compte certifié" 
-                        matTooltipClass='tooltip-account-profile' 
+                        matTooltipClass='linkarts-tooltip' 
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="200">verified</mat-icon>
 
-                      
+                        <div *ngIf="type_of_account_checked" class="pro-logo"
+                        matTooltip="Compte professionnel" 
+                        matTooltipClass='linkarts-tooltip' 
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="200">PRO</div>
 
                     </span>
                 </div>
@@ -312,7 +310,7 @@
             
         <div class="small-screen-categories">
             <mat-form-field floatLabel='never'>
-                <mat-select  panelClass="accountCategorySelectClass" [(value)]="opened_section_small" disableOptionCentering (selectionChange)="onCategoryChange($event)">
+                <mat-select  #accountSelect panelClass="accountCategorySelectClass" [(value)]="opened_section_small" disableOptionCentering (selectionChange)="onCategoryChange($event)">
                     
                     <mat-select-trigger>
                         <ng-container *ngIf="opened_section==0">
@@ -646,7 +644,8 @@
                 <div class="logos-container" [@enterFromTopAnimation]>
                     <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0,false);scroll(target)" #target>
                         <div class="image1"></div>
-                        <span>Bandes dessinées ({{number_of_comics}})</span>
+                        <span class="long-title">Bandes dessinées ({{number_of_comics}})</span>
+                        <span class="short-title">BD ({{number_of_comics}})</span>
                     </button>
                     <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1,false);scroll(target)" #target>
                         <div class="image2"></div>

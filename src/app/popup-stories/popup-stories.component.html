@@ -1,20 +1,28 @@
 
 <div class="stories-container">
-    <button mat-raised-button (click)="close_dialog()" tabIndex="-1" class="position style1">
-        <mat-icon class="item-icon" >close</mat-icon>
+    <button (click)="close_dialog()" class="close" tabIndex="-1">
+        <mat-icon>close</mat-icon>
     </button>
+
     <div class="swiper-container-stories">
+        
         <div class="swiper-wrapper">
     
             <ng-container #targetUpload></ng-container>
-    
+
+            <div *ngIf="!story_loaded" class="story-skeleton">
+                <div class="header">
+                    <div class="img shiny"></div>
+                    <div class="author-name shiny"></div>
+                </div>
+                <div class="loading-dots">
+                    &nbsp; <span>.</span><span>.</span><span>.</span>
+                </div>
+            </div>
     
         </div>
     
         <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div> 
-        
-        
+        <div class="swiper-button-next"></div>
     </div>
-    
 </div>

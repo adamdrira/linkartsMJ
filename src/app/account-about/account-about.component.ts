@@ -2711,6 +2711,9 @@ export class AccountAboutComponent implements OnInit {
     }
     if(this.registerForm1.invalid){
       this.display_error_validator_1=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet'},
+      });
       return
     }
 
@@ -2722,17 +2725,20 @@ export class AccountAboutComponent implements OnInit {
       if(!this.registerForm1.value.siret || (this.registerForm1.value.siret && this.registerForm1.value.siret.length<14)){
         console.log("in else if false")
         this.display_error_validator_1=true;
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Le formulaire est incomplet'},
+        });
         this.loading_validation_form_1=false;
       }
       else{
         console.log("in else if ok")
         this.display_error_validator_1=false;
         let siret = form.siret
-        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret, form.primary_description,form.primary_description_extended,form.job,form.training).subscribe(l=>{
+        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret, form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'),form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'),form.job,form.training).subscribe(l=>{
           console.log(l);
           this.type_of_account=form.type_of_account;
-          this.primary_description=form.primary_description;
-          this.primary_description_extended=form.primary_description_extended
+          this.primary_description=form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');
+          this.primary_description_extended=form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
           this.job=form.job;
           this.training=form.training;
           this.loading_validation_form_1=false;
@@ -2745,11 +2751,11 @@ export class AccountAboutComponent implements OnInit {
     else{
       //this.loading_validation_form_1=false;
       this.display_error_validator_1=false;
-      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null, form.primary_description,form.primary_description_extended,form.job,form.training).subscribe(l=>{
+      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null, form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'),form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'),form.job,form.training).subscribe(l=>{
         console.log(l);
         this.type_of_account=form.type_of_account;
-        this.primary_description=form.primary_description;
-        this.primary_description_extended=form.primary_description_extended
+        this.primary_description=form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');
+        this.primary_description_extended=form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
         this.job=form.job;
         this.training=form.training;
         this.loading_validation_form_1=false;
@@ -2825,6 +2831,9 @@ export class AccountAboutComponent implements OnInit {
     }
     if(this.registerForm2.invalid ){
       this.display_error_validator_2=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet'},
+      });
       return 
     }
     this.loading_validation_form_2=true;
@@ -2974,6 +2983,9 @@ export class AccountAboutComponent implements OnInit {
     }
     if(this.registerForm3.invalid ){
       this.display_error_validator_3=true;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet'},
+      });
       return 
     }
     this.loading_validation_form_3=true;

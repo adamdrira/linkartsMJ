@@ -156,8 +156,13 @@ export class AccountComponent implements OnInit {
         this.number_of_ads_to_show+=5;
       }
     }
+    
+    if( this.accountSelect ) {
+      this.accountSelect.close();
+    }
   }
   
+  @ViewChild("accountSelect") accountSelect;
 
  
 
@@ -526,6 +531,7 @@ export class AccountComponent implements OnInit {
         };
 
         this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
+          console.log("jgoiphbhbhbhbhbhbhbhbhbr{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{");
           console.log(r[0]);
           this.number_of_comics=r[0].number_of_comics;
           this.number_of_drawings=r[0].number_of_drawings;
@@ -1464,7 +1470,7 @@ export class AccountComponent implements OnInit {
   add_story(){
     const dialogRef = this.dialog.open(PopupAddStoryComponent, {
       data: {user_id:this.user_id},
-      panelClass: 'popupUploadPictureClass',
+      panelClass: 'popupAddStoryClass',
     });
   }
 

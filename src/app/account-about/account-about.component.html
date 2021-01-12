@@ -490,19 +490,6 @@
                 </div>
 
             </ng-container>
-
-
-            <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_2">done_all</mat-icon>
-                <span *ngIf="!loading_validation_form_2">Valider</span>
-                <div *ngIf="loading_validation_form_2 " class="loading-page-form">
-                    <mat-spinner diameter="20"></mat-spinner>
-                </div>
-            </button>
-
-            <div *ngIf="display_error_validator_2" class="error_validator" [@enterAnimation]>
-                <span>Les informations saisies sont incorrectes ou manquantes.</span>
-            </div>
             
             <ng-container *ngIf="visitor_mode && links.length>0">
                 <div class="form-title">
@@ -608,6 +595,17 @@
             </ng-container>
 
 
+            <button class="validate-form-button" *ngIf="registerForm2_activated && !visitor_mode" (click)="validate_form_2();" [@enterAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!loading_validation_form_2">done_all</mat-icon>
+                <span *ngIf="!loading_validation_form_2">Valider</span>
+                <div *ngIf="loading_validation_form_2 " class="loading-page-form">
+                    <mat-spinner diameter="20"></mat-spinner>
+                </div>
+            </button>
+
+            <div *ngIf="display_error_validator_2" class="error_validator" [@enterAnimation]>
+                <span>Les informations saisies sont incorrectes ou manquantes.</span>
+            </div>
             
         </div>
 
@@ -644,10 +642,10 @@
             <div class="form-item" *ngIf="registerForm3_activated" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
                     <mat-label>Prénom</mat-label>
-                    <input matInput formControlName="firstName" maxLength="10" type="search" autocomplete="off">
+                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off">
                     <mat-error *ngIf="registerForm3.controls['firstName'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                     </mat-error>
-                    <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/10</div>
+                    <div class="length-indicator">{{registerForm3.controls['firstName'].value?.length || 0}}/20</div>
                 </mat-form-field>
             </div>
             <div class="form-item" *ngIf="!registerForm3_activated" [@enterAnimation]>
