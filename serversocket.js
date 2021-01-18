@@ -695,6 +695,16 @@ wss.on('connection', (ws, req)=>{
                                 toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received_new_friend_in_the_group', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                               }
                             }
+                            if(messageArray.is_from_server && messageArray.message=='new_section'){
+                              console.log("new_section")
+                              let toUserWebSocket1= webSockets[userID];
+                              for(let i=0;i<toUserWebSocket1.length;i++){
+                                console.log("sending back to each one of the user")
+                                toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'new_section', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
+                              }
+                            }
+                            
+                            
 
                             for(let k=1;k<list_of_receivers.length;k++){
                               if(list_of_receivers[k]!=userID && list_of_receivers[k]!=id_friend){
@@ -842,10 +852,10 @@ wss.on('connection', (ws, req)=>{
           return ws.terminate();
         } 
         ws.isAlive = false;
-        ws.ping(null, false, true);
+        ws.ping(null, false, (err)=>{});
         //console.log("ping");
     });
-  }, 10000);
+  }, 5000);
 
   function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);

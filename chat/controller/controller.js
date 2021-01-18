@@ -280,30 +280,35 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
            limit:50,
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(messages =>  {
               let list_of_messages_reactions={};
-              list_of_chat_groups_reactions.findAll({
-                where:{
-                  id_group_chat:id_friend,
-                  id_message:{[Op.gte]: messages[messages.length-1].id},
-                }
-              }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(reacts=>{
-                for(let i=0;i<reacts.length;i++){
-                  if(list_of_messages_reactions[reacts[i].id_message]){
-                    list_of_messages_reactions[reacts[i].id_message].push(reacts[i].emoji_reaction)
+              if(messages.length>0){
+               
+                list_of_chat_groups_reactions.findAll({
+                  where:{
+                    id_group_chat:id_friend,
+                    id_message:{[Op.gte]: messages[messages.length-1].id},
                   }
-                  else{
-                    list_of_messages_reactions[reacts[i].id_message]=[reacts[i].emoji_reaction];
+                }).catch(err => {
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(reacts=>{
+                  for(let i=0;i<reacts.length;i++){
+                    if(list_of_messages_reactions[reacts[i].id_message]){
+                      list_of_messages_reactions[reacts[i].id_message].push(reacts[i].emoji_reaction)
+                    }
+                    else{
+                      list_of_messages_reactions[reacts[i].id_message]=[reacts[i].emoji_reaction];
+                    }
                   }
-                }
+                  res.status(200).send([messages,{list_of_messages_reactions:list_of_messages_reactions}])
+                })
+              }
+              else{
                 res.status(200).send([messages,{list_of_messages_reactions:list_of_messages_reactions}])
-              })
-             
+              }
            });
         }
         else{
@@ -320,9 +325,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
            limit:50,
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(messages =>  {
               res.status(200).send([messages])
            });
         }
@@ -400,10 +405,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       let list=messages[i].list_of_users_who_saw;
                       list.push(current_user)
                       if(list.length<messages[i].list_of_users_in_the_group.length){
-                        messages[i].update({
+                        /*messages[i].update({
                           "list_of_users_who_saw":list,
+                        });*/
+                        list_of_messages.update({
+                          "list_of_users_who_saw":list,
+                        },{
+                          where:{
+                            id: messages[i].id
+                          }
                         });
-                        console.log(message[i].list_of_users_who_saw)
+                        console.log(messages[i].list_of_users_who_saw)
                       }
                       else{
                         messages[i].update({
