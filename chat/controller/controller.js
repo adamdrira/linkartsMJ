@@ -371,10 +371,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         const id_friend=req.body.id_user;
         const id_chat_section =req.body.id_chat_section;
         const is_a_group_chat =req.body.is_a_group_chat;
-        //console.log("lets see messages seen")
-        //console.log(id_friend);
-        //console.log(id_chat_section);
-        //console.log(current_user);
+        console.log("lets see messages seen")
+        console.log(id_friend);
+        console.log(id_chat_section);
+        console.log(current_user);
         const Op = Sequelize.Op;
         let compt=0;
         if(is_a_group_chat){
@@ -384,16 +384,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 id_receiver: id_friend,
                 is_a_group_chat:true,
                 id_user:{[Op.ne]:current_user},
-                status: {[Op.ne]:"seen"},
+                status: {[Op.notIn]:["seen","deleted"]},
             },
             order: [
                 ['createdAt', 'DESC']
               ],
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages =>  {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(messages =>  {
               if(messages.length>0){
                 for(let i=0;i<messages.length;i++){
                     if(messages[i].list_of_users_who_saw.indexOf(current_user)<0){
@@ -403,6 +403,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                         messages[i].update({
                           "list_of_users_who_saw":list,
                         });
+                        console.log(message[i].list_of_users_who_saw)
                       }
                       else{
                         messages[i].update({
@@ -432,28 +433,44 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                id_user: id_friend,
                is_a_group_chat:{[Op.not]: true},
                id_receiver:current_user,
-               status: {[Op.ne]:"seen"},
+               status: {[Op.notIn]:["seen","deleted"]},
             },
             order: [
                 ['createdAt', 'DESC']
               ],
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(messages =>  {
             //console.log("here he is")
               //console.log(messages)
               if(messages.length>0){
-                for(let i=0;i<messages.length;i++){
+
+                list_of_messages.update({
+                  "status":"seen",
+                },
+                {where:{
+                  id_chat_section:id_chat_section,
+                  id_user: id_friend,
+                  is_a_group_chat:{[Op.not]: true},
+                  id_receiver:current_user,
+                  status:{[Op.ne]:"deleted"},
+                }});
+
+                res.status(200).send([messages])
+                /*for(let i=0;i<messages.length;i++){
                     messages[i].update({
                         "status":"seen",
-                    });
+                    },
+                    {where:{
+                      "status":{[Op.ne]:"deleted"},
+                    }});
                     compt++;
                     if(compt==messages.length){
                         res.status(200).send([messages])
                     }
-               }
+               }*/
               }
               else{
                 res.status(200).send([{message:"nothing"}])
@@ -788,7 +805,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
           
         ]
       },
-      limit:10,
+      limit:25,
       order: [
         ['subscribers_number', 'DESC']
       ],
@@ -815,12 +832,12 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             order: [
                 ['date', 'DESC']
               ],
-            limit:10,
+            limit:25,
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(friends =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(friends =>  {
             if(friends.length>0){
               let compte=0;
               for(let j=0;j<friends.length;j++){
@@ -838,9 +855,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                       ]
                     }
                   }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(us=>{
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                  }).then(us=>{
                     if(us){
                       list_of_related_users.push(us);
                     }
@@ -902,7 +919,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             
           ]
         },
-        limit:10,
+        limit:25,
         order: [
           ['subscribers_number', 'DESC']
         ],
@@ -1237,6 +1254,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       order: [
         ['updatedAt', 'DESC']
       ],
+      limit:50,
     }).catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
@@ -1353,9 +1371,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         const files = await imagemin([filename], {
         destination: './data_and_routes/chat_images',
         plugins: [
-            imageminPngquant({
-            quality: [0.5, 0.6]
-            })
+          imageminPngquant({
+            quality: [0.7, 0.8]
+        })
         ]
         });
         res.status(200).send(([{ "file_name": file_name}]))
@@ -1370,7 +1388,15 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
       let filename = "./data_and_routes/chat_images/" +file_name;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        res.status(200).send(data);
+        if(e){
+          filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
       } );
     
     });
@@ -1381,7 +1407,16 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       let friend_id=parseInt(req.params.friend_id);
       let filename = '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` +file_name;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        res.status(200).send(data);
+        if(e){
+          filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
+        
       } );
     
     });
@@ -1480,9 +1515,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             const files = await imagemin([file_name], {
             destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
             plugins: [
-                imageminPngquant({
-                quality: [0.5, 0.6]
-                })
+              imageminPngquant({
+                quality: [0.7, 0.8]
+            })
             ]
             });
           }
@@ -1714,7 +1749,9 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
  router.post('/delete_message/:id', function (req, res) {
+  console.log("delete_message")
   let id=parseInt(req.params.id);
+  console.log(id);
   list_of_messages.findOne({
     where:
     {id:id}
@@ -2155,6 +2192,12 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
   let id_chat_section= parseInt(req.params.id_chat_section);
   let friend_type= req.params.friend_type;
   let message = (req.params.message).toLowerCase();
+
+  console.log(id_user)
+  console.log(id_friend)
+  console.log(id_chat_section)
+  console.log(friend_type)
+  console.log(message)
   const Op = Sequelize.Op;
   if(friend_type=='group'){
     list_of_messages.findAll({
@@ -2352,11 +2395,11 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             ['chat_section_name', 'ASC']
           ],
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(section=>{
-          res.status(200).send([section])
-        })
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(section=>{
+              res.status(200).send([section])
+            })
       }
       });
 
@@ -2714,13 +2757,31 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       
             let filename = "./data_and_routes/profile_pics/" + chat_profile_pic_name;
             fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
+              if(e){
+                filename = "./data_and_routes/not-found-image.jpg";
+                fs.readFile( path.join(process.cwd(),filename), function(e,data){
+                  res.status(200).send(data);
+                } );
+              }
+              else{
+                res.status(200).send(data);
+              }
+              
             } );
         }
         else{
           let filename = "./data_and_routes/chat_profile_pics/" + chat_profile_pic_name;
             fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
+              if(e){
+                filename = "./data_and_routes/not-found-image.jpg";
+                fs.readFile( path.join(process.cwd(),filename), function(e,data){
+                  res.status(200).send(data);
+                } );
+              }
+              else{
+                res.status(200).send(data);
+              }
+             
             } );
         }
         
@@ -2774,7 +2835,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
      
       
-    router.post('/exit_group', function (req, res) {
+    router.post('/exit_group_chat', function (req, res) {
       let id_user = get_current_user(req.cookies.currentUser);
       let id_receiver= req.body.id_receiver;
       const Op = Sequelize.Op;
@@ -3016,9 +3077,9 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
             limit:1,
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(message =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(message =>  {
                 if(message.length>0){
                     let id=message[0].id;
                     list_of_messages.findAll({
@@ -3033,9 +3094,9 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                       limit:1,
                       })
                       .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(message2=>{
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                      }).then(message2=>{
                         if(message2.length>0){
                           if(message2[0].id>id){
                             res.status(200).send([message2])
@@ -3113,9 +3174,9 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
                 const files = await imagemin([file_name], {
                 destination: './data_and_routes/chat_profile_pics',
                 plugins: [
-                    imageminPngquant({
-                    quality: [0.5, 0.6]
-                    })
+                  imageminPngquant({
+                    quality: [0.7, 0.8]
+                })
                 ]
                 });
               })();
