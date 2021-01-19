@@ -9,7 +9,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { convert_timestamp_to_number } from '../helpers/dates';
 import { SignupComponent } from '../signup/signup.component';
-
+import {get_date_to_show} from '../helpers/dates';
+import {date_in_seconds} from '../helpers/dates';
 import { MatDialog } from '@angular/material/dialog';
 
 declare var $: any;
@@ -50,10 +51,16 @@ export class CommentsComponent implements OnInit {
   @Input() chapter_number:number;
   @Input() commentariesnumber:number;
   @Input() number_of_comments_to_show:number;
-  
-  skeleton_array:any;
+  @Input() visitor_id:number;
+  @Input()  visitor_name:string;
+  @Input() visitor_mode=true;
+
+ 
+  skeleton_array=Array(5);
   pp_is_loaded=false;
   
+
+  @Output() first_comment = new EventEmitter<any>();
   @Output() new_comment = new EventEmitter<any>();
   @Output() removed_comment = new EventEmitter<any>();
   
@@ -64,124 +71,169 @@ export class CommentsComponent implements OnInit {
   comments_list:any = [];
   display_comments=false;
   now_in_seconds:number;
-  visitor_mode=true;
-  visitor_mode_retrieved=false;
+  
   my_comments_list:any[]=[];
   display_my_comments=false;
 
   
   editable_comment:number;
 
-  visitor_id:number;
-  visitor_name:string;
+
 
   user_blocked=false;
   user_who_blocked:string;
   user_blocked_retrieved=false;
 
   comment_changed() {
+    this.loading_edit=false;
     this.editable_comment = -1;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  /*ngOnChanges(changes: SimpleChanges) {
     if(changes.number_of_comments_to_show){
 
       this.skeleton_array = Array(this.number_of_comments_to_show);
       this.cd.detectChanges();
     }
-  }
+  }*/
 
+  show_icon=false;
   ngAfterViewInit() {
+
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+
     this.skeleton_array = Array(this.number_of_comments_to_show);
   }
+
+
   ngOnInit(): void {
 
+    if(this.format=="serie"){
+      this.chapter_number+=1;
+    }
     console.log(this.type_of_account);
     this.comment = new FormControl('', [Validators.required, Validators.maxLength(1500) ]);
     this.comment_container = new FormGroup({
       comment: this.comment,
     });
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-      this.visitor_id=r[0].id;
-      this.visitor_name=r[0].nickname;
-      if(r[0].id==this.authorid){
-        this.visitor_mode=false;
+
+    console.log(this.authorid)
+    this.Profile_Edition_Service.check_if_user_blocked(this.authorid).subscribe(r=>{
+      console.log(r)
+      if(r[0].nothing){
+        this.user_blocked=false;
       }
-      this.visitor_mode_retrieved=true;
-      this.Profile_Edition_Service.check_if_user_blocked(this.authorid).subscribe(r=>{
-        console.log(r)
-        if(r[0].nothing){
-          this.user_blocked=false;
+      else{
+        if(r[0].id_user==this.authorid){
+          this.user_who_blocked="user";
         }
         else{
-          if(r[0].id_user==this.authorid){
-            this.user_who_blocked="user";
-          }
-          else{
-            this.user_who_blocked="me";
-          }
-          this.user_blocked=true;
+          this.user_who_blocked="me";
         }
-        this.user_blocked_retrieved=true;
-      })
-
-      this.Profile_Edition_Service.retrieve_profile_picture( r[0].id).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-      });
-
-      this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(t=>{
-          this.my_comments_list=t[0];
-          if(this.my_comments_list.length>0){
-              this.sort_comments(this.my_comments_list,'mine');
-              
-          }
-      })
-
-      this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(l=>{
-
-        this.comments_list=l[0];
-        console.log(this.comments_list);
-        if(this.comments_list.length>0){
-         this.sort_comments(this.comments_list,"other");  
-        }
-      });
+        this.user_blocked=true;
+      }
+      this.user_blocked_retrieved=true;
     })
-   
-    /*let THIS=this;
-    $('textarea.textarea-add-comment').on('keydown', function(e){
-      console.log($('textarea.textarea-add-comment').val());
-      if(e.which == 13) {
-        e.preventDefault();
-        
-        if( $('textarea.textarea-add-comment').val() ) {
 
-          //envoyer commentaire
-          THIS.NotationService.add_commentary(THIS.category,THIS.format,THIS.style,THIS.publication_id,THIS.chapter_number,$('textarea.textarea-add-comment').val()).subscribe(r=>{
-            THIS.display_comments=false;
-            THIS.comments_list.splice(0, 0, r[0]);
-            THIS.display_comments=true;
-          });
-          // alert( "sending : " + $('textarea.textarea-add-comment').val() );
-          $('textarea.textarea-add-comment').val("");
-          
-          THIS.new_comment.emit();
+    this.Profile_Edition_Service.retrieve_my_profile_picture().subscribe(r=> {
+      let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.profile_picture = SafeURL;
+    });
 
+
+    let my_comments_found=false;
+    let other_comments_found=false;
+    this.NotationService.get_my_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(t=>{
+        this.my_comments_list=t[0];
+        if(this.my_comments_list.length>0){
+            this.sort_comments(this.my_comments_list,'mine');
+        }
+        my_comments_found=true;
+        send_all(this)
+    })
+
+    this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(l=>{
+
+      this.comments_list=l[0];
+      console.log(this.comments_list);
+      if(this.comments_list.length>0){
+        this.sort_comments(this.comments_list,"other");  
+      }
+      other_comments_found=true;
+      send_all(this)
+    });
+ 
+    function send_all(THIS){
+      if(other_comments_found && my_comments_found){
+        if(THIS.comments_list.length>0){
+          THIS.first_comment.emit({comment:THIS.comments_list[0]})
+        }
+        else if(THIS.my_comments_list.length>0){
+          THIS.first_comment.emit({comment:THIS.my_comments_list[0]})
         }
       }
-    }).on('keydown', function(){
-      $(this).height(1);
-      var totalHeight = $(this).prop('scrollHeight') - parseInt($(this).css('padding-top')) - parseInt($(this).css('padding-bottom'));
-      $(this).height(totalHeight + 10);
-    });*/
+      
+    }
 
   }
 
   
 
-    
+
+  sort_comments(list,target){
+    if(list.length>1){
+      for (let i=1; i<list.length; i++){
+        let time = convert_timestamp_to_number(list[i].createdAt);
+        let number_of_likes= 60*60*list[i].number_of_likes; //un like fait gagner 1h
+        if(list[i].author_id_who_comments==this.authorid){
+          number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
+        }
+        for (let j=0; j<i;j++){
+          let second_number_of_likes=60*60*list[j].number_of_likes;
+          if(list[j].author_id_who_comments==this.authorid){
+            second_number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
+          }
+          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + second_number_of_likes)){
+            list.splice(j, 0, list.splice(i, 1)[0]);
+          }
+          if(j==list.length-2){
+            if(target=="other"){
+              this.display_comments=true;
+             
+            }
+            else{
+              this.display_my_comments=true;
+            }
+           
+          }
+        }
+      }
+    }
+    else{
+      if(target=="other"){
+        this.display_comments=true;
+        this.first_comment.emit({comment:this.comments_list[0]})
+      }
+      else{
+        this.display_my_comments=true;
+      }
+    }
+            
+  }
+
+
+
+  /************************************************ COMMENTS MANAGMENT ********************************/
+  /************************************************ COMMENTS MANAGMENT ********************************/
+  /************************************************ COMMENTS MANAGMENT ********************************/
+
+
+
   SHIFT_CLICKED=false;
   keyup(event) {
     if(event.key=="Shift"){
@@ -199,6 +251,7 @@ export class CommentsComponent implements OnInit {
 
           this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
             console.log(r[0])
+            console.log(get_date_to_show(date_in_seconds(this.now_in_seconds,r[0].createdAt) ));
             if(this.visitor_id!=this.authorid){
               this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).subscribe(l=>{
                 console.log(l[0])
@@ -249,7 +302,13 @@ export class CommentsComponent implements OnInit {
     }
   }
 
+  loading_remove=false;
+  loading_edit=false;
   remove_comment(i){
+      if(this.loading_remove){
+        return
+      }
+      this.loading_remove=true;
       this.NotationService.remove_commentary(this.my_comments_list[i].publication_category,this.my_comments_list[i].format,this.my_comments_list[i].style,this.my_comments_list[i].publication_id,this.my_comments_list[i].chapter_number,this.my_comments_list[i].id).subscribe(l=>{
         let index=-1;
         console.log(l[0]);
@@ -257,10 +316,12 @@ export class CommentsComponent implements OnInit {
           if(this.my_comments_list[i].id==l[0].id){
             index=i;
           }
-          if (index > -1) {
-            this.my_comments_list.splice(index, 1);
-          }
+          
         }
+        if (index > -1) {
+          this.my_comments_list.splice(index, 1);
+        }
+        this.loading_remove=false;
         if(this.visitor_id!=this.authorid){
           this.NotificationsService.remove_notification('comment',this.category,this.format,this.publication_id,this.chapter_number,false,l[0].id).subscribe(l=>{
             let message_to_send ={
@@ -295,65 +356,37 @@ export class CommentsComponent implements OnInit {
   }
 
   remove_other_comment(i){
+    if(this.loading_remove){
+      return
+    }
+    this.loading_remove=true;
     this.NotationService.remove_commentary(this.comments_list[i].publication_category,this.comments_list[i].format,this.comments_list[i].style,this.comments_list[i].publication_id,this.comments_list[i].chapter_number,this.comments_list[i].id).subscribe(l=>{
       let index=-1;
       for (let i=0;i<this.comments_list.length;i++){
         if(this.comments_list[i].id==l[0].id){
           index=i;
         }
-        if (index > -1) {
-          this.comments_list.splice(index, 1);
-          //this.visitor_mode_list.splice(index,1);
-        }
+        
       }
-      
+      if (index > -1) {
+        this.comments_list.splice(index, 1);
+        //this.visitor_mode_list.splice(index,1);
+      }
+      this.loading_remove=false;
     })
 
     this.removed_comment.emit();
 }
 
   edit_comment(i) {
+    if(this.loading_remove || this.loading_edit){
+      return
+    }
+    this.loading_edit=true;
     this.editable_comment = i;
   }
 
-  sort_comments(list,target){
-    if(list.length>1){
-      for (let i=1; i<list.length; i++){
-        let time = convert_timestamp_to_number(list[i].createdAt);
-        let number_of_likes= 60*60*list[i].number_of_likes; //un like fait gagner 1h
-        if(list[i].author_id_who_comments==this.authorid){
-          number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
-        }
-        for (let j=0; j<i;j++){
-          let second_number_of_likes=60*60*list[j].number_of_likes;
-          if(list[j].author_id_who_comments==this.authorid){
-            second_number_of_likes+=60*60*10000; // un commentarie du propriétaire vaut un commentaire à 10000 likes 
-          }
-          if( (time + number_of_likes) > (convert_timestamp_to_number(list[j].createdAt) + second_number_of_likes)){
-            list.splice(j, 0, list.splice(i, 1)[0]);
-          }
-          if(j==list.length-2){
-            if(target=="other"){
-              this.display_comments=true;
-            }
-            else{
-              this.display_my_comments=true;
-            }
-           
-          }
-        }
-      }
-    }
-    else{
-      if(target=="other"){
-        this.display_comments=true;
-      }
-      else{
-        this.display_my_comments=true;
-      }
-    }
-            
-  }
+ 
   
   load_pp(){
     this.pp_is_loaded=true;
@@ -366,7 +399,9 @@ export class CommentsComponent implements OnInit {
 
   
   signup(){
-    const dialogRef = this.dialog.open(SignupComponent, {});
+    const dialogRef = this.dialog.open(SignupComponent, {
+      panelClass:"signupComponentClass"
+    });
   }
 
 }

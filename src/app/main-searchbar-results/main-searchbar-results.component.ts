@@ -59,7 +59,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.router.routeReuseStrategy.shouldReuseRoute = function() {
       return false;
     };
-
+    this.navbar.setActiveSection(-1);
     this.navbar.show();
   }
 
@@ -83,12 +83,12 @@ export class MainSearchbarResultsComponent implements OnInit {
   first_filters=[this.first_filters_accounts,this.first_filters_ads,this.first_filters_comics,this.first_filters_drawings,this.first_filters_writings];
 
   comics_tags=["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
   drawings_tags=["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
-  "Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport"];
+  "Réaliste","Religion","Romantique","SF","Sociologie","Sport"];
   writings_tags=["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","Science-fiction","Sociologie","Sport","Thriller","Western"];
-  ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
+  ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
 
 
   accounts_favorites=["Bandes dessinées","Dessins", "Ecrits", "Annonces"];
@@ -222,8 +222,15 @@ export class MainSearchbarResultsComponent implements OnInit {
     
   }
 
-  
-  
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+
+
   @ViewChild("swiperCategories") swiperCategories:ElementRef;
   initialize_swiper() {
 
@@ -774,26 +781,27 @@ export class MainSearchbarResultsComponent implements OnInit {
     console.log("get proposition " + i + ' /' + this.list_of_first_propositions.length)
     console.log(" compteur " + compteur + ' and compteur research ' + this.compteur_research)
     if(this.list_of_first_propositions[i].publication_category=="Account"){
+      this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_first_propositions[i].target_id).subscribe(t=> {
+        let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+        if(compteur==this.compteur_research){
+          this.list_of_thumbnails[i] = SafeURL;
+        }
+      });
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
-          this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).subscribe(t=> {
-            let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            if(compteur==this.compteur_research){
-              this.list_of_thumbnails[i] = SafeURL;
-              this.compteur_propositions++;
-              console.log(this.compteur_propositions)
-              console.log(this.list_of_first_propositions)
-              if(this.compteur_propositions==this.list_of_first_propositions.length){
-                this.propositions_done("account","")
-              }
-            }
-           
-          });
+          this.compteur_propositions++;
+          console.log(this.compteur_propositions)
+          console.log(this.list_of_first_propositions)
+          if(this.compteur_propositions==this.list_of_first_propositions.length){
+            this.propositions_done("account","")
+          }
         }
         
       })
+     
+     
     }
     if(this.list_of_first_propositions[i].publication_category=="Ad"){
       this.Ads_service.retrieve_ad_by_id(this.list_of_first_propositions[i].target_id).subscribe(ad=>{
@@ -1060,16 +1068,19 @@ export class MainSearchbarResultsComponent implements OnInit {
     return "/linkcollab"
   }
 
+  @ViewChild('input') input:ElementRef;
+
   page_clicked(e:any) {
     if(e.keyCode === 13){
       e.preventDefault();
 
       if( (e.target.value >= 1) && (e.target.value <= this.number_of_pages) ) {
-        //go to page
+        this.current_page=e.target.value ;
+        this.open_new_page()
         
       }
       else {
-        //vider l'input
+       this.input.nativeElement.value= this.current_page;
       }
     }
   }
@@ -1093,12 +1104,12 @@ export class MainSearchbarResultsComponent implements OnInit {
   }
 
 
-scroll(el: HTMLElement) {
+  scroll(el: HTMLElement) {
 
-  this.cd.detectChanges();
-  var topOfElement = el.offsetTop - 150;
-  window.scroll({top: topOfElement, behavior:"smooth"});
-}
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
 
  open_new_page(){
   

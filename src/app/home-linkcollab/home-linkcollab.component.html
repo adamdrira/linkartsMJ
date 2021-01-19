@@ -3,252 +3,307 @@
 
 
 <div class="container-fluid">
-    <main role="main" class="main">
-        
 
 
+    <!--<div class="top-container">
 
-        <div id="left-container">
-
-            <div class="categories-container">
-                
-                <div class="category-filter put-on-the-left">
-                    <div class="content-action text-center" (click)="open_subcategory(0);" [ngClass]="{'opened': subcategory==0 }">
-                        <div class="title" [ngClass]="{'title-opened': subcategory==0 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': subcategory==0 }">
-                                </div>
-                            </div>
-                          Collaborations bénévoles
-                        </div>
-                    </div>
-                    <div class="content-action text-center" (click)="open_subcategory(1)" [ngClass]="{'opened': subcategory==1 }">
-                        <div class="title" [ngClass]="{'title-opened': subcategory==1 }"> 
-                            <div class="icon-container">
-                                <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
-                                </div>
-                            </div>
-                            Collaborations rémunérées
-                        </div>
-                    </div>
+        <div class="categories-container">
+            <div class="category-filter">
+                <div class="content-action text-center">
+                    <span>Nos partenaires potentiels</span>
                 </div>
+            </div>
+        </div>
+        
+        <div class="right-container-scrollable">
 
+            <div class="panel-controller">
+                <div class="dropdowns-container">
+                    <select name="somename" class="SelectBox5" placeholder="Trier par type" style="height: 100%;">
+                        <option label="Bandes dessinées">Bandes dessinées</option>
+                        <option label="Dessins">Dessins</option>
+                        <option label="Écrits">Écrits</option>
+                    </select>
+                </div>
             </div>
 
 
-            <div class="left-container-scrollable">
+           
 
-                <div class="panel-controller">
-                    <div class="dropdowns-container" *ngIf="subcategory==0">
-                        
-                        <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
+
+
+            <div class="item-container">
+                <div class="picture-container">
+                    <img src="../../assets/img/glenat_edition.png">
+                    <button mat-raised-button class="submit-project-button style0">
+                        Découvrir
+                    </button>
+                </div>
+                <div class="detail-container">
+                    <div class="author-container">
+                        <div class="left-container">
+                            <img src="../../assets/img/glenat_edition.png">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">
+                                Glénat
+                            </span>
+                            <div class="author-location">
+                                <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
+                                <span>Paris, France</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="picture-container">
+                    <img src="../../assets/img/pika_edition.png">
+                    <button mat-raised-button class="submit-project-button style0">
+                        Découvrir
+                    </button>
+                </div>
+                <div class="detail-container">
+                    <div class="author-container">
+                        <div class="left-container">
+                            <img src="../../assets/img/pika_edition.png">
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">
+                                Pika
+                            </span>
+                            <div class="author-location">
+                                <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
+                                <span>Paris, France</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>-->
+
+    <div class="bottom-container">
+
+        <div class="category-filter ">
+            <div class="content-action text-center" (click)="open_subcategory(0);" [ngClass]="{'opened': subcategory==0 }">
+                <div class="title" [ngClass]="{'title-opened': subcategory==0 }"> 
+                    <div class="icon-container">
+                        <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': subcategory==0 }">
+                        </div>
+                    </div>
+                    Collaborations bénévoles
+                </div>
+            </div>
+            <div class="content-action text-center" (click)="open_subcategory(1)" [ngClass]="{'opened': subcategory==1 }">
+                <div class="title" [ngClass]="{'title-opened': subcategory==1 }"> 
+                    <div class="icon-container">
+                        <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
+                        </div>
+                    </div>
+                    Collaborations rémunérées
+                </div>
+            </div>
+            <div class="content-action text-center" (click)="open_subcategory(2)" [ngClass]="{'opened': subcategory==2 }">
+                <div class="title" [ngClass]="{'title-opened': subcategory==2 }"> 
+                    <div class="icon-container">
+                        <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
+                        </div>
+                    </div>
+                    Produits & Services
+                </div>
+            </div>
+        </div>
+
+
+        <div class="left-container-scrollable">
+
+            <div class="panel-controller">
+                <div class="dropdowns-container"  [ngClass]="{'invisible':!sumo_ready}">
+                    
+                    <select name="somename" class="SelectBox1" placeholder="Objet de l'annonce" style="height: 100%;">
+                        <!--<option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Bandes dessinées">Bandes dessinées</option>
+                        <option label="BD européennes">BD européennes</option>
+                        <option label="Comics">Comics</option>
+                        <option label="Manga">Manga</option>
+                        <option label="Dessin ">Dessin en tout genre</option>
+                        <option label="Dessin numérique">Dessin numérique</option>
+                        <option label="Dessin traditionnel">Dessin traditionnel</option>
+                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
+                        <option label="Articles">Articles</option>
+                        <option label="Roman">Roman</option>
+                        <option label="Roman illustré">Roman illustré</option>
+                        <option label="Scénario">Scénario</option>-->
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option *ngFor="let section of ads_types;let i=index;">{{section}}</option> 
+                    </select>
+                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                        <!--<option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>-->
+                        <option selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option *ngFor="let section of ads_descriptions;let i=index;">{{section}}</option> 
+                    </select>
+                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
+                        <!--<option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option label="Professionnel non artiste">Professionnel non artiste</option>
+                        <option label="Artiste">Artiste</option>
+                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
+                        <option label="Ecrivain">Ecrivain</option>
+                        <option label="Dessinateur">Dessinateur</option>
+                        <option label="Scénariste">Scénariste</option>-->
+                        <option disabled selected value="none"></option>
+                        <option label="Tout">Tout</option>
+                        <option *ngFor="let section of ads_targets;let i=index;">{{section}}</option> 
+                    </select>
+
+                    <div [ngClass]="{'really-invisible':!service}">
+                        <select name="somename" class="SelectBox6" placeholder="Catégorie de l'annonce " style="height: 100%;" >
                             <option disabled selected value="none"></option>
                             <option label="Tout">Tout</option>
-                            <option label="Bandes dessinées">Bandes dessinées</option>
-                            <option label="BD européennes">BD européennes</option>
-                            <option label="Comics">Comics</option>
-                            <option label="Manga">Manga</option>
-                            <option label="Dessin ">Dessin en tout genre</option>
-                            <option label="Dessin numérique">Dessin numérique</option>
-                            <option label="Dessin traditionnel">Dessin traditionnel</option>
-                            <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                            <option label="Articles">Articles</option>
-                            <option label="Roman">Roman</option>
-                            <option label="Roman illustré">Roman illustré</option>
-                            <option label="Scénario">Scénario</option>
+                            <option *ngFor="let section of ads_services_types;let i=index;">{{section}}</option> 
                         </select>
-                        <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
+                    </div>
+                   
+
+                    <div [ngClass]="{'really-invisible':!service}">
+                        <select name="somename" class="SelectBox8" placeholder="Type d'annonce" style="height: 100%;">
+                            <option disabled selected value="Offres"></option>
+                            <option label="Tout">Tout</option>
+                            <option label="Offre">Offre</option>
+                            <option label="Demande">Demande</option>
+                        </select>
+                    </div>
+                   
+
+                    <div [ngClass]="{'really-invisible':!remuneration}">
+                        <select name="somename" class="SelectBox7" placeholder="Type de rémunération" style="height: 100%;" >
                             <option disabled selected value="none"></option>
                             <option label="Tout">Tout</option>
-                            <option label="Professionnel non artiste">Professionnel non artiste</option>
-                            <option label="Artiste">Artiste</option>
-                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                            <option label="Ecrivain">Ecrivain</option>
-                            <option label="Dessinateur">Dessinateur</option>
-                            <option label="Scénariste">Scénariste</option>
+                            <option *ngFor="let section of ads_remuneration_types;let i=index;" >{{section}}</option> 
                         </select>
-                        <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option label="Professionnel non artiste">Professionnel non artiste</option>
-                            <option label="Artiste">Artiste</option>
-                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                            <option label="Ecrivain">Ecrivain</option>
-                            <option label="Dessinateur">Dessinateur</option>
-                            <option label="Scénariste">Scénariste</option>
-                        </select>
+                    </div>
+                   
+
+                    
+
+                    <div  [ngClass]="{'really-invisible':!remuneration && !service}">
                         <select name="somename" class="SelectBox4" placeholder="Tri par pertinence" style="height: 100%;">
                             <option disabled selected value="Pertinence"></option>
                             <option label="pertinence">Tri par pertinence</option>
                             <option label="récent">Tri par le plus récent</option>
                             <option label="ancient">Tri par le plus ancient</option>
+                            <option label="croissant">Tri par montant croissant</option>
+                            <option label="décroissant">Tri par montant décroissant</option>
                         </select>
-                        
                     </div>
 
-                    <div class="dropdowns-container" *ngIf="subcategory==1">
-                        <select name="somename" class="SelectBox1" placeholder="Type de projet" style="height: 100%;">
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option label="Bandes dessinées">Bandes dessinées</option>
-                            <option label="BD européennes">BD européennes</option>
-                            <option label="Comics">Comics</option>
-                            <option label="Manga">Manga</option>
-                            <option label="Dessin ">Dessin en tout genre</option>
-                            <option label="Dessin numérique">Dessin numérique</option>
-                            <option label="Dessin traditionnel">Dessin traditionnel</option>
-                            <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                            <option label="Articles">Articles</option>
-                            <option label="Roman">Roman</option>
-                            <option label="Roman illustré">Roman illustré</option>
-                            <option label="Scénario">Scénario</option>
-                        </select>
-                        <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option label="Professionnel non artiste">Professionnel non artiste</option>
-                            <option label="Artiste">Artiste</option>
-                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                            <option label="Ecrivain">Ecrivain</option>
-                            <option label="Dessinateur">Dessinateur</option>
-                            <option label="Scénariste">Scénariste</option>
-                        </select>
-                        <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option label="Professionnel non artiste">Professionnel non artiste</option>
-                            <option label="Artiste">Artiste</option>
-                            <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                            <option label="Ecrivain">Ecrivain</option>
-                            <option label="Dessinateur">Dessinateur</option>
-                            <option label="Scénariste">Scénariste</option>
-                        </select>
-                        <select name="somename" class="SelectBox4" placeholder="Tri par pertinence" style="height: 100%;">
-                            <option disabled selected value="none"></option>
+                    <div  [ngClass]="{'really-invisible':remuneration || service}">
+                        <select name="somename" class="SelectBox4b" placeholder="Tri par pertinence" style="height: 100%;">
+                            <option disabled selected value="Pertinence"></option>
                             <option label="pertinence">Tri par pertinence</option>
                             <option label="récent">Tri par le plus récent</option>
                             <option label="ancient">Tri par le plus ancient</option>
                         </select>
-                        
                     </div>
+                   
+                    
                 </div>
 
-
-                <div *ngIf="list_of_ads_received">
-                    <div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                        <app-thumbnail-ad 
-                        [item]=item
-                        now_in_seconds={{now_in_seconds}}
-                        ></app-thumbnail-ad>
-                    </div>
-                </div>
                 
-
             </div>
 
-        </div>
 
-
-
-        <div id="right-container">
-
-            <div class="categories-container">
-                <div class="category-filter">
-                    <div class="content-action text-center">
-                        <span>Nos partenaires potentiels</span>
-                    </div>
-                </div>
-            </div>
+            <div *ngIf="loading_ads && !list_of_ads_received" class="thumbnails-container ">
             
-            <div class="right-container-scrollable">
-
-                <div class="panel-controller">
-                    <div class="dropdowns-container">
-                        <select name="somename" class="SelectBox5" placeholder="Trier par type" style="height: 100%;">
-                            <option label="Bandes dessinées">Bandes dessinées</option>
-                            <option label="Dessins">Dessins</option>
-                            <option label="Écrits">Écrits</option>
-                        </select>
+                <div class="loading_height_5">
+                    <div class="thumbnail" *ngFor="let item of skeleton_array; let i = index">
+                        <app-thumbnail-artwork 
+                        [skeleton]="skeleton"
+                        ></app-thumbnail-artwork>
                     </div>
                 </div>
 
+               
+            </div >
 
-                <!--<div class="search-container">
-                    <mat-form-field class="search-input">
-                        <mat-label>Rechercher</mat-label>
-                        <input matInput placeholder="Rechercher" autocomplete="off">
-                    </mat-form-field>
+            <div class="no-proposition-container" *ngIf="list_of_ads_received && display_no_propositions" [@enterAnimation]>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">find_in_page</mat-icon>
+                <span >Aucun résultat pour la recherche demandée</span>
+            </div>
+
+            <div *ngIf="list_of_ads_received" class="thumbnails-container ">
+                <!--<div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
+                    <app-thumbnail-ad 
+                    [item]=item
+                    now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-ad>
                 </div>-->
 
-
-
-                <div class="item-container">
-                    <div class="picture-container">
-                        <img src="../../assets/img/glenat_edition.png">
-                        <button mat-raised-button class="submit-project-button style0">
-                            Découvrir
+                <ng-container *ngIf="show_propositions">
+                    <div [ngClass]="{'loading_height_5':(number_of_pages>current_page || ( current_page==number_of_pages && number_of_results%5==0)),'loading_height_4':(current_page==number_of_pages && number_of_results%5==4),'loading_height_3':(current_page==number_of_pages && number_of_results%5==3),'loading_height_2':(current_page==number_of_pages && number_of_results%5==2),'loading_height_1':(current_page==number_of_pages && number_of_results%5==1)}">
+                        <ng-container *ngFor="let item of list_of_ads;let i=index">
+                           
+                            <div class="thumbnail " >
+                                <app-thumbnail-ad
+                                now_in_seconds={{now_in_seconds}}
+                                [item]=list_of_ads[i]>
+                                </app-thumbnail-ad>
+                            </div>
+                        </ng-container>
+                    </div>
+                    
+        
+                    
+                    <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
+                        <button class="button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
+                        </button>
+                        <button class="button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
+                        </button>
+        
+                        <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
+                        <span class="total-pages"> / {{number_of_pages}}</span>
+                        
+                        <button class="button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
+                        </button>
+                        <button class="button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
                         </button>
                     </div>
-                    <div class="detail-container">
-                        <!--********************-->
-                        <!--Author container-->
-                        <!--********************-->
-                        <div class="author-container">
-                            <div class="left-container">
-                                <img src="../../assets/img/glenat_edition.png">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">
-                                    Glénat
-                                </span>
-                                <div class="author-location">
-                                    <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
-                                    <span>Paris, France</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="item-container">
-                    <div class="picture-container">
-                        <img src="../../assets/img/pika_edition.png">
-                        <button mat-raised-button class="submit-project-button style0">
-                            Découvrir
-                        </button>
-                    </div>
-                    <div class="detail-container">
-                        <!--********************-->
-                        <!--Author container-->
-                        <!--********************-->
-                        <div class="author-container">
-                            <div class="left-container">
-                                <img src="../../assets/img/pika_edition.png">
-                            </div>
-                            <div class="right-container">
-                                <span class="author-name">
-                                    Pika
-                                </span>
-                                <div class="author-location">
-                                    <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
-                                    <span>Paris, France</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                </ng-container>
 
 
             </div>
 
-
+            
+            
 
         </div>
 
+    </div>
+
+
 
         
 
-        
 
-    </main>
 </div>

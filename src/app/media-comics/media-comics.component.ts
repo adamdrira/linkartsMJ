@@ -45,18 +45,14 @@ export class MediaComicsComponent implements OnInit {
     /*if(this.number_of_comics_to_show>=0){
       this.update_lists(this.number_of_comics_to_show);
     }*/
-    console.log(this.width)
     var n = Math.floor(this.width/250);
-    console.log(n)
     if(n>3){
-      console.log("n>3")
       this.number_of_comics_to_show=(n<6)?n:6;
     }
     else{
       console.log("n<4 ")
       this.number_of_comics_to_show=6;
     }
-    console.log(this.number_of_comics_to_show)
    
     this.cd.detectChanges()
   }

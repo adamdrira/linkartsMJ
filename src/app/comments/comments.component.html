@@ -23,7 +23,7 @@
 
 <div class="blocked" *ngIf="user_blocked_retrieved && user_blocked">
 
-    <mat-icon>info_outline</mat-icon>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
     <span *ngIf="user_who_blocked=='me'">Vous avez bloqué cet utilisateur et ne pouvez plus commenter ses contenus</span>
     <span *ngIf="user_who_blocked!='me'">Vous avez été bloqué par cet utilisateur et ne pouvez plus commenter ses contenus</span>
 </div>
@@ -58,7 +58,7 @@
     </div>
 
 
-    <ng-container *ngIf='display_comments && visitor_mode_retrieved'>
+    <ng-container *ngIf='display_comments '>
         <div class="comment">
 
             <div class="left-container">
@@ -78,19 +78,19 @@
             <div class="right-container">
                 <!--options pour un visiteur -->
                 <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
-                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
                     <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon>flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                         <span>Signaler</span>
                     </button>
                     <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon>flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                         <span>Annuler le signalement</span>
                     </button>
                     <button *ngIf="!visitor_mode && category!='ad'" (click)="remove_other_comment(0)" class="comments-button-menu-item" mat-menu-item>
-                        <mat-icon>close</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>
                 </mat-menu>
@@ -119,15 +119,15 @@
             
             <div class="right-container">
                 <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
-                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                    <button class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
-                        <mat-icon>edit</mat-icon>
+                    <button  *ngIf="!loading_edit" class="comments-button-menu-item" tabIndex="-1" (click)="edit_comment(i)" mat-menu-item>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                         <span>Editer</span>
                     </button>
                     <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment(i)" mat-menu-item>
-                        <mat-icon>close</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>
                 </mat-menu>
@@ -136,7 +136,7 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf='display_comments && visitor_mode_retrieved'>
+    <ng-container *ngIf='display_comments'>
         <div *ngFor="let item of comments_list.slice(1,number_of_comments_to_show); let i = index" class="comment">
 
             <div class="left-container">
@@ -155,15 +155,15 @@
             
             <div class="right-container">
                 <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
-                    <mat-icon class="optionsButton">more_vert</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
                     <button class="comments-button-menu-item" tabIndex="-1" mat-menu-item>
-                        <mat-icon>flag</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                         <span>Signaler</span>
                     </button>
                     <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_other_comment(i)" mat-menu-item>
-                        <mat-icon>close</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                         <span>Supprimer</span>
                     </button>
                 </mat-menu>

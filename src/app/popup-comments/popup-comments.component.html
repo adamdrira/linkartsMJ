@@ -9,9 +9,20 @@
 <div class="scrollable-container">
     <div class="component-container">
 
-        <app-comments [type_of_account]=type_of_account [title]="title" [category]=category [format]=format
-        [style]=style [publication_id]=publication_id [chapter_number]=chapter_number [authorid]=authorid
-        [number_of_comments_to_show]=number_of_comments_to_show (new_comment)="new_comment();"
+        <app-comments 
+        [visitor_id]="visitor_id"
+        [visitor_name]="visitor_name"
+        [visitor_mode]="visitor_mode"
+        [type_of_account]=type_of_account 
+        [title]="title" 
+        [category]=category 
+        [format]=format
+        [style]=style 
+        [publication_id]=publication_id 
+        [chapter_number]=chapter_number 
+        [authorid]=authorid
+        [number_of_comments_to_show]=number_of_comments_to_show 
+        (new_comment)="new_comment();"
         (removed_comment)="removed_comment();"></app-comments>
 
 

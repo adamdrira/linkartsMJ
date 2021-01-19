@@ -3,6 +3,7 @@ import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/cor
 import {ElementRef,Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { Location } from '@angular/common';
+import { CookieService } from 'ngx-cookie-service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import {trigger, style, animate, transition} from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
@@ -15,15 +16,17 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import {AuthenticationService} from '../services/authentication.service';
 import {LoginComponent} from '../login/login.component';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+
 import { MatDialog } from '@angular/material/dialog';
 import {NotificationsService} from '../services/notifications.service';
 import { Ads_service } from '../services/ads.service';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { PopupNavbarComponent } from '../popup-navbar/popup-navbar.component';
 import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 declare var $: any;
 declare var Swiper: any;
@@ -73,12 +76,15 @@ export class NavbarLinkartsComponent implements OnInit {
       navbar.connexion.subscribe(r=>{
         if(r!=this.connexion_status){
           this.connexion_status=r
-          if(!r){
-            console.log("not connected")
-          }
+          
           if(r){
             console.log("connected")
-            //this.reload_page();
+            if(this.chatService.messages && !this.using_chat && this.navbar_visible && this.using_chat_retrieved){
+
+              this.check_chat_service=true;
+              this.check_chat_service_func();
+              this.cd.detectChanges();
+            }
           }
         }
         
@@ -103,6 +109,7 @@ export class NavbarLinkartsComponent implements OnInit {
         console.log(this.chatService)
         console.log(this.navbar.visible)
         console.log(using_chat)
+        this.using_chat=using_chat;
         this.using_chat_retrieved=true;
         if(this.chatService.messages && !using_chat && this.navbar_visible){
           //console.log("if not using chat")
@@ -158,24 +165,28 @@ export class NavbarLinkartsComponent implements OnInit {
   focus_activated=false;
   show_researches_propositions=false;
   show_selector=false;
-  using_chat=false;
-  using_chat_retrieved=false;
+
   check_chat_service=false;
   check_notifications_from_service=false;
   list_of_notifications_profile_pictures=[];
   notifications_pictures_retrieved=false;
   list_of_notifications=[];
-  list_of_messages=[];
-  number_of_unseen_messages:number;
+  
   number_of_unchecked_notifications=100;
   index_of_notifications_to_show=15;
   show_notifications=false;
+
+
+  using_chat=false;
+  using_chat_retrieved=false;
   show_chat_messages=false;
+  list_of_messages=[];
+  number_of_unseen_messages:number;
+  @ViewChild('chat') chat:ElementRef;
 
   @ViewChild('input') input:ElementRef;
   @ViewChild('searchicon') searchicon:ElementRef;
   @ViewChild('notifications') notifications:ElementRef;
-  @ViewChild('chat') chat:ElementRef;
   @ViewChild('propositions') propositions:ElementRef;
   @ViewChild('navbarLogo') navbarLogo:ElementRef;
 
@@ -193,7 +204,7 @@ export class NavbarLinkartsComponent implements OnInit {
   //notificaitons 
   display_new_messages=false;
   logo_is_loaded=false;
-  
+  logo_is_loaded2=false;
   @HostListener('window:focus', ['$event'])
   onFocus(event: any): void {
     if(!this.user_present && (this.type_of_profile=='account' || this.type_of_profile=='suspended') && !this.show_chat_messages){
@@ -204,16 +215,9 @@ export class NavbarLinkartsComponent implements OnInit {
 
   }
 
-  @HostListener('window:blur', ['$event'])
-    onBlur(event: any): void {
-    /*this.user_present=false;
-    this.show_chat_messages=false;
-    this.show_notifications=false;*/
-  }
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    console.log("clickout")
     if(!this.user_present && !this.show_notifications && (this.type_of_profile=='account' || this.type_of_profile=='suspended')){
       this.user_present=true;
       this.list_of_friends_retrieved=false;
@@ -226,14 +230,15 @@ export class NavbarLinkartsComponent implements OnInit {
       } 
     }
     if(this.show_notifications){
-      if(!this.notifications.nativeElement.contains(event.target) ) {
+      if(this.notifications && !this.notifications.nativeElement.contains(event.target) ) {
         this.show_notifications=false;
         this.change_notifications_status_to_checked();
       } 
     }
     if(this.show_chat_messages){
-      if(!this.chat.nativeElement.contains(event.target) ) {
-        this.list_of_chat_friends_ids=[]; 
+      if(this.chat &&!this.chat.nativeElement.contains(event.target) ) {
+        console.log("reset chat")
+        //this.list_of_chat_friends_ids=[]; 
         this.show_chat_messages=false;
         this.number_of_unseen_messages=0;
         this.cd.detectChanges();
@@ -249,20 +254,41 @@ export class NavbarLinkartsComponent implements OnInit {
 
   @ViewChild('navbarMargin', { read: ElementRef }) navbarMargin:ElementRef;
     
+  list_of_conditions=[];
+  conditions_retrieved=false;
   ngOnInit() {
     console.log(this.navbar.visible)
     window.addEventListener('scroll', this.scroll, true);
     
     //this.setHeight();
     //this.define_margin_top();
+    let compteur_conditions=0;
+    for(let i=0;i<5;i++){
+      this.Writing_Upload_Service.retrieve_writing_for_options(i).subscribe(r=>{
+        this.list_of_conditions[i]=r;
+        compteur_conditions++;
+        if(compteur_conditions==5){
+          this.conditions_retrieved=true;
+        }
+      })
+    }
 
-    this.AuthenticationService.tokenCheck().subscribe(r=>{
-      if(r=="account" || r=="suspended"){
-        this.type_of_profile=r;
+    this.Profile_Edition_Service.get_current_user_and_cookies().subscribe(r=>{
+
+      let user =r[0].user
+      let cookies =r[0].cookies;
+      if(!cookies){
+        this.show_cookies=true;
+      }
+      console.log(user);
+      console.log(cookies)
+      if(user[0] && (user[0].status=="account" || user[0].status=="suspended")){
+        this.type_of_profile=user[0].status;
         //console.log(this.type_of_profile)
-        this.retrieve_profile();
+        this.retrieve_profile(user);
       }
       else{
+        console.log("in false")
         this.data_retrieved=true;
         this.using_chat_retrieved=true;
         this.type_of_profile="visitor";
@@ -280,11 +306,11 @@ export class NavbarLinkartsComponent implements OnInit {
     this.get_connection_interval = setInterval(() => {
       console.log(this.list_of_friends_retrieved)
       console.log(!this.navbar.get_using_chat())
-      if(this.list_of_friends_retrieved && !this.navbar.get_using_chat()){
+      if(this.list_of_friends_retrieved && !this.navbar.get_using_chat() && !this.popup_opened){
         console.log("getting connections status")
         this.get_connections_status();
       }
-    }, 5000);
+    }, 60000);
 
  
 
@@ -358,9 +384,8 @@ export class NavbarLinkartsComponent implements OnInit {
 
   
 
-  retrieve_profile(){
+  retrieve_profile(r){
     //console.log("retrieve profile")
-    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id=r[0].id;
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.pseudo=r[0].nickname;
@@ -399,7 +424,6 @@ export class NavbarLinkartsComponent implements OnInit {
           this.number_of_unchecked_notifications=0;
         }
       });
-    })
   }
 
   pp_loaded(){
@@ -474,18 +498,19 @@ export class NavbarLinkartsComponent implements OnInit {
   list_of_notifications_dates=[];
   final_list_of_notifications_to_show=[];
   compteur_get_final_list=0;
+  number_of_empties=0;
   get_final_list_of_notifications_to_show(status){
     if(status=="add"){
       this.list_of_notifications_profile_pictures.splice(0,0,null);
     }
     this.compteur_get_final_list++;
-    let compteur=this.compteur_get_final_list
+    let compteur=this.compteur_get_final_list;
     //console.log("Az get fi list of notifs r c " + this.compteur_get_final_list)
     this.final_list_of_notifications_to_show=[];
     this.dictionnary_of_similar_notifications={};
     this.dictionnary_of_similar_notifications[0]=[];
     this.final_list_of_notifications_to_show[0]=this.list_of_notifications[0];
-    let number_of_empties=0;
+    this.number_of_empties=0;
     if(this.list_of_notifications.length>1){
       for(let i=1;i<this.list_of_notifications.length;i++){
         this.dictionnary_of_similar_notifications[i]=[];
@@ -530,11 +555,11 @@ export class NavbarLinkartsComponent implements OnInit {
             this.final_list_of_notifications_to_show[i]=this.list_of_notifications[i];
         }
         else if(i<20){
-          number_of_empties+=1
+          this.number_of_empties+=1
         }
       }
     }
-    this.index_of_notifications_to_show=15+number_of_empties;
+    this.index_of_notifications_to_show=15+ this.number_of_empties;
     this.data_retrieved=true;
     this.display_number_of_unchecked_notifications();
     let compteur_pp=0;
@@ -553,7 +578,7 @@ export class NavbarLinkartsComponent implements OnInit {
               compteur_pp++;
               if(compteur_pp==this.list_of_notifications.length){
                 //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
-                this.index_of_notifications_to_show=15+number_of_empties;
+                this.index_of_notifications_to_show=15+ this.number_of_empties;
                 this.notifications_pictures_retrieved=true;
                 this.display_number_of_unchecked_notifications();
               }
@@ -567,7 +592,7 @@ export class NavbarLinkartsComponent implements OnInit {
           compteur_pp++;
           if(compteur_pp==this.list_of_notifications.length){
             //console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
-            this.index_of_notifications_to_show=15+number_of_empties;
+            this.index_of_notifications_to_show=15+ this.number_of_empties;
             this.notifications_pictures_retrieved=true;
             this.display_number_of_unchecked_notifications();
           }
@@ -582,7 +607,7 @@ export class NavbarLinkartsComponent implements OnInit {
                 compteur_pp++;
                 if(compteur_pp==this.list_of_notifications.length){
                  // console.log(" Az End pp for c " + compteur + " and r c " +  this.compteur_get_final_list)
-                  this.index_of_notifications_to_show=15+number_of_empties;
+                  this.index_of_notifications_to_show=15+ this.number_of_empties;
                   this.notifications_pictures_retrieved=true;
                   this.display_number_of_unchecked_notifications();
                 }
@@ -852,10 +877,11 @@ export class NavbarLinkartsComponent implements OnInit {
             this.initialize_swiper2();
             //this.swiper.update();
             //this.swiper2.update();
-            specific_retrieved=true;
+            
             this.cd.detectChanges();
 
             if(m[0][0].length<10){
+              specific_retrieved=true;
               check_with_global(this)
             }
             else{
@@ -873,7 +899,7 @@ export class NavbarLinkartsComponent implements OnInit {
           //console.log(r[0][0]);
           global_result=r[0][0]
           global_retrieved=true;
-          if(r[1]==this.compteur_research){
+          if(r[1]==this.compteur_research && specific_retrieved){
             check_with_global(this)
             
           }
@@ -990,23 +1016,26 @@ export class NavbarLinkartsComponent implements OnInit {
     this.cd.detectChanges();
   }
   get_first_propositions(i,compteur){
+    this.list_of_thumbnails_history[i]=null;
     if(this.list_of_first_propositions_history[i].publication_category=="Account"){
       //console.log("Account");
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions_history[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_recent){
           this.list_of_last_propositions_history[i]=profile[0];
+          
           this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
               this.list_of_thumbnails_history[i] = SafeURL;
-              this.compteur_first_propositions++;
-              if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
-                this.display_first_propositions("Account")
-              }
+              
             }
            
           });
+          this.compteur_first_propositions++;
+          if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+            this.display_first_propositions("Account")
+          }
         }
         
       })
@@ -1022,12 +1051,14 @@ export class NavbarLinkartsComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_recent){
               this.list_of_thumbnails_history[i] = SafeURL;
-              this.compteur_first_propositions++;
-              if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
-                this.display_first_propositions("Ad")
-              }
+              
             }
+           
           })
+          this.compteur_first_propositions++;
+          if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+            this.display_first_propositions("Ad")
+          }
         }
       })
     }
@@ -1044,13 +1075,14 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
                   this.list_of_thumbnails_history[i] = SafeURL;
-                  this.compteur_first_propositions++;
-                  if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
-                    this.display_first_propositions("Comic one-shot")
-                  }
+                  
                 }
                 
             })
+            this.compteur_first_propositions++;
+            if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+              this.display_first_propositions("Comic one-shot")
+            }
           }
           
         })
@@ -1064,12 +1096,13 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
                   this.list_of_thumbnails_history[i] = SafeURL;
-                  this.compteur_first_propositions++;
-                  if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
-                    this.display_first_propositions("Comic serie")
-                  }
+                 
                 }
             })
+            this.compteur_first_propositions++;
+            if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+              this.display_first_propositions("Comic serie")
+            }
           }
         })
       }
@@ -1086,12 +1119,13 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
                   this.list_of_thumbnails_history[i] = SafeURL;
-                  this.compteur_first_propositions++;
+                  
+                }
+            })
+            this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
                     this.display_first_propositions("Drawing one-shot")
                   }
-                }
-            })
           }
           
         })
@@ -1105,12 +1139,13 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_recent){
                   this.list_of_thumbnails_history[i] = SafeURL;
-                  this.compteur_first_propositions++;
+                  
+                }
+            })
+            this.compteur_first_propositions++;
                   if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
                     this.display_first_propositions("Drawing artbook")
                   }
-                }
-            })
           }
           
         })
@@ -1127,13 +1162,14 @@ export class NavbarLinkartsComponent implements OnInit {
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_recent){
                 this.list_of_thumbnails_history[i] = SafeURL;
-                this.compteur_first_propositions++;
-                if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
-                  this.display_first_propositions("writing")
-                }
+               
               }
               
           })
+          this.compteur_first_propositions++;
+          if(this.compteur_first_propositions==this.list_of_first_propositions_history.length){
+            this.display_first_propositions("writing")
+          }
         }
        
       })
@@ -1155,26 +1191,34 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   get_other_propositions(i,compteur){
     console.log("get_other_propositions")
+    console.log(this.compteur_research)
     console.log(this.list_of_first_propositions)
+    console.log(this.list_of_first_propositions.length)
     console.log(i)
     console.log(this.list_of_first_propositions[i])
+    this.list_of_thumbnails[i]=null;
     if(this.list_of_first_propositions[i].publication_category=="Account"){
-      console.log("Account");
+      
       this.Profile_Edition_Service.retrieve_profile_data(this.list_of_first_propositions[i].target_id).subscribe(profile=>{
         if(compteur==this.compteur_research){
           this.list_of_last_propositions[i]=profile[0];
+          this.list_of_thumbnails[i]=null;
           this.Profile_Edition_Service.retrieve_profile_picture(profile[0].id ).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
               this.list_of_thumbnails[i] = SafeURL;
-              this.compteur_other_propositions++;
-              if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-               this.display_other_propositions("account")
-              }
+             
             }
            
           });
+          this.compteur_other_propositions++;
+          console.log("Account");
+          console.log(i)
+          console.log(this.compteur_other_propositions)
+          if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+           this.display_other_propositions("account")
+          }
         }
         
       })
@@ -1190,13 +1234,17 @@ export class NavbarLinkartsComponent implements OnInit {
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             if(compteur==this.compteur_research){
               this.list_of_thumbnails[i] = SafeURL;
-              this.compteur_other_propositions++;
-              if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                this.display_other_propositions("ad")
-              }
+             
             }
            
           });
+          this.compteur_other_propositions++;
+          console.log("ad")
+          console.log(i)
+          console.log(this.compteur_other_propositions)
+          if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+            this.display_other_propositions("ad")
+          }
         }
         
       })
@@ -1213,13 +1261,17 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
                   this.list_of_thumbnails[i] = SafeURL;
-                  this.compteur_other_propositions++;
-                  if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                    this.display_other_propositions("comic osh")
-                  }
+                 
                 }
                 
             })
+            this.compteur_other_propositions++;
+            console.log("com os")
+            console.log(i)
+            console.log(this.compteur_other_propositions)
+            if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+              this.display_other_propositions("comic osh")
+            }
           }
           
         })
@@ -1233,12 +1285,16 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
                   this.list_of_thumbnails[i] = SafeURL;
-                  this.compteur_other_propositions++;
-                  if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                    this.display_other_propositions("comic serie")
-                  }
+                  
                 }
             })
+            this.compteur_other_propositions++;
+            console.log("com s")
+            console.log(i)
+            console.log(this.compteur_other_propositions)
+            if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+              this.display_other_propositions("comic serie")
+            }
           }
         })
       }
@@ -1255,12 +1311,16 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
                   this.list_of_thumbnails[i] = SafeURL;
-                  this.compteur_other_propositions++;
-                  if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                    this.display_other_propositions("drawing os")
-                  }
+                  
                 }
             })
+            this.compteur_other_propositions++;
+            console.log("draw os")
+            console.log(i)
+            console.log(this.compteur_other_propositions)
+            if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+              this.display_other_propositions("drawing os")
+            }
           }
           
         })
@@ -1274,12 +1334,16 @@ export class NavbarLinkartsComponent implements OnInit {
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 if(compteur==this.compteur_research){
                   this.list_of_thumbnails[i] = SafeURL;
-                  this.compteur_other_propositions++;
-                  if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                    this.display_other_propositions("drawing art")
-                  }
+                  
                 }
             })
+            this.compteur_other_propositions++;
+            console.log("draw a")
+            console.log(i)
+            console.log(this.compteur_other_propositions)
+            if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+              this.display_other_propositions("drawing art")
+            }
           }
           
         })
@@ -1296,13 +1360,17 @@ export class NavbarLinkartsComponent implements OnInit {
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
               if(compteur==this.compteur_research){
                 this.list_of_thumbnails[i] = SafeURL;
-                this.compteur_other_propositions++;
-                if(this.compteur_other_propositions==this.list_of_first_propositions.length){
-                  this.display_other_propositions("writing")
-                }
+               
               }
               
           })
+          this.compteur_other_propositions++;
+          console.log("writing")
+          console.log(i)
+          console.log(this.compteur_other_propositions)
+          if(this.compteur_other_propositions==this.list_of_first_propositions.length){
+            this.display_other_propositions("writing")
+          }
         }
        
       })
@@ -1314,6 +1382,17 @@ export class NavbarLinkartsComponent implements OnInit {
   /**************************************** ACCOUNT NAVIGATION  ***********************************/
   get_my_profile() {
     return "/account/" + this.pseudo + "/" + this.user_id;
+  }
+
+  go_to_home(){
+
+    this.not_using_chat();
+    this.router.navigate(['/']);
+  }
+  
+  go_to_linkcollab(){
+    this.not_using_chat();
+    this.router.navigate(['/linkcollab']);
   }
 
   /**************************************** SEARCHBAR NAVIGATION  ***********************************/
@@ -1383,7 +1462,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions[i];
-    this.navbar.add_main_research_to_history("Ad",ad.remuneration,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.loading_research=false;
       return
     })
@@ -1398,7 +1477,7 @@ export class NavbarLinkartsComponent implements OnInit {
     this.loading_research=true;
     this.not_using_chat();
     let ad =this.list_of_last_propositions_history[i];
-    this.navbar.add_main_research_to_history("Ad",ad.remuneration,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
+    this.navbar.add_main_research_to_history("Ad",null,ad.id,ad.title, null,"clicked_after_research",0,0,0,0,"unknown","unknown","unknown","unknown",this.type_of_profile).subscribe(r=>{
       this.router.navigate([`/ad-page/${this.list_of_last_propositions_history[i].title}/${this.list_of_last_propositions_history[i].id}`]);
       this.loading_research=false;
       return
@@ -1664,14 +1743,27 @@ export class NavbarLinkartsComponent implements OnInit {
     }
     this.disconnecting=true;
     clearInterval(this.get_connection_interval)
+    
     this.AuthenticationService.logout();
-      
-    this.Community_recommendation.generate_recommendations().subscribe(r=>{
+    //this.router.navigate(["/"]);
+    let recommendations_string = this.CookieService.get('recommendations');
+    console.log(recommendations_string)
+    if(recommendations_string){
       this.disconnecting=false;
-      this.cd.detectChanges();
       this.location.go('/')
       location.reload();
-    })
+     
+    }
+    else{
+      this.Community_recommendation.generate_recommendations().subscribe(r=>{
+        this.disconnecting=false;
+        this.cd.detectChanges();
+        this.location.go('/')
+        location.reload();
+      })
+    }
+    
+    /*)*/
   
     //this.type_of_profile="visitor";
     
@@ -1685,7 +1777,9 @@ export class NavbarLinkartsComponent implements OnInit {
   }
 
   signup(){
-    const dialogRef = this.dialog.open(SignupComponent, {});
+    const dialogRef = this.dialog.open(SignupComponent, {
+      panelClass:"signupComponentClass"
+    });
   }
 
   /***************************************Style navbar **********************************/
@@ -1791,8 +1885,11 @@ sectionChange(e:any) {
   }
 }
 sectionChange2(e:any) {
-  this.not_using_chat();
-  this.go_to_section( e );
+  if(e>=0){
+    this.not_using_chat();
+    this.go_to_section( e );
+  }
+
 }
 
 /********************************************* CHAT MESSAGES NOTIFICATIONS ****************************/
@@ -1893,10 +1990,10 @@ sort_friends_list() {
     let friends=r[0].friends;
     if(friends.length>0){
       let compt=0;
+      let compt_pp=0;
       //console.log(friends)
       for(let i=0;i<friends.length;i++){
         this.list_of_chat_friends_ids[i]=friends[i].id;
-        let pp_retrieved=false;
         let data_retrieved=false;
         if(friends[i].id_user==this.user_id){
             
@@ -1907,22 +2004,26 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
-              pp_retrieved=true;
+              data_retrieved=true;
               all_retrieved(this);
             });
 
             this.Profile_Edition_Service.retrieve_profile_picture( friends[i].id_receiver ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_friends_profile_pictures[i] = SafeURL;
-              data_retrieved=true;
-              all_retrieved(this);
-             
+              this.list_of_pictures_by_ids_users[friends[i].id_receiver] = SafeURL;
+              console.log( this.list_of_pictures_by_ids_users)
+              compt_pp++;
+              console.log(compt_pp)
+              console.log(friends.length)
+              if(compt_pp==friends.length){
+                this.sort_list_of_profile_pictures()
+              }
             });
-
+           
             
             function all_retrieved(THIS){
-              if(data_retrieved && pp_retrieved){
+              if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
                   //console.log(this.list_of_friends_ids)
@@ -1942,20 +2043,26 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
-              pp_retrieved=true;
+              data_retrieved=true;
               all_retrieved(this);
             });
 
             this.Profile_Edition_Service.retrieve_profile_picture(  friends[i].id_user ).subscribe(t=> {
               let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_friends_profile_pictures[i] = SafeURL;
-              data_retrieved=true;
-              all_retrieved(this);
+              this.list_of_pictures_by_ids_users[friends[i].id_user] = SafeURL;
+              console.log( this.list_of_pictures_by_ids_users)
+              compt_pp++
+              console.log(compt_pp)
+              console.log(friends.length)
+              if(compt_pp==friends.length){
+                this.sort_list_of_profile_pictures()
+              }
             });
 
+            
             function all_retrieved(THIS){
-              if(data_retrieved && pp_retrieved){
+              if(data_retrieved ){
                 compt ++;
                 if(compt==friends.length){
                   //console.log(this.list_of_friends_ids)
@@ -2001,28 +2108,35 @@ sort_friends_groups_chats_list(){
               this.list_of_friends_ids[len+i]=r[0].friends[i].id_receiver;
               this.list_of_friends_date[len+i]=new Date(r[0].friends[i].date).getTime()/1000;
               this.list_of_friends_types[len+i]='group';
+              
               this.chatService.retrieve_chat_profile_picture(r[0].friends[i].chat_profile_pic_name,r[0].friends[i].profile_pic_origin).subscribe(t=> {
                
                 let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.list_of_friends_profile_pictures[len+i]=SafeURL;
+                
+                this.list_of_pictures_by_ids_groups[r[0].friends[i].id_receiver] = SafeURL;
+                console.log( this.list_of_pictures_by_ids_groups)
                 compt ++;
                 if(compt==r[0].friends.length){
-                  this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{
-                   
-                    this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
-                   
-                    this.sort_list_of_groups_and_friends();
-                  });
+                  this.sort_list_of_profile_pictures();
                 }
               });
+
             }
+            this.chatService.get_last_friends_groups_message(list_of_ids).subscribe(u=>{    
+              this.list_of_friends_last_message=this.list_of_friends_last_message.concat(u[0].list_of_friends_messages);
+              this.sort_list_of_groups_and_friends();
+            });
           })
         }
       }
       
     }
     else{
+      this.can_sort_list_of_profile_pictures=true;
+      if(this.list_of_pp_sorted){
+        this.sort_list_of_profile_pictures()
+      }
       this.get_connections_status();
       this.list_of_friends_retrieved=true;
     }
@@ -2044,23 +2158,58 @@ sort_list_of_groups_and_friends(){
         this.list_of_friends_types.splice(j,0,this.list_of_friends_types.splice(i,1)[0]);
         this.list_of_friends_names.splice(j,0,this.list_of_friends_names.splice(i,1)[0]);
         this.list_of_friends_pseudos.splice(j,0,this.list_of_friends_pseudos.splice(i,1)[0]);
-        this.list_of_friends_profile_pictures.splice(j,0,this.list_of_friends_profile_pictures.splice(i,1)[0]);
-      }
-      if(i==length-1 && j==length-2){
-        this.get_connections_status();
-        this.list_of_friends_retrieved=true;
-        
       }
     }
   }
+  this.can_sort_list_of_profile_pictures=true;
+  if(this.list_of_pp_sorted){
+    this.sort_list_of_profile_pictures()
+  }
+  this.get_connections_status();
+  this.list_of_friends_retrieved=true;
+}
+
+list_of_pp_sorted=false;
+can_sort_list_of_profile_pictures=false;
+list_of_pictures_by_ids_users={};
+list_of_pictures_by_ids_groups={};
+sort_list_of_profile_pictures(){
+  console.log("try pp")
+  if(this.can_sort_list_of_profile_pictures){
+    console.log("sort_listpp")
+    console.log( this.list_of_pictures_by_ids_users)
+    console.log(this.list_of_pictures_by_ids_groups)
+    let length=this.list_of_friends_ids.length;
+    for(let i=0;i<length;i++){
+      if(this.list_of_friends_types[i]=='user'){
+        this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_users[this.list_of_friends_ids[i]]
+      }
+      else{
+        this.list_of_friends_profile_pictures[i]=this.list_of_pictures_by_ids_groups[this.list_of_friends_ids[i]]
+      }
+     
+    }
+    console.log(this.list_of_friends_ids)
+    console.log(this.list_of_friends_profile_pictures)
+   
+  }
+  else{
+    this.list_of_pp_sorted=true;
+  }
+  
+}
+
+friends_pp_loaded=[]
+load_friends_pp(i){
+  this.friends_pp_loaded[i]=true;
 }
 
 get_connections_status(){
-  console.log(this.list_of_friends_users_only)
+  //console.log(this.list_of_friends_users_only)
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
-    console.log(r)
+    //console.log(r)
     console.log(r[0].list_of_users_connected);
-    console.log(this.list_of_friends_types)
+    //console.log(this.list_of_friends_types)
     let compt=0
     for(let i=0;i<this.list_of_friends_types.length;i++){
       
@@ -2174,101 +2323,103 @@ change_message_status(event){
     //console.log(event);
     //console.log(this.list_of_friends_ids)
     //console.log(this.list_of_friends_types)
-    let index=-1;
-    for(let i=0;i<this.list_of_friends_ids.length;i++){
-      if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type ){
-        index=i;
+    if(this.list_of_pp_sorted){
+      let index=-1;
+      for(let i=0;i<this.list_of_friends_ids.length;i++){
+        if(this.list_of_friends_ids[i]==event.friend_id && this.list_of_friends_types[i]==event.friend_type ){
+          index=i;
+        }
       }
-    }
-    //console.log(index)
-    if(index>=0){
-      //console.log("a friend message")
-      //fait partie de la liste des contacts
-      //console.log(event.message);
-      this.list_of_friends_last_message[index]=event.message;
-      this.cd.detectChanges();
-      //put message to received
-      this.list_of_friends_last_message[index].status="received";
-      //console.log("received");
-      this.cd.detectChanges();
-      
-      this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
-      this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
-      this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
-      this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
-      this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
-      this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
-      this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
-      //console.log(this.list_of_friends_last_message)
-      this.cd.detectChanges();
+      //console.log(index)
+      if(index>=0){
+        //console.log("a friend message")
+        //fait partie de la liste des contacts
+        //console.log(event.message);
+        this.list_of_friends_last_message[index]=event.message;
+        this.cd.detectChanges();
+        //put message to received
+        this.list_of_friends_last_message[index].status="received";
+        //console.log("received");
+        this.cd.detectChanges();
+        
+        this.list_of_friends_types.splice(0,0,this.list_of_friends_types.splice(index,1)[0]);
+        this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
+        this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
+        this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+        this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
+        this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
+        this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+        //console.log(this.list_of_friends_last_message)
+        this.cd.detectChanges();
 
-    }
-    else{
-      if(event.friend_type=='group'){
-        this.get_group_chat_name(event.friend_id,event.message);
       }
       else{
-        this.chatService.check_if_is_related(event.friend_id).subscribe(r=>{
-          if(r[0].value){
-            if(event.friend_id==this.user_id){
-              console.log("it s me")
-              this.list_of_friends_types.splice(0,0,'user');
-              this.list_of_friends_ids.splice(0,0,event.friend_id);
-                this.list_of_friends_last_message.splice(0,0,event.message);
-                this.list_of_friends_last_message[0].status="received";
-                this.list_of_friends_names.splice(0,0,this.author_name);
-                this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
-                this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
-                this.list_of_friends_pseudos.splice(0,0,this.pseudo);
-                this.cd.detectChanges();
-            }
-            else{
-              console.log("related but not me")
-              let name;
-              let pseudo;
-              let picture;
-              let data_retrieved=false;
-              let pp_retrieved=false;
-              this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
-                console.log(s);
-                pseudo = s[0].nickname;
-                name =s[0].firstname + ' ' + s[0].lastname;
-                data_retrieved=true;
-                check_all(this)
-              });
-  
-              this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
-                console.log(t);
-                let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                picture = SafeURL;
-                pp_retrieved=true;
-                check_all(this)
-              
-              })
-  
-              function check_all(THIS){
-                if(data_retrieved && pp_retrieved){
-                  THIS.list_of_friends_types.splice(0,0,'user');
-                  THIS.list_of_friends_ids.splice(0,0,event.friend_id);
-                  THIS.list_of_friends_last_message.splice(0,0,event.message);
-                  THIS.list_of_friends_last_message[0].status="received";
-                  THIS.list_of_friends_names.splice(0,0,name);
-                  THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
-                  THIS.list_of_friends_profile_pictures.splice(0,0,picture);
-                  THIS.list_of_friends_pseudos.splice(0,0,pseudo);
-                  THIS.cd.detectChanges();
+        if(event.friend_type=='group'){
+          this.get_group_chat_name(event.friend_id,event.message);
+        }
+        else{
+          this.chatService.check_if_is_related(event.friend_id).subscribe(r=>{
+            if(r[0].value){
+              if(event.friend_id==this.user_id){
+                console.log("it s me")
+                this.list_of_friends_types.splice(0,0,'user');
+                this.list_of_friends_ids.splice(0,0,event.friend_id);
+                  this.list_of_friends_last_message.splice(0,0,event.message);
+                  this.list_of_friends_last_message[0].status="received";
+                  this.list_of_friends_names.splice(0,0,this.author_name);
+                  this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                  this.list_of_friends_pseudos.splice(0,0,this.pseudo);
+                  this.cd.detectChanges();
+              }
+              else{
+                console.log("related but not me")
+                let name;
+                let pseudo;
+                let picture;
+                let data_retrieved=false;
+                let pp_retrieved=false;
+                this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
+                  console.log(s);
+                  pseudo = s[0].nickname;
+                  name =s[0].firstname + ' ' + s[0].lastname;
+                  data_retrieved=true;
+                  check_all(this)
+                });
+    
+                this.Profile_Edition_Service.retrieve_profile_picture( event.friend_id).subscribe(t=> {
+                  console.log(t);
+                  let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  picture = SafeURL;
+                  pp_retrieved=true;
+                  check_all(this)
+                })
+                
+                function check_all(THIS){
+                  if(data_retrieved && pp_retrieved){
+                    THIS.list_of_friends_types.splice(0,0,'user');
+                    THIS.list_of_friends_ids.splice(0,0,event.friend_id);
+                    THIS.list_of_friends_last_message.splice(0,0,event.message);
+                    THIS.list_of_friends_last_message[0].status="received";
+                    THIS.list_of_friends_names.splice(0,0,name);
+                    THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                    THIS.list_of_friends_profile_pictures.splice(0,0,picture);
+                    THIS.list_of_friends_pseudos.splice(0,0,pseudo);
+                    THIS.cd.detectChanges();
+                  }
+                
                 }
-               
               }
             }
-          }
-        })
-      }
+          })
+        }
 
-     
       
+        
+      }
     }
+    
   }
 
 
@@ -2498,22 +2649,11 @@ change_message_status(event){
 
   get_chat_url(i){
     if(this.list_of_friends_types[i]=='group'){
-      /*let found=false;
-      for(let j=0;this.list_of_friends_last_message[i].list_of_users_who_saw.length;j++){
-        if(this.list_of_friends_last_message[i].list_of_users_who_saw[j]==this.user_id){
-          found=true;
-        }
-      }
-      if(!found ){
-        this.number_of_unseen_messages--;
-      }*/
+
       this.number_of_unseen_messages=0;
       return `group/${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
     else{
-      /*if(this.list_of_friends_last_message[i].id_user!=this.user_id && this.list_of_friends_last_message[i].status!="seen"){
-        this.number_of_unseen_messages--;
-      }*/
       this.number_of_unseen_messages=0;
       return `${this.list_of_friends_pseudos[i]}/${this.list_of_friends_ids[i]}`
     }
@@ -2523,7 +2663,14 @@ change_message_status(event){
     this.logo_is_loaded=true;
   }
 
+  logo2_loaded(){
+    this.logo_is_loaded2=true;
+  }
 
+  /****************************************** SWIPER  SWIPER ********************************************/
+  /****************************************** SWIPER  SWIPER ********************************************/
+  /****************************************** SWIPER  SWIPER ********************************************/
+  /****************************************** SWIPER  SWIPER ********************************************/
   
   swiper:any;
   @ViewChild("swiperCategories") swiperCategories:ElementRef;
@@ -2614,5 +2761,101 @@ change_message_status(event){
   }
 
 
+
+  open_options(i){
+    console.log(i)
+    if(!this.conditions_retrieved){
+      return
+    }
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.list_of_conditions[i]},
+      panelClass:"panelAdAttachments",
+    });
+   
+  }
+
+
+  show_cookies=false;
+  agree_on_cookies(){
+    console.log("agree")
+    this.show_cookies=false;
+    this.Profile_Edition_Service.agree_on_cookies().subscribe(r=>{
+     console.log(r[0])
+    })
+  }
+
+  
+  /****************************************** POPUP NAVBAR  ********************************************/
+  /****************************************** POPUP NAVBAR  ********************************************/
+  /****************************************** POPUP NAVBAR  ********************************************/
+  /****************************************** POPUP NAVBAR  ********************************************/
+
+
+  popup_opened=false;
+  open_menu_for_phone(){
+    if(this.data_retrieved && this.using_chat_retrieved){
+      this.popup_opened=true;
+      const dialogRef = this.dialog.open(PopupNavbarComponent, {
+        data: {
+          profile_picture:this.profile_picture,
+          user_id:this.user_id,
+          author_first_name:this.author_first_name,
+          pseudo:this.pseudo,
+          author_name:this.author_name,
+          data_retrieved:this.data_retrieved,
+          number_of_unchecked_notifications:this.number_of_unchecked_notifications,
+          index_of_notifications_to_show:this.index_of_notifications_to_show,
+          show_notifications:this.show_notifications,
+          check_chat_service:this.check_chat_service,
+          check_notifications_from_service:this.check_notifications_from_service,
+          list_of_notifications_profile_pictures:this.list_of_notifications_profile_pictures,
+          notifications_pictures_retrieved:this.notifications_pictures_retrieved,
+          list_of_notifications:this.list_of_notifications,
+          notification_loaded:this.notification_loaded,
+          dictionnary_of_similar_notifications:this.dictionnary_of_similar_notifications,
+          list_of_notifications_dates:this.list_of_notifications_dates,
+          final_list_of_notifications_to_show:this.final_list_of_notifications_to_show,
+          compteur_get_final_list:this.compteur_get_final_list,
+
+
+          show_chat_messages:this.show_chat_messages,
+          list_of_messages:this.list_of_messages,
+          number_of_unseen_messages:this.number_of_unseen_messages,
+          using_chat:this.using_chat,
+          using_chat_retrieved:this.using_chat_retrieved,
+          list_of_chat_friends_ids:this.list_of_chat_friends_ids, // id de la liste list_of_chat_friends
+          number_of_friends_to_show:this.number_of_friends_to_show,
+          list_of_friends_types:this.list_of_friends_types,
+          list_of_friends_profile_pictures:this.list_of_friends_profile_pictures,
+          list_of_friends_pseudos:this.list_of_friends_pseudos,
+          list_of_friends_names:this.list_of_friends_names,
+          list_of_friends_ids:this.list_of_friends_ids,
+          list_of_friends_last_message:this.list_of_friends_last_message,
+          list_of_friends_retrieved:this.list_of_friends_retrieved,
+          list_of_friends_date:this.list_of_friends_date,
+          list_of_friends_users_only:this.list_of_friends_users_only,
+          list_of_last_connection_dates:this.list_of_last_connection_dates,
+          list_of_friends_connected:this.list_of_friends_connected,
+          connections_status_retrieved:this.connections_status_retrieved,
+          list_of_groups_retrieved:this.list_of_groups_retrieved,
+          list_of_groups_ids:this.list_of_groups_ids,
+          number_of_empties:this.number_of_empties,
+          list_of_pp_sorted:this.list_of_pp_sorted,
+          can_sort_list_of_profile_pictures:this.can_sort_list_of_profile_pictures,
+          list_of_pictures_by_ids_users:this.list_of_pictures_by_ids_users,
+          list_of_pictures_by_ids_groups:this.list_of_pictures_by_ids_groups,
+        },
+        panelClass: 'popupMenuNavbar',
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        this.popup_opened=false;
+      })
+    }
+    
+  }
+
+
+  
   
 }

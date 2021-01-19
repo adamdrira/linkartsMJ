@@ -14,11 +14,12 @@
 
 
         <!--Logo-->
-        <a class="logoLinkarts" *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
-            <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
+        
+
+        <a class="logoLinkarts " *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
+          <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg'>
         </a>
 
-        
         <div class="HIDDEN-ON-SMALL-SCREEN-1" *ngIf="!activated_search"
           [ngClass]="{'invisible': !show_selector || !logo_is_loaded}">
           
@@ -29,7 +30,7 @@
             </a>
             <a class="category" [ngClass]="{'opened': navbar.active_section==1 }"  (click)="not_using_chat()" routerLink="/linkcollab">
                 <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-                <span>COLLABORATIONS</span>
+                <span>LINKCOLLAB</span>
             </a>
           </div>
         </div>
@@ -50,24 +51,47 @@
               
               <mat-select-trigger>
 
+                <ng-container *ngIf="navbar.active_section==-1">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" >menu</mat-icon>
+                  <span>NAVIGUER</span>
+                </ng-container>
                 <ng-container *ngIf="navbar.active_section==0">
                   <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
                   <span>ACCUEIL</span>
                 </ng-container>
                 <ng-container *ngIf="navbar.active_section==1">
                   <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-                  <span>COLLABORATIONS</span>
+                  <span>LINKCOLLAB</span>
                 </ng-container>
               </mat-select-trigger>
 
-              <mat-option [value]="0" select>
-                <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
-                ACCUEIL
-              </mat-option>
-              <mat-option [value]="1">
-                <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
-                COLLABORATIONS
-              </mat-option>
+
+              <ng-container *ngIf="navbar.active_section==-1">
+                <mat-option [value]="-1" select >
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" >menu</mat-icon>
+                  NAVIGUER
+                </mat-option>
+                <mat-option [value]="0" >
+                  <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+                  ACCUEIL
+                </mat-option>
+                <mat-option [value]="1">
+                  <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+                  LINKCOLLAB
+                </mat-option>
+              </ng-container>
+
+              <ng-container *ngIf="navbar.active_section!=-1">
+                <mat-option [value]="0" select>
+                  <div class="icon-home" [ngClass]="{'icon-clicked': navbar.active_section==0 }"></div>
+                  ACCUEIL
+                </mat-option>
+                <mat-option [value]="1">
+                  <div class="icon-collaboration" [ngClass]="{'icon-clicked': navbar.active_section==1 }"></div>
+                  LINKCOLLAB
+                </mat-option>
+              </ng-container>
+             
             </mat-select>
           </mat-form-field>
         </div>
@@ -86,18 +110,23 @@
 
           <div class="SMALL-SCREEN-SECTIONS VISIBLE-ON-MORE-SMALL-SCREEN-1" *ngIf="!activated_search" [ngClass]="{'invisible':  !logo_is_loaded}">
             
-            <a routerLink="/" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==0 }">
+            <!--<a routerLink="/" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==0 }">
               <div class="icon-home"></div>
             </a>
             <a routerLink="/linkcollab" [ngClass]="{'invisible': activated_search, 'icon-clicked': navbar.active_section==1 }">
               <div class="icon-collaboration"></div>
-            </a>
+            </a>-->
             
             <a (click)="activate_search();">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">search</mat-icon>
             </a>
           </div>
 
+
+          <a class="SMALL-SCREEN-LOGO" [ngClass]="{'SMALL-SCREEN-LOGO-VISITOR': type_of_profile=='visitor'}"  *ngIf="!activated_search" routerLink="/" (click)="not_using_chat()" >
+            <img class="logo" (load)="logo2_loaded()" src='../../assets/img/svg/Logo-LA3-18-01.svg'>
+          </a>
+          
           <div class="navbar-l1-searchbar-container"
             [ngClass]="{'extended-searchbar': type_of_profile=='visitor', 'activated_searchbar': activated_search, 'invisible':!logo_is_loaded}">
 
@@ -453,7 +482,7 @@
           <div class="navbar-l1-icons-container notifications-block" *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
 
 
-            <div #chat class="icon-container" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
+            <div #chat class="icon-container  none-for-phone" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
               <div class="icon icon-messenger" (click)="open_messages()"
                 [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"></div>
               <ng-container *ngIf="number_of_unseen_messages>0">
@@ -478,7 +507,7 @@
 
 
               <div class="notifications-chat-container "
-                *ngIf="show_chat_messages && data_retrieved && using_chat_retrieved" [@enterAnimation]>
+                *ngIf="show_chat_messages && data_retrieved && using_chat_retrieved && !popup_opened" [@enterAnimation]>
 
                 <div #myScrollContainer_chat class="notifications-container ">
                   <div class="loading-page" *ngIf="!list_of_friends_retrieved ">
@@ -489,7 +518,7 @@
                     <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'invisible':!show_chat_messages}">
                       <a class="author-container" (click)="open_chat_2()" [routerLink]="get_chat_2(i)">
                         <div class="left-container">
-                          <img [src]="list_of_friends_profile_pictures[i]">
+                          <img [src]="list_of_friends_profile_pictures[i]" (load)="load_friends_pp(i)" [ngClass]="{'invisible': !friends_pp_loaded[i] }">
 
 
                           <ng-container *ngIf="connections_status_retrieved">
@@ -777,7 +806,7 @@
                   </div>
                 </div>
 
-                <a class="open-chat" routerLink="/chat" (click)="open_chat_2()" *ngIf="list_of_friends_retrieved">
+                <a class="open-chat" routerLink="/chat" (click)="open_chat_2()">
                   <span> Consulter la messagerie</span>
                 </a>
               </div>
@@ -789,12 +818,12 @@
             <!-- ---------------------------NOTIFICATIONS----------------------------------->
             <!-- ---------------------------NOTIFICATIONS----------------------------------->
 
-            <div #notifications class="icon-container" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
+            <div #notifications class="icon-container none-for-phone" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
               <div class="icon icon-bell" (click)="open_notifications() "
                 [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}">
               </div>
               <ng-container *ngIf="number_of_unchecked_notifications>0">
-                <div [ngClass]="{ 'invisible':!pp_is_loaded || !data_retrieved || !using_chat_retrieved || using_chat,
+                <div [ngClass]="{ 'invisible':!pp_is_loaded || !data_retrieved || !using_chat_retrieved ,
                                   'notif-size-1':10>number_of_unchecked_notifications,
                                   'notif-size-2':100>number_of_unchecked_notifications && number_of_unchecked_notifications>=10,
                                   'notif-size-3':number_of_unchecked_notifications>=100}" style="cursor:pointer;"
@@ -816,7 +845,7 @@
 
 
 
-              <div class="notifications-chat-container" *ngIf="show_notifications && data_retrieved" [@enterAnimation]>
+              <div class="notifications-chat-container" *ngIf="show_notifications && data_retrieved && !popup_opened" [@enterAnimation]>
                 <div #myScrollContainer class="notifications-container notifications-model">
 
                   <!--IF NO NOTIFICATION TO SHOW-->
@@ -2287,18 +2316,25 @@
             </a>
 
             <div class="profile-container SMALL-SCREEN-PP">
-              <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" tabIndex="-1" [matMenuTriggerFor]="options2">
+
+              <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" (click)="open_menu_for_phone()">
                 <img [src]="profile_picture" (load)="pp_loaded()"
                   [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
 
-                  <!--<div class="absolute-menu-logo">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">menu</mat-icon>
-                  </div>-->
               </div>
 
-              <!--<button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
-              </button>-->
+              <ng-container *ngIf="number_of_unseen_messages>0 || number_of_unchecked_notifications>0 ">
+
+                <div class="notif-size-0" >
+                </div>
+              </ng-container>
+              <!--<div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" tabIndex="-1" [matMenuTriggerFor]="options2">
+                <img [src]="profile_picture" (load)="pp_loaded()"
+                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
+
+              </div>
+
+             
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_profile()">
                   <img [src]="profile_picture" (load)="pp_loaded()"
@@ -2321,7 +2357,7 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
                   <span>Se déconnecter</span>
                 </button>
-              </mat-menu>
+              </mat-menu>-->
 
             </div>
 
@@ -2362,30 +2398,47 @@
 
             <div class="options LARGE-SCREEN-OPTIONS" *ngIf="!activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">more_vert</mat-icon>
               </button>
               <mat-menu #options="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item *ngIf="(type_of_profile=='account' || type_of_profile=='suspended')" (click)="really_open_my_account()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous</span>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+                  <span>Conditions d'utilisation</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+                  <span>Sécurité et confidentialité</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Mentions légales</span>
                 </button>
               </mat-menu>
             </div>
 
-            <div class="options SMALL-SCREEN-OPTIONS"
+            <div class="options SMALL-SCREEN-OPTIONS"   
               *ngIf="type_of_profile!='account' && type_of_profile!='suspended' && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more more_vert ">more_vert</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more menu">menu</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
+                <button   class="navbar-button-menu-item menu" tabIndex="-1" mat-menu-item (click)="go_to_home()">
+                  <div class="icon-home"></div>
+                <span>Accueil</span>
+                </button>
+                <button   class="navbar-button-menu-item menu" tabIndex="-1" mat-menu-item (click)="go_to_linkcollab()">
+                  <div class="icon-collaboration " ></div>
+                  <span>LinkCollab</span>
+                </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="login()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">exit_to_app</mat-icon>
                   <span>Se connecter</span>
@@ -2394,13 +2447,21 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                   <span>S'inscrire</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous</span>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+                  <span>Conditions d'utilisation</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+                  <span>Sécurité et confidentialité</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Mentions légales</span>
                 </button>
               </mat-menu>
             </div>
@@ -2408,20 +2469,28 @@
             <div class="options SMALL-SCREEN-OPTIONS HIDE-OPTIONS-ON-SMALL-SCREEN"
               *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
               <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">more_vert</mat-icon>
               </button>
               <mat-menu #options2="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous</span>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
+                  <span>Conditions d'utilisation</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
+                  <span>Sécurité et confidentialité</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </button>
+                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Mentions légales</span>
                 </button>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
@@ -2447,13 +2516,35 @@
 
 
 
+    <div class="cookies-container" *ngIf="show_cookies" [@enterAnimation]>
+      <div class="text-container large-screen">
+        Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site. Si vous continuez à utiliser ce dernier, nous considérerons que vous acceptez l'utilisation des cookies.
+      </div>
 
+      <div class="small-screen text-container ">
+        <span>Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site.  <span class="see-more" (click)="open_options(4)"> Voir plus</span></span>
+        
+       
+      </div>
+      <div class="buttons-container">
+        <div class="first-button equal-width" (click)="agree_on_cookies()">
+          Ok
+        </div>
+        <div class="first-button large-screen" (click)="open_options(4)"> 
+          Voir plus
+        </div>
+
+      </div>
+    </div>
 
 
   </div>
 
   <div #navbarMargin class="navbar-margin"></div>
 
+ 
 </div>
+
+
 
 <!--Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->

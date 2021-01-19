@@ -66,47 +66,57 @@ export class HomeLinkartsComponent implements OnInit {
   change_profile_number=0;
   ngOnInit() {
 
-    this.authenticationService.currentUserType.subscribe(r=>{
-      if(r!='' && this.change_profile_number<2){
-        this.type_of_profile=r;
-        
-        this.change_profile_number++;
-        this.category_index = this.route.snapshot.data['category'];
-        console.log(this.category_index)
-        this.status[this.category_index]=true;
-        this.categories_to_load[this.category_index]=true;
-        this.cd.detectChanges()
-        for(let j=0;j<4;j++){
-          if(j!=this.category_index){
-            this.status[j]=false;
-          }
-        }
-        if(this.category_index==4){
-          //après le click du lien envoyé par mail pour confirmer inscription
-          let id = parseInt(this.route.snapshot.paramMap.get('id'));
-          let password = this.route.snapshot.paramMap.get('password');
-          console.log(id)
-          console.log(password)
-          
-          this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
-            console.log(r[0])
-            this.category_index=0;
-            if(r[0].user_found){
-              this.location.go('/recommendations')
-              const dialogRef = this.dialog.open(LoginComponent, {
-                data: {usage:"registration"}
-              });
-            }
-            else{
-              this.location.go('/recommendations')
-            }
-          })
-        }
-        this.type_of_profile_retrieved=true;
-        this.cd.detectChanges();
-        this.initialize_swiper();
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      
+      if(r[0]){
+        this.type_of_profile=r[0].status;
       }
+      else{
+        this.type_of_profile="visitor";
+      }
+        
+      this.change_profile_number++;
+      this.category_index = this.route.snapshot.data['category'];
+      console.log(this.category_index)
+      this.status[this.category_index]=true;
+      this.categories_to_load[this.category_index]=true;
+      this.cd.detectChanges()
+      for(let j=0;j<4;j++){
+        if(j!=this.category_index){
+          this.status[j]=false;
+        }
+      }
+      if(this.category_index==4){
+        //après le click du lien envoyé par mail pour confirmer inscription
+        let id = parseInt(this.route.snapshot.paramMap.get('id'));
+        let password = this.route.snapshot.paramMap.get('password');
+        console.log(id)
+        console.log(password)
+        
+        this.Profile_Edition_Service.check_password_for_registration(id,password).subscribe(r=>{
+          console.log(r[0])
+          this.category_index=0;
+          if(r[0].user_found){
+            this.location.go('/recommendations')
+            const dialogRef = this.dialog.open(LoginComponent, {
+              data: {usage:"registration"}
+            });
+          }
+          else{
+            this.location.go('/recommendations')
+          }
+        })
+      }
+      this.type_of_profile_retrieved=true;
+      this.cd.detectChanges();
+      this.initialize_swiper();
     })
+
+    /*this.authenticationService.currentUserType.subscribe(r=>{
+      if(r!='' && this.change_profile_number<2){
+        
+      }
+    })*/
     
   }
  

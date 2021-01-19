@@ -30,6 +30,9 @@
                 <span>Voir plus</span>
             </button>
 
+            <div class="comment-in-edition" *ngIf="edit_comment">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+            </div>
         </div>
         
         <div class="options-container">
@@ -39,8 +42,11 @@
                 </button>
                 <button *ngIf="!liked && !like_in_progress" (click)="add_or_remove_like()">J'aime</button>
                 <button *ngIf="liked && !like_in_progress" (click)="add_or_remove_like()">Je n'aime plus</button>
-                <span> • {{number_of_likes}}</span>
-                <mat-icon>thumb_up</mat-icon>
+                <span>&nbsp;• {{number_of_likes}}</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                <span>&nbsp;•</span>
+                <button *ngIf="!see_responses" (click)="show_responses();" >Répondre <ng-container *ngIf="responses_list.length>0">({{responses_list.length}})</ng-container></button>
+                <button *ngIf="see_responses" (click)="show_less_responses();">Voir moins</button>
             </ng-container>
 
             <span class="date">
@@ -48,22 +54,18 @@
             </span>
         </div>
 
-        <ng-container *ngIf="answers_retrieved">
-            <button class="answers-button" (click)="show_responses();" *ngIf="responses_list.length && !see_responses" [@enterAnimation]>
-                <mat-icon>expand_more</mat-icon>
-                <span>Voir les réponses ({{responses_list.length}})</span>
-            </button>
+        <!--<ng-container *ngIf="answers_retrieved">
 
             <button class="answers-button" (click)="show_responses();" *ngIf="!responses_list.length && !see_responses" [@enterAnimation]>
-                <mat-icon>expand_more</mat-icon>
-                <span>Répondre</span>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_more</mat-icon>
+                <span>Répondre <ng-container *ngIf="responses_list.length>0">({{responses_list.length}})</ng-container></span>
             </button>
 
             <button class="answers-button" (click)="show_less_responses();" *ngIf="see_responses" [@enterAnimation]>
-                <mat-icon>expand_less</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">expand_less</mat-icon>
                 <span>Voir moins</span>
             </button>
-        </ng-container>
+        </ng-container>-->
         
 
 
@@ -83,28 +85,31 @@
                         <div class="comment">
                             <a [routerLink]=open_response_account(i)>{{author_name_list[i]}}</a>
 
-                                <textarea matInput cdkTextareaAutosize #textareaRESPONSE 
-                                type="text" 
-                                (keydown)="onKeydownResponse($event, i);" 
-                                (keyup)="onKeyupResponse($event, i);" 
-                                [readonly]="editable_response!=i"
-                                autocomplete="off"
-                                [ngClass]="{'read': editable_response!=i, 'write': editable_response==i}">{{ (item.comment && item.comment.length > 150 && !item.see_more) ? (item.comment | slice:0:150) + '...' : item.comment}}</textarea>
+                            <textarea matInput cdkTextareaAutosize #textareaRESPONSE 
+                            type="text" 
+                            (keydown)="onKeydownResponse($event, i);" 
+                            (keyup)="onKeyupResponse($event, i);" 
+                            [readonly]="editable_response!=i"
+                            autocomplete="off"
+                            [ngClass]="{'read': editable_response!=i, 'write': editable_response==i}">{{ (item.comment && item.comment.length > 150 && !item.see_more) ? (item.comment | slice:0:150) + '...' : item.comment}}</textarea>
 
-                                <button (click)="see_more_response(i);" class="see-more" *ngIf="item.comment && item.comment.length > 150 && !item.see_more">
-                                    <span>Voir plus</span>
-                                </button>
+                            <button (click)="see_more_response(i);" class="see-more" *ngIf="item.comment && item.comment.length > 150 && !item.see_more">
+                                <span>Voir plus</span>
+                            </button>
+                            <div class="comment-in-edition" *ngIf="editable_response==i">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+                            </div>
 
                         </div>
                         <div class="options-container">
                             <ng-container *ngIf="likes_checked">
-                                <button *ngIf="answer_like_in_progress">
+                                <button *ngIf="answer_like_in_progress[i]">
                                     <mat-spinner diameter="15"></mat-spinner>
                                 </button>
-                                <button *ngIf="!liked_list[i] && !answer_like_in_progress" (click)="add_or_remove_answer_like(i)">J'aime</button>
-                                <button *ngIf="liked_list[i] && !answer_like_in_progress" (click)="add_or_remove_answer_like(i)">Je n'aime plus</button>
+                                <button *ngIf="!liked_list[i] && !answer_like_in_progress[i]" (click)="add_or_remove_answer_like(i)">J'aime</button>
+                                <button *ngIf="liked_list[i] && !answer_like_in_progress[i]" (click)="add_or_remove_answer_like(i)">Je n'aime plus</button>
                                 <span> • {{item.likesnumber}}</span>
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                             </ng-container>
         
                             <span class="date">
@@ -118,15 +123,15 @@
                 <!--mat menu ici-->
                 <div class="right-container">
                     <button class="optionsMenu" [matMenuTriggerFor]="commentOptions">
-                        <mat-icon class="optionsButton">more_vert</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                     </button>
                     <mat-menu #commentOptions="matMenu" class="comments-mat-menu">
-                        <button class="comments-button-menu-item" tabIndex="-1" (click)="edit_response(i)" mat-menu-item>
-                            <mat-icon>edit</mat-icon>
+                        <button *ngIf="!loading_edit" class="comments-button-menu-item" tabIndex="-1" (click)="edit_response(i)" mat-menu-item>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                             <span>Editer</span>
                         </button>
                         <button class="comments-button-menu-item" tabIndex="-1" (click)="remove_comment_answer(i)" mat-menu-item>
-                            <mat-icon>close</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                             <span>Supprimer</span>
                         </button>
                     </mat-menu>

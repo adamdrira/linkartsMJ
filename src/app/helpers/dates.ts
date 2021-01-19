@@ -2,7 +2,10 @@
 export function get_date_to_show(s: number) {
     
     if( s < 3600 ) {
-        if( Math.trunc(s/60)==1 ) {
+        if( Math.trunc(s/60)<=0) {
+          return "A l'instant";
+        }
+        else if( Math.trunc(s/60)==1 ) {
           return "Il y a 1 minute";
         }
         else {
@@ -55,7 +58,10 @@ export function get_date_to_show(s: number) {
 export function get_date_to_show_chat(s: number) {
     
   if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
+      if( Math.trunc(s/60)<=0 ) {
+        return "1 min";
+      }
+      else if( Math.trunc(s/60)==1 ) {
         return "1 min";
       }
       else {
@@ -108,7 +114,10 @@ export function get_date_to_show_chat(s: number) {
 export function get_date_to_show_navbar(s: number) {
     
   if( s < 3600 ) {
-      if( Math.trunc(s/60)==1 ) {
+      if( Math.trunc(s/60)<=0 ) {
+        return "A l'instant";
+      }
+      else if( Math.trunc(s/60)==1 ) {
         return "Il y 1 minute";
       }
       else {
@@ -161,7 +170,10 @@ export function get_date_to_show_navbar(s: number) {
 
 export function get_date_to_show_for_ad(s: number) {
   if( s < 3600 ) {
-    if( Math.trunc(s/60)==1 ) {
+    if( Math.trunc(s/60)<=0 ) {
+      return "A l'instant";
+    }
+    else if( Math.trunc(s/60)==1 ) {
       return "Envoyée il y a 1 minute";
     }
     else {

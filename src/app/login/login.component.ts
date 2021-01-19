@@ -190,9 +190,9 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     // stop here if form is invalid
-    if (this.loginForm.invalid) {
+    /*if (this.loginForm.invalid) {
         return;
-    }
+    }*/
 
     this.loading = true;
 
@@ -301,7 +301,7 @@ export class LoginComponent implements OnInit {
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
 
         if(data[0].found && data[0].user.id==this.data.id_user){
-            this.Profile_Edition_Service.suspend_account().subscribe(r=>{
+            this.Profile_Edition_Service.suspend_account(this.selected_motif).subscribe(r=>{
               console.log(r[0])
               this.loading=false
               this.authenticationService.logout();
@@ -325,7 +325,7 @@ export class LoginComponent implements OnInit {
       this.loading = true;
       this.Profile_Edition_Service.check_email_and_password(this.f.username.value, this.f.password.value,0).subscribe( data => {
             if(data[0].found && data[0].user.id==this.data.id_user){
-                this.Profile_Edition_Service.delete_account().subscribe(r=>{
+                this.Profile_Edition_Service.delete_account(this.selected_motif).subscribe(r=>{
                   console.log(r[0])
                   this.loading=false
                   this.authenticationService.logout();

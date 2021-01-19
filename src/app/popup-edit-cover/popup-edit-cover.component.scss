@@ -1,6 +1,7 @@
 $default-color: rgb(218,220,225);
 
 .title {
+    position: relative;
     width: 100%;
     border-bottom: 1px solid #13213d;
     box-shadow: 0px 10px 8px -8px #121b2b;
@@ -41,6 +42,8 @@ $default-color: rgb(218,220,225);
 
             color:white;
             font-size: 24px;
+            max-width:24px ;
+          overflow: hidden;
         }
     }
 
@@ -139,6 +142,8 @@ $default-color: rgb(218,220,225);
                     height: 20px !important;
                     width: 20px !important;
                     font-size: 22px !important;
+                    max-width:22px !important;
+          overflow: hidden;
                     margin: auto 10px auto auto !important;
                 }
                 span {

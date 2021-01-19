@@ -1,8 +1,15 @@
 $default-color: rgb(218,220,225);
 
+.invisible {
+    visibility:hidden;
+    pointer-events: none;
+}
+
 
 .comment-element {
     display: flex;
+
+
 
     > .left-container {
         padding-top: 2px;
@@ -25,9 +32,10 @@ $default-color: rgb(218,220,225);
 
         .comment {
             //max-height: 180px;
+            position: relative;
             min-height: 50px;
             max-height: 600px;
-            background: #203864;
+            background: #021133;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
             border-radius: 12px;
             padding: 6px 12px 12px 12px;
@@ -89,10 +97,9 @@ $default-color: rgb(218,220,225);
             flex-wrap: wrap;
             margin-top: 5px;
             color:$default-color;
-
+            font-size: 11px;
             button {
                 background: unset;
-                font-size: 12px;
                 color: $default-color;
                 border: none;
                 outline: none;
@@ -102,28 +109,34 @@ $default-color: rgb(218,220,225);
                 }
             }
             span {
-                font-size: 12px;
+                
                 line-height: 24px;
             }
             mat-icon {
-                font-size: 16px;
-                padding-top: 3px;
-                padding-left: 4px;
-                height:unset;
-                width:unset;
+                font-size: 15px;
+                max-width: 15px;
+                overflow: hidden;
+                margin-top: 3px;
+                margin-right: 1px;
+                margin-left: 4px;
+                color: #7ed7ffbf;
+                height: unset;
+                width: unset;
             }
 
             .date {
                 margin-left:auto;
             }
             
-            @media (max-width: 370px) {
+            @media (max-width: 400px) {
                 button {
                     font-size:10px;
                 }
                 mat-icon {
                     font-size: 13px;
-                    padding-top: 5px;
+                    max-width:13px;
+                    overflow: hidden;
+                    margin-top: 5px;
                 }
                 span {
                     font-size:10px;
@@ -136,9 +149,11 @@ $default-color: rgb(218,220,225);
             display: flex;
             outline: none;
             width: 100%;
-            border: 1px solid #1b3665;
+            border: unset;
+            background: unset;
+            //border: 1px solid #1b3665;
             border-radius: 7px;
-            background: #2a4575;
+            //background: #2a4575;
             padding-bottom: 0px;
             margin-top: 2px;
             padding: 3px;
@@ -148,10 +163,12 @@ $default-color: rgb(218,220,225);
                 height: 20px;
                 width: 20px;
                 font-size: 22px;
+                max-width:22px;
+                    overflow: hidden;
                 margin: auto 6px auto auto;
             }
             span {
-                font-size: 12px;
+                font-size: 11px;
                 margin: auto auto auto 0px;
             }
 
@@ -217,6 +234,8 @@ $default-color: rgb(218,220,225);
                         height: unset;
                         width: unset;
                         font-size: 18px;
+                        max-width:18px;
+                    overflow: hidden;
                         color: #dadce1;
                     }
                     
@@ -237,10 +256,15 @@ $default-color: rgb(218,220,225);
 
             .left-container {
                 .profile-picture {
-                    margin:0px 5px auto 0px;
-                    width:30px;
-                    height:30px;
-                    border-radius:50px;
+                    margin: 2px 5px auto 0px;
+                    width: 24px;
+                    min-width: 24px;
+                    height: 24px;
+                    min-height: 24px;
+                    border-radius: 50px;
+                    -o-object-fit: cover;
+                    object-fit: cover;
+                    display: flex;
                     overflow: hidden;
                     img {
                         width:100%;
@@ -256,11 +280,13 @@ $default-color: rgb(218,220,225);
                     color:$default-color;
                     min-height: 50px;
                     caret-color: white;
-                    background: #203864;
+                    background: #021133;
                     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     border-radius: 12px;
                     padding: 6px 12px;
                     font-size: 12px;
+                    max-width: calc(100% - 29px);
+                    
                     &::-webkit-scrollbar {
                         width: 3px;
                         height: 3px;
@@ -282,12 +308,26 @@ $default-color: rgb(218,220,225);
 
 }
 
+.comment-in-edition{
+    position: absolute;
+    top: 4px;
+    right: 10px;
+
+    mat-icon{
+        color: #dadce1;
+        font-size: 16px;
+        height:16px;
+        max-width: 16px;
+        overflow: hidden;
+    }
+}
+
 ::placeholder {
     color:$default-color;
 }
 
 .dark-shiny {
-    background-color: #203864;
+    background-color:#0c2048;
     background-image: linear-gradient(to right, #00000000 33%, #162e58 50%, #00000000 66%);
     background-size: 300% 100%;
     animation: shine 2s infinite;
@@ -300,175 +340,3 @@ $default-color: rgb(218,220,225);
 }
 
 
-
-/*a refaire*/
-
-
-/*
-.right-container .options-container .action {
-    cursor:pointer;
-    display:flex;
-}
-
-.right-container .options-container .separator {
-    margin-left:5px;
-    margin-right:5px;
-    cursor:default;
-}
-
-.right-container .options-container .action .likesnumber{
-    margin:auto auto;
-}
-.right-container .options-container .action .like-icon{
-    margin: auto auto auto 4px;
-    width: 18px;
-    height: 18px;
-    background-color: rgb(77, 141, 255);
-    -webkit-mask:  url("../../assets/img/svg/like-3.svg") no-repeat 50% 50%;
-    mask: url("../../assets/img/svg/like-3.svg") no-repeat 50% 50%;
-}
-
-.right-container .options-container .date-container {
-    margin:auto 0px auto auto;
-    cursor:default;
-}
-
-
-.right-container .response {
-    display:flex;
-    width:100%;
-    margin-top:10px;
-}
-
-.right-container .response .left-container {
-    display:flex;
-    width:40px;
-}
-
-.right-container .response .left-container .img-container {
-    display: flex;
-    margin: 0px auto auto auto;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    overflow: hidden;
-}
-
-.right-container .response .left-container .img-container img {
-    object-fit:cover;
-    width:100%;
-    height:100%;
-}
-
-
-.right-container .response .right-container {
-    width:calc( 100% - 40px );
-}
-
-.right-container .response .right-container .comment-container {
-    width:100%;
-    background: rgb(100, 128, 179);
-    border-radius: 8px;
-    padding: 5px 10px 5px 10px;
-    word-break: break-word;
-}
-
-
-.right-container .response-input {
-    display:flex;
-    margin-top:10px;
-    width:100%;
-}
-
-.right-container .response-input .left-container {
-    display:flex;
-    width:40px;
-}
-
-.right-container .response-input .left-container .img-container {
-    display: flex;
-    margin: 0px auto auto auto;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    overflow: hidden;
-}
-
-.right-container .response-input .left-container .img-container img {
-    object-fit:cover;
-    width:100%;
-    height:100%;
-}
-
-
-.right-container .response-input .right-container {
-    width:calc( 100% - 40px - 28px );
-}
-
-.right-container .response-input .right-container .comment-container {
-    width:100%;
-    background: rgb(100, 128, 179);
-    border-radius: 8px;
-    padding: 5px 10px 5px 10px;
-    word-break: break-word;
-}
-
-.response-input .textarea-respond-to-comment {
-    outline:none;
-    height:42px;
-    width:100%;
-    background: rgb(100, 128, 179);
-    color: white;
-    padding: 5px 10px 5px 10px;
-    border: 1px solid rgb(32, 56, 100);
-    font-size: 15px;
-    border-radius: 8px;
-    line-height:20px;
-    transition: width 0.25s;
-    resize:none;
-    overflow:hidden;
-
-}
-
-::placeholder {
-    color:white;
-}
-
-.textarea {
-    resize: none;
-    width: 100%;
-    background: none;
-    border: none;
-    color: white;
-    outline: none;
-}
-
-.read {
-    cursor:default;
-}
-
-.write {
-    cursor:text;
-}
-
-::ng-deep .response .optionsMenu.mat-icon-button {
-    outline:none;
-    width:28px !important;
-    height:28px !important;
-    line-height: 23px !important;
-}
-::ng-deep .response .optionsMenu .mat-button-wrapper {
-    display:flex !important;
-    margin: auto auto !important;
-}
-
-::ng-deep .response .optionsMenu .optionsButton {
-    margin:auto auto !important;
-    font-size:23px !important;
-    width: unset !important;
-    height: unset !important;
-}
-
-.invisible{
-    visibility:hidden;
-}*/

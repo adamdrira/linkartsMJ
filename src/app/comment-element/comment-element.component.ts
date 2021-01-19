@@ -93,7 +93,7 @@ export class CommentElementComponent implements OnInit {
   date_upload_to_show:any;
   
   like_in_progress=false;
-  answer_like_in_progress=false;
+  answer_like_in_progress=[];
   //récupéré
   user_name:string;
   primary_description:string;
@@ -144,6 +144,7 @@ export class CommentElementComponent implements OnInit {
 
   ngOnInit(): void {
     this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
+    console.log(this.date_upload_to_show)
     this.comment=this.comment_information.commentary;
     this.category=this.comment_information.publication_category;
     this.id=this.comment_information.id;
@@ -254,19 +255,32 @@ export class CommentElementComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  
+  loading_remove=false;
+  loading_edit=false;
   remove_comment_answer(i){
+    if(this.loading_remove){
+      return
+    }
+    this.loading_remove=true;
     this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id).subscribe(l=>{
       let index=-1;
+      console.log(l[0])
+      console.log(this.responses_list)
       for (let i=0;i<this.responses_list.length;i++){
         if(this.responses_list[i].id==l[0].id){
           index=i;
         }
-        if (index > -1) {
-          this.responses_list.splice(index, 1);
-        }
       }
-      this.NotificationsService.remove_notification('comment_answer',this.category,this.format,this.publication_id,this.chapter_number,true,this.responses_list[i].id).subscribe(l=>{
+      if (index > -1) {
+        this.responses_list.splice(index, 1);
+        this.profile_picture_list.splice(index, 1);
+        this.pseudo_list.splice(index, 1);
+        this.author_name_list.splice(index, 1);
+        this.visitor_mode_list.splice(index, 1)
+        this.liked_list.splice(index, 1);
+      }
+      this.loading_remove=false;
+      this.NotificationsService.remove_notification('comment_answer',this.category,this.format,this.publication_id,this.chapter_number,true,l[0].id).subscribe(l=>{
         let message_to_send ={
           for_notifications:true,
           type:"comment_answer",
@@ -372,7 +386,7 @@ export class CommentElementComponent implements OnInit {
 
   add_or_remove_answer_like(i){
     console.log(this.responses_list[i].comment)
-    this.answer_like_in_progress=true;
+    this.answer_like_in_progress[i]=true;
     if(this.liked_list[i]){
       this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
         if(this.visitor_id!=this.responses_list[i].id_user){
@@ -396,14 +410,14 @@ export class CommentElementComponent implements OnInit {
             this.chatService.messages.next(message_to_send);
             this.responses_list[i].likesnumber=this.responses_list[i].likesnumber-1;
             this.liked_list[i]=false;
-            this.answer_like_in_progress=false;
+            this.answer_like_in_progress[i]=false;
             this.cd.detectChanges();
           })
         }
         else{
           this.responses_list[i].likesnumber=this.responses_list[i].likesnumber-1;
           this.liked_list[i]=false;
-          this.answer_like_in_progress=false;
+          this.answer_like_in_progress[i]=false;
           this.cd.detectChanges();
         }
         
@@ -433,14 +447,14 @@ export class CommentElementComponent implements OnInit {
             this.chatService.messages.next(message_to_send);
             this.responses_list[i].likesnumber=this.responses_list[i].likesnumber+1;
             this.liked_list[i]=true;
-            this.answer_like_in_progress=false;
+            this.answer_like_in_progress[i]=false;
             this.cd.detectChanges()
           })
         }
         else{
           this.responses_list[i].likesnumber=this.responses_list[i].likesnumber+1;
           this.liked_list[i]=true;
-          this.answer_like_in_progress=false;
+          this.answer_like_in_progress[i]=false;
           this.cd.detectChanges()
         }
        
@@ -450,12 +464,18 @@ export class CommentElementComponent implements OnInit {
   }
 
   show_less_responses(){
-    this.see_responses = false;
+    if(this.answers_retrieved){
+      this.see_responses = false;
+    }
+  
   }
 
   show_responses() {
-    this.see_responses = true;
-    this.cd.detectChanges();
+    if(this.answers_retrieved){
+      this.see_responses = true;
+      this.cd.detectChanges();
+    }
+    
   }
 
  
@@ -463,6 +483,10 @@ export class CommentElementComponent implements OnInit {
   set_editable() {
     this.see_more();
     this.edit_comment = true;
+    if(this.loading_edit){
+      return
+    }
+    this.loading_edit=true;
     this.cd.detectChanges();
 
     
@@ -476,6 +500,7 @@ export class CommentElementComponent implements OnInit {
 
   set_not_editable() {
     this.edit_comment = false;
+    this.loading_edit=false;
     this.cd.detectChanges();
   }
   
@@ -639,7 +664,13 @@ export class CommentElementComponent implements OnInit {
       this.SHIFT_3_CLICKED = false;
     }
   }
+  show_icon=false;
   ngAfterViewInit() {
+
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
 
   }
 

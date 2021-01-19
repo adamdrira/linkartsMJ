@@ -16,6 +16,7 @@ export class PopupAddStoryComponent implements OnInit {
     dialogRef.disableClose = true;
   }
 
+
   ngOnInit(): void {
   }
 
@@ -26,5 +27,7 @@ export class PopupAddStoryComponent implements OnInit {
       THIS.show_icon=true;
     });
   }
+
+
 
 }

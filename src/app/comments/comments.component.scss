@@ -10,6 +10,8 @@ $default-color: rgb(218,220,225);
         width: unset;
         height: unset;
         font-size: 33px;
+        max-width:33px;
+                    overflow: hidden;
         color:$default-color;
     }
     span {
@@ -27,10 +29,10 @@ $default-color: rgb(218,220,225);
     .left-container {
         .profile-picture {
             margin:0px 5px auto 0px;
-            width:30px;
-            height:30px;
-            border-radius:50px;
-            overflow: hidden;
+            width: 33px;
+            height: 33px;
+            border-radius: 50px;
+            box-shadow: 0px 0px 1px 2px #02113369;
         }
     }
     .right-container {
@@ -89,11 +91,15 @@ $default-color: rgb(218,220,225);
                 //max-height: 180px;
                 min-height: 50px;
                 caret-color: white;
-                background: #203864;
+                color: #dadce1;
+                background: #021133;
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+                //background: #203864;
+                //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                 border-radius: 12px;
                 padding: 6px 12px;
                 font-size: 12px;
+                max-width: calc(100% - 29px);
                 &::-webkit-scrollbar {
                     width: 3px;
                     height: 3px;
@@ -112,7 +118,7 @@ $default-color: rgb(218,220,225);
 
     .comment {
         display:flex;
-        margin-top: 40px;
+        margin-top: 20px;
         .left-container {
             width: -webkit-fill-available;
         }
@@ -136,6 +142,8 @@ $default-color: rgb(218,220,225);
                     height: unset;
                     width: unset;
                     font-size: 18px;
+                    max-width:18px;
+                    overflow: hidden;
                     color: #dadce1;
                 }
                 
@@ -187,6 +195,8 @@ $default-color: rgb(218,220,225);
             width: unset !important;
             height: unset !important;
             font-size: 18px !important;
+            max-width:18px !important;
+                    overflow: hidden;
             color: rgb(32, 56, 100) !important;
         }
 
@@ -220,7 +230,7 @@ $default-color: rgb(218,220,225);
 }
 
 .dark-shiny {
-    background-color: #203864;
+    background-color:#0c2048;
     background-image: linear-gradient(to right, #00000000 33%, #162e58 50%, #00000000 66%);
     background-size: 300% 100%;
     animation: shine 2s infinite;
