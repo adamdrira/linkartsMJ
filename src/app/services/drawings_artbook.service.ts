@@ -62,7 +62,7 @@ export class Drawings_Artbook_Service {
   }
 
   ModifyArtbook2(drawing_id,Title, Category, Tags:String[],highlight){
-    return this.httpClient.post('routes/modify_drawings_artbook', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight }, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post('routes/modify_drawings_artbook2', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight }, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

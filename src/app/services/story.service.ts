@@ -28,6 +28,12 @@ export class Story_service {
       }));
   };
 
+  check_stories_for_account(user_id){
+    return this.httpClient.post(`routes/check_stories_for_account`,{user_id:user_id}, {withCredentials:true}).pipe(map(information=>{
+      return information
+  }));
+  }
+
   get_stories_by_user_id(id_user){
     return this.httpClient.get(`routes/get_stories_by_user_id/${id_user}`, {withCredentials:true}).pipe(map(information=>{
           return information

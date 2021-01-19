@@ -40,7 +40,7 @@ export class Drawings_Onepage_Service {
   }
 
   ModifyDrawingOnePage2(drawing_id,Title, Category, Tags:String[],highlight){
-    return this.httpClient.post('routes/modify_drawing_one_page', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight }, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post('routes/modify_drawing_one_page2', {Title: Title, Category:Category, Tags:Tags, drawing_id:drawing_id,highlight:highlight }, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

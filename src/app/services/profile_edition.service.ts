@@ -107,6 +107,20 @@ export class Profile_Edition_Service {
     }));
   }
 
+
+  get_current_user_and_cookies(){
+    return this.httpClient.get('api/userid_and_cookies',{withCredentials:true} ).pipe(map((information)=>{   
+      return information;
+    }));
+  }
+
+  agree_on_cookies(){
+    return this.httpClient.post('routes/agree_on_cookies',{},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+  
+
   get_user_id_by_pseudo(pseudo){
     return this.httpClient.get(`routes/get_user_id_by_pseudo/${pseudo}`,{withCredentials:true} ).pipe(map((information)=>{
       return information;
@@ -121,7 +135,6 @@ export class Profile_Edition_Service {
 
 
   block_user(id_user_blocked,date){
-    console.log(date)
     return this.httpClient.post('routes/block_user',{id_user_blocked:id_user_blocked,date:date},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
@@ -299,14 +312,14 @@ export class Profile_Edition_Service {
     }));
   }
 
-  delete_account(){
-    return this.httpClient.post('routes/delete_account',{},{withCredentials:true} ).pipe(map((information)=>{
+  delete_account(motif){
+    return this.httpClient.post('routes/delete_account',{motif:motif},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }
 
-  suspend_account(){
-    return this.httpClient.post('routes/suspend_account',{},{withCredentials:true} ).pipe(map((information)=>{
+  suspend_account(motif){
+    return this.httpClient.post('routes/suspend_account',{motif:motif},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));
   }

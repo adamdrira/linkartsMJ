@@ -22,7 +22,8 @@ export class Community_recommendation {
   }
 
   generate_recommendations(){
-    return this.httpClient.post('routes/generate_recommendations', {}, {withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post('routes/generate_recommendations', {}, {withCredentials:true}).pipe(map((information)=>{ 
+      this.CookieService.set('recommendations', JSON.stringify(information), 365*10, '/','localhost',undefined,'Lax');
       return information;
       }));
   }
@@ -58,11 +59,6 @@ export class Community_recommendation {
       }));
   }
 
-  sorted_category_list(){
-   return this.httpClient.get('python/sorted_category_list', {withCredentials:true}).pipe(map(information=>{
-        return information;
-     }));
- };
 
  sorted_favourite_type_list(){
   return this.httpClient.get('python/sorted_favourite_type_list', {withCredentials:true}).pipe(map(information=>{
@@ -70,11 +66,7 @@ export class Community_recommendation {
     }));
 };
 
-delete_recommendations_artpieces(){
-  return this.httpClient.delete('python/delete_recommendations_artpieces',{withCredentials:true}).pipe(map(information=>{
-     return information;
-    }));
-}
+
 
 get_first_recommendation_bd_os_for_user(index_bd){
   return this.httpClient.post('routes/get_first_recommendation_bd_os_for_user', {index_bd:index_bd},{withCredentials:true}).pipe(map(information=>{  

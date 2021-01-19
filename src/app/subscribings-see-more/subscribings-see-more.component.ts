@@ -93,6 +93,8 @@ export class SubscribingsSeeMoreComponent implements OnInit {
       this.list_of_contents_sorted=true;
       this.last_timestamp=list[0].createdAt;
     }
+    console.log(list)
+    console.log(this.last_timestamp)
 
   }
 
@@ -109,6 +111,7 @@ export class SubscribingsSeeMoreComponent implements OnInit {
 
   see_more_contents(){
     this.Subscribing_service.see_more_contents(this.list_of_users,this.last_timestamp).subscribe(r=>{
+      console.log(r[0])
       if(r[0].length>0){
         let compt=0;
         for (let j=0; j< r[0].length;j++){

@@ -48,7 +48,6 @@ export class Bd_CoverService {
 
 
   add_covername_to_sql(bd_id,format:string){
-    this.CookieService.delete('name_cover_bd','/');
     if(format==="One-shot"){
       return this.httpClient.post('routes/add_cover_bd_oneshot_todatabase', {name: this.covername, bd_id: bd_id}, {withCredentials:true}).pipe(map((information)=>{
         return information;
@@ -65,13 +64,11 @@ export class Bd_CoverService {
     
     if(format==="One-shot"){
       return this.httpClient.post('routes/add_cover_bd_oneshot_todatabase', {name: this.covername, bd_id: bd_id}, {withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
     else if(format==="Série"){
       return this.httpClient.post('routes/add_cover_bd_serie_todatabase', {name: this.covername, bd_id: bd_id},{withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
@@ -84,7 +81,6 @@ export class Bd_CoverService {
     if(this.covername != ''){
       return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${this.covername}`, {withCredentials:true}).pipe(map(information=>{
         this.covername = '';
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }));
     }
@@ -98,7 +94,6 @@ export class Bd_CoverService {
     
      if(name && name!=''){
       return this.httpClient.delete(`routes/remove_cover_bd_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
-        this.CookieService.delete('name_cover_bd','/');
         return information;
       }))
      }

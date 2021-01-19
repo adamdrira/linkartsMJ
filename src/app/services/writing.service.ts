@@ -133,6 +133,13 @@ export class Writing_Upload_Service {
     }));
   }
 
+  retrieve_writing_for_options(i){
+    return this.httpClient.get(`routes/retrieve_writing_for_options/${i}`,{responseType:'blob'}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+  
+
   get_number_of_writings(id_user,date_format,compteur){
     return this.httpClient.post('routes/get_number_of_writings',{id_user:id_user,date_format:date_format}, {withCredentials:true}).pipe(map(information=>{
     return [information,compteur]

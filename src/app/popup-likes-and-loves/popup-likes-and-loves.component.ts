@@ -76,28 +76,46 @@ export class PopupLikesAndLovesComponent implements OnInit {
       let n=this.list_of_users_ids.length;
       let compt=0;
       for (let i=0;i<n;i++){
+        let  sub_retrieved=false;
+        let data_retrieved=false;
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_users_ids[i]).subscribe(r=>{
           this.list_of_users_information[i]=r[0];
-          this.Subscribing_service.check_if_visitor_susbcribed(r[0].id).subscribe(information=>{
-            if(information[0].value){
-              this.list_of_check_subscribtion[i]=true;
+          data_retrieved=true;
+          check_all(this)
+        });
+
+        this.Subscribing_service.check_if_visitor_susbcribed(this.list_of_users_ids[i]).subscribe(information=>{
+          if(information[0].value){
+            this.list_of_check_subscribtion[i]=true;
+          }
+          else{
+            this.list_of_check_subscribtion[i]=false;
+          }
+          sub_retrieved=true;
+          check_all(this)
+          
+        });
+
+        this.list_of_profile_pictures[i]=null;
+        this.Profile_Edition_Service.retrieve_profile_picture(this.list_of_users_ids[i]).subscribe(r=> {
+          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.list_of_profile_pictures[i] = SafeURL;
+
+        });
+
+        function check_all(THIS){
+          if(sub_retrieved && data_retrieved){
+            compt++;
+            console.log(compt)
+            console.log(n)
+            if(compt==n){
+              THIS.subscribtion_info_added=true;
+              THIS.cd.detectChanges()
             }
-            else{
-              this.list_of_check_subscribtion[i]=false;
-            }
-            this.Profile_Edition_Service.retrieve_profile_picture( r[0].id).subscribe(r=> {
-              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.list_of_profile_pictures[i] = SafeURL;
-              compt++;
-              if(compt==n){
-                this.subscribtion_info_added=true;
-                this.cd.detectChanges()
-              }
-            });
-            
-          });
-        })
+          }
+        }
+        
         
       }
     }

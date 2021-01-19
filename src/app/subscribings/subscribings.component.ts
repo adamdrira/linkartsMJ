@@ -391,7 +391,8 @@ export class SubscribingsComponent implements OnInit {
   display_contents=false;
   display_nothing_found=false;
   sort_list_of_contents(list,period){
-    //console.log(list);
+    console.log(list);
+    console.log(period)
     if(list.length>1){
       for (let i=1; i<list.length; i++){
         let time = this.convert_timestamp_to_number(list[i].createdAt);
@@ -404,7 +405,7 @@ export class SubscribingsComponent implements OnInit {
         }
       }
       if(period=='old'){
-        //console.log(this.list_of_contents)
+        console.log(this.list_of_contents)
         this.list_of_contents_sorted=true;
         this.last_timestamp=list[list.length-1].createdAt;
       }
@@ -430,6 +431,7 @@ export class SubscribingsComponent implements OnInit {
     else{
       if(period=='old'){
         this.list_of_contents_sorted=true;
+        
       }
       if(period=='new'){
         this.list_of_new_contents_sorted=true;

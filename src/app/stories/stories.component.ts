@@ -64,7 +64,7 @@ export class StoriesComponent implements OnInit {
   users_retrieved=false;
   now_in_seconds:number;
   user_id:number;
-
+  user_name:string;
   list_of_list_of_data:any[]=[];
   first_part_sorted=false;
   second_part_sorted=false;
@@ -153,17 +153,8 @@ export class StoriesComponent implements OnInit {
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
+      this.user_name=r[0].nickname;
       console.log(r[0].id);
-      //this.list_of_users.push(r[0].id);
-      /*this.Subscribing_service.get_all_subscribings_for_stories(this.user_id).subscribe(info=>{
-        let users= info[0];
-        if(users.length>0){
-          for (let i=0; i< users.length;i++){ 
-            this.list_of_users.push(users[i].id_user_subscribed_to); 
-          }
-        }
-        this.retrieve_data_and_valdiate();
-      })*/
       this.retrieve_data_and_valdiate();
       
     });
@@ -187,6 +178,12 @@ export class StoriesComponent implements OnInit {
       let compteur_pp_rerieved=0;
       let compteur_covers_retrieved=0;
       for (let k =0;k<r[0].list_of_users.length;k++){
+        if(r[0].list_of_stories_s[k].length>0){
+          compt_found_stories++;
+        }
+      }
+
+      for (let k =0;k<r[0].list_of_users.length;k++){
         let itsme=false;
         if(r[0].list_of_users[k]==this.user_id){
           itsme=true;
@@ -195,7 +192,6 @@ export class StoriesComponent implements OnInit {
         this.list_of_users.push(r[0].list_of_users[k]);
         // ajout des boolean false et true si toutes les stories ont étaient vues
         if(r[0].list_of_stories_s[k].length>0){
-          compt_found_stories++;
           if(r[0].list_of_users[k]==this.user_id){
             this.do_I_have_stories=true;
           }
@@ -791,7 +787,7 @@ export class StoriesComponent implements OnInit {
       console.log(this.list_of_list_of_data)
       console.log(this.user_id)
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
-        data: { list_of_users: this.final_list_of_users, index_id_of_user: i, list_of_data:this.list_of_list_of_data,current_user:this.user_id},
+        data: { list_of_users: this.final_list_of_users, index_id_of_user: i, list_of_data:this.list_of_list_of_data,current_user:this.user_id,current_user_name:this.user_name},
         panelClass: 'popupStoriesClass'
       });
 
@@ -808,7 +804,9 @@ export class StoriesComponent implements OnInit {
         if(result.event=="end-swiper"){
           this.list_of_state[this.list_of_state.length-1]=false;
         }
-        })
+        console.log(this.list_of_state)
+        console.log(this.final_list_of_users)
+      })
     }
     
 

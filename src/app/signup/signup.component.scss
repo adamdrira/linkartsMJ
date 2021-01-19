@@ -23,6 +23,26 @@
   }
 }
 
+.back-button{
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none !important;
+  border: unset;
+  border-radius: 50px;
+  height: 40px;
+  width: 40px;
+  background: white;
+  z-index: 10;
+  cursor: pointer;
+
+  &:hover {
+    background: #efefef;
+  }
+}
 .popup-signup {
 
   position: relative;

@@ -35,24 +35,16 @@ export class ChatService {
           this.messages=<Subject<Message>>this.wsService
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
-              //this.wsService.check_state();
-              //console.log(response)
+              this.wsService.check_state();
+              console.log(response)
               let data = JSON.parse(response.data);
               return data
           }))
 
-
-
-          /*this.messages=<WebSocketSubject<Message>>this.connect(`ws://localhost:4600/path?id=${l[0].id}`)
-          .pipe(map((response:MessageEvent):Message=>{
-              //this.wsService.check_state();
-              //console.log(response.data)
-              let data = JSON.parse(response.data);
-              return data
-          }))*/
+          console.log(this.messages)
         }
         
-      });
+    });
 
   }
 
@@ -61,21 +53,22 @@ export class ChatService {
   }
 
  reconnect(){
-    setInterval(() => {
+      this.messages=null;
       this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0] && l[0].status && l[0].status!="visitor"){
           this.messages=<Subject<Message>>this.wsService
           .connect(`ws://localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
-              //this.wsService.check_state();
-              ////console.log(response)
+              console.log(this.wsService.check_state());
+              console.log(response)
               let data = JSON.parse(response.data);
               return data
           }))
+
+          console.log(this.messages)
         }
         
       });
-      },5000);
   }
 
   /*public connect(url) {
@@ -269,7 +262,7 @@ get_the_group_creator(id_friend):Observable<any>{
 }
 
 exit_group(id_receiver):Observable<any>{
-  return this.httpClient.post('routes/exit_group',{id_receiver:id_receiver},{withCredentials:true}).pipe(map(information=>{
+  return this.httpClient.post('routes/exit_group_chat',{id_receiver:id_receiver},{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }

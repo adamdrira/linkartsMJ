@@ -53,17 +53,30 @@ export class PopupStoriesComponent implements OnInit {
  
   story_loaded=false;
 
+  list_of_users=[];
+  list_of_data=[];
+  index_id_of_user=this.data.index_id_of_user
+  for_account=this.data.for_account;
   ngOnInit() {
 
     
     console.log( this.data.list_of_users );
     console.log( this.data.list_of_users[this.data.index_id_of_user] );
     console.log( this.data.list_of_data[this.data.index_id_of_user] );
-    if(!this.data.list_of_data[0]){
+    
+    if(this.data.list_of_users.length>0){
+      for(let i=0;i<this.data.list_of_users.length;i++){
+        this.list_of_users[i]=this.data.list_of_users[i];
+        this.list_of_data[i]=this.data.list_of_data[i];
+      }
+    }
+
+    if(!this.list_of_data[0]){
       console.log('ya r')
-      this.data.list_of_users.splice(0,1);
-      this.data.list_of_data.splice(0,1);
-      this.data.index_id_of_user=this.data.index_id_of_user-1;
+      this.list_of_users.splice(0,1);
+      this.list_of_data.splice(0,1);
+      this.index_id_of_user-=-1;
+      console.log(this.list_of_users)
       console.log(this.data.list_of_users)
     }
 
@@ -98,33 +111,33 @@ export class PopupStoriesComponent implements OnInit {
     
 
   let k=0;
-  for(let s =0; s<this.data.list_of_users.length;s++){
-    this.Story_service.get_last_seen_story(this.data.list_of_users[s]).subscribe(l=>{
+  for(let s =0; s<this.list_of_users.length;s++){
+    this.Story_service.get_last_seen_story(this.list_of_users[s]).subscribe(l=>{
       console.log(l[0]);
       console.log(s);
-      console.log(this.data.list_of_users)
-       console.log(this.data.list_of_data[s]) ;
+      console.log(this.list_of_users)
+       console.log(this.list_of_data[s]) ;
       if(l[0]){
-        console.log(this.data.list_of_data[s].length)
-        for (let i=0;i<this.data.list_of_data[s].length;i++){
-          if(this.data.list_of_data[s][i].id==l[0].id_story){
+        console.log(this.list_of_data[s].length)
+        for (let i=0;i<this.list_of_data[s].length;i++){
+          if(this.list_of_data[s][i].id==l[0].id_story){
             this.list_index_debut[s]=i+1;
-            if(this.list_index_debut[s]>=this.data.list_of_data[s].length){
+            if(this.list_index_debut[s]>=this.list_of_data[s].length){
               this.list_index_debut[s]=0;
             }
           }
-          if(i==this.data.list_of_data[s].length-1){
+          if(i==this.list_of_data[s].length-1){
             if(!(this.list_index_debut[s]>=0)){
               this.list_index_debut[s]=0;
             }
             k++;
             //on a récupéré tous les indices des dernières stories vues par l'utilisateur
-            if(k==this.data.list_of_users.length){
+            if(k==this.list_of_users.length){
               console.log(this.list_index_debut);
-              for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-                this.createStory( this.data.list_of_users[j], this.list_index_debut[j],this.data.list_of_data[j] );
+              for(let j = 0; j < this.list_of_users.length ; j++ ) {
+                this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j] );
                 this.refresh_stories_status();
-                this.swiper.slideTo( this.data.index_id_of_user, false, false );
+                this.swiper.slideTo( this.index_id_of_user, false, false );
                 this.refresh_stories_status();
               }
             }
@@ -135,11 +148,11 @@ export class PopupStoriesComponent implements OnInit {
         console.log("in ex");
         this.list_index_debut[s]=0;
         k++;
-        if(k==this.data.list_of_users.length){
-          for(let j = 0; j < this.data.list_of_users.length ; j++ ) {
-            this.createStory( this.data.list_of_users[j], this.list_index_debut[j],this.data.list_of_data[j]);
+        if(k==this.list_of_users.length){
+          for(let j = 0; j < this.list_of_users.length ; j++ ) {
+            this.createStory( this.list_of_users[j], this.list_index_debut[j],this.list_of_data[j]);
             this.refresh_stories_status();
-            this.swiper.slideTo( this.data.index_id_of_user, false, false );
+            this.swiper.slideTo( this.index_id_of_user, false, false );
             this.refresh_stories_status();
           }
         }
@@ -170,6 +183,8 @@ export class PopupStoriesComponent implements OnInit {
     this.componentRef[ this.componentRef.length - 1 ].instance.list_of_data = list_of_data;
     this.componentRef[ this.componentRef.length - 1 ].instance.user_id = user_id;
     this.componentRef[ this.componentRef.length - 1 ].instance.current_user = this.data.current_user;
+
+    this.componentRef[ this.componentRef.length - 1 ].instance.current_user_name = this.data.current_user_name;
     this.componentRef[ this.componentRef.length - 1 ].instance.index_debut = index_debut;
 
     this.componentRef[ this.componentRef.length - 1 ].instance.closePopup.subscribe( v => {

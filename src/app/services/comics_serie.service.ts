@@ -97,7 +97,7 @@ export class BdSerieService {
   }
 
   ModifyBdSerie2(bd_id,Title, Category, Tags:String[], highlight){
-    return this.httpClient.post('routes/modify_bd_serie', {Title: Title, Category:Category, Tags:Tags, bd_id:bd_id, highlight:highlight},{withCredentials:true}).pipe(map((information)=>{
+    return this.httpClient.post('routes/modify_bd_serie2', {Title: Title, Category:Category, Tags:Tags, bd_id:bd_id, highlight:highlight},{withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }

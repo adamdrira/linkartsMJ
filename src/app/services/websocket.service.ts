@@ -34,6 +34,7 @@ export class WebSocketService {
 }
 
 public check_state(){
+  return this.ws.readyState
   //console.log(this.ws.readyState);
 }
 
@@ -44,7 +45,7 @@ public check_state(){
   connect(url):Subject<MessageEvent>{
       if(!this.subject){
           this.subject=this.create(url);
-          //console.log("connected to " + url);
+          console.log("connect to " + url);
       }
       return this.subject;
 
@@ -56,49 +57,62 @@ public check_state(){
       let THIS=this;
       
       this.ws = new WebSocket(url);
-      //console.log(this.ws );
+      console.log(this.ws );
       let observable = new Observable(
           (obs:Observer<MessageEvent>)=>{
-             this.ws.onmessage=obs.next.bind(obs);
-             this.ws.onerror=obs.error.bind(obs);
-             
-             this.ws.onclose=function(e) {  
-              //console.log(e);
-              //console.log('socket closed try again'); 
-               if(!e.wasClean){
-                 //console.log("not cleen");
-                 //THIS.ChatService.reconnect();
-                 let retry= setInterval(() => {
-                    //console.log(THIS.ws.readyState);
-                    if(THIS.ws.readyState==2 || THIS.ws.readyState==3){
-                      THIS.subject = null;
-                      THIS.NavbarService.send_connextion_status(false)
-                      return THIS.connect(url)
-                    }
-                    else{
-                      clearInterval(retry)
-                      THIS.subject = null;
-                      THIS.NavbarService.send_connextion_status(true)
-                      return THIS.connect(url)
-                    }
-                   
-                    },10000);
-               }
-               
+              this.ws.onmessage=obs.next.bind(obs);
+              this.ws.onerror=obs.error.bind(obs);
               
-            }
-              return ;
+              this.ws.onclose=function(e) {  
+                console.log(e);
+                console.log('socket closed try again'); 
+                if(!e.wasClean){
+                    console.log("not cleen");
+                    let retry= setInterval(() => {
+                        console.log(THIS.ws.readyState);
+                        if(THIS.ws.readyState==2 || THIS.ws.readyState==3 ){
+                          THIS.subject = null;
+                          THIS.NavbarService.send_connextion_status(false)
+                          return THIS.connect(url)
+                        }
+                        else{
+                          clearInterval(retry)
+                          THIS.subject = null;
+                          THIS.NavbarService.send_connextion_status(true)
+                        }
+                    
+                      },1000);
+                }
+              }
+              return this.ws.close.bind(this.ws); ;
           }
       )
 
       let observer= {
           next:(data:Object)=>{
+              console.log(this.ws.readyState)
+              console.log(WebSocket.OPEN)
               if(this.ws.readyState===WebSocket.OPEN){
-               this.ws.send(JSON.stringify(data));
+                console.log(JSON.stringify(data))
+                this.NavbarService.send_connextion_status(true)
+                this.ws.send(JSON.stringify(data));
+              }
+              else{
+                  if(THIS.ws.readyState==2 || THIS.ws.readyState==3){
+                    THIS.subject = null;
+                    THIS.NavbarService.send_connextion_status(false)
+                    THIS.connect(url)
+                  }
+                  else{
+                    THIS.subject = null;
+                    THIS.NavbarService.send_connextion_status(true);
+                  }
               }
           },
           error: (err: any) => {console.log(err)},
-          complete: () => { this.ws.complete();
+          complete: () => { 
+            console.log("compelete")
+            this.ws.complete();
             this.subject = null;},
           
       }

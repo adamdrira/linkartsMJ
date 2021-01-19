@@ -12,8 +12,29 @@
     //box-shadow: 0px 0px 3px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.14), 0px 2px 7px 0px rgba(0, 0, 0, 0.12);
 }
 
+.new-loading{
+    background-color: #205486;
+    background-image: linear-gradient(to right, #00000000 33%, #4bc7ff8f 50%, #00000000 66%);
+    background-size: 300% 100%;
+    animation: shine 2s infinite;
+}
+
+.old-loading {
+    background-color: gainsboro !important;
+    background-image: linear-gradient(to right, #00000000 33%, #dbf2f396 50%, #00000000 66%) !important;
+    background-size: 300% 100% !important;
+    -webkit-animation: shine 2s infinite !important;
+    animation: shine 2s infinite !important;
+}
+
 .story-swiper-container {
     height: min-content;
+}
+
+@keyframes shine {
+    0% {
+        background-position: right;
+    }
 }
 
 .story {
@@ -75,11 +96,13 @@
 }
 
 .new {
-    background: linear-gradient(to right, #0014ff, #00feff);
+    //background: linear-gradient(to right, #205486, #4bc7ff);
+    box-shadow: 0px 0px 1px 3px #4bc7ff;
 }
 
 .old {
-    background: linear-gradient(to right, #95a2b9, #dff7f7);
+    //background: linear-gradient(to right, #95a2b9, #dff7f7);
+    box-shadow: 0px 0px 0px 2px #f9f9f9c7;
     //border: 3px solid rgb(209, 224, 251) !important;
 }
 

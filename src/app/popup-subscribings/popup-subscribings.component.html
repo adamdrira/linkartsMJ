@@ -22,55 +22,58 @@
     </div>
 
     <div class="subscribers-container" *ngIf="list_of_subscribings.length>0 && subscribtion_info_added" [@enterAnimation]>
-        <div *ngFor="let item of list_of_subscribings_information; let i=index" class="subscriber-card">
+        <div *ngFor="let item of list_of_subscribings_information; let i=index" class="subscriber-card" [ngClass]="{'really-invisible':!list_of_subscribings_information[i] }">
             
             
             <!--********************-->
             <!--Author container-->
             <!--********************-->
-            <div class="subscriber">
-                <div class="user-container">
-                    <a [routerLink]=get_user_link(i)>
-                        <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
-                            <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
-                        </div>
-                    </a>
-                    <a [routerLink]=get_user_link(i)>
-                        <div class="right-container">
-                            
-                            
-                            <span class="author-name">{{item.firstname}} {{item.lastname}}
-                                <mat-icon *ngIf="list_of_subscribings_information[i].certified_account"
-                                matTooltip="Compte certifié" 
-                                matTooltipClass='linkarts-tooltip' 
-                                [matTooltipPosition]="'below'"
-                                [matTooltipShowDelay]="200">verified</mat-icon>
-        
-                                <div *ngIf="list_of_subscribings_information[i].type_of_account_checked" class="pro-logo"
-                                matTooltip="Compte professionnel" 
-                                matTooltipClass='linkarts-tooltip'
-                                [matTooltipPosition]="'below'"
-                                [matTooltipShowDelay]="200">PRO</div>
-                            </span>
-                            <span class="user-description">@{{item.nickname}}</span>
-                        </div>
-                    </a>
+            <ng-container *ngIf="list_of_subscribings_information[i]">
+                <div class="subscriber">
+                    <div class="user-container">
+                        <a [routerLink]=get_user_link(i)>
+                            <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
+                                <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
+                            </div>
+                        </a>
+                        <a [routerLink]=get_user_link(i)>
+                            <div class="right-container">
+                                
+                                
+                                <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                    <mat-icon *ngIf="list_of_subscribings_information[i].certified_account"
+                                    matTooltip="Compte certifié" 
+                                    matTooltipClass='linkarts-tooltip' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">verified</mat-icon>
+            
+                                    <div *ngIf="list_of_subscribings_information[i].type_of_account_checked" class="pro-logo"
+                                    matTooltip="Compte professionnel" 
+                                    matTooltipClass='linkarts-tooltip'
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">PRO</div>
+                                </span>
+                                <span class="user-description">@{{item.nickname}}</span>
+                            </div>
+                        </a>
+                    </div>
+                  
                 </div>
-              
-            </div>
-            
-
-            <ng-container *ngIf="type_of_profile=='account' && list_of_subscribings[i].id_user_subscribed_to!=visitor_id">
-                <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
-                    <mat-icon>add</mat-icon>
-                    <span>S'abonner</span>
-                </button>
-                <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
-                    <mat-icon>notifications_active</mat-icon>
-                    <span>Abonné</span>
-                </button>
+                
+    
+                <ng-container *ngIf="type_of_profile=='account' && list_of_subscribings_information[i].id!=visitor_id">
+                    <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
+                        <mat-icon>add</mat-icon>
+                        <span>S'abonner</span>
+                    </button>
+                    <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
+                        <mat-icon>notifications_active</mat-icon>
+                        <span>Abonné</span>
+                    </button>
+                </ng-container>
+                
             </ng-container>
-            
+           
 
         </div>
     </div>

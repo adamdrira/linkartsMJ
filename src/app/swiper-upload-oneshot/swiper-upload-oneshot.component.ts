@@ -73,7 +73,12 @@ export class SwiperUploadOneshotComponent implements OnInit {
     
   }
 
-  ngAfterViewInit() {
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
 
     this.cd.detectChanges;
     this.initialize_swiper();
@@ -245,9 +250,9 @@ export class SwiperUploadOneshotComponent implements OnInit {
       if( this.component_creation_in_progress ) {
           return;
       }
-      else if(this.componentRef.length==100){
+      else if(this.componentRef.length==50){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 100 pages"},
+          data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 50 pages"},
           panelClass: 'dialogRefClassText'
         });
       }

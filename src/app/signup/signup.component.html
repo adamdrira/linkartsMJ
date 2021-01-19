@@ -4,6 +4,9 @@
     <mat-icon>close</mat-icon>
 </button>
 
+<button *ngIf="step>0" class="back-button" (click)="step_back();">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+</button>
 
 <div class="popup-signup">
 
@@ -87,9 +90,9 @@
     
     <ng-container *ngIf="step==1">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
         
         <div class="step-name">
             <span>Informations de compte 1</span>
@@ -187,9 +190,9 @@
 
     <ng-container *ngIf="step==2">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
         
         <div class="step-name">
             <span>Informations de compte 2</span>
@@ -245,9 +248,9 @@
     
     <ng-container *ngIf="step==3 && registerForm1.value.gender=='Groupe' && (registerForm2.value.type_of_account=='Artistes' || registerForm2.value.type_of_account=='Artistes professionels')">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
         
         <div class="step-name add-group-members">
             <span>Liste des membres du groupe</span>
@@ -387,9 +390,9 @@
     
     <ng-container *ngIf="step==4 && registerForm1.value.gender=='Groupe' && need_authentication">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
         
         <div class="step-name">
             <span>Authentification de l'admin</span>
@@ -453,9 +456,9 @@
 
     <ng-container *ngIf="step==4 && registerForm1.value.gender=='Groupe' &&  !need_authentication">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
 
             
         <!-- A TERMINER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -586,9 +589,9 @@
 
     <ng-container *ngIf="step==3 && registerForm1.value.gender!='Groupe'">
 
-        <div class="step-back">
+        <!--<div class="step-back">
             <div (click)="step_back();" class="left">Retour</div>
-        </div>
+        </div>-->
 
         <div class="step-name">
             <span>Informations complémentaires</span>

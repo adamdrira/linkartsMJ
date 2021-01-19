@@ -3,6 +3,10 @@
         visibility: hidden;
         pointer-events: none;
     }
+    
+    .really-invisible{
+        display: none !important;
+    }
 
     .title-no-data {
         height: 200px;
@@ -35,6 +39,7 @@
         margin-bottom: 10px;
         text-align: center;
         position: relative;
+        padding-left: 10px;
 
         span {
             font-weight: bold;
@@ -241,12 +246,7 @@
             }
             &.subscribe-button {
                 color: white;
-                background-image: linear-gradient(
-                    0.02turn,
-                    rgba(2, 18, 54, 0.9),
-                    rgba(19, 51, 100, 0.9),
-                    rgba(44, 114, 164, 0.9)
-                );
+                background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9));
                 &:hover {
                     background-image: linear-gradient(
                         0.02turn,

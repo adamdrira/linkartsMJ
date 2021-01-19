@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class NavbarService {
 
    
-    active_section: number;
+    active_section: number=-1;
     height: number;//in px
     visible: boolean=false;
     account: string;
@@ -63,6 +63,7 @@ export class NavbarService {
     
 
     set_using_chat(){
+      this.active_section=-1;
       this.using_chat=true;
       this.chatSubject.next( this.using_chat)
     }
@@ -73,8 +74,10 @@ export class NavbarService {
     get_using_chat(){ return this.using_chat}
 
     send_connextion_status(status){
+      console.log(status)
       this.connexion_status=status;
       this.connexionSubject.next(status);
+      
     }
 
      /********************************************* NOTIFICATIONS **************************************/

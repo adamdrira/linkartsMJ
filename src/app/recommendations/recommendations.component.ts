@@ -147,7 +147,7 @@ export class RecommendationsComponent implements OnInit {
     let recommendations_string = this.CookieService.get('recommendations');
     console.log(recommendations_string)
     if(recommendations_string){
-      recommendations_string=recommendations_string.substring(2);
+      //recommendations_string=recommendations_string.substring(2);
       let recommendations= JSON.parse(recommendations_string);
       let info=recommendations[0].sorted_list_category;
       let information=recommendations[0].styles_recommendation;

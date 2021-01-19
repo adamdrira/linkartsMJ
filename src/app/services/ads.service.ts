@@ -25,8 +25,8 @@ export class Ads_service {
   
 
 
-  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value,price_type,service,price_value_service,price_type_service){  
-    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,service:service,price_value_service:price_value_service,price_type_service:price_type_service,my_description:my_description,targets:targets,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
+  add_primary_information_ad(title,type_of_project,description,location,my_description,targets,remuneration,price_value,price_type,service,price_value_service,price_type_service,offer_or_demand){  
+    return this.httpClient.post('routes/add_primary_information_ad', {description: description, title: title,type_of_project:type_of_project,service:service,offer_or_demand:offer_or_demand,price_value_service:price_value_service,price_type_service:price_type_service,my_description:my_description,targets:targets,location:location,remuneration:remuneration,price_value:price_value,price_type:price_type}, {withCredentials:true}).pipe(map((information)=>{
          return information;
        }));
    }
@@ -44,10 +44,10 @@ export class Ads_service {
   };
 
    get_thumbnail_name(){
-    return this.httpClient.get('routes/get_cookies_thumbnail_ad', {withCredentials:true}).pipe(map(information=>{
+    return this.httpClient.get('routes/get_thumbnail_ad_name', {withCredentials:true}).pipe(map(information=>{
         this.name_thumbnail_ad = information[0].name_thumbnail_ad;
         console.log(this.name_thumbnail_ad)
-        return this.name_thumbnail_ad
+        return information
     }));
   };
 
@@ -56,7 +56,6 @@ export class Ads_service {
   }
 
   send_confirmation_for_add_ad(confirmation:boolean){
-    this.CookieService.delete('name_thumbnail_ad','/');
       this.thumbnail_confirmation = confirmation
   };
 
@@ -68,7 +67,6 @@ export class Ads_service {
 
   add_thumbnail_ad_to_database(id){
       return this.httpClient.post('routes/add_thumbnail_ad_to_database', {name: this.name_thumbnail_ad, id: id}, {withCredentials:true}).pipe(map((information)=>{
-        this.CookieService.delete('name_thumbnail_ad','/');
         return information;
       }));
   };
@@ -77,8 +75,7 @@ export class Ads_service {
    remove_thumbnail_ad_from_folder() {
     
     if(this.name_thumbnail_ad!=''){
-        return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${this.name_thumbnail_ad}`, {withCredentials:true}).pipe(map(information=>{
-          this.CookieService.delete('name_thumbnail_ad','/');  
+        return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${this.name_thumbnail_ad}`, {withCredentials:true}).pipe(map(information=>{ 
           return information;
           }));
     }
@@ -91,7 +88,6 @@ export class Ads_service {
    remove_thumbnail_ad_from_folder2(name):Observable<any> {
      if(name && name!=''){
       return this.httpClient.delete(`routes/remove_thumbnail_ad_from_folder/${name}`, {withCredentials:true}).pipe(map(information=>{
-        this.CookieService.delete('name_thumbnail_ad','/');
         return information;
       }));
      }
@@ -116,7 +112,13 @@ export class Ads_service {
 
     get_sorted_ads(remuneration,type_of_project,author,target,sorting):Observable<Object> {
       return this.httpClient.get(`routes/get_sorted_ads/${remuneration}/${type_of_project}/${author}/${target}/${sorting}`,{withCredentials:true}).pipe(map(information=>{
-        return information;   
+        return information ;  
+      }));
+    }
+
+    get_sorted_ads_linkcollab(type_of_project,author,target,remuneration,service,type_of_remuneration,type_of_service,offer_or_demand, sorting,offset,compteur):Observable<Object> {
+      return this.httpClient.post('routes/get_sorted_ads_linkcollab', {remuneration:remuneration,service:service,offer_or_demand:offer_or_demand,type_of_remuneration:type_of_remuneration,type_of_service:type_of_service,type_of_project:type_of_project,author:author,target:target,sorting:sorting,offset:offset},{withCredentials:true}).pipe(map(information=>{
+        return [information,compteur];   
       }));
     }
 
@@ -127,7 +129,7 @@ export class Ads_service {
     }
 
     retrieve_ad_thumbnail_picture(file_name:string) {
-      return this.httpClient.get(`routes/retrieve_ad_thumbnail_bd_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
+      return this.httpClient.get(`routes/retrieve_ad_thumbnail_picture/${file_name}`,{responseType:'blob'}).pipe(map(information=>{
         return information;   
       }));
     }
