@@ -13,13 +13,13 @@
                     <mat-icon class="icon" *ngIf="zoom == 1" (click)="zoom_button();">zoom_in</mat-icon>
                      
 
-                    <div class="pages-controller-container">
+                    <!--<div class="pages-controller-container">
                         Page :
                         <input type="text" aria-label="" role="navigation" size="5">
                         <div class="total-pages">
                             <span></span>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -32,7 +32,24 @@
             <div #swiperContainer class="swiper-container artwork" >
                 <div #swiperWrapper class="swiper-wrapper">
     
-                    <div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
+
+                    <div #slide class="swiper-slide swiper-slide-writing" >
+                        <pdf-viewer 
+                        class="pdf-document" 
+                        [src]="pdfSrc" 
+                        [zoom]="zoom"
+                        [render-text]="true" 
+
+                        [autoresize]="true" 
+                        [show-all]="true"
+                        [original-size]='true' 
+
+                        [fit-to-page]='true' 
+                        [render-text]='false'
+                        (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
+                    </div>
+
+                    <!--<div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
                         <div class="slide-container">
     
                             <pdf-viewer
@@ -45,17 +62,12 @@
                             (after-load-complete)="afterLoadComplete($event, i)"
                             ></pdf-viewer>
 
-                            
+                          
     
                         </div>
-                    </div>
+                    </div>-->
     
                 </div>
-                <!-- Add Scrollbar -->
-                <div class="swiper-scrollbar"></div>
-                <!-- Add Arrows -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
             </div>
     
         </div>

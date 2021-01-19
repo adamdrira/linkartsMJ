@@ -1,3 +1,10 @@
+
+
+.invisible {
+    pointer-events: none;
+    visibility: hidden;
+}
+
 .swiper-container-stories {
     height:100%;
     width:400px;
@@ -22,28 +29,14 @@
     z-index:9;
 }
 
-
-::ng-deep .swiper-container-stories .swiper-button-prev {
-    color:black;
-    outline:none !important;
-    left: -80px !important;  
-    background: #c7c7c7;
-    border-radius: 50%;
-    height: 60px;
-    width: 60px;
-    padding-right: 7px;
+ 
+::ng-deep {
+    .panelAdAttachments {
+        mat-dialog-container {
+            background: #021133 !important;
+        }
+    }
 }
-::ng-deep .swiper-container-stories .swiper-button-next {
-    color:black;
-    outline:none !important;
-    right: -80px !important;  
-    background: #c7c7c7;
-    border-radius: 50%;
-    height: 60px;
-    width: 60px;
-    padding-left: 7px;
-}
-
 
   //********************************************
   //********************************************
@@ -57,9 +50,11 @@
     overflow-y:auto;
     color:white;
     height:80vh;
-
+    min-width: 70vw;
+    border-radius:5px;
+    background: #040b19;
     //background: linear-gradient(180deg, rgb(0, 0, 0), rgb(32, 56, 100));
-    background:linear-gradient(180deg, #182338, #182338);
+    //background:linear-gradient(180deg, #182338, #182338);
 
     padding:0px 20px 20px 20px;
     position: relative;
@@ -69,7 +64,7 @@
     padding: 20px 20px 0px 20px;
     overflow:auto;
     height:100%;
-    background: rgb(24, 35, 56);
+    
 }
 
 
@@ -117,7 +112,7 @@
     padding-right:20px;
     box-shadow: 0px -1px 31px rgba(0, 0, 0, 0.5);
     border-radius:25px;
-    background:rgb(32, 56, 100);
+    background: rgba(2, 18, 54, 0.9);
 }
 
 #left-container .top-container .options-container .icons-container {
@@ -323,6 +318,7 @@ right:0 !important;
 }
 .swiper-wrapper {
     position:relative;
+
 }
 
   

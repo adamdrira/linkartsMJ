@@ -127,7 +127,7 @@ export class PopupAdAttachmentsComponent implements OnInit {
 
 
 
-  afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
+  /*afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
     this.total_pages = pdf.numPages;
     this.cd.detectChanges();
     
@@ -136,9 +136,16 @@ export class PopupAdAttachmentsComponent implements OnInit {
       this.refresh_controls_pagination();
     };
     
-  }
+  }*/
 
-  
+  writing_retrieved=false;
+  afterLoadComplete(pdf: PDFDocumentProxy) {
+    console.log(pdf)
+    this.total_pages = pdf.numPages;
+    this.writing_retrieved=true;
+    this.cd.detectChanges();
+    
+  }
 
   refresh_controls_pagination() {
     $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
