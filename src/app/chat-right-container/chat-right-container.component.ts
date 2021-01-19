@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges, ViewChildren, QueryList, Query } from '@angular/core';
+import { Component, OnInit, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges, ViewChildren, QueryList, Query, EventEmitter, Output } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormsModule,ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService} from '../services/chat.service';
@@ -10,13 +10,66 @@ import { ChatComponent } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
 import { getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
+import { pattern } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any;
 
 @Component({
   selector: 'app-chat-right-container',
   templateUrl: './chat-right-container.component.html',
-  styleUrls: ['./chat-right-container.component.scss']
+  styleUrls: ['./chat-right-container.component.scss'],
+  animations: [
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
+        ])
+      ],
+    ),
+    //LEAVING ANIMATIONS
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateX(0%)', opacity: 1}),
+          animate('200ms ease-in-out', style({transform: 'translateX(-30px)', opacity: 0}))
+        ])
+      ],
+    )
+  ],
 })
 export class ChatRightContainerComponent implements OnInit {
 
@@ -25,6 +78,7 @@ export class ChatRightContainerComponent implements OnInit {
     private FormBuilder:FormBuilder,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
+    private formBuilder: FormBuilder,
     public navbar: NavbarService, 
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd: ChangeDetectorRef
@@ -131,6 +185,9 @@ export class ChatRightContainerComponent implements OnInit {
   show_scroll_pictures=false;
 
   ngOnInit(): void {
+
+    this.createFormAd();
+
     this.current_friend_type=this.friend_type;
     this.current_id_chat_section=this.id_chat_section;
     this.current_friend_id=this.friend_id;
@@ -349,5 +406,61 @@ export class ChatRightContainerComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:this.list_of_pictures_src,index_of_picture:indice},
     });
+  }
+
+
+
+  
+  @Input() list_of_chat_sections: any;
+  @Input() list_of_chat_sections_notifications: any;
+  @Input() number_of_sections_unseen: number;
+  @Input() activate_add_chat_section: boolean;
+  @Input() show_notification_message: boolean;
+  
+  @Output() addChatSection = new EventEmitter<any>();
+  @Output() addChatSectionName = new EventEmitter<any>();
+  @Output() deletedChatSection = new EventEmitter<any>();
+  @Output() cancelAddSection = new EventEmitter<any>();
+  @Output() changeSection = new EventEmitter<any>();
+
+  @Output() arrowBack = new EventEmitter<any>();
+  
+  chat_section_name_added: FormControl;
+  chat_section_group:FormGroup;
+
+  add_chat_section() {
+    this.addChatSection.emit();
+  }
+  delete_chat_section() {
+    this.deletedChatSection.emit();
+  }
+  add_chat_section_name() {
+    this.addChatSectionName.emit( this.chat_section_group.value.chat_section_name_added );
+    this.chat_section_group.reset();
+  }
+  cancel_add_section() {
+    this.chat_section_group.reset();
+    this.cancelAddSection.emit();
+  }
+  change_section(e:any) {
+    this.changeSection.emit( e );
+  }
+
+
+  createFormAd() {
+    this.chat_section_group = this.formBuilder.group({
+      chat_section_name_added: ['',
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(pattern("text")),
+        ]),
+      ],
+    });
+  }
+
+  arrow_back() {
+    this.arrowBack.emit();
   }
 }

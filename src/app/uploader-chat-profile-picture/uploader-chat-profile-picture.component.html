@@ -1,20 +1,22 @@
-<div id="uploader-profile-picture" class="thumbnail-container">
+<div id="uploader-group-profile-picture" class="thumbnail-container">
 
     <div *ngIf="!image_uploaded" class="image-container">
-        
-        
+
+
         <div class="dropzone-container">
-            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
+                [uploader]="uploader" class="dropzone">
                 <div class="icon-container">
-                    <div class="upload-icon"></div>
+                    <mat-icon>save_alt</mat-icon>
                     <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
 
-                    
+
                     <label>
                         <div class="upload-picture">
                             <div class="add-logo"></div>
                             <span>Télécharger une photo</span>
-                            <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                            <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader"
+                                style="display: none;" />
                         </div>
                     </label>
 
@@ -26,20 +28,25 @@
     </div>
 
 
-    <div *ngIf="image_uploaded" class="crop-container">
+    <div *ngIf="image_uploaded" class="crop-container" [@enterAnimation]>
 
         <div class="img-container">
             <div class="full-crop">
                 <img #image [src]="displayContent(uploader.queue[0])" crossorigin>
             </div>
 
+
+            <mat-slider min="0" max="1" step="0.01" value="0.5" (input)="sliderEvent($event)"></mat-slider>
+
             <div class="options">
-                
-                <button mat-raised-button class="cancel style0" (click)="step_back();">Annuler</button>
-
-                <mat-slider min="0" max="1" step="0.01" value="0.5" (input)="sliderEvent($event)"></mat-slider>
-
-                <button mat-raised-button class="validate style1" (click)="set_crop()">Valider</button>
+                <button class="cancel style0" (click)="step_back();">
+                    <mat-icon>refresh</mat-icon>
+                    <span>Recommencer</span>
+                </button>
+                <button class="validate style1" (click)="set_crop()">
+                    <mat-icon>done</mat-icon>
+                    <span>Valider</span>
+                </button>
             </div>
 
         </div>

@@ -1,487 +1,488 @@
 
-<div  class="main-chat-container" >
+<div class="main-chat-container" >
 
-    <div class="chat-friends-container" [ngClass]="{'invisible':!list_of_friends_retrieved || !list_of_spams_retrieved || !list_of_users_blocked_retrieved}">
-
-        <div class="selector">
-            <div class="author-container">
-                <div *ngIf="profile_picture_retrieved" class="left-container" [ngClass]="{'shiny': !my_pp_loaded }">
-                    <img [src]="profile_picture" (load)="load_my_pp()" [ngClass]="{'invisible': !my_pp_loaded }">
-                </div>
+    <div class="chat-skeleton" *ngIf="!list_of_friends_retrieved || !list_of_spams_retrieved || !list_of_users_blocked_retrieved">
+        <div class="left-container">
+            <div class="top-container">
+                <div class="pp shiny"></div>
+                <div class="right-button shiny"></div>
+                <div class="right-button shiny"></div>
             </div>
 
+            <div class="searchbar shiny"></div>
+            
+            <div class="users-container">
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+                <div class="user-card shiny"></div>
+            </div>
 
+        </div>
+    </div>
 
-            <div class="formdata-container">
-                <form [formGroup]="formData" style="align-self:center;padding:0 10px; margin: auto;">
-                    <mat-radio-group formControlName="IsActive"
-                     (change)="radioChange($event)" style="position: relative">
-                        <mat-radio-button value="Mes contacts"  >Mes contacts</mat-radio-button>
-                        <mat-radio-button value="Autres"  >
-                            Autres
-                        </mat-radio-button> 
-                        <div class="number-of-notifs-container" *ngIf="number_of_unseen_messages>0 && 100>number_of_unseen_messages"  >
-                            <span *ngIf="10>number_of_unseen_messages" class="number-of-notifs">
-                              {{number_of_unseen_messages}}
-                            </span>
-                            <span *ngIf="number_of_unseen_messages>9" class="number-of-notifs-more">
-                              +{{number_of_unseen_messages}}
-                            </span>
+    
+    <div class="chat-friends-container" [ngClass]="{'invisible':!list_of_friends_retrieved || !list_of_spams_retrieved || !list_of_users_blocked_retrieved, category1:opened_category==1}">
+       
+        <div class="top-options-container">
+            
+            <div class="profile-picture-container" [ngClass]="{'shiny': !my_pp_loaded }">
+                <img [src]="profile_picture" (load)="load_my_pp()" [ngClass]="{'invisible': !my_pp_loaded }">
+            </div>
+            
+            <ng-container *ngIf="opened_category == 0 && !display_add_a_friend_to_a_group">
+                <button (click)="set_category(1)" [@enterFromRightAnimation]
+                matTooltip="Invitations"
+                matTooltipClass='linkarts-tooltip'
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="100">
+                    <mat-icon>mail</mat-icon>
+                    <div [ngClass]="{ 'notif-size-1':10>number_of_unseen_messages,
+                                  'notif-size-2':100>number_of_unseen_messages && number_of_unseen_messages>=10,
+                                  'notif-size-3':number_of_unseen_messages>=100}" style="cursor:pointer;" *ngIf="number_of_unseen_messages>0" (click)="set_category(1)">
+                        <div class="number-of-notifs" (click)="set_category(1)">
+                            <div *ngIf="number_of_unseen_messages>=100" [@enterAnimation]>
+                            +99
+                            </div>
+                            <div *ngIf="100>number_of_unseen_messages" [@enterAnimation]>
+                            {{number_of_unseen_messages}}
+                            </div>
                         </div>
-                    </mat-radio-group>
-                    
-                </form>
-            </div>
+                    </div>
+                </button>
 
-            <div class="button-container" *ngIf="!select_group_chat_contacts && !display_add_a_friend_to_a_group">
-                <button mat-button tabIndex="-1" class="mat-icon-button" (click)="create_group_chat()"> 	
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">group_add</mat-icon>
+                <button (click)="create_group_chat();" *ngIf="!select_group_chat_contacts && !display_add_a_friend_to_a_group" [@enterFromRightAnimation]
+                matTooltip="Créer un groupe de discussion"
+                matTooltipClass='linkarts-tooltip'
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="100">
+                    <mat-icon>group_add</mat-icon>
                 </button>
-            </div>
-            <div class="button-container" *ngIf="select_group_chat_contacts">
-                <button mat-button tabIndex="-1" class="mat-icon-button" (click)="cancel_create_group_chat()"> 	
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
-                </button>
-            </div>
-            <div class="button-container" *ngIf="display_add_a_friend_to_a_group">
-                <button mat-button tabIndex="-1" class="mat-icon-button" (click)="cancel_add_friend_group()"> 	
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" style="font-size: 35px; width: 35px;color:rgb(32,56,100);">keyboard_backspace</mat-icon>
-                </button>
-            </div>
-
+            </ng-container>
             
-            
+            <ng-container *ngIf="opened_category != 0 && !display_add_a_friend_to_a_group">
+                <button class="back-icon" (click)="cancel_create_group_chat();cancel_add_friend_group();this.set_category(0);" [@enterFromRightAnimation]>
+                    <mat-icon>chevron_left</mat-icon>
+                    <span>retour</span>
+                </button>
+            </ng-container>
+            <ng-container *ngIf="display_add_a_friend_to_a_group">
+                <button class="back-icon" (click)="cancel_add_friend_group();" [@enterFromRightAnimation]>
+                    <mat-icon>chevron_left</mat-icon>
+                    <span>retour</span>
+                </button>
+            </ng-container>
         </div>
 
-        <div class="searchbar-container" [formGroup]="fd" novalidate>
+        <div class="searchbar-container add-contact" *ngIf="display_add_a_friend_to_a_group" [@enterFromRightAnimation]>
+            <span class="invitations">Ajouter un contact</span>
+        </div>
+        <div class="searchbar-container add-contact" *ngIf="opened_category==2" [@enterFromRightAnimation]>
+            <span class="invitations">Créer un groupe</span>
+        </div>
+
+        <div class="searchbar-container" [formGroup]="fd" novalidate *ngIf="get_friends"  [ngClass]="{'with-box-shadow': list_scrolled }" [@enterFromLeftAnimation]>
             
-            <div [ngClass]="{'hovered': display_first_propositions }">
-                
-                
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" *ngIf="!display_first_propositions" 
-                style="align-self: center;padding-left: 10px;color: #6c75a7;cursor:default;"
-                (click)="activateFocus()">search</mat-icon>
+            <div [ngClass]="{'hovered': display_first_propositions || get_propositions, 'with-loupe':!display_first_propositions && !get_propositions }">
+
+                <div class="mat-icon-container" *ngIf="!display_first_propositions && !get_propositions" (click)="activateFocus()" [@leaveAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
+                </div>
 
                 <input #input
                 *ngIf="!display_add_a_friend_to_a_group"
-                style="display: block;
-                width: 90%;
-                height: calc(1.5em + .75rem + 2px);
-                padding: .375rem .75rem;
-                font-size: 1rem;
-                cursor:text;
-                font-weight: 400;
-                line-height: 1.5;
-                color: #495057;
-                background-color: unset;
-                background: unset;
-                border: 1px solid #ced4da;
-                border: unset;
-                border-radius: 10px;"
                 formControlName="fdSearchbar"
                 (click)="activateFocus()"
-                onfocus="this.placeholder = ''"
+                onfocus="this.placeholder = 'Rechercher'"
                 (input)="research_friends();"
                 (paste)="onPaste($event);"
                 onblur="this.placeholder = 'Rechercher'"
-                class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+                type="text" [placeholder]="'Rechercher'"
+                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
                 <input #input
                 *ngIf="display_add_a_friend_to_a_group"
-                style="display: block;
-                width: 90%;
-                height: calc(1.5em + .75rem + 2px);
-                padding: .375rem .75rem;
-                font-size: 1rem;
-                cursor:text;
-                font-weight: 400;
-                line-height: 1.5;
-                color: #495057;
-                background-color: unset;
-                background: unset;
-                border: 1px solid #ced4da;
-                border: unset;
-                border-radius: 10px;"
                 formControlName="fdSearchbar"
                 (click)="activateFocus_add()"
-                onfocus="this.placeholder = ''"
+                onfocus="this.placeholder = 'Rechercher'"
                 (input)="research_friends_add();"
                 onblur="this.placeholder = 'Rechercher'"
-                class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher'">
+                type="text" [placeholder]="'Rechercher'"
+                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 
-                <button mat-button tabIndex="-1" class="mat-icon-button" *ngIf="display_first_propositions" (click)="delete_placeholder()">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" *ngIf="display_first_propositions">close</mat-icon>
-                </button>
-
-
+                <div class="mat-icon-container close" *ngIf="(display_first_propositions || get_propositions)" (click)="delete_placeholder()" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                </div>
                 
             </div>
-            
+        </div>
+
+        <div class="searchbar-container with-box-shadow" *ngIf="!get_friends && opened_category==1" [@enterFromRightAnimation]>
+            <span class="invitations">Invitations</span>
         </div>
 
         <!-- List of contacts-->
         <!-- List of contacts-->
         <!-- List of contacts-->
-
-        <div #myScrollContainer class="subscribers-container" >
-
-
+        <div #myScrollContainer class="subscribers-container" (scroll)="scroll_on_list($event)">
+            
             <!-- list of friends -->
             <!-- list of friends -->
             <!-- list of friends -->
             <ng-container *ngIf="list_of_friends_retrieved && get_friends && !get_propositions">
 
-                    <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened': list_of_friends_ids[i]== friend_id && list_of_friends_types[i]==friend_type}">
-                        <div class="author-container" (click)="open_chat(i)">
-                            <div class="left-container" [ngClass]="{'shiny': !friend_pp_loaded[i] }">
+                <div *ngFor="let item of list_of_friends_ids.slice(0,number_of_friends_to_show); let i=index" class="subscriber-card" 
+                [ngClass]="{'opened': list_of_friends_ids[i]== friend_id && list_of_friends_types[i]==friend_type && chat_right_container_is_opened}"
+                [@enterFromLeftAnimation]>
+                    <div class="author-container" (click)="open_chat(i)">
+                        <div class="left-container">
+
+                            <div class="img-container" [ngClass]="{'shiny': !friend_pp_loaded[i] }">
                                 <img [src]="list_of_friends_profile_pictures[i]" (load)="load_friend_pp(i)" [ngClass]="{'invisible': !friend_pp_loaded[i] }">
-                                <div class="connection-state-container" *ngIf="connections_status_retrieved">
-                                    <div *ngIf="list_of_friends_connected[i]">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto; color:green">done</mat-icon>
-                                    </div>
-                                    <div *ngIf="!list_of_friends_connected[i]">
-                                        <div style="width: 40px; font-size: 12px;" *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">{{list_of_last_connection_dates[i]}} </div>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="right-container">
-                                <span class="author-name">{{list_of_friends_names[i]}} </span>
-                                <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
-                                    <div class="last-message" >
 
-                                        <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
-                                        <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
-                                        <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
-                                        <div  *ngIf="list_of_friends_last_message[i].is_an_attachment">
-                                            
+                            <ng-container *ngIf="connections_status_retrieved">
+                                <div *ngIf="list_of_friends_connected[i]" class="connected">
+                                </div>
+
+                                <div *ngIf="!list_of_friends_connected[i]" class="last-connection">
+                                    <span *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
+                                    {{list_of_last_connection_dates[i]}} 
+                                    </span>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                        <div class="right-container">
+                            <span class="author-name">{{list_of_friends_names[i]}} </span>
+                            <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
+                                <div class="last-message" >
+
+                                    <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
+                                    <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
+                                    <!--------------------------- AN ATTACHMENT FROM USER ----------------------------->
+                                    <div  *ngIf="list_of_friends_last_message[i].is_an_attachment">
+                                        
+                                        <!--------------------------- FRIEND CHAT ----------------------------->
                                             <!--------------------------- FRIEND CHAT ----------------------------->
-                                             <!--------------------------- FRIEND CHAT ----------------------------->
-                                            <ng-container *ngIf="list_of_friends_types[i]=='user'">
-                                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                            vous avez envoyé une image 
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                            vous a envoyé une image
-                                                        </div>
+                                        <ng-container *ngIf="list_of_friends_types[i]=='user'">
+                                            <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        vous avez envoyé une image 
                                                     </div>
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                            vous avez envoyé une pièce jointe 
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                            vous a envoyé une pièce jointe
-                                                        </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        vous a envoyé une image
                                                     </div>
                                                 </div>
-    
-                                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                            <b> vous avez envoyé une image</b>
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                            <b> vous a envoyé une image</b>
-                                                        </div>
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        vous avez envoyé une pièce jointe 
                                                     </div>
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
-                                                            <b>vous avez envoyé une pièce jointe </b>
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
-                                                            <b>vous a envoyé une pièce jointe </b>
-                                                        </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        vous a envoyé une pièce jointe
                                                     </div>
                                                 </div>
-                                            </ng-container>
-                                
-                                             <!--------------------------- GROUP CHAT ----------------------------->
-                                             <!--------------------------- GROUP CHAT ----------------------------->
-
-                                            <ng-container >
-    
-                                                <div *ngIf="list_of_friends_types[i]!='user'">
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
-                                                            <b> vous avez envoyé une image </b> 
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                                            vous avez envoyé une image
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
-                                                            <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une image</b>
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && (list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
-                                                            {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une image
-                                                        </div>
-                                                        
-                                                    </div>
-                                                    <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
-                                                            <b>vous avez envoyé une pièce jointe </b>
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
-                                                            <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une pièce jointe </b>
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user==current_user && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                                            vous avez envoyé une pièce jointe 
-                                                        </div>
-                                                        <div *ngIf="list_of_friends_last_message[i].id_user!=current_user  && list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                            {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une pièce jointe
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
-                                            
-                                            
-                                        </div>
-
-                                         <!--------------------------- NOT AN ATTACHMENT ----------------------------->
-                                        <!--------------------------- NOT AN ATTACHMENT ----------------------------->
-                                        <!--------------------------- NOT AN ATTACHMENT ----------------------------->
-
-                                        <div  *ngIf="!list_of_friends_last_message[i].is_an_attachment">
-
-                                             <!--------------------------- FROM USER ----------------------------->
-                                            <!--------------------------- FROM USER ----------------------------->
-                                            <!--------------------------- FROM USER ----------------------------->
-
-                                            <!-- friend MESSAGE -->
-                                            <!-- friend MESSAGE -->
-                                            <!-- friend MESSAGE -->
-
-                                            <ng-container *ngIf="list_of_friends_types[i]=='user'">
-                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server  && list_of_friends_last_message[i].status!='deleted'">
-                                                    <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                        {{list_of_friends_last_message[i].message}} 
-                                                    </div>
-                                                    <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
-                                                    </div>
-                                                </div>
-                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
-                                                    <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                                        moi : {{list_of_friends_last_message[i].message}} 
-                                                    </div>
-                                                    <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                                        <b> moi : {{list_of_friends_last_message[i].message}}</b>
-                                                    </div>
-                                                </div>
-
-                                            </ng-container>
-
-                                            <!-- GROUP MESSAGE -->
-                                            <!-- GROUP MESSAGE -->
-                                            <!-- GROUP MESSAGE -->
-
-                                            <ng-container *ngIf="list_of_friends_types[i]!='user'">
-                                                 <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server  && list_of_friends_last_message[i].status!='deleted'">
-                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                        {{list_of_friends_last_message[i].message}} 
-                                                    </div>
-                                                    <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                        <b>{{list_of_friends_last_message[i].message}}</b>
-                                                    </div>
-                                                </div>
-                                                <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
-                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                                        moi : {{list_of_friends_last_message[i].message}} 
-                                                    </div>
-                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length==1">
-                                                        <b>moi : {{list_of_friends_last_message[i].message}}</b>
-                                                    </div>
-                                                </div>
-                                            </ng-container>
-                                           
-                                            <div *ngIf="list_of_friends_last_message[i].status=='deleted'">
-                                                message supprimé
                                             </div>
 
-                                            <!--------------------------- FROM SERVER ----------------------------->
-                                            <!--------------------------- FROM SERVER ----------------------------->
-                                            <!--------------------------- FROM SERVER ----------------------------->
-
-                                            <div *ngIf="list_of_friends_last_message[i].is_from_server">
-
-                                                <!------------------------------------------- NEW CONTACT OR NEW GROUP-------------------------------------->
-                                                
-                                                <div *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
-                                                    {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
-                                                </div>
-                                                <div *ngIf="list_of_friends_last_message[i].is_a_group_chat  && list_of_friends_last_message[i].message=='New'">
-                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                        Bienvenue dans le groupe : {{list_of_friends_names[i]}}.
+                                            <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        <b> vous avez envoyé une image</b>
                                                     </div>
-                                                    <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                        <b>Bienvenue dans le groupe : {{list_of_friends_names[i]}}.</b>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        <b> vous a envoyé une image</b>
                                                     </div>
                                                 </div>
-
-                                                <!------------------------------------------- FRIEND EXIT GROUP -------------------------------------->
-                                                
-                                                <div class="new-contact-message-content" *ngIf="list_of_friends_last_message[i].message=='Exit'">
-                                                    <span *ngIf="list_of_friends_last_message[i].real_id_user">
-                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                            {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe
-                                                        </div>
-                                                        <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                            <b> {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe</b>
-                                                        </div>
-                                                       
-                                                    </span>
-                                                    <span *ngIf="!list_of_friends_last_message[i].real_id_user">
-                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                            {{list_of_friends_last_message[i].id_user}} a quitté le groupe
-                                                        </div>
-                                                        <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                            <b> {{list_of_friends_last_message[i].id_user}} a quitté le groupe</b>
-                                                        </div>
-                                                        
-                                                    </span>
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user">
+                                                        <b>vous avez envoyé une pièce jointe </b>
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user">
+                                                        <b>vous a envoyé une pièce jointe </b>
+                                                    </div>
                                                 </div>
+                                            </div>
+                                        </ng-container>
+                            
+                                            <!--------------------------- GROUP CHAT ----------------------------->
+                                            <!--------------------------- GROUP CHAT ----------------------------->
 
-                                                 <!------------------------------------------- NEW FRIEND JOIN GROUP --------------------------------------> 
+                                        <ng-container >
 
-
-                                                <div class="new-contact-message-content" *ngIf="list_of_friends_last_message[i].message=='New_friend_in_the_group'">
-                                                    <div *ngFor="let item of list_of_friends_last_message[i].list_of_names_added; let j=index">
-                                                        <span *ngIf="list_of_friends_last_message[i].real_id_user">
-                                                            <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
-                                                                {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.
-                                                            </div>
-                                                            <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                                <b> {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.</b>
-                                                            </div>
-                                                            
-                                                        </span>
-                                                        <span *ngIf="!list_of_friends_last_message[i].real_id_user">
-                                                            <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>0">
-                                                                {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.
-                                                            </div>
-                                                            <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
-                                                                <b> {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.</b>
-                                                            </div>
-                                                            
-                                                        </span>
+                                            <div *ngIf="list_of_friends_types[i]!='user'">
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
+                                                        <b> vous avez envoyé une image </b> 
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
+                                                        vous avez envoyé une image
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
+                                                        <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une image</b>
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && (list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
+                                                        {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une image
                                                     </div>
                                                     
                                                 </div>
+                                                <div  *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
+                                                        <b>vous avez envoyé une pièce jointe </b>
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0)">
+                                                        <b> {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une pièce jointe </b>
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user==current_user && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
+                                                        vous avez envoyé une pièce jointe 
+                                                    </div>
+                                                    <div *ngIf="list_of_friends_last_message[i].id_user!=current_user  && list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                        {{list_of_friends_last_message[i].id_user_name}} vous a envoyé une pièce jointe
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        
+                                        
+                                    </div>
+
+                                        <!--------------------------- NOT AN ATTACHMENT ----------------------------->
+                                    <!--------------------------- NOT AN ATTACHMENT ----------------------------->
+                                    <!--------------------------- NOT AN ATTACHMENT ----------------------------->
+
+                                    <div  *ngIf="!list_of_friends_last_message[i].is_an_attachment">
+
+                                            <!--------------------------- FROM USER ----------------------------->
+                                        <!--------------------------- FROM USER ----------------------------->
+                                        <!--------------------------- FROM USER ----------------------------->
+
+                                        <!-- friend MESSAGE -->
+                                        <!-- friend MESSAGE -->
+                                        <!-- friend MESSAGE -->
+
+                                        <ng-container *ngIf="list_of_friends_types[i]=='user'">
+                                            <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server  && list_of_friends_last_message[i].status!='deleted'">
+                                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                    {{list_of_friends_last_message[i].message}} 
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                                    <b>{{list_of_friends_last_message[i].message}}</b>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
+                                                <div *ngIf="list_of_friends_last_message[i].status=='seen'">
+                                                    moi : {{list_of_friends_last_message[i].message}} 
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].status=='received'">
+                                                    <b> moi : {{list_of_friends_last_message[i].message}}</b>
+                                                </div>
                                             </div>
 
-                                           
+                                        </ng-container>
+
+                                        <!-- GROUP MESSAGE -->
+                                        <!-- GROUP MESSAGE -->
+                                        <!-- GROUP MESSAGE -->
+
+                                        <ng-container *ngIf="list_of_friends_types[i]!='user'">
+                                                <div *ngIf="list_of_friends_last_message[i].id_user!=current_user && !list_of_friends_last_message[i].is_from_server  && list_of_friends_last_message[i].status!='deleted'">
+                                                <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                    {{list_of_friends_last_message[i].message}} 
+                                                </div>
+                                                <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                    <b>{{list_of_friends_last_message[i].message}}</b>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].id_user==current_user && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
+                                                <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
+                                                    moi : {{list_of_friends_last_message[i].message}} 
+                                                </div>
+                                                <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length==1">
+                                                    <b>moi : {{list_of_friends_last_message[i].message}}</b>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        
+                                        <div *ngIf="list_of_friends_last_message[i].status=='deleted'">
+                                            message supprimé
                                         </div>
-                                    </div>
-                                    <div *ngIf="!list_of_friends_last_message[i].date">
-                                        - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
-                                    </div>
-                                    <div *ngIf="list_of_friends_last_message[i].date">
-                                        - {{list_of_friends_last_message[i].date}}
+
+                                        <!--------------------------- FROM SERVER ----------------------------->
+                                        <!--------------------------- FROM SERVER ----------------------------->
+                                        <!--------------------------- FROM SERVER ----------------------------->
+
+                                        <div *ngIf="list_of_friends_last_message[i].is_from_server">
+
+                                            <!------------------------------------------- NEW CONTACT OR NEW GROUP-------------------------------------->
+                                            
+                                            <div *ngIf="!list_of_friends_last_message[i].is_a_group_chat && list_of_friends_last_message[i].message=='New' ">
+                                                {{list_of_friends_names[i]}} fait désormais parti de vos contacts. Vous pouvez donc échanger librement.
+                                            </div>
+                                            <div *ngIf="list_of_friends_last_message[i].is_a_group_chat  && list_of_friends_last_message[i].message=='New'">
+                                                <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                    Bienvenue dans le groupe : {{list_of_friends_names[i]}}.
+                                                </div>
+                                                <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                    <b>Bienvenue dans le groupe : {{list_of_friends_names[i]}}.</b>
+                                                </div>
+                                            </div>
+
+                                            <!------------------------------------------- FRIEND EXIT GROUP -------------------------------------->
+                                            
+                                            <div class="new-contact-message-content" *ngIf="list_of_friends_last_message[i].message=='Exit'">
+                                                <span *ngIf="list_of_friends_last_message[i].real_id_user">
+                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                        {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe
+                                                    </div>
+                                                    <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                        <b> {{list_of_friends_last_message[i].real_id_user}} a quitté le groupe</b>
+                                                    </div>
+                                                    
+                                                </span>
+                                                <span *ngIf="!list_of_friends_last_message[i].real_id_user">
+                                                    <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                        {{list_of_friends_last_message[i].id_user}} a quitté le groupe
+                                                    </div>
+                                                    <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                        <b> {{list_of_friends_last_message[i].id_user}} a quitté le groupe</b>
+                                                    </div>
+                                                    
+                                                </span>
+                                            </div>
+
+                                                <!------------------------------------------- NEW FRIEND JOIN GROUP --------------------------------------> 
+
+
+                                            <div class="new-contact-message-content" *ngIf="list_of_friends_last_message[i].message=='New_friend_in_the_group'">
+                                                <div *ngFor="let item of list_of_friends_last_message[i].list_of_names_added; let j=index">
+                                                    <span *ngIf="list_of_friends_last_message[i].real_id_user">
+                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>=0">
+                                                            {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.
+                                                        </div>
+                                                        <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                            <b> {{list_of_friends_last_message[i].real_id_user}} a ajouté {{item}} au groupe.</b>
+                                                        </div>
+                                                        
+                                                    </span>
+                                                    <span *ngIf="!list_of_friends_last_message[i].real_id_user">
+                                                        <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)>0">
+                                                            {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.
+                                                        </div>
+                                                        <div *ngIf="0>list_of_friends_last_message[i].list_of_users_who_saw.indexOf(current_user)">
+                                                            <b> {{list_of_friends_last_message[i].id_user}} a ajouté {{item}} au groupe.</b>
+                                                        </div>
+                                                        
+                                                    </span>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+
+                                        
                                     </div>
                                 </div>
-                                
+                                <div *ngIf="!list_of_friends_last_message[i].date" class="date-container">
+                                    - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
+                                </div>
+                                <div *ngIf="list_of_friends_last_message[i].date" class="date-container">
+                                    - {{list_of_friends_last_message[i].date}}
+                                </div>
                             </div>
-                
+                            
                         </div>
+            
                     </div>
+                </div>
             </ng-container>
 
+
+            
              <!-- list of spams-->
             <!-- list of spams -->
             <!-- list of spams-->
 
             <ng-container *ngIf="list_of_spams_retrieved && get_spams && !get_propositions">
-                    <div *ngFor="let item of list_of_spams_ids.slice(0,number_of_spams_to_show); let i=index" class="subscriber-card">
-                        <div class="author-container" (click)="open_chat_spam(i)">
-                            <div class="left-container" [ngClass]="{'shiny': !spam_pp_loaded[i] }">
+                <div *ngFor="let item of list_of_spams_ids.slice(0,number_of_spams_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened': list_of_spams_ids[i]== friend_id && chat_right_container_is_opened}" [@enterFromRightAnimation]>
+                    <div class="author-container" (click)="open_chat_spam(i)">
+
+                        <div class="left-container">
+                            <div class="img-container" [ngClass]="{'shiny': !spam_pp_loaded[i] }">
                                 <img [src]="list_of_spams_profile_pictures[i]" (load)="load_spam_pp(i)" [ngClass]="{'invisible': !spam_pp_loaded[i] }">
                             </div>
-                                <div class="right-container">
-                                    <span class="author-name">{{list_of_spams_names[i]}} </span>
-                                    <div class="last-message-container" *ngIf="list_of_spams_last_message[i]">
-                                        <div class="last-message" >
-                                            <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
-                                                <div *ngIf="list_of_spams_last_message[i].status=='seen' || list_of_spams_last_message[i].id_user==current_user">
-                                                    <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                                        a envoyé une image
-                                                    </div>
+                        </div>
+                            <div class="right-container">
+                                <span class="author-name">{{list_of_spams_names[i]}} </span>
+                                <div class="last-message-container" *ngIf="list_of_spams_last_message[i]">
+                                    <div class="last-message" >
+                                        <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
+                                            <div *ngIf="list_of_spams_last_message[i].status=='seen' || list_of_spams_last_message[i].id_user==current_user">
+                                                <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
+                                                    a envoyé une image
+                                                </div>
+                                            </div>
+                                            <div *ngIf="list_of_spams_last_message[i].status=='received'">
+                                                <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
+                                                    <b>a envoyé une image</b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  *ngIf="!list_of_spams_last_message[i].is_an_attachment">
+                                            <div *ngIf="list_of_spams_last_message[i].id_user!=current_user && list_of_spams_last_message[i].status!='deleted'">
+                                                <div *ngIf="list_of_spams_last_message[i].status=='seen'">
+                                                    {{list_of_spams_last_message[i].message}} 
                                                 </div>
                                                 <div *ngIf="list_of_spams_last_message[i].status=='received'">
-                                                    <div  *ngIf="list_of_spams_last_message[i].attachment_type=='picture_message' || list_of_spams_last_message[i].attachment_type=='picture_file'">
-                                                        <b>a envoyé une image</b>
-                                                    </div>
+                                                    <b>{{list_of_spams_last_message[i].message}}</b>
                                                 </div>
                                             </div>
-                                            <div  *ngIf="!list_of_spams_last_message[i].is_an_attachment">
-                                                <div *ngIf="list_of_spams_last_message[i].id_user!=current_user && list_of_spams_last_message[i].status!='deleted'">
-                                                    <div *ngIf="list_of_spams_last_message[i].status=='seen'">
-                                                        {{list_of_spams_last_message[i].message}} 
-                                                    </div>
-                                                    <div *ngIf="list_of_spams_last_message[i].status=='received'">
-                                                        <b>{{list_of_spams_last_message[i].message}}</b>
-                                                    </div>
-                                                </div>
-                                                <div *ngIf="list_of_spams_last_message[i].id_user==current_user && list_of_spams_last_message[i].status!='deleted'">
-                                                        {{list_of_spams_last_message[i].message}} 
-                                                </div>
-                                                <div *ngIf="list_of_spams_last_message[i].status=='deleted'">
-                                                    message supprimé
-                                                </div>
+                                            <div *ngIf="list_of_spams_last_message[i].id_user==current_user && list_of_spams_last_message[i].status!='deleted'">
+                                                    {{list_of_spams_last_message[i].message}} 
                                             </div>
-                                        </div>
-                                        <div *ngIf="!list_of_spams_last_message[i].date">
-                                            - {{show_date_of_timestamp(list_of_spams_last_message[i],i)}}
-                                        </div>
-                                        <div *ngIf="list_of_spams_last_message[i].date">
-                                            - {{list_of_spams_last_message[i].date}}
+                                            <div *ngIf="list_of_spams_last_message[i].status=='deleted'">
+                                                message supprimé
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    
+                                    <div *ngIf="!list_of_spams_last_message[i].date" class="date-container">
+                                        - {{show_date_of_timestamp(list_of_spams_last_message[i],i)}}
+                                    </div>
+                                    <div *ngIf="list_of_spams_last_message[i].date" class="date-container">
+                                        - {{list_of_spams_last_message[i].date}}
+                                    </div>
                                 </div>
-                        </div>
+                                
+                                
+                            </div>
                     </div>
-                
+                </div>
             </ng-container>
 
 
-             <!-- list of propositions after research -->
-            <!-- list of propositions after research -->
-            <!-- list of propositions after research -->
 
-            <ng-container *ngIf="get_propositions" [formGroup]="Groupchat" novalidate>
 
-                 <!-- list of propositions for users and groups -->
+
+
+            <!---------------------------------------------------->
+            <!---------------------------------------------------->
+            <!--ADD GROUP-->
+            <!---------------------------------------------------->
+            <!---------------------------------------------------->
+            <ng-container *ngIf="get_propositions">
+                <!-- list of propositions for users and groups -->
                 <!-- list of propositions for users and groups  -->
                 <!-- list of propositions for users and groups  -->
-
                 <ng-container *ngIf="!display_add_a_friend_to_a_group">
 
-                     <!-- New liens when creating a group-->
+                    <!-- New liens when creating a group-->
                     <!--  New liens when creating a group  -->
-                    <div style="display:flex" *ngIf="select_group_chat_contacts" >
-                        <div style="width: 60%; margin: 5px 10px 5px 20px;">
-                            <mat-form-field class="album-name-input">
-                                <mat-label>Nom du groupe</mat-label>
-                                <input matInput class="matInput" formControlName="Groupchatname" autocomplete="off" required placeholder="Nom du groupe">
-                            </mat-form-field>
-                        </div>
-                        
-                        <div class="group-chat-container-button" >
-                            <button mat-raised-button  (click)="group_chat_creation_done();" >
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
-                                Créer 
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display:block; margin: 5px 10px 5px 20px;" *ngIf="select_group_chat_contacts">
-                        <span style="color:red" *ngIf="display_invalid_groupchat">
-                            Sélection incomplete ou invalide
-                        </span>
-                        <div *ngFor=" let item of list_of_selected_names; let i=index">
-                            - {{item}}
-                        </div>
-                    </div>
     
                     
                     <!-- --------------------FIRST PROPOSITIONS   GROUPS ANS USERS ------------------------>
@@ -490,43 +491,48 @@
                     <!-- --------------------FIRST PROPOSITIONS   GROUPS ANS USERS ------------------------>
                     <!-- --------------------FIRST PROPOSITIONS   GROUPS ANS USERS ------------------------>
 
-                    <div *ngIf="display_first_propositions && !loading_other_propositions" > 
+                    <ng-container *ngIf="display_first_propositions && !loading_other_propositions" > 
     
                         <div class="category-research" *ngIf="!select_group_chat_contacts">
-                            <div class="category-research-result" (click)="open_category_for_research(0)" [ngClass]="{'opened':opened_category_for_research==0}">
-                                Utilisateurs
-                            </div>
-                            <div class="category-research-result" (click)="open_category_for_research(1)" [ngClass]="{'opened':opened_category_for_research==1}">
-                                Groupes
-                            </div>
+                            <button (click)="open_category_for_research(0)" [ngClass]="{'opened':opened_category_for_research==0}">
+                                <mat-icon>person</mat-icon>
+                                <span>Utilisateurs</span>
+                            </button>
+                            <button (click)="open_category_for_research(1)" [ngClass]="{'opened':opened_category_for_research==1}">
+                                <mat-icon>group</mat-icon>
+                                <span>Groupes</span>
+                            </button>
                         </div>
     
+
                         <!-- -----------------LIST OF USERS--------------------->
                          <!-- -----------------LIST OF USERS--------------------->
-
                         <ng-container *ngIf="opened_category_for_research==0 || select_group_chat_contacts">
                             <div *ngFor="let item of list_of_contacts_names; let i=index" class="subscriber-card"  [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_contacts_ids[i])}">
-                                <div class="author-container" (click)="open_new_contact_chat(1,i)">
-                                    <div class="left-container"   [ngClass]="{'shiny': !contact_pp_loaded[i] }">
-                                        <img [src]="list_of_contacts_pictures[i]" (load)="load_contact_pp(i)" [ngClass]="{'invisible': !contact_pp_loaded[i] }">
+                                <div class="author-container" (click)="open_new_contact_chat(1,i)" [ngClass]="{'with-right-button': select_group_chat_contacts}">
+                                    <div class="left-container">
+                                        <div class="img-container" [ngClass]="{'shiny': !contact_pp_loaded[i] }">
+                                            <img [src]="list_of_contacts_pictures[i]" (load)="load_contact_pp(i)" [ngClass]="{'invisible': !contact_pp_loaded[i] }">
+                                        </div>
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{list_of_contacts_names[i]}} </span>
-                                        <div>@{{list_of_contacts_pseudos[i]}}</div>
+                                        <span class="author-name">@{{list_of_contacts_pseudos[i]}}</span>
                                     </div>
-                        
                                 </div>
-                                <div *ngIf="select_group_chat_contacts " class="group-chat-container-button" >
-                                    <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,0);" *ngIf="!check_if_is_in_selected_ids(list_of_contacts_ids[i])">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                        Ajouter 
-                                    </button>
-                                    <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,0);" *ngIf="check_if_is_in_selected_ids(list_of_contacts_ids[i])">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add_disabled</mat-icon>
-                                        Retirer 
+
+                                <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && !check_if_is_in_selected_ids(list_of_contacts_ids[i])" (click)="add_contact_to_group(i,0);">
+                                    <button>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                                        <span>Ajouter</span>
                                     </button>
                                 </div>
-                                
+                                <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && check_if_is_in_selected_ids(list_of_contacts_ids[i])" (click)="remove_contact_from_group(i,0);">
+                                    <button>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
+                                        <span>Retirer</span>
+                                    </button>
+                                </div>
                             </div>
     
                         </ng-container>
@@ -534,25 +540,23 @@
 
                          <!-- -----------------LIST OF GROUPS--------------------->
                          <!-- -----------------LIST OF GROUPS--------------------->
-
-
                         <ng-container *ngIf="opened_category_for_research==1 && display_first_propositions_group">
                             <div *ngFor="let item of list_of_contacts_groups_names; let i=index" class="subscriber-card" >
                                 <div class="author-container" (click)="open_new_contact_chat(6,i)">
-                                    <div class="left-container" [ngClass]="{'shiny': !contact_group_pp_loaded[i] }">
-                                        <img [src]="list_of_contacts_groups_pictures[i]" (load)="load_contact_group_pp(i)" [ngClass]="{'invisible': !contact_group_pp_loaded[i] }">
+                                    <div class="left-container">
+                                        <div class="img-container" [ngClass]="{'shiny': !contact_group_pp_loaded[i] }">
+                                            <img [src]="list_of_contacts_groups_pictures[i]" (load)="load_contact_group_pp(i)" [ngClass]="{'invisible': !contact_group_pp_loaded[i] }">
+                                        </div>
                                     </div>
                                     <div class="right-container">
                                         <span class="author-name">{{list_of_contacts_groups_names[i]}} </span>
                                     </div>
                                 </div>
-                                
                             </div>
-    
                         </ng-container>
     
                         
-                    </div>
+                    </ng-container>
         
                     <!-- --------------------OTHER PROPOSITIONS   GROUPS ANS USERS ------------------------>
                     <!-- --------------------OTHER PROPOSITIONS   GROUPS ANS USERS ------------------------>
@@ -562,14 +566,16 @@
 
                     
                     <ng-container *ngIf="loading_other_propositions">
-    
+
                         <div class="category-research" *ngIf="!select_group_chat_contacts">
-                            <div class="category-research-result" (click)="open_category_for_research(0)" [ngClass]="{'opened':opened_category_for_research==0}">
-                                Utilisateurs
-                            </div>
-                            <div class="category-research-result" (click)="open_category_for_research(1)" [ngClass]="{'opened':opened_category_for_research==1}">
-                                Groupes
-                            </div>
+                            <button (click)="open_category_for_research(0)" [ngClass]="{'opened':opened_category_for_research==0}">
+                                <mat-icon>person</mat-icon>
+                                <span>Utilisateurs</span>
+                            </button>
+                            <button (click)="open_category_for_research(1)" [ngClass]="{'opened':opened_category_for_research==1}">
+                                <mat-icon>group</mat-icon>
+                                <span>Groupes</span>
+                            </button>
                         </div>
     
                          <!-- --------------------USUAL DISPLAY------------------------>
@@ -579,37 +585,44 @@
                         <ng-container *ngIf="opened_category_for_research==0 || select_group_chat_contacts">
                             <div *ngIf="display_other_contacts "> 
                                 <div *ngFor="let item of list_of_related_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_related_contacts_ids[i])}">
-                                    <div class="author-container" (click)="open_new_contact_chat(3,i)">
-                                        <div class="left-container" [ngClass]="{'shiny': !related_contact_pp_loaded[i] }">
-                                            <img [src]="list_of_related_contacts_pictures[i]" (load)="load_related_contact_pp(i)" [ngClass]="{'invisible': !related_contact_pp_loaded[i] }">
+                                    <div class="author-container" (click)="open_new_contact_chat(3,i)" [ngClass]="{'with-right-button': select_group_chat_contacts}">
+                                        <div class="left-container">
+                                            <div class="img-container" [ngClass]="{'shiny': !related_contact_pp_loaded[i] }">
+                                                <img [src]="list_of_related_contacts_pictures[i]" (load)="load_related_contact_pp(i)" [ngClass]="{'invisible': !related_contact_pp_loaded[i] }">
+                                            </div>
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
-                                            <div>@{{list_of_related_contacts_pseudos[i]}}</div>
+                                            <span class="author-name">@{{list_of_related_contacts_pseudos[i]}}</span>
                                         </div>
                                     </div>
-                                    <div *ngIf="select_group_chat_contacts" class="group-chat-container-button" >
-                                        <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,2);" *ngIf="!check_if_is_in_selected_ids(list_of_related_contacts_ids[i])">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                            Ajouter 
+                                    
+                                    <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && !check_if_is_in_selected_ids(list_of_related_contacts_ids[i])" (click)="add_contact_to_group(i,2);">
+                                        <button>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                                            <span>Ajouter</span>
                                         </button>
-                                        <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,2);" *ngIf="check_if_is_in_selected_ids(list_of_related_contacts_ids[i])">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                            Retirer 
+                                    </div>
+                                    <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && check_if_is_in_selected_ids(list_of_related_contacts_ids[i])" (click)="remove_contact_from_group(i,2);">
+                                        <button>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
+                                            <span>Retirer</span>
                                         </button>
                                     </div>
                                 </div>
+
                                 <ng-container *ngIf="!select_group_chat_contacts">
                                     <div *ngFor="let item of list_of_other_contacts_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card">
                                         <div class="author-container" (click)="open_new_contact_chat(4,i)">
-                                            <div class="left-container" [ngClass]="{'shiny': !related_other_pp_loaded[i] }">
-                                                <img [src]="list_of_other_contacts_pictures[i]" (load)="load_other_contact_pp(i)" [ngClass]="{'invisible': !related_other_pp_loaded[i] }">
+                                            <div class="left-container">
+                                                <div class="img-container" [ngClass]="{'shiny': !related_other_pp_loaded[i] }">
+                                                    <img [src]="list_of_other_contacts_pictures[i]" (load)="load_other_contact_pp(i)" [ngClass]="{'invisible': !related_other_pp_loaded[i] }">
+                                                </div>
                                             </div>
                                             <div class="right-container">
                                                 <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
-                                                <div>@{{list_of_other_contacts_pseudos[i]}}</div>
+                                                <span class="author-name">@{{list_of_other_contacts_pseudos[i]}}</span>
                                             </div>
-                                
                                         </div>
                                     </div>
                                 </ng-container>
@@ -621,46 +634,55 @@
                             <!-- --------------------DISPLAY ALL PROPOSITIONS ------------------------>
                             <div *ngIf="!display_other_contacts && display_all_searching_proppositions"> 
                                 <div *ngFor="let item of list_of_all_contacts_names; let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids(list_of_all_contacts_ids[i])}">
-                                    <div class="author-container" (click)="open_new_contact_chat(5,i)">
-                                        <div class="left-container" [ngClass]="{'shiny': !all_contacts_loaded[i] }">
-                                            <img [src]="list_of_all_contacts_pictures[i]" (load)="load_all_contacts_pp(i)" [ngClass]="{'invisible': !all_contacts_loaded[i] }">
+                                    <div class="author-container" (click)="open_new_contact_chat(5,i)" [ngClass]="{'with-right-button': select_group_chat_contacts}">
+                                        
+                                        <div class="left-container">
+                                            <div class="img-container" [ngClass]="{'shiny': !all_contacts_loaded[i] }">
+                                                <img [src]="list_of_all_contacts_pictures[i]" (load)="load_all_contacts_pp(i)" [ngClass]="{'invisible': !all_contacts_loaded[i] }">
+                                            </div>
                                         </div>
                                         <div class="right-container">
                                             <span class="author-name">{{list_of_all_contacts_names[i]}} </span>
-                                            <div>@{{list_of_all_contacts_pseudos[i]}}</div>
+                                            <span class="author-name">@{{list_of_all_contacts_pseudos[i]}}</span>
                                         </div>
                                     </div>
-                                    <div *ngIf="select_group_chat_contacts" class="group-chat-container-button" >
-                                        <button mat-raised-button style="color:black"  (click)="add_contact_to_group(i,4);" *ngIf="!check_if_is_in_selected_ids(list_of_all_contacts_ids[i])">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                            Ajouter 
+
+                                    <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && !check_if_is_in_selected_ids(list_of_all_contacts_ids[i])" (click)="add_contact_to_group(i,4);">
+                                        <button>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                                            <span>Ajouter</span>
                                         </button>
-                                        <button mat-raised-button style="color:black"  (click)="remove_contact_from_group(i,4);" *ngIf="check_if_is_in_selected_ids(list_of_all_contacts_ids[i])">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                            Retirer 
+                                    </div>
+                                    <div class="group-chat-container-button" *ngIf="select_group_chat_contacts && check_if_is_in_selected_ids(list_of_all_contacts_ids[i])" (click)="remove_contact_from_group(i,4);">
+                                        <button>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
+                                            <span>Retirer</span>
                                         </button>
                                     </div>
                                 </div>
-                                
                             </div>
-                            <div *ngIf="display_all_searching_proppositions_button" style="display:flex; cursor: pointer;" (click)="get_all_searching_propositions()">
-                                <span style="margin:auto;"> Voir tous les résultats</span>
-                            </div>
+
+                            <button *ngIf="display_all_searching_proppositions_button" class="see-all" (click)="get_all_searching_propositions()">
+                                <mat-icon>keyboard_arrow_down</mat-icon>
+                                <span>Voir tous les résultats</span>
+                            </button>
     
                         </ng-container>
     
                          <!-- -------------------- DISPLAY GROUpS PROPOSITIONS------------------------>
                         <!-- --------------------DISPLAY GROUpS PROPOSITIONS------------------------>
                         <!-- --------------------DISPLAY GROUpS PROPOSITIONS ------------------------>
-
                         <ng-container *ngIf="opened_category_for_research==1 && display_propositions_groups">
                             <div *ngFor="let item of list_of_propositions_groups_names.slice(0,number_of_groups_to_show); let i=index" class="subscriber-card" >
                                 <div class="author-container" (click)="open_new_contact_chat(7,i)">
-                                    <div class="left-container" [ngClass]="{'shiny': !propositions_groups_loaded[i] }">
-                                        <img [src]="list_of_propositions_groups_pictures[i]"  (load)="load_propositions_groups_pp(i)" [ngClass]="{'invisible': !propositions_groups_loaded[i] }">
+
+                                    <div class="left-container">
+                                        <div class="img-container" [ngClass]="{'shiny': !propositions_groups_loaded[i] }">
+                                            <img [src]="list_of_propositions_groups_pictures[i]" (load)="load_propositions_groups_pp(i)" [ngClass]="{'invisible': !propositions_groups_loaded[i] }">
+                                        </div>
                                     </div>
                                     <div class="right-container">
-                                        <span class="author-name">{{item}} </span>
+                                        <span class="author-name">{{item}}</span>
                                     </div>
                                 </div>
                                 
@@ -672,109 +694,130 @@
 
                 </ng-container>
 
+
+
                 <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
-                 <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
-                  <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
-                   <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
-
-
-
+                <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
+                <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
+                <!-- -------------------------------------- ADD A FRIEND TO A GROUP ---------------------->
                 <ng-container *ngIf="display_add_a_friend_to_a_group">
-                    
-                    <div style="display:flex"  >
-                        <div style="width: 60%; margin: 5px 10px 5px 20px;">
-                            Ajouter un contact
-                        </div>
-                        
-                        <div class="group-chat-container-button" >
-                            <button mat-raised-button  (click)="add_friend_done();" >
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">done</mat-icon>
-                                Valider 
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display:block; margin: 5px 10px 5px 20px;">
-                        <span style="color:red" *ngIf="trigger_selected_list_invalid">
-                            Sélection incomplete ou invalide
-                        </span>
-                        <div *ngFor=" let item of selected_list_of_new_friends_names; let i=index">
-                            - {{item}}
-                        </div>
-                    </div>
-
-
-                    
-                    <div *ngIf="display_first_propositions">
-                        <div *ngFor="let item of list_of_new_friends_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card"  [ngClass]="{'opened':check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])}">
-                            <div class="author-container" >
-                                <div class="left-container"  [ngClass]="{'shiny': !new_friends_loaded[i] }">
-                                    <img [src]="list_of_new_friends_pictures[i]" (load)="load_new_friends_pp(i)" [ngClass]="{'invisible': !new_friends_loaded[i] }">
-                                </div>
-                                <div class="right-container">
-                                    <span class="author-name">{{list_of_new_friends_names[i]}} </span>
-                                    <div>@{{list_of_new_friends_pseudos[i]}}</div>
-                                </div>
-                    
-                            </div>
-                            <div class="group-chat-container-button" >
-                                <button mat-raised-button style="color:black"  (click)="add_friend_to_group(i);" *ngIf="!check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                    Ajouter 
-                                </button>
-                                <button mat-raised-button style="color:black"  (click)="remove_friend_to_group(i);" *ngIf="check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                    Retirer 
-                                </button>
-                            </div>
-                            
-                        </div>
-
-                    </div>
-
-                    <div *ngIf="display_other_contacts "> 
+                    <div *ngIf="display_first_propositions || display_other_contacts">
                         <div *ngFor="let item of list_of_new_friends_names.slice(0,number_of_new_friends_to_show); let i=index" class="subscriber-card" [ngClass]="{'opened':check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])}">
-                            <div class="author-container">
-                                <div class="left-container" [ngClass]="{'shiny': !new_friends_loaded[i] }">
-                                    <img [src]="list_of_new_friends_pictures[i]" (load)="load_new_friends_pp(i)" [ngClass]="{'invisible': !new_friends_loaded[i] }">
+                            <div class="author-container with-right-button">
+
+                                <div class="left-container">
+                                    <div class="img-container" [ngClass]="{'shiny': !new_friends_loaded[i] }">
+                                        <img [src]="list_of_new_friends_pictures[i]" (load)="load_new_friends_pp(i)" [ngClass]="{'invisible': !new_friends_loaded[i] }">
+                                    </div>
                                 </div>
                                 <div class="right-container">
                                     <span class="author-name">{{list_of_new_friends_names[i]}} </span>
-                                    <div>@{{list_of_new_friends_pseudos[i]}}</div>
+                                    <span class="author-name">@{{list_of_new_friends_pseudos[i]}}</span>
                                 </div>
                             </div>
-                            <div class="group-chat-container-button" >
-                                <button mat-raised-button style="color:black"  (click)="add_friend_to_group(i);" *ngIf="!check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                    Ajouter 
+
+                            <div class="group-chat-container-button" *ngIf="!check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])" (click)="add_friend_to_group(i);">
+                                <button>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                                    <span>Ajouter</span>
                                 </button>
-                                <button mat-raised-button style="color:black"  (click)="remove_friend_to_group(i);" *ngIf="check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 25px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                    Retirer 
+                            </div>
+                            <div class="group-chat-container-button" *ngIf="check_if_is_in_selected_ids_add(list_of_new_friends_ids[i])" (click)="remove_friend_to_group(i);">
+                                <button>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">remove_circle_outline</mat-icon>
+                                    <span>Retirer</span>
                                 </button>
                             </div>
                         </div>
-                        
                     </div>
-                    
-                    
-
-
                 </ng-container>
 
-                
-
             </ng-container>
-
-
-            
-        
         </div>
+
+        <ng-container *ngIf="display_add_a_friend_to_a_group">
+            <div class="create-group-form" [@enterFromBottomAnimation]>
+                <div class="list-of-members" *ngIf="selected_list_of_new_friends_names.length > 0">
+                    <span>Nouveaux membres : </span>
+                    <span *ngFor=" let item of selected_list_of_new_friends_names; let i=index">
+                        {{item}}<ng-container *ngIf="i+1!=selected_list_of_new_friends_names.length">,&nbsp;</ng-container>
+                    </span>
+                </div>
+                <button (click)="add_friend_done();">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                    <span>Valider</span>
+                </button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="get_propositions" [formGroup]="Groupchat" novalidate>
+            <ng-container *ngIf="!display_add_a_friend_to_a_group">
+                <div class="create-group-form" *ngIf="select_group_chat_contacts" [@enterFromBottomAnimation]>
+
+                    <div class="list-of-members" *ngIf="list_of_selected_names.length > 0">
+                        <span>Membres : </span>
+                        <span *ngFor=" let item of list_of_selected_names; let i=index">
+                            {{item}}<ng-container *ngIf="i+1!=list_of_selected_names.length">,&nbsp;</ng-container>
+                        </span>
+                    </div>
+
+                    <div class="form-item">
+                        <mat-form-field floatLabel='never'>
+                            <mat-label>Nom du groupe</mat-label>
+                            <input matInput formControlName="Groupchatname" maxLength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search">
+                            <mat-error *ngIf="Groupchat.controls['Groupchatname'].invalid">Veuillez saisir un nom valide</mat-error>
+                            <div class="length-indicator">{{Groupchat.controls['Groupchatname'].value?.length || 0}}/30</div>
+                        </mat-form-field>
+                    </div>
+
+                    <button (click)="group_chat_creation_done();">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                        <span>Créer</span>
+                    </button>
+
+                </div>
+            </ng-container>
+        </ng-container>
 
     </div>
     
     
-    
-    <div  *ngIf="list_of_friends_retrieved && active_section==1 && list_of_users_blocked_retrieved"  class="chat-container">
+    <div *ngIf="!( list_of_friends_retrieved && active_section==1 && list_of_users_blocked_retrieved && chat_right_container_is_opened )
+    && !( list_of_friends_retrieved && (active_section==2 || active_section==3) && list_of_users_blocked_retrieved && chat_right_container_is_opened )" class="chat-container-skeleton">
+        <div class="left-container">
+            <div class="top-container">
+                <div class="display-flex">
+                    <div class="pp shiny"></div>
+                    <div class="name shiny"></div>
+                    <div class="button-right shiny"></div>
+                    <div class="button-right shiny"></div>
+                </div>
+            </div>
+            <div class="bottom-container">
+                <div class="left-button shiny"></div>
+                <div class="right-textarea shiny"></div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="top-container">
+                <div class="button-right shiny"></div>
+            </div>
+            <div class="select-container">
+                <div class="select shiny"></div>
+            </div>
+            <div class="button-container">
+                <div class="button shiny"></div>
+            </div>
+            <div class="button-container">
+                <div class="button shiny"></div>
+            </div>
+            <div class="button-container">
+                <div class="button shiny"></div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="list_of_friends_retrieved && active_section==1 && list_of_users_blocked_retrieved && chat_right_container_is_opened" [ngClass]="{'show-me-on-small-screen': chat_right_container_is_opened }"  class="chat-container">
         <app-chat
         [id_chat_section]="id_chat_section"
         [spam]="spam"
@@ -799,16 +842,12 @@
         (change_message_status)="change_message_status( $event );"
         (blocking_managment)="blocking_managment($event)"
         (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
-        (display_exit)="display_exit($event)"></app-chat>
+        (display_exit)="display_exit($event)"
+        (arrowBack)="change_chat_right_container()"></app-chat>
     </div>
 
 
-    <div  *ngIf="list_of_friends_retrieved && (active_section==2 || active_section==3) && list_of_users_blocked_retrieved "  class="chat-container">
-
-        <div class="loading-page" *ngIf="!active_section_done ">
-            <mat-spinner diameter="40"></mat-spinner>
-        </div>
-
+    <div *ngIf="list_of_friends_retrieved && (active_section==2 || active_section==3) && list_of_users_blocked_retrieved && chat_right_container_is_opened" [ngClass]="{'show-me-on-small-screen': chat_right_container_is_opened }"  class="chat-container">
         <app-chat *ngIf="active_section_done"
         [id_chat_section]="id_chat_section"
         [spam]="spam"
@@ -831,9 +870,10 @@
         (add_spam_to_contacts)="add_spam_to_contacts( $event );"
         (add_group_to_contacts)="add_group_to_contacts( $event );"
         (change_message_status)="change_message_status( $event );"
-        (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
         (blocking_managment)="blocking_managment($event)"
-        (display_exit)="display_exit($event)"></app-chat>
+        (add_a_friend_to_the_group)="add_a_friend_to_the_group( $event );"
+        (display_exit)="display_exit($event)"
+        (arrowBack)="change_chat_right_container()"></app-chat>
     </div>
 
 

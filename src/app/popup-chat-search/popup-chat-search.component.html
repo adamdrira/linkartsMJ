@@ -1,0 +1,31 @@
+
+<div class="button-container-close">
+    <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
+        <mat-icon class="item-icon" >close</mat-icon>
+    </button>
+</div>
+
+<div class="popup-chat-search">
+
+    <div [formGroup]="searchForm">
+        <div class="step-name">
+            <span>Rechercher un message</span>
+        </div>
+        <div class="form-item">
+            <mat-form-field floatLabel='never'>
+                <mat-label>Message</mat-label>
+                <input matInput formControlName="search" autocomplete="off" type="search">
+                <mat-error *ngIf="searchForm.controls['search'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                </mat-error>
+                <div class="length-indicator">{{searchForm.controls['search'].value?.length || 0}}/30</div>
+            </mat-form-field>
+            
+        </div>
+    </div>
+    
+    <button class="submit-button" (click)="validate_all();">
+        <mat-icon>search</mat-icon>
+        <span>Rechercher</span>
+    </button>
+
+</div>

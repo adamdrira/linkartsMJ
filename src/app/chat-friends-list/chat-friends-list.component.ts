@@ -11,13 +11,67 @@ import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import {get_date_to_show_chat} from '../helpers/dates';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { pattern } from '../helpers/patterns';
+
 declare var $: any;
 
 
 @Component({
   selector: 'app-chat-friends-list',
   templateUrl: './chat-friends-list.component.html',
-  styleUrls: ['./chat-friends-list.component.scss']
+  styleUrls: ['./chat-friends-list.component.scss'],
+  animations: [
+    trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
+        ])
+      ],
+    ),
+    //LEAVING ANIMATIONS
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateX(0%)', opacity: 1}),
+          animate('200ms ease-in-out', style({transform: 'translateX(-30px)', opacity: 0}))
+        ])
+      ],
+    )
+  ],
 })
 export class ChatFriendsListComponent implements OnInit {
 
@@ -44,9 +98,6 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('fdselector') fdselector:ElementRef;
 
   
-
-
-  selectedRadio = 'Mes contacts';
   //current_user
   current_user:number=0;
   current_user_name:string;
@@ -59,7 +110,6 @@ export class ChatFriendsListComponent implements OnInit {
   get_spams=false;
   get_propositions=false;
   spam='false';
-  section="Mes contacts";
 
   //chat_friends and groups
   list_of_chat_friends_ids:number[]=[]; // id de la liste list_of_chat_friends
@@ -304,14 +354,6 @@ export class ChatFriendsListComponent implements OnInit {
   };
 
   
-  /******************************************************* */
-  /******************** AFTER VIEW CHECKED *************** */
-  /******************************************************* */
-  
-  ngAfterViewChecked() {
-    this.initialize_heights();
-  }
-
   show_icon=false;
   ngAfterViewInit(){
     let THIS=this;
@@ -319,10 +361,13 @@ export class ChatFriendsListComponent implements OnInit {
       console.log("load")
       THIS.show_icon=true;
     });
-  }
-
-  initialize_heights() {
-    $('.main-chat-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
+    
+    if( window.innerWidth>850 ) {
+      this.chat_right_container_is_opened = true;
+    }
+    else {
+      this.chat_right_container_is_opened = false;
+    }
   }
 
  
@@ -698,13 +743,12 @@ export class ChatFriendsListComponent implements OnInit {
           this.chatService.check_if_is_related(this.active_section_user_id).subscribe(r=>{
             if(!r[0].value){
               this.spam='true';
-              this.selectedRadio="Autres";
-              this.formData.reset(
-                this.createFormAd()
-              )
+
+              this.set_category(1);
+              this.createFormAd();
+
               this.get_friends=false;
               this.get_spams=true;
-              this.section="Autres";
             }
             related_retrieved=true;
             last_check(this);
@@ -908,10 +952,8 @@ export class ChatFriendsListComponent implements OnInit {
       this.get_spams=false;
       
 
-      this.selectedRadio="Mes contacts";
-            this.formData.reset(
-              this.createFormAd()
-            ); // change radio
+      this.set_category(0);
+      this.createFormAd();
       console.log("radio changed")
       this.spam='false';
 
@@ -1257,9 +1299,8 @@ change_message_status(event){
 
   
   add_a_friend_to_the_group(event){
-    console.log("adding a friend ready to go")
-    console.log(event);
     this.cancel_create_group_chat();
+    this.set_category(0);
     this.display_other_contacts=false;
     this.selected_list_of_new_friends_ids=[];
     this.selected_list_of_new_friends_names=[];
@@ -1275,7 +1316,7 @@ change_message_status(event){
   }
 
   cancel_add_friend_group(){
-    console.log("cancel_add_friend_group")
+    console.log("cancel_add_friend_group");
     this.selected_list_of_new_friends_ids=[];
     this.selected_list_of_new_friends_names=[];
     this.list_of_new_friends_ids=[];
@@ -1291,7 +1332,7 @@ change_message_status(event){
   }
 
   trigger_selected_list_invalid
-  add_friend_done(){
+  add_friend_done() {
     console.log("add friend done")
     //valider l'ajout d'ami au groupe
     if(this.selected_list_of_new_friends_names.length>0){
@@ -1479,7 +1520,6 @@ change_message_status(event){
     let index=this.selected_list_of_new_friends_ids.indexOf(this.list_of_new_friends_ids[i])
     this.selected_list_of_new_friends_ids.splice(index,1)
     this.selected_list_of_new_friends_names.splice(index,1)
-    this.list_of_new_friends_pseudos.splice(index,1)
     
     console.log(this.selected_list_of_new_friends_ids)
   }
@@ -1501,8 +1541,16 @@ change_message_status(event){
   
   createFormControlsAds() {
     this.fdSearchbar = new FormControl('');
-    this.Groupchatname= new FormControl('', [Validators.required, Validators.maxLength(30), Validators.pattern("^[^\\s]+.*") ]);
-   }
+    this.Groupchatname= new FormControl('', 
+      Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(30),
+        Validators.pattern(pattern("text")),
+      ]),
+    );
+  }
+
 
   createFormAd() {
     this.fd = new FormGroup({
@@ -1511,9 +1559,6 @@ change_message_status(event){
     this.Groupchat = new FormGroup({
       Groupchatname: this.Groupchatname,
     });
-    this.formData = this.FormBuilder.group({
-      IsActive: this.selectedRadio
-    })
   }
 
  
@@ -1570,7 +1615,10 @@ change_message_status(event){
   }
 
   delete_placeholder(){
-    this.input.nativeElement.value='';
+
+    if( this.input ) {
+      this.input.nativeElement.value='';
+    }
     this.fd.value.fdSearchbar='';
     if(!this.select_group_chat_contacts && !this.display_add_a_friend_to_a_group){
       this.get_propositions=false;
@@ -1586,8 +1634,6 @@ change_message_status(event){
     else if(this.display_add_a_friend_to_a_group){
       this.get_first_propositions_for_add_friend();
     }
-   
-    
   }
  
   get_first_history_propositions_group(){
@@ -2033,6 +2079,8 @@ change_message_status(event){
     }
     this.cd.detectChanges();
 
+    
+    this.chat_right_container_is_opened = true;
   }
 
   open_chat_spam(i){
@@ -2057,6 +2105,9 @@ change_message_status(event){
     this.friend_picture=this.list_of_spams_profile_pictures[i];
     this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
     this.cd.detectChanges();
+
+    
+    this.chat_right_container_is_opened = true;
   }
 
   display_opened=true;
@@ -2081,25 +2132,19 @@ change_message_status(event){
         if(r[0].value){
           if(this.spam=='true'){
             this.spam='false';
-            this.selectedRadio="Mes contacts";
-            this.formData.reset(
-              this.createFormAd()
-            )
+            this.set_category(0);
+            this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
-            this.section="Mes contacts";
           }
           
         }
         else if( this.spam=='false'){
           this.spam='true';
-          this.selectedRadio="Autres";
-          this.formData.reset(
-            this.createFormAd()
-          )
+          this.set_category(1);
+          this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
-          this.section="Autres";
         }
         console.log("adding to search bar");
         console.log(this.list_of_contacts_ids[i])
@@ -2123,24 +2168,18 @@ change_message_status(event){
         if(r[0].value){
           if(this.spam=='true'){
             this.spam='false';
-            this.selectedRadio="Mes contacts";
-            this.formData.reset(
-              this.createFormAd()
-            )
+            this.set_category(0);
+            this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
-            this.section="Mes contacts";
           }
         }
         else{
           this.spam='true';
-          this.selectedRadio="Autres";
-          this.formData.reset(
-            this.createFormAd()
-          )
+          this.set_category(1);
+          this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
-          this.section="Autres";
         }
         console.log("adding to search bar");
         console.log(this.list_of_related_contacts_ids[i])
@@ -2165,24 +2204,18 @@ change_message_status(event){
           console.log("is related");
           if(this.spam=='true'){
             this.spam='false';
-            this.selectedRadio="Mes contacts";
-            this.formData.reset(
-              this.createFormAd()
-            )
+            this.set_category(0);
+            this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
-            this.section="Mes contacts";
           }
         }
         else{
           this.spam='true';
-          this.selectedRadio="Autres";
-          this.formData.reset(
-            this.createFormAd()
-          )
+          this.set_category(1);
+          this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
-          this.section="Autres";
         }
         console.log("adding to search bar");
         console.log(this.list_of_related_contacts_ids[i])
@@ -2207,24 +2240,18 @@ change_message_status(event){
           console.log("is related");
           if(this.spam=='true'){
             this.spam='false';
-            this.selectedRadio="Mes contacts";
-            this.formData.reset(
-              this.createFormAd()
-            )
+            this.set_category(0);
+            this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
-            this.section="Mes contacts";
           }
         }
         else{
           this.spam='true';
-          this.selectedRadio="Autres";
-          this.formData.reset(
-            this.createFormAd()
-          )
+          this.set_category(1);
+          this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
-          this.section="Autres";
         }
         console.log("adding to search bar");
         console.log(this.list_of_all_contacts_ids[i])
@@ -2246,13 +2273,10 @@ change_message_status(event){
     if(indice==6){
       if(this.spam=='true'){
         this.spam='false';
-        this.selectedRadio="Mes contacts";
-        this.formData.reset(
-          this.createFormAd()
-        )
+        this.set_category(0);
+        this.createFormAd();
         this.get_friends=true;
         this.get_spams=false;
-        this.section="Mes contacts";
       }
       console.log("adding to search bar");
       console.log(this.list_of_contacts_groups_ids[i])
@@ -2275,13 +2299,10 @@ change_message_status(event){
       console.log(this.spam)
       if(this.spam=='true'){
         this.spam='false';
-        this.selectedRadio="Mes contacts";
-        this.formData.reset(
-          this.createFormAd()
-        )
+        this.set_category(0);
+        this.createFormAd();
         this.get_friends=true;
         this.get_spams=false;
-        this.section="Mes contacts";
       }
       console.log("adding to search bar");
       console.log(this.list_of_propositions_groups_ids[i])
@@ -2313,17 +2334,16 @@ change_message_status(event){
 
 
  
-  radioChange(event){
-    console.log(this.section)
-    if(this.section!=event.value){
+  radioChange(i){
+    
+    if(this.opened_category != i){
       this.delete_placeholder();
-      if(event.value =='Autres'){
-        console.log("Autres");
+      if( i == 1){
         if(this.list_of_spams_ids.length>0){
           console.log("ya un spam");
           console.log(this.list_of_spams_ids);
           console.log(this.list_of_spams_names);
-          this.section=event.value;
+          
           this.waiting_friend_type=this.friend_type;
           this.waiting_friend_id=this.friend_id;
           this.waiting_friend_name=this.friend_name;
@@ -2348,21 +2368,16 @@ change_message_status(event){
           console.log(this.friend_id)
         }
         else{
-          this.selectedRadio="Mes contacts";
-          this.formData.reset(
-            this.createFormAd()
-          )
+          this.set_category(0);
+          this.createFormAd();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:"Vous n'avez aucun autre message"},
           });
+          return false;
         }
         
       }
-      else{
-          console.log(event.value);
-          this.section=event.value;
-          console.log("contacts");
-
+      else {
           this.id_chat_section =this.waiting_id_chat_section;
           console.log(this.id_chat_section);
           this.friend_type=this.waiting_friend_type;
@@ -2378,6 +2393,7 @@ change_message_status(event){
       }
       this.delete_placeholder();
       this.cd.detectChanges();
+      return true;
     }
   }
 
@@ -2487,6 +2503,8 @@ create_group_chat(){
   this.select_group_chat_contacts=true;
   this.get_propositions=true;
   this.get_first_propositions(1,0);
+  
+  this.opened_category = 2;
 }
 
 list_of_selected_names=[];
@@ -2555,19 +2573,16 @@ cancel_create_group_chat(){
   this.list_of_selected_ids=[];
   this.select_group_chat_contacts=false;
   this.get_propositions=false;
-  this.display_invalid_groupchat=false;
   this.Groupchat.reset();
   this.cd.detectChanges();
   this.delete_placeholder();
 }
 
-display_invalid_groupchat=false;
 group_chat_creation_done(){
  console.log(this.list_of_selected_names)
  console.log(this.list_of_selected_ids)
  if(this.Groupchat.valid && this.list_of_selected_ids.length>0){
   console.log("valide")
-  this.display_invalid_groupchat=false;
   this.list_of_selected_ids.push(this.current_user)
   this.chatService.create_group_chat(this.list_of_selected_ids,this.Groupchat.value.Groupchatname).subscribe(r=>{
     this.select_group_chat_contacts=false;
@@ -2596,8 +2611,9 @@ group_chat_creation_done(){
   })
  }
  else{
-   console.log("invalise")
-   this.display_invalid_groupchat=true;
+  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+    data: {showChoice:false, text:"Veuillez inclure au moins un membre"},
+  });
  }
 }
 
@@ -2785,5 +2801,49 @@ get_connections_status(){
     this.new_friends_loaded[i]=true
   }
 
+  
+  opened_category:number = 0;
+  set_category(i: number) {
+    if( this.opened_category == i ) {
+      return;
+    }
+    else {
+      let bool = this.radioChange(i);
+      if(bool) {
+        this.opened_category = i;
+      }
+    }
+  }
+
+  list_scrolled:boolean = false;
+  scroll_on_list(e:any) {
+    if (e.target.scrollTop == 0) {
+      this.list_scrolled = false;
+    }
+    else {
+      this.list_scrolled = true;
+    }
+    this.cd.detectChanges();
+    return;
+  }
  
+  
+  chat_right_container_is_opened:boolean;
+  change_chat_right_container() {
+    this.chat_right_container_is_opened = false;
+    //this.chat_right_container_is_opened = !this.chat_right_container_is_opened;
+  }
+
+  
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( window.innerWidth>850 ) {
+      this.chat_right_container_is_opened = true;
+    }
+    /*else {
+      this.chat_right_container_is_opened = false;
+    }*/
+  }
+
 }

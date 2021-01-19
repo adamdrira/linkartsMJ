@@ -1,92 +1,162 @@
 <div class="main-right-container">
 
-  
 
-    <div class="section-title">
-      <span>{{chat_section_to_open}} </span>
-    </div>
+  <div class="display-flex" *ngIf="spam=='false'">
 
+    <button (click)="arrow_back();" class="arrow-back" [@enterAnimation]>
+      <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+    </button>
 
+    <button [matMenuTriggerFor]="artworkOptions" [@enterAnimation]>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">more_horiz</mat-icon>
+    </button>
+
+    <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
+      <button class="chat-menu-item" mat-menu-item (click)="delete_chat_section()">
+          <mat-icon [ngClass]="{'invisible': !show_icon }">delete</mat-icon>
+          <span>Supprimer cette discussion</span>
+      </button>
+    </mat-menu>
+
+  </div>
+
+    <!--
+      (selectionChange)="change_profile($event)"
+    -->
+  <div class="chat-right-form" [formGroup]="chat_section_group">
     
-    <div #myScrollContainer class="main-options-container" id="main-options-container">
-          
-      
-          <div class="options-container" >
-            <mat-accordion>
+    <div class="step-form" *ngIf="!activate_add_chat_section" [@enterAnimation]>
 
-              <mat-expansion-panel (opened)="panelOpenState_0 = true"
-                                  (closed)="panelOpenState_0 = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Fichiers partagés
-                  </mat-panel-title>
-                  <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
-                    {{total_size_of_files[0] | number:'.2' }} MB 
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <div *ngIf="!list_of_files_retrieved ">
-                  <div class="show-more" >
-                    <mat-spinner diameter="20" ></mat-spinner>
-                  </div>
-                </div>
-                <mat-list *ngIf="list_of_files_retrieved" >
-                  <mat-list-item *ngFor="let file of list_of_files,let i=index">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" mat-list-icon>folder</mat-icon>
-                    <div mat-line>
-                      <a [href]="list_of_files_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
-                    </div>
-                    <div mat-line> {{file.createdAt | date}}</div>
-                    <div mat-line>{{file.size | number:'.2' }} MB</div>
-                    <mat-divider></mat-divider>
-                  </mat-list-item>
-                </mat-list>
-                <div class="show-more" *ngIf="show_scroll_files">
-                  <mat-spinner diameter="20" ></mat-spinner>
-                </div>
-                
-              </mat-expansion-panel>
-              <mat-expansion-panel (opened)="panelOpenState_1 = true"
-                                  (closed)="panelOpenState_1 = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Images partagées
-                  </mat-panel-title>
-                  <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
-                    {{total_size_of_pictures[0] | number:'.2' }} MB 
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <div *ngIf="!list_of_pictures_retrieved">
-                  <div class="show-more" >
-                    <mat-spinner diameter="20" ></mat-spinner>
-                  </div>
-                </div>
-                <mat-list *ngIf="list_of_pictures_retrieved">
-                  <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
-                    <div (click)="show_images(i)">
-                      <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i) [ngClass]="{'invisible':!list_of_images_loaded[i]}"  >
-                    </div>
-                   
-                    <div mat-line>
-                      <a [href]="list_of_pictures_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
-                    </div>
-                    <div mat-line> {{file.createdAt | date}}</div>
-                    <div mat-line>{{file.size | number:'.2' }} MB</div>
-                    <mat-divider></mat-divider>
-                  </mat-list-item>
-                </mat-list>
-              </mat-expansion-panel>
-
-
-
-
-            </mat-accordion>
+      <div class="form-item">
+        <div [ngClass]="{ 'notif-size-1':10>number_of_sections_unseen,
+          'notif-size-2':100>number_of_sections_unseen && number_of_sections_unseen>=10,
+          'notif-size-3':number_of_sections_unseen>=100}" style="cursor:pointer;z-index:10;" *ngIf="show_notification_message && number_of_sections_unseen>0">
+          <div class="number-of-notifs">
+              <div *ngIf="number_of_sections_unseen>=100" [@enterAnimation]>
+              +99
+              </div>
+              <div *ngIf="100>number_of_sections_unseen" [@enterAnimation]>
+              {{number_of_sections_unseen}}
+              </div>
+          </div>
         </div>
-      
+
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-select  [(value)]="chat_section_to_open" (selectionChange)="change_section($event)" disableOptionCentering panelClass="chatRightContainerSelectClass">
+                <mat-option  *ngFor="let obj of list_of_chat_sections, let i = index" [value]="obj">
+                    {{ obj }}
+                    <div class="unseen-message" *ngIf="list_of_chat_sections_notifications[i]">
+                    </div>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+
     </div>
-        
-    
+
+
+    <button (click)="add_chat_section();" *ngIf="!activate_add_chat_section" [@enterAnimation]>
+      <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+      <span>Créer une nouvelle section</span>
+    </button>
+
+    <ng-container *ngIf="activate_add_chat_section">
+      <div class="form-item" [@enterAnimation]>
+        <mat-form-field floatLabel='never'>
+            <mat-label>Nom de la section</mat-label>
+            <input matInput formControlName="chat_section_name_added" maxLength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search">
+            <mat-error *ngIf="chat_section_group.controls['chat_section_name_added'].invalid">Veuillez saisir un nom valide</mat-error>
+            <div class="length-indicator">{{chat_section_group.controls['chat_section_name_added'].value?.length || 0}}/30</div>
+        </mat-form-field>
+      </div>
+      <button (click)="cancel_add_section();" [@enterAnimation]>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+        <span>Annuler</span>
+      </button>
+      <button (click)="add_chat_section_name();" [@enterAnimation]>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+        <span>Créer</span>
+      </button>
+    </ng-container>
+
+  </div>
+
+
+
+  <div #myScrollContainer class="main-options-container">
+
+
+    <div class="options-container">
+      <mat-accordion>
+
+        <mat-expansion-panel (opened)="panelOpenState_0 = true" (closed)="panelOpenState_0 = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Fichiers partagés
+            </mat-panel-title>
+            <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
+              {{total_size_of_files[0] | number:'.2' }} MB
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div *ngIf="!list_of_files_retrieved ">
+            <div class="show-more">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+          </div>
+          <mat-list *ngIf="list_of_files_retrieved">
+            <mat-list-item *ngFor="let file of list_of_files,let i=index">
+              <mat-icon [ngClass]="{'invisible': !show_icon }" mat-list-icon>folder</mat-icon>
+              <div mat-line>
+                <a [href]="list_of_files_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+              </div>
+              <div mat-line> {{file.createdAt | date}}</div>
+              <div mat-line>{{file.size | number:'.2' }} MB</div>
+              <mat-divider></mat-divider>
+            </mat-list-item>
+          </mat-list>
+          <div class="show-more" *ngIf="show_scroll_files">
+            <mat-spinner diameter="20"></mat-spinner>
+          </div>
+
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="panelOpenState_1 = true" (closed)="panelOpenState_1 = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Images partagées
+            </mat-panel-title>
+            <mat-panel-description [ngClass]="{'invisible':!list_of_files_retrieved && !list_of_pictures_retrieved}">
+              {{total_size_of_pictures[0] | number:'.2' }} MB
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div *ngIf="!list_of_pictures_retrieved">
+            <div class="show-more">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+          </div>
+          <mat-list *ngIf="list_of_pictures_retrieved">
+            <mat-list-item *ngFor="let file of list_of_pictures,let i=index">
+              <div (click)="show_images(i)">
+                <img [src]="list_of_pictures_src[i]" style="max-width:80px;max-height:80px;" (load)=image_loaded(i)
+                  [ngClass]="{'invisible':!list_of_images_loaded[i]}">
+              </div>
+
+              <div mat-line>
+                <a [href]="list_of_pictures_src[i]" download="{{file.attachment_name}}">{{file.attachment_name}}</a>
+              </div>
+              <div mat-line> {{file.createdAt | date}}</div>
+              <div mat-line>{{file.size | number:'.2' }} MB</div>
+              <mat-divider></mat-divider>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+
+
+
+
+      </mat-accordion>
+    </div>
+
+  </div>
+
+
 </div>
-
-
-
-
