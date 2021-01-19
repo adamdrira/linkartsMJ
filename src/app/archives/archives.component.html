@@ -4,11 +4,11 @@
     
     <!--<div class="logos-container">
         <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
-            <mat-icon>account_circle</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
             <span>Archives personnelles</span>
         </button>
         <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
-            <mat-icon>supervisor_account</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">supervisor_account</mat-icon>
             <span>Autres utilisateurs</span>
         </button>
     </div>-->
@@ -16,11 +16,11 @@
     <div class="panel-background">
         <div class="logos-container"  #target [@enterFromTopAnimation]>
              <button class="logo" [ngClass]="{'opened': opened_category == 0 }" (click)="open_category(0);scroll(target);" #target>
-                <mat-icon>account_circle</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
                 <span>Archives personnelles</span>
             </button>
             <button class="logo" [ngClass]="{'opened': opened_category == 1 }" (click)="open_category(1);scroll(target);" #target>
-                <mat-icon>supervisor_account</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">supervisor_account</mat-icon>
                 <span>Autres utilisateurs</span>
             </button>
         </div>
@@ -64,14 +64,14 @@
     && list_of_writings_added && list_of_stories_received
     && !(list_of_stories_data.length>0 || private_list_of_writings.length>0 
     || private_list_of_drawings.length>0 || private_list_of_comics.length>0)" [@enterAnimation]>
-        <mat-icon>info_outline</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
         <span>Aucune archive</span>
     </div>
     <div class="text-lines large" *ngIf="opened_category == 1 && list_of_ads_added && list_of_writings_added
     && list_of_drawings_added && list_of_comics_added
     && !(list_of_ads.length>0 ||  list_of_writings.length>0
         || list_of_drawings.length>0 || list_of_comics.length>0)" [@enterAnimation]>
-        <mat-icon>info_outline</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
         <span>Aucune archive</span>
     </div>
 
@@ -305,19 +305,28 @@
                 <div *ngFor="let item of list_of_stories_data.slice(0,this.number_of_stories_to_show_by_category[0]); let i = index" [ngStyle]="{ 'width' : story_width + 'px' }" class="thumbnail-story-container"   >
                     
                     <div class="thumbnail-story" [ngClass]="{'shiny':!list_display_stories[i] }" #thumbnail_stories>
-                        <img [src]="list_of_stories[i]" (load)="display_stories_thumbnails(i)" [ngClass]="{'invisible':!list_display_stories[i] }">
+                        <img [src]="list_of_stories[i]" (click)="show_stories(i)" (load)="display_stories_thumbnails(i)" [ngClass]="{'invisible':!list_display_stories[i] }">
 
                         <div class="story-bottom-container" [ngClass]="{'invisible':!list_display_stories[i] }">
                             <span>Le {{get_date(item.createdAt)}}</span>
                         </div>
+
+                        <button *ngIf="list_of_viewers_by_story_found[i]" (click)="show_viewers(i)" class="views-button"  [ngClass]="{'invisible':!list_of_viewers_by_story_found[i] }" 
+                            matTooltip="Liste des vues"
+                            matTooltipClass='linkarts-tooltip' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                            <span>{{number_of_views_by_story[i]}}</span>
+                            <mat-icon>visibility</mat-icon>
+                        </button>
     
                         <button class="button-mat-menu" [ngClass]="{'opacity1': openedMenu==i+'archive' }" (menuClosed)="menuClosed();" (menuOpened)="menuOpened(i,'archive');" [matMenuTriggerFor]="storyOptions" [ngClass]="{'invisible':!list_display_stories[i] }">
-                            <mat-icon>more_vert</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                         </button>
                         <mat-menu #storyOptions="matMenu" xPosition='before' class="archive-mat-menu">
                             <button class="archive-menu-item" tabIndex="-1" mat-menu-item (click)="hide_story(i)"> 	
-                                <mat-icon>delete</mat-icon>
-                                <span>Supprimer</span>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">delete</mat-icon>
+                                <span>Retirer</span>
                             </button>
                         </mat-menu>
                     </div>

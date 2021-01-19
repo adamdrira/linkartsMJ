@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Reports_service } from '../services/reports.service';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -27,6 +27,7 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { fromEvent } from 'rxjs';
 
 declare var Swiper: any;
 declare var $: any;
@@ -92,19 +93,9 @@ export class ArtworkWritingComponent implements OnInit {
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
       };
-      this.AuthenticationService.currentUserType.subscribe(r=>{
-        console.log(r);
-        if(r!=''){
-          this.type_of_account=r;
-          this.type_of_account_retrieved=true;
-          if(this.pp_loaded){
-            this.display_right_container=true;
-          }
-        }
-      })
-    this.fullscreen_mode = false;
-    this.navbar.setActiveSection(0);
-    this.navbar.show();
+      this.fullscreen_mode = false;
+      this.navbar.setActiveSection(-1);
+      this.navbar.show();
   }
 
 
@@ -117,13 +108,13 @@ export class ArtworkWritingComponent implements OnInit {
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
   @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
+  @ViewChild('slide') slide:ElementRef;
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
 
   thumbnail_picture_retrieved=false;
   //display component
-  display_right_container=false;
   pp_loaded=false;
   display_pages=false;
   display_writings_recommendations=false;
@@ -165,6 +156,7 @@ export class ArtworkWritingComponent implements OnInit {
   total_pages:number;
   pdfSrc:SafeUrl;
   
+  page_number=1;
   zoom: number = 1.0;
 
   writing_id:number;
@@ -183,7 +175,9 @@ export class ArtworkWritingComponent implements OnInit {
   primary_description:string;
   profile_picture:SafeUrl;
   lovesnumber:number;
+  list_of_loves:any;
   likesnumber:number;
+  list_of_likes:any;
   thumbnail_picture:string;
 
   date_upload_to_show:string;
@@ -218,6 +212,7 @@ export class ArtworkWritingComponent implements OnInit {
 
   visitor_id:number;
   visitor_name:string;
+  visitor_status:string;
   mode_visiteur = true;
   mode_visiteur_added = false; 
   visible:boolean = false;
@@ -226,12 +221,27 @@ export class ArtworkWritingComponent implements OnInit {
 
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   number_of_comments_to_show:number=10;
+  page_not_found=false;
+  profile_data_retrieved=false;
+  emphasized_contend_retrieved=false;
+  subscribtion_retrieved=false;
+  likes_retrieved_but_not_checked=false;
+  ready_to_check_view=false;
+  loves_retrieved_but_not_checked=false;
+  current_user_retrieved=false;
+  
 
+  first_comment='';
+  first_comment_retrieved=false;
+  pp_first_comment:any;
+
+
+  item_retrieved=false;
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
-
+    window.scroll(0,0);
     setInterval(() => {
 
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
@@ -244,40 +254,47 @@ export class ArtworkWritingComponent implements OnInit {
 
     this.writing_id  = parseInt(this.activatedRoute.snapshot.paramMap.get('writing_id'));
     if(!(this.writing_id>0)){
-      this.router.navigateByUrl('/page_not_found');
-        return
+      this.page_not_found=true;
+      return
     }
+
+    this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+      this.visitor_id = l[0].id;
+      this.visitor_name=l[0].nickname;
+      this.visitor_status=l[0].status;
+      this.type_of_account=l[0].status;
+        this.type_of_account_retrieved=true;
+      this.current_user_retrieved=true;
+      this.check_view_after_current();
+      this.check_loves_after_current();
+      this.check_likes_after_current();
+     
+    }) 
 
     this.Writing_Upload_Service.retrieve_writing_information_by_id(this.writing_id).subscribe(r => {
       if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended"){
         if(r[0] && r[0].status=="deleted"){
-          return this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
-            return this.router.navigateByUrl("/page_not_found");
+          this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
+            this.page_not_found=true;
+            this.cd.detectChanges();
+            return
           });
+        }
+        else{
+          this.page_not_found=true;
+          this.cd.detectChanges();
+          return
         }
       }
       else{
         let title =this.activatedRoute.snapshot.paramMap.get('title');
         if(r[0].title !=title ){
-          this.router.navigateByUrl("/page_not_found");
+          this.page_not_found=true;
           return;
         }
         else{
           let file_name=r[0].file_name;
           this.authorid=r[0].authorid;
-          this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
-            this.pseudo = r[0].nickname;
-            
-            this.type_of_account_checked=r[0].type_of_account_checked;
-            this.certified_account=r[0].certified_account;
-          });
-          this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
-            if (l[0]!=null && l[0]!=undefined){
-              if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
-                this.content_emphasized=true;
-              }
-            }
-          });
           this.list_of_reporters=r[0].list_of_reporters;
           this.highlight=r[0].highlight;
           this.title=r[0].title;
@@ -292,99 +309,70 @@ export class ArtworkWritingComponent implements OnInit {
           this.thumbnail_picture=r[0].name_coverpage ;
           this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
           this.thumbnail_picture_retrieved=true;
+
+          this.check_archive();
+
+          this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
+            this.pseudo = r[0].nickname;
+            this.user_name = r[0].firstname + ' ' + r[0].lastname;
+            this.primary_description=r[0].primary_description;
+            this.type_of_account_checked=r[0].type_of_account_checked;
+            this.certified_account=r[0].certified_account;
+            this.profile_data_retrieved=true;
+          });
+
+          this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+            if (l[0]!=null && l[0]!=undefined){
+              if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
+                this.content_emphasized=true;
+              }
+            }
+            this.emphasized_contend_retrieved=true;
+          });
+          
+          this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
+            if(information[0].value){
+              this.already_subscribed=true;
+            }
+          }); 
           
           this.get_author_recommendations();
           this.get_recommendations_by_tag();
           
-          /*this.Community_recommendation.get_recommendations_by_tag(r[0].authorid,"writing",this.writing_id,"writing",r[0].category,r[0].firsttag).subscribe(e=>{
-            if(e[0].list_to_send.length >0){
-              this.list_of_recommendations_by_tag=e[0].list_to_send;
-              this.list_of_recommendations_by_tag_retrieved=true;
-            }
-          });*/
+       
+          this.ready_to_check_view=true;
+          this.check_view_after_current()
     
           this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
             if(information[0].value){
               this.already_subscribed=true;
             }
+            this.subscribtion_retrieved=true;
           });
           
-          this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-            this.visitor_id=l[0].id;
-            this.visitor_name=l[0].nickname;
-            if (this.authorid == l[0].id){
-              this.mode_visiteur = false;
-              this.mode_visiteur_added = true;
-            }
-            else{
-              this.NotationService.add_view('writing',  "unknown", r[0].category, this.writing_id,0,r[0].firsttag,r[0].secondtag,r[0].thirdtag,this.authorid).subscribe(r=>{
-                this.id_view_created = r[0].id;
-               this.Community_recommendation.delete_recommendations_cookies();
-            this.Community_recommendation.generate_recommendations().subscribe(r=>{})
-              });
-              this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
-                if(information[0].value){
-                  this.already_subscribed=true;
-                  this.mode_visiteur_added = true;
-                }
-                else{
-                  this.mode_visiteur_added = true;
-                }
-              });         
-            }  
-
-            
-              if(!this.mode_visiteur){
-                this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,title,"clicked").subscribe(p=>{
-                  if(!p[0].value){
-                    this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, l[0].status).subscribe();
-                  }
-                })
-              }
-              else{
-                this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, l[0].status).subscribe();
-              }
-
-            
-            
-            this.check_archive();
-          });
+         
 
           this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).subscribe(r=>{
             //views and comments
             this.commentariesnumber=r[0].list_of_comments.length;
             this.viewsnumber= r[0].list_of_views.length;
             //loves
-            let list_of_loves= r[0].list_of_loves;
-            this.lovesnumber=list_of_loves.length;
-            if (list_of_loves.length != 0){
-              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-                for (let i=0;i<list_of_loves.length;i++){
-                  this.list_of_users_ids_loves.push(list_of_loves[i].author_id_who_loves);
-                  if (list_of_loves[i].author_id_who_loves == l[0].id){
-                    this.loved = true;
-                  }
-                }
-                this.list_of_users_ids_loves_retrieved=true;
-              });
+            this.list_of_loves= r[0].list_of_loves;
+            this.lovesnumber=this.list_of_loves.length;
+            if (this.list_of_loves.length != 0){
+              this.loves_retrieved_but_not_checked=true;
+              this.check_loves_after_current()
             }
             else{
               this.list_of_users_ids_loves_retrieved=true;
             }
     
             //likes
-            let list_of_likes= r[0].list_of_likes;
-            this.likesnumber=list_of_likes.length;
-            if (list_of_likes.length != 0){
-              this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-                for (let i=0;i<list_of_likes.length;i++){
-                  this.list_of_users_ids_likes.push(list_of_likes[i].author_id_who_likes);
-                  if (list_of_likes[i].author_id_who_likes == l[0].id){
-                    this.liked = true;
-                  }
-                }
-                this.list_of_users_ids_likes_retrieved=true;
-              });
+            this.list_of_likes= r[0].list_of_likes;
+            this.likesnumber=this.list_of_likes.length;
+            if (this.list_of_likes.length != 0){
+              this.likes_retrieved_but_not_checked=true;
+              this.check_likes_after_current()
             }
             else{
               this.list_of_users_ids_likes_retrieved=true;
@@ -395,6 +383,7 @@ export class ArtworkWritingComponent implements OnInit {
           this.Writing_Upload_Service.retrieve_writing_by_name(file_name).subscribe(r=>{
             let file = new Blob([r], {type: 'application/pdf'});
             this.pdfSrc = URL.createObjectURL(file);
+            this.item_retrieved=true;
           });
     
           this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).subscribe(r=> {
@@ -404,13 +393,7 @@ export class ArtworkWritingComponent implements OnInit {
             
           });
     
-          this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=> {
-            this.user_name = r[0].firstname + ' ' + r[0].lastname;
-            this.primary_description=r[0].primary_description;
-            
-            this.type_of_account_checked=r[0].type_of_account_checked;
-            this.certified_account=r[0].certified_account;
-          });
+         
         }
       }
 
@@ -423,6 +406,63 @@ export class ArtworkWritingComponent implements OnInit {
 
 
 
+
+
+  check_likes_after_current(){
+    if(this.current_user_retrieved && this.likes_retrieved_but_not_checked){
+      for (let i=0;i<this.list_of_likes.length;i++){
+        this.list_of_users_ids_likes.push(this.list_of_likes[i].author_id_who_likes);
+        if (this.list_of_likes[i].author_id_who_likes == this.visitor_id){
+          this.liked = true;
+        }
+      }
+      this.list_of_users_ids_likes_retrieved=true;
+    }
+  }
+
+  check_loves_after_current(){
+    if(this.current_user_retrieved && this.loves_retrieved_but_not_checked){
+      for (let i=0;i<this.list_of_loves.length;i++){
+        this.list_of_users_ids_loves.push(this.list_of_loves[i].author_id_who_loves);
+        if (this.list_of_loves[i].author_id_who_loves == this.visitor_id){
+          this.loved = true;
+        }
+      }
+      this.list_of_users_ids_loves_retrieved=true;
+    }
+  }
+
+  check_view_after_current(){
+    if(this.current_user_retrieved && this.ready_to_check_view){
+      if (this.authorid == this.visitor_id){
+        this.mode_visiteur = false;
+        
+        this.navbar.check_if_research_exists("Writing","unknown",this.writing_id,this.title,"clicked").subscribe(p=>{
+          if(!p[0].value){
+            this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).subscribe();
+          }
+        })
+      }
+      else{
+        this.navbar.add_main_research_to_history("Writing","unknown",this.writing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag, this.visitor_status).subscribe();
+        this.NotationService.add_view('writing',  "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
+          this.id_view_created = r[0].id;
+          if(r[0].id>0){
+            this.Community_recommendation.delete_recommendations_cookies();
+            this.Community_recommendation.generate_recommendations().subscribe(r=>{})
+          }
+        });
+                
+      } 
+      this.mode_visiteur_added = true;
+    }
+  }
+
+
+  /********************************************** RECOMMENDATIONS **************************************/
+  /********************************************** RECOMMENDATIONS **************************************/
+  /********************************************** RECOMMENDATIONS **************************************/
+
   get_author_recommendations(){
     this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
       console.log(e[0].list_to_send)
@@ -434,13 +474,7 @@ export class ArtworkWritingComponent implements OnInit {
         } 
       }
       this.list_of_author_recommendations_comics_retrieved=true;
-
-      if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-        console.log( this.list_of_author_recommendations_comics)
-        console.log( this.list_of_author_recommendations_drawings)
-        console.log( this.list_of_author_recommendations_writings)
-        this.list_of_author_recommendations_retrieved=true;
-      }
+      this.check_recommendations();
     })
     this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
       if(e[0].list_to_send.length >0){
@@ -452,13 +486,7 @@ export class ArtworkWritingComponent implements OnInit {
         
       }
       this.list_of_author_recommendations_drawings_retrieved=true;
-
-      if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-        console.log( this.list_of_author_recommendations_comics)
-        console.log( this.list_of_author_recommendations_drawings)
-        console.log( this.list_of_author_recommendations_writings)
-        this.list_of_author_recommendations_retrieved=true;
-      }
+      this.check_recommendations();
     })
     this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
@@ -471,46 +499,35 @@ export class ArtworkWritingComponent implements OnInit {
       }
       this.list_of_author_recommendations_writings_retrieved=true;
       
-      if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-        console.log( this.list_of_author_recommendations_comics)
-        console.log( this.list_of_author_recommendations_drawings)
-        console.log( this.list_of_author_recommendations_writings)
-        this.list_of_author_recommendations_retrieved=true;
-      }
+      this.check_recommendations();
     })
   }
 
+  check_recommendations(){
+    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
+      console.log( this.list_of_author_recommendations_comics)
+      console.log( this.list_of_author_recommendations_drawings)
+      console.log( this.list_of_author_recommendations_writings)
+      this.list_of_author_recommendations_retrieved=true;
+    }
+  }
+
+  first_propositions_retrieved=false;
+  second_propositions_retrieved=false;
+  second_propositions=[];
+  first_propositions=[];
   get_recommendations_by_tag(){
+
+    
     this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.firsttag,6).subscribe(u=>{
       if(u[0].length>0){
         console.log(u[0])
         let list_of_first_propositions=u[0];
+        this.first_propositions=u[0];
         console.log(list_of_first_propositions)
         if(list_of_first_propositions.length<6 && this.secondtag){
-          this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.secondtag,6-list_of_first_propositions.length).subscribe(r=>{
-            if(r[0].length>0){
-              console.log(r[0])
-              let len=list_of_first_propositions.length;
-              for(let j=0;j<r[0].length;j++){
-                let ok=true;
-                for(let k=0;k<len;k++){
-                  if(  list_of_first_propositions[k].format==r[0][j].format && list_of_first_propositions[k].target_id==r[0][j].target_id){
-                    ok=false;
-                  }
-                  if(k==len-1){
-                    if(ok){
-                      list_of_first_propositions.push(r[0][j])
-                    }
-                  }
-                }
-              }
-              console.log(list_of_first_propositions)
-              this.get_recommendations_by_tags_contents(list_of_first_propositions)
-            }
-            else{
-              this.get_recommendations_by_tags_contents(list_of_first_propositions)
-            }
-          })
+          this.first_propositions_retrieved=true;
+          check_all(this);
         }
         else{
           this.get_recommendations_by_tags_contents(list_of_first_propositions)
@@ -521,39 +538,76 @@ export class ArtworkWritingComponent implements OnInit {
       }
       
     })
+
+    this.Community_recommendation.get_artwork_recommendations_by_tag('Writing',"unknown",this.writing_id,this.style,this.secondtag,6).subscribe(r=>{
+      
+      this.second_propositions_retrieved=true;
+      this.second_propositions=r[0];
+      console.log(this.second_propositions)
+      check_all(this)
+    
+    })
+
+
+    function check_all(THIS){
+      
+      if(THIS.second_propositions_retrieved && THIS.first_propositions_retrieved){
+        if(THIS.second_propositions.length>0){
+         
+          let len=THIS.first_propositions.length;
+          for(let j=0;j<THIS.second_propositions.length;j++){
+            let ok=true;
+            console.log(j)
+            for(let k=0;k<len;k++){
+              if(THIS.first_propositions[k].format==THIS.second_propositions[j].format && THIS.first_propositions[k].target_id==THIS.second_propositions[j].target_id){
+                ok=false;
+              }
+            }
+            if(ok){
+              console.log("push")
+              THIS.first_propositions.push(THIS.second_propositions[j])
+            }
+          }
+          THIS.get_recommendations_by_tags_contents( THIS.first_propositions)
+        
+        }
+        else{
+          THIS.get_recommendations_by_tags_contents( THIS.first_propositions)
+        }
+
+       
+      }
+    }
   }
 
   get_recommendations_by_tags_contents(list_of_first_propositions){
     let len=list_of_first_propositions.length;
-    let indice=0;
-    for(let k=0;k<len;k++){
-      if( list_of_first_propositions[k].format=="unknown" && list_of_first_propositions[k].target_id==this.writing_id){
-        indice=k;
-      }
-      if(k==len-1){
-        list_of_first_propositions.splice(indice,1);
-        console.log(list_of_first_propositions)
-        let compteur_propositions=0;
-        if(list_of_first_propositions.length>0){
-          for(let i=0;i<list_of_first_propositions.length;i++){
-              this.Writing_Upload_Service.retrieve_writing_information_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
-                if(comic[0].status=="public"){
-                  this.list_of_recommendations_by_tag.push(comic[0]);
-                }
-                compteur_propositions++;
-                if(compteur_propositions==list_of_first_propositions.length){
-                  console.log(this.list_of_recommendations_by_tag);
-                  this.list_of_recommendations_by_tag_retrieved=true;
-                }
-              })
-          }
-        }
-        else{
-          this.list_of_recommendations_by_tag_retrieved=true;
-        }
-        
+    console.log(list_of_first_propositions)
+    for(let i=0;i<len;i++){
+      if(list_of_first_propositions[len-i-1].format=="unknown" && list_of_first_propositions[len-i-1].target_id==this.writing_id){
+        list_of_first_propositions.splice(len-i-1,1);
       }
     }
+    console.log(list_of_first_propositions)
+    let compteur_propositions=0;
+    if(list_of_first_propositions.length>0){
+      for(let i=0;i<list_of_first_propositions.length;i++){
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(list_of_first_propositions[i].target_id).subscribe(comic=>{
+            if(comic[0].status=="public"){
+              this.list_of_recommendations_by_tag.push(comic[0]);
+            }
+            compteur_propositions++;
+            if(compteur_propositions==list_of_first_propositions.length){
+              console.log(this.list_of_recommendations_by_tag);
+              this.list_of_recommendations_by_tag_retrieved=true;
+            }
+          })
+      }
+    }
+    else{
+      this.list_of_recommendations_by_tag_retrieved=true;
+    }
+      
   }
 
 
@@ -572,13 +626,29 @@ export class ArtworkWritingComponent implements OnInit {
   /******************************************************* */
   /******************** AFTER VIEW INIT ****************** */
   /******************************************************* */
-  ngAfterViewInit() {
 
+  show_icon=false;
+  page_height=800;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
     this.open_category(0);
+    $(".top-container .pages-controller-container input").val(1 )
 
-    
+    /*let width=this.slide.nativeElement.offsetWidth-10;
+    this.page_height=Math.trunc(width*1.4135);
+    console.log(width)
+    console.log(this.page_height)
+    this.rd.setStyle(  this.slide.nativeElement, "max-height", Math.trunc(width*1.4135) +"px" );*/
+ 
+    fromEvent(this.slide.nativeElement,'scroll').subscribe((e: Event) =>{
+      let page = Math.trunc(e.target['scrollTop']/(this.page_height+10) +1)
+      this.page_number=page;
+      $(".top-container .pages-controller-container input").val(page )
+    });
   }
-
   
 
 
@@ -642,6 +712,12 @@ export class ArtworkWritingComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.openOption(-1);
+    if(this.slide){
+      let width=this.slide.nativeElement.offsetWidth-10;
+      this.page_height=Math.trunc(width*1.4135);
+      this.rd.setStyle(  this.slide.nativeElement, "max-height", Math.trunc(width*1.4135)+"px" );
+    }
+   
   }
 
 
@@ -655,7 +731,7 @@ export class ArtworkWritingComponent implements OnInit {
         style:this.style,
         type:null,
         firsttag:this.firsttag,
-        secondtad:this.secondtag,
+        secondtag:this.secondtag,
         thirdtag:this.thirdtag,
       }, 
       panelClass: 'popupArtworkDataClass',
@@ -667,13 +743,16 @@ export class ArtworkWritingComponent implements OnInit {
     
     this.dialog.open(PopupCommentsComponent, {
       data: {
+        visitor_id:this.visitor_id,
+        visitor_name:this.visitor_name,
+        visitor_mode:this.mode_visiteur,
         type_of_account:this.type_of_account,
         title:this.title,
         category:'Writing',
         format:null,
         style:this.style,
         publication_id:this.writing_id,
-        chapter_number:null,
+        chapter_number:0,
         authorid:this.authorid,
         number_of_comments_to_show:this.number_of_comments_to_show
       }, 
@@ -730,14 +809,40 @@ export class ArtworkWritingComponent implements OnInit {
     });
     
     this.refresh_swiper_pagination();
+
+    $(".top-container .pages-controller-container input").width()
     $(".top-container .pages-controller-container input").keydown(function (e){
       if(e.keyCode == 13){
-        THIS.setSlide( $(".top-container .pages-controller-container input").val() );
+        console.log( $(".top-container .pages-controller-container input").val())
+        
+
       }
     });
   }
 
 
+
+  @ViewChild('input') input:ElementRef;
+  change_page(event){
+    console.log(this.input.nativeElement.value)
+    console.log(event)
+    if(event.code.includes("Enter")){
+      let page=Number(this.input.nativeElement.value)
+      console.log(page)
+      if(page && page>=1 && page<=this.total_pages){
+        console.log("ok")
+        console.log(this.slide.nativeElement.scrollTop) 
+        console.log(this.page_height)
+        console.log(this.page_height*page)
+        this.slide.nativeElement.scrollTop=this.page_height*page-this.page_height + 10*page +1;
+      }
+      
+    }
+
+    let offset=this.slide.nativeElement.offsetTop;
+    let height =this.slide.nativeElement.getBoundingClientRect().height;
+    
+  }
 
 
   refresh_swiper_pagination() {
@@ -872,10 +977,11 @@ export class ArtworkWritingComponent implements OnInit {
         this.like_in_progress=true;
         if(this.liked) {      
           this.liked=false;  
+          this.likesnumber-=1;
             this.NotationService.remove_like('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{      
               let index=this.list_of_users_ids_likes.indexOf(this.visitor_id);
               this.list_of_users_ids_likes.splice(index,1);
-              this.likesnumber-=1;
+            
               if(this.authorid==this.visitor_id){
                 this.like_in_progress=false;
                 this.cd.detectChanges();
@@ -908,9 +1014,10 @@ export class ArtworkWritingComponent implements OnInit {
         }
         else {
           this.liked=true;
+          this.likesnumber+=1;
             this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
-              this.likesnumber+=1;
+              
               if(this.authorid==this.visitor_id){
                 
                 this.like_in_progress=false;
@@ -959,11 +1066,12 @@ export class ArtworkWritingComponent implements OnInit {
       if(this.list_of_users_ids_loves_retrieved){
         this.love_in_progress=true;
         if(this.loved) {    
-          this.loved=false;  
+          this.loved=false; 
+          this.lovesnumber-=1; 
             this.NotationService.remove_love('writing', "unknown", this.style, this.writing_id,0).subscribe(r=>{        
               let index=this.list_of_users_ids_loves.indexOf(this.visitor_id);
               this.list_of_users_ids_loves.splice(index,1);
-              this.lovesnumber-=1;
+             
               if(this.authorid==this.visitor_id){
                
                 this.love_in_progress=false;
@@ -996,10 +1104,11 @@ export class ArtworkWritingComponent implements OnInit {
           
         }
         else {  
-          this.loved=true;    
+          this.loved=true;  
+          this.lovesnumber+=1;    
             this.NotationService.add_love('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
               this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
-              this.lovesnumber+=1;     
+                
               if(this.authorid==this.visitor_id){
                 
                 this.love_in_progress=false; 
@@ -1166,7 +1275,13 @@ export class ArtworkWritingComponent implements OnInit {
     });
   }
 
+
+  checking_report=false;
   report(){
+    if(this.checking_report){
+      return
+    }
+    this.checking_report=true;
     this.Reports_service.check_if_content_reported('writing',this.writing_id,"unknown",0).subscribe(r=>{
       console.log(r[0])
       if(r[0].nothing){
@@ -1180,6 +1295,7 @@ export class ArtworkWritingComponent implements OnInit {
           panelClass:'popupReportClass'
         });
       }
+      this.checking_report=false;
     })
     
   }
@@ -1231,61 +1347,14 @@ export class ArtworkWritingComponent implements OnInit {
 
  profile_picture_loaded(){
   this.pp_loaded=true;
-  if(this.type_of_account_retrieved){
-    this.display_right_container=true;
-  }
 }
 
-/*compteur_recom_writings=0;
-sendLoadedWriting(event){
-  this.compteur_recom_writings+=1;
-  if( this.compteur_recom_writings==this.list_of_author_recommendations_writings.length){
-    this.display_writings_recommendations=true;
-    this.compteur_recom_writings=0;
-    console.log("display recom writi")
-  }
-}
-
-compteur_recom_comics=0;
-sendLoadedComic(event){
-  this.compteur_recom_comics+=1;
-  if( this.compteur_recom_comics==this.list_of_author_recommendations_comics.length){
-    this.display_comics_recommendations=true;
-    this.compteur_recom_comics=0;
-    console.log("display recom comics")
-  }
-}
-
-compteur_recom_drawings=0;
-sendLoadedDrawing(event){
-  this.compteur_recom_drawings+=1;
-  if( this.compteur_recom_drawings==this.list_of_author_recommendations_drawings.length){
-    this.display_drawings_recommendations=true;
-    this.compteur_recom_drawings=0;
-    console.log("display recom draw")
-  }
- 
-}
-compteur_recom_others_writings=0
-sendLoadedWritingsOthers(event){
-  this.compteur_recom_others_writings+=1;
-  if( this.compteur_recom_others_writings==this.list_of_recommendations_by_tag.length){
-    this.display_writings_recommendations_others=true;
-    this.compteur_recom_others_writings=0;
-    console.log("display recom writings others")
-  }
-}*/
-
-afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
+writing_retrieved=false;
+afterLoadComplete(pdf: PDFDocumentProxy) {
+  console.log(pdf)
   this.total_pages = pdf.numPages;
+  this.writing_retrieved=true;
   this.cd.detectChanges();
-  
-  if( (i+1) == this.total_pages ) {
-    this.initialize_swiper();
-    this.refresh_swiper_pagination();
-    this.display_writing=true;
-    this.display_pages=true;
-  };
   
 }
 
@@ -1415,6 +1484,22 @@ pdf_is_loaded(){
   }
 
 
+  
+  first_comment_received(e){
+    console.log(e);
+    this.first_comment=e.comment.commentary;
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
+      let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.pp_first_comment= SafeURL;
+    })
+    this.first_comment_retrieved=true;
+  }
+
+  first_comment_pp_loaded=false;
+  load_first_comment_pp(){
+    this.first_comment_pp_loaded=true;
+  }
 }
 
 

@@ -19,6 +19,7 @@ import { pattern } from '../helpers/patterns';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 declare var Swiper:any;
 declare var $: any;
@@ -89,8 +90,13 @@ export class AddWritingComponent implements OnInit {
   @ViewChild("thumbnailVerso", {static:false}) thumbnailVerso: ElementRef;
   @ViewChild("title", {static:false}) title: ElementRef;
   
+  conditions:any;
+
   ngOnInit() {
 
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
+      this.conditions=r;
+    })
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
       this.pseudo = r[0].nickname;
@@ -108,29 +114,26 @@ export class AddWritingComponent implements OnInit {
 
   
 
-  ngAfterViewInit() {
-
-
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
-
 
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
-        panelClass: 'dialogRefClassText'
-      });
    }else{
     this.monetised = false;
    }
   }
 
   read_conditions() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Conditions en cours d'écriture"},
-      panelClass: 'dialogRefClassText'
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.conditions},
+      panelClass:"panelAdAttachments",
     });
   }
 
@@ -225,8 +228,14 @@ export class AddWritingComponent implements OnInit {
     let total_pages=list[1];
 
  
-    
-    if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
+    if(total_pages>=50){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Votre écrit ne peut faire plus de 50 pages'},
+        panelClass: 'dialogRefClassText'
+      });
+      this.validateButton.nativeElement.disabled = false;
+    }
+    else if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
 
       
        this.display_loading=true;
@@ -235,7 +244,7 @@ export class AddWritingComponent implements OnInit {
           this.fw.value.fwTitle,
           this.fw.value.fwCategory, 
           this.fw.value.fwTags, 
-          this.fw.value.fwDescription,  
+          this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),  
           this.monetised,
           total_pages)
         .subscribe( v => {
@@ -273,8 +282,6 @@ export class AddWritingComponent implements OnInit {
         });
       
     }
-
-
     else {
       if( !this.fw.valid ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -337,7 +344,7 @@ export class AddWritingComponent implements OnInit {
   genres: string[] = [];
 
   allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -408,52 +415,6 @@ export class AddWritingComponent implements OnInit {
   }
 
   
-  /*swiper:any;
-  total_pages:number;
-  arrayOne(n: number): any[] {
-    return Array(n);
-  }
-
-  @ViewChild('pdfDocument')
-  pdfDocumentRef: ElementRef;
-
-  initialize_swiper() {
-    let THIS = this;
-    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
-      speed: 500,
-      spaceBetween:100,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      keyboard: {
-        enabled: true,
-      },
-      on: {
-        slideChange: function () {
-          THIS.cd.detectChanges();
-          THIS.pdfDocumentRef.nativeElement.scrollIntoView({behavior: 'smooth'});
-        },
-      },
-    });
-  }
-  
-  afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
-    this.total_pages = pdf.numPages;
-    this.cd.detectChanges();
-    if( (i+1) == this.total_pages ) {
-      this.initialize_swiper();
-      //this.refresh_controls_pagination();
-      //this.display_writing=true;
-      //this.display_pages=true;
-    };
-  }*/
+ 
   
 }

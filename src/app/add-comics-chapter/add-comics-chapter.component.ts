@@ -5,6 +5,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
+declare var $ : any;
 
 @Component({
   selector: 'app-add-comics-chapter',
@@ -71,6 +72,7 @@ export class AddComicsChapterComponent implements OnInit {
 
     
   }
+
 
   logo_is_loaded=false;
   pp_is_loaded=false;

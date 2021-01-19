@@ -1,4 +1,8 @@
-<div class="artwork">
+<div class="artwork" *ngIf="page_not_found">
+    <app-page-not-found></app-page-not-found>
+</div>
+
+<div class="artwork" *ngIf="!page_not_found">
 
 
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -7,247 +11,366 @@
     <div #leftContainer class="artwork-container">
         <div class="content-container">
 
-            
+            <ng-container *ngIf="!item || !visitor_mode_added">
 
-            <div class="project-title" *ngIf="item">
-                <span>
-                    {{item.title}}
-                </span>
-                <button *ngIf="visitor_mode_added && visitor_mode && type_of_account=='account'" (click)="respond();" [@enterAnimation]>
-                    <mat-icon>post_add</mat-icon>
-                    <span>Répondre à l'offre</span>
-                </button>
-                <button *ngIf="visitor_mode_added && !visitor_mode && see_responses==0" (click)="responses();" [@enterAnimation]>
-                    <mat-icon>keyboard_arrow_down</mat-icon>
-                    <span>Voir les réponses</span>
-                </button>
-                <button *ngIf="visitor_mode_added && !visitor_mode && (see_responses==1 || see_responses==2)" (click)="return_to_ad(0);" [@enterAnimation]>
-                    <mat-icon>text_snippet</mat-icon>
-                    <span>Voir l'annonce</span>
-                </button>
-            </div>
-            
-            <div class="horizontal-line"></div>
-
-            <div *ngIf="see_responses==0 && attachments_retrieved" [@enterAnimation]>
-
-                <div *ngIf="list_of_pictures.length == 1" class="one-picture">
-                    <div class="images" (click)="read_pictures(0)">
-                        <img [src]="list_of_pictures[0]">
-                    </div>
+                <div class="project-title"  [@enterAnimation]>
+                    <span class=" loading-long dark-shiny">
+                    </span>
                 </div>
+                <div class="horizontal-line"></div>
 
-                <div *ngIf="list_of_pictures.length == 2" class="two-pictures">
-                    <div class="images first" (click)="read_pictures(0)">
-                        <img [src]="list_of_pictures[0]">
-                    </div>
-                    <div class="images second" (click)="read_pictures(1)">
-                        <img [src]="list_of_pictures[1]">
-                    </div>
+                <div class="project-type" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">work</mat-icon>
+                    <span class=" loading dark-shiny"></span>
                 </div>
-
-                <div *ngIf="list_of_pictures.length >= 3" class="three-pictures">
-                    <div class="images first" (click)="read_pictures(0)">
-                        <img [src]="list_of_pictures[0]">
-                    </div>
-                    <div class="images second">
-                        <div class="first" (click)="read_pictures(1)">
-                            <img [src]="list_of_pictures[1]">
-                        </div>
-                        <div class="second" (click)="read_pictures(2)">
-                            <img [src]="list_of_pictures[2]">
-                        </div>
-                    </div>
-                    
-                    <div class="see-more-photos" *ngIf="list_of_pictures.length > 3" (click)="read_pictures(3)">
-                        Voir toutes les photos ({{list_of_pictures.length}})
-                    </div>
+                <div class="project-type" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
+                    <span class=" loading2 dark-shiny"></span>
                 </div>
-
-
-                <div class="project-type">
-                    <mat-icon>work</mat-icon>
-                    <span>{{item.type_of_project}}</span>
-                </div>
-                <div class="project-type" *ngIf="item.remuneration">
-                    <mat-icon>euro_symbol</mat-icon>
-                    <span>Rémunération : {{item.price_value}} € <ng-container *ngIf="item.price_type">({{item.price_type}})</ng-container></span>
-                </div>
-                <div class="project-type">
-                    <mat-icon>location_on</mat-icon>
-                    <span>{{item.location}}</span>
-                </div>
-
 
                 <div class="horizontal-line"></div>
-                <div class="project-type">
-                    <mat-icon>description</mat-icon>
-                    <span>Description</span>
+                <div class="project-type" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                    <span class=" loading dark-shiny"></span>
                 </div>
-                <div class="description">
-                    <span>{{item.description}}</span>
+                <div class="project-type" [@enterAnimation]>
+                    <span class=" loading3 dark-shiny"></span>
+                </div>
+                <div class="project-type" [@enterAnimation]>
+                    <span class=" loading4 dark-shiny"></span>
                 </div>
                 
 
                 <div class="horizontal-line"></div>
-                
-                <div class="project-type">
-                    <mat-icon>how_to_reg</mat-icon>
-                    <span>Auteur : {{item.my_description}}</span>
+               
+                <div class="project-type"  [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">how_to_reg</mat-icon>
+                    <span class=" loading dark-shiny"></span>
                 </div>
 
-                <div class="project-type">
-                    <mat-icon>how_to_reg</mat-icon>
-                    <span *ngIf="item.target_two == null">Cible : {{item.target_one}}</span>
-                    <span *ngIf="item.target_two!== null">Cibles : {{item.target_one}}, {{item.target_two}}</span>
+                <div class="project-type" [@enterAnimation]>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">person_search</mat-icon>
+                    <span class=" loading2 dark-shiny"></span>
                 </div>
 
-                <ng-container *ngIf="list_of_attachments.length>0">
-                    <div class="horizontal-line"></div>
-                
-                    <div class="project-type">
-                        <mat-icon>attachment</mat-icon>
-                        <span>Documents joints</span>
-                    </div>
 
-                    <div class="project-files">
-                        <div class="section-container">
-                            <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
-                                <div *ngIf="list_of_attachments[i]"class="attachments-container">
-                                    <div (click)="read_attachment(i)" class="attachment-item">
-                                        <mat-icon>insert_drive_file</mat-icon>
-                                    </div>
-                                    <span><i>{{list_of_attachments_name[i]}}</i></span>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                </ng-container>
-            </div>
-
-            
-            <div *ngIf="see_responses==1 && !answers_retrieved" class="mat-spinner-container" [@enterAnimation]>
-                <mat-spinner diameter="40"></mat-spinner>
-            </div>
-            <div *ngIf="see_responses==1 && answers_retrieved" [@enterAnimation]>
-                <div class="project-type" *ngIf="list_of_profile_pictures.length">
-                    <span>Liste des réponses</span>
-                </div>
-                <div class="project-no-response" *ngIf="!list_of_profile_pictures.length">
-                    <mat-icon>info_outline</mat-icon>
-                    <span>Aucune réponse</span>
-                </div>
                 
 
-                <ng-container *ngIf="list_of_profile_pictures.length">
-                    <div class="responses-container" *ngFor="let item of list_of_profile_pictures; let i=index">
-                        <div class="subscriber-card">
-                            <!--********************-->
-                            <!--Author container-->
-                            <!--********************-->
-                            <div class="subscriber">
-                                <a [routerLink]=get_response_author_link(i) class="user-container">
-                                    <div class="left-container">
-                                        <img [src]="list_of_profile_pictures[i]">
-                                    </div>
-                                    
-                                    
-                                    <div class="right-container">
-                                        <span class="author-name" *ngIf="list_of_authors_name[i]!=''">
-                                            <a [routerLink]=get_response_author_link(i) (click)="stop($event)" matTooltip="Voir le profil"
-                                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
-                                                {{list_of_authors_name[i]}}
-                                            </a>
-                                    
-                                            <mat-icon *ngIf="list_of_certified_account[i]" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
-                                                [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
-                                    
-                                            <span *ngIf="list_of_type_of_account_checked[i]" class="pro-logo" matTooltip="Compte professionnel"
-                                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">PRO</span>
-                                    
-                                        </span>
-                                        <span class="author-description" *ngIf="pseudo!=''">@{{list_of_pseudos[i]}}</span>
-                                    </div>
-                                </a>
-                        
-                                <span>{{list_of_dates[i]}}</span>
-                            </div>
-                            <button (click)="stop($event);see_response(i);" [@enterAnimation]>
-                                <span>Voir la réponse</span>
-                            </button>
-                        </div>
-                    </div>
-                </ng-container>
-                
-            </div>
+            </ng-container>
 
-            
-            <div *ngIf="see_responses==2" [@enterAnimation]>
+            <ng-container *ngIf="item && visitor_mode_added">
 
-                <div class="response-title">
-                    <div class="project-type">
-                        <span>Réponse de {{list_of_authors_name[b]}}</span>
-                    </div>
-                    <button (click)="return_to_ad(1)">
-                        <mat-icon>arrow_back</mat-icon>
-                        <span>Retour</span>
+                <div class="project-title"  [@enterAnimation]>
+                    <span>
+                        {{item.title}}
+                    </span>
+                    <button *ngIf="visitor_mode_added && visitor_mode && type_of_account=='account'" (click)="respond();" [@enterAnimation]>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
+                        <span>Répondre à l'offre</span>
+                    </button>
+                    <button *ngIf="visitor_mode_added && !visitor_mode && see_responses==0" (click)="responses();" [@enterAnimation]>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
+                        <span >Voir les réponses</span>
+                    </button>
+                    <button *ngIf="visitor_mode_added && !visitor_mode && (see_responses==1 || see_responses==2)" (click)="return_to_ad(0);" [@enterAnimation]>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">text_snippet</mat-icon>
+                        <span>Voir l'annonce</span>
                     </button>
                 </div>
                 
-                
-                <ng-container *ngIf="response_attachments_retrieved">
+                <div class="horizontal-line"></div>
+    
+                <div *ngIf="see_responses==0 " [@enterAnimation]>
+    
+                    <ng-container  *ngIf="!attachments_retrieved">
 
-                    <div class="project-type">
-                        <mat-icon>email</mat-icon>
-                        <span>Message</span>
-                    </div>
+                        <div *ngIf="number_of_pictures==1" class="one-picture">
+                            <div class="images ">
+                                <div class="dark-shiny loading-pic">
 
-                    <div class="description">
-                        <span>{{response_to_read.description}}</span>
-                    </div>
-                    
-                    <div class="horizontal-line"></div>
-                    
-                    <ng-container *ngIf="response_list_of_pictures.length">
-                        <div class="project-type">
-                            <mat-icon>image</mat-icon>
-                            <span>Images</span>
-                        </div>
-
-                        <div class="images-container">
-                            <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)">
-                                <img [src]="response_list_of_pictures[i]">
+                                </div>
                             </div>
                         </div>
+                        
+                        <div *ngIf="number_of_pictures==2" class="two-pictures">
+                            <div class="images first" >
+                                <div class="dark-shiny loading-pic">
+
+                                </div>
+                            </div>
+                            <div class="images second" >
+                                <div class="dark-shiny loading-pic">
+
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div *ngIf="number_of_pictures >= 3" class="three-pictures">
+                            <div class="images first" >
+                                <div class="dark-shiny loading-pic">
+
+                                </div>
+                            </div>
+                            <div class="images second">
+                                <div class="first" >
+                                    <div class="dark-shiny loading-pic">
+
+                                    </div>
+                                </div>
+                                <div class="second ">
+                                    <div class="dark-shiny loading-pic">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
                     </ng-container>
 
-                        
-                    <ng-container *ngIf="response_list_of_attachments.length">
-                        
+                    <ng-container  *ngIf="attachments_retrieved">
+
+                        <div *ngIf="list_of_pictures.length == 1" class="one-picture"  [@enterAnimation]>
+                            <div class="images" (click)="read_pictures(0)"  >
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                            </div>
+                        </div>
+
+                        <div *ngIf="list_of_pictures.length == 2" class="two-pictures"  [@enterAnimation]>
+                            <div class="images first" (click)="read_pictures(0)">
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                            </div>
+                            <div class="images second" (click)="read_pictures(1)" >
+                                <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" >
+                            </div>
+                        </div>
+        
+                        <div *ngIf="list_of_pictures.length >= 3" class="three-pictures"  [@enterAnimation]>
+                            <div class="images first" (click)="read_pictures(0)">
+                                <img [src]="list_of_pictures[0]" (load)="load_picture(0)"  [ngClass]="{'invisible': !picture_loaded[0] }" >
+                            </div>
+                            <div class="images second">
+                                <div class="first" (click)="read_pictures(1)">
+                                    <img [src]="list_of_pictures[1]" (load)="load_picture(1)"  [ngClass]="{'invisible': !picture_loaded[1] }" >
+                                </div>
+                                <div class="second" (click)="read_pictures(2)">
+                                    <img [src]="list_of_pictures[2]" (load)="load_picture(2)"  [ngClass]="{'invisible': !picture_loaded[2] }" >
+                                </div>
+                            </div>
+                            
+                            <div class="see-more-photos" *ngIf="list_of_pictures.length > 3" (click)="read_pictures(3)">
+                                Voir toutes les photos ({{list_of_pictures.length}})
+                            </div>
+                        </div>
+        
+                    </ng-container>
+                    
+    
+                    
+                    <div class="project-type">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">work</mat-icon>
+                        <span>{{item.type_of_project}}</span>
+                    </div>
+                    <div class="project-type" *ngIf="!item.remuneration && !item.service">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+                        <span>Collab. Bénévole  </span>
+                    </div>
+                    <div class="project-type" *ngIf="item.remuneration">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
+                        <span>Collab. Rémunérée 
+                            <ng-container *ngIf="item.price_value>0"> : {{item.price_value}} € </ng-container> 
+                            <ng-container *ngIf="item.price_type"> {{item.price_type}}</ng-container>
+                        </span>
+                    </div>
+                    <div class="project-type" *ngIf="item.service">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">design_services</mat-icon>
+                        <span> 
+                            <ng-container *ngIf="item.price_type_service==''"> Produits & Sevices •</ng-container>  
+                            <ng-container *ngIf="item.price_type_service!=''"> {{item.price_type_service}} •</ng-container> 
+                            <ng-container *ngIf="item.offer_or_demand!=''"> {{item.offer_or_demand}} </ng-container> 
+                            <ng-container *ngIf="item.price_value_service>0">: {{item.price_value_service}}€ </ng-container> 
+                           
+                        </span>
+                    </div>
+                    <div class="project-type">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
+                        <span>{{item.location}}</span>
+                    </div>
+    
+    
+                    <div class="horizontal-line"></div>
+                    <div class="project-type">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">description</mat-icon>
+                        <span>Description</span>
+                    </div>
+                    <div class="description">
+                        <span>{{item.description}}</span>
+                    </div>
+                    
+    
+                    <div class="horizontal-line"></div>
+                    
+                    <div class="project-type">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">how_to_reg</mat-icon>
+                        <span>Auteur : {{item.my_description}}</span>
+                    </div>
+    
+                    <div class="project-type">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_search</mat-icon>
+                        <span *ngIf="item.target_two == null">Cible : {{item.target_one}}</span>
+                        <span *ngIf="item.target_two!== null">Cibles : {{item.target_one}}, {{item.target_two}}</span>
+                    </div>
+    
+                    <ng-container *ngIf="list_of_attachments.length>0">
                         <div class="horizontal-line"></div>
-                        
+                    
                         <div class="project-type">
-                            <mat-icon>attachment</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
                             <span>Documents joints</span>
                         </div>
-                    
-
+    
                         <div class="project-files">
                             <div class="section-container">
-                                <ng-container *ngFor="let attachment of response_list_of_attachments, let i=index">
-                                    <div *ngIf="response_list_of_attachments[i]"class="attachments-container">
-                                        <div (click)="read_attachment_response(i)" class="attachment-item">
-                                            <mat-icon>insert_drive_file</mat-icon>
+                                <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
+                                    <div *ngIf="list_of_attachments[i]"class="attachments-container">
+                                        <div (click)="read_attachment(i)" class="attachment-item">
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                         </div>
-                                        <span><i>{{response_list_of_attachments_name[i]}}</i></span>
+                                        <span><i>{{list_of_attachments_name[i]}}</i></span>
                                     </div>
                                 </ng-container>
                             </div>
                         </div>
                     </ng-container>
+                </div>
+    
+                
+                <div *ngIf="see_responses==1 && !answers_retrieved" class="mat-spinner-container" [@enterAnimation]>
+                    <mat-spinner diameter="40"></mat-spinner>
+                </div>
+                
+                <div *ngIf="see_responses==1 && answers_retrieved" [@enterAnimation]>
+                    <div class="project-type" *ngIf="list_of_profile_pictures.length">
+                        <span>Liste des réponses</span>
+                    </div>
+                    <div class="project-no-response" *ngIf="!list_of_profile_pictures.length">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                        <span>Aucune réponse</span>
+                    </div>
+                    
+    
+                    <ng-container *ngIf="list_of_profile_pictures.length">
+                        <div class="responses-container" *ngFor="let item of list_of_profile_pictures; let i=index">
+                            <div class="subscriber-card">
+                                <!--********************-->
+                                <!--Author container-->
+                                <!--********************-->
+                                <div class="subscriber">
+                                    <a [routerLink]=get_response_author_link(i) class="user-container">
+                                        <div class="left-container">
+                                            <img [src]="list_of_profile_pictures[i]">
+                                        </div>
+                                        
+                                        
+                                        <div class="right-container">
+                                            <span class="author-name" *ngIf="list_of_authors_name[i]!=''">
+                                                <a [routerLink]=get_response_author_link(i) (click)="stop($event)" matTooltip="Voir le profil"
+                                                    matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
+                                                    {{list_of_authors_name[i]}}
+                                                </a>
+                                        
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_certified_account[i]" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
+                                                    [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
+                                        
+                                                <span *ngIf="list_of_type_of_account_checked[i]" class="pro-logo" matTooltip="Compte professionnel"
+                                                    matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">PRO</span>
+                                        
+                                            </span>
+                                            <span class="author-description" *ngIf="pseudo!=''">@{{list_of_pseudos[i]}}</span>
+                                        </div>
+                                    </a>
+                            
+                                    <span>{{list_of_dates[i]}}</span>
+                                </div>
+                                <button (click)="stop($event);see_response(i);" [@enterAnimation]>
+                                    <span>Voir la réponse</span>
+                                </button>
+                            </div>
+                        </div>
+                    </ng-container>
+                    
+                </div>
+    
+                
+                <div *ngIf="see_responses==2" [@enterAnimation]>
+    
+                    <div class="response-title">
+                        <div class="project-type">
+                            <span>Réponse de {{list_of_authors_name[b]}}</span>
+                        </div>
+                        <button (click)="return_to_ad(1)">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+                            <span>Retour</span>
+                        </button>
+                    </div>
+                    
+                    
+                    <ng-container *ngIf="response_attachments_retrieved">
+    
+                        <div class="project-type">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">email</mat-icon>
+                            <span>Message</span>
+                        </div>
+    
+                        <div class="description">
+                            <span>{{response_to_read.description}}</span>
+                        </div>
+                        
+                        <div class="horizontal-line"></div>
+                        
+                        <ng-container *ngIf="response_list_of_pictures.length">
+                            <div class="project-type">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">image</mat-icon>
+                                <span>Images</span>
+                            </div>
+    
+                            <div class="images-container">
+                                <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)">
+                                    <img [src]="response_list_of_pictures[i]">
+                                </div>
+                            </div>
+                        </ng-container>
+    
+                            
+                        <ng-container *ngIf="response_list_of_attachments.length">
+                            
+                            <div class="horizontal-line"></div>
+                            
+                            <div class="project-type">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+                                <span>Documents joints</span>
+                            </div>
+                        
+    
+                            <div class="project-files">
+                                <div class="section-container">
+                                    <ng-container *ngFor="let attachment of response_list_of_attachments, let i=index">
+                                        <div *ngIf="response_list_of_attachments[i]"class="attachments-container">
+                                            <div (click)="read_attachment_response(i)" class="attachment-item">
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
+                                            </div>
+                                            <span><i>{{response_list_of_attachments_name[i]}}</i></span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+    
+                    </ng-container>
+                </div>
+            </ng-container>
+            
 
-                </ng-container>
-            </div>
+           
 
         </div>
 
@@ -260,19 +383,41 @@
         <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <!--!!!!!!!! RECOMMENDATIONS CONTAINER !!!!!!!!!!!-->
         <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <div class="recommendations-container" *ngIf="(!list_of_author_ads_retrieved || !list_of_other_ads_retrieved) && see_responses==0">
+            <div class="categories">
+                <button [ngClass]="{'opened': left_container_category_index==0 }"
+                    >
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
+                    <span>Du même auteur</span>
+                </button>
+                <button [ngClass]="{'opened': left_container_category_index==1 }"
+                  >
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">burst_mode</mat-icon>
+                    <span>Similaires</span>
+                </button>
+            </div>
+            <div class="recommendation-group" >
+                <div class="no-recommendation">
+                    <mat-spinner diameter="25"  style="margin:auto;"></mat-spinner>
+                </div>
+            </div>
+            
+        </div>
+
+
         <div class="recommendations-container"
             *ngIf="list_of_author_ads_retrieved && list_of_other_ads_retrieved && see_responses==0">
 
             <div class="categories">
                 <button [ngClass]="{'opened': left_container_category_index==0 }"
                     (click)="open_left_container_category(0);">
-                    <mat-icon>account_circle</mat-icon>
-                    <span>Annonces du même auteur</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
+                    <span>Du même auteur</span>
                 </button>
                 <button [ngClass]="{'opened': left_container_category_index==1 }"
                     (click)="open_left_container_category(1);">
-                    <mat-icon>burst_mode</mat-icon>
-                    <span>Annonces similaires</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">burst_mode</mat-icon>
+                    <span>Dimilaires</span>
                 </button>
             </div>
 
@@ -282,37 +427,40 @@
             <!--SAME AUTHOR ARTWORKS-->
             <!--********************-->
             <!--********************-->
-            <ng-container *ngIf="left_container_category_index==0">
-                <div class="recommendation-group" *ngIf=" list_of_author_ads.length>0 && list_of_author_ads_retrieved">
+            <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
+                <div class="recommendation-group" *ngIf=" display_author_ads ">
                     <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index">
-                        <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        <app-thumbnail-ad [for_ad_page]="for_ad_page" [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
                 
-                <div class="recommendation-group" *ngIf="!list_of_author_ads.length">
+                <div class="recommendation-group" *ngIf="!display_author_ads">
                     <div class="no-recommendation">
-                        <mat-icon>info_outline</mat-icon>
-                        <span>Aucune recommendation n'est actuellement disponible pour cette annonce</span>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                        <span>Aucune recommendation disponible</span>
                     </div>
                 </div>
-            </ng-container>
+            </div>
 
             <!--******************-->
             <!--******************-->
             <!--SAME TYPE ARTWORKS-->
             <!--******************-->
             <!--******************-->
-            <ng-container *ngIf="left_container_category_index==1">
-                <div class="recommendation-group" *ngIf=" list_of_other_ads.length>0 && list_of_other_ads_retrieved">
+            <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
+                <div class="recommendation-group" *ngIf=" display_other_ads">
                     <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index">
                         <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
                     </div>
                 </div>
-                <div class="no-recommendation" *ngIf="!list_of_other_ads.length">
-                    <mat-icon>info_outline</mat-icon>
-                    <span>Aucune recommendation n'est actuellement disponible pour cette annonce</span>
+                <div class="recommendation-group" *ngIf=" !display_other_ads">
+                    <div class="no-recommendation">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                        <span>Aucune recommendation disponible </span>
+                    </div>
                 </div>
-            </ng-container>
+                
+            </div>
         </div>
 
     </div>
@@ -323,207 +471,280 @@
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
     <!--!!!!!!!!! INFORMATIONS CONTAINER !!!!!!!!!!!!!-->
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-    <div #myScrollContainer class="artwork-about-container" *ngIf="attachments_retrieved && archive_retrieved">
-        
-        <div class="artwork-title">
+    <div #myScrollContainer class="artwork-about-container" >
+    
+        <ng-container *ngIf="!archive_retrieved || !visitor_mode_added">
             
-            <button *ngIf="visitor_mode_added && visitor_mode  && type_of_account=='account' && archive_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
-            <mat-icon class="optionsButton">more_vert</mat-icon>
-            </button>
-            <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
-                <button class="artwork-button-menu-item" mat-menu-item (click)="archive();" *ngIf="!ad_archived">
-                    <mat-icon>cloud_download</mat-icon>
-                    <span>Archiver</span>
-                </button>
-                <button class="artwork-button-menu-item" mat-menu-item (click)="unarchive();" *ngIf="ad_archived">
-                    <mat-icon>cloud_download</mat-icon>
-                    <span>Désarchiver</span>
-                </button>
-                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="report();">
-                    <mat-icon>flag</mat-icon>
-                    <span>Signaler</span>
-                </button>
-                <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="cancel_report();">
-                    <mat-icon>flag</mat-icon>
-                    <span>Annuler le signalement</span>
-                </button>
-            </mat-menu>
+            <div class="data-container">
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="author-container">
+                    <div class="left-container">
 
-            <!--options pour un visiteur -->
-            <button *ngIf="visitor_mode_added && !visitor_mode  && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
-                <mat-icon class="optionsButton">more_vert</mat-icon>
-            </button>
-            <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
-                <button class="artwork-button-menu-item" mat-menu-item (click)="edit_thumbnail();">
-                    <mat-icon>view_carousel</mat-icon>
-                    <span>Modifier la miniature</span>
-                </button>
-                <button class="artwork-button-menu-item" mat-menu-item (click)="delete();">
-                    <mat-icon>clear</mat-icon>
-                    <span>Supprimer</span>
-                </button>
-            </mat-menu>
-        </div>
-        
-        
-        
-        <div class="data-container">
-            <!--********************-->
-            <!--Author container-->
-            <!--********************-->
-            <div class="author-container">
-                <a [routerLink]=open_account() (click)="stop($event)" class="left-container" matTooltip="Voir le profil"
-                    matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
-                    <img [src]="profile_picture" (load)="profile_picture_loaded()"
-                        [ngClass]="{'really-invisible':!profile_picture_is_loaded}">
-                    <div *ngIf="!profile_picture_is_loaded" class="dark-shiny"></div>
-                </a>
-                <div class="right-container">
-                    <span class="author-name" *ngIf="author_name!=''">
-                        <a [routerLink]=open_account() (click)="stop($event)" matTooltip="Voir le profil"
-                            matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
-                            {{author_name}}
-                        </a>
-        
-                        <mat-icon *ngIf="certified_account" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
-                            [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
-        
-                        <span *ngIf="type_of_account_checked" class="pro-logo" matTooltip="Compte professionnel"
-                            matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'"
-                            [matTooltipShowDelay]="200">PRO</span>
-        
+                        <div  class="dark-shiny"></div>
+                    </div>
+                    <div class="right-container">
+                        <span class="author-name dark-shiny loading5">
+            
+                        </span>
+                        <span class="author-description loading6 dark-shiny"></span>
+                       
+                       
+                    </div>
+            
+                </div>
+            
+            
+                <div class="view-and-date-numbers">
+                    <span class="dark-shiny loading7">
                     </span>
-                    <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
-                </div>
-        
-                <div *ngIf="visitor_mode_added && visitor_mode" class="subscribing-container">
-                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"
-                        [@enterAnimation] class="opened" tabIndex="-1">
-                        <mat-icon>notifications_active </mat-icon>
-                        <span>Abonné(e)</span>
-                    </button>
-                    <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"
-                        [@enterAnimation] tabIndex="-1">
-                        <mat-icon>person_add</mat-icon>
-                        <span>S'abonner</span>
-                    </button>
-                </div>
-            </div>
-        
-        
-            <div class="view-and-date-numbers">
-                <span>
-                    <ng-container *ngIf="number_of_views == 0">Aucune vue</ng-container>
-                    <ng-container *ngIf="number_of_views == 1">1 vue</ng-container>
-                    <ng-container *ngIf="number_of_views > 1">{{number_of_views}} vues</ng-container>
-                    •
-                    <span *ngIf="item.number_of_responses == 0">Aucune réponse</span>
-                    <span *ngIf="item.number_of_responses == 1">1 réponse</span>
-                    <span *ngIf="item.number_of_responses > 1">{{item.number_of_responses}} réponses</span>
-                </span>
-        
-                <span class="second-span">{{date_to_show}}</span>
-            </div>
-        </div>
-
-
-        <div class="comment-container" (click)="see_comments();">
-            <span>Commentaires</span>
-            <span class="second-span">&nbsp; ({{commentariesnumber}})</span>
             
-            <div class="first-comment-container">
-                <ng-container *ngIf="!commentariesnumber">
-                    <div class="add-comment">
-                        <span>Ajouter un commentaire</span>
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="commentariesnumber">
-                    <div class="img-container">
-                        <img [src]="profile_picture">
-                    </div>
-                    <div class="comment">
-                        <span>gjioeh gopehsrg çpod hgoprd goped jgope jgoped jgoped jgopedg jdoprj gopgj oe jvopr</span>
-                    </div>
-                </ng-container>
-            </div>
-        </div>
-        
-
-        <div class="ad-container">
-            <div class="ad">
-            </div>
-            <div class="ad-link">
-                <span>Soutenez le site en faisant un don </span>
-                <div class="ad-icon">
                 </div>
             </div>
-        </div>
-        
-        <div class="description-and-comments">
-            <app-comments [type_of_account]=type_of_account [title]="item.title" category='ad' [format]="item.type_of_project"
-                [style]="item.remuneration" [publication_id]="item.id" chapter_number=0 [authorid]="item.id_user"
-                [number_of_comments_to_show]=number_of_comments_to_show [commentariesnumber]=commentariesnumber
-                (new_comment)="new_comment();" (removed_comment)="removed_comment();"></app-comments>
-        </div>
-        
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <!--!!!!!!!! RECOMMENDATIONS CONTAINER !!!!!!!!!!!-->
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <div class="recommendations-container"
-            *ngIf="list_of_author_ads_retrieved && list_of_other_ads_retrieved">
-
-            <div class="categories">
-                <button [ngClass]="{'opened': left_container_category_index==0 }"
-                    (click)="open_left_container_category(0);">
-                    <mat-icon>account_circle</mat-icon>
-                    <span>Annonces du même auteur</span>
-                </button>
-                <button [ngClass]="{'opened': left_container_category_index==1 }"
-                    (click)="open_left_container_category(1);">
-                    <mat-icon>burst_mode</mat-icon>
-                    <span>Annonces similaires</span>
-                </button>
-            </div>
-
-
-            <!--********************-->
-            <!--********************-->
-            <!--SAME AUTHOR ARTWORKS-->
-            <!--********************-->
-            <!--********************-->
-            <ng-container *ngIf="left_container_category_index==0">
-                <div class="recommendation-group" *ngIf=" list_of_author_ads.length>0 && list_of_author_ads_retrieved">
-                    <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index">
-                        <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
-                    </div>
-                </div>
+    
+    
+            <div class="comment-container" >
+                <div class=" loading5 dark-shiny"></div>
                 
-                <div class="recommendation-group" *ngIf="!list_of_author_ads.length">
-                    <div class="no-recommendation">
-                        <mat-icon>info_outline</mat-icon>
-                        <span>Aucune recommendation n'est actuellement disponible pour cette annonce</span>
+                <div class="first-comment-container loading9 dark-shiny">
+                </div>
+            </div>
+            
+    
+            <div class="ad-container">
+                <div class="dark-shiny loading-pic">
+                </div>
+            </div>
+            
+            
+        
+    
+        </ng-container>
+        
+        <ng-container *ngIf="archive_retrieved && visitor_mode_added">
+            
+            <div class="data-container">
+                <!--********************-->
+                <!--Author container-->
+                <!--********************-->
+                <div class="author-container">
+                    <a [routerLink]=open_account() (click)="stop($event)" class="left-container" matTooltip="Voir le profil"
+                        matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
+                        <img [src]="profile_picture" (load)="profile_picture_loaded()"
+                            [ngClass]="{'really-invisible':!profile_picture_is_loaded}">
+                        <div *ngIf="!profile_picture_is_loaded" class="dark-shiny"></div>
+                    </a>
+                    <div class="right-container">
+                        <span class="author-name" *ngIf="author_name!=''">
+                            <a [routerLink]=open_account() (click)="stop($event)" matTooltip="Voir le profil"
+                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
+                                {{author_name}}
+                            </a>
+            
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
+                                [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
+            
+                            <span *ngIf="type_of_account_checked" class="pro-logo" matTooltip="Compte professionnel"
+                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">PRO</span>
+            
+                        </span>
+                        <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
+                        <div class="options-buttons">
+                
+                            <button *ngIf="visitor_mode_added && visitor_mode  && type_of_account=='account' && archive_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
+                                <button class="artwork-button-menu-item" mat-menu-item (click)="archive();" *ngIf="!ad_archived">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                                    <span>Archiver</span>
+                                </button>
+                                <button class="artwork-button-menu-item" mat-menu-item (click)="unarchive();" *ngIf="ad_archived">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">cloud_download</mat-icon>
+                                    <span>Désarchiver</span>
+                                </button>
+                                <button *ngIf="visitor_mode && !(list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="report();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                    <span>Signaler</span>
+                                </button>
+                                <button *ngIf="visitor_mode && (list_of_reporters && list_of_reporters.indexOf(visitor_id)>=0)" class="artwork-button-menu-item" mat-menu-item (click)="cancel_report();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
+                                    <span>Annuler le signalement</span>
+                                </button>
+                            </mat-menu>
+                
+                            <button *ngIf="visitor_mode_added && !visitor_mode  && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
+                                <button class="artwork-button-menu-item" mat-menu-item (click)="edit_thumbnail();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
+                                    <span>Modifier la miniature</span>
+                                </button>
+                                <button class="artwork-button-menu-item" mat-menu-item (click)="delete();">
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
+                                    <span>Supprimer</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                       
+                    </div>
+            
+                    <div *ngIf="visitor_mode_added && visitor_mode" class="subscribing-container">
+                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="already_subscribed"
+                            [@enterAnimation] class="opened" tabIndex="-1">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active </mat-icon>
+                            <span>Abonné(e)</span>
+                        </button>
+                        <button (click)="subscribtion()" [disabled]="loading_subscribtion" *ngIf="!already_subscribed"
+                            [@enterAnimation] tabIndex="-1">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
+                            <span>S'abonner</span>
+                        </button>
                     </div>
                 </div>
-            </ng-container>
-
-            <!--******************-->
-            <!--******************-->
-            <!--SAME TYPE ARTWORKS-->
-            <!--******************-->
-            <!--******************-->
-            <ng-container *ngIf="left_container_category_index==1">
-                <div class="recommendation-group" *ngIf=" list_of_other_ads.length>0 && list_of_other_ads_retrieved">
-                    <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index">
-                        <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+            
+            
+                <div class="view-and-date-numbers">
+                    <span>
+                        <ng-container *ngIf="number_of_views == 0">Aucune vue</ng-container>
+                        <ng-container *ngIf="number_of_views == 1">1 vue</ng-container>
+                        <ng-container *ngIf="number_of_views > 1">{{number_of_views}} vues</ng-container>
+                        •
+                        <span *ngIf="item.number_of_responses == 0">Aucune réponse</span>
+                        <span *ngIf="item.number_of_responses == 1">1 réponse</span>
+                        <span *ngIf="item.number_of_responses > 1">{{item.number_of_responses}} réponses</span>
+                    </span>
+            
+                    <span class="second-span">{{date_to_show}}</span>
+                </div>
+            </div>
+    
+    
+            <div class="comment-container" (click)="see_comments();">
+                <div class="number-of-comments" *ngIf="commentariesnumber">
+                    <span>Commentaires</span>
+                    <span class="second-span">&nbsp; ({{commentariesnumber}})</span>
+                </div>
+                <div class="number-of-comments" *ngIf="!commentariesnumber ">
+                    <span>Soyez le premier à ajouter un commentaire !</span>
+                </div>
+               
+                
+                <div class="first-comment-container" *ngIf="commentariesnumber && first_comment_retrieved">
+                    <div class="profile-picture " [ngClass]="{'dark-shiny': !first_comment_pp_loaded }">
+                        <img [src]="pp_first_comment"  (load)="load_first_comment_pp()"  [ngClass]="{'invisible': !first_comment_pp_loaded }">
+                    </div>
+                    <div class="comment" >
+                        {{first_comment}}
                     </div>
                 </div>
-                <div class="no-recommendation" *ngIf="!list_of_other_ads.length">
-                    <mat-icon>info_outline</mat-icon>
-                    <span>Aucune recommendation n'est actuellement disponible pour cette annonce</span>
+                <div class="first-comment-container loading9 dark-shiny" *ngIf="commentariesnumber && !first_comment_retrieved">
                 </div>
-            </ng-container>
-        </div>
+            </div>
+            
+    
+            <div class="ad-container">
+                <div class="ad">
+                </div>
+                <div class="ad-link">
+                    <span>Soutenez le site en faisant un don </span>
+                    <div class="ad-icon">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="description-and-comments">
+                <div class="categories">
+                    <div class="title">
+                        <!--<mat-icon [ngClass]="{'invisible': !show_icon }">comment</mat-icon>-->
+                        <span>Commentaires ({{commentariesnumber}})</span>
+                    </div>
+                </div>
 
+                <app-comments 
+                [type_of_account]=type_of_account 
+                [title]="item.title" 
+                [visitor_id]="visitor_id"
+                [visitor_name]="visitor_name"
+                [visitor_mode]="visitor_mode"
+                category='ad' 
+                [format]="item.type_of_project"
+                [style]="item.remuneration" 
+                [publication_id]="item.id" 
+                chapter_number=0 
+                [authorid]="item.id_user"
+                [number_of_comments_to_show]=number_of_comments_to_show 
+                [commentariesnumber]=commentariesnumber
+                (first_comment)="first_comment_received($event)"
+                (new_comment)="new_comment();" 
+                (removed_comment)="removed_comment();"></app-comments>
+            </div>
+            
+            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            <!--!!!!!!!! RECOMMENDATIONS CONTAINER !!!!!!!!!!!-->
+            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            <div class="recommendations-container"
+                *ngIf="list_of_author_ads_retrieved && list_of_other_ads_retrieved">
+    
+                <div class="categories">
+                    <button [ngClass]="{'opened': left_container_category_index==0 }"
+                        (click)="open_left_container_category(0);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">account_circle</mat-icon>
+                        <span>Du même auteur</span>
+                    </button>
+                    <button [ngClass]="{'opened': left_container_category_index==1 }"
+                        (click)="open_left_container_category(1);">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">burst_mode</mat-icon>
+                        <span>Similaires</span>
+                    </button>
+                </div>
+    
+    
+                <!--********************-->
+                <!--********************-->
+                <!--SAME AUTHOR ARTWORKS-->
+                <!--********************-->
+                <!--********************-->
+                <div *ngIf="list_of_author_ads_retrieved"  [ngClass]="{'really-invisible': left_container_category_index!=0 }">
+                    <div class="recommendation-group" *ngIf=" display_author_ads ">
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_ads; let i=index">
+                            <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation-group" *ngIf="!display_author_ads">
+                        <div class="no-recommendation">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                            <span>Aucune recommendation disponible</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!--******************-->
+                <!--******************-->
+                <!--SAME TYPE ARTWORKS-->
+                <!--******************-->
+                <!--******************-->
+                <div *ngIf="list_of_other_ads_retrieved" [ngClass]="{'really-invisible': left_container_category_index!=1 }">
+                    <div class="recommendation-group" *ngIf=" display_other_ads">
+                        <div class="thumbnail-container" *ngFor="let item of list_of_other_ads; let i=index">
+                            <app-thumbnail-ad [item]=item now_in_seconds={{now_in_seconds}}></app-thumbnail-ad>
+                        </div>
+                    </div>
+                    <div class="recommendation-group" *ngIf="!display_other_ads">
+                        <div class="no-recommendation">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
+                            <span>Aucune recommendation disponible</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </ng-container>
+        
 
     </div>
 
@@ -537,246 +758,3 @@
 
 
 
-
-
-<!--
-    
-
-                <div style="display:flex;flex-wrap:wrap;justify-content: space-between;margin-bottom:10px;">
-                    <div class="project-title">
-                        {{item.title}}
-                    </div>
-                    <button mat-raised-button class="submit-button style0" *ngIf="visitor_mode && type_of_account=='account'" (click)="respond();">
-                        <mat-icon>post_add</mat-icon>
-                        <span>Répondre à l'offre</span>
-                    </button>
-                    <button mat-raised-button class="submit-button style0" *ngIf="!visitor_mode && see_responses==0" (click)="responses();">
-                        <mat-icon>keyboard_arrow_down</mat-icon>
-                        <span>Voir les réponses</span>
-                    </button>
-                    <button mat-raised-button class="submit-button style0" *ngIf="!visitor_mode && (see_responses==1 || see_responses==2)" (click)="return_to_ad(0);">
-                        <mat-icon>text_snippet</mat-icon>
-                        <span>Voir l'annonce</span>
-                    </button>
-                </div>
-
-                
-                <ng-container *ngIf="see_responses==0 && attachments_retrieved">
-
-                    <ng-container *ngIf="list_of_pictures.length > 0">
-                        <div class="horizontal-line"></div>
-                    </ng-container>
-                    <div *ngIf="list_of_pictures.length > 0" class="project-type">
-                            <mat-icon>photo</mat-icon>
-                            <span>Images</span>
-                    </div>
-                    
-                    <div *ngIf="list_of_pictures.length == 1" style="max-height: 400px;display:flex; justify-content: center;">
-                        <div class="images" (click)="read_pictures(0)">
-                            <img [src]="list_of_pictures[0]" style="max-height:100%;max-width: 100%; width:unset;height:unset">
-                        </div>
-                    </div>
-
-                    <div *ngIf="list_of_pictures.length == 2" style="width:100%;height:400px;display:flex; justify-content:center ;">
-                        <div class="images" style="max-width: 50%;padding: 10px 10px 10px 0px;" (click)="read_pictures(0)">
-                            <img [src]="list_of_pictures[0]" style="max-width: 100%; width:unset;height:100%">
-                        </div>
-                        <div class="images" style="max-width: 50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(1)">
-                            <img [src]="list_of_pictures[1]" style="max-width: 100%; width:unset;height:100%">
-                        </div>
-                    </div>
-
-                    <div *ngIf="list_of_pictures.length >= 3" style="width:100%;height:400px;display:flex;position:relative;">
-                        <div class="images" style="width:50%;padding: 10px 10px 10px 0px;" (click)="read_pictures(0)">
-                            <img [src]="list_of_pictures[0]">
-                        </div>
-                        <div class="images" style="width:50%;">
-                            <div style="height:50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(1)">
-                                <img [src]="list_of_pictures[1]">
-                            </div>
-                            <div style="height:50%;padding: 10px 0px 10px 10px;" (click)="read_pictures(2)">
-                                <img [src]="list_of_pictures[2]">
-                            </div>
-                        </div>
-                        
-                        <div class="see-more-photos" *ngIf="list_of_pictures.length > 3" (click)="read_pictures(3)">
-                            Voir toutes les photos ({{list_of_pictures.length}})
-                        </div>
-                    </div>
-
-                    <ng-container *ngIf="list_of_pictures.length == 0">
-                        <div class="response-horizontal-line"></div>
-                    </ng-container>
-                    <ng-container *ngIf="list_of_pictures.length > 0">
-                        <div class="horizontal-line"></div>
-                    </ng-container>
-
-                    <div class="project-type">
-                        <mat-icon>work</mat-icon>
-                        {{item.type_of_project}}
-                    </div>
-                    <div class="project-location" *ngIf="item.remuneration">
-                        <mat-icon>attach_money</mat-icon>
-                        <span>Rémunération : {{item.price_value}}€</span>
-                    </div>
-                    <div class="project-location">
-                        <mat-icon>location_on</mat-icon>
-                        <span>{{item.location}}</span>
-                    </div>
-
-
-                    <div class="horizontal-line"></div>
-                    <div class="project-description">
-                        <div>
-                            <mat-icon>description</mat-icon>
-                            Description
-                        </div>
-                        {{item.description}}
-                    </div>
-
-
-                    <div class="horizontal-line"></div>
-                    <div class="project-cibles">
-                        <ng-container >
-                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
-                                <mat-icon>how_to_reg</mat-icon>
-                                Auteur
-                            </div>
-                            <div>
-                                <span>{{item.my_description}}</span>
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="item.target_two == null">
-                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
-                                <mat-icon>how_to_reg</mat-icon>
-                                Cible
-                            </div>
-                            <div>
-                                <span>{{item.target_one}}</span>
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="item.target_two != null">
-                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">
-                                <mat-icon>how_to_reg</mat-icon>
-                                Cibles
-                            </div>
-                            <div>
-                                <span>{{item.target_one}}</span>
-                            </div>
-                            <div>
-                                <span>{{item.target_two}}</span>
-                            </div>
-                        </ng-container>
-                    </div>
-
-
-                    <ng-container *ngIf="list_of_attachments.length>0">
-                        <div class="horizontal-line"></div>
-                        <div class="project-files">
-                            <div style="font-weight:bold;font-size:18px;margin-bottom:10px;">Documents joints</div>
-                            <div class="section-container">
-                                <ng-container *ngFor="let attachment of list_of_attachments, let i=index">
-                                    <div *ngIf="list_of_attachments[i]"class="attachments-container">
-                                        <div (click)="read_attachment(i)" class="attachment-item">
-                                            <mat-icon>picture_as_pdf</mat-icon>
-                                        </div>
-                                        <span><i>{{list_of_attachments_name[i]}}</i></span>
-                                    </div>
-                                </ng-container>
-                            </div>
-                        </div>
-                    </ng-container>
-                    
-                </ng-container>
-
-                
-                <ng-container *ngIf="see_responses==1">
-
-                    <div class="horizontal-line"></div>
-                    <div class="project-responses" style="font-weight:bold;font-size:19px;margin-bottom:10px;">
-                        <ng-container *ngIf="answers_retrieved && list_of_profile_pictures.length">Liste des réponses</ng-container>
-                        <ng-container *ngIf="answers_retrieved && !list_of_profile_pictures.length">Aucune réponse</ng-container>
-                    </div>
-
-                    <div *ngIf="answers_retrieved" class="responses-container">
-                        <div *ngFor="let item of list_of_profile_pictures; let i=index" class="response">
-                            <div class="author-container" style="width:unset !important;">
-                                <div class="left-container">
-                                    <img  [src]="list_of_profile_pictures[i]">
-                                </div>
-                                <a href="/account/{{list_of_pseudos[i]}}/{{list_of_ids[i]}}">
-                                    <div class="right-container">
-                                        <div class="author-name">{{list_of_authors_name[i]}}</div>
-                                        <div class="author-description">@{{list_of_pseudos[i]}}</div>
-                                        <div class="author-description">{{list_of_dates[i]}}</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <button mat-raised-button class="style1" (click)="see_response(i);">
-                                <span>Voir la réponse</span>
-                            </button>
-                        </div>
-                    </div>
-                </ng-container>
-
-                
-                <ng-container *ngIf="see_responses==2">
-                    <div class="horizontal-line"></div>
-
-
-                    <div style="display:flex;flex-wrap:wrap;justify-content: space-between;margin-bottom:20px;">
-                        <div style="margin:0px auto auto 0px;font-weight:bold;cursor:default;">Réponse de {{list_of_authors_name[b]}}</div>
-                        <button mat-raised-button class="style1 response2" (click)="return_to_ad(1)">
-                            <span>Retour</span>
-                        </button>
-                    </div>
-
-                    <div *ngIf="response_attachments_retrieved" class="response-2">
-                        <div class="category-content-1">
-                            <div class="section-container-2">
-                                <div>
-                                    <mat-icon>email</mat-icon>
-                                    Message
-                                </div>
-                                {{response_to_read.description}}
-                            </div>
-
-                            
-                            <ng-container *ngIf="response_list_of_pictures.length">
-                                <div class="response-horizontal-line"></div>
-                                <div class="section-container-2">
-                                    <div>
-                                        <mat-icon>image</mat-icon>
-                                        Images
-                                    </div>
-                                </div>
-                                <div class="section-container-2" style="display:flex;flex-wrap: wrap;">
-                                    <div *ngFor="let picture of response_list_of_pictures, let i=index" (click)="read_pictures_response(i)" class="image-container">
-                                        <img [src]="response_list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
-                                    </div>
-                                   
-                                </div>
-                            </ng-container>
-
-                            <ng-container *ngIf="response_list_of_attachments.length">
-                                <div class="response-horizontal-line"></div>
-                                <div class="section-container-2">
-                                    <div>
-                                        <mat-icon>attachment</mat-icon>
-                                        Pièces-jointes
-                                    </div>
-                                </div>
-                                <div class="section-container-2" style="display:flex;flex-wrap: wrap;">
-                                    <div *ngFor="let attachment of response_list_of_attachments, let i=index" class="attachment-container" (click)="read_attachment_response(i)">
-                                        <div class="attachment-picture">
-                                            <mat-icon>picture_as_pdf</mat-icon>
-                                        </div>
-                                        <span> {{response_list_of_attachments_name[i]}}</span>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                </ng-container>
-
--->

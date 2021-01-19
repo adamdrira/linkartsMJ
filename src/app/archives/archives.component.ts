@@ -22,6 +22,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
+import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 
 declare var $: any;
 
@@ -89,8 +91,10 @@ export class ArchivesComponent implements OnInit {
   opened_album:number = -1;
   
   now_in_seconds= Math.trunc( new Date().getTime()/1000);
-  
 
+  @Input('pseudo') pseudo:string;
+  @Input('id_user') id_user:number;
+  @Input('author') author:any;
   list_of_comics:any[]=[];
   list_of_comics_added=false;
 
@@ -152,12 +156,6 @@ export class ArchivesComponent implements OnInit {
     let user_id= parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     
     
-    this.Profile_Edition_Service.get_current_user().subscribe( r => {
-      if( r[0].id!=user_id) {
-        this.location.go('/');
-        location.reload();
-      }
-    })
     
     // get other comics archived
     this.Subscribing_service.get_archives_comics().subscribe(l=>{
@@ -378,7 +376,14 @@ export class ArchivesComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit(){
+  show_icon=false;
+  ngAfterViewInit() {
+    
+    let THIS=this;
+    $(window).ready(function () {
+      console.log("load")
+      THIS.show_icon=true;
+    })
     this.width=this.main_container.nativeElement.offsetWidth*0.9;
 
     this.get_number_of_comics_to_show();
@@ -505,6 +510,9 @@ export class ArchivesComponent implements OnInit {
 /**************************************************STORIES ******************************* */
 /**************************************************STORIES ******************************* */
   // archives stories
+  number_of_views_by_story=[];
+  list_of_viewers_by_story=[];
+  list_of_viewers_by_story_found=[];
   get_stories(){
     this.Story_service.get_all_my_stories().subscribe(r=>{
 
@@ -519,13 +527,41 @@ export class ArchivesComponent implements OnInit {
             let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.list_of_stories[i]=SafeURL;
-            compt++;
-            if(compt==r[0].length){
-              this.list_of_stories_received=true;
-              this.cd.detectChanges();
-            }
           });
+
+          console.log(r[0][i])
+          console.log(r[0][i].id_user_who_looks)
+          this.Story_service.get_list_of_viewers_for_story(r[0][i].id).subscribe(m=>{
+            this.number_of_views_by_story[i]=m[0].length;
+            console.log(m[0])
+            if(m[0].length>0){
+              this.list_of_viewers_by_story[i]=[];
+              let compt=0;
+              for (let j=0;j<m[0].length;j++){
+                console.log(m[0][j].id_user_who_looks)
+                this.Profile_Edition_Service.retrieve_profile_data(m[0][j].id_user_who_looks).subscribe(l=>{
+                  this.list_of_viewers_by_story[i][j]=l[0];
+                  compt++;
+                  if(compt==m[0].length){
+                    console.log()
+                    this.list_of_viewers_by_story_found[i]=true;
+                  }
+                })
+              }
+            }
+            else{
+              this.list_of_viewers_by_story_found[i]=true;
+            }
+          
+            
+          })
+          
         }
+        console.log(this.list_of_stories)
+        console.log(this.number_of_views_by_story)
+        console.log( this.list_of_viewers_by_story_found)
+        console.log( this.list_of_viewers_by_story)
+        this.list_of_stories_received=true;
       }
       else {
         this.list_of_stories_received=true;
@@ -551,10 +587,145 @@ export class ArchivesComponent implements OnInit {
     return table[2]+'/'+table[1]+'/'+table[0];
   }
 
+
   
+  number_of_stories_to_show_by_category=[];
+  compteur_number_of_stories=0;
+  number_of_stories_variable:number;
+  got_number_of_stories_to_show=false;
+  number_of_lines_stories:number;
+  get_number_of_stories_to_show(){
+    let width =this.main_container.nativeElement.offsetWidth*0.9;
+  
+    if(width>0 && !this.got_number_of_stories_to_show){
+      this.number_of_stories_variable=Math.floor(width/250);
+      this.got_number_of_stories_to_show=true;
+      this.number_of_lines_stories=3;
+      this.compteur_number_of_stories= this.number_of_stories_variable*this.number_of_lines_stories;
+
+      this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
+    }
+  }
+
+  reset_number_of_stories_to_show(){
+    if(this.got_number_of_stories_to_show){
+      this.compteur_number_of_stories= this.number_of_stories_variable*2;
+      this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
+    }
+  }
+
+  update_number_of_stories_to_show(){
+    if(this.got_number_of_stories_to_show){
+      let width =this.main_container.nativeElement.offsetWidth*0.9;
+      let variable =Math.floor(width/250);
+      
+      if(variable>this.number_of_stories_variable){
+        this.number_of_stories_to_show_by_category[0]/=this.number_of_stories_variable;
+        this.number_of_stories_to_show_by_category[0]*=variable;
+        this.number_of_stories_variable=variable;
+        this.cd.detectChanges();
+      }
+    }
+  }
+
+  see_more_stories(){
+    if(this.number_of_stories_to_show_by_category[0]>=this.list_of_stories_data.length){
+      return
+    }
+    else{
+      this.number_of_stories_to_show_by_category[0]+=this.number_of_stories_variable*2;
+      
+      this.cd.detectChanges();
+    }
+    
+  }
+
+  list_display_stories=[];
+  display_stories_thumbnails(i){
+    this.update_story_width();
+    this.list_display_stories[i]=true;
+    
+  }
+
+  
+  scroll(el: HTMLElement) {
+
+    this.cd.detectChanges();
+    var topOfElement = el.offsetTop - 150;
+    window.scroll({top: topOfElement, behavior:"smooth"});
+  }
+
+  scrollDown() {
+    window.scrollBy({
+      top: 200,
+      behavior : "smooth"
+    })
+  }
+
+  
+
+  story_width:number = 400;
+  @ViewChildren("thumbnail_stories") thumbnail_stories: QueryList<ElementRef>;
+  update_story_width() {
+    var n = Math.floor(this.width/250);
+    if( n>2 ) {
+      this.story_width=this.width/n;
+      for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", 200 + "px");
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 12 + "px");
+        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", 266.66 + "px");
+      }
+      //this.story_width = (this.container_stories2.nativeElement.offsetWidth-5) / Math.floor( (this.container_stories2.nativeElement.offsetWidth/240) );
+    }
+    else{
+        
+        //let width=(140*(this.width/750)>110)?140*(this.width/750):110
+        let width =this.width/3;
+        this.story_width=width;
+        let final_width=(width<=210)?width-10:200;
+        for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
+          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", final_width + "px");
+          if(width<10){
+            this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 11 + "px");
+          }
+         
+          let height = final_width*1.33;
+          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", height + "px");
+        }
+
+    }
+  
+    
+    this.cd.detectChanges()
+  }
+
+
+
+  show_stories(indice){
+    if(this.number_of_views_by_story){
+      console.log(indice)
+      console.log(this.list_of_stories)
+      const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
+        data: {list_of_pictures:this.list_of_stories,index_of_picture:indice},
+      });
+    }
+   
+  }
+
+  show_viewers(i){
+    this.dialog.open(PopupSubscribersComponent, {
+      data: {
+        subscribers:this.list_of_viewers_by_story,
+        type_of_profile:'account',
+        visitor_name:this.pseudo,
+        visitor_id:this.id_user
+      }, 
+      panelClass: 'popupViewUsersClass',
+    });
+  }
   /**************************************************ADS ******************************* */
-/**************************************************ADS ******************************* */
-/**************************************************ADS ******************************* */
+  /**************************************************ADS ******************************* */
+  /**************************************************ADS ******************************* */
   //Archives ads
   get_ads(){
     this.Subscribing_service.get_archives_ads().subscribe(q=>{
@@ -961,119 +1132,9 @@ see_more_writings(category_number){
     
   }
 
-/**************************************DISPLAY STORIES **************************************** */
-/**************************************DISPLAY STORIES **************************************** */
-/**************************************DISPLAY STORIES **************************************** */
 
-  number_of_stories_to_show_by_category=[];
-  compteur_number_of_stories=0;
-  number_of_stories_variable:number;
-  got_number_of_stories_to_show=false;
-  number_of_lines_stories:number;
-  get_number_of_stories_to_show(){
-    let width =this.main_container.nativeElement.offsetWidth*0.9;
-  
-    if(width>0 && !this.got_number_of_stories_to_show){
-      this.number_of_stories_variable=Math.floor(width/250);
-      this.got_number_of_stories_to_show=true;
-      this.number_of_lines_stories=3;
-      this.compteur_number_of_stories= this.number_of_stories_variable*this.number_of_lines_stories;
 
-      this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
-    }
-  }
-
-  reset_number_of_stories_to_show(){
-    if(this.got_number_of_stories_to_show){
-      this.compteur_number_of_stories= this.number_of_stories_variable*2;
-      this.number_of_stories_to_show_by_category[0]=this.compteur_number_of_stories;
-    }
-  }
-
-  update_number_of_stories_to_show(){
-    if(this.got_number_of_stories_to_show){
-      let width =this.main_container.nativeElement.offsetWidth*0.9;
-      let variable =Math.floor(width/250);
-      
-      if(variable>this.number_of_stories_variable){
-        this.number_of_stories_to_show_by_category[0]/=this.number_of_stories_variable;
-        this.number_of_stories_to_show_by_category[0]*=variable;
-        this.number_of_stories_variable=variable;
-        this.cd.detectChanges();
-      }
-    }
-  }
-
-  see_more_stories(){
-    if(this.number_of_stories_to_show_by_category[0]>=this.list_of_stories_data.length){
-      return
-    }
-    else{
-      this.number_of_stories_to_show_by_category[0]+=this.number_of_stories_variable*2;
-      
-      this.cd.detectChanges();
-    }
-    
-  }
-
-  list_display_stories=[];
-  display_stories_thumbnails(i){
-    this.update_story_width();
-    this.list_display_stories[i]=true;
-    
-  }
-
-  
-  scroll(el: HTMLElement) {
-
-    this.cd.detectChanges();
-    var topOfElement = el.offsetTop - 150;
-    window.scroll({top: topOfElement, behavior:"smooth"});
-  }
-
-  scrollDown() {
-    window.scrollBy({
-      top: 200,
-      behavior : "smooth"
-    })
-  }
-
-  
-
-  story_width:number = 400;
-  @ViewChildren("thumbnail_stories") thumbnail_stories: QueryList<ElementRef>;
-  update_story_width() {
-    var n = Math.floor(this.width/250);
-    if( n>2 ) {
-      this.story_width=this.width/n;
-      for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
-        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", 200 + "px");
-        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 12 + "px");
-        this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", 266.66 + "px");
-      }
-      //this.story_width = (this.container_stories2.nativeElement.offsetWidth-5) / Math.floor( (this.container_stories2.nativeElement.offsetWidth/240) );
-    }
-    else{
-        
-        //let width=(140*(this.width/750)>110)?140*(this.width/750):110
-        let width =this.width/3;
-        this.story_width=width;
-        let final_width=(width<=210)?width-10:200;
-        for(let i=0;i<this.thumbnail_stories.toArray().length;i++){
-          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "width", final_width + "px");
-          if(width<10){
-            this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "font-size", 11 + "px");
-          }
-         
-          let height = final_width*1.33;
-          this.rd.setStyle(this.thumbnail_stories.toArray()[i].nativeElement, "height", height + "px");
-        }
-
-    }
-  
-    
-    this.cd.detectChanges()
-  }
+  /******************************************* Options *****************************************/
 
   openedMenu:string = "";
   menuClosed() {

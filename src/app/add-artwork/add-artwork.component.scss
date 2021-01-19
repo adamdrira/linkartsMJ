@@ -28,7 +28,7 @@
     height: 60px;
     box-shadow: 0px 3px 0px -2px rgba(150, 150, 150, 0.11), 0px 1px 2px 0px rgba(0, 0, 0, 0.14),
         0px 0px 14px 0px rgb(109, 109, 109, 0.2);
-    z-index: 1010;
+    z-index: 1000;
 
     .invisible {
         visibility: hidden;
@@ -161,6 +161,18 @@
         .mat-option:hover:not(.mat-option-disabled):not(.mat-active),
         .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
             background: #f6fafd !important;
+        }
+        &::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        &::-webkit-scrollbar-thumb {
+            background-image: linear-gradient(0deg, #ffffff00, #76ccff, #ffffff00);
+            border-radius: 20px;
         }
 
         .mat-option {
@@ -367,6 +379,8 @@
                     height: unset !important;
                     width: unset !important;
                     font-size: 20px;
+                    max-width:20px;
+                    overflow: hidden;
                     margin: auto 0px auto 0px;
                     cursor: default;
                     color: rgb(32, 56, 100);
@@ -511,14 +525,18 @@
             margin-bottom: 15px;
             padding: 6px 6px !important;
             border-radius: 40px;
-            border: 1px solid #203864;
-            background-color: white !important;
+            border:unset !important;
+            /* border: 1px solid #203864; */
+            background: unset;
+            /* background-color: white !important; */
             outline: none !important;
 
             mat-icon {
                 width: unset;
                 height: unset;
                 font-size: 25px;
+                max-width:25px;
+                overflow: hidden;
                 margin: auto 5px auto 0px;
                 color: #203864;
             }
@@ -571,6 +589,8 @@
             width: unset;
             height: unset;
             font-size: 28px;
+            max-width:28px;
+                overflow: hidden;
         }
         .submit-button-with-done-all > span {
             margin: auto auto auto 0px;
@@ -731,6 +751,8 @@
         left: 21px;
         top: 9px;
         font-size: 22px;
+        max-width:22px;
+        overflow: hidden;
         color: rgb(32, 56, 100);
         height: unset !important;
         width: unset !important;

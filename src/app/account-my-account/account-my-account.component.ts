@@ -318,19 +318,22 @@ export class AccountMyAccountComponent implements OnInit {
     this.registerForm1_activated=true;
   }
 
-  
+  checking_password=false;
   validate_edit_password(){
     console.log(this.registerForm1)
-    if(this.registerForm1.invalid){
-      
+    if(this.registerForm1.invalid || this.checking_password){
+      this.checking_password=true;
     }
     else{
+      this.checking_password=true;
       this.Profile_Edition_Service.check_password(this.email, this.registerForm1.value.password).subscribe(data => {
         if(data.token){
+
           console.log("current password");
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
           });
+          this.checking_password=false;
         }
         if(data.msg=="error"){
           // le mot de passe n'est ni ancien ni existant
@@ -341,6 +344,7 @@ export class AccountMyAccountComponent implements OnInit {
             this.registerForm1.controls['old_password'].setValue('')
             this.registerForm1.controls['old_password_real_value'].setValue(this.registerForm1.value.password)
             this.registerForm1_activated=false;
+            this.checking_password=false;
             this.cd.detectChanges();
           })
         }
@@ -354,8 +358,12 @@ export class AccountMyAccountComponent implements OnInit {
               this.validate_old_password();
             }
             else {
+              this.registerForm1_activated=false;
+              
             }
           });
+
+          this.checking_password=false;
         }
         
       },
@@ -369,7 +377,7 @@ export class AccountMyAccountComponent implements OnInit {
 
   validate_old_password(){
     if(this.registerForm1.invalid){
-      
+      return
     }
     else{
       this.Profile_Edition_Service.edit_password(this.registerForm1.value.password).subscribe(r=>{
@@ -665,12 +673,20 @@ export class AccountMyAccountComponent implements OnInit {
 
 
 
+  validation_all=false;
   validate_all(id_group){
     console.log(id_group)
+    if(this.validation_all){
+      return
+    }
+
+    this.validation_all=true;
     if(this.a_share_is_in_edition){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez terminer votre édition avant de valider'},
       });
+      
+      this.validation_all=false;
       return
     }
     let compt=0;
@@ -679,14 +695,18 @@ export class AccountMyAccountComponent implements OnInit {
       compt+=(this.list_of_members_shares_by_group[id_group][i])?Number(this.list_of_members_shares_by_group[id_group][i]):0;
     }
     console.log(compt);
+
     if(compt!=100){
+      this.validation_all=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'La somme des gains doit être égale à 100. Elle est actuellement égale à : ' + compt},
       });
     }
     else{
         this.Profile_Edition_Service.validate_group_creation_and_shares(id_group,this.list_of_members_ids_by_group[id_group],this.list_of_members_shares_by_group[id_group]).subscribe(r=>{
+          
           if(r[0].error){
+            
             if(r[0].error=="already_validated"){
               const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                 data: {showChoice:false, text:'Vous avez déjà validé la création de ce groupe'},
@@ -747,14 +767,18 @@ export class AccountMyAccountComponent implements OnInit {
             console.log(  this.list_of_members_status_by_group[id_group])
             console.log( this.list_of_groups_status)
           }
+          this.validation_all=false;
         });
-
+        
     }
     console.log(this.list_of_members_shares_by_group[id_group])
     console.log(id_group)
   }
 
+
   abort_group(id_group){
+
+
     let index=this.list_of_groups_ids.indexOf(id_group);
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir refuser la création de ce groupe ? Ceci entrainera sa suppression'},
@@ -1013,24 +1037,8 @@ export class AccountMyAccountComponent implements OnInit {
   }
  
 
- 
 
-  /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-    data: {showChoice:true, text:'Etes-vous sûr de vouloir suspendre votre compte ?'},
-  });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if(result){
-      this.deletion_loading=true;
-      this.Profile_Edition_Service.suspend_account().subscribe(r=>{
-        console.log(r[0])
-        this.deletion_loading=false;
-        this.authenticationService.logout();
-        this.location.go('/')
-        location.reload();
-      })
-    }
-  })*/
  }
 
  get_back_suspended_account(){
@@ -1070,22 +1078,6 @@ export class AccountMyAccountComponent implements OnInit {
   }
  
 
-  /*const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-    data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer votre compte ?'},
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if(result){
-      this.deletion_loading=true;
-      this.Profile_Edition_Service.delete_account().subscribe(r=>{
-        console.log(r[0])
-        this.deletion_loading=false;
-        this.authenticationService.logout();
-        this.location.go('/')
-        location.reload();
-      })
-    }
-  })*/
    
  }
 

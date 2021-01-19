@@ -265,9 +265,13 @@ export class AddAlbumDrawingComponent implements OnInit {
     }
   }
   
-  
+  loading=false;
   get_solution() {
-    
+    if(this.loading){
+      return
+    }
+
+    this.loading=true;
 
     if( !this.gridAlbum || !this.album_list ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {

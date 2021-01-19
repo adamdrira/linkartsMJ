@@ -9,7 +9,7 @@
 
 
             <button class="step-back-button" (click)="back_home();">
-                <mat-icon>keyboard_arrow_left</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
@@ -97,7 +97,7 @@
                                 [removable]="removable"
                                 (removed)="remove(genre)">
                                 {{genre}}
-                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                               </mat-chip>
                               <input
                                 placeholder="Genres (maximum : 3)"
@@ -151,7 +151,7 @@
                         </div>
 
                         <div *ngIf="monetised" class="monetised-text">
-                            Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.
+                            Attention ! Nous vous rappelons que la monétisation d'œuvres plagiées, de fanarts et d'œuvres aux contenus inapproriés sont interdits et susceptibles de se retourner contre vous. 
                         </div>
                     </div>
 
@@ -214,7 +214,7 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='One-shot' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='One-shot'">
             
             <button class="step-back-button" (click)="step_back();">
-                <mat-icon>keyboard_arrow_left</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
 
@@ -250,7 +250,7 @@
         <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 ) && f00.value.f00Format=='Série' " [hidden]="CURRENT_step==0 && f00.value.f00Format=='Série'">
             
             <button class="step-back-button" (click)="step_back();">
-                <mat-icon>keyboard_arrow_left</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                 <span>Retour</span>
             </button>
             

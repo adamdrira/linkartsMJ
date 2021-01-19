@@ -229,9 +229,13 @@ export class AddAlbumWritingComponent implements OnInit {
     }
   }
   
-  
+  loading=false;
   get_solution() {
-    
+    if(this.loading){
+      return
+    }
+
+    this.loading=true;
     if( !this.grid || !this.album_list ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez sélectionner au moins une œuvre'},

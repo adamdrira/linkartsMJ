@@ -104,6 +104,15 @@ export class AddArtworkComponent implements OnInit {
     
   }
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+  
+
   get_user_data() {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -87,21 +87,14 @@ export class AdPageComponent implements OnInit {
         return false;
       };
   
-      this.AuthenticationService.currentUserType.subscribe(r=>{
-        console.log(r);
-        if(r!=''){
-          this.type_of_account=r;
-          this.type_of_account_retrieved=true;
-        }
-        
-      })
-    this.navbar.setActiveSection(1);
+
+    this.navbar.setActiveSection(-1);
     this.navbar.show();
   }
 
   @ViewChildren('category') categories:QueryList<ElementRef>;
   
-
+  for_ad_page=true;
   already_subscribed:boolean;
   type_of_account:string;
   type_of_account_retrieved=false;
@@ -157,6 +150,9 @@ export class AdPageComponent implements OnInit {
   response_attachments_retrieved=false;
   b:number;
 
+  first_comment='';
+  first_comment_retrieved=false;
+  pp_first_comment:any;
   display_author_ads=false;
   display_other_ads=false;
   list_of_author_ads_retrieved=false;
@@ -177,6 +173,27 @@ export class AdPageComponent implements OnInit {
   type_of_profile_retrieved=false;
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
   number_of_comments_to_show=10;
+
+  page_not_found=false;
+  profile_data_retrieved=false;
+  emphasized_contend_retrieved=false;
+  subscribtion_retrieved=false;
+  likes_retrieved_but_not_checked=false;
+  ready_to_check_view=false;
+  loves_retrieved_but_not_checked=false;
+  current_user_retrieved=false;
+
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+      console.log(window.innerWidth)
+      if( window.innerWidth<=1000 ) {
+        this.for_ad_page=false;
+      }
+      else{
+        this.for_ad_page=true;
+      }
+  }
   /******************************************************* */
   /******************** AFTER VIEW CHECKED *************** */
   /******************************************************* */
@@ -191,8 +208,13 @@ export class AdPageComponent implements OnInit {
   }
 
 
-  ngOnInit() {
 
+  /**********************************************   ON INIT  **************************************/
+  /**********************************************   ON INIT  **************************************/
+  /**********************************************   ON INIT  **************************************/
+  number_of_pictures=0;
+  ngOnInit() {
+    window.scroll(0,0);
     setInterval(() => {
 
       if( this.commentariesnumber && this.myScrollContainer && this.myScrollContainer.nativeElement.scrollTop + this.myScrollContainer.nativeElement.offsetHeight >= this.myScrollContainer.nativeElement.scrollHeight*0.7){
@@ -206,239 +228,117 @@ export class AdPageComponent implements OnInit {
     this.ad_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     let title = this.activatedRoute.snapshot.paramMap.get('title');
 
-    
+    this.Profile_Edition_Service.get_current_user().subscribe(l=>{
+      this.visitor_id = l[0].id;
+      this.visitor_name=l[0].nickname;
+      this.type_of_account=l[0].status;
+      this.type_of_account_retrieved=true;
+      this.current_user_retrieved=true;
+      this.check_view_after_current();
+    })
+
 
     this.Ads_service.retrieve_ad_by_id(this.ad_id).subscribe(m=>{
       console.log(m[0]);
       console.log(title)
+      var re = /(?:\.([^.]+))?$/;
+      if(m[0].number_of_attachments>0){
+        for(let i=0;i<m[0].number_of_attachments;i++){
+          if(i==0 && m[0].attachment_name_one && re.exec(m[0].attachment_name_one)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+          if(i==1 && m[0].attachment_name_one && re.exec(m[0].attachment_name_one)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+          if(i==2 && m[0].attachment_name_two && re.exec(m[0].attachment_name_two)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+          if(i==3 && m[0].attachment_name_three && re.exec(m[0].attachment_name_three)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+          if(i==4 && m[0].attachment_name_four && re.exec(m[0].attachment_name_four)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+          if(i==5 && m[0].attachment_name_five && re.exec(m[0].attachment_name_five)[1]!="pdf"){
+            this.number_of_pictures++;
+          }
+        }
+      }
+      console.log(this.number_of_pictures)
       this.item=m[0];
       this.list_of_reporters=this.item.list_of_reporters
       if(!m[0] || title!=m[0].title || m[0].status=="deleted" || m[0].status=="suspended"){
         if(m[0] && m[0].status=="deleted"){
-          return this.navbar.delete_research_from_navbar("Ad",m[0].type_of_project,this.ad_id).subscribe(r=>{
-            return this.router.navigateByUrl("/page_not_found");
+          this.navbar.delete_research_from_navbar("Ad",m[0].type_of_project,this.ad_id).subscribe(r=>{
+            this.page_not_found=true;
+            this.cd.detectChanges();
+            return
           });
         }
-        
-        
-      }
-      
-      this.commentariesnumber=m[0].commentariesnumber;
-      
-      this.navbar.get_number_of_clicked("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
-        this.number_of_views=r[0].number
-      })
-      console.log(this.item);
-      console.log(this.item.title)
-      this.check_archive();
-      this.Profile_Edition_Service.get_current_user().subscribe(r=>{
-        this.visitor_id=r[0].id
-        this.visitor_name=r[0].nickname;
-        if(r[0].id==this.item.id_user){
-          this.visitor_mode=false;
+        else{
+          this.page_not_found=true;
+          this.cd.detectChanges();
+          return
         }
+      }
+      else{
+        this.commentariesnumber=m[0].commentariesnumber;
+      
+        this.navbar.get_number_of_clicked("Ad",this.item.type_of_project,this.item.id).subscribe(r=>{
+          this.number_of_views=r[0].number
+        })
+        console.log(this.item);
+        console.log(this.item.title)
+        this.ready_to_check_view=true;
+        this.check_view_after_current();
+        this.check_archive();
+  
+    
+        this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
+          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.profile_picture = SafeURL;
+        });
+    
+        this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
+          this.author_name = r[0].firstname + ' ' + r[0].lastname;
+          this.primary_description=r[0].primary_description;
+          this.pseudo = r[0].nickname;
+          
+          this.type_of_account_checked=r[0].type_of_account_checked;
+          this.certified_account=r[0].certified_account;
+          this.profile_data_retrieved=true;
+        });
+  
         this.Subscribing_service.check_if_visitor_susbcribed(this.item.id_user).subscribe(information=>{
           console.log(information)
           if(information[0].value){
             this.already_subscribed=true;
-            this.visitor_mode_added = true;
           }
-          else{
-            this.visitor_mode_added = true;
-          }
-         
-            if(!this.visitor_mode){
-              this.navbar.check_if_research_exists("Ad",`${this.item.remuneration}`,this.item.id,this.item.title,"clicked").subscribe(p=>{
-                if(!p[0].value){
-                  this.navbar.add_main_research_to_history("Ad",`${this.item.remuneration}` ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,"account").subscribe(l=>{
-                  });
-                }
-              })
-            }
-            else{
-              
-              this.navbar.add_main_research_to_history("Ad",`${this.item.remuneration}` ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,r[0].status).subscribe(l=>{
-              });
-            }
-            
+          this.subscribtion_retrieved=true;
           
         }); 
-      });
   
-      this.Profile_Edition_Service.retrieve_profile_picture( this.item.id_user).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.profile_picture = SafeURL;
-      });
+        this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
+          let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          console.log(SafeURL);
+          this.thumbnail_picture = SafeURL;
+        });
   
-      this.Profile_Edition_Service.retrieve_profile_data(this.item.id_user).subscribe(r=> {
-        this.author_name = r[0].firstname + ' ' + r[0].lastname;
-        this.primary_description=r[0].primary_description;
-        this.pseudo = r[0].nickname;
-        
-        this.type_of_account_checked=r[0].type_of_account_checked;
-        this.certified_account=r[0].certified_account;
-      });
-
-
-      this.date_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.item.createdAt) );
-
-
-      this.Ads_service.retrieve_ad_thumbnail_picture( this.item.thumbnail_name ).subscribe(r=> {
-        let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        console.log(SafeURL);
-        this.thumbnail_picture = SafeURL;
-      });
+        this.date_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.item.createdAt) );
+        this.get_ad_contents(this.item);
   
-      this.Ads_service.get_ads_by_user_id(this.item.id_user).subscribe(l=>{
-       console.log(l[0])
-
-        for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-          if(l[0][i].id!=this.item.id){
-            this.list_of_author_ads.push(l[0][i])
-          }
-        }
-
-        if(this.list_of_author_ads.length==0){
-          this.display_other_ads=true;
-        }
-        else{
-          this.display_author_ads=true;
-        }
-        console.log(this.list_of_author_ads)
-        this.list_of_author_ads_retrieved=true;
-
-      })
-
-      this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
-        console.log(l[0])
-        if(l[0].length>0){
-          for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-            if(l[0][i].id!=this.item.id){
-              this.list_of_other_ads.push(l[0][i])
-            }
-          }
-          this.list_of_other_ads_retrieved=true;
-        }
-        if(l[0].length==0 || this.list_of_other_ads.length==0) {
-          this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,"none","pertinence").subscribe(l=>{
-            console.log(l[0])
-            if(l[0].length>0){
-              for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                if(l[0][i].id!=this.item.id){
-                  this.list_of_other_ads.push(l[0][i])
-                }
-              }
-              this.list_of_other_ads_retrieved=true;
-            }
-            if(l[0].length==0 || this.list_of_other_ads.length==0){
-              this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,"none",this.item.target_one,"pertinence").subscribe(l=>{
-                console.log(l[0])
-                if(l[0].length>0){
-                  for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                    if(l[0][i].id!=this.item.id){
-                      this.list_of_other_ads.push(l[0][i])
-                    }
-                  }
-                  this.list_of_other_ads_retrieved=true;
-                }
-                if(l[0].length==0 || this.list_of_other_ads.length==0){
-                  this.Ads_service.get_sorted_ads(this.item.remuneration,"none",this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
-                    console.log(l[0])
-                    if(l[0].length>0){
-                      for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                        if(l[0][i].id!=this.item.id){
-                          this.list_of_other_ads.push(l[0][i])
-                        }
-                      }
-                      this.list_of_other_ads_retrieved=true;
-                    }
-                    if((l[0].length==0 || this.list_of_other_ads.length==0)){
-                      this.Ads_service.get_sorted_ads((this.item.remuneration)?false:true,this.item.type_of_project,this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
-                        console.log(l[0])
-                        if(l[0].length>0){
-                          for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                            if(l[0][i].id!=this.item.id){
-                              this.list_of_other_ads.push(l[0][i])
-                            }
-                          }
-                          this.list_of_other_ads_retrieved=true;
-                        }
-                        if(l[0].length==0 || this.list_of_other_ads.length==0){
-                          this.Ads_service.get_sorted_ads((this.item.remuneration)?false:true,"none",this.item.my_description,this.item.target_one,"pertinence").subscribe(l=>{
-                            console.log(l[0])
-                            if(l[0].length>0){
-                              for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                                if(l[0][i].id!=this.item.id){
-                                  this.list_of_other_ads.push(l[0][i])
-                                }
-                              }
-                              this.list_of_other_ads_retrieved=true;
-                            }
-                            if((l[0].length==0 || this.list_of_other_ads.length==0) && this.item.target_two){
-                              this.Ads_service.get_sorted_ads(this.item.remuneration,this.item.type_of_project,this.item.my_description,this.item.target_two,"pertinence").subscribe(l=>{
-                                console.log(l[0])
-                                if(l[0].length>0){
-                                  for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                                    if(l[0][i].id!=this.item.id){
-                                      this.list_of_other_ads.push(l[0][i])
-                                    }
-                                  }
-                                  this.list_of_other_ads_retrieved=true;
-                                }
-                                if(l[0].length==0 || this.list_of_other_ads.length==0) {
-                                  this.Ads_service.get_sorted_ads(this.item.remuneration,"none",this.item.my_description,this.item.target_two,"pertinence").subscribe(l=>{
-                                    console.log(l[0])
-                                    if(l[0].length>0){
-                                      for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
-                                        if(l[0][i].id!=this.item.id){
-                                          this.list_of_other_ads.push(l[0][i])
-                                        }
-                                      }
-                                      this.list_of_other_ads_retrieved=true;
-                                    }
-                                    if(l[0].length==0 || this.list_of_other_ads.length==0){
-                                      
-                                      this.list_of_other_ads_retrieved=true;
-                                      this.display_author_ads=true;
-                                      this.display_other_ads=true;
-                                    }
-                                    console.log(this.list_of_other_ads)
-                                  })
-                                }
-                                console.log(this.list_of_other_ads)
-                              })
-                            }
-                            if((l[0].length==0 || this.list_of_other_ads.length==0) && !this.item.target_two){
-                                      
-                              this.list_of_other_ads_retrieved=true;
-                              this.display_author_ads=true;
-                              this.display_other_ads=true;
-                            }
-                            console.log(this.list_of_other_ads)
-                          })
-                        }
-                        console.log(this.list_of_other_ads)
-                      })
-                    }
-
-                    
-                   
-                    
-                  })
-                }
-                console.log(this.list_of_other_ads)
-              })
-            }
-            console.log(this.list_of_other_ads)
-          })
-        }
-        console.log(this.list_of_other_ads)
-      })
+       
+    
+        this.get_recommendations()
+      }
+      
+     
 
 
-      this.get_ad_contents(this.item);
+
+      
     })
 
     
@@ -446,15 +346,170 @@ export class AdPageComponent implements OnInit {
   }
 
 
+  check_view_after_current(){
+  
+    if(this.current_user_retrieved && this.ready_to_check_view){
+      console.log("check_view_after_current")
+      if(this.visitor_id==this.item.id_user){
+        this.visitor_mode=false;
+        this.navbar.check_if_research_exists("Ad",null,this.item.id,this.item.title,"clicked").subscribe(p=>{
+          if(!p[0].value){
+            this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,"account").subscribe(l=>{
+            });
+          }
+        })
+      }
+      else{
+        this.navbar.add_main_research_to_history("Ad",null ,this.item.id,this.item.title,null,"clicked",0,0,0,0,this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.target_two,this.type_of_account).subscribe();
+      }
+      this.visitor_mode_added=true;
+      console.log(this.visitor_mode_added)
+      console.log(this.visitor_mode)
+      console.log(this.type_of_account)
+
+    }
+
+   
+    
+  }
+
+
+  get_recommendations(){
+    this.Ads_service.get_ads_by_user_id(this.item.id_user).subscribe(l=>{
+      console.log(l[0])
+
+       for(let i=0;i<((l[0].length>5)?5:l[0].length);i++){
+         if(l[0][i].id!=this.item.id){
+           this.list_of_author_ads.push(l[0][i])
+         }
+       }
+
+       if(this.list_of_author_ads.length==0){
+         this.display_author_ads=false;
+       }
+       else{
+         this.display_author_ads=true;
+       }
+       console.log(this.list_of_author_ads)
+       this.list_of_author_ads_retrieved=true;
+
+     })
+
+     let offer_or_demand=(this.item.offer_or_demand!='')?this.item.offer_or_demand:"none";
+     let type_of_remuneration=(this.item.price_type!='')?this.item.price_type:"none";
+     let type_of_service=(this.item.price_type_service!='')?this.item.price_type_service:"none";
+     console.log(this.item.price_type)
+     console.log(this.item.price_type_service)
+     console.log(type_of_remuneration)
+     console.log(type_of_service)
+     if(this.item.target_two){
+       let firt_retrieved=false;
+       let second_retrieved=false;
+
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).subscribe(r=>{
+         console.log(r);
+         console.log(r[0][0]);
+         let number_of_results=r[0][0].number_of_ads;
+         let results=r[0][0].results
+         console.log(results)
+         
+         if (number_of_results>0){
+           for (let i=0;i<results.length;i++){
+             if(results[i].id!=this.item.id){
+               this.list_of_other_ads.push(results[i]);
+             }
+           }
+         }
+         firt_retrieved=true;
+         check_all(this);
+         
+       })
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_two,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",5,0).subscribe(r=>{
+         console.log(r[0][0]);
+         let number_of_results=r[0][0].number_of_ads;
+         let results=r[0][0].results
+         console.log(results)
+         
+         if (number_of_results>0){
+           for (let i=0;i<results.length;i++){
+             if(results[i].id!=this.item.id){
+               this.list_of_other_ads.push(results[i]);
+             }
+           }
+         }
+         second_retrieved=true;
+         check_all(this);
+       
+       })
+
+       function check_all(THIS){
+         if(firt_retrieved && second_retrieved){
+           if(THIS.list_of_other_ads.length>0){
+             THIS.display_other_ads=true;
+           }
+           else{
+             THIS.display_other_ads=false;
+           }
+           THIS.list_of_other_ads_retrieved=true;
+           console.log(THIS.list_of_other_ads)
+         }
+       }
+     }
+     else{
+       this.Ads_service.get_sorted_ads_linkcollab(this.item.type_of_project,this.item.my_description,this.item.target_one,this.item.remuneration,this.item.service,type_of_remuneration,type_of_service,offer_or_demand,"pertinence",0,0).subscribe(r=>{
+         console.log(r);
+         console.log(r[0][0]);
+         let number_of_results=r[0][0].number_of_ads;
+         let results=r[0][0].results
+         console.log(results)
+         
+         if (number_of_results>0){
+           for (let i=0;i<results.length;i++){
+             if(results[i].id!=this.item.id){
+               this.list_of_other_ads.push(results[i]);
+             }
+           }
+         }
+
+         if(this.list_of_other_ads.length>0){
+           this.display_other_ads=true;
+         }
+         else{
+           this.display_other_ads=false;
+         }
+         console.log( this.list_of_other_ads)
+         console.log( this.display_other_ads)
+         this.list_of_other_ads_retrieved=true;
+       })
+     }
+  }
  
+  /****************************************** LOADING  *******************************************/
+  /****************************************** LOADING  *******************************************/
+  /****************************************** LOADING  *******************************************/
+
+
   profile_picture_loaded(){
     this.profile_picture_is_loaded=true;
   }
 
 
 
-  
+  show_icon=false;
   ngAfterViewInit() {
+
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+
+    console.log(window.innerWidth)
+    if( window.innerWidth<=1000 ) {
+      this.for_ad_page=false;
+    }
+    else{
+      this.for_ad_page=true;
+    }
 
     var swiper = new Swiper('.swiper-container', {
       navigation: {
@@ -475,6 +530,8 @@ export class AdPageComponent implements OnInit {
 
   
 
+
+  /******************************************** OPTIONS **************************************/
  
 
   read_pictures(i:number){
@@ -486,6 +543,7 @@ export class AdPageComponent implements OnInit {
   read_attachment(i:number){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
+      panelClass:"panelAdAttachments",
     });
   }
 
@@ -498,6 +556,7 @@ export class AdPageComponent implements OnInit {
   read_attachment_response(i:number){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.response_list_of_attachments[i]},
+      panelClass:"panelAdAttachments",
     });
   }
 
@@ -866,13 +925,16 @@ export class AdPageComponent implements OnInit {
 
 
   open_left_container_category(i : number) {
-    if(i==1){
+    /*if(i==1){
       this.display_author_ads=false;
       this.display_other_ads=true;
     }
     else{
       this.display_author_ads=true;
       this.display_other_ads=false;
+    }*/
+    if(this.left_container_category_index==i){
+      return
     }
     this.left_container_category_index=i;
   }
@@ -967,6 +1029,22 @@ export class AdPageComponent implements OnInit {
   new_comment() {
     this.commentariesnumber++;
     this.cd.detectChanges();
+  }
+
+  first_comment_received(e){
+    console.log(e);
+    this.first_comment=e.comment.commentary;
+    this.Profile_Edition_Service.retrieve_profile_picture(e.comment.author_id_who_comments).subscribe(p=> {
+      let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
+      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+      this.pp_first_comment= SafeURL;
+    })
+    this.first_comment_retrieved=true;
+  }
+
+  first_comment_pp_loaded=false;
+  load_first_comment_pp(){
+    this.first_comment_pp_loaded=true;
   }
 
   removed_comment() {
@@ -1314,8 +1392,14 @@ export class AdPageComponent implements OnInit {
     });
   }
 
+
+  checking_report=false
   report(){
 
+    if(this.checking_report){
+      return
+    }
+    this.checking_report=true;
     this.Reports_service.check_if_content_reported('ad',this.item.id,this.item.type_of_project,0).subscribe(r=>{
       console.log(r[0])
       if(r[0].nothing){
@@ -1329,6 +1413,7 @@ export class AdPageComponent implements OnInit {
           panelClass:'popupReportClass'
         });
       }
+      this.checking_report=false;
     })
   }
 
@@ -1347,9 +1432,12 @@ export class AdPageComponent implements OnInit {
 
 
   see_comments() {
-    
+  
     this.dialog.open(PopupCommentsComponent, {
       data: {
+        visitor_id:this.visitor_id,
+        visitor_name:this.visitor_name,
+        visitor_mode:this.visitor_mode,
         type_of_account:this.type_of_account,
         title:this.item.title,
         category:'ad',
@@ -1378,4 +1466,9 @@ export class AdPageComponent implements OnInit {
     e.stopPropagation();
   };
 
+
+  picture_loaded=[];
+  load_picture(i){
+    this.picture_loaded[i]=true;
+  }
 }

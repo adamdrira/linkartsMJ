@@ -126,18 +126,20 @@ export class AddAdComponent implements OnInit {
   fdPrice_type: FormControl;
   fdPrice1:FormControl;
   fdPrice_type1: FormControl;
+  fdOffer_demand: FormControl;
   price_value:string;
   price_value1:string;
   price_type:string='';
   price_type1:string='';
+  offer_or_demand:string='';
   fdMydescription: FormControl;
   fdTargets: FormControl;
   fdProject_type: FormControl;
  
   fdPreferential_location: FormControl;
   remuneration:boolean = false;
+  volunteer:boolean = true;
   for_service:boolean = false;
-  
   createFormControlsAds() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
     this.fdMydescription = new FormControl('', Validators.required);
@@ -146,6 +148,7 @@ export class AddAdComponent implements OnInit {
     this.fdPrice_type = new FormControl('');
     this.fdPrice1 = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);
     this.fdPrice_type1 = new FormControl('');
+    this.fdOffer_demand= new FormControl('');
     this.fdTargets = new FormControl( this.genres, [Validators.required]);
     this.fdProject_type = new FormControl('', [Validators.required]);
     this.fdPreferential_location = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("location") ) ]);
@@ -162,6 +165,7 @@ export class AddAdComponent implements OnInit {
       fdPrice_type: this.fdPrice_type,
       fdPrice1: this.fdPrice1,
       fdPrice_type1: this.fdPrice_type1,
+      fdOffer_demand:this.fdOffer_demand,
       fdDescription:  this.fdDescription,
     });
   }
@@ -197,15 +201,26 @@ export class AddAdComponent implements OnInit {
     
   }
 
+  setVolunteer(e){
+    if(e.checked){
+      this.volunteer = true;
+      this.remuneration = false;
+      this.for_service = false;
+    }
+
+  }
+
   setRemuneration(e){
     if(e.checked){
       
       if(this.for_service){
         this.for_service = false;
       }
+      this.volunteer = false;
       this.remuneration = true;
     }
     else{
+      this.volunteer = true;
       this.remuneration = false;
     }
 
@@ -218,12 +233,15 @@ export class AddAdComponent implements OnInit {
 
     
     if(e.checked){
-      this.for_service = true;
+      
       if(this.remuneration){
         this.remuneration = false;
       }
+      this.for_service = true;
+      this.volunteer = false;
     }
     else{
+      this.volunteer = true;
       this.for_service = false;
     }
   }
@@ -231,9 +249,9 @@ export class AddAdComponent implements OnInit {
 
 
   //Ajouté par Mokhtar
-  listOfTypes = ["Bandes dessinées en tout genre","BD européennes","Comics","Manga","Webtoon","Dessin en tout genre","Dessin digital",
-  "Dessin traditionnel","Ecrit en tout genre","Article","Poésie","Roman","Roman illustré","Scénario"];
-
+  listOfTypes = ["Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
+  "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
+  listOffers=["Offre","Demande","Réinitialiser"]
   listOfPriceTypes = ["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
   listOfPriceTypes1 = ["Produits","Services","Réinitialiser"];
   listOfDescriptions = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
@@ -252,7 +270,7 @@ export class AddAdComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  allGenres: string[] = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -348,6 +366,17 @@ export class AddAdComponent implements OnInit {
     console.log(this.price_type1)
   }
 
+  change_offer_and_demand(event){
+    if(this.fd.value.fdOffer_demand=="Réinitialiser"){
+      this.fd.controls['fdOffer_demand'].setValue(null);
+      this.fd.controls['fdOffer_demand'].updateValueAndValidity();
+      this.offer_or_demand='';
+    }
+    else{
+      this.offer_or_demand=this.fd.value.fdOffer_demand;
+    }
+    console.log(this.offer_or_demand)
+  }
 
   validate_form_ads() {
 
@@ -392,8 +421,7 @@ export class AddAdComponent implements OnInit {
         this.display_loading=true;
         this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).subscribe(r=>{
           if(r[0].result=="ok"){
-            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription,this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1)
-            .subscribe((val)=> {
+            this.Ads_service.add_primary_information_ad(this.fd.value.fdTitle, this.fd.value.fdProject_type,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'),this.fd.value.fdPreferential_location, this.fd.value.fdMydescription,this.fd.value.fdTargets,this.remuneration,this.price_value,this.price_type,this.for_service,this.price_value1,this.price_type1,this.offer_or_demand).subscribe((val)=> {
               this.ad_id=val[0].id;
               this.Ads_service.add_thumbnail_ad_to_database(val[0].id).subscribe(l=>{
                 this.id_ad=l[0].id;

@@ -17,7 +17,8 @@ import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { startWith, map } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { Writing_Upload_Service } from '../services/writing.service';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 declare var $: any;
 
@@ -44,6 +45,7 @@ export class AddDrawingComponent implements OnInit {
     private rd: Renderer2, 
     private Drawings_CoverService:Drawings_CoverService,
     private el: ElementRef,
+    private Writing_Upload_Service:Writing_Upload_Service,
     private _constants: ConstantsService, 
     private _upload: UploadService,
     private resolver: ComponentFactoryResolver, 
@@ -84,8 +86,13 @@ export class AddDrawingComponent implements OnInit {
   modal_displayed: boolean;
   type_of_account:string;
   user_retrieved=false;
+  conditions:any;
+
   ngOnInit() {
 
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
+      this.conditions=r;
+    })
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.type_of_account=r[0].type_of_account;
       this.user_retrieved=true;
@@ -98,7 +105,12 @@ export class AddDrawingComponent implements OnInit {
     this.stepChanged.emit(0);
   }
 
-  ngAfterContentInit() {
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
   
@@ -123,19 +135,15 @@ export class AddDrawingComponent implements OnInit {
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
-        panelClass: 'dialogRefClassText'
-      });
    }else{
     this.monetised = false;
    }
   }
 
   read_conditions() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Conditions en cours d'écriture"},
-      panelClass: 'dialogRefClassText'
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.conditions},
+      panelClass:"panelAdAttachments",
     });
   }
 
@@ -199,7 +207,7 @@ export class AddDrawingComponent implements OnInit {
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
       if( this.CURRENT_step < (this.REAL_step) ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false)
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'), false)
         .subscribe(inf=>{
           this.stepChanged.emit(1);
           this.CURRENT_step++;
@@ -211,7 +219,7 @@ export class AddDrawingComponent implements OnInit {
         });
       }
       else {
-        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, false).subscribe(val=> {
+        this.Drawings_Onepage_Service.CreateDrawingOnepage(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'), false).subscribe(val=> {
           this.Subscribing_service.add_content('drawing', 'one-shot', val[0].drawing_id,0).subscribe(r=>{
             this.drawing_id=val[0].drawing_id;
             this.stepChanged.emit(1);
@@ -231,7 +239,7 @@ export class AddDrawingComponent implements OnInit {
     else if ( this.fd.valid  && (this.fd.value.fdFormat == "Artbook") ) {
 
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription, this.monetised)
+          this.Drawings_Artbook_Service.ModifyArtbook(this.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised)
           .subscribe(inf=>{
             this.stepChanged.emit(1);
             this.CURRENT_step++;
@@ -243,7 +251,7 @@ export class AddDrawingComponent implements OnInit {
           });
         }
         else {
-          this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription, this.monetised)
+          this.Drawings_Artbook_Service.CreateDrawingArtbook(this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags,this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised)
           .subscribe((val)=> {
             this.Subscribing_service.add_content('drawing', 'artbook', val[0].drawing_id,0).subscribe(r=>{
               this.stepChanged.emit(1);
@@ -305,7 +313,7 @@ export class AddDrawingComponent implements OnInit {
   genres: string[] = [];
 
   allGenres: string[] = ["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
-  "Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport"];
+  "Réaliste","Religion","Romantique","SF","Sociologie","Sport"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

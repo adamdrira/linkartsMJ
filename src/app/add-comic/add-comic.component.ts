@@ -22,7 +22,8 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
-
+import { Writing_Upload_Service } from '../services/writing.service';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 
 declare var Swiper: any;
 declare var $ : any;
@@ -48,6 +49,7 @@ export class AddComicComponent implements OnInit {
     private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
     private viewref: ViewContainerRef,
+    private Writing_Upload_Service:Writing_Upload_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private bdOneShotService: BdOneShotService,
     private bdSerieService: BdSerieService,
@@ -87,9 +89,12 @@ export class AddComicComponent implements OnInit {
   type_of_account:string;
   user_retrieved=false;
 
-
+  conditions:any;
   ngOnInit() {
 
+    this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
+      this.conditions=r;
+    })
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.type_of_account=r[0].type_of_account;
       this.user_retrieved=true;
@@ -103,7 +108,13 @@ export class AddComicComponent implements OnInit {
   }
 
 
-  
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
 
   //********************************************************************************************************* */
@@ -169,19 +180,15 @@ export class AddComicComponent implements OnInit {
   setMonetisation(e){
     if(e.checked){
       this.monetised = true;
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Attention ! Nous vous rappelons que les œuvres plagiées, les fanarts et les œuvres aux contenus inapproriés sont interdits. Toute monétisation faisant suite à ce genre de publication pourra donner suite à une procédure judiciaire et à des frais de remboursement.'},
-        panelClass: 'dialogRefClassText'
-      });
    }else{
     this.monetised = false;
    }
   }
 
   read_conditions() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Conditions en cours d'écriture"},
-      panelClass: 'dialogRefClassText'
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.conditions},
+      panelClass:"panelAdAttachments",
     });
   }
 
@@ -242,7 +249,7 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdOneShotService.ModifyBdOneShot(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
               this.CURRENT_step++;
@@ -258,7 +265,7 @@ export class AddComicComponent implements OnInit {
         }
         //Else if NEW Step1
         else {
-          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdOneShotService.CreateBdOneShot(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised )
           .subscribe((val)=> {
             this.bd_id=val[0].bd_id;
               this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
@@ -283,7 +290,7 @@ export class AddComicComponent implements OnInit {
         /********************** A CHANGER (ENLEVER COULEUR) ************************/
         
         if( this.CURRENT_step < (this.REAL_step) ) {
-          this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdSerieService.ModifyBdSerie(this.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised )
           .subscribe(inf=>{
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(m=>{
               this.bdSerieService.modify_chapter_bd_serie(this.bd_id,1,this.f00SerieFirstChapter.value).subscribe(m=>{
@@ -300,7 +307,7 @@ export class AddComicComponent implements OnInit {
         }
         //Else if NEW Step1
         else {
-          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description, this.monetised )
+          this.bdSerieService.CreateBdSerie(this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'), this.monetised )
           .subscribe((val)=> {
             this.bd_id=val[0].bd_id;
             this.Bd_CoverService.add_covername_to_sql(this.bd_id,this.f00.value.f00Format).subscribe(r=>{
@@ -385,7 +392,7 @@ export class AddComicComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
   allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

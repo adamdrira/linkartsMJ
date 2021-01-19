@@ -1,48 +1,4 @@
 
-
-//ng-deeps
-/*
-::ng-deep .form-container .SumoSelect {
-    display:block;
-    width:unset;
-    height:45px;
-    background:white;
-    border:1px solid rgb(204,204,204);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    border-radius:4px;
-}
-
-::ng-deep .form-container .optWrapper .options .opt.disabled {
-    display:none;
-}
-
-::ng-deep .bootstrap-tagsinput {
-    display:flex;
-    height:45px;
-    line-height: unset;
-}
-
-::ng-deep .bootstrap-tagsinput .label-info {
-    border-radius:5px;
-    padding-left:10px;
-    padding-right:10px;
-    height: 80%;
-    margin-top: auto;
-    margin-bottom: auto;
-    background-color:rgb(114, 203, 221);
-    color:rgb(50, 50, 50);
-}
-
-
-::ng-deep .modal {
-    height:unset !important;
-    overflow:visible !important;
-}
-
-::ng-deep .blocker {
-    z-index:100000;
-}*/
-
 .invisible{
     visibility:hidden;
     pointer-events: none;
