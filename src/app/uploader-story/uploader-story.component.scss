@@ -17,6 +17,11 @@ $default-color: rgb(218, 220, 225);
 
     max-width: 60vw;
 
+    .invisible {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
     .uploaded-image-container-padding {
         position: relative;
         display: flex;
@@ -29,7 +34,7 @@ $default-color: rgb(218, 220, 225);
             position: relative;
             overflow: hidden;
             width: fit-content;
-
+            min-height: 300px;
             max-height: 60vh;
             max-width: 60vw;
 
@@ -81,6 +86,8 @@ $default-color: rgb(218, 220, 225);
                             height: 26px;
                             width: 26px;
                             font-size: 13px;
+                            max-width: 13px;
+        overflow: hidden;
                             left: 50%;
                             transform: translatex(-50%);
                             border: 1px solid #5e5e5e;
@@ -121,6 +128,8 @@ $default-color: rgb(218, 220, 225);
                     width: unset;
                     margin: auto auto;
                     font-size: 20px;
+                    max-width: 20px;
+        overflow: hidden;
                     color: rgb(32, 56, 100);
                 }
 
@@ -152,6 +161,8 @@ $default-color: rgb(218, 220, 225);
                     height: unset !important;
                     width: unset !important;
                     font-size: 20px;
+                    max-width: 20px;
+        overflow: hidden;
                     margin: auto 0px auto 0px;
                     cursor: default;
                     color: $default-color;
@@ -298,6 +309,8 @@ $default-color: rgb(218, 220, 225);
                         width: unset;
                         height: unset;
                         font-size: 55px;
+                        max-width: 55px;
+        overflow: hidden;
                         margin: auto auto 10px auto;
                         color: #d4dbe4;
                     }
@@ -381,6 +394,8 @@ $default-color: rgb(218, 220, 225);
             height: 20px;
             width: 20px;
             font-size: 22px;
+            max-width: 22px;
+        overflow: hidden;
             margin: auto 10px auto auto;
         }
         span {
@@ -419,6 +434,8 @@ $default-color: rgb(218, 220, 225);
             width: 20px !important;
             mat-icon {
                 font-size: 18px !important;
+                max-width: 18px !important;
+        overflow: hidden;
             }
         }
     }
@@ -439,6 +456,8 @@ $default-color: rgb(218, 220, 225);
             width: 18px !important;
             mat-icon {
                 font-size: 16px !important;
+                max-width: 16px !important;
+        overflow: hidden;
             }
         }
     }

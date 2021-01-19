@@ -82,6 +82,13 @@ export class UploaderReportsAttachmentsComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
   
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
 
 

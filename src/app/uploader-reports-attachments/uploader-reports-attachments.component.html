@@ -7,7 +7,7 @@
             
             <span class="uploader-absolute-number">{{uploader.queue.length}}/5</span>
 
-            <mat-icon>attachment</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
             <span>Ajouter une pièce jointe</span>
 
             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
@@ -21,7 +21,7 @@
 
         <ng-container *ngIf="list_of_contents_type[i]">
             <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
-                <mat-icon>close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </button>
             <div class="attachment-picture">
                 <img [src]="list_of_pictures[i]">
@@ -31,10 +31,10 @@
 
         <ng-container *ngIf="!list_of_contents_type[i]">
             <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
-                <mat-icon>close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </button>
             <div class="attachment-picture">
-                <mat-icon>insert_drive_file</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
             </div>
         </ng-container>
 

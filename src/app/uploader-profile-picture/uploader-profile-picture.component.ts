@@ -76,7 +76,14 @@ export class UploaderProfilePictureComponent implements OnInit {
   public fileOverAnother(e:any):void {
     this.hasAnotherDropZoneOver = e;
   }
-
+  
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
   ngOnInit(): void {
 
@@ -104,7 +111,10 @@ export class UploaderProfilePictureComponent implements OnInit {
           });
         }
         else{
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           this.image_uploaded = true;
+
           file.withCredentials = true; 
         }
       }
@@ -114,7 +124,7 @@ export class UploaderProfilePictureComponent implements OnInit {
 
   }
 
-
+  image_to_show:any;
 
   initialize_cropper(content: ElementRef) {
     
@@ -149,8 +159,13 @@ export class UploaderProfilePictureComponent implements OnInit {
     this.uploader.clearQueue();
   }
 
+  loading=false;
   set_crop() {
-    
+    if(this.loading){
+      return
+    }
+
+    this.loading=true;
     const canvas = this.cropper.getCroppedCanvas();
     //this.imageDestination = canvas.toDataURL("image/png");
     canvas.toBlob(blob => {

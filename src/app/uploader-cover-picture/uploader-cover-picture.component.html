@@ -7,7 +7,7 @@
         <div class="dropzone-container">
             <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
                 <div class="icon-container">
-                    <mat-icon>save_alt</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                     <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
 
                     
@@ -32,18 +32,21 @@
 
         <div class="img-container">
             <div class="full-crop">
-                <img #image [src]="displayContent(uploader.queue[0])" crossorigin>
+                <img #image [src]="image_to_show" crossorigin>
             </div>
 
             <div class="options">
                 <button class="cancel style0" (click)="step_back();">
-                    <mat-icon>refresh</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
                     <span>Recommencer</span>
                 </button>
-                <button class="validate style1" (click)="set_crop()">
-                    <mat-icon>done</mat-icon>
-                    <span>Valider</span>
+                <button class="validate style1" (click)="set_crop()" [disabled]="loading">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!loading">done_all</mat-icon>
+                    <span  *ngIf="!loading">Valider</span>
+                    <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
                 </button>
+
+                
             </div>
 
         </div>

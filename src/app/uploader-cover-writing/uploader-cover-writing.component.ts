@@ -81,11 +81,11 @@ export class UploaderCoverWritingComponent implements OnInit {
   @Input('writing_id') writing_id: number;
   @Input('thumbnail_picture') thumbnail_picture: string;
   
-  
+  pp_loaded=false;
   ngOnChanges(changes: SimpleChanges) {
     
 
-    if( changes.category && this.category ) {
+    if( changes.category && this.category  && !this.for_edition) {
       console.log(this.category )
       this.cd.detectChanges();
 
@@ -143,15 +143,24 @@ export class UploaderCoverWritingComponent implements OnInit {
   }
   
 
-  ngAfterViewInit() {
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
-
+  load_pp(){
+    this.pp_loaded=true;
+  }
+  
   cover_loading=false;
   ngOnInit() {
 
-    this.description=this.description.slice(0,290);
+    if(this.description){
+      this.description = this.description.slice(0,290);
+    }
     this.Writing_CoverService.send_confirmation_for_addwriting(this.confirmation); 
 
     this.uploader.onAfterAddingFile = async (file) => {
@@ -179,6 +188,8 @@ export class UploaderCoverWritingComponent implements OnInit {
         }
         else{
           file.withCredentials = true; 
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           this.afficheruploader = false;
           this.afficherpreview = true;
         }
@@ -197,7 +208,7 @@ export class UploaderCoverWritingComponent implements OnInit {
           else{
             this.Writing_CoverService.add_covername_to_sql(this.writing_id).subscribe(r=>{
               this.Writing_CoverService.remove_last_cover_from_folder(this.thumbnail_picture).subscribe(info=>{
-                this.cover_loading=false;
+                
                 location.reload();
                 
               });
@@ -229,7 +240,7 @@ export class UploaderCoverWritingComponent implements OnInit {
   };
 
   
-
+  image_to_show:any;
 
   //on affiche le preview du fichier ajouté
   displayContent(item: FileItem): SafeUrl {

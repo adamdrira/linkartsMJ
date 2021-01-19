@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { Story_service } from '../services/story.service';
@@ -60,11 +60,10 @@ export class UploaderStoryComponent implements OnInit {
 
 
   imageSource: SafeUrl = "";
-
   uploader: FileUploader;
   hasBaseDropZoneOver: boolean;
   hasAnotherDropZoneOver: boolean;
-
+  image_to_show:any;
   //pour cacher l'uploader dans certains cas
   afficherpreview: boolean = false;
 
@@ -76,7 +75,13 @@ export class UploaderStoryComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
   ngOnInit() {
 
@@ -105,7 +110,11 @@ export class UploaderStoryComponent implements OnInit {
         }
         else {
           file.withCredentials = true;
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show = this.sanitizer.bypassSecurityTrustUrl(url);
           this.afficherpreview = true;
+                    
+        
         }
       }
 
@@ -115,7 +124,12 @@ export class UploaderStoryComponent implements OnInit {
       location.reload();
     }
   };
-node 
+
+  
+  @ViewChild("validator") validator:ElementRef;
+  load_image(){
+    this.validator.nativeElement.scrollIntoView({behavior: "smooth"});
+  }
 
   //on affiche le preview du fichier ajouté
   displayContent(item: FileItem): SafeUrl {
@@ -248,7 +262,14 @@ node
   }
   activated_popup=-1;
   
+
+  loading=false;
   set_crop() {
+
+    if(this.loading){
+      return
+    }
+    this.loading=true;
 
     this.set_activated_popup(-1);
     var THIS = this;
@@ -257,7 +278,18 @@ node
     .then(function (blob) {
         
         THIS.Story_service.upload_story( blob ).subscribe(res => {
-          location.reload();
+          if(res[0].ok){
+            location.reload();
+          }
+          else{
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
+              panelClass: 'dialogRefClassText'
+            });
+            this.loading=false;
+
+          }
+          
         })
         //document.body.appendChild(img);
     })

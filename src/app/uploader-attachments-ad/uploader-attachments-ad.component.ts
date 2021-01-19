@@ -84,9 +84,12 @@ export class UploaderAttachmentsAdComponent implements OnInit {
   }
   
 
-  ngAfterViewInit() {
-    
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
   

@@ -5,6 +5,10 @@
     height:400px;
 }
         
+.invisible {
+    visibility: hidden;
+    pointer-events: none;
+}
 
 .thumbnail-container {
     display:flex;
@@ -36,6 +40,8 @@
                         width:unset;
                         height:unset;
                         font-size: 55px;
+                        max-width: 55px;
+        overflow: hidden;
                         margin: auto auto 10px auto;
                         color:rgb(32,56,100);
                     }

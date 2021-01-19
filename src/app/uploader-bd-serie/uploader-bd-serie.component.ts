@@ -12,7 +12,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
 
-
+declare var $:any;
 @Component({
   selector: 'app-uploader-bd-serie',
   templateUrl: './uploader-bd-serie.component.html',
@@ -117,6 +117,14 @@ export class UploaderBdSerieComponent implements OnInit{
   }
   
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+  image_to_show:any;
   ngOnInit() {
 
     console.log(this.bd_id);
@@ -146,11 +154,13 @@ export class UploaderBdSerieComponent implements OnInit{
         else{
           file.withCredentials = true; 
           this.afficheruploader = false;
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           this.afficherpreview = true;
         }
       }
     };
-
+    
     this.uploader.onCompleteItem = (file) => {
 
       if( (this._page + 1) == this.total_pages ) {

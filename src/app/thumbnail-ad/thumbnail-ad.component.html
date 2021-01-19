@@ -1,4 +1,14 @@
-<div class="thumbnail-ad">
+<div class="thumbnail-ad" [ngClass]="{'not-ad-page':!for_ad_page,'for-ad-page':for_ad_page}">
+
+    <div *ngIf="!thumbnail_picture_received" class="global-container " >
+        <div class="left-container unset-margin no-border-style shiny">
+            <div class="thumbnail-picture">
+
+            </div>
+        </div>
+        <div class="right-container-loading">
+        </div>
+    </div>
 
     <a *ngIf="thumbnail_picture_received" class="global-container" [routerLink]=get_artwork() [@enterAnimation]>
 
@@ -36,7 +46,7 @@
 
         <div class="left-container no-border-style">
             <img #image [src]="thumbnail_picture" (load)="load_thumbnail()"
-                [ngClass]="{'invisible':!thumbnail_is_loaded}" class="thumbnail-picture">
+                [ngClass]="{'invisible':!thumbnail_is_loaded}" >
         </div>
 
 
@@ -50,7 +60,7 @@
                 <div class="author-container">
 
                     <a [routerLink]=open_account() (click)="stop($event)" class="left-container"
-                    matTooltip="Voir le profil"
+                    matTooltip="Voir le profil de @{{pseudo}}"
                     matTooltipClass='tooltip-thumbnail-ad' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">
@@ -61,13 +71,17 @@
                     <div class="right-container">
                         
                         <div class="author-description-container">
-                            <span class="author-description name" *ngIf="author_name!=''">
+                            <span class="author-description loading shiny" *ngIf="!profile_data_retrieved">
+                               
+                                
+                            </span>
+                            <span class="author-description name" *ngIf="profile_data_retrieved">
                                 <a [routerLink]=open_account() (click)="stop($event)"
-                                matTooltip="Voir le profil"
+                                matTooltip="Voir le profil de @{{pseudo}}"
                                 matTooltipClass='tooltip-thumbnail-ad' 
                                 [matTooltipPosition]="'below'"
                                 [matTooltipShowDelay]="200">
-                                    {{author_name}}
+                                   {{author_name}} 
                                 </a>
                                 
                                 <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
@@ -84,9 +98,10 @@
                                 
                             </span>
                         </div>
+                        
                         <div class="author-description-container">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
-                            <span class="author-description">{{item.my_description}}</span>
+                            <span class="author-description" >{{item.my_description}}</span>
                         </div>
                         <div class="author-description-container">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">location_on</mat-icon>
@@ -95,15 +110,16 @@
                     </div>
 
                 </div>
-
-                <div class="cible-container" *ngIf="item.target_two == null">
+                <div  #before class="before-cible-container" >
+                </div>
+                <div #targets class="cible-container" *ngIf="item.target_two == null">
                     <span class="cible-title">Cible</span>
                     <div class="cible-description-container">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
                         <span class="cible-description">{{item.target_one}}</span>
                     </div>
                 </div>
-                <div class="cible-container" *ngIf="item.target_two != null">
+                <div #targets class="cible-container" *ngIf="item.target_two != null">
                     <span class="cible-title">Cibles</span>
                     <div class="cible-description-container">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">person</mat-icon>
@@ -121,40 +137,24 @@
                 <ng-container *ngIf="see_responses==0 && attachments_retrieved">
 
 
-                    <!--<div #swiperAttachments class="swiper-attachments" *ngIf="list_of_pictures.length || list_of_attachments.length">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide" *ngFor="let picture of list_of_pictures, let i=index">
-                                <div (click)="read_pictures(i);stop($event);" class="image-container">
-                                    <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
-                                </div>
-                                <span><i>&nbsp;</i></span>
-                            </div>
-                            <div class="swiper-slide" *ngFor="let attachment of list_of_attachments, let i=index">
-                                <div (click)="read_attachment(i);stop($event);" class="image-container">
-                                    <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
-                                </div>
-                                <span><i>{{list_of_attachments_name[i]}}</i></span>
-                            </div>
-                        </div>
-                        <div class="swiper-button-prev" (click)="stop($event)"></div>
-                        <div class="swiper-button-next" (click)="stop($event)"></div>
-                    </div>-->
+       
 
                     <div class="categories">
                         <div class="category" [ngClass]="{'opened': category_index == 0 }"
                             (click)="open_category(0);stop($event);">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">notes</mat-icon>
-                            <span>Description</span>
+                            <span *ngIf="not_phone">Description</span>
+                            <span *ngIf="!not_phone"> </span>
                         </div>
                         <div class="category" [ngClass]="{'opened': category_index == 1 }"
                             (click)="open_category(1);stop($event);">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">image</mat-icon>
-                            <span>Images ({{list_of_pictures.length}})</span>
+                            <span > <ng-container *ngIf="not_phone">Images</ng-container> ({{list_of_pictures.length}})</span>
                         </div>
                         <div class="category" [ngClass]="{'opened': category_index == 2 }"
                             (click)="open_category(2);stop($event);">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
-                            <span>Fichiers ({{list_of_attachments.length}})</span>
+                            <span> <ng-container *ngIf="not_phone">Fichiers</ng-container> ({{list_of_attachments.length}})</span>
                         </div>
 
                         <div class="absolute-border-bottom"
@@ -165,23 +165,29 @@
 
                     <div *ngIf="category_index==0" class="section-container" [@enterAnimation]>
 
-                        <span *ngIf="!item.remuneration">{{item.type_of_project}}</span>
-                        <span
-                            *ngIf="item.remuneration && item.price_value>0 && item.price_type==''">{{item.type_of_project}}
-                            • Rémunération : {{item.price_value}}€</span>
-                        <span
-                            *ngIf="item.remuneration && item.price_value>0 && item.price_type!=''">{{item.type_of_project}}
-                            • Rémunération : {{item.price_value}}€ • {{item.price_type}}</span>
-                        <span
-                            *ngIf="item.remuneration && !(item.price_value>0) && item.price_type==''">{{item.type_of_project}}
-                            • Rémunéré</span>
-                        <span
-                            *ngIf="item.remuneration && !(item.price_value>0) && item.price_type!=''">{{item.type_of_project}}
-                            • Rémunéré • {{item.price_type}}</span>
-                        <!--<div class="verso-type">
-                            <div class="type-container"><span>{{item.type_of_project}}</span></div>
-                            <div class="tag-container" *ngIf="item.remuneration && item.price_value!='0'"><span>Rémunumation : {{item.price_value}}€</span></div>
-                        </div>-->
+                        <span *ngIf="!item.remuneration && !item.service">Collab. Bénévole • {{item.type_of_project}}</span>
+
+                        <ng-container *ngIf="item.remuneration">
+                            <span>Collab. Rémunérée • {{item.type_of_project}}
+                                <ng-container *ngIf="item.price_value>0"> : {{item.price_value}} € </ng-container> 
+                                <ng-container *ngIf="item.price_type"> {{item.price_type}}</ng-container>
+                            </span>
+                           
+                        </ng-container>
+
+                        <ng-container *ngIf="item.service">
+                            <span>
+                                <ng-container *ngIf="item.price_type_service==''"> Produits & Sevices •  {{item.type_of_project}} •</ng-container>
+                                  
+                                <ng-container *ngIf="item.price_type_service!=''"> {{item.price_type_service}} • {{item.type_of_project}} •</ng-container> 
+                                <ng-container *ngIf="item.offer_or_demand!=''"> {{item.offer_or_demand}} </ng-container> 
+                                <ng-container *ngIf="item.price_value_service>0">: {{item.price_value_service}}€ </ng-container> 
+                            </span>
+                           
+                        </ng-container>
+                        
+
+
                         <div class="item-description">
                             <span>
                                 {{item.description}}
@@ -210,10 +216,14 @@
                 </ng-container>
             </div>
             <div class="date-container">
-                <span>{{date_to_show}} • </span>
-                <span *ngIf="item.number_of_responses==0">Aucun retour</span>
-                <span *ngIf="item.number_of_responses==1">{{item.number_of_responses}} retour</span>
-                <span *ngIf="item.number_of_responses>1">{{item.number_of_responses}} retours</span>
+                <div>@{{pseudo}} </div>
+                <span>&nbsp;• {{date_to_show}} 
+                    <ng-container *ngIf="item.number_of_responses==0">• Aucun retour</ng-container>
+                    <ng-container *ngIf="item.number_of_responses==1">• {{item.number_of_responses}} retour</ng-container>
+                    <ng-container *ngIf="item.number_of_responses>1">• {{item.number_of_responses}} retours</ng-container>
+                </span>
+               
+               
             </div>
 
 

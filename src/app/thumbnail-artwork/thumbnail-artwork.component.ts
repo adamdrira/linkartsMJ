@@ -111,6 +111,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   @Input() subscribing_format: any;
   @Input() emphasized: boolean;
 
+
   type_of_account:string;
   type_of_account_checked:boolean;
   certified_account:boolean;  
@@ -167,7 +168,9 @@ export class ThumbnailArtworkComponent implements OnInit {
       
       if(this.emphasized){
         //emphasized
+
         console.log("in if")
+        console.log(this.item)
         this.type_of_thumbnail=0;
         this.category=this.item.publication_category;
         this.subscribing_category=this.item.publication_category;
@@ -427,6 +430,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       else{
         //console.log("in else")
         //trendings and subscribings
+        console.log(this.item)
         this.type_of_thumbnail=1;
         this.category=this.subscribing_category;
         this.format=this.subscribing_format;
@@ -690,7 +694,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     //console.log("thumbnail_is_loaded")
     this.thumbnail_is_loaded=true;
     this.cd.detectChanges();
-    this.initialize_swiper();
+    //this.initialize_swiper();
   };
 
   load_pp(){
@@ -705,7 +709,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       return "/artwork-drawing/"+this.subscribing_format+"/"+this.title+"/"+this.content_id;
     }
     else {
-      return "/artwork-artwork"+"/"+this.title+"/"+this.content_id;
+      return "/artwork-writing"+"/"+this.title+"/"+this.content_id;
     }
   };
 
@@ -743,78 +747,78 @@ export class ThumbnailArtworkComponent implements OnInit {
   swiper2_initialized=false;
   swiper_initialized=false;
   initialize_swiper() {
-    //console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )
-    let THIS = this;
+      //console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )
+      let THIS = this;
 
 
-    this.cd.detectChanges();
-    if( this.subscribing_category!='writing' && this.swiperArtworkPreview && !this.swiper_initialized ) {
-      this.swiper = new Swiper( this.swiperArtworkPreview.nativeElement, {
-        effect: 'fade',
-        fadeEffect: { crossFade: true },
-        speed: 800,
-        initialSlide:0,
-        pagination: {
-          el: '.thumbnail-artwork-pagination',
-          type: 'bullets'
-        },
-        observer:true,
-      })
-      this.swiper_initialized=true;
-      this.cd.detectChanges()
-      ////console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
-    };
-    //console.log(this.swiperThumbnails )
-    //console.log(this.swiper2_initialized )
-    if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
-      
-      this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
-        speed: 500,
-        initialSlide:0,
-        slidesPerView:1,
-        navigation: {
-          nextEl: '.swiper--button-next',
-          prevEl: '.swiper--button-prev',
-        },
-        pagination: {
-          el: '.thumbnail-artwork-pagination',
-          type: 'bullets'
-        },
-        simulateTouch:true,
-        observer:true,
-        
-
-      })
-      this.swiper2_initialized=true;
-      this.cd.detectChanges()
-    };
-
-    if( this.subscribing_category=='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
-      this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
-        speed: 500,
-        initialSlide:0,
-        slidesPerView:1,
-        navigation: {
-          nextEl: '.swiper--button-next',
-          prevEl: '.swiper--button-prev',
-        },
-        pagination: {
-          el: '.thumbnail-artwork-pagination',
-          type: 'bullets'
-        },
-        simulateTouch:true,
-        observer:true,
-        on: {
-          slideChange: function () {
-            THIS.load_pdf();
+      this.cd.detectChanges();
+      if( this.subscribing_category!='writing' && this.swiperArtworkPreview && !this.swiper_initialized ) {
+        this.swiper = new Swiper( this.swiperArtworkPreview.nativeElement, {
+          effect: 'fade',
+          fadeEffect: { crossFade: true },
+          speed: 800,
+          initialSlide:0,
+          pagination: {
+            el: '.thumbnail-artwork-pagination',
+            type: 'bullets'
           },
-        },
-      })
-      this.swiper2_initialized=true;
-      this.cd.detectChanges()
-    }
+          observer:true,
+        })
+        this.swiper_initialized=true;
+        this.cd.detectChanges()
+        ////console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
+      };
+      //console.log(this.swiperThumbnails )
+      //console.log(this.swiper2_initialized )
+      if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
+        
+        this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
+          speed: 500,
+          initialSlide:0,
+          slidesPerView:1,
+          navigation: {
+            nextEl: '.swiper--button-next',
+            prevEl: '.swiper--button-prev',
+          },
+          pagination: {
+            el: '.thumbnail-artwork-pagination',
+            type: 'bullets'
+          },
+          simulateTouch:true,
+          observer:true,
+          
 
-    return;
+        })
+        this.swiper2_initialized=true;
+        this.cd.detectChanges()
+      };
+
+      if( this.subscribing_category=='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
+        this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
+          speed: 500,
+          initialSlide:0,
+          slidesPerView:1,
+          navigation: {
+            nextEl: '.swiper--button-next',
+            prevEl: '.swiper--button-prev',
+          },
+          pagination: {
+            el: '.thumbnail-artwork-pagination',
+            type: 'bullets'
+          },
+          simulateTouch:true,
+          observer:true,
+          on: {
+            slideChange: function () {
+              THIS.load_pdf();
+            },
+          },
+        })
+        this.swiper2_initialized=true;
+        this.cd.detectChanges()
+      }
+
+      return;
   };
 
 
@@ -1089,7 +1093,9 @@ export class ThumbnailArtworkComponent implements OnInit {
   edit_thumbnail() {
     if(this.category=="comic"){
 
-      const dialogRef = this.dialog.open(PopupEditCoverComicComponent, {
+     
+
+      const dialogRef = this.dialog.open(PopupEditCoverComponent, {
         data: {type:"edit_comic_thumbnail",
         format:this.format,
         bd_id: (this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,

@@ -13,7 +13,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 
 const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 
-
+declare var $:any;
 @Component({
   selector: 'app-uploader-artbook',
   templateUrl: './uploader-artbook.component.html',
@@ -113,6 +113,13 @@ export class UploaderArtbookComponent implements OnInit {
     this.afficheruploader = true;
   }
   
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
   ngOnInit(): void {
     console.log(this.drawing_id)

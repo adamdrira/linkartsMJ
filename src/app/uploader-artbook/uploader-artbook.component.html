@@ -7,7 +7,7 @@
         <div class="dropzone-container">
             <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
                 <div class="icon-container">
-                    <mat-icon>save_alt</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                     <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
                 </div>
                 
@@ -32,7 +32,7 @@
 
         <div class="element-container">
             <div class="img-container">
-                <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}">
+                <img [src]="SafeURL" alt="{{ uploader.queue[0]?.file?.name }}">
             </div>
             <div class="name-container">
                 <span>{{ uploader.queue[0]?.file?.name }}</span>

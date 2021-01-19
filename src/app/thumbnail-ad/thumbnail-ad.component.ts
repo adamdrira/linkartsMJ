@@ -66,18 +66,60 @@ export class ThumbnailAdComponent implements OnInit {
 
   @ViewChildren('category') categories:QueryList<ElementRef>;
   @ViewChild('image') image:ElementRef;
-  
-
+  @ViewChild('targets') targets:ElementRef;
+  @ViewChild('before') before:ElementRef;
+  not_phone=true;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if( this.image ) {
       let width = this.image.nativeElement.width;
-      if( window.innerWidth<=700 ) {
-        this.rd.setStyle(this.image.nativeElement, 'height', width*(32/24)+'px');
+      if(this.for_ad_page){
+        if( window.innerWidth<=1100 ) {
+          let second_width=this.targets.nativeElement.offsetWidth/2;
+          this.rd.setStyle(this.image.nativeElement, 'height', width*(32/24)+'px');
+          this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #1c2d50");
+          this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #1c2d50");
+        }
+        else if( window.innerWidth>1100 ) {
+          this.rd.setStyle(this.image.nativeElement, 'height', '266.66px');
+          this.rd.setStyle(this.before.nativeElement, 'border-left',50 + "px solid whitesmoke");
+          this.rd.setStyle(this.before.nativeElement, 'border-right', "unset");
+          this.rd.setStyle(this.before.nativeElement, 'border-top',37.5 + "px solid #1b2a4b");
+          this.rd.setStyle(this.before.nativeElement, 'border-bottom',37.5 + "px solid #1b2a4b");
+        }
+
+        if(window.innerWidth<=850 ){
+          this.not_phone=false;
+        }
+        else{
+          this.not_phone=true;
+        }
       }
-      else if( window.innerWidth>700 ) {
-        this.rd.setStyle(this.image.nativeElement, 'height', '266.66px');
+      else{
+        if( window.innerWidth<=700 ) {
+          let second_width=this.targets.nativeElement.offsetWidth/2;
+          this.rd.setStyle(this.image.nativeElement, 'height', width*(32/24)+'px');
+          this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
+          this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
+        }
+        else if( window.innerWidth>700 ) {
+          this.rd.setStyle(this.image.nativeElement, 'height', '266.66px');
+          this.rd.setStyle(this.before.nativeElement, 'border-left',50 + "px solid whitesmoke");
+          this.rd.setStyle(this.before.nativeElement, 'border-right', "unset");
+          this.rd.setStyle(this.before.nativeElement, 'border-top',37.5 + "px solid #021236e6");
+          this.rd.setStyle(this.before.nativeElement, 'border-bottom',37.5 + "px solid #021236e6");
+        }
+
+        if(window.innerWidth<=450 ){
+          this.not_phone=false;
+        }
+        else{
+          this.not_phone=true;
+        }
       }
+      
+
+    
     }
   }
 
@@ -87,13 +129,13 @@ export class ThumbnailAdComponent implements OnInit {
   status3:String;
   category_index: number = 0;//0 pour description, 1 pour pieces-jointes.
 
-  author_name: string;
+  author_name: string='';
   pseudo: string;
   primary_description: string;
   profile_picture: SafeUrl;
   @Input() item: any;
   @Input() now_in_seconds: number;
-
+  @Input() for_ad_page: boolean;
   
   type_of_account:string;
   type_of_account_checked:boolean;
@@ -136,6 +178,7 @@ export class ThumbnailAdComponent implements OnInit {
   author_id:number;
   id_user:number;
   list_of_reporters:any[]=[];
+  profile_data_retrieved=false;
   ngOnInit() {
 
     console.log(this.item);
@@ -165,6 +208,7 @@ export class ThumbnailAdComponent implements OnInit {
       
       this.type_of_account_checked=r[0].type_of_account_checked;
       this.certified_account=r[0].certified_account;
+      this.profile_data_retrieved=true;
     });
 
 
@@ -175,6 +219,24 @@ export class ThumbnailAdComponent implements OnInit {
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.thumbnail_picture_received=true;
       this.thumbnail_picture = SafeURL;
+      this.cd.detectChanges();
+      if(this.for_ad_page){
+        if( this.targets && window.innerWidth<=1100 ) {
+          console.log(window.innerWidth)
+            let second_width=this.before.nativeElement.offsetWidth/2;
+            this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
+            this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
+        }
+      }
+      else{
+        if( this.targets && window.innerWidth<=700 ) {
+          console.log(window.innerWidth)
+            let second_width=this.before.nativeElement.offsetWidth/2;
+            this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
+            this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
+        }
+      }
+      
     });
 
     this.get_ad_contents(this.item);
@@ -195,6 +257,50 @@ export class ThumbnailAdComponent implements OnInit {
   
   show_icon=false;
   ngAfterViewInit(){
+
+    if(this.for_ad_page){
+      if( window.innerWidth<=1100 ) {
+        console.log(window)
+        console.log(window.innerWidth)
+        if(this.targets){
+          let second_width=this.before.nativeElement.offsetWidth/2;
+          console.log(second_width)
+          this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #021236e6");
+          this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #021236e6");
+        }
+       
+      }
+  
+      if(window.innerWidth<=850 ){
+        this.not_phone=false;
+      }
+      else{
+        this.not_phone=true;
+      }
+  
+    }
+    else{
+      if( window.innerWidth<=700 ) {
+        console.log(window)
+        console.log(window.innerWidth)
+        if(this.targets){
+          let second_width=this.before.nativeElement.offsetWidth/2;
+          console.log(second_width)
+          this.rd.setStyle(this.before.nativeElement, 'border-left',second_width + "px solid #1c2d50");
+          this.rd.setStyle(this.before.nativeElement, 'border-right',second_width + "px solid #1c2d50");
+        }
+       
+      }
+  
+      if(window.innerWidth<=450 ){
+        this.not_phone=false;
+      }
+      else{
+        this.not_phone=true;
+      }
+  
+    }
+    
     let THIS=this;
     $(window).ready(function () {
       THIS.show_icon=true;

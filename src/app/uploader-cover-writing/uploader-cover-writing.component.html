@@ -15,7 +15,7 @@
                         <div class="dropzone">
                             <div class="icon-container">
                                 <label>
-                                    <mat-icon>save_alt</mat-icon>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
                                     <div class="select-button">
                                         Sélectionner un fichier
                                     </div>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <ng-container *ngIf="afficherpreview">
-                        <img [src]="displayContent(uploader.queue[0])" alt="{{ uploader.queue[0]?.file?.name }}">
+                        <img [src]="image_to_show" alt="{{ uploader.queue[0]?.file?.name }}">
                     </ng-container>
 
                 </div>
@@ -48,8 +48,8 @@
                     <!--Author container-->
                     <!--********************-->
                     <div class="author-container">
-                        <div class="left-container">
-                            <img [src]="profile_picture">
+                        <div class="left-container" [ngClass]="{'shiny': !pp_loaded }">
+                            <img [src]="profile_picture" (load)="load_pp()" [ngClass]="{'invisible': !pp_loaded }">
                         </div>
                         <div class="right-container">
                             <span class="author-name">{{author_name}}</span>
@@ -62,20 +62,20 @@
                     <div class="stats-container">
                         <div class="figure-container views">
                             <div>
-                                <mat-icon>visibility</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                                 <span>&nbsp;</span>
                                 <!--<div class="view-logo"></div>-->
                             </div>
                         </div>
                         <div class="figure-container likes">
                             <div>
-                                <mat-icon>thumb_up</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                                 <span>&nbsp;</span>
                             </div>
                         </div>
                         <div class="figure-container loves">
                             <div>
-                                <mat-icon>favorite</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                                 <span>&nbsp;</span>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
         </div>
 
         <!--Slide verso-->
-        <div class="swiper-slide thumbnail">
+        <div class="swiper-slide thumbnail"  *ngIf="!for_edition">
 
             <div #thumbnailVerso class="element-writing border-verso">
 
@@ -167,19 +167,19 @@
 <div class="buttons-container" *ngIf="afficherpreview" [@enterAnimation]>
     <ng-container *ngIf="!uploader.queue[0].isSuccess">
         <button class="button style0" (click)="remove_beforeupload(uploader.queue[0]);" [disabled]="cover_loading">
-            <mat-icon>refresh</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
             <span class="">Recommencer</span>
         </button>
         <button class="button style1" [ngClass]="{'loading_thumbnail':cover_loading}" (click)="validate()"
             [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || cover_loading">
-            <mat-icon *ngIf="!cover_loading">done</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!cover_loading">done</mat-icon>
             <span *ngIf="!cover_loading">Valider</span>
             <mat-spinner *ngIf="cover_loading" diameter="25" style="margin:auto;"></mat-spinner>
         </button>
     </ng-container>
     <ng-container *ngIf="uploader.queue[0].isSuccess">
         <button class="button style0" (click)="remove_afterupload(uploader.queue[0]);" [disabled]="cover_loading">
-            <mat-icon>refresh</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
             <span class="">Recommencer</span>
         </button>
     </ng-container>

@@ -12,7 +12,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Subscribing_service } from '../services/subscribing.service';
 
 const url = 'http://localhost:4600/routes/upload_drawing_onepage';
-
+declare var $:any;
 @Component({
   selector: 'app-uploader-dessin-unique',
   templateUrl: './uploader-dessin-unique.component.html',
@@ -96,9 +96,15 @@ export class UploaderDessinUniqueComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
   
-
+  image_to_show:any;
   ngOnInit() {
     console.log(this.drawing_id)
     let URL = url + '/' + this.drawing_id;
@@ -134,6 +140,8 @@ export class UploaderDessinUniqueComponent implements OnInit {
           }
           else{
             file.withCredentials = true; 
+            let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
             this.afficheruploader = false;
             this.afficherpreview = true;
           }

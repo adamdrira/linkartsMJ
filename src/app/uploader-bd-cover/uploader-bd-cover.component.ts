@@ -79,7 +79,7 @@ export class UploaderBdCoverComponent implements OnInit {
   @Input('thumbnail_picture') thumbnail_picture: string;
   ngOnChanges(changes: SimpleChanges) {
 
-    if( changes.category && this.category ) {
+    if( changes.category && this.category && !this.for_edition ) {
 
       this.cd.detectChanges();
 
@@ -130,15 +130,22 @@ export class UploaderBdCoverComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
   
-
-  ngAfterViewInit() {
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
   cover_loading=false;
+  image_to_show:any;
   ngOnInit() {
 
-    this.description = this.description.slice(0,290);
+    if(this.description){
+      this.description = this.description.slice(0,290);
+    }
+  
     this.Bd_CoverService.send_confirmation_for_addartwork(this.confirmation); 
 
     this.uploader.onAfterAddingFile = async (file) => {
@@ -168,6 +175,9 @@ export class UploaderBdCoverComponent implements OnInit {
           file.withCredentials = true; 
           this.afficheruploader = false;
           this.afficherpreview = true;
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+          this.image_to_show=SafeURL
         }
       }
     };
@@ -259,6 +269,11 @@ export class UploaderBdCoverComponent implements OnInit {
     event.target.value = '';
   }
 
+
+  pp_loaded=false;
+  load_pp(){
+    this.pp_loaded=true;
+  }
 
   @ViewChild("swiperCategories") swiperCategories:ElementRef;
   swiper:any;

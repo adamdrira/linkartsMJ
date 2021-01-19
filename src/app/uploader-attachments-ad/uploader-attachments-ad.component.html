@@ -1,13 +1,5 @@
 
-<!--<div class="button-container" >
-    <label>
-        <div class="select-button">
-            <span>Sélectionner jusqu'à 5 fichiers complémentaires</span>
-        </div>
-        <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
-    </label>
-    
-</div>-->
+
 
 <div class="button-container">
     <label>
@@ -16,7 +8,7 @@
 
         <div class="select-button">
             
-            <mat-icon>attachment</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
             <span>Ajouter une pièce jointe</span>
 
             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
@@ -26,23 +18,7 @@
 
 
 
-<!--<tr class="name-container" >
-    <td *ngFor="let item of uploader.queue; let i=index">
-        <span *ngIf="!list_of_contents_type[i]">{{ uploader.queue[i]?.file?.name }} et {{ item?.file?.size/1024/1024 | number:'.2' }} MB</span>
-        
-        <span *ngIf="list_of_contents_type[i]"><img [src]="list_of_pictures[i]" style="max-width:140px;max-height:140px;"></span>
 
-
-        <div>
-
-            <button mat-raised-button class="button style0"
-                (click)="remove_beforeupload(uploader.queue[i],i);">
-                <span class="">Supprimer</span> 
-            </button>
-        </div>
-    </td>
-
-</tr>-->
 
 
 
@@ -52,7 +28,7 @@
 
         <ng-container *ngIf="list_of_contents_type[i]">
             <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
-                <mat-icon>close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </button>
             <div class="attachment-picture">
                 <img [src]="list_of_pictures[i]">
@@ -62,31 +38,16 @@
 
         <ng-container *ngIf="!list_of_contents_type[i]">
             <button mat-icon-button (click)="remove_beforeupload(uploader.queue[i],i);">
-                <mat-icon>close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </button>
             <div class="attachment-picture">
-                <mat-icon>insert_drive_file</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
             </div>
         </ng-container>
 
         <span><i>{{ uploader.queue[i]?.file?.name }}</i></span>
 
-        
-        
-        <!--<div class="left-container">
-            <span><i>{{ uploader.queue[i]?.file?.name }}</i></span>
-        </div>
-        
-        <div *ngIf="list_of_contents_type[i]"  class="attachment-picture">
-            <img [src]="list_of_pictures[i]">
-        </div>
-
-        <div>
-            <button mat-raised-button class="button style0"
-                (click)="remove_beforeupload(uploader.queue[i],i);">
-                <span class="">Supprimer</span> 
-            </button>
-        </div>-->
+      
 
     </div>
 </div>

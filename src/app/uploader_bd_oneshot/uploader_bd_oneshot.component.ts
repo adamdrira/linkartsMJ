@@ -18,7 +18,7 @@ import {ChatService}from '../services/chat.service';
 
 const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 
-
+declare var $:any;
 
 @Component({
   selector: 'app-uploader_bd_oneshot',
@@ -58,7 +58,7 @@ export class Uploader_bd_oneshot implements OnInit{
   //pour cacher l'uploader dans certains cas
   afficherpreview :boolean;
   afficheruploader:boolean;
-
+  image_to_show:any;
   _page: number;
   _upload:boolean;
   user_id:number;
@@ -146,6 +146,8 @@ get upload(): boolean {
         else{
           file.withCredentials = true; 
           this.afficheruploader = false;
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           this.afficherpreview = true;
         }
       }
@@ -184,6 +186,13 @@ get upload(): boolean {
     }
   };
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
 //on affiche le preview du fichier ajouté
  displayContent(item: FileItem): SafeUrl {
