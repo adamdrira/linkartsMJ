@@ -108,6 +108,7 @@
   .author-container .left-container {
   width: 29px;
   height: 29px;
+  border-radius: 50%;
   min-width: 29px !important;
   min-height: 29px !important;
   margin: auto 3px auto 0px;
@@ -350,6 +351,9 @@
   padding:0px 25px 0px 25px;
 }
 
+.swiper-slide {
+  width:100% !important;
+}
 
 .swiper-categories .swiper-wrapper {
   height: 100% !important;
@@ -377,3 +381,21 @@
     font-size: 11px !important;
 }
 
+
+.invisible{
+  visibility:hidden;
+  pointer-events: none;
+}
+
+.shiny {
+  background-color: rgb(220, 220, 220);
+  background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;
+  }
+}

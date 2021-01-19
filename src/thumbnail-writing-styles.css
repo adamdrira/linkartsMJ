@@ -118,6 +118,7 @@
     .author-container .left-container {
     width: 32px;
     height: 32px;
+    border-radius: 50%;
     min-width: 32px !important;
     min-height: 32px !important;
     margin: auto 3px auto 0px;
@@ -145,6 +146,10 @@
       text-overflow: ellipsis;
     }
     
+    .swiper-slide {
+      width:100% !important;
+    }
+
     .author-container .right-container span.author-description {
       font-size: 11px;
       line-height: 18px;
@@ -390,4 +395,15 @@
 
 
 
+.shiny {
+  background-color: rgb(220, 220, 220);
+  background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 2s infinite;
+}
 
+@keyframes shine {
+  0% {
+    background-position: right;
+  }
+}

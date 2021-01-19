@@ -140,6 +140,7 @@
   .author-container .left-container {
     width: 29px;
     height: 29px;
+    border-radius: 50%;
     min-width: 29px ;
     min-height: 29px ;
     margin: auto 3px auto 0px;
@@ -373,4 +374,22 @@
 .artbook {
   position:absolute;
   right:8px;
+}
+
+.invisible{
+  visibility:hidden;
+  pointer-events: none;
+}
+
+.shiny {
+  background-color: rgb(220, 220, 220);
+  background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;
+  }
 }
