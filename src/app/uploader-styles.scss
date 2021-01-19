@@ -5,6 +5,10 @@
     background: rgb(24, 35, 56);
 }
 
+.invisible {
+    visibility: hidden;
+    pointer-events: none;
+}
 
 .upload-container .upload-title span {
     margin:auto auto;
@@ -57,6 +61,8 @@
     width:unset;
     color:white;
     font-size:65px;
+    max-width: 65px;
+    overflow: hidden;
 }
 
 .upload-container .uploader-container .dropzone .icon-container span {

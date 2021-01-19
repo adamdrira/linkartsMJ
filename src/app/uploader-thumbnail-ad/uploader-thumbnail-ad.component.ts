@@ -101,12 +101,16 @@ export class UploaderThumbnailAdComponent implements OnInit {
   }
   
 
-  ngAfterViewInit() {
-    
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
   }
 
   cover_loading=false;
+  image_to_show:any;
   ngOnInit() {
 
     if(this.for_edition){
@@ -141,6 +145,8 @@ export class UploaderThumbnailAdComponent implements OnInit {
           });
         }
         else{
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
           file.withCredentials = true; 
           this.afficheruploader = false;
           this.afficherpreview = true;
@@ -154,28 +160,40 @@ export class UploaderThumbnailAdComponent implements OnInit {
       if(!this.for_edition){
         
         this.Ads_service.get_thumbnail_name().subscribe(r=>{
-          this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
-          this.cover_loading=false;
+          if(r[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
+          }
+          else{
+            this.Ads_service.send_confirmation_for_add_ad(this.confirmation);
+            this.cover_loading=false;
+          }
+          
         });
       }
       else{
         this.Ads_service.get_thumbnail_name().subscribe(s=>{
           console.log(s)
-          this.Ads_service.add_thumbnail_ad_to_database(this.item.id).subscribe(l=>{
-            console.log(l)
-            console.log(this.item.thumbnail_name)
-            if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
-              this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).subscribe(r=>{
-                console.log(r)
-                this.cover_loading=false;
-                 location.reload();
-               });
-            }
-            else{
-              location.reload();
-            }
-           
-          })
+          if(s[0].error){
+            this.remove_afterupload(this.uploader.queue[0])
+          }
+          else{
+            this.Ads_service.add_thumbnail_ad_to_database(this.item.id).subscribe(l=>{
+              console.log(l)
+              console.log(this.item.thumbnail_name)
+              if(this.item.thumbnail_name && this.item.thumbnail_name!=''){
+                this.Ads_service.remove_thumbnail_ad_from_folder2(this.item.thumbnail_name).subscribe(r=>{
+                  console.log(r)
+                  this.cover_loading=false;
+                   location.reload();
+                 });
+              }
+              else{
+                location.reload();
+              }
+             
+            })
+          }
+
         })
          
       }

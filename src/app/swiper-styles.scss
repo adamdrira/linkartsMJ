@@ -4,6 +4,11 @@
     margin-top:30px;
 }
 
+.invisible {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .artbook-upload-container {
     position:relative;
     margin-top:30px;
@@ -160,6 +165,8 @@
             width: unset;
             height: unset;
             font-size: 28px;
+            max-width: 28px;
+    overflow: hidden;
         }
         span {
             margin: auto auto auto 0px;
@@ -253,6 +260,8 @@
     margin: auto auto 4px auto;
     color: rgb(32 56 100);
     font-size: 40px;
+    max-width: 40px;
+    overflow: hidden;
     width:unset !important;
     height:unset !important;
 }
@@ -341,6 +350,8 @@
     margin-bottom: auto;
     margin-right: 3px;
     font-size: 22px;
+    max-width: 22px;
+    overflow: hidden;
 }
 
 
@@ -355,6 +366,8 @@
 .hidden-chapter mat-icon {
     margin: auto auto 5px auto;
     font-size: 33px;
+    max-width: 33px;
+    overflow: hidden;
     color: #2bb900;
     height: unset !important;
     width: unset !important;

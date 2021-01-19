@@ -10,7 +10,7 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
 
 declare var Swiper:any;
-
+declare var $:any;
 const URL ='http://localhost:4600/routes/upload_writing';
 
 @Component({
@@ -67,6 +67,14 @@ export class UploaderWrittingComponent implements OnInit {
   pdfSafeUrl:SafeUrl;
   total_pages:number;
 
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
+  
   ngOnInit(): void {
 
     this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0); 
@@ -109,6 +117,7 @@ export class UploaderWrittingComponent implements OnInit {
     };
 
      this.uploader.onCompleteItem = (file) => {
+       console.log("item complete")
       this.confirmation = true; 
       this.Writing_Upload_Service.send_confirmation_for_addwriting(this.confirmation,this.total_pages);
       this.Writing_Upload_Service.get_writing_name().subscribe();
