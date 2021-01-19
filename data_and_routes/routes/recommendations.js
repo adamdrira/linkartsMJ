@@ -124,7 +124,8 @@ const generate_recommendations = (request, response) => {
             //let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`); 
             //console.log("reading to send 1")
             //console.log(JSON.parse(json2))
-            response.cookie("recommendations",[{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}]).send([{sorted_list_category:sorted_list_category,styles_recommendation:styles_recommendation}]);  
+            response.status(200).send([{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}])
+            //response.cookie("recommendations",[{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}]).send([{sorted_list_category:sorted_list_category,styles_recommendation:styles_recommendation}]);  
           });
 
           
