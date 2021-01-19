@@ -18,6 +18,8 @@ module.exports = (router,
   users_information_privacy,
   users_groups_managment,
   users_mailing,
+  users_strikes,
+  users_cookies,
   List_of_views,
   List_of_likes,
   List_of_loves,
@@ -101,8 +103,8 @@ router.post('/add_profile_pic', function (req, res) {
               destination: './data_and_routes/profile_pics',
               plugins: [
                 imageminPngquant({
-                  quality: [0.5, 0.6]
-                })
+                  quality: [0.7, 0.8]
+              })
               ]
             });
             User = await users.findOne({
@@ -166,8 +168,8 @@ router.post('/add_cover_pic', function (req, res) {
               destination: './data_and_routes/cover_pics',
               plugins: [
                 imageminPngquant({
-                  quality: [0.5, 0.6]
-                })
+                  quality: [0.7, 0.8]
+              })
               ]
             });
             User = await users.findOne({
@@ -211,12 +213,23 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
       if(User && User.profile_pic_file_name){
         let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //blob = data.toBlob('application/image');
-          res.status(200).send(data);
+          if(e){
+            filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+          
         } );
       }
       else{
-        res.status(200).send([{error:"error"}]);
+        let filename = "./data_and_routes/not-found-image.jpg";
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          res.status(200).send(data);
+        } );
       }
       
     }); 
@@ -243,12 +256,23 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
     if(User && User.profile_pic_file_name){
       let filename = "./data_and_routes/profile_pics/" + User.profile_pic_file_name;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        res.status(200).send(data);
+        if(e){
+          filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
+        
       } );
     }
     else{
-      res.status(200).send([{error:"error"}]);
+      let filename = "./data_and_routes/not-found-image.jpg";
+      fs.readFile( path.join(process.cwd(),filename), function(e,data){
+        res.status(200).send(data);
+      } );
     }
     
   }); 
@@ -274,12 +298,23 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
       if(User && User.cover_pic_file_name  ){
         let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //blob = data.toBlob('application/image');
-          res.status(200).send(data);
+          if(e){
+            filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+          
         } );
       }
       else{
-        res.status(200).send([{error:"error"}]);
+        let  filename = "./data_and_routes/not-found-image.jpg";
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          res.status(200).send(data);
+        } );
       }
      
     }); 
@@ -287,39 +322,83 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
 });
 
-router.post('/retrieve_my_cover_picture', function (req, res) {
- 
-  const user_id = get_current_user(req.cookies.currentUser);
 
-  users.findOne({
-    where: {
-      id: user_id,
-    }
-  })
-  .catch(err => {
-    //console.log(err);	
-    res.status(500).json({msg: "error", details: err});		
-  }).then(User =>  {
-    if(User && User.cover_pic_file_name  ){
-      let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+  router.post('/agree_on_cookies', function (req, res) {
+  
+    const user_id = get_current_user(req.cookies.currentUser);
+
+    users_cookies.findOne({
+      where: {
+        id: user_id,
+      }
+    })
+    .catch(err => {
+      //console.log(err);	
+      res.status(500).json({msg: "error", details: err});		
+    }).then(user_found =>  {
+      if(user_found){
+        res.status(200).send([{ok:"ok"}]);
+      }
+      else{
+        users_cookies.create({
+          "id_user":user_id,
+          "agreement":true,
+        }).catch(err => {
+          //console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(user=>{
+          res.status(200).send([user])
+        })
+      }
+    
+    }); 
+
+  });
+
+
+  router.post('/retrieve_my_cover_picture', function (req, res) {
+  
+    const user_id = get_current_user(req.cookies.currentUser);
+
+    users.findOne({
+      where: {
+        id: user_id,
+      }
+    })
+    .catch(err => {
+      //console.log(err);	
+      res.status(500).json({msg: "error", details: err});		
+    }).then(User =>  {
+      if(User && User.cover_pic_file_name  ){
+        let filename = "./data_and_routes/cover_pics/" + User.cover_pic_file_name ;
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
+          if(e){
+            filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+        
+        } );
+      }
+      else{
+      let filename = "./data_and_routes/not-found-image.jpg";
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
         res.status(200).send(data);
       } );
-    }
-    else{
-      res.status(200).send([{error:"error"}]);
-    }
-   
-  }); 
+      }
+    
+    }); 
 
 
-});
+  });
 
 
 
 router.get('/retrieve_profile_data/:user_id', function (req, res) {
-
 
     const user_id = req.params.user_id;
     users.findOne({
@@ -333,8 +412,6 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
 		}).then(User =>  {
         res.status(200).send([User]);
       } );
-
-
 });
 
 router.get('/retrieve_profile_data_and_check_visitor/:user_id', function (req, res) {
@@ -670,16 +747,18 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/check_if_user_blocked', function (req, res) {
-    //console.log("check_if_user_blocked")
+    console.log("check_if_user_blocked")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
+    console.log(id_user)
     const Op = Sequelize.Op;
     users_blocked.findOne({
       where:{
         [Op.or]:[{[Op.and]:[{id_user: current_user},{id_user_blocked:id_user}]},{[Op.and]:[{id_user: id_user},{id_user_blocked:current_user}]}],
       }
     }).catch(err => {
-			//console.log(err);	
+      console.log(err);	
+      throw err;
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
       if(user){
@@ -1408,7 +1487,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     //console.log("delete_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
-    
+    let motif=req.body.motif;
     users.findOne({
       where:{
         id:current_user,
@@ -1421,6 +1500,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       if(user){
         user.update({
           "status":"deleted",
+          "reason":motif,
           "email":null,
           "nickname":"Utilisateur_introuvable_" +user.id,
           "firstname":"Utilisateur introuvable",
@@ -1665,7 +1745,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     //console.log("suspend_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
-    
+    let motif=req.body.motif;
     users.findOne({
       where:{
         id:current_user,
@@ -1678,6 +1758,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       if(user){
         user.update({
           "status":"suspended",
+          "reason":motif,
         }).catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
@@ -2185,7 +2266,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     })
     .catch(err => {
-			//console.log(err);	
+			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user =>  {
       if(user){

@@ -1,6 +1,7 @@
 const db = require('./db.config.js');
 const User = db.users;
 const User_passwords = db.user_passwords;
+const User_cookies = db.users_cookies;
 const User_links = db.user_links;
 const users_mailing = db.users_mailing;
 const users_information_privacy = db.users_information_privacy;
@@ -8,8 +9,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
-let list_of_invited_mails=["adam.drira","mokhtar.meghaichi"]
-let list_of_invited_passwords=["Adam_@d@m_4d4m_1996","Mokhtar_m°kht@r_m0kht4r_1996"]
+let list_of_invited_mails=["adam.drira","mokhtar.meghaichi","Samar_Kanoun","nacima.connaissance","invitation.invité"]
+let list_of_invited_passwords=["Adam_@d@m_4d4m_1996","Mokhtar_m°kht@r_m0kht4r_1996","SaM4r_Sam0urti^","Nacim4_The_B3st","4nInV1t@tiion"]
 const chat_seq = require('../chat/model/sequelize');
 const List_of_subscribings = require('../p_subscribings_archives_contents/model/sequelize').list_of_subscribings;
 const albums_seq = require('../albums_edition/model/sequelize');
@@ -948,11 +949,49 @@ exports.getCurrentUser = async (req, res) => {
 			return res.status(200).json({msg: "error"});
 		}
 		else{
-			const user = await User.findOne( { where: { id : decoded.id} } )
+			User.findOne( { 
+				where: { id : decoded.id} 
+			} )
 			.catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{res.send([user]);})
+				console.log(err);	
+				res.status(500).json({msg: "error", details: err});		
+			}).then(user=>{
+				res.send([user]);
+			})
+		}
+	
+	});
+ 
+ };
+
+ 
+ exports.getCurrentUser_and_cookies = async (req, res) => {
+	let value = req.cookies;
+
+	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
+		if(err){
+			return res.status(200).json({msg: "error"});
+		}
+		else{
+			User.findOne( { 
+				where: { id : decoded.id} 
+			} )
+			.catch(err => {
+				console.log(err);	
+				res.status(500).json({msg: "error", details: err});		
+			}).then(user=>{
+				User_cookies.findOne({
+					where:{
+						id_user:decoded.id
+					}
+				}).catch(err => {
+					console.log(err);	
+					res.status(500).json({msg: "error", details: err});		
+				}).then(cookies=>{
+					res.send([{user:[user],cookies:cookies}]);
+				})
+				
+			})
 		}
 		
 		
@@ -960,8 +999,6 @@ exports.getCurrentUser = async (req, res) => {
 	});
  
  };
-
- 
 
 //request : token.
 exports.checkToken = async (req, res) => {

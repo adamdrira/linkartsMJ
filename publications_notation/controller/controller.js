@@ -27,8 +27,10 @@ module.exports = (router,
 
     function get_current_user(token){
         var user = 0
-        jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
-            user=decoded.id;
+        jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{	
+            if(decoded){
+                user=decoded.id;
+            }	
         });
         return user;
     };
@@ -63,14 +65,14 @@ module.exports = (router,
                     author_id_liked:author_id_liked,
                 }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(like=>{
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(like=>{
                 if(!like){
                     add_like()
                 }
                 else{
-                    res.send(200).send([{error:"already_liked"}])
+                    res.status(200).send([{error:"already_liked"}])
                 }
             })
             
@@ -83,9 +85,9 @@ module.exports = (router,
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(bd =>  {
                             const likes = bd.likesnumber + 1;
                             bd.update({
                             "likesnumber":likes,
@@ -468,7 +470,7 @@ module.exports = (router,
                     add_love()
                 }
                 else{
-                    res.send(200).send([{error:"already_loved"}])
+                    res.status(200).send([{error:"already_loved"}])
                 }
             })
 
@@ -843,7 +845,7 @@ module.exports = (router,
 
     router.post('/add_view/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_viewed', function (req, res) {
         let current_user = get_current_user(req.cookies.currentUser);
-        //console.log("add_view")
+        console.log("add_view")
         const category = req.params.category;
         const format = req.params.format;
         const style = req.params.style;
@@ -853,56 +855,109 @@ module.exports = (router,
         const secondtag=req.params.secondtag;
         const thirdtag=req.params.thirdtag;
         const author_id_viewed=parseInt(req.params.author_id_viewed);
-        //console.log('ajout de view');
-        List_of_views.create({
-            "status":"public",
-            "author_id_who_looks": current_user,
-            "publication_category":category,
-            "format": format,
-            "style":style,
-            "firsttag":firsttag,
-            "secondtag":secondtag,
-            "thirdtag":thirdtag,
-            "publication_id": publication_id,
-            "chapter_number": chapter_number,
-            "author_id_viewed":author_id_viewed
-        })
-        .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(list_of_view => {
-            List_of_contents.findOne({
-                where:{
-                     publication_id : publication_id,
-                     chapter_number : chapter_number,
-                     publication_category :category,
-                     format : format,
+        console.log(category)
+        console.log(format)
+        console.log(publication_id)
+        console.log(chapter_number)
+
+        
+
+        List_of_views.findAll({
+            where:{
+                status:"public",
+                author_id_who_looks: current_user,
+                publication_category:category,
+                format: format,
+                publication_id: publication_id,
+                chapter_number: chapter_number,
+                author_id_viewed:author_id_viewed
+            },
+            limit:1,
+            order: [['createdAt', 'DESC']]
+            
+        }).catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+        }).then(view_found => {
+            if(view_found[0]){
+                let now_in_seconds= Math.trunc( new Date().getTime()/1000);
+                
+                let time =(view_found[0].createdAt).toString();
+                let uploaded_date_in_second = new Date(time).getTime()/1000;
+                console.log("time view")
+                console.log(view_found[0].createdAt)
+                console.log(uploaded_date_in_second)
+                console.log(now_in_seconds)
+                console.log(now_in_seconds - uploaded_date_in_second)
+                if((now_in_seconds - uploaded_date_in_second)>120){
+                    add_view()
                 }
-            }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(content=>{
-                //console.log("content found and is  from ")
-                //console.log(content.id_user)
-                User.findOne({
+                else{
+                    res.status(200).send([{id:0}]) 
+                }
+            }
+            else{
+                res.status(200).send([{id:0}]) 
+            }
+        })
+
+        function add_view(){
+            List_of_views.create({
+                "status":"public",
+                "author_id_who_looks": current_user,
+                "publication_category":category,
+                "format": format,
+                "style":style,
+                "firsttag":firsttag,
+                "secondtag":secondtag,
+                "thirdtag":thirdtag,
+                "publication_id": publication_id,
+                "chapter_number": chapter_number,
+                "author_id_viewed":author_id_viewed
+            })
+            .catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(list_of_view => {
+                List_of_contents.findOne({
                     where:{
-                        id:content.id_user
+                         publication_id : publication_id,
+                         publication_category :category,
+                         format : format,
                     }
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-                    //console.log("user view");
-                    //console.log(user.nickname)
-                    let number_of_views=(user.number_of_views)?(user.number_of_views+1):1;
-                    user.update({
-                        number_of_views:number_of_views,
-                    })
-                    res.status(200).send([list_of_view])
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(content=>{
+                    console.log("content found and is  from ")
+                    console.log(content.id_user)
+                    if(content){
+                        User.findOne({
+                            where:{
+                                id:content.id_user
+                            }
+                        }).catch(err => {
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(user=>{
+                            //console.log("user view");
+                            //console.log(user.nickname)
+                            let number_of_views=(user.number_of_views)?(user.number_of_views+1):1;
+                            user.update({
+                                number_of_views:number_of_views,
+                            })
+                            res.status(200).send([list_of_view])
+                        })
+                    }
+                    else{
+                        res.status(200).send([list_of_view])
+                    }
+                   
                 })
+                
             })
-            
-        })
+        }
+       
             
        
         
@@ -920,9 +975,9 @@ module.exports = (router,
                 }
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(view =>  {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(view =>  {
                 if(view){
                     if(view_time>5){
                         if (view.publication_category=== "comic" ) {
@@ -933,9 +988,9 @@ module.exports = (router,
                                     }
                                     })
                                     .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+                                        //console.log(err);	
+                                        res.status(500).json({msg: "error", details: err});		
+                                    }).then(bd =>  {
                                         const views = bd.viewnumber + 1;
                                         bd.update({
                                             "viewnumber":views,
@@ -949,9 +1004,9 @@ module.exports = (router,
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
                                                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(view=>{
+                                                    //console.log(err);	
+                                                    res.status(500).json({msg: "error", details: err});		
+                                                }).then(view=>{
                                                     res.status(200).send([view])
                                                 })
                                             }
@@ -1263,6 +1318,7 @@ module.exports = (router,
 
         
     router.post('/get_content_marks', function (req, res) {
+        console.log("get_content_marks")
         let current_user = get_current_user(req.cookies.currentUser);
         
         const category = req.body.category;
@@ -1273,6 +1329,10 @@ module.exports = (router,
         let list_of_comments=[];
         let list_of_views=[];
         let list_of_loves=[]
+        console.log(category)
+        console.log(format)
+        console.log(publication_id)
+        console.log(chapter_number)
         const Op = Sequelize.Op;
         Liste_of_likes.findAll({
             where: {
@@ -1304,9 +1364,9 @@ module.exports = (router,
                 ],
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(loves =>  {
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(loves =>  {
                 list_of_loves=loves;
                 List_of_views.findAll({
                     where: {
@@ -1321,9 +1381,9 @@ module.exports = (router,
                     ],
                 })
                 .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(views =>  {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(views =>  {
                     list_of_views=views;
                     List_of_comments.findAll({
                         where: {
@@ -1871,14 +1931,14 @@ module.exports = (router,
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(like=>{
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(like=>{
                 if(!like){
                     add_like()
                 }
                 else{
-                    res.send(200).send([{error:"already_liked"}])
+                    res.status(200).send([{error:"already_liked"}])
                 }
             })
 
@@ -2011,9 +2071,11 @@ module.exports = (router,
                     }).catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(answer=>{res.status(200).send([answer])});
+            }).then(answer=>{
+                res.status(200).send([answer])
+            });
                     
-                })
+        })
            
     });
 
@@ -2036,7 +2098,7 @@ module.exports = (router,
                 add_like()
             }
             else{
-                res.send(200).send([{error:"already_liked"}])
+                res.status(200).send([{error:"already_liked"}])
             }
         })
 
@@ -2313,17 +2375,17 @@ module.exports = (router,
                 comment.update({
                     "number_of_answers":(number_of_answers>=0)?number_of_answers:0,
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(comments=>{
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(comments=>{
                     List_of_comments_answers.findOne({
                         where: {
                             id:comment_anwser_id,
                             }
                     }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(comment_answer=>{
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(comment_answer=>{
                         if(comment_answer){
                             List_of_contents.findOne({
                                 where:{
@@ -2333,9 +2395,9 @@ module.exports = (router,
                                     chapter_number:chapter_number,
                                 }
                             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(content=>{
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(content=>{
                                 if(content){
                                     if(comment_answer.author_id_who_replies==current_user ){
                                         List_of_comments_answers.destroy({
@@ -2344,7 +2406,7 @@ module.exports = (router,
                                                     },
                                             truncate: false
                                         });
-                                        res.status(200).send([comment]);
+                                        res.status(200).send([comment_answer]);
                                     }
                                     else{
                                         res.status(200).send([{error:"not_allowed"}]); 
@@ -2380,6 +2442,12 @@ module.exports = (router,
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
 
+        console.log("get_my_commentaries")
+        console.log(publication_id)
+        console.log(category)
+        console.log(format)
+        console.log(chapter_number)
+
         List_of_comments.findAll({
             where: {
                 status:"public",
@@ -2394,7 +2462,7 @@ module.exports = (router,
               ],
         })
         .catch(err => {
-			//console.log(err);	
+			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
             res.status(200).send([comments])
@@ -2411,8 +2479,11 @@ module.exports = (router,
         const format = req.params.format;
         const publication_id = parseInt(req.params.publication_id);
         const chapter_number = parseInt(req.params.chapter_number);
-        //console.log("get_commentaries")
-        //console.log(publication_id)
+        console.log("get_commentaries")
+        console.log(publication_id)
+        console.log(category)
+        console.log(format)
+        console.log(chapter_number)
         List_of_comments.findAll({
             where: {
                 status:"public",
@@ -2427,7 +2498,7 @@ module.exports = (router,
               ],
         })
         .catch(err => {
-			//console.log(err);	
+			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(comments =>  {
             res.status(200).send([comments])

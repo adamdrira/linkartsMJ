@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
+const Navbar = require('../../navbar/model/sequelize');
+const Notations = require('../../publications_notation/model/sequelize');
 //On récupère le numéro de la page uplaodé
 var list_covers_by_id={};
 
@@ -167,9 +169,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               "title":title,
               "category": category,
               "highlight":highlight,
-              "firsttag": Tags[0],
-              "secondtag": Tags[1],
-              "thirdtag": Tags[2],
+              "firsttag": Tags[0]?Tags[0]:null,
+              "secondtag": Tags[1]?Tags[1]:null,
+              "thirdtag": Tags[2]?Tags[2]:null,
               "monetization":monetization,
             })
             .catch(err => {
@@ -185,46 +187,92 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     router.post('/modify_bd_oneshot2', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
   
-      (async () => {
+
       const highlight = req.body.highlight;
       const title = req.body.Title;
       const category = req.body.Category;
       const Tags = req.body.Tags;
       const bd_id = req.body.bd_id;
-        if (Object.keys(req.body).length === 0 ) {
-          //console.log("information isn't uploaded correctly");
-          return res.send({
-            success: false
-          });
-          
-        } else { 
-          //console.log('information uploaded correctly');
-           bd = await Liste_bd_os.findOne({
-              where: {
-                bd_id: bd_id,
-                authorid: current_user,
-              }
-            })
-            .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
-              bd.update({
-                "title":title,
-                "category": category,
-                "highlight":highlight,
-                "firsttag": Tags[0],
-                "secondtag": Tags[1],
-                "thirdtag": Tags[2],
-              })
-              .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([bd]))
-            }); 
+        
+      Liste_bd_os.findOne({
+        where: {
+          bd_id: bd_id,
+          authorid: current_user,
+        }
+      })
+      .catch(err => {
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(bd =>  {
+        bd.update({
+          "title":title,
+          "category": category,
+          "highlight":highlight,
+          "firsttag": Tags[0]?Tags[0]:null,
+          "secondtag": Tags[1]?Tags[1]:null,
+          "thirdtag": Tags[2]?Tags[2]:null,
+        })
+        .catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(bd=>{
+
+          Navbar.list_of_navbar_researches.update({
+            "style": category,
+            "firsttag": Tags[0]?Tags[0]:null,
+            "secondtag": Tags[1]?Tags[1]:null,
+            "thirdtag": Tags[2]?Tags[2]:null,
+          },
+          {
+            where:{
+              publication_category:"Comic",
+              format:"one-shot",
+              target_id:bd_id
             }
-  
-      })();
+          })
+          Notations.List_of_likes.update({
+            "style": category,
+            "firsttag": Tags[0]?Tags[0]:null,
+            "secondtag": Tags[1]?Tags[1]:null,
+            "thirdtag": Tags[2]?Tags[2]:null,
+          },
+          {
+            where:{
+              publication_category:"comic",
+              format:"one-shot",
+              publication_id:bd_id
+            }
+          })
+          Notations.List_of_loves.update({
+            "style": category,
+            "firsttag": Tags[0]?Tags[0]:null,
+            "secondtag": Tags[1]?Tags[1]:null,
+            "thirdtag": Tags[2]?Tags[2]:null,
+          },
+          {
+            where:{
+              publication_category:"comic",
+              format:"one-shot",
+              publication_id:bd_id
+            }
+          })
+          Notations.List_of_views.update({
+            "style": category,
+            "firsttag": Tags[0]?Tags[0]:null,
+            "secondtag": Tags[1]?Tags[1]:null,
+            "thirdtag": Tags[2]?Tags[2]:null,
+          },
+          {
+            where:{
+              publication_category:"comic",
+              format:"one-shot",
+              publication_id:bd_id
+            }
+          })
+          res.status(200).send([bd])
+        })
+      }); 
+            
       });
 
     router.post('/change_oneshot_comic_status', function (req, res) {
@@ -318,8 +366,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                 destination: './data_and_routes/pages_bd_oneshot',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.5, 0.6]
-                  })
+                    quality: [0.7, 0.8]
+                })
                 ]
               });
               //console.log(files)
@@ -389,8 +437,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
           destination: './data_and_routes/covers_bd',
           plugins: [
             imageminPngquant({
-              quality: [0.5, 0.6]
-            })
+              quality: [0.7, 0.8]
+          })
           ]
         });
        
@@ -439,8 +487,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               destination: './data_and_routes/covers_bd',
               plugins: [
                 imageminPngquant({
-                  quality: [0.5, 0.6]
-                })
+                  quality: [0.7, 0.8]
+              })
               ]
             });
             console.log("respong name_cover")
@@ -753,45 +801,68 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
     
   router.get('/retrieve_thumbnail_bd_picture/:file_name', function (req, res) {
 
-    (async () => {
+
 
       const file_name = req.params.file_name;
       let filename = "./data_and_routes/covers_bd/" + file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        //console.log("thumbnail bd picture retrieved");
-        res.status(200).send(data);
+        if(e){
+          filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
+        
       });
-      })();
+   
   });
 
   router.get('/retrieve_bd_oneshot_page/:bd_id/:bd_page', function (req, res) {
 
-    (async () => {
+    console.log("retrieve_bd_oneshot_page")
 
       const bd_id = parseInt(req.params.bd_id);
       const bd_page = parseInt(req.params.bd_page);
-
-      page = await pages_bd_os.findOne({
+      console.log(bd_id)
+      console.log(bd_page)
+       pages_bd_os.findOne({
         where: {
           bd_id: bd_id,
           page_number:bd_page,
         }
       })
       .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(page =>  {
-  
-        let filename = "./data_and_routes/pages_bd_oneshot/" + page.file_name;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //blob = data.toBlob('application/image');
-          //console.log("bd page retrieved");
-          res.status(200).send(data);
-        } );
+        console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(page =>  {
+        //console.log(page)
+        if(page && page.file_name){
+          let filename = "./data_and_routes/pages_bd_oneshot/" + page.file_name;
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            if(e){
+              filename = "./data_and_routes/not-found-image.jpg";
+              fs.readFile( path.join(process.cwd(),filename), function(e,data){
+                res.status(200).send(data);
+              } );
+            }
+            else{
+              res.status(200).send(data);
+            }
+           
+          } );
+        }
+        else{
+          let filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        
       });
      
-     })();
   });
 
  

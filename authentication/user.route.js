@@ -29,6 +29,8 @@ module.exports = function(app) {
     
     //getuserID
     app.get('/api/userid', users.getCurrentUser);
+    app.get('/api/userid_and_cookies', users.getCurrentUser_and_cookies);
+    
     //pseudo and email check
     app.post('/api/users/check_pseudo', users.check_pseudo);
     app.post('/api/users/check_email', users.check_email);

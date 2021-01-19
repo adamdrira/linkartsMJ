@@ -40,6 +40,7 @@ exports.list_of_ads = (sequelize, DataTypes) => {
         status:DataTypes.STRING,
         date:DataTypes.DATE,
         commentariesnumber: DataTypes.INTEGER,
+        offer_or_demand: DataTypes.STRING,
         list_of_reporters:DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {

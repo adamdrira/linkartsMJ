@@ -103,7 +103,6 @@ module.exports = (router,
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
-        const id_user = req.body.id_user;
         const publication_name=req.body.publication_name;
         const id_receiver = req.body.id_receiver;
         const publication_category = req.body.publication_category;
@@ -115,6 +114,17 @@ module.exports = (router,
         const chapter_number = req.body.chapter_number;
         const comment_id=req.body.comment_id;
         const Op = Sequelize.Op;
+        console.log(type)
+        console.log(publication_name)
+        console.log(id_receiver)
+        console.log(publication_category)
+        console.log(format)
+        console.log(publication_id)
+        console.log(information)
+        console.log(id_user_name)
+        console.log(is_comment_answer)
+        console.log(chapter_number)
+        console.log(comment_id)
         if(id_receiver){
             list_of_notifications.findOne({
                 where:{
@@ -157,7 +167,7 @@ module.exports = (router,
                         "status":"unchecked"
                     })
                     .catch(err => {
-                        //console.log(err);	
+                        console.log(err);	
                         res.status(500).json({msg: "error", details: err});		
                     }).then(notification=>{
                         res.status(200).send([notification])
@@ -201,7 +211,7 @@ module.exports = (router,
                             if(notification_found){
                                 compt++;
                                 if(compt==subscribers.length){
-                                    res.status(200).send([notification])
+                                    res.status(200).send([notification_found])
                                 }
                                 
                             }

@@ -41,6 +41,7 @@ module.exports = (sequelize, Sequelize) => {
 		subscribings:Sequelize.ARRAY(Sequelize.INTEGER),
 		status:{type: Sequelize.STRING},
 		password_registration:{type: Sequelize.STRING},
+		reason:{type: Sequelize.STRING},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
@@ -70,6 +71,26 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 	const users_mailing = sequelize.define('users_mailing', {
+		id_user:{type: Sequelize.INTEGER},
+		agreement:{type: Sequelize.BOOLEAN},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+
+	const users_strikes = sequelize.define('users_strikes', {
+		id_user:{type: Sequelize.INTEGER},
+		number_of_strikes:{type: Sequelize.INTEGER},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+
+	const users_cookies = sequelize.define('users_cookies', {
 		id_user:{type: Sequelize.INTEGER},
 		agreement:{type: Sequelize.BOOLEAN},
 	},
@@ -141,5 +162,5 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 
-	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing};
+	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies};
 }

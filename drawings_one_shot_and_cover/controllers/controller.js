@@ -6,7 +6,8 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
-
+const Navbar = require('../../navbar/model/sequelize');
+const Notations = require('../../publications_notation/model/sequelize');
 
 module.exports = (router, drawings_one_page,list_of_users,trendings_contents) => {
   
@@ -166,60 +167,129 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   router.post('/modify_drawing_one_page', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
 
-    (async () => {
+
     const highlight = req.body.highlight;
     const title = req.body.Title;
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const monetization = req.body.monetization;
     const drawing_id = req.body.drawing_id;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        //console.log(Tags[i]);
-      }
-    }*/
-
-      if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
-        return res.send({
-          success: false
-        });
-        
-      } else { 
-        //console.log('information uploaded correctly');
-         drawing = await drawings_one_page.findOne({
+    drawings_one_page.findOne({
             where: {
               drawing_id: drawing_id,
               authorid:current_user,
             }
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
             drawing.update({
               "title":title,
               "category": category,
               "highlight":highlight,
-              "firsttag": Tags[0],
-              "secondtag": Tags[1],
-              "thirdtag": Tags[2],
+              "firsttag": Tags[0]?Tags[0]:null,
+              "secondtag": Tags[1]?Tags[1]:null,
+              "thirdtag": Tags[2]?Tags[2]:null,
               "monetization":monetization,
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([drawing]))
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(res.status(200).send([drawing]))
           }); 
-          }
-
-    })();
+          
     });
+
+    router.post('/modify_drawing_one_page2', function (req, res) {
+      let current_user = get_current_user(req.cookies.currentUser);
+  
+  
+      const highlight = req.body.highlight;
+      const title = req.body.Title;
+      const category = req.body.Category;
+      const Tags = req.body.Tags;
+      const drawing_id = req.body.drawing_id;
+      drawings_one_page.findOne({
+              where: {
+                drawing_id: drawing_id,
+                authorid:current_user,
+              }
+            })
+            .catch(err => {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(drawing =>  {
+              drawing.update({
+                "title":title,
+                "category": category,
+                "highlight":highlight,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              })
+              .catch(err => {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(drawing=>{
+
+              Navbar.list_of_navbar_researches.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"Drawing",
+                  format:"one-shot",
+                  target_id:drawing_id
+                }
+              })
+              Notations.List_of_likes.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"drawing",
+                  format:"one-shot",
+                  publication_id:drawing_id
+                }
+              })
+              Notations.List_of_loves.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"drawing",
+                  format:"one-shot",
+                  publication_id:drawing_id
+                }
+              })
+              Notations.List_of_views.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+              "secondtag": Tags[1]?Tags[1]:null,
+              "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"drawing",
+                  format:"one-shot",
+                  publication_id:drawing_id
+                }
+              })
+              res.status(200).send([drawing])
+            })
+            }); 
+            
+      });
 
 
     //on post l'image uploadée
@@ -262,8 +332,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               destination: './data_and_routes/covers_drawings',
               plugins: [
                 imageminPngquant({
-                  quality: [0.5, 0.6]
-                })
+                  quality: [0.7, 0.8]
+              })
               ]
             });
            
@@ -421,8 +491,8 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                   destination: './data_and_routes/covers_drawings',
                   plugins: [
                     imageminPngquant({
-                      quality: [0.5, 0.6]
-                    })
+                      quality: [0.7, 0.8]
+                  })
                   ]
                 });
                 console.log("respond")
@@ -679,9 +749,16 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
       let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        //console.log("thumbnail drawing picture retrieved");
-        res.status(200).send(data);
+        if(e){
+          filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
+        
       });
   });
 
@@ -689,9 +766,16 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //blob = data.toBlob('application/image');
-          //console.log("drawing page retrieved");
-          res.status(200).send(data);
+          if(e){
+            filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+         
         } );
 
   });

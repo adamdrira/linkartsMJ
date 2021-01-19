@@ -63,7 +63,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                     destination: './data_and_routes/stories',
                     plugins: [
                         imageminPngquant({
-                        quality: [0.5, 0.6]
+                            quality: [0.7, 0.8]
                         })
                     ]
                     });
@@ -90,6 +90,80 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
     });
 
+
+
+    
+    router.post('/check_stories_for_account', function (req, res) {
+        console.log("check_stories_for_account")
+      
+        const current_user = get_current_user(req.cookies.currentUser);
+        const user_id=req.body.user_id;
+        const Op = Sequelize.Op;
+        var today= new Date();
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        let stories_retrieved=[];
+        let story_found=false;
+        let status=false;
+
+        list_of_stories.findAll({
+            where: {
+                id_user: user_id,
+                status:"public",
+                createdAt: {[Op.gte]: yesterday}
+            },
+            order: [
+                ['createdAt', 'ASC']
+                ],
+            })
+            .catch(err => {
+                console.log(err);			
+            }).then(stories =>  {
+
+                if(stories.length>0){
+                    stories_retrieved=stories;
+                    story_found=true;
+
+                    (async () => {
+
+                        const number_of_stories = await list_of_stories.count({
+                            where: {
+                                status:"public",
+                                id_user: user_id,
+                                createdAt: {[Op.gte]: yesterday}
+                            },
+                        });
+                            
+                            
+                        const number_of_stories_seen = await list_of_views.count({
+                            where: {
+                                status:"public",
+                                authorid: user_id,
+                                id_user_who_looks: current_user,
+                                createdAt: {[Op.gte]: yesterday}
+                            },
+                        });
+    
+                        if (number_of_stories==number_of_stories_seen ){
+                            res.status(200).send([{stories_retrieved:stories_retrieved,story_found:story_found,status:status}])
+                         
+                        }
+                       
+                        else {
+                            status=true;
+                            res.status(200).send([{stories_retrieved:stories_retrieved,story_found:story_found,status:status}])
+                     
+                        }
+                            
+                    })();
+                }
+                else{
+                    stories_found=false;
+                    res.status(200).send([{stories_retrieved:stories_retrieved,story_found:story_found,status:status}])
+
+                }
+            })
+    })
     
     router.post('/get_stories_and_list_of_users', function (req, res) {
         console.log("get_stories_and_list_of_users")
@@ -126,129 +200,129 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 for(let i=0;i<users.length;i++){
                     list_of_users.push(users[i].id_user_subscribed_to);
                 }
-            }
+                for(let i=0;i<list_of_users.length;i++){
+                    let user_id= list_of_users[i];
+                    console.log(user_id);
+                    list_of_stories.findAll({
+                    where: {
+                        id_user: user_id,
+                        status:"public",
+                        createdAt: {[Op.gte]: yesterday}
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                        ],
+                    })
+                    .catch(err => {
+                        console.log(err);			
+                    }).then(stories =>  {
+                        
+                        if(stories.length>0){
+                            (async () => {
+        
+                           
+        
+                                const user_data = await Users.findOne({
+                                    where: {
+                                        id:user_id,
+                                    },
+                                });
+                                list_of_users_data[i]=user_data;
             
-            for(let i=0;i<list_of_users.length;i++){
-                let user_id= list_of_users[i];
-                console.log(user_id);
-                list_of_stories.findAll({
-                where: {
-                    id_user: user_id,
-                    status:"public",
-                    createdAt: {[Op.gte]: yesterday}
-                },
-                order: [
-                    ['createdAt', 'ASC']
-                    ],
-                })
-                .catch(err => {
-                    console.log(err);			
-                }).then(stories =>  {
-                    
-                    if(stories.length>0){
-                        (async () => {
-    
-                       
-    
-                            const user_data = await Users.findOne({
-                                where: {
-                                    id:user_id,
-                                },
-                            });
-                            list_of_users_data[i]=user_data;
-        
-                            const number_of_stories = await list_of_stories.count({
-                                where: {
-                                    status:"public",
-                                    id_user: user_id,
-                                    createdAt: {[Op.gte]: yesterday}
-                                },
-                            });
-                                
-                                
-                            const number_of_stories_seen = await list_of_views.count({
-                                where: {
-                                    status:"public",
-                                    authorid: user_id,
-                                    id_user_who_looks: current_user,
-                                    createdAt: {[Op.gte]: yesterday}
-                                },
-                            });
-        
-                            if ((number_of_stories==number_of_stories_seen && number_of_stories>0) || number_of_stories==0){
-                                
-                                list_of_views.count({
+                                const number_of_stories = await list_of_stories.count({
+                                    where: {
+                                        status:"public",
+                                        id_user: user_id,
+                                        createdAt: {[Op.gte]: yesterday}
+                                    },
+                                });
+                                    
+                                    
+                                const number_of_stories_seen = await list_of_views.count({
                                     where: {
                                         status:"public",
                                         authorid: user_id,
                                         id_user_who_looks: current_user,
-                                        [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
-                                            
+                                        createdAt: {[Op.gte]: yesterday}
                                     },
-                                }).catch(err => {
-                                    console.log(err);		
-                                }).then(number=>{
-                                    list_of_stories_s[i]=stories;
-                                    list_of_states[i]=false;
-                                    list_of_number_of_views[i]=number;
-                                    compt++;
-                                    if(compt==list_of_users.length){
-                                        res.status(200).send([{list_of_users:list_of_users,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views,list_of_users_data:list_of_users_data}])
-                                    }
-                                   
-                                })
-                                
-                            }
-                            else{
-                                list_of_views.count({
-                                    where: {
-                                        status:"public",
-                                        authorid: user_id,
-                                        id_user_who_looks: current_user,
-                                        [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
-                                            
-                                    },
+                                });
+            
+                                if ((number_of_stories==number_of_stories_seen && number_of_stories>0) || number_of_stories==0){
+                                    
+                                    list_of_views.count({
+                                        where: {
+                                            status:"public",
+                                            authorid: user_id,
+                                            id_user_who_looks: current_user,
+                                            [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
+                                                
+                                        },
                                     }).catch(err => {
                                         console.log(err);		
                                     }).then(number=>{
                                         list_of_stories_s[i]=stories;
-                                        list_of_states[i]=true;
+                                        list_of_states[i]=false;
                                         list_of_number_of_views[i]=number;
                                         compt++;
                                         if(compt==list_of_users.length){
                                             res.status(200).send([{list_of_users:list_of_users,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views,list_of_users_data:list_of_users_data}])
                                         }
+                                       
                                     })
-                            }
-                                
-                        })();
-                    }
-                    else{
-                        (async () => {
-                            const user_data = await Users.findOne({
-                                where: {
-                                    id:user_id,
-                                },
-                            });
-                            list_of_users_data[i]=user_data;
-                            list_of_stories_s[i]=stories;
-                            list_of_states[i]=false;
-                            list_of_number_of_views[i]=0;
-                            compt++;
-                            if(compt==list_of_users.length){
-                                res.status(200).send([{list_of_users:list_of_users,list_of_users_data:list_of_users_data,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views}])
-                            }
-                        })();
-                       
-                    }
-                    
-                }); 
+                                    
+                                }
+                                else{
+                                    list_of_views.count({
+                                        where: {
+                                            status:"public",
+                                            authorid: user_id,
+                                            id_user_who_looks: current_user,
+                                            [Op.and]: [{ createdAt:{[Op.gte]: last_week} }, { createdAt:{[Op.lte]: today} }],
+                                                
+                                        },
+                                        }).catch(err => {
+                                            console.log(err);		
+                                        }).then(number=>{
+                                            list_of_stories_s[i]=stories;
+                                            list_of_states[i]=true;
+                                            list_of_number_of_views[i]=number;
+                                            compt++;
+                                            if(compt==list_of_users.length){
+                                                res.status(200).send([{list_of_users:list_of_users,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views,list_of_users_data:list_of_users_data}])
+                                            }
+                                        })
+                                }
+                                    
+                            })();
+                        }
+                        else{
+                            (async () => {
+                                const user_data = await Users.findOne({
+                                    where: {
+                                        id:user_id,
+                                    },
+                                });
+                                list_of_users_data[i]=user_data;
+                                list_of_stories_s[i]=stories;
+                                list_of_states[i]=false;
+                                list_of_number_of_views[i]=0;
+                                compt++;
+                                if(compt==list_of_users.length){
+                                    res.status(200).send([{list_of_users:list_of_users,list_of_users_data:list_of_users_data,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views}])
+                                }
+                            })();
+                           
+                        }
+                        
+                    }); 
+                }
             }
+            else{
+                res.status(200).send([{list_of_users:list_of_users,list_of_users_data:list_of_users_data,list_of_stories_s:list_of_stories_s,list_of_states:list_of_states,list_of_number_of_views:list_of_number_of_views}])
+            }
+            
         });
 
-        
-       
-        
     });
 
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
@@ -458,7 +532,16 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         router.get('/retrieve_story/:file_name', function (req, res) {
             let filename = "./data_and_routes/stories/" + req.params.file_name ;
             fs.readFile( path.join(process.cwd(),filename), function(e,data){
-              res.status(200).send(data);
+                if(e){
+                    filename = "./data_and_routes/not-found-image.jpg";
+                    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+                      res.status(200).send(data);
+                    } );
+                }
+                else{
+                res.status(200).send(data);
+                }
+              
             });
         });
 
@@ -494,9 +577,9 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                     id:id_story,
                 }
             }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(story=>{
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(story=>{
                 if(story){
                     list_of_views.findOne({
                         where:{
@@ -506,16 +589,16 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                             "id_story": id_story,
                         }
                     }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(story_view=>{
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(story_view=>{
                         if(story_view){
                             story_view.update({
                                 "view": story_view.view+1
                             }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(view=>{
+                                console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(view=>{
                                     console.log(view.id);
                                     res.status(200).send([view])
                                 });
@@ -637,12 +720,13 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 where:{
                     id_story:id_story,
                 },
-                attributes: [
-                    [Sequelize.fn('DISTINCT', Sequelize.col('authorid'),Sequelize.col('id_user_who_looks')), 'users'],'authorid','id_user_who_looks'],
-            }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(stories=>{
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+                }).catch(err => {
+                    console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(stories=>{
                 res.status(200).send([stories])
             })
             

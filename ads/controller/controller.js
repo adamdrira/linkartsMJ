@@ -7,7 +7,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 var nodemailer = require('nodemailer');
-
+var list_covers_by_id={};
 
 module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
@@ -68,6 +68,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             const price_value = req.body.price_value;
             const price_type = req.body.price_type;
             const service = req.body.service;
+            const offer_or_demand = req.body.offer_or_demand;
             const price_value_service = req.body.price_value_service;
             const price_type_service = req.body.price_type_service;
             console.log(price_value);
@@ -93,6 +94,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   "status":"public",
                   "refreshment_number":0,
                   "commentariesnumber":0,
+                  "offer_or_demand":offer_or_demand,
                   "date":today,
         
               })
@@ -160,12 +162,13 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                   destination: './data_and_routes/thumbnails_ads',
                   plugins: [
                     imageminPngquant({
-                      quality: [0.5, 0.6]
-                    })
+                      quality: [0.7, 0.8]
+                  })
                   ]
                 });
                 console.log("respond name_thumbnail_ad")
-                res.cookie('name_thumbnail_ad', file_name).send([{file_name:file_name}]);
+                list_covers_by_id[current_user]=file_name;
+                res.status(200).send([{file_name:file_name}]);
                })();
             });
     });
@@ -216,10 +219,18 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
             });
     });
 
-    router.get('/get_cookies_thumbnail_ad', (req, res)=>{ 
-        console.log('get_cookies_thumbnail_ad');
+    router.get('/get_thumbnail_ad_name', (req, res)=>{ 
+        /*console.log('get_cookies_thumbnail_ad');
         let value = req.cookies;
-        res.status(200).send([value]);
+        res.status(200).send([value]);*/
+        let current_user = get_current_user(req.cookies.currentUser);
+        let covername=list_covers_by_id[current_user];
+        if(covername){
+          res.status(200).send([{name_thumbnail_ad:covername}]);
+        }
+        else{
+          res.status(200).send([{error:"cover_not_found"}]);
+        }
     });
 
  
@@ -306,8 +317,8 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
                 destination: './data_and_routes/attachments_ads',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.5, 0.6]
-                  })
+                    quality: [0.7, 0.8]
+                })
                 ]
               });
             }
@@ -527,34 +538,60 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
          }); 
    });
 
-    router.get('/retrieve_ad_thumbnail_bd_picture/:file_name', function (req, res) {
-      (async () => {
+    router.get('/retrieve_ad_thumbnail_picture/:file_name', function (req, res) {
+
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
+          
+          if(e){
+            let filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+          
         });
-        })();
+
     });
 
     router.get('/retrieve_ad_picture/:file_name', function (req, res) {
-      (async () => {
+
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/pictures_ads/" + file_name ;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
+          if(e){
+            let filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+          
         });
-        })();
     });
 
     router.get('/retrieve_ad_attachment/:file_name', function (req, res) {
-      (async () => {
+
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/attachments_ads/" + file_name ;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          res.status(200).send(data);
+          if(e){
+            let filename = "./data_and_routes/file-not-found.pdf";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+         
         });
-        })();
     });
 
     router.delete('/delete_ad/:id', function (req, res) {
@@ -588,6 +625,179 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
               });
               res.status(200).send([ad]);
             });
+  });
+
+  router.post('/get_sorted_ads_linkcollab', function (req, res) {
+    console.log("get_sorted_ads_linkcollab ");
+    const remuneration = req.body.remuneration;
+    const service = req.body.service;
+    const offer_or_demand = req.body.offer_or_demand;
+    const type_of_remuneration = req.body.type_of_remuneration;
+    const type_of_service = req.body.type_of_service;
+    const offset = req.body.offset;
+    const type_of_project = req.body.type_of_project;
+    const author = req.body.author;
+    const target = req.body.target;
+    const sorting = req.body.sorting;
+    console.log((type_of_project != "none") ? type_of_project:"none");
+    console.log((author != "none") ? author:"none");
+    console.log((target != "none") ? target:"none");
+    console.log(sorting);
+    console.log(author);
+    console.log(remuneration);
+    console.log(service)
+    console.log(offer_or_demand)
+    console.log(type_of_project);
+    console.log(type_of_remuneration);
+    console.log(type_of_service);
+    console.log(offset);
+    const Op = Sequelize.Op;
+    let number_of_ads=0;
+
+    let ads_to_look_for={}
+    let order_to_look_for=[]
+    if(remuneration){
+      //collab rémunérés
+      ads_to_look_for={
+        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
+        my_description: (author != "none") ? author: {[Op.ne]:"none"},
+        price_type: (type_of_remuneration != "none") ? type_of_remuneration: {[Op.ne]:"none"},
+        [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
+        status:"public",
+        remuneration: true,
+        service: {[Op.not]:true}
+        
+      };
+
+      if(sorting=="pertinence"){
+        order_to_look_for=[
+          ['number_of_responses', 'DESC'],
+          ['createdAt', 'DESC'],
+        ]
+      }
+      else if(sorting=="récent"){
+        order_to_look_for=[
+          ['date', 'DESC']
+        ]
+      }
+      else if(sorting=="ancient"){
+        order_to_look_for=[
+          ['date', 'ASC']
+        ]
+      }
+      else if(sorting=="croissant"){
+        order_to_look_for=[
+          [ Sequelize.cast(Sequelize.col('price_value'), 'BIGINT') , 'ASC' ]
+        ]
+      }
+      else if(sorting=="décroissant"){
+        order_to_look_for=[
+          [ Sequelize.cast(Sequelize.col('price_value'), 'BIGINT') , 'DESC' ]
+        ]
+      }
+      
+      
+    }
+    else if(service){
+      // produits ou services
+      ads_to_look_for={
+        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
+        my_description: (author != "none") ? author: {[Op.ne]:"none"},
+        price_type_service: (type_of_service != "none") ? type_of_service: {[Op.ne]:"none"},
+        offer_or_demand: (offer_or_demand != "none") ? offer_or_demand: {[Op.ne]:"none"},
+        [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
+        status:"public",
+        remuneration: {[Op.not]:true},
+        service: true
+        
+      };
+
+      if(sorting=="pertinence"){
+        order_to_look_for=[
+          ['number_of_responses', 'DESC'],
+          ['createdAt', 'DESC'],
+        ]
+      }
+      else if(sorting=="récent"){
+        order_to_look_for=[
+          ['date', 'DESC']
+        ]
+      }
+      else if(sorting=="ancient"){
+        order_to_look_for=[
+          ['date', 'ASC']
+        ]
+      }
+      else if(sorting=="croissant"){
+        order_to_look_for=[
+          [ Sequelize.cast(Sequelize.col('price_value_service'), 'BIGINT') , 'ASC' ]
+        ]
+      }
+      else if(sorting=="décroissant"){
+        order_to_look_for=[
+          [ Sequelize.cast(Sequelize.col('price_value_service'), 'BIGINT') , 'DESC' ]
+        ]
+      }
+    }
+    else{
+      //benevoles
+      ads_to_look_for={
+        type_of_project: (type_of_project != "none") ? type_of_project: {[Op.ne]:"none"},
+        my_description: (author != "none") ? author: {[Op.ne]:"none"},
+        [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"} }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
+        status:"public",
+        remuneration: {[Op.not]:true},
+        service: {[Op.not]:true}
+        
+      };
+
+      if(sorting=="pertinence"){
+        order_to_look_for=[
+          ['number_of_responses', 'DESC'],
+          ['createdAt', 'DESC'],
+        ]
+      }
+      else if(sorting=="récent"){
+        order_to_look_for=[
+          ['date', 'DESC']
+        ]
+      }
+      else if(sorting=="ancient"){
+        order_to_look_for=[
+          ['date', 'ASC']
+        ]
+      }
+    }
+
+    list_of_ads.count({
+      where:ads_to_look_for,
+    }).catch(err => {
+      console.log(err);	
+      res.status(500).json({msg: "error", details: err});		
+    }).then(number=>{
+      console.log(number)
+      if(number){
+        number_of_ads=number;
+        list_of_ads.findAll({
+          where: ads_to_look_for,
+          order: order_to_look_for,
+          limit:5,
+          offset:offset
+        })
+        .catch(err => {
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(results=>{
+          res.status(200).send([{number_of_ads:number_of_ads,results:results}]);
+        });
+      }
+      else{
+        res.status(200).send([{number_of_ads:number_of_ads,results:[]}]);
+      }
+    });
+
+   
+      
   });
 
   router.get('/get_sorted_ads/:remuneration/:type_of_project/:author/:target/:sorting', function (req, res) {
@@ -678,7 +888,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
               my_description: (author != "none") ? author: {[Op.ne]:"none"},
               [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"}, }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
               status:"public",
-              remuneration: {[Op.ne]:true}
+              remuneration: {[Op.not]:true}
               
             },
             order: [
@@ -699,7 +909,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
               my_description: (author != "none") ? author: {[Op.ne]:"none"},
               [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"}, }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
               status:"public",
-              remuneration: {[Op.ne]:true}
+              remuneration: {[Op.not]:true}
             },
             order: [
                 ['date', 'DESC']
@@ -719,7 +929,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
               my_description: (author != "none") ? author: {[Op.ne]:"none"},
               [Op.or]: [{ target_one: (target != "none") ? target: {[Op.ne]:"none"}, }, { target_two: (target != "none") ? target: {[Op.ne]:"none"},}],
               status:"public",
-              remuneration: {[Op.ne]:true}
+              remuneration: {[Op.not]:true}
             },
             order: [
                 ['date', 'ASC']

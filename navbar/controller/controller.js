@@ -322,7 +322,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
             else{
                 
                 let result = JSON.parse(JSON.stringify(results.rows));
-                console.log(result)
                 res.status(200).send([result]);
             }
         })
@@ -1109,13 +1108,6 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                 } )
         }
         else{
-            console.log(" find list_of_navbar_researches")
-            console.log(id_user)
-            console.log(publication_category)
-            console.log(format)
-            console.log(target_id)
-            console.log(research_string)
-            console.log(status)
             list_of_navbar_researches.findAll({
                 where:{
                     id_user:id_user,
@@ -1129,10 +1121,10 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                     ['createdAt', 'DESC']
                   ],
                 }).catch(err => {
-                //console.log(err);	
+                console.log(err);	
                 res.status(500).json({msg: "error", details: err});		
             }).then(result=>{
-                if(result[0]){
+                if(result && result[0]){
                     console.log(" result found")
                     let now_in_seconds= Math.trunc( new Date().getTime()/1000);
                     let time =(result[0].createdAt).toString();
@@ -1165,8 +1157,8 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                     else if((now_in_seconds - uploaded_date_in_second)>3600){
                         console.log("ready to add")
                         if(firsttag=='Romantique' || firsttag=='Shojo' || firsttag=='Yuri' || firsttag=='Yaoi' || firsttag=='Josei' 
-                        || secondtag=='Romantique' || secondtag=='Shojo' || secondtag=='Yuri' || secondtag=='Yaoi' || secondtag=='Josei' 
-                        || thirdtag=='Romantique' || thirdtag=='Shojo' || thirdtag=='Yuri' || thirdtag=='Yaoi' || thirdtag=='Josei'){
+                            || secondtag=='Romantique' || secondtag=='Shojo' || secondtag=='Yuri' || secondtag=='Yaoi' || secondtag=='Josei' 
+                            || thirdtag=='Romantique' || thirdtag=='Shojo' || thirdtag=='Yuri' || thirdtag=='Yaoi' || thirdtag=='Josei'){
                             if(getRandomInt(5)==0){
                                 list_of_navbar_researches.create({
                                     "user_status":user_status,
@@ -1242,9 +1234,9 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                             }
                              
                         }
-                        if(firsttag=='Caricatural' || firsttag=='Religion' 
-                        || secondtag=='Caricatural' || secondtag=='Religion' 
-                        || thirdtag=='Caricatural' || thirdtag=='Religion' ){
+                        else if(firsttag=='Caricatural' || firsttag=='Religion' 
+                            || secondtag=='Caricatural' || secondtag=='Religion' 
+                            || thirdtag=='Caricatural' || thirdtag=='Religion' ){
                             if(getRandomInt(20)==0){
                                 list_of_navbar_researches.create({
                                     "user_status":user_status,
@@ -1320,7 +1312,7 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                             
                         }
                         else{
-                            console.log("in else add")
+                            console.log("in else add");
                             list_of_navbar_researches.create({
                                 "user_status":user_status,
                                 "id_user":id_user,
@@ -1339,10 +1331,12 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                                 "secondtag":secondtag,
                                 "thirdtag":thirdtag,
                             }).catch(err => {
-                                //console.log(err);	
+                                console.log(err);	
                                 res.status(500).json({msg: "error", details: err});		
                             }).then(result1=>{
+                                console.log("put res1")
                                 if(publication_category=="Account"){
+                                    console.log("in res 1")
                                     list_of_navbar_researches.update({
                                         "number_of_comics":number_of_comics,
                                         "number_of_drawings":number_of_drawings,

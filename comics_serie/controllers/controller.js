@@ -3,7 +3,8 @@ const fs = require('fs');
 var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
-
+const Navbar = require('../../navbar/model/sequelize');
+const Notations = require('../../publications_notation/model/sequelize');
 const Sequelize = require('sequelize');
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
@@ -25,11 +26,7 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     res.statuts(200).send(value)
     });
 
-  router.get('/clear_cookies_cover_bd_serie', function(req, res){
-      res.clearCookie('name_cover_bd_serie');
-      res.send('cookie cover cleared');
-  });
- 
+
 
   router.get('/get_cookies_cover_bd_serie', (req, res)=>{ 
     //console.log('get it')
@@ -145,114 +142,129 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
   router.post('/modify_bd_serie', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
 
-    (async () => {
+    
     const highlight = req.body.highlight;
     const title = req.body.Title;
     const category = req.body.Category;
     const Tags = req.body.Tags;
     const bd_id = req.body.bd_id;
     const monetization = req.body.monetization;
-    /*for (let i = 0; i < Tags.length; i++){
-      if (Tags[i] !=null){
-        Tags[i] = Tags[i].substring(1);
-        while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-            Tags[i] = Tags[i].substr(1);
-        }
-        Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-      }
-    }*/
-
-      if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
-        return res.send({
-          success: false
-        });
-        
-      } else { 
-        //console.log('information uploaded correctly');
-         bd = await Liste_bd_serie.findOne({
+    Liste_bd_serie.findOne({
             where: {
               bd_id: bd_id,
               authorid: current_user,
             }
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(bd =>  {
             bd.update({
               "title":title,
               "category": category,
               "highlight":highlight,
-              "firsttag": Tags[0],
-              "secondtag": Tags[1],
-              "thirdtag": Tags[2],
+              "firsttag": Tags[0]?Tags[0]:null,
+              "secondtag": Tags[1]?Tags[1]:null,
+              "thirdtag": Tags[2]?Tags[2]:null,
               "monetization":monetization,
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([bd]))
-          }); 
-          }
-
-    })();
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd=>{
+              res.status(200).send([bd])
+            })
+        }); 
     });
 
     router.post('/modify_bd_serie2', function (req, res) {
       let current_user = get_current_user(req.cookies.currentUser);
   
-      (async () => {
+     
       const highlight = req.body.highlight;
       const title = req.body.Title;
       const category = req.body.Category;
       
       const Tags = req.body.Tags;
       const bd_id = req.body.bd_id;
-      /*for (let i = 0; i < Tags.length; i++){
-        if (Tags[i] !=null){
-          Tags[i] = Tags[i].substring(1);
-          while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-              Tags[i] = Tags[i].substr(1);
-          }
-          Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-        }
-      }*/
-  
-        if (Object.keys(req.body).length === 0 ) {
-          //console.log("information isn't uploaded correctly");
-          return res.send({
-            success: false
-          });
-          
-        } else { 
-          //console.log('information uploaded correctly');
-           bd = await Liste_bd_serie.findOne({
+      Liste_bd_serie.findOne({
               where: {
                 bd_id: bd_id,
                 authorid: current_user,
               }
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
               bd.update({
                 "title":title,
                 "category": category,
                 "highlight":highlight,
-                "firsttag": Tags[0],
-                "secondtag": Tags[1],
-                "thirdtag": Tags[2],
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
               })
               .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([bd]))
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(bd=>{
+                Navbar.list_of_navbar_researches.update({
+                  "style": category,
+                  "firsttag": Tags[0]?Tags[0]:null,
+                  "secondtag": Tags[1]?Tags[1]:null,
+                  "thirdtag": Tags[2]?Tags[2]:null,
+                },
+                {
+                  where:{
+                    publication_category:"Comic",
+                    format:"serie",
+                    target_id:bd_id
+                  }
+                })
+                Notations.List_of_likes.update({
+                  "style": category,
+                  "firsttag": Tags[0]?Tags[0]:null,
+                  "secondtag": Tags[1]?Tags[1]:null,
+                  "thirdtag": Tags[2]?Tags[2]:null,
+                },
+                {
+                  where:{
+                    publication_category:"comic",
+                    format:"serie",
+                    publication_id:bd_id
+                  }
+                })
+                Notations.List_of_loves.update({
+                  "style": category,
+                  "firsttag": Tags[0]?Tags[0]:null,
+                  "secondtag": Tags[1]?Tags[1]:null,
+                  "thirdtag": Tags[2]?Tags[2]:null,
+                },
+                {
+                  where:{
+                    publication_category:"comic",
+                    format:"serie",
+                    publication_id:bd_id
+                  }
+                })
+                Notations.List_of_views.update({
+                  "style": category,
+                  "firsttag": Tags[0]?Tags[0]:null,
+                  "secondtag": Tags[1]?Tags[1]:null,
+                  "thirdtag": Tags[2]?Tags[2]:null,
+                },
+                {
+                  where:{
+                    publication_category:"comic",
+                    format:"serie",
+                    publication_id:bd_id
+                  }
+                })
+                res.status(200).send([bd])
+              })
             }); 
-            }
-  
-      })();
+           
       });
 
     router.post('/change_serie_comic_status', function (req, res) {
@@ -339,21 +351,12 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
   router.post('/modify_chapter_bd_serie', function (req, res) {
     let current_user = get_current_user(req.cookies.currentUser);
 
-    (async () => {
+  
     const title= req.body.Title;
     const number = req.body.chapter_number;
     //console.log("modification de chapitre")
     const bd_id = req.body.bd_id;
-
-      if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
-        return res.send({
-          success: false
-        });
-        
-      } else { 
-        //console.log('information uploaded correctly');
-         chapter = await chapters_bd_serie.findOne({
+    chapters_bd_serie.findOne({
             where: {
               author_id: current_user,
               bd_id: bd_id,
@@ -361,19 +364,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             }
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(chapter =>  {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(chapter =>  {
             chapter.update({
               "title":title,
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([chapter]));
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(res.status(200).send([chapter]));
           });
-          }
-
-    })();
+         
     });
 
     
@@ -444,8 +445,8 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                 destination: './data_and_routes/pages_bd_serie',
                 plugins: [
                   imageminPngquant({
-                    quality: [0.5, 0.6]
-                  })
+                    quality: [0.7, 0.8]
+                })
                 ]
               });
             })();
@@ -930,13 +931,13 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
   router.get('/retrieve_bd_chapter_page/:bd_id/:chapter_number/:bd_page', function (req, res) {
 
-    (async () => {
+
 
       const bd_id = parseInt(req.params.bd_id);
       const chapter_number = req.params.chapter_number;
       const bd_page = parseInt(req.params.bd_page);
 
-      page = await pages_bd_serie.findOne({
+      pages_bd_serie.findOne({
         where: {
           bd_id: bd_id,
           chapter_number:chapter_number,
@@ -948,14 +949,31 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 			res.status(500).json({msg: "error", details: err});		
 		}).then(page =>  {
   
-        let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
-        fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //console.log("bd page retrieved");
-          res.status(200).send(data);
-        } );
+        if(page && page.file_name){
+          let filename = "./data_and_routes/pages_bd_serie/" + page.file_name;
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            if(e){
+              filename = "./data_and_routes/not-found-image.jpg";
+              fs.readFile( path.join(process.cwd(),filename), function(e,data){
+                res.status(200).send(data);
+              } );
+            }
+            else{
+              res.status(200).send(data);
+            }
+            //console.log("bd page retrieved");
+            
+          } );
+        }
+        else{
+          let filename = "./data_and_routes/not-found-image.jpg";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+        }
+        
       });
      
-     })();
   });
 
 

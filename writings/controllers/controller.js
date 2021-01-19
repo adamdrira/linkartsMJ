@@ -6,6 +6,8 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 const Sequelize = require('sequelize');
+const Navbar = require('../../navbar/model/sequelize');
+const Notations = require('../../publications_notation/model/sequelize');
 var list_of_covers={};
 var list_of_writings ={};
 
@@ -189,57 +191,86 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     let current_user = get_current_user(req.cookies.currentUser);
     
 
-    (async () => {
+    
       const highlight = req.body.highlight;
       const title = req.body.Title;
       const category = req.body.Category;
       const Tags = req.body.Tags;
       const writing_id = req.body.writing_id;
-      /*for (let i = 0; i < Tags.length; i++){
-        if (Tags[i] !=null){
-          Tags[i] = Tags[i].substring(1);
-          while(Tags[i].charAt(0) <='9' && Tags[i].charAt(0) >='0'){  
-              Tags[i] = Tags[i].substr(1);
-          }
-          Tags[i] = Tags[i].substring(3,Tags[i].length - 1); 
-          //console.log(Tags[i]);
-        }
-      }*/
-
-      if (Object.keys(req.body).length === 0 ) {
-        //console.log("information isn't uploaded correctly");
-        return res.send({
-          success: false
-        });
-        
-      } else { 
-        //console.log('information uploaded correctly');
-         writing = await Liste_Writings.findOne({
+      Liste_Writings.findOne({
             where: {
               writing_id: writing_id,
               authorid: current_user,
             }
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(writing =>  {
             writing.update({
               "title":title,
                 "category": category,
                 "highlight":highlight,
-                "firsttag": Tags[0],
-                "secondtag": Tags[1],
-                "thirdtag": Tags[2],
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(res.status(200).send([writing]))
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(writing=>{
+              Navbar.list_of_navbar_researches.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"Writing",
+                  publication_id:writing_id
+                }
+              })
+              Notations.List_of_likes.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+              "secondtag": Tags[1]?Tags[1]:null,
+              "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"writing",
+                  publication_id:writing_id
+                }
+              })
+              Notations.List_of_loves.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"writing",
+                  publication_id:writing_id
+                }
+              })
+              Notations.List_of_views.update({
+                "style": category,
+                "firsttag": Tags[0]?Tags[0]:null,
+                "secondtag": Tags[1]?Tags[1]:null,
+                "thirdtag": Tags[2]?Tags[2]:null,
+              },
+              {
+                where:{
+                  publication_category:"writing",
+                  publication_id:writing_id
+                }
+              })
+              res.status(200).send([writing])
+            })
           }); 
-          }
-
-    })();
+          
     });
 
       
@@ -279,8 +310,8 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
               destination: './data_and_routes/covers_writings',
               plugins: [
                 imageminPngquant({
-                  quality: [0.5, 0.6]
-                })
+                  quality: [0.7, 0.8]
+              })
               ]
             });
             list_of_covers[current_user]=file_name
@@ -646,25 +677,70 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
-          //console.log("bd page retrieved");
+         
+
+          if(e){
+            let filename = "./data_and_routes/file-not-found.pdf";
+            fs.readFile( path.join(process.cwd(),filename), function(e,data){
+              res.status(200).send(data);
+            } );
+          }
+          else{
+            res.status(200).send(data);
+          }
+        } );
+
+  });
+
+
+  
+
+  router.get('/retrieve_writing_for_options/:index', function (req, res) {
+    console.log("retrieve_writing_for_options")
+    
+    //0 conditions d'utilisation
+    //1 sécrurité et condit
+    //2 qui sommes nous
+    //3mentions légales
+    //4cookies
+    //5 précisions pour la monetization
+    let index= parseInt(req.params.index)
+    let filename = "./data_and_routes/conditions/conditions_utilisation.pdf" ;
+    /*if(index==0){
+      filename += 'conditions_utilisation'
+    }*/
+    console.log(path.join(process.cwd(),filename))
+    fs.readFile( path.join(process.cwd(),filename), function(e,data){
+     
+
+      if(e){
+        let filename = "./data_and_routes/file-not-found.pdf";
+        fs.readFile( path.join(process.cwd(),filename), function(e,data){
           res.status(200).send(data);
         } );
+      }
+      else{
+        res.status(200).send(data);
+      }
+    } );
 
   });
 
   router.get('/retrieve_thumbnail_writing_picture/:file_name', function (req, res) {
 
-    (async () => {
-
-      
       const file_name = req.params.file_name;
       let filename = "./data_and_routes/covers_writings/" + file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
-        //blob = data.toBlob('application/image');
-        //console.log("thumbnail writing picture retrieved");
-        res.status(200).send(data);
+        if(e){
+          let filename = "./data_and_routes/not-found-image.jpg";
+          fs.readFile( path.join(process.cwd(),filename), function(e,data){
+            res.status(200).send(data);
+          } );
+        }
+        else{
+          res.status(200).send(data);
+        }
       });
-      })();
   });
 
   
@@ -672,7 +748,7 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
    //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
    router.delete('/remove_last_cover_from_folder/:file_name', function (req, res) {
     
-    (async () => {
+  
     const name_coverpage=req.params.file_name;
 
     //console.log( 'tentative annulation');
@@ -692,7 +768,6 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
           }
         });
       });
-    })();
   });
  
       

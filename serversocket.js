@@ -22,7 +22,6 @@ wss.on('connection', (ws, req)=>{
   
   ws.isAlive = true;
   ws.on('pong', () => {
-    //console.log("pong");
       ws.isAlive = true;
   });
   console.log("user is connected")
@@ -52,7 +51,7 @@ wss.on('connection', (ws, req)=>{
     console.log('received from ' + userID + ': ' + message)
     var messageArray = JSON.parse(message);
     console.log("messageArray")
-
+    ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     if(messageArray.for_notifications){
 
 
@@ -135,6 +134,9 @@ wss.on('connection', (ws, req)=>{
       /*****************************************SEND MESSAGE TO A USER  *************************/
       /*****************************************SEND MESSAGE TO A USER  *************************/
       var toUserWebSocket = webSockets[parseInt(messageArray.id_receiver)];
+      
+      
+      console.log("web here")
       const Op = Sequelize.Op;
       const id_user=messageArray.id_user;
       const id_friend=messageArray.id_receiver;
@@ -246,10 +248,21 @@ wss.on('connection', (ws, req)=>{
                       console.log("send back message with received")
                       console.log(messageArray);
                       let toUserWebSocket1= webSockets[userID];
+                      console.log(toUserWebSocket1.length)
+                      //console.log(ws)
+                      let add_socket=true;
                       for(let i=0;i<toUserWebSocket1.length;i++){
+                        console.log(toUserWebSocket1[i]==ws)
                         console.log("sending back to each one")
+                        //console.log(toUserWebSocket1[i])
                         toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
                       }
+                      if(!add_socket){
+                        console.log("add socket")
+                        //webSockets[userID].push(ws);
+                        //ws.send(JSON.stringify([{id_user:"server",id_receiver:messageArray.id_receiver, is_from_server:true, server_message:'received', message:messageArray, id_message:r.id,real_id_user:messageArray.id_user}]));
+                      }
+                      
                       
                     }
                     if(messageArray.is_from_server){
@@ -851,11 +864,11 @@ wss.on('connection', (ws, req)=>{
           console.log("déconnexion")
           return ws.terminate();
         } 
+        //ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
         ws.isAlive = false;
         ws.ping(null, false, (err)=>{});
-        //console.log("ping");
     });
-  }, 5000);
+  }, 30000);
 
   function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
