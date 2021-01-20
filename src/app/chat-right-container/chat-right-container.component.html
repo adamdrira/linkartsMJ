@@ -57,13 +57,13 @@
 
     <button (click)="add_chat_section();" *ngIf="!activate_add_chat_section" [@enterAnimation]>
       <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-      <span>Créer une nouvelle section</span>
+      <span>Créer une nouvelle discussion</span>
     </button>
 
     <ng-container *ngIf="activate_add_chat_section">
       <div class="form-item" [@enterAnimation]>
         <mat-form-field floatLabel='never'>
-            <mat-label>Nom de la section</mat-label>
+            <mat-label>Nom de la discussion</mat-label>
             <input matInput formControlName="chat_section_name_added" maxLength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search">
             <mat-error *ngIf="chat_section_group.controls['chat_section_name_added'].invalid">Veuillez saisir un nom valide</mat-error>
             <div class="length-indicator">{{chat_section_group.controls['chat_section_name_added'].value?.length || 0}}/30</div>

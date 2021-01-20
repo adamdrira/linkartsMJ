@@ -390,10 +390,10 @@
                                     </div>
                                 </div>
                                 <div *ngIf="!list_of_friends_last_message[i].date" class="date-container">
-                                    - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
+                                    • {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
                                 </div>
                                 <div *ngIf="list_of_friends_last_message[i].date" class="date-container">
-                                    - {{list_of_friends_last_message[i].date}}
+                                    • {{list_of_friends_last_message[i].date}}
                                 </div>
                             </div>
                             
@@ -452,10 +452,10 @@
                                         </div>
                                     </div>
                                     <div *ngIf="!list_of_spams_last_message[i].date" class="date-container">
-                                        - {{show_date_of_timestamp(list_of_spams_last_message[i],i)}}
+                                        • {{show_date_of_timestamp(list_of_spams_last_message[i],i)}}
                                     </div>
                                     <div *ngIf="list_of_spams_last_message[i].date" class="date-container">
-                                        - {{list_of_spams_last_message[i].date}}
+                                        • {{list_of_spams_last_message[i].date}}
                                     </div>
                                 </div>
                                 

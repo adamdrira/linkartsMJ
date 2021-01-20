@@ -228,6 +228,7 @@ export class ChatFriendsListComponent implements OnInit {
   ngOnInit() {
     
     this.active_section = this.route.snapshot.data['section'];
+    console.log(this.active_section)
     if(this.active_section==2){
       let pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
       this.active_section_user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
@@ -242,6 +243,9 @@ export class ChatFriendsListComponent implements OnInit {
             this.location.go('/chat')
             this.active_section=1;
             //location.reload();
+          }
+          else{
+
           }
         })
       }
@@ -614,7 +618,7 @@ export class ChatFriendsListComponent implements OnInit {
       else{
         this.friend_type='user';
         this.can_sort_list_of_profile_pictures=true;
-        if(this.list_of_pp_sorted){
+        if(this.list_of_pp_sorted_tried){
           this.sort_list_of_profile_pictures()
         }
         this.get_connections_status();
@@ -652,7 +656,7 @@ export class ChatFriendsListComponent implements OnInit {
       }
     }
     this.can_sort_list_of_profile_pictures=true;
-    if(this.list_of_pp_sorted){
+    if(this.list_of_pp_sorted_tried){
       this.sort_list_of_profile_pictures()
     }
     
@@ -663,6 +667,7 @@ export class ChatFriendsListComponent implements OnInit {
 
   list_of_pp_sorted=false;
   can_sort_list_of_profile_pictures=false;
+  list_of_pp_sorted_tried=false;
   sort_list_of_profile_pictures(){
     if(this.can_sort_list_of_profile_pictures){
       console.log("sort_listpp")
@@ -683,10 +688,10 @@ export class ChatFriendsListComponent implements OnInit {
       console.log(this.list_of_friends_ids)
       console.log(this.list_of_friends_profile_pictures)
       this.friend_picture=this.list_of_friends_profile_pictures[ind];
-     
+      this.list_of_pp_sorted=true;
     }
     else{
-      this.list_of_pp_sorted=true;
+      this.list_of_pp_sorted_tried=true;
     }
     
   }
@@ -728,13 +733,13 @@ export class ChatFriendsListComponent implements OnInit {
             }
           })
 
-          
+          this.friend_picture=null;
           this.Profile_Edition_Service.retrieve_profile_picture(this.active_section_user_id).subscribe(t=> {
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.friend_picture=SafeURL;
             pp_retrieved=true;
-            last_check(this);
+            //last_check(this);
             console.log(this.friend_id)
             console.log(this.friend_pseudo)
             console.log(this.spam)
@@ -756,7 +761,7 @@ export class ChatFriendsListComponent implements OnInit {
           })
 
           function last_check(THIS){
-            if(related_retrieved && data_retrieved && pp_retrieved){
+            if(related_retrieved && data_retrieved){
               THIS.active_section_done=true;
             }
           }
@@ -764,13 +769,14 @@ export class ChatFriendsListComponent implements OnInit {
         else{
           let pp_retrieved=false;
           let information_retrieved=false;
+          this.friend_picture=null;
           this.chatService.retrieve_chat_profile_picture(m[0].chat_profile_pic_name,m[0].profile_pic_origin).subscribe(t=> {
             console.log(t);
             let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.friend_picture=SafeURL;
             pp_retrieved=true;
-            last_check(this);
+            //last_check(this);
             
           })
 
@@ -784,7 +790,7 @@ export class ChatFriendsListComponent implements OnInit {
           })
 
           function last_check(THIS){
-            if(information_retrieved && pp_retrieved){
+            if(information_retrieved ){
               console.log(THIS.friend_name);
               console.log(THIS.friend_pseudo);
               console.log(THIS.friend_id);
@@ -1057,7 +1063,7 @@ change_message_status(event){
     console.log(index_friend)
     
     if(index_friend>=0){
-      if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
+      if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section && this.list_of_friends_last_message[index_friend].id==event.id_message){
         this.list_of_friends_last_message[index_friend].status="deleted";
       } 
       if(event.status=="seen" &&  this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
@@ -1071,7 +1077,7 @@ change_message_status(event){
            }
         }
         else if((this.list_of_friends_last_message[index_friend].id_user==this.current_user && this.current_user!=event.real_friend_id)
-        || this.list_of_friends_last_message[index_friend].id_user!=this.current_user){
+        || this.list_of_friends_last_message[index_friend].id_user!=this.current_user &&  this.list_of_friends_last_message[index_friend].status!="deleted"){
           this.list_of_friends_last_message[index_friend].status="seen";
         }
         
@@ -1093,7 +1099,7 @@ change_message_status(event){
       if(event.status=="delete"){
         this.list_of_spams_last_message[index_spam].status="deleted";
       } 
-      if(event.status=="seen"){
+      if(event.status=="seen" && this.list_of_spams_last_message[index_spam].status!="deleted"){
         this.list_of_spams_last_message[index_spam].status="seen";
       } 
       
@@ -1126,7 +1132,7 @@ change_message_status(event){
         this.list_of_friends_last_message[index]=event.message;
         this.cd.detectChanges();
         //put message to seen
-        if(this.friend_id==event.friend_id && this.user_present && event.id_chat_section==event.message.id_chat_section && this.friend_type==event.friend_type){
+        if( this.list_of_friends_last_message[index].status!="seen" && this.friend_id==event.friend_id && this.user_present && event.id_chat_section==event.message.id_chat_section && this.friend_type==event.friend_type){
           this.list_of_friends_last_message[index].status="seen";
           console.log("seen")
           this.cd.detectChanges();
@@ -1331,10 +1337,15 @@ change_message_status(event){
     this.delete_placeholder();
   }
 
-  trigger_selected_list_invalid
+  trigger_selected_list_invalid=false;
+  adding_friend=false;
   add_friend_done() {
     console.log("add friend done")
     //valider l'ajout d'ami au groupe
+    if(this.adding_friend){
+      return
+    }
+    this.adding_friend=true;
     if(this.selected_list_of_new_friends_names.length>0){
       this.chatService.add_new_friends_to_a_group(this.id_group_where_friends_are_added,this.selected_list_of_new_friends_ids).subscribe(r=>{
         console.log(r[0])
@@ -1343,7 +1354,7 @@ change_message_status(event){
             data: {showChoice:false, text:"Le groupe ne peut contenir plus de 10 utilisateurs."},
           });
           this.selected_list_of_new_friends_names=[];
-          
+          this.adding_friend=false;
           this.selected_list_of_new_friends_ids=[];
         }
         else if(r[0]){
@@ -1371,6 +1382,7 @@ change_message_status(event){
             this.chatService.messages.next(message_one);
             this.cancel_add_friend_group();
           }
+          this.adding_friend=false;
         }
         
        
@@ -1379,6 +1391,7 @@ change_message_status(event){
     else{
       console.log("liste non valide");
       this.trigger_selected_list_invalid=true;
+      this.adding_friend=false;
     }
   }
  

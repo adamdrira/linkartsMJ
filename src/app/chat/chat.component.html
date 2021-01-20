@@ -53,13 +53,17 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button class="chat-menu-item" mat-menu-item>
+                        <button class="chat-menu-item" mat-menu-item  (click)="remove_contact()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retirer de mes contacts</span>
                         </button>
-                        <button class="chat-menu-item" mat-menu-item (click)="block_user()">
+                        <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
                             <span>Bloquer l'utilisateur</span>
+                        </button>
+                        <button *ngIf="block_chat && who_blocked=='me'" class="chat-menu-item"  mat-menu-item (click)="unblock_user()"> 	
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">report_off</mat-icon>
+                            <span>Débloquer l'utilisateur</span>
                         </button>
                     </mat-menu>
 
@@ -259,7 +263,7 @@
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
                                     'padding-for-no-state':
                                         !( ( list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted' ) ||
-                                            ( list_of_messages[list_of_messages.length -1 - i].status=='sent' ) ||
+                                           
                                             ( (index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen' ) ) ,
                                     'message-search-style': searched_message==i  }">
 
@@ -638,7 +642,7 @@
 
                         <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='new_section'">
                             <span>
-                                Bienvenue dans la section : <b>{{chat_section_to_open}}</b>
+                                Bienvenue dans la section <b>{{chat_section_to_open}}</b>
                             </span>
                         </div>
 
@@ -966,7 +970,6 @@
                                         <mat-icon>done</mat-icon>
                                     </div>
                                 </div>
-                                
                                 <!--
                                 <div class="display-seen-by-all"
                                     *ngIf="list_of_messages.length-1==i && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length==list_of_messages[list_of_messages.length- i-1].list_of_users_in_the_group.length ">
@@ -1243,7 +1246,7 @@
                             <div class="new-contact-message-content" *ngIf="list_of_messages[list_of_messages.length -1 - i].message=='new_section'">
                                 <span>
                                     <mat-icon>person_add</mat-icon>
-                                    Bienvenue dans la section : <b>{{chat_section_to_open}}</b>
+                                    Bienvenue dans la section <b>{{chat_section_to_open}}</b>
                                 </span>
                             </div>
 

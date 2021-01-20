@@ -1064,7 +1064,7 @@ button.show-more {
                 cursor: default;
                 margin-left: 6px;
                 color: rgb(32, 56, 100);
-                background: #9ec0ff70;
+                background: #f3f3f3;
                 font-weight: 500;
                 font-size: 13px;
                 padding: 8px 15px;
@@ -1273,6 +1273,10 @@ button.show-more {
         border-radius: 50px;
         background: rgb(32, 56, 100);
     }
+    .sent{
+        border: 2px solid #203864 !important;
+        background:unset !important;
+    }
     mat-icon {
         height: unset;
         width: unset;
@@ -1290,40 +1294,40 @@ button.show-more {
     }
 }
 .my-top-message {
-    border-radius: 20px 20px 5px 20px;
+    border-radius: 20px 20px 6px 20px;
     img {
-        border-radius: 20px 20px 5px 20px;
+        border-radius: 20px 20px 6px 20px;
     }
 }
 .my-middle-message {
-    border-radius: 20px 10px 10px 20px;
+    border-radius: 20px 6px 6px 20px;
     img {
-        border-radius: 20px 10px 10px 20px;
+        border-radius: 20px 6px 6px 20px;
     }
 }
 .my-bottom-message {
-    border-radius: 20px 5px 20px 20px;
+    border-radius: 20px 6px 20px 20px;
     img {
-        border-radius: 20px 5px 20px 20px;
+        border-radius: 20px 6px 20px 20px;
     }
 }
 
 .friend-top-message {
-    border-radius: 20px 20px 20px 5px;
+    border-radius: 20px 20px 20px 6px;
     img {
-        border-radius: 20px 20px 20px 5px;
+        border-radius: 20px 20px 20px 6px;
     }
 }
 .friend-middle-message {
-    border-radius: 10px 20px 20px 10px;
+    border-radius: 6px 20px 20px 6px;
     img {
-        border-radius: 10px 20px 20px 10px;
+        border-radius: 6px 20px 20px 6px;
     }
 }
 .friend-bottom-message {
-    border-radius: 5px 20px 20px 20px;
+    border-radius: 6px 20px 20px 20px;
     img {
-        border-radius: 5px 20px 20px 20px;
+        border-radius: 6px 20px 20px 20px;
     }
 }
 
