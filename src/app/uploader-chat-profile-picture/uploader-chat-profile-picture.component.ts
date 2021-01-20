@@ -70,7 +70,13 @@ export class UploaderChatProfilePictureComponent implements OnInit {
 
   }
 
-
+  show_icon=false;
+  ngAfterViewInit(){
+    let THIS=this;
+    $(window).ready(function () {
+      THIS.show_icon=true;
+    });
+  }
 
   initialize_cropper(content: ElementRef) {
     
@@ -104,8 +110,13 @@ export class UploaderChatProfilePictureComponent implements OnInit {
     this.uploader.clearQueue();
   }
 
+  loading=false;
   set_crop() {
-    
+    if(this.loading){
+      return
+    }
+
+    this.loading=true;
     const canvas = this.cropper.getCroppedCanvas();
     //this.imageDestination = canvas.toDataURL("image/png");
     canvas.toBlob(blob => {

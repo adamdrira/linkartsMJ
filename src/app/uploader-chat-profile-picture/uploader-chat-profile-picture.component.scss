@@ -31,6 +31,8 @@
                         width:unset;
                         height:unset;
                         font-size: 55px;
+                        max-width: 55px;
+                        overflow: hidden;
                         margin: auto auto 10px auto;
                         color:rgb(32,56,100);
                     }
@@ -152,6 +154,8 @@
                 height:unset;
                 color:rgb(32,56,100);
                 margin:auto 5px auto auto;
+                max-width: 24px;
+                overflow: hidden;
             }
             span {
                 font-size: 16px;
