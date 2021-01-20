@@ -150,6 +150,7 @@ wss.on('connection', (ws, req)=>{
          
         }
       }
+      
       else if(messageArray.status=='not-writing'){
         if (toUserWebSocket && toUserWebSocket.length>0) {
           console.log("sending writing");
@@ -173,6 +174,16 @@ wss.on('connection', (ws, req)=>{
           for(let i=0;i<toUserWebSocket.length;i++){
             toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'emoji',message:messageArray,real_id_user:id_user}]));
           }
+        }
+      }
+      else if(messageArray.status=="delete_message" ){
+        console.log("send delete_message");
+        if (toUserWebSocket && toUserWebSocket.length>0) {
+          console.log("sending delete_message");
+          for(let i=0;i<toUserWebSocket.length;i++){
+            toUserWebSocket[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend, is_from_server:true, server_message:'delete_message',message:messageArray,id_user_writing:id_user,id_message:messageArray.id_message}]));
+          }
+         
         }
       }
       else if(messageArray.status!='seen' && messageArray.status!='writing'  && messageArray.status!='not-writing' &&  messageArray.status!='emoji' && messageArray.status!='block'){
@@ -609,6 +620,20 @@ wss.on('connection', (ws, req)=>{
                     console.log("sending emoji change ");
                     for(let i=0;i<toUserWebSocket1.length;i++){
                       toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'emoji',message:messageArray,group_chat_id:messageArray.id_receiver,id_message:messageArray.id_message}]));
+                    }
+                  }
+                }
+              }
+            }
+            else if(messageArray.status=="delete_message" ){
+              for(let k=0;k<list_of_receivers.length;k++){
+                if(list_of_receivers[k]!=userID){
+                  var toUserWebSocket1 = webSockets[list_of_receivers[k]];
+                  const id_friend1=list_of_receivers[k];
+                  if (toUserWebSocket1 && toUserWebSocket1.length>0) {
+                    console.log("sending  delete_message ");
+                    for(let i=0;i<toUserWebSocket1.length;i++){
+                      toUserWebSocket1[i].send(JSON.stringify([{id_user:"server",id_receiver:id_friend1, is_from_server:true, server_message:'delete_message',message:messageArray,group_chat_id:messageArray.id_receiver,id_message:messageArray.id_message,id_user_writing:id_user}]));
                     }
                   }
                 }

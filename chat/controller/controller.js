@@ -2659,6 +2659,7 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     
 
     router.get('/get_notifications_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
+      console.log("get_notifications_section")
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend= parseInt(req.params.id_friend);
       let id_chat_section= parseInt(req.params.id_chat_section);
@@ -2671,12 +2672,18 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               id_chat_section:id_chat_section,
               id_receiver:id_friend, 
               id_user:{[Op.ne]:id_user},     
+              status:"received",
+              [Op.not]: {
+                list_of_users_who_saw: {
+                 [Op.contains]: [id_user],
+                },
+              },
           },
-          where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
+          //where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+          console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(messages=>{
           if(messages.length>0){
             res.status(200).send([{ "value":true}]); 
           }
@@ -2686,6 +2693,9 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
         })
       }
       else{
+        console.log("look for id chat section " + id_chat_section)
+        console.log(id_friend)
+        console.log(id_user)
         list_of_messages.findAll({
           where:{
                is_a_group_chat:{[Op.not]: true},
@@ -2694,9 +2704,9 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
               [Op.and]:[ {id_user:id_friend},{id_receiver:id_user}],         
           },
         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(messages=>{
+          //console.log(err);	
+          res.status(500).json({msg: "error", details: err});		
+        }).then(messages=>{
           if(messages.length>0){
             res.status(200).send([{ "value":true}]); 
           }

@@ -886,13 +886,13 @@ exports.encrypt_data= async(req,res)=>{
 	var mailCorrect =false;
 	
 	for(let i=0;i<list_of_invited_mails.length;i++){
-		console.log(list_of_invited_mails[i])
-		console.log(list_of_invited_passwords[i])
-		if( bcrypt.compare( String(req.body.mail), String(list_of_invited_mails[i])) && bcrypt.compare( String(req.body.password), String(list_of_invited_passwords[i])))
-		mailCorrect= true;
-		passwordCorrect = true;
-	}
+		if( String(req.body.mail)==list_of_invited_mails[i] && String(req.body.password)==list_of_invited_passwords[i]){
 
+			mailCorrect= true;
+			passwordCorrect = true;
+		}
+	
+	}
 	if(!passwordCorrect || !mailCorrect) {
 		return res.status(200).json({msg: "error"});
 	}
