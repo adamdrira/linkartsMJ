@@ -49,7 +49,7 @@ const authentification = require('../../authentication/db.config');
 
 // Cors
 const corsOptions = {
-   origin: ['http://localhost:4200'],
+   origin: ['https://linkarts.fr'],
    optionsSuccessStatus: 200
  };
  router.use(cors(corsOptions));
