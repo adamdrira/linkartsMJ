@@ -17,11 +17,12 @@ const trendings_seq= require('../../p_trendings/model/sequelize');
 const Sequelize = require('sequelize');
 var nodemailer = require('nodemailer');
 const Pool = require('pg').Pool;
+
 const pool = new Pool({
   port: 5432,
   database: 'linkarts',
-  user: 'postgres',
-  password: 'test',
+  user: 'adamdrira',
+  password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
 });
@@ -136,7 +137,7 @@ pool.connect((err, client, release) => {
     
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 150);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 2);
   
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
@@ -212,7 +213,11 @@ pool.connect((err, client, release) => {
                             })
                             .on("finish", function() {
                               
-                              const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
+                              //pour ubuntu
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          
+          //pour angular
+          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
                               //console.log(pythonProcess)
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
@@ -591,24 +596,24 @@ const get_writings_trendings = (request, response) => {
                 }
               });
         
-            var mailOptions = {
-                from: 'Linkarts <services@linkarts.fr>', // sender address
-                to:  user.email, // my mail
-                //cc:"adam.drira@etu.emse.fr",
-                subject: `Top tendances !`, // Subject line
-                //text: 'plain text', // plain text body
-                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Bandes dessinées"</p>
-                <p><a href="http://localhost:4200/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
-                // attachments: params.attachments
-            };
+              var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to:  user.email, // my mail
+                  //cc:"adam.drira@etu.emse.fr",
+                  subject: `Top tendances !`, // Subject line
+                  //text: 'plain text', // plain text body
+                  html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Bandes dessinées"</p>
+                  <p><a href="http://localhost:4200/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                  // attachments: params.attachments
+              };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error while sending mail: ' + error);
-                } else {
-                    console.log('Message sent: %s', info.messageId);
-                }
-            })*/
+              transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                  } else {
+                      console.log('Message sent: %s', info.messageId);
+                  }
+              })
             }
           })
         }
@@ -842,13 +847,13 @@ const get_writings_trendings = (request, response) => {
                 // attachments: params.attachments
             };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
+            transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('Error while sending mail: ' + error);
                 } else {
                     console.log('Message sent: %s', info.messageId);
                 }
-            })*/
+            })
             }
           })
         }
@@ -1029,14 +1034,14 @@ const get_writings_trendings = (request, response) => {
                 // attachments: params.attachments
             };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
+            transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('Error while sending mail: ' + error);
                 } else {
                     console.log('Message sent: %s', info.messageId);
                     
                 }
-            })*/
+            })
             }
           })
         }

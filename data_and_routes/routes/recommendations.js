@@ -15,11 +15,12 @@ var fastcsv = require("fast-csv");
 const Sequelize = require('sequelize');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
+
 const pool = new Pool({
   port: 5432,
   database: 'linkarts',
-  user: 'postgres',
-  password: 'test',
+  user: 'adamdrira',
+  password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
 });
@@ -43,7 +44,7 @@ pool.connect((err, client, release) => {
 const generate_recommendations = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 280);
+  last_week.setDate(last_week.getDate() - 30);
 
 
 
@@ -70,8 +71,11 @@ const generate_recommendations = (request, response) => {
         console.log("raady to load " + jsonData.length);
         if(jsonData.length>=1){
           
-
-          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+          //pour ubuntu
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          
+          //pour angular
+          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
            // console.log("python res")
@@ -1247,7 +1251,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 280);
+  last_week.setDate(last_week.getDate() - 30);
   let list_to_send=[];
  
   pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1  AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,format], (error, results1) => {
@@ -1373,7 +1377,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 280);
+    last_week.setDate(last_week.getDate() - 30);
   
   
     let list_to_send=[];
@@ -1451,7 +1455,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
 
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 280);
+    last_week.setDate(last_week.getDate() - 30);
   
     let list_to_send=[];
    
@@ -1575,7 +1579,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 280);
+  last_week.setDate(last_week.getDate() - 30);
 
 
   let list_to_send=[];
@@ -1652,7 +1656,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   console.log("complete_recommendation_writing")
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 280);
+  last_week.setDate(last_week.getDate() - 30);
   console.log(style)
   let list_to_send=[];
  
@@ -1729,7 +1733,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 280);
+    last_week.setDate(last_week.getDate() - 30);
   
   
     let list_to_send=[];

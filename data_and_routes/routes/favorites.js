@@ -11,11 +11,20 @@ const trendings_seq= require('../../p_trendings/model/sequelize');
 const favorites_seq= require('../../favorites/model/sequelize');
 const Sequelize = require('sequelize');
 const Pool = require('pg').Pool;
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
+  host: 'localhost',
+  //dialect: 'postgres'
+});*/
+
+const pool = new Pool({
+  port: 5432,
+  database: 'linkarts',
+  user: 'adamdrira',
+  password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
 });
@@ -88,7 +97,11 @@ pool.connect((err, client, release) => {
                 console.log(e)
             })
             .on("finish", function() {
-                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+                //pour ubuntu
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          
+          //pour angular
+          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
                 //console.log(pythonProcess)
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
