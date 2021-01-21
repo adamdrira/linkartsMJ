@@ -1,309 +1,312 @@
+<div class="home-linkcollab">
 
+    <div class="categories-container">
 
+        <div class="select-container">
+            <mat-form-field floatLabel='never' [ngClass]="{'opened': homeLinkcollabSelect && homeLinkcollabSelect.panelOpen }">
 
-
-<div class="container-fluid">
-
-
-    <!--<div class="top-container">
-
-        <div class="categories-container">
-            <div class="category-filter">
-                <div class="content-action text-center">
-                    <span>Nos partenaires potentiels</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="right-container-scrollable">
-
-            <div class="panel-controller">
-                <div class="dropdowns-container">
-                    <select name="somename" class="SelectBox5" placeholder="Trier par type" style="height: 100%;">
-                        <option label="Bandes dessinées">Bandes dessinées</option>
-                        <option label="Dessins">Dessins</option>
-                        <option label="Écrits">Écrits</option>
-                    </select>
-                </div>
-            </div>
-
-
-           
-
-
-
-            <div class="item-container">
-                <div class="picture-container">
-                    <img src="../../assets/img/glenat_edition.png">
-                    <button mat-raised-button class="submit-project-button style0">
-                        Découvrir
-                    </button>
-                </div>
-                <div class="detail-container">
-                    <div class="author-container">
-                        <div class="left-container">
-                            <img src="../../assets/img/glenat_edition.png">
-                        </div>
-                        <div class="right-container">
-                            <span class="author-name">
-                                Glénat
-                            </span>
-                            <div class="author-location">
-                                <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
-                                <span>Paris, France</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="item-container">
-                <div class="picture-container">
-                    <img src="../../assets/img/pika_edition.png">
-                    <button mat-raised-button class="submit-project-button style0">
-                        Découvrir
-                    </button>
-                </div>
-                <div class="detail-container">
-                    <div class="author-container">
-                        <div class="left-container">
-                            <img src="../../assets/img/pika_edition.png">
-                        </div>
-                        <div class="right-container">
-                            <span class="author-name">
-                                Pika
-                            </span>
-                            <div class="author-location">
-                                <mat-icon style="font-size: 20px;margin: 0px -4px 0px -2px;">location_on</mat-icon>
-                                <span>Paris, France</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-        </div>
-
-
-
-    </div>-->
-
-    <div class="bottom-container">
-
-        <div class="category-filter ">
-            <div class="content-action text-center" (click)="open_subcategory(0);" [ngClass]="{'opened': subcategory==0 }">
-                <div class="title" [ngClass]="{'title-opened': subcategory==0 }"> 
-                    <div class="icon-container">
-                        <div class="icon icon-recommendation" [ngClass]="{'icon-clicked': subcategory==0 }">
-                        </div>
-                    </div>
-                    Collaborations bénévoles
-                </div>
-            </div>
-            <div class="content-action text-center" (click)="open_subcategory(1)" [ngClass]="{'opened': subcategory==1 }">
-                <div class="title" [ngClass]="{'title-opened': subcategory==1 }"> 
-                    <div class="icon-container">
-                        <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
-                        </div>
-                    </div>
-                    Collaborations rémunérées
-                </div>
-            </div>
-            <div class="content-action text-center" (click)="open_subcategory(2)" [ngClass]="{'opened': subcategory==2 }">
-                <div class="title" [ngClass]="{'title-opened': subcategory==2 }"> 
-                    <div class="icon-container">
-                        <div class="icon icon-trendings" [ngClass]="{'icon-clicked': subcategory==1 }">
-                        </div>
-                    </div>
-                    Produits & Services
-                </div>
-            </div>
-        </div>
-
-
-        <div class="left-container-scrollable">
-
-            <div class="panel-controller">
-                <div class="dropdowns-container"  [ngClass]="{'invisible':!sumo_ready}">
+                <mat-select #homeLinkcollabSelect panelClass="homeLinkcollabSelect" ng-animate-disabled
+                [(value)]="category_index" disableOptionCentering
+                (selectionChange)="sectionChange2($event)">
                     
-                    <select name="somename" class="SelectBox1" placeholder="Objet de l'annonce" style="height: 100%;">
-                        <!--<option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Bandes dessinées">Bandes dessinées</option>
-                        <option label="BD européennes">BD européennes</option>
-                        <option label="Comics">Comics</option>
-                        <option label="Manga">Manga</option>
-                        <option label="Dessin ">Dessin en tout genre</option>
-                        <option label="Dessin numérique">Dessin numérique</option>
-                        <option label="Dessin traditionnel">Dessin traditionnel</option>
-                        <option label="Ecrit en tout genre">Ecrit en tout genre</option>
-                        <option label="Articles">Articles</option>
-                        <option label="Roman">Roman</option>
-                        <option label="Roman illustré">Roman illustré</option>
-                        <option label="Scénario">Scénario</option>-->
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option *ngFor="let section of ads_types;let i=index;">{{section}}</option> 
-                    </select>
-                    <select name="somename" class="SelectBox2" placeholder="Auteur" style="height: 100%;">
-                        <!--<option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>-->
-                        <option selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option *ngFor="let section of ads_descriptions;let i=index;">{{section}}</option> 
-                    </select>
-                    <select name="somename" class="SelectBox3" placeholder="Cible" style="height: 100%;">
-                        <!--<option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option label="Professionnel non artiste">Professionnel non artiste</option>
-                        <option label="Artiste">Artiste</option>
-                        <option label="Auteur de bandes dessinées">Auteur de bandes dessinées</option>
-                        <option label="Ecrivain">Ecrivain</option>
-                        <option label="Dessinateur">Dessinateur</option>
-                        <option label="Scénariste">Scénariste</option>-->
-                        <option disabled selected value="none"></option>
-                        <option label="Tout">Tout</option>
-                        <option *ngFor="let section of ads_targets;let i=index;">{{section}}</option> 
-                    </select>
-
-                    <div [ngClass]="{'really-invisible':!service}">
-                        <select name="somename" class="SelectBox6" placeholder="Catégorie de l'annonce " style="height: 100%;" >
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option *ngFor="let section of ads_services_types;let i=index;">{{section}}</option> 
-                        </select>
-                    </div>
-                   
-
-                    <div [ngClass]="{'really-invisible':!service}">
-                        <select name="somename" class="SelectBox8" placeholder="Type d'annonce" style="height: 100%;">
-                            <option disabled selected value="Offres"></option>
-                            <option label="Tout">Tout</option>
-                            <option label="Offre">Offre</option>
-                            <option label="Demande">Demande</option>
-                        </select>
-                    </div>
-                   
-
-                    <div [ngClass]="{'really-invisible':!remuneration}">
-                        <select name="somename" class="SelectBox7" placeholder="Type de rémunération" style="height: 100%;" >
-                            <option disabled selected value="none"></option>
-                            <option label="Tout">Tout</option>
-                            <option *ngFor="let section of ads_remuneration_types;let i=index;" >{{section}}</option> 
-                        </select>
-                    </div>
-                   
-
-                    
-
-                    <div  [ngClass]="{'really-invisible':!remuneration && !service}">
-                        <select name="somename" class="SelectBox4" placeholder="Tri par pertinence" style="height: 100%;">
-                            <option disabled selected value="Pertinence"></option>
-                            <option label="pertinence">Tri par pertinence</option>
-                            <option label="récent">Tri par le plus récent</option>
-                            <option label="ancient">Tri par le plus ancient</option>
-                            <option label="croissant">Tri par montant croissant</option>
-                            <option label="décroissant">Tri par montant décroissant</option>
-                        </select>
-                    </div>
-
-                    <div  [ngClass]="{'really-invisible':remuneration || service}">
-                        <select name="somename" class="SelectBox4b" placeholder="Tri par pertinence" style="height: 100%;">
-                            <option disabled selected value="Pertinence"></option>
-                            <option label="pertinence">Tri par pertinence</option>
-                            <option label="récent">Tri par le plus récent</option>
-                            <option label="ancient">Tri par le plus ancient</option>
-                        </select>
-                    </div>
-                   
-                    
-                </div>
-
-                
-            </div>
-
-
-            <div *ngIf="loading_ads && !list_of_ads_received" class="thumbnails-container ">
-            
-                <div class="loading_height_5">
-                    <div class="thumbnail" *ngFor="let item of skeleton_array; let i = index">
-                        <app-thumbnail-artwork 
-                        [skeleton]="skeleton"
-                        ></app-thumbnail-artwork>
-                    </div>
-                </div>
-
-               
-            </div >
-
-            <div class="no-proposition-container" *ngIf="list_of_ads_received && display_no_propositions" [@enterAnimation]>
-                <mat-icon [ngClass]="{'invisible': !show_icon }">find_in_page</mat-icon>
-                <span >Aucun résultat pour la recherche demandée</span>
-            </div>
-
-            <div *ngIf="list_of_ads_received" class="thumbnails-container ">
-                <!--<div *ngFor="let item of list_of_ads; let i = index" style="margin-top:30px;">
-                    <app-thumbnail-ad 
-                    [item]=item
-                    now_in_seconds={{now_in_seconds}}
-                    ></app-thumbnail-ad>
-                </div>-->
-
-                <ng-container *ngIf="show_propositions">
-                    <div [ngClass]="{'loading_height_5':(number_of_pages>current_page || ( current_page==number_of_pages && number_of_results%5==0)),'loading_height_4':(current_page==number_of_pages && number_of_results%5==4),'loading_height_3':(current_page==number_of_pages && number_of_results%5==3),'loading_height_2':(current_page==number_of_pages && number_of_results%5==2),'loading_height_1':(current_page==number_of_pages && number_of_results%5==1)}">
-                        <ng-container *ngFor="let item of list_of_ads;let i=index">
-                           
-                            <div class="thumbnail " >
-                                <app-thumbnail-ad
-                                now_in_seconds={{now_in_seconds}}
-                                [item]=list_of_ads[i]>
-                                </app-thumbnail-ad>
+                    <mat-select-trigger>
+                        <ng-container *ngIf="category_index==0">
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation">
+                                </div>
                             </div>
+                            <span>Collaborations bénévoles</span>
                         </ng-container>
-                    </div>
-                    
-        
-                    
-                    <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
-                        <button class="button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
-                        </button>
-                        <button class="button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
-                        </button>
-        
-                        <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
-                        <span class="total-pages"> / {{number_of_pages}}</span>
+                        <ng-container *ngIf="category_index==1">
+                            <div class="icon-container">
+                                <div class="icon icon-trendings">
+                                </div>
+                            </div>
+                            <span>Collaborations rémunérées</span>
+                        </ng-container>
+                        <ng-container *ngIf="category_index==2">
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed">
+                                </div>
+                            </div>
+                            <span>Produits et services</span>
+                        </ng-container>
                         
-                        <button class="button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
-                        </button>
-                        <button class="button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
-                        </button>
+                        <div class="arrow-container" [ngClass]="{'opened': homeLinkcollabSelect && homeLinkcollabSelect.panelOpen }">
+                            <mat-icon>arrow_back_ios_new</mat-icon>
+                        </div>
+                    </mat-select-trigger>
+
+                    
+
+
+                    <mat-option [value]="0">
+                        <div class="icon-container">
+                            <div class="icon icon-recommendation">
+                            </div>
+                        </div>
+                        <span>Collaborations bénévoles</span>
+                    </mat-option>
+                    <mat-option [value]="1">
+                        <div class="icon-container">
+                            <div class="icon icon-trendings">
+                            </div>
+                        </div>
+                        <span>Collaborations rémunérées</span>
+                    </mat-option>
+                    <mat-option [value]="2">
+                        <div class="icon-container">
+                            <div class="icon icon-newsfeed">
+                            </div>
+                        </div>
+                        <span>Produits et services</span>
+                    </mat-option>
+                </mat-select>
+
+            </mat-form-field>
+        </div>
+
+        <div class="swiper-container">
+            <div  #swiperCategories  class="swiper-item" >
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <div class="category" (click)="open_category(0, true);" [ngClass]="{'opened': category_index==0 }">
+                            <div class="icon-container">
+                                <div class="icon icon-recommendation">
+                                </div>
+                            </div>
+                            <span>Collaborations bénévoles</span>
+                        </div>
                     </div>
-                </ng-container>
+                    <div class="swiper-slide">
+                        <div class="category" (click)="open_category(1, true);" [ngClass]="{'opened': category_index==1 }">
+                            <div class="icon-container">
+                                <div class="icon icon-trendings">
+                                </div>
+                            </div>
+                            <span>Collaborations rémunérées</span>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="category" (click)="open_category(2, true);" [ngClass]="{'opened': category_index==2 }">
+                            <div class="icon-container">
+                                <div class="icon icon-newsfeed">
+                                </div>
+                            </div>
+                            <span>Produits et services</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="button-prev-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isBeginning }"></div>
+            <div class="button-next-shadow" *ngIf="swiper" [ngClass]="{'invisible': swiper.isEnd }"></div>
+            <div class="swiper-button-prev first" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+            <div class="swiper-button-next first" [ngClass]="{'invisible': swiper && swiper.isBeginning && swiper.isEnd }"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="home-linkcollab-selects" [formGroup]="f1" *ngIf="f1">
+
+    <div class="swiper-container">
+        <div #swiperCategories2 class="swiper-item">
+            <div class="swiper-wrapper">
+                        
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '175px'}" *ngIf="innerWidth>=400">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Objet de l'annonce</mat-label>
+                        <mat-select #matSelect1 (selectionChange)="change_select1($event)" formControlName="type_of_project" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of ads_types, let i = index">
+                                <mat-option *ngIf="!( i==0 && type_of_project=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=450">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Auteur</mat-label>
+                        <mat-select #matSelect2 (selectionChange)="change_select2($event)" formControlName="author" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of ads_descriptions, let i = index">
+                                <mat-option *ngIf="!( i==0 && author=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '230px'}" *ngIf="innerWidth>=500">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Cible</mat-label>
+                        <mat-select #matSelect3 (selectionChange)="change_select3($event)" formControlName="target" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of ads_targets, let i = index">
+                                <mat-option *ngIf="!( i==0 && target=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '200px'}" *ngIf="innerWidth>=700">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Catégorie de l'annonce</mat-label>
+                        <mat-select #matSelect4 (selectionChange)="change_select4($event)" formControlName="type_of_service" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of ads_services_types, let i = index">
+                                <mat-option *ngIf="!( i==0 && type_of_service=='none' )" [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '160px'}" [ngClass]="{'really-invisible':!service}" *ngIf="innerWidth>=1000">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Type d'annonce</mat-label>
+                        <mat-select #matSelect5 (selectionChange)="change_select5($event)" formControlName="offer_or_demand" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <mat-option *ngIf="!( offer_or_demand=='none' )" value="Tout">
+                                Tout
+                            </mat-option>
+                            <mat-option value="Offre">
+                                Offre
+                            </mat-option>
+                            <mat-option value="Demande">
+                                Demande
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '190px'}" *ngIf="innerWidth>=1000" [ngClass]="{'really-invisible': !remuneration}">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Type de rémunération</mat-label>
+                        <mat-select #matSelect6 (selectionChange)="change_select6($event)" formControlName="type_of_remuneration" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <ng-container *ngFor="let obj of ads_remuneration_types, let i = index">
+                                <mat-option [value]="obj">
+                                    {{ obj }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '220px'}" [ngClass]="{'really-invisible':!remuneration && !service}" *ngIf="innerWidth>=1000">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Tri par pertinence</mat-label>
+                        <mat-select #matSelect7 (selectionChange)="change_select7($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <mat-option value="Tri par pertinence">
+                                Tri par pertinence
+                            </mat-option>
+                            <mat-option value="Tri par le plus récent">
+                                Tri par le plus récent
+                            </mat-option>
+                            <mat-option value="Tri par le plus ancien">
+                                Tri par le plus ancien
+                            </mat-option>
+                            <mat-option value="Tri par montant croissant">
+                                Tri par montant croissant
+                            </mat-option>
+                            <mat-option value="Tri par montant décroissant">
+                                Tri par montant décroissant
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" [ngClass]="{'really-invisible':remuneration || service}" *ngIf="innerWidth>=1000">
+                    <mat-form-field floatLabel='never' class="select-class">
+                        <mat-label>Tri par pertinence</mat-label>
+                        <mat-select #matSelect8 (selectionChange)="change_select8($event)" formControlName="sorting" disableOptionCentering panelClass="homelinkcollabSelectClass">
+                            <mat-option value="Tri par pertinence">
+                                Tri par pertinence
+                            </mat-option>
+                            <mat-option value="Tri par le plus récent">
+                                Tri par le plus récent
+                            </mat-option>
+                            <mat-option value="Tri par le plus ancien">
+                                Tri par le plus ancien
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-item swiper-slide" [ngStyle]="{'width' : '165px'}" *ngIf="1000>innerWidth">
+                    <button (click)="open_more_filters()">
+                        <mat-icon>filter_alt</mat-icon>
+                        <span>Voir tous les filtres</span>
+                    </button>
+                </div>
+
 
 
             </div>
-
-            
-            
-
         </div>
-
+        <div class="button-prev-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isBeginning }"></div>
+        <div class="button-next-shadow" *ngIf="swiper2" [ngClass]="{'invisible': swiper2.isEnd }"></div>
+        <div class="swiper-button-prev second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+        <div class="swiper-button-next second" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
     </div>
 
 
 
-        
+</div>
 
 
+
+<div *ngIf="loading_ads && !list_of_ads_received" class="thumbnails-container">
+    <div class="loading_height_5">
+        <div class="thumbnail" *ngFor="let item of skeleton_array; let i = index">
+            <app-thumbnail-artwork 
+            [skeleton]="skeleton"
+            ></app-thumbnail-artwork>
+        </div>
+    </div>
+</div>
+
+<div class="no-proposition-container" *ngIf="!list_of_ads.length && list_of_ads_received && display_no_propositions">
+    <mat-icon [ngClass]="{'invisible': !show_icon }" [@enterFromTopAnimation]>find_in_page</mat-icon>
+    <span [@enterFromTopAnimation]>Aucun résultat pour la recherche demandée</span>
+</div>
+
+<div *ngIf="list_of_ads_received" class="thumbnails-container ">
+    <ng-container *ngIf="show_propositions">
+        <div [ngClass]="{'loading_height_5':(number_of_pages>current_page || ( current_page==number_of_pages && number_of_results%5==0)),'loading_height_4':(current_page==number_of_pages && number_of_results%5==4),'loading_height_3':(current_page==number_of_pages && number_of_results%5==3),'loading_height_2':(current_page==number_of_pages && number_of_results%5==2),'loading_height_1':(current_page==number_of_pages && number_of_results%5==1)}">
+            <ng-container *ngFor="let item of list_of_ads;let i=index">
+                
+                <div class="thumbnail " >
+                    <app-thumbnail-ad
+                    now_in_seconds={{now_in_seconds}}
+                    [item]=list_of_ads[i]>
+                    </app-thumbnail-ad>
+                </div>
+            </ng-container>
+        </div>
+        <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
+            <button class="button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
+            </button>
+            <button class="button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
+            </button>
+
+            <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
+            <span class="total-pages"> / {{number_of_pages}}</span>
+            
+            <button class="button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
+            </button>
+            <button class="button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
+            </button>
+        </div>
+    </ng-container>
 </div>

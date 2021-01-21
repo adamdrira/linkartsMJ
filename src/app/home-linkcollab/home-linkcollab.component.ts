@@ -5,8 +5,12 @@ import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
 import { SearchbarService } from '../services/searchbar.service';
 
+import { MatDialog } from '@angular/material/dialog';
+
 import {MatInputModule} from '@angular/material/input';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 declare var Swiper: any
 declare var $: any 
@@ -17,13 +21,54 @@ declare var $: any
   styleUrls: ['./home-linkcollab.component.scss'],
   animations: [
     trigger(
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
       'enterAnimation', [
         transition(':enter', [
-          style({transform: 'translateY(0)', opacity: 0}),
-          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
         ])
-      ]
+      ],
     ),
+    //LEAVING ANIMATIONS
+    trigger(
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateX(0%)', opacity: 1}),
+          animate('200ms ease-in-out', style({transform: 'translateX(-30px)', opacity: 0}))
+        ])
+      ],
+    )
   ],
 })
 
@@ -34,6 +79,8 @@ export class HomeLinkcollabComponent implements OnInit {
     public navbar: NavbarService,
     private cd: ChangeDetectorRef,
     private Ads_service:Ads_service,
+    public dialog: MatDialog,
+    private fb: FormBuilder
     ) {
 
     this.navbar.setActiveSection(1);
@@ -41,17 +88,21 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
 
+  @ViewChild("homeLinkcollabSelect") homeLinkcollabSelect;
+  @ViewChild("matSelect1") matSelect1;
+  @ViewChild("matSelect2") matSelect2;
+  @ViewChild("matSelect3") matSelect3;
+  @ViewChild("matSelect4") matSelect4;
+  @ViewChild("matSelect5") matSelect5;
+  @ViewChild("matSelect6") matSelect6;
+  @ViewChild("matSelect7") matSelect7;
+  @ViewChild("matSelect8") matSelect8;
 
-  @HostListener('window:resize', ['$event'])
-    onResize(event) {
-      this.cd.detectChanges();
-      this.initialize_heights();
-  };
 
 
 
+  category_index:number = -1;
 
-  subcategory:number;
   type_of_project:string="none";
   author:string="none";
   target:string="none";
@@ -61,14 +112,14 @@ export class HomeLinkcollabComponent implements OnInit {
   skeleton_array = Array(5);
   now_in_seconds=Math.trunc( new Date().getTime()/1000);
 
-  ads_types = ["Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
+  ads_types = ["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
   "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
 
-  ads_remuneration_types = ["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
-  ads_services_types = ["Produits","Services","Réinitialiser"];
-  ads_descriptions = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  ads_remuneration_types = ["Tout","Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
+  ads_services_types = ["Tout","Produits","Services"];
+  ads_descriptions = ["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
   
-  ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+  ads_targets=["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
 
   type_of_service='none';
   offer_or_demand='none'; // offre ou demande
@@ -76,14 +127,25 @@ export class HomeLinkcollabComponent implements OnInit {
   service=false;
   remuneration=false;
 
+  
+  f1: FormGroup;
   /*********************************************************************** */
   /*********************************************************************** */
   /*On init */
   /*********************************************************************** */
   /*********************************************************************** */
   ngOnInit() {
+    this.open_category(0, true);
 
-    this.open_subcategory(0);
+    this.f1 = this.fb.group({
+      type_of_project: [this.type_of_project],
+      author: [this.author],
+      target: [this.target],
+      type_of_service: [this.type_of_service],
+      offer_or_demand: [this.offer_or_demand],
+      type_of_remuneration: [this.type_of_remuneration],
+      sorting: [this.sorting],
+    })
   }
 
   /*********************************************************************** */
@@ -92,33 +154,56 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   /*********************************************************************** */
   show_icon=false;
+    
   ngAfterViewInit() {
 
     let THIS=this;
     $(window).ready(function () {
       THIS.show_icon=true;
     });
-    this.initialize_selectors();
+    this.initialize_swiper();
     
+    this.initialize_swiper2();
   }
 
-  
-  ngAfterViewChecked() {
-    this.initialize_heights();
-  }
+  innerWidth: number;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  };
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    if( this.homeLinkcollabSelect ) {
+      this.homeLinkcollabSelect.close();
+    }
+    if( this.matSelect1 ) {
+      this.matSelect1.close();
+    }
+    if( this.matSelect2 ) {
+      this.matSelect2.close();
+    }
+    if( this.matSelect3 ) {
+      this.matSelect3.close();
+    }
+    if( this.matSelect4 ) {
+      this.matSelect4.close();
+    }
+    if( this.matSelect5 ) {
+      this.matSelect5.close();
+    }
+    if( this.matSelect6 ) {
+      this.matSelect6.close();
+    }
+    if( this.matSelect7 ) {
+      this.matSelect7.close();
+    }
+    if( this.matSelect8 ) {
+      this.matSelect8.close();
+    }
+  };
 
-  initialize_heights() {
-    //if( !this.fullscreen_mode ) {
-      $('#left-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      $('#right-container').css("height", ( window.innerHeight - this.navbar.getHeight() ) + "px");
-      this.cd.detectChanges();
-    //}
-  }
-
-
-  open_subcategory(i) {
-
-    if( this.subcategory==i ) {
+  open_category(i, check_no_same_change) {
+    if( this.category_index==i && check_no_same_change ) {
       return;
     }
     this.type_of_project="none";
@@ -144,193 +229,265 @@ export class HomeLinkcollabComponent implements OnInit {
       this.service=true;
       this.get_sorted_ads();
     }
-    this.subcategory=i;
-    
+    this.category_index=i;
+    this.cd.detectChanges();
+    window.dispatchEvent(new Event('resize'));
     return;
   }
 
-  sumo_ready=false;
-  initialize_selectors() {
 
-    let THIS=this;
-  
-    $(document).ready(function () {
-      $(".SelectBox1").SumoSelect({
-      });    
-      $(".SelectBox2").SumoSelect({
-      });    
-      $(".SelectBox3").SumoSelect({
-      });    
-      $(".SelectBox4").SumoSelect({
-      });
-      $(".SelectBox4b").SumoSelect({
-      });
-      $(".SelectBox5").SumoSelect({
-      });
-      $(".SelectBox6").SumoSelect({
-      });
-      $(".SelectBox7").SumoSelect({
-      });
-      $(".SelectBox8").SumoSelect({
-      });
+  swiper: any;
+  @ViewChild("swiperCategories") swiperCategories: ElementRef;
+  initialize_swiper() {
 
-      THIS.sumo_ready=true;
-    });
-    $('.panel-controller .right-container').hide().delay(80).show('fast');
+    if (!this.swiper && this.swiperCategories) {
+      this.swiper = new Swiper(this.swiperCategories.nativeElement, {
+        speed: 300,
+        initialSlide: 0,
 
-    $(".SelectBox1").change(function(){
-     
-      console.log($(this).val());
-      let type_of_project
-      if($(this).val()=="Tout"){
-        type_of_project="none";
-      }
-      else{
-        type_of_project=$(this).val();
-      }
-      if(THIS.type_of_project==type_of_project){
-        return
-      }
-      THIS.type_of_project=$(this).val();
-      THIS.get_sorted_ads();
-    });
-  
 
-    $(".SelectBox2").change(function(){
-      console.log($(this).val());
-      let author
-      if($(this).val()=="Tout"){
-        author="none";
-      }
-      else{
-        author=$(this).val();
-      }
-      if(THIS.author==author){
-        return
-      }
-      THIS.author=author;
-      THIS.get_sorted_ads();
-    });
-    $(".SelectBox3").change(function(){
-      console.log($(this).val());
-      let target
-      if($(this).val()=="Tout"){
-        target="none";
-      }
-      else{
-        target=$(this).val();
-      }
-      if(THIS.target==target){
-        return
-      }
-      THIS.target=target;
-      THIS.get_sorted_ads();
-    });
-    $(".SelectBox4").change(function(){
-      console.log($(this).val());
-      let sorting
-      if($(this).val()=="Tri par pertinence"){
-       sorting="pertinence";
-      }
-      else if($(this).val()=="Tri par le plus récent"){
-        sorting="récent";
-      }
-      else if($(this).val()=="Tri par le plus ancient"){
-        sorting="ancient";
-      }
-      else if($(this).val()=="Tri par montant croissant"){
-        sorting="croissant";
-      }
-      else if($(this).val()=="Tri par montant décroissant"){
-        sorting="décroissant";
-      }
+        breakpoints: {
+          300: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+            spaceBetween: 10,
+            simulateTouch: true,
+            allowTouchMove: true,
+          },
+          400: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+            spaceBetween: 20,
+            simulateTouch: true,
+            allowTouchMove: true,
+          },
+          700: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            spaceBetween: 20,
+            simulateTouch: false,
+            allowTouchMove: false,
+          }
+        },
 
-      if(sorting==THIS.sorting){
-        return;
-      }
-      THIS.sorting=sorting;
-      THIS.get_sorted_ads();
-    });
-    $(".SelectBox4b").change(function(){
-      console.log($(this).val());
-      let sorting
-      if($(this).val()=="Tri par pertinence"){
-       sorting="pertinence";
-      }
-      else if($(this).val()=="Tri par le plus récent"){
-        sorting="récent";
-      }
-      else if($(this).val()=="Tri par le plus ancient"){
-        sorting="ancient";
-      }
-      else if($(this).val()=="Tri par montant croissant"){
-        sorting="croissant";
-      }
-      else if($(this).val()=="Tri par montant décroissant"){
-        sorting="décroissant";
-      }
-
-      if(sorting==THIS.sorting){
-        return;
-      }
-      THIS.sorting=sorting;
-      THIS.get_sorted_ads();
-    });
-    $(".SelectBox6").change(function(){
-     
-      console.log($(this).val());
-      let type_of_service
-      if($(this).val()=="Tout"){
-        type_of_service="none";
-      }
-      else{
-        type_of_service=$(this).val();
-      }
-      if(type_of_service==THIS.type_of_service){
-        return;
-      }
-      THIS.type_of_service=type_of_service;
-      THIS.get_sorted_ads();
-    });
-
-    $(".SelectBox7").change(function(){
-     
-      console.log($(this).val());
-      let type_of_remuneration
-      if($(this).val()=="Tout"){
-          type_of_remuneration="none";
-      }
-      else{
-        type_of_remuneration=$(this).val();
-      }
-      if(type_of_remuneration==THIS.type_of_remuneration){
-        return;
-      }
-      THIS.type_of_remuneration=type_of_remuneration;
-      THIS.get_sorted_ads();
-    });
-    $(".SelectBox8").change(function(){
-     
-      console.log($(this).val());
-      let offer_or_demand
-      if($(this).val()=="Tout"){
-        offer_or_demand="none";
-      }
-      else if($(this).val()=="Offres") {
-        offer_or_demand="Offre";
-      }
-      else if($(this).val()=="Demandes") {
-        offer_or_demand="Demande";
-      }
-
-      if(offer_or_demand==THIS.offer_or_demand){
-        return;
-      }
-      THIS.offer_or_demand=offer_or_demand;
-      THIS.get_sorted_ads();
-    });
-
+        navigation: {
+          nextEl: '.swiper-button-next.first',
+          prevEl: '.swiper-button-prev.first',
+        },
+      })
+    }
   }
+
+  swiper2:any;
+  @ViewChild("swiperCategories2") swiperCategories2:ElementRef;
+  initialize_swiper2() {
+
+    if( !this.swiper2 && this.swiperCategories2 ) {
+      this.swiper2 = new Swiper( this.swiperCategories2.nativeElement, {
+        speed: 300,
+        initialSlide:0,
+
+        slidesPerView: 'auto',
+
+        breakpoints: {
+          // when window width is >= 320px
+          320: {
+            slidesPerGroup: 2,
+          },
+          // when window width is >= 480px
+          500: {
+            slidesPerGroup: 3,
+          },
+          // when window width is >= 640px
+          700: {
+            slidesPerGroup: 4,
+          },
+          // when window width is >= 640px
+          900: {
+            slidesPerGroup: 5,
+          }
+        },
+
+        navigation: {
+          nextEl: '.swiper-button-next.second',
+          prevEl: '.swiper-button-prev.second',
+        },
+        observer:'true',
+      })
+    }
+  }
+  
+
+  sectionChange2(e:any) {
+    this.open_category(e.value, false);
+  }
+
+
+  change_select1(e:any) {
+    if( e.value=="Tout" ){
+      if( this.type_of_project == "none" ) {
+        return;
+      }
+      this.type_of_project="none";
+    }
+    else{
+      if( this.type_of_project == e.value ) {
+        return;
+      }
+      this.type_of_project= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select2(e:any) {
+    if( e.value=="Tout" ){
+      if( this.author == "none" ) {
+        return;
+      }
+      this.author="none";
+    }
+    else{
+      if( this.author == e.value ) {
+        return;
+      }
+      this.author= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select3(e:any) {
+    if( e.value=="Tout" ){
+      if( this.target == "none" ) {
+        return;
+      }
+      this.target="none";
+    }
+    else{
+      if( this.target == e.value ) {
+        return;
+      }
+      this.target= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select4(e:any) {
+    if( e.value=="Tout" ){
+      if( this.type_of_service == "none" ) {
+        return;
+      }
+      this.type_of_service="none";
+    }
+    else{
+      if( this.type_of_service == e.value ) {
+        return;
+      }
+      this.type_of_service= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select5(e:any) {
+    if( e.value=="Tout" ){
+      if( this.offer_or_demand == "none" ) {
+        return;
+      }
+      this.offer_or_demand="none";
+    }
+    else{
+      if( this.offer_or_demand == e.value ) {
+        return;
+      }
+      this.offer_or_demand= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select6(e:any) {
+    if( e.value=="Tout" ){
+      if( this.type_of_remuneration == "none" ) {
+        return;
+      }
+      this.type_of_remuneration="none";
+    }
+    else{
+      if( this.type_of_remuneration == e.value ) {
+        return;
+      }
+      this.type_of_remuneration= e.value;
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select7(e:any) {
+    if( e.value=="Tri par pertinence" ){
+      if( this.sorting == "pertinence" ) {
+        return;
+      }
+      this.sorting="pertinence";
+    }
+    else if( e.value=="Tri par le plus récent" ){
+      if( this.sorting == "récent" ) {
+        return;
+      }
+      this.sorting="récent";
+    }
+    else if( e.value=="Tri par le plus ancien" ){
+      if( this.sorting == "ancient" ) {
+        return;
+      }
+      this.sorting="ancient";
+    }
+    else if( e.value=="Tri par montant croissant" ){
+      if( this.sorting == "croissant" ) {
+        return;
+      }
+      this.sorting="croissant";
+    }
+    else if( e.value=="Tri par montant décroissant" ){
+      if( this.sorting == "décroissant" ) {
+        return;
+      }
+      this.sorting="décroissant";
+    }
+    else {
+      if( this.sorting == "pertinence" ) {
+        return;
+      }
+      this.sorting="pertinence";
+    }
+    this.get_sorted_ads();
+  }
+
+  change_select8(e:any) {
+    if( e.value=="Tri par pertinence" ){
+      if( this.sorting == "pertinence" ) {
+        return;
+      }
+      this.sorting="pertinence";
+    }
+    else if( e.value=="Tri par le plus récent" ){
+      if( this.sorting == "récent" ) {
+        return;
+      }
+      this.sorting="récent";
+    }
+    else if( e.value=="Tri par le plus ancien" ){
+      if( this.sorting == "ancient" ) {
+        return;
+      }
+      this.sorting="ancient";
+    }
+    else {
+      if( this.sorting == "pertinence" ) {
+        return;
+      }
+      this.sorting="pertinence";
+    }
+    this.get_sorted_ads();
+  }
+  
+
   skeleton:boolean=true;
   compteur_ads=0;
   loading_ads=false;
@@ -428,6 +585,40 @@ export class HomeLinkcollabComponent implements OnInit {
   }
 
 
-
+  open_more_filters() {
+    const dialogRef = this.dialog.open(PopupLinkcollabFiltersComponent, {
+      data: { 
+        category_index:this.category_index,
+        type_of_project:this.type_of_project,
+        author:this.author,
+        target:this.target,
+        type_of_service:this.type_of_service,
+        offer_or_demand:this.offer_or_demand,
+        type_of_remuneration:this.type_of_remuneration,
+        sorting:this.sorting,
+        service:this.service,
+        remuneration:this.remuneration,
+      },
+      panelClass: "popupFiltersComponentClass",
+    }).afterClosed().subscribe(
+      result => {
+        this.f1.controls['type_of_project'].setValue(result.type_of_project);
+        this.f1.controls['author'].setValue(result.author);
+        this.f1.controls['target'].setValue(result.target);
+        this.f1.controls['type_of_service'].setValue(result.type_of_service);
+        this.f1.controls['offer_or_demand'].setValue(result.offer_or_demand);
+        this.f1.controls['type_of_remuneration'].setValue(result.type_of_remuneration);
+        this.f1.controls['sorting'].setValue(result.sorting);
+        
+        this.change_select1({value: result.type_of_project});
+        this.change_select2({value: result.author});
+        this.change_select3({value: result.target});
+        this.change_select4({value: result.type_of_service});
+        this.change_select5({value: result.offer_or_demand});
+        this.change_select6({value: result.type_of_remuneration});
+        this.change_select7({value: result.sorting});
+        this.change_select8({value: result.sorting});
+      });
+  }
 
 }
