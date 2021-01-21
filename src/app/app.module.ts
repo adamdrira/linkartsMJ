@@ -25,7 +25,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import {MatToolbarModule} from '@angular/material/toolbar';
-
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
 import { ContentComponent } from './content/content.component';
 import { CategoryComponent } from './category/category.component';
@@ -174,6 +173,11 @@ import { ThumbnailSkeletonComponent } from './thumbnail-skeleton/thumbnail-skele
 import { PopupEditCoverComponent } from './popup-edit-cover/popup-edit-cover.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { ThumbnailUserComponent } from './thumbnail-user/thumbnail-user.component';
+import { PopupArtworkDataComponent } from './popup-artwork-data/popup-artwork-data.component';
+import { PopupCommentsComponent } from './popup-comments/popup-comments.component';
+import { PopupNavbarComponent } from './popup-navbar/popup-navbar.component';
+import { PopupChatSearchComponent } from './popup-chat-search/popup-chat-search.component';
+import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popup-linkcollab-filters.component';
 
 
 @NgModule({
@@ -293,6 +297,11 @@ import { ThumbnailUserComponent } from './thumbnail-user/thumbnail-user.componen
     PopupEditCoverComponent,
     FavoritesComponent,
     ThumbnailUserComponent,
+    PopupArtworkDataComponent,
+    PopupCommentsComponent,
+    PopupNavbarComponent,
+    PopupChatSearchComponent,
+    PopupLinkcollabFiltersComponent,
   ],
   imports: [
     BrowserModule,
