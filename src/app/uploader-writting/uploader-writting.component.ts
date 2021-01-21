@@ -11,7 +11,7 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
 declare var Swiper:any;
 declare var $:any;
-const URL ='http://localhost:4600/routes/upload_writing';
+const URL ='https://linkarts.fr/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',

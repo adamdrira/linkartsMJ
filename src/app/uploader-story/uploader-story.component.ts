@@ -17,7 +17,7 @@ declare var Cropper: any;
 declare var $: any;
 
 
-const url = 'http://localhost:4600/routes/upload_story';
+const url = 'https://linkarts.fr/routes/upload_story';
 
 @Component({
   selector: 'app-uploader-story',
