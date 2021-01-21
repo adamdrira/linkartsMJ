@@ -253,7 +253,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
       else if(this.componentRef.length==50){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 50 pages"},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
       }
       else {
@@ -332,6 +332,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
       
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
+        panelClass: "popupConfirmationClass",
       });
 
     }

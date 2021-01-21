@@ -124,7 +124,7 @@ export class SignupComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Conditions en cours d'écriture"},
-      panelClass: 'dialogRefClassText'
+      panelClass: "popupConfirmationClass",
     });
   }
 

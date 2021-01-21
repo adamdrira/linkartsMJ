@@ -1139,6 +1139,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(r[0]){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+            panelClass: "popupConfirmationClass",
           });
         }
         else{
@@ -1154,6 +1155,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+            panelClass: "popupConfirmationClass",
           });
         }
         else{
@@ -1169,6 +1171,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+            panelClass: "popupConfirmationClass",
           });
         }
         else{

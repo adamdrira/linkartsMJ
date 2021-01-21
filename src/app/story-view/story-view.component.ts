@@ -3,8 +3,6 @@ import {Story_service} from '../services/story.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Reports_service} from '../services/reports.service';
 import {Subscribing_service} from '../services/subscribing.service';
-import {NotificationsService} from '../services/notifications.service';
-import {ChatService} from '../services/chat.service';
 import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component';
 import {PopupReportComponent} from '../popup-report/popup-report.component';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
@@ -36,8 +34,6 @@ export class StoryViewComponent implements OnInit {
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
     private rd:Renderer2,
-    private chatService:ChatService,
-    private NotificationsService:NotificationsService,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -52,8 +48,7 @@ export class StoryViewComponent implements OnInit {
 
   @Input('user_id') user_id; //author
   @Input('list_of_data') list_of_data; //list_of_data
-  @Input('current_user') current_user; 
-  @Input('current_user_name') current_user_name; //visitor
+  @Input('current_user') current_user;  //visitor
   @Input('index_debut') index_debut;
   //index_debut:number=3;
   
@@ -130,13 +125,9 @@ export class StoryViewComponent implements OnInit {
     
     let k=0;
 
-    this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.index_debut].id).subscribe(r=>{
-      console.log(r[0])
-      this.number_of_views=r[0].length;
-    })
+
     for (let i=0;i<this.list_of_data.length;i++){
 
-      
       this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
         let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -206,17 +197,11 @@ export class StoryViewComponent implements OnInit {
       });
 
   }
-  number_of_views=0;
+
   next_slide() {
     console.log("next slide adding vew " + this.user_id)
     this.cd.detectChanges();
     let id_story =this.list_of_data[this.swiper.activeIndex].id;
-    console.log(id_story)
-    this.Story_service.get_list_of_viewers_for_story(id_story).subscribe(r=>{
-      console.log(r[0])
-      this.number_of_views=r[0].length;
-    })
-
     this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
       if(r[0]){
         this.Story_service.add_view(this.user_id,id_story,false).subscribe();
@@ -247,7 +232,6 @@ export class StoryViewComponent implements OnInit {
   }
 
   previous_slide() {
-    
     this.cd.detectChanges();
     
     if( this.swiper.activeIndex == 0 ) {
@@ -262,10 +246,6 @@ export class StoryViewComponent implements OnInit {
       this.startTimer();
     }
     
-    this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex-1].id).subscribe(r=>{
-      console.log(r[0])
-      this.number_of_views=r[0].length;
-    })
     this.swiper.slideTo( this.swiper.activeIndex - 1 );
     this.cd.detectChanges();
 
@@ -331,6 +311,7 @@ export class StoryViewComponent implements OnInit {
  delete_story(i){
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes vous sûr de vouloir supprimer la story ?'},
+    panelClass: "popupConfirmationClass",
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -351,145 +332,53 @@ list_of_profile_pictures:SafeUrl[]=[];
 list_of_pp_loaded=[];
 get_list_of_viewers(i){
   
-  if(!this.paused ){
-    this.clickPause();
-  }
+  this.clickPause();
   
+  this.loading_list_of_viewers = true;
+
   console.log("list_of_viewers")
-  if(this.loading_list_of_viewers){
+  if(this.viewers_found){
+    this.show_list_of_viewers=true;
+    this.loading_list_of_viewers=false;
     return;
   }
-
-  this.loading_list_of_viewers = true;
   this.Story_service.get_list_of_viewers_for_story(this.list_of_data[i].id).subscribe(r=>{
     console.log(r[0])
     if(r[0].length>0){
       let n =r[0].length;
-      let data_retrieved=false;
-      let sub_retrieved=false;
       for (let i=0;i<n;i++){
         console.log(r[0][i].id_user_who_looks)
         this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user_who_looks).subscribe(l=>{
           this.list_of_viewers[i]=l[0];
-          data_retrieved=true;
-          check_all(this)
           
+          this.Subscribing_service.check_if_visitor_susbcribed(r[0][i].id_user_who_looks).subscribe(information=>{
+            if(information[0].value){
+              this.list_of_check_subscribtion[i]=true;
+            }
+            else{
+              this.list_of_check_subscribtion[i]=false;
+            }
+            this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
+              let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.list_of_profile_pictures[i] = SafeURL;
+              if(i==n-1){
+                this.viewers_found=true;
+                this.show_list_of_viewers=true;
+                this.loading_list_of_viewers=false;
+              }
+            });
+            
+          });
         })
-
-        this.Subscribing_service.check_if_visitor_susbcribed(r[0][i].id_user_who_looks).subscribe(information=>{
-          if(information[0].value){
-            this.list_of_check_subscribtion[i]=true;
-          }
-          else{
-            this.list_of_check_subscribtion[i]=false;
-          }
-          sub_retrieved=true;
-          check_all(this)
-        });
-
-        this.Profile_Edition_Service.retrieve_profile_picture( r[0][i].id_user_who_looks).subscribe(t=> {
-          let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
-          const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-          this.list_of_profile_pictures[i] = SafeURL;
-
-        });
         
-
-        function check_all(THIS){
-          if(data_retrieved && sub_retrieved){
-            THIS.viewers_found=true;
-            THIS.show_list_of_viewers=true;
-            THIS.loading_list_of_viewers=false;
-          }
-        }
       }
-    }
-    else{
-      this.loading_list_of_viewers=false;
-      this.show_list_of_viewers=true;
-      this.viewers_found=false;
     }
   })
 }
 
 loading_subscribtion=false;
-
 subscribtion(i){
-
-    if(!this.loading_subscribtion){
-      this.loading_subscribtion=true;
-      if(!this.list_of_check_subscribtion[i]){
-        this.list_of_check_subscribtion[i]=true;
-        this.Subscribing_service.subscribe_to_a_user(this.list_of_viewers[i].id).subscribe(information=>{
-          
-          console.log(information)
-          if(information[0].subscribtion){
-            
-            this.loading_subscribtion=false;
-            this.cd.detectChanges();
-          }
-          else{
-            this.NotificationsService.add_notification('subscribtion',this.current_user,this.current_user_name,this.list_of_viewers[i].id,this.list_of_viewers[i].id.toString(),'none','none',this.current_user,0,"add",false,0).subscribe(l=>{
-              let message_to_send ={
-                for_notifications:true,
-                type:"subscribtion",
-                id_user_name:this.current_user_name,
-                id_user:this.current_user, 
-                id_receiver:this.list_of_viewers[i].id,
-                publication_category:this.list_of_viewers[i].id.toString(),
-                publication_name:'none',
-                format:'none',
-                publication_id:this.current_user,
-                chapter_number:0,
-                information:"add",
-                status:"unchecked",
-                is_comment_answer:false,
-                comment_id:0,
-              }
-              this.loading_subscribtion=false;
-              this.chatService.messages.next(message_to_send);
-              this.cd.detectChanges();
-            })
-          }
-         
-        });
-      }
-      else{
-        this.list_of_check_subscribtion[i]=false;
-        this.Subscribing_service.remove_subscribtion(this.list_of_viewers[i].id).subscribe(information=>{
-         
-          console.log(information)
-          this.NotificationsService.remove_notification('subscribtion',this.list_of_viewers[i].id.toString(),'none',this.current_user,0,false,0).subscribe(l=>{
-            let message_to_send ={
-              for_notifications:true,
-              type:"subscribtion",
-              id_user_name:this.current_user_name,
-              id_user:this.current_user, 
-              id_receiver:this.list_of_viewers[i].id,
-              publication_category:this.list_of_viewers[i].id.toString(),
-              publication_name:'none',
-              format:'none',
-              publication_id:this.current_user,
-              chapter_number:0,
-              information:"remove",
-              status:"unchecked",
-              is_comment_answer:false,
-              comment_id:0,
-            }
-           
-            this.loading_subscribtion=false;
-            this.chatService.messages.next(message_to_send);
-            this.cd.detectChanges();
-          })
-        });
-      }
-    }
-    
-  
-
-}
-
-/*subscribtion(i){
 
   
   if(!this.loading_subscribtion) {
@@ -512,7 +401,7 @@ subscribtion(i){
       });
     }
   }
-}*/
+}
 
 load_list_of_pp(k){
   this.list_of_pp_loaded[k]=true;
@@ -528,6 +417,7 @@ close_list_of_viewers(){
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{

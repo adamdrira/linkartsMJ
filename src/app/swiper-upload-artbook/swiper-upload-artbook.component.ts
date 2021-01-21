@@ -306,7 +306,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
       else if(this.componentRef.length==50){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 50 pages"},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
       }
       else {
@@ -427,12 +427,14 @@ export class SwiperUploadArtbookComponent implements OnInit {
     if( ((canvas.height / canvas.width) < (180/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"La miniature n'est pas assez haute. Veuillez augmenter la hauteur, ou réduire la largeur"},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     else if( ((canvas.height / canvas.width) > (600/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"La miniature n'est pas assez large. Veuillez augmenter la largeur, ou réduire la hauteur"},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
@@ -495,6 +497,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
       this.displayErrors = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
 
@@ -504,6 +507,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
       this.displayErrors = true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg},
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
     }

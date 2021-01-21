@@ -143,12 +143,14 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     if( ((canvas.height / canvas.width) < (180/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"La miniature n'est pas assez haute. Veuillez augmenter la hauteur, ou réduire la largeur"},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     else if( ((canvas.height / canvas.width) > (600/300)) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"La miniature n'est pas assez large. Veuillez augmenter la largeur, ou réduire la hauteur"},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
@@ -230,6 +232,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     if( !this.image_uploaded ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg1},
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
       this.displayErrors = true;
@@ -237,6 +240,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     else if( !this.imageDestination ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:errorMsg2},
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
       this.displayErrors = true;
