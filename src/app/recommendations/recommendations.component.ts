@@ -189,72 +189,75 @@ export class RecommendationsComponent implements OnInit {
  
   media_visibility=false;
   manage_styles_recommendation(info,information){
-    console.log("manage_styles_recommendation")
-    this.index_bd= info.comic;
-    this.index_drawing= info.drawing;
-    this.index_writing= info.writing;
-    if( this.index_bd == 0) {
-      this.subcategory=0;
-      window.dispatchEvent(new Event('resize'));
-      this.cd.detectChanges()
-      this.load_bd_recommendations();
-    } 
-    if(this.index_drawing == 0){
-      this.subcategory=1;
-      this.type_of_skeleton="drawing";
-      window.dispatchEvent(new Event('resize'));
-      this.cd.detectChanges()
-      this.load_drawing_recommendations();
-    } 
-    else if(this.index_writing == 0) {
-      this.subcategory=2;
-      this.type_of_skeleton="writing";
-      window.dispatchEvent(new Event('resize'));
-      this.cd.detectChanges()
-      this.load_writing_recommendations();
-    }
-    let interval = setInterval( () => {
-      console.log("interval")
-      this.media_visibility=true;
-      clearInterval(interval);
-      this.cd.detectChanges();
-    },200)
-    
-    //sort styles
-    var i = 0;
-    var j=0;
-    var k=0;
-    if(this.index_bd >=0){
-      for (let item of information.comic[this.index_bd]){
-        this.change_list_position(this.sorted_style_list_bd,this.sorted_style_list_bd.indexOf(item[0]),i);
-        i++;
-      };
-    }
-    if(this.index_drawing >=0){
+    if(info){
+      console.log("manage_styles_recommendation")
+      this.index_bd= info.comic;
+      this.index_drawing= info.drawing;
+      this.index_writing= info.writing;
+      if( this.index_bd == 0) {
+        this.subcategory=0;
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges()
+        this.load_bd_recommendations();
+      } 
+      if(this.index_drawing == 0){
+        this.subcategory=1;
+        this.type_of_skeleton="drawing";
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges()
+        this.load_drawing_recommendations();
+      } 
+      else if(this.index_writing == 0) {
+        this.subcategory=2;
+        this.type_of_skeleton="writing";
+        window.dispatchEvent(new Event('resize'));
+        this.cd.detectChanges()
+        this.load_writing_recommendations();
+      }
+      let interval = setInterval( () => {
+        console.log("interval")
+        this.media_visibility=true;
+        clearInterval(interval);
+        this.cd.detectChanges();
+      },200)
       
-      for (let item of information.drawing[this.index_drawing]){
-        this.change_list_position(this.sorted_style_list_drawing,this.sorted_style_list_drawing.indexOf(item[0]),j);
-        j++;
-      };
-    }
-    if(this.index_writing>=0){
-      for (let item of information.writing[this.index_writing]){
-        this.change_list_position(this.sorted_style_list_writing,this.sorted_style_list_writing.indexOf(item[0]),k);
-        k++;
-      };
-      for (let i=0; i< this.sorted_style_list_writing.length;i++) {
-        if (this.sorted_style_list_writing[i] == "Scenario") {
-          this.sorted_style_list_writing[i] ="Scénario";
-        }
-        else if (this.sorted_style_list_writing[i]  == "Illustrated novel") {
-          this.sorted_style_list_writing[i] ="Roman illustré";
-        }
-        else if (this.sorted_style_list_writing[i]  == "Poetry") {
-          this.sorted_style_list_writing[i] ="Poésie";
+      //sort styles
+      var i = 0;
+      var j=0;
+      var k=0;
+      if(this.index_bd >=0){
+        for (let item of information.comic[this.index_bd]){
+          this.change_list_position(this.sorted_style_list_bd,this.sorted_style_list_bd.indexOf(item[0]),i);
+          i++;
+        };
+      }
+      if(this.index_drawing >=0){
+        
+        for (let item of information.drawing[this.index_drawing]){
+          this.change_list_position(this.sorted_style_list_drawing,this.sorted_style_list_drawing.indexOf(item[0]),j);
+          j++;
+        };
+      }
+      if(this.index_writing>=0){
+        for (let item of information.writing[this.index_writing]){
+          this.change_list_position(this.sorted_style_list_writing,this.sorted_style_list_writing.indexOf(item[0]),k);
+          k++;
+        };
+        for (let i=0; i< this.sorted_style_list_writing.length;i++) {
+          if (this.sorted_style_list_writing[i] == "Scenario") {
+            this.sorted_style_list_writing[i] ="Scénario";
+          }
+          else if (this.sorted_style_list_writing[i]  == "Illustrated novel") {
+            this.sorted_style_list_writing[i] ="Roman illustré";
+          }
+          else if (this.sorted_style_list_writing[i]  == "Poetry") {
+            this.sorted_style_list_writing[i] ="Poésie";
+          }
         }
       }
+      this.sorted_category_retrieved=true;
     }
-    this.sorted_category_retrieved=true;
+    
   }
 
 
