@@ -16,7 +16,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 
-const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
+const url = 'https://linkarts.fr/routes/upload_page_bd_oneshot/';
 
 declare var $:any;
 

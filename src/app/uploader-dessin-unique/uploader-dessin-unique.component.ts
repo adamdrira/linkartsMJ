@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
 
-const url = 'http://localhost:4600/routes/upload_drawing_onepage';
+const url = 'https://linkarts.fr/routes/upload_drawing_onepage';
 declare var $:any;
 @Component({
   selector: 'app-uploader-dessin-unique',

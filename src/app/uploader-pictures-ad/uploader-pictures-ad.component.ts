@@ -8,7 +8,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 declare var $:any;
 
-const url = 'http://localhost:4600/routes/upload_pictures_ad';
+const url = 'https://linkarts.fr/routes/upload_pictures_ad';
 
 @Component({
   selector: 'app-uploader-pictures-ad',

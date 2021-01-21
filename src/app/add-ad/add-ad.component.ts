@@ -390,7 +390,7 @@ export class AddAdComponent implements OnInit {
       }
     }
     else if(this.remuneration && this.fd.valid){
-      this.price_value =this.fd.value.fdPrice;
+      this.price_value =(this.fd.value.fdPrice!='')?this.fd.value.fdPrice:'0';
     }
     else if(!this.remuneration){
       this.price_value ="0";
@@ -404,7 +404,7 @@ export class AddAdComponent implements OnInit {
       }
     }
     else if(this.for_service && this.fd.valid){
-      this.price_value1 =this.fd.value.fdPrice1;
+      this.price_value1 =(this.fd.value.fdPrice1!='')?this.fd.value.fdPrice1:'0';
     }
     else if(!this.for_service){
       this.price_value1 ="0";

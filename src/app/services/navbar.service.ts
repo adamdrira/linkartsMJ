@@ -8,7 +8,7 @@ export class NavbarService {
    
     active_section: number=-1;
     height: number;//in px
-    visible: boolean=false;
+    public visible: boolean=false;
     account: string;
     component_visible=false;
     using_chat=false;
