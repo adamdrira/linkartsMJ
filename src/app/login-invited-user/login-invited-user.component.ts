@@ -5,7 +5,6 @@ import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import * as WebFont from 'webfontloader';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 declare var $: any;
