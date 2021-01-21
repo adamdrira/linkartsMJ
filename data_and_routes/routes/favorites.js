@@ -97,11 +97,8 @@ pool.connect((err, client, release) => {
                 console.log(e)
             })
             .on("finish", function() {
-                //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
-          
-          //pour angular
-          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', user]);
+                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 //console.log(pythonProcess)
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {

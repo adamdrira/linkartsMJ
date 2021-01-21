@@ -214,7 +214,7 @@ pool.connect((err, client, release) => {
                             .on("finish", function() {
                               
                               //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', user]);
           
           //pour angular
           //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
