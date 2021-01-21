@@ -51,10 +51,6 @@ import { StoriesComponent } from './stories/stories.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
 import { RecommendationcollabComponent } from './recommendationcollab/recommendationcollab.component';
 import { ArtworkComponent } from './artwork/artwork.component';
-import { LinkcollabBenevoleComponent } from './linkcollab-benevole/linkcollab-benevole.component';
-import { LinkcollabRemunereeComponent } from './linkcollab-remuneree/linkcollab-remuneree.component';
-import { LinkcollabOfferComponent } from './linkcollab-offer/linkcollab-offer.component';
-import { TestComponent } from './test/test.component';
 import { AccountComponent } from './account/account.component';
 
 import { KeysPipe } from './helpers/pipemodule';
@@ -164,7 +160,6 @@ import { UploaderChatProfilePictureComponent } from './uploader-chat-profile-pic
 import { PopupChatGroupMembersComponent } from './popup-chat-group-members/popup-chat-group-members.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { PopupShareContentComponent } from './popup-share-content/popup-share-content.component';
 import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
 import { PopupReportComponent } from './popup-report/popup-report.component';
 import { UploaderReportsAttachmentsComponent } from './uploader-reports-attachments/uploader-reports-attachments.component';
@@ -202,10 +197,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     RecommendationsComponent,
     ArtworkComponent,
     RecommendationcollabComponent,
-    LinkcollabBenevoleComponent,
-    LinkcollabRemunereeComponent,
-    LinkcollabOfferComponent,
-    TestComponent,
     AccountComponent,
     MediaComicsComponent,
     TrendsComponent,
@@ -288,7 +279,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     PopupChatGroupMembersComponent,
     AdPageComponent,
     PageNotFoundComponent,
-    PopupShareContentComponent,
     LoginInvitedUserComponent,
     PopupReportComponent,
     UploaderReportsAttachmentsComponent,

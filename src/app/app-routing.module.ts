@@ -7,12 +7,8 @@ import{ PasswordResetComponent } from "./password-reset/password-reset.component
 import{ ArtworkComponent } from "./artwork/artwork.component";
 import{ ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import{ HomeLinkcollabComponent } from "./home-linkcollab/home-linkcollab.component";
-import{ LinkcollabBenevoleComponent } from "./linkcollab-benevole/linkcollab-benevole.component";
-import{ LinkcollabRemunereeComponent } from "./linkcollab-remuneree/linkcollab-remuneree.component";
-import{ LinkcollabOfferComponent } from "./linkcollab-offer/linkcollab-offer.component";
 import{ AccountComponent } from "./account/account.component";
 
-import{ TestComponent } from "./test/test.component";
 
 import { AuthGuard } from './helpers/auth.guard';
 import { TempAuthGuard } from './helpers/temp_auth.guard';
@@ -87,7 +83,6 @@ const routes: Routes = [
   {path:'chat/:pseudo/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 2}},
   {path:'chat/group/:name/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},
   //Components tests
-  {path:'test', component:TestComponent, canActivate: [AuthGuard,TempAuthGuard]},
   {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard,TempAuthGuard]},
   {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard,TempAuthGuard]},
 
@@ -105,9 +100,6 @@ const routes: Routes = [
 
   //Linkcollab
   {path:'linkcollab', component:HomeLinkcollabComponent,canActivate: [TempAuthGuard]},
-  {path:'linkcollab/collaborations_benevoles', component:LinkcollabBenevoleComponent,canActivate: [TempAuthGuard]},
-  {path:'linkcollab/collaborations_remunerees', component:LinkcollabRemunereeComponent,canActivate: [TempAuthGuard]},
-  {path:'linkcollab/offer', component:LinkcollabOfferComponent,canActivate: [TempAuthGuard]},
 
   //Authentification
   {path:'login', component:LoginComponent,canActivate: [TempAuthGuard]},
