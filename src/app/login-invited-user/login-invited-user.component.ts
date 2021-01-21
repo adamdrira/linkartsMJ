@@ -7,11 +7,22 @@ import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import * as WebFont from 'webfontloader';
 import { pattern } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 declare var $: any;
 @Component({
   selector: 'app-login-invited-user',
   templateUrl: './login-invited-user.component.html',
-  styleUrls: ['./login-invited-user.component.scss']
+  styleUrls: ['./login-invited-user.component.scss'],  
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('150ms', style({opacity: 1}))
+        ])
+      ],
+    )
+  ]
 })
 export class LoginInvitedUserComponent implements OnInit {
 
@@ -39,13 +50,6 @@ export class LoginInvitedUserComponent implements OnInit {
   hide=true;
   ngOnInit() {
 
-      /*WebFont.load({
-        google: {
-          families: [ 'Material Icons']
-        }
-      })*/
-
-   
 
       this.loginForm = this.formBuilder.group({
           mail: ['', Validators.required],
@@ -77,15 +81,6 @@ export class LoginInvitedUserComponent implements OnInit {
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
   get g(){ return this.ResetPasswordForm.controls; }
-
-  reset_password_menu=false;
-  open_reset_password(){
-      this.reset_password_menu=true;
-  }
-
-  open_connexion_menu(){
-    this.reset_password_menu=false;
-  }
 
   onSubmitReset(){
       this.submitted_reset=true;
@@ -126,21 +121,24 @@ export class LoginInvitedUserComponent implements OnInit {
 
     this.loading = true;
     this.authenticationService.login_invited_user(this.f.mail.value, this.f.password.value).subscribe( data => {
-          this.loading=false;
-          console.log(data.msg);
-          if(data.token){
-            this.router.navigate(['/'])
-          }
-          else{
-              console.log("error");
-              this.display_wrong_data=true;
-          }
-          
-      },
-      error => {
-          this.loading = false;
-      });
-    }
+        this.loading=false;
+        console.log(data.msg);
+
+        
+        if(data.token){
+          this.router.navigate(['/'])
+        }
+        else{
+          console.log("error");
+          this.display_wrong_data=true;
+        }
+        
+    },
+    error => {
+        this.loading = false;
+        this.display_wrong_data=true;
+    });
+  }
 
 
 }

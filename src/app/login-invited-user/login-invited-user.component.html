@@ -1,102 +1,49 @@
 
+<div class="popup-login">
+    
+    <div class="centered">
 
-
-<div class="popup-container" *ngIf="!reset_password_menu">
-    <div class="popup-step">
-
-        <div class="back-and-logo">
-            <div class="logo">
-                logo
-            </div>
+        <div class="logo">
+            <img src="../../assets/img/svg/Logo-LA3-18-01.svg">
         </div>
-        <div class="step-name">
-            <span>Connexion</span>
-        </div>
+    
         <div class="step-form" [formGroup]="loginForm">
-
             <div class="form-item">
-                <mat-form-field>
+                <mat-form-field floatLabel='never'>
                     <mat-label>Identifiant</mat-label>
-                    <input matInput formControlName="mail" autocomplete="off">
+                    <input matInput formControlName="mail" autocomplete="off" type="search">
                 </mat-form-field>
             </div>
-            
+    
             <div class="form-item">
-                <mat-form-field style="position:relative">
+                <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
                     <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
-                    <div class="error" *ngIf="display_wrong_data">Le mot de passe ou l'identifiant sont incorrectes
+    
+                    <div class="remove-red-eye" (click)="change_password_type()"
+                    [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
-                    <div style="margin:auto auto; position:absolute;right: 5px;top:5px;cursor: pointer;"  >
-                        <mat-icon  class="item-icon " style="color: #162644;"  (click)="change_password_type()" [ngClass]="{ 'invisible' : !show_icon }" >remove_red_eye</mat-icon>
-                    </div>
+    
                 </mat-form-field>
             </div>
-
         </div>
-
-
-        <div class="step-validation">
-
-            <button mat-raised-button [disabled]="loading" class="submit-button style1" (click)="login();">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-                <span *ngIf="!loading">Se connecter</span>
-            </button>
-
-        </div>
-        
-       
-    </div>
-</div>
-
-
-
-
-<div class="popup-container" *ngIf="reset_password_menu">
     
-    
-    <div class="popup-step">
-        <div class="back-and-logo">
-            <div class="back-button">
-                <button mat-raised-button class="style0" (click)="open_connexion_menu();">
-                    <span>Retour</span>
-                </button>
+        <button [disabled]="loading" class="submit-button" (click)="login();">
+            <span *ngIf="!loading">Se connecter</span>
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
             </div>
-            <div class="logo">
-                logo
-            </div>
-        </div>
-
+        </button>
         
-        <div class="step-name">
-            <span>Récupérer mon mot de passe</span>
+        <div class="error">
+            <span *ngIf="display_wrong_data" [@enterAnimation]>Le mot de passe ou l'identifiant sont incorrects</span>
         </div>
-        <div class="step-form" [formGroup]="ResetPasswordForm">
-
-            <div class="form-item">
-                <mat-form-field>
-                    <mat-label>Adresse mail</mat-label>
-                    <input matInput formControlName="mail_recuperation" autocomplete="off">
-                    <mat-error *ngIf="ResetPasswordForm.controls['mail_recuperation'].invalid">Veuillez faire une saisie valide
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            
-        </div>
-
-        <div class="step-validation">
-            <button mat-raised-button [disabled]="loading" class="submit-button style0" (click)="onSubmitReset();">
-                <span>Envoyer</span>
-            </button>
-        </div>
-
-
-
-
-
-
     </div>
 
-
-
 </div>
+

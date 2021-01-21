@@ -404,7 +404,8 @@ export class ChatRightContainerComponent implements OnInit {
     console.log(indice)
     console.log(this.list_of_pictures)
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-      data: {list_of_pictures:this.list_of_pictures_src,index_of_picture:indice},
+      data: {list_of_pictures:this.list_of_pictures_src,index_of_picture:indice},      
+      panelClass:"popupDocumentClass",
     });
   }
 

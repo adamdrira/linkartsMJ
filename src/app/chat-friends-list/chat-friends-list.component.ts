@@ -1351,7 +1351,9 @@ change_message_status(event){
         console.log(r[0])
         if(r[0] && r[0].warning){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Le groupe ne peut contenir plus de 10 utilisateurs."},
+            data: {showChoice:false, text:"Le groupe ne peut contenir plus de 10 utilisateurs."},          
+            panelClass: "popupConfirmationClass",
+
           });
           this.selected_list_of_new_friends_names=[];
           this.adding_friend=false;
@@ -2384,7 +2386,8 @@ change_message_status(event){
           this.set_category(0);
           this.createFormAd();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Vous n'avez aucun autre message"},
+            data: {showChoice:false, text:"Vous n'avez aucun autre message"},          
+            panelClass: "popupConfirmationClass",
           });
           return false;
         }
@@ -2626,6 +2629,7 @@ group_chat_creation_done(){
  else{
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:false, text:"Veuillez inclure au moins un membre"},
+    panelClass: "popupConfirmationClass",
   });
  }
 }

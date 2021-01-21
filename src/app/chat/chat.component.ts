@@ -662,13 +662,15 @@ export class ChatComponent implements OnInit  {
         if(this.uploader.queue.length==6){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},
+            data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 5 fichiers'},          
+            panelClass: "popupConfirmationClass",
           });
         }
         else if(Math.trunc(size)>10){
           this.uploader.queue.pop();
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:`Votre fichier est trop volumineux, choisissez un fichier de moins de 10Mo alors qu'il fait ${size}`},
+            panelClass: "popupConfirmationClass",
           });
         }
         else{
@@ -1191,12 +1193,14 @@ export class ChatComponent implements OnInit  {
       if(this.attachments.length==5){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez envoyer plus de 5 fichiers simultanément'},
+          panelClass: "popupConfirmationClass",
         });
         return
       }
       if(Math.trunc(size)>5){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le fichier est trop volumineux'},
+          panelClass: "popupConfirmationClass",
         });
         return
       }
@@ -1248,6 +1252,7 @@ export class ChatComponent implements OnInit  {
     if( this.message_group.value.message.length > 1500 ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Ce message est trop long (> 1500 caractères), il n\'a pas été envoyé'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
@@ -1550,6 +1555,7 @@ export class ChatComponent implements OnInit  {
     console.log(this.list_of_messages[i].id);
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer le message ?'},
+      panelClass: "popupConfirmationClass",
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -2159,11 +2165,13 @@ add_chat_section_name(e: any){
       if(r[0].cause=="already"){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Cette conversation existe déjà'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas crééer plus de 15 conversations'},
+          panelClass: "popupConfirmationClass",
         });
       }
       
@@ -2181,11 +2189,13 @@ delete_chat_section(){
   if(this.id_chat_section==1){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:'Vous ne pouvez pas supprimer la discussion principale'},
+      panelClass: "popupConfirmationClass",
     });
   }
   else{
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer la discussion ainsi que tous les messages concernés ?'},
+      panelClass: "popupConfirmationClass",
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -2197,6 +2207,7 @@ delete_chat_section(){
           else{
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Vous ne pouvez pas supprimer une discussion dont vous n'êtes pas le créateur"},
+              panelClass: "popupConfirmationClass",
             });
           }
         })
@@ -2845,6 +2856,7 @@ exit_group(){
 
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter le groupe ?'},
+    panelClass: "popupConfirmationClass",
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -3745,6 +3757,7 @@ block_user(){
   if(this.friend_id>1){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
+      panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -3808,6 +3821,7 @@ unblock_user(){
 remove_contact(){
   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
     data: {showChoice:true, text:'Etes-vous sûr de vouloir retirer cet utilisateur de votre liste de contacts ? '},
+    panelClass: "popupConfirmationClass",
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -3845,7 +3859,9 @@ remove_contact(){
     console.log(new_indice)
     console.log(new_list)
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
-      data: {list_of_pictures:new_list,index_of_picture:new_indice},
+      data: {list_of_pictures:new_list,index_of_picture:new_indice},      
+      panelClass:"popupDocumentClass",
+
     });
   }
   
