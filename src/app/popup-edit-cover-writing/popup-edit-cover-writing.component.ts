@@ -73,6 +73,7 @@ export class PopupEditCoverWritingComponent implements OnInit {
   else {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:'Veuillez télécharger et valider une photo pour la miniature'},
+      panelClass: "popupConfirmationClass",
     });
   }
 

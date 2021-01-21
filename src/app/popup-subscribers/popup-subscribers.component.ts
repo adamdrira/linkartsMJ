@@ -192,6 +192,7 @@ export class PopupSubscribersComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
+        panelClass: "popupConfirmationClass",
       });
     }
   

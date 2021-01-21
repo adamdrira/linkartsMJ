@@ -1,5 +1,5 @@
 
-@import '../../material-styles.css';
+@import '../../material-styles.scss';
 
 
 .form-container.profile-bio {
@@ -255,9 +255,9 @@
       font-size: 12px;
   }
 
-  .button-container-close{
-    margin: auto 0px auto auto;
-    width: 30px;
+.button-container-close{
+  margin: auto 0px auto auto;
+  width: 30px;
 }
 
 .close-button{

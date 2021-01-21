@@ -4,6 +4,13 @@
     flex-direction: column;
     margin: 20px 50px 0px 50px;
 
+    @media (max-width:600px) {
+        margin: 20px 20px 0px 20px;
+        > span {
+            font-size: 12px;
+        }
+    }
+
     color:rgb(32,56,100);
 
     .alert-icon {
@@ -14,8 +21,6 @@
             width: unset;
             height: unset;
             font-size: 40px;
-            max-width:40px ;
-          overflow: hidden;
             margin: 10px auto 5px auto;
         }
     }
@@ -62,13 +67,39 @@
     box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
 }
 
-::ng-deep .dialogRefClassText {
+::ng-deep .popupConfirmationClass {
+    max-width: 900px !important;
+
+    .mat-dialog-container {    
+        max-height: 90vh;
+        max-width: 90vw;
+        overflow: auto;
+        
+        @media (max-width:500px) {
+            max-height: 95vh;
+            max-width: 94vw;
+        }
+
+        &::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        &::-webkit-scrollbar-track {
+            border-radius: 15px;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background-color: transparent;
+        }
+        &:hover {
+            &::-webkit-scrollbar-thumb {
+                background-color: #dadada;
+            }
+        }
+    }
+    /*
     @media (min-width:701px) {
         max-width:80vw;
         width:unset !important;
-    }
-    @media (max-width:700px) {
-        max-width:unset !important;
-        width:80vw !important;
-    }
+    }*/
 }

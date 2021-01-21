@@ -48,9 +48,6 @@ export class PopupCommentsComponent implements OnInit {
   publication_id=this.data.publication_id;
   chapter_number=this.data.chapter_number;
   authorid=this.data.authorid;
-  visitor_id=this.data.visitor_id;
-  visitor_name=this.data.visitor_name;
-  visitor_mode=this.data.visitor_mode;
   number_of_comments_to_show=this.data.number_of_comments_to_show;
 
   commentariesnumber:number;
@@ -68,12 +65,5 @@ export class PopupCommentsComponent implements OnInit {
     
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
 
 }

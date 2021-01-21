@@ -156,7 +156,8 @@ export class PopupFormComicComponent implements OnInit {
 
     else {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+        panelClass: "popupConfirmationClass",
       });
     }
 

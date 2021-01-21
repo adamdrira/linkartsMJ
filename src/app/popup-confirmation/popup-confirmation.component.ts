@@ -1,8 +1,6 @@
-import { Component, OnInit, Inject,AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-declare var $:any;
 
 @Component({
   selector: 'app-popup-confirmation',
@@ -17,16 +15,8 @@ export class PopupConfirmationComponent implements OnInit {
      }
 
 
-  show_icon=false;
-  ngOnInit(){
+  ngOnInit(): void {
 
-  }
-
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
   }
 
   cancel() {

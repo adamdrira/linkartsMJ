@@ -1,0 +1,98 @@
+import { trigger, transition, style, animate } from '@angular/animations';
+import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@Component({
+  selector: 'app-popup-linkcollab-filters',
+  templateUrl: './popup-linkcollab-filters.component.html',
+  styleUrls: ['./popup-linkcollab-filters.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
+})
+export class PopupLinkcollabFiltersComponent implements OnInit {
+
+  constructor(
+    public dialogRef: MatDialogRef<PopupLinkcollabFiltersComponent>,
+    private cd:ChangeDetectorRef,
+    private rd:Renderer2,
+    private sanitizer:DomSanitizer,
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      dialogRef.disableClose = true;
+  }
+  
+  ads_types = ["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
+  "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
+
+  ads_remuneration_types = ["Tout","Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
+  ads_services_types = ["Tout","Produits","Services"];
+  ads_descriptions = ["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
+  
+  ads_targets=["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+
+
+  category_index=this.data.category_index;
+  type_of_project=this.data.type_of_project;
+  author=this.data.author;
+  target=this.data.target;
+  type_of_service=this.data.type_of_service;
+  offer_or_demand=this.data.offer_or_demand;
+  type_of_remuneration=this.data.type_of_remuneration;
+  sorting=this.data.sorting;
+  service=this.data.service;
+  remuneration=this.data.remuneration;
+
+
+  ngOnInit(): void {
+
+  }
+
+  change_select1(e:any) {
+    this.type_of_project= e.value;
+  }
+  change_select2(e:any) {
+    this.author= e.value;
+  }
+  change_select3(e:any) {
+    this.target= e.value;
+  }
+  change_select4(e:any) {
+    this.type_of_service= e.value;
+  }
+  change_select5(e:any) {
+    this.offer_or_demand= e.value;
+  }
+  change_select6(e:any) {
+    this.type_of_remuneration= e.value;
+  }
+  change_select7(e:any) {
+    this.sorting=e.value;
+  }
+  change_select8(e:any) {
+    this.sorting=e.value;
+  }
+
+  validate(){
+    this.dialogRef.close({
+      category_index:this.category_index,
+      type_of_project:this.type_of_project,
+      author:this.author,
+      target:this.target,
+      type_of_service:this.type_of_service,
+      offer_or_demand:this.offer_or_demand,
+      type_of_remuneration:this.type_of_remuneration,
+      sorting:this.sorting,
+      service:this.service,
+      remuneration:this.remuneration,
+    });
+  }
+}

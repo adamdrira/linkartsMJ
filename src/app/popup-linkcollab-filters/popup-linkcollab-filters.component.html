@@ -1,0 +1,144 @@
+
+<div class="component-container popupLinkcollabFilters">
+
+
+    
+    <div class="title">
+        <span>Filtrer les annonces : <ng-container *ngIf="category_index==0">Collaborations bénévoles</ng-container>
+            <ng-container *ngIf="category_index==1">Collaborations rémunérées</ng-container>
+            <ng-container *ngIf="category_index==2">Produits et services</ng-container></span>
+
+        <button class="close-button" (click)="validate();">
+            <mat-icon>close</mat-icon>
+        </button>
+
+    </div>
+
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Objet de l'annonce</mat-label>
+            <mat-select (selectionChange)="change_select1($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="type_of_project">
+                <ng-container *ngFor="let obj of ads_types, let i = index">
+                    <mat-option *ngIf="!( i==0 && type_of_project=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Auteur</mat-label>
+            <mat-select (selectionChange)="change_select2($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="author">
+                <ng-container *ngFor="let obj of ads_descriptions, let i = index">
+                    <mat-option *ngIf="!( i==0 && author=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Cible</mat-label>
+            <mat-select (selectionChange)="change_select3($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="target">
+                <ng-container *ngFor="let obj of ads_targets, let i = index">
+                    <mat-option *ngIf="!( i==0 && target=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Catégorie de l'annonce</mat-label>
+            <mat-select (selectionChange)="change_select4($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="type_of_service">
+                <ng-container *ngFor="let obj of ads_services_types, let i = index">
+                    <mat-option *ngIf="!( i==0 && type_of_service=='none' )" [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide" [ngClass]="{'really-invisible':!service}">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Type d'annonce</mat-label>
+            <mat-select (selectionChange)="change_select5($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="offer_or_demand">
+                <mat-option *ngIf="!( offer_or_demand=='none' )" value="Tout">
+                    Tout
+                </mat-option>
+                <mat-option value="Offre">
+                    Offre
+                </mat-option>
+                <mat-option value="Demande">
+                    Demande
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide" [ngClass]="{'really-invisible': !remuneration}">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Type de rémunération</mat-label>
+            <mat-select (selectionChange)="change_select6($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="type_of_remuneration">
+                <ng-container *ngFor="let obj of ads_remuneration_types, let i = index">
+                    <mat-option [value]="obj">
+                        {{ obj }}
+                    </mat-option>
+                </ng-container>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide" [ngClass]="{'really-invisible':!remuneration && !service}">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Tri par pertinence</mat-label>
+            <mat-select (selectionChange)="change_select7($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="sorting">
+                <mat-option value="Tri par pertinence">
+                    Tri par pertinence
+                </mat-option>
+                <mat-option value="Tri par le plus récent">
+                    Tri par le plus récent
+                </mat-option>
+                <mat-option value="Tri par le plus ancien">
+                    Tri par le plus ancien
+                </mat-option>
+                <mat-option value="Tri par montant croissant">
+                    Tri par montant croissant
+                </mat-option>
+                <mat-option value="Tri par montant décroissant">
+                    Tri par montant décroissant
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="form-item swiper-slide" [ngClass]="{'really-invisible':remuneration || service}">
+        <mat-form-field floatLabel='never' class="select-class">
+            <mat-label>Tri par pertinence</mat-label>
+            <mat-select (selectionChange)="change_select8($event)" disableOptionCentering panelClass="popupLinkcollabSelectClass" [value]="sorting">
+                <mat-option value="Tri par pertinence">
+                    Tri par pertinence
+                </mat-option>
+                <mat-option value="Tri par le plus récent">
+                    Tri par le plus récent
+                </mat-option>
+                <mat-option value="Tri par le plus ancien">
+                    Tri par le plus ancien
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <button class="validate" (click)="validate()">
+        <mat-icon>done_all</mat-icon>
+        <span>Valider</span>
+    </button>
+
+</div>

@@ -281,7 +281,7 @@ export class PopupNavbarComponent implements OnInit {
       let pdfSrc = URL.createObjectURL(file);*/
       const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
         data: {file:r},
-        panelClass:"panelAdAttachments",
+        panelClass: "popupDocumentClass",
       });
     })
    
