@@ -45,7 +45,6 @@ import { JwtInterceptor  } from './helpers/jwt.interceptor';
 import { ErrorInterceptor  } from './helpers/error.interceptor';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { SearchbarComponent } from './searchbar/searchbar.component';
 import { StoriesComponent } from './stories/stories.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
@@ -191,7 +190,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     ContentOfferComponent,
     LoginComponent,
     SignupComponent,
-    PasswordResetComponent,
     SearchbarComponent,
     StoriesComponent,
     RecommendationsComponent,

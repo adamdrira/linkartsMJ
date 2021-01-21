@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import{ HomeLinkartsComponent } from "./home-linkarts/home-linkarts.component";
 import{ LoginComponent } from "./login/login.component";
 import{ SignupComponent } from "./signup/signup.component";
-import{ PasswordResetComponent } from "./password-reset/password-reset.component";
 import{ ArtworkComponent } from "./artwork/artwork.component";
 import{ ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import{ HomeLinkcollabComponent } from "./home-linkcollab/home-linkcollab.component";
@@ -104,7 +103,6 @@ const routes: Routes = [
   //Authentification
   {path:'login', component:LoginComponent,canActivate: [TempAuthGuard]},
   {path:'signup', component:SignupComponent,canActivate: [TempAuthGuard]},
-  {path:'password_reset', component:PasswordResetComponent,canActivate: [TempAuthGuard]},
   {path:'login_invited_user', component:LoginInvitedUserComponent},
 
   //page not found
