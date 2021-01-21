@@ -1956,6 +1956,7 @@ open_messages(){
   else if(this.navbar.get_using_chat()){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:'Vous êtes déjà dans la messagerie'},
+      panelClass: "popupConfirmationClass",
     });
   }
   else{
@@ -2818,7 +2819,7 @@ change_message_status(event){
     }
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_conditions[i]},
-      panelClass:"panelAdAttachments",
+      panelClass:"popupDocumentClass",
     });
    
   }

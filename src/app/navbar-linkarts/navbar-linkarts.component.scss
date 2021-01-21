@@ -1,3 +1,5 @@
+@import "../../unsecured-ng-deeps.scss";
+
 .cookies-container{
   position: absolute;
   width: 100%;
@@ -1556,6 +1558,7 @@
     position: relative;
     min-height: 110px;
     max-height: 245px;
+    height: 100%;
     background: #f9f9f9;
     overflow-y: scroll;
   }
@@ -1906,7 +1909,7 @@
     
     
     .notifications-chat-container {
-      height: calc(100% - 66px);
+      height: calc(100% - 53px);
     }
   
     .notifications-container{
