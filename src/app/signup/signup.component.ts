@@ -476,7 +476,7 @@ export class SignupComponent implements OnInit {
   //links managment
   add_link(){
     //ajouter vérification sur le fait que ce sont bien des liens valides qui sont ajoutés
-    console.log("add_link")
+    //console.log("add_link")
    
     if(this.links_titles.length>=3){
       return
@@ -494,8 +494,8 @@ export class SignupComponent implements OnInit {
       this.registerForm6.controls['link_title'].setValue("");
     }
     else{
-      console.log("###########################");
-      console.log( this.registerForm4.controls );
+      //console.log("###########################");
+      //console.log( this.registerForm4.controls );
 
       if( this.registerForm4.controls['link_title'].invalid || this.registerForm4.controls['link'].invalid ) {
         return;
@@ -514,8 +514,8 @@ export class SignupComponent implements OnInit {
     
 
     
-    console.log(this.links)
-    console.log(this.links_titles)
+    //console.log(this.links)
+    //console.log(this.links_titles)
   }
 
   remove_link(i){
@@ -531,9 +531,9 @@ export class SignupComponent implements OnInit {
   check_pseudo(){
     this.index_check++;
     this.Profile_Edition_Service.check_pseudo(this.registerForm3.value.nickname, this.index_check).subscribe(r=>{
-      //console.log(r)
+      ////console.log(r)
       if(r[0][0].msg=="found"){
-        //console.log("display found")
+        ////console.log("display found")
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
       }
@@ -555,10 +555,10 @@ export class SignupComponent implements OnInit {
     this.index_check_email++;
     if(this.registerForm1.value.email && this.registerForm1.value.password){
       this.Profile_Edition_Service.check_email_and_password(this.registerForm1.value.email,this.registerForm1.value.password, this.index_check_email).subscribe(r=>{
-        //console.log(r[0])
+        ////console.log(r[0])
         if(r[1]== this.index_check_email){
           if(r[0].found){
-            //console.log("display found")
+            ////console.log("display found")
             this.display_email_and_password_error=true;
             if(r[0].email && this.registerForm1.value.gender && this.registerForm1.value.gender!='Groupe'){
               this.display_email_found_1=true;
@@ -592,7 +592,7 @@ export class SignupComponent implements OnInit {
   change_profile(event){
     
     if(event.value!=this.current_profile){
-      console.log("reseting")
+      //console.log("reseting")
       this.registerForm2.reset();
       this.registerForm4.reset();
       this.registerForm5.reset();
@@ -623,11 +623,11 @@ export class SignupComponent implements OnInit {
     this.loading=true;
     if(this.registerForm7.valid){
       this.Profile_Edition_Service.check_email_and_password(this.registerForm7.value.email,this.registerForm7.value.password,0).subscribe(r=>{
-        console.log(r[0])
-        console.log(this.list_of_ids[0])
-        console.log(r[0].user.id)
+        //console.log(r[0])
+        //console.log(this.list_of_ids[0])
+        //console.log(r[0].user.id)
           if(r[0].found && r[0].user.id==this.list_of_ids[0]){
-            console.log("ok")
+            //console.log("ok")
             this.loading=false;
             this.display_email_and_password_found_1=false;
             this.error_authentication=false;
@@ -636,7 +636,7 @@ export class SignupComponent implements OnInit {
           }
           else{
             this.loading=false;
-            console.log("not ok ")
+            //console.log("not ok ")
             this.error_authentication=true;
             
           }
@@ -652,20 +652,20 @@ export class SignupComponent implements OnInit {
   }
 
   validate_step() {
-    console.log("validate step")
-    console.log(this.step)
-    console.log(this.registerForm2)
+    //console.log("validate step")
+    //console.log(this.step)
+    //console.log(this.registerForm2)
     if(this.step==1 && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
-        console.log(this.registerForm2.value.siret)
+        //console.log(this.registerForm2.value.siret)
         if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<14)){
-          console.log("siret prob")
+          //console.log("siret prob")
           this.display_need_information=true;
           this.display_email_and_password_found_1=false;
           return;
         }
         else if((this.registerForm2.valid && this.registerForm1.value.gender!='Groupe') || (this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID')){
-          console.log(this.registerForm2);
-          console.log("cas 5")
+          //console.log(this.registerForm2);
+          //console.log("cas 5")
           this.display_need_members=false;
           this.display_need_information=false;
           this.display_email_and_password_found_1=false;
@@ -677,7 +677,7 @@ export class SignupComponent implements OnInit {
     || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && ( (this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Artistes' || this.registerForm2.value.type_of_account=='Artistes professionels') ) || (this.registerForm1.value.gender!='Groupe') ))
     || (this.step==3 && this.registerForm1.value.gender=='Groupe' && this.list_of_pseudos.length>1 ) ) {
       if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
-        console.log("cas 2")
+        //console.log("cas 2")
        
         if( this.registerForm2.value.type_of_account.includes('Artiste')){
         this.need_authentication=true;
@@ -699,7 +699,7 @@ export class SignupComponent implements OnInit {
     else if (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && this.registerForm1.value.gender=='Groupe' 
     &&  (this.registerForm2.value.type_of_account!='Artistes' 
     && this.registerForm2.value.type_of_account!='Artistes professionels')){
-      console.log("cas 3")
+      //console.log("cas 3")
       this.display_need_members=false;
       this.display_need_information=false;
       this.step+=2; 
@@ -707,12 +707,12 @@ export class SignupComponent implements OnInit {
       this.cd.detectChanges();
     }
     else if(this.step==3 && this.list_of_pseudos.length<2 ){
-      console.log("cas 4")
+      //console.log("cas 4")
       this.display_need_members=true;
     }
     else if(this.step==1 &&  this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID'){
-      console.log(this.registerForm2);
-      console.log("cas 5")
+      //console.log(this.registerForm2);
+      //console.log("cas 5")
       this.display_need_members=false;
       this.display_need_information=false;
       this.display_email_and_password_found_1=false;
@@ -720,11 +720,11 @@ export class SignupComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
-      console.log("cas 6")
-      console.log(this.registerForm3);
-      console.log(this.display_email_and_password_error)
-      console.log(this.display_email_and_password_found_1)
-      console.log(this.display_email_found_1)
+      //console.log("cas 6")
+      //console.log(this.registerForm3);
+      //console.log(this.display_email_and_password_error)
+      //console.log(this.display_email_and_password_found_1)
+      //console.log(this.display_email_found_1)
       if(this.display_email_and_password_error){
         this.display_email_and_password_found_1=true;
         if(this.registerForm1.value.gender && this.registerForm1.value.gender!="Groupe"){
@@ -820,35 +820,35 @@ export class SignupComponent implements OnInit {
       return
     }
     this.compteur_research++;
-    console.log(this.registerForm5.value.fdSearchbar )
+    //console.log(this.registerForm5.value.fdSearchbar )
     if(this.registerForm5.value.fdSearchbar && this.registerForm5.value.fdSearchbar.replace(/\s/g, '').length>0){
-      console.log("loading research")
+      //console.log("loading research")
       this.Profile_Edition_Service.get_pseudos_who_match_for_signup(this.registerForm5.value.fdSearchbar,this.compteur_research).subscribe(r=>{
-        console.log(r)
+        //console.log(r)
         let compt=r[1];
         if(r[0][0].nothing){
           if(r[1]==this.compteur_research){
-            console.log("no result");
+            //console.log("no result");
             this.display_no_pseudos_found=true;
             this.pseudo_found='';
             this.profile_picture_found=null;
           }
         }
         else if(r[1]==this.compteur_research){
-          console.log("in else if")
+          //console.log("in else if")
           this.birthday_found=r[0][0].birthday
           this.pseudo_found=r[0][0].nickname;
           this.id_found=r[0][0].id;
           this.Profile_Edition_Service.retrieve_profile_picture(r[0][0].id).subscribe(p=>{
-            console.log(p)
-            console.log(compt);
-            console.log(this.compteur_research)
+            //console.log(p)
+            //console.log(compt);
+            //console.log(this.compteur_research)
             if(compt==this.compteur_research){
               
               let url = (window.URL) ? window.URL.createObjectURL(p) : (window as any).webkitURL.createObjectURL(p);
               this.profile_picture_found= this.sanitizer.bypassSecurityTrustUrl(url);
               this.display_no_pseudos_found=false;
-              console.log(this.profile_picture_found)
+              //console.log(this.profile_picture_found)
             }
             
           })
@@ -863,12 +863,12 @@ export class SignupComponent implements OnInit {
 
   add_member(){
     this.list_of_birthdays.push(this.birthday_found)
-    console.log(this.list_of_birthdays)
+    //console.log(this.list_of_birthdays)
     this.research_member_loading=false;
     this.list_of_ids.push(this.id_found)
     this.list_of_pseudos.push(this.pseudo_found);
     this.list_of_profile_pictures.push(this.profile_picture_found);
-    console.log(this.list_of_pseudos);
+    //console.log(this.list_of_pseudos);
     this.input.nativeElement.value='';
     this.registerForm5.value.fdSearchbar='';
   }
@@ -1152,7 +1152,7 @@ export class SignupComponent implements OnInit {
   /*********************************************** REGISTER FUNCTION  *********************************/
   loading_signup=false;
   register() {
-    console.log("register")
+    //console.log("register")
     
 
     if( !this.cgu_accepted ) {
@@ -1165,15 +1165,15 @@ export class SignupComponent implements OnInit {
     }
     // stop here if form is invalid
     if ( this.registerForm1.invalid || this.registerForm3.invalid || (this.registerForm4.invalid && this.registerForm1.value.gender!='Groupe') ||  (this.registerForm1.value.gender=='Groupe' && this.registerForm6.invalid)  ) {
-        console.log("something inbalid 1");
+        //console.log("something inbalid 1");
         return;
     }
     if(this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.firstName.status=='INVALID'){
-      console.log("something inbalid 2");
+      //console.log("something inbalid 2");
         return;
     }
     if(this.registerForm1.value.gender!='Groupe' && this.registerForm2.invalid){
-      console.log("something inbalid 3");
+      //console.log("something inbalid 3");
       return;
     }
 
@@ -1191,7 +1191,7 @@ export class SignupComponent implements OnInit {
       this.user.siret=null;
     }
     this.user.firstname = this.capitalizeFirstLetter( this.registerForm2.value.firstName.toLowerCase() );
-    console.log(this.registerForm2.value.lastName)
+    //console.log(this.registerForm2.value.lastName)
     if(this.registerForm2.controls['lastName'] && this.registerForm2.value.lastName){
       this.user.lastname = this.capitalizeFirstLetter( this.registerForm2.value.lastName.toLowerCase() );
     }
@@ -1199,7 +1199,7 @@ export class SignupComponent implements OnInit {
       this.user.lastname = '';
     }
     if(this.registerForm2.controls['birthday'] && this.registerForm2.controls['birthday'].valid){
-      console.log(this.registerForm2.value.birthday._i.date)
+      //console.log(this.registerForm2.value.birthday._i.date)
       if(this.registerForm2.value.birthday._i.date){
         this.user.birthday = this.registerForm2.value.birthday._i.date  + '-' + this.registerForm2.value.birthday._i.month  + '-' + this.registerForm2.value.birthday._i.year ;
       }
@@ -1220,7 +1220,7 @@ export class SignupComponent implements OnInit {
       }
       
     }
-    console.log(this.user.birthday);
+    //console.log(this.user.birthday);
     
     //form3
     this.user.nickname = this.registerForm3.value.nickname;
@@ -1270,17 +1270,17 @@ export class SignupComponent implements OnInit {
    
 
     this.Profile_Edition_Service.check_pseudo(this.user.nickname,0).subscribe(r=>{
-      console.log(r)
+      //console.log(r)
       if(r[0][0].msg=="found"){
         this.display_pseudo_found_2=true;
         this.loading_signup=false;
         this.cd.detectChanges()
       }
       else{
-        console.log(this.user)
-        console.log(this.links)
+        //console.log(this.user)
+        //console.log(this.links)
         this.Profile_Edition_Service.check_email(this.user,0).subscribe(r=>{
-          console.log(r)
+          //console.log(r)
           if(r[0][0].msg=="found" && r[0][0].type=="user"){
             this.display_email_found_2=true;
             this.loading_signup=false;
@@ -1289,21 +1289,21 @@ export class SignupComponent implements OnInit {
           else{
             this.user.list_of_members;
             this.user.id_admin;
-            console.log(this.user)
+            //console.log(this.user)
 
             this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
-              console.log(r[0]);
+              //console.log(r[0]);
               if(!r[0].error){
                 this.display_email_or_pseudo_found=false;
                 let id=r[0].id_user;
                 if( this.links.length > 0 ) {
-                  console.log(this.links)
+                  //console.log(this.links)
                   let compt=0;
                   for(let i=0;i<this.links.length;i++){
                     this.Profile_Edition_Service.add_link(r[0].id_user,this.links_titles[i],this.links[i]).subscribe(l=>{
                       compt+=1;
                       if(this.links.length==compt){
-                        console.log("c'est bon");
+                        //console.log("c'est bon");
                         if(this.registerForm1.value.gender=="Groupe" && this.user.id_admin){
                             this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
                               let message_to_send ={
@@ -1325,14 +1325,14 @@ export class SignupComponent implements OnInit {
                               this.ChatService.messages.next(message_to_send);
                               if(!this.user.type_of_account.includes("Artiste")){
                                 this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                                  console.log(m)
+                                  //console.log(m)
                                   this.loading_signup=false;
                                   location.reload();
                                 })
                               }
                               else{
                                 this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                                  console.log(m)
+                                  //console.log(m)
                                   this.loading_signup=false;
                                   location.reload();
                                 })
@@ -1342,7 +1342,7 @@ export class SignupComponent implements OnInit {
                         }
                         else{
                           this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                            console.log(m)
+                            //console.log(m)
                             this.loading_signup=false;
                             location.reload();
                           })
@@ -1353,9 +1353,9 @@ export class SignupComponent implements OnInit {
                 }
                 else {
                   if(this.registerForm1.value.gender=="Groupe"){
-                    console.log("for groupe")
+                    //console.log("for groupe")
                     this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
-                      console.log(l[0])
+                      //console.log(l[0])
                       let message_to_send ={
                         for_notifications:true,
                         type:"group_creation",
@@ -1389,7 +1389,7 @@ export class SignupComponent implements OnInit {
                   }
                   else{
                     this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                      console.log(m)
+                      //console.log(m)
                       this.loading_signup=false;
                       location.reload();
                     })

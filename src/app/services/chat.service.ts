@@ -31,7 +31,7 @@ export class ChatService {
 
 
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-        if(l[0] ){
+        if(l[0]  && l[0].status && l[0].status!="visitor"){
           this.messages=<Subject<Message>>this.wsService
           .connect(`ws://linkarts.fr/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{

@@ -121,14 +121,14 @@ export class LoginInvitedUserComponent implements OnInit {
     this.loading = true;
     this.authenticationService.login_invited_user(this.f.mail.value, this.f.password.value).subscribe( data => {
         this.loading=false;
-        console.log(data.msg);
+        //console.log(data.msg);
 
         
         if(data.token){
           this.router.navigate(['/'])
         }
         else{
-          console.log("error");
+          //console.log("error");
           this.display_wrong_data=true;
         }
         
