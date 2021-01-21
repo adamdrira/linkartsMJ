@@ -284,13 +284,13 @@ value:string="add";
     if( (this.form_number==0 && this.componentRef.length==100) || (this.form_number==1 && this.list_of_chapters.length==100) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"Vous ne pouvez pas ajouter plus de 100 chapitres"},
-        panelClass: 'dialogRefClassText'
+        panelClass: "popupConfirmationClass",
       });
     }
     else if( this.chapter_creation_in_progress ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:"Veuillez valider le chapitre en cours avant d'en ajouter un nouveau"},
-        panelClass: 'dialogRefClassText'
+        panelClass: "popupConfirmationClass",
       });
     }
     else if(this.form_number==0){
@@ -344,7 +344,7 @@ value:string="add";
       if( this.componentRef.length > 1 ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer ce chapitre ?'},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
   
         dialogRef.afterClosed().subscribe(result => {
@@ -357,7 +357,7 @@ value:string="add";
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous devez conserver au moins un chapitre'},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
       }
     }
@@ -365,7 +365,7 @@ value:string="add";
       if( this.list_of_chapters.length > 1 ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer ce chapitre ?'},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
   
         dialogRef.afterClosed().subscribe(result => {
@@ -378,7 +378,7 @@ value:string="add";
       else {
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous devez conserver au moins un chapitre'},
-            panelClass: 'dialogRefClassText'
+            panelClass: "popupConfirmationClass",
           });
        
       }
@@ -443,7 +443,7 @@ value:string="add";
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:"Vous ne pouvez pas modifier le contenu des chapitres validés"},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
       }
     }
@@ -476,7 +476,7 @@ value:string="add";
     if( this.edit_name != -1 ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention ! Vous devez valider l\'édition du nom avant de finaliser le téléchargement.'},
-        panelClass: 'dialogRefClassText'
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
     }
@@ -500,7 +500,7 @@ value:string="add";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:errorMsg},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
   
       }
@@ -553,7 +553,7 @@ value:string="add";
         
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:errorMsg},
-          panelClass: 'dialogRefClassText'
+          panelClass: "popupConfirmationClass",
         });
   
       }
