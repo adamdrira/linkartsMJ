@@ -1,0 +1,401 @@
+
+  /*****************THUMBNAIL COMIC STYLES**********************/
+  
+  a {
+    cursor:pointer;
+  }
+
+  .element-book {
+
+    /*nouveau style*/
+
+    display: flex;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:auto;
+    flex-direction: column;
+    width: 200px;
+    height: 267px;
+    position: relative;
+    transition: 0.2s ease-in-out;
+    color:white;
+  }
+  
+  .border-recto {
+
+    /*nouveau style*/
+    box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 10px 2px rgb(0 0 0 / 10%), 0px 2px 5px 0px rgba(0, 0, 0, 0.12);
+    /*border:1px solid rgb(206, 206, 206);*/
+
+    border-radius:4px 30px 4px 30px;
+    overflow: hidden;
+  }
+  
+  .border-verso {
+    box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 10px 2px rgb(0 0 0 / 10%), 0px 2px 5px 0px rgba(0, 0, 0, 0.12);
+    border-radius:30px 4px 30px 4px;
+    padding: 10px 15px 5px 15px;
+    overflow: hidden;
+    background: rgb(109, 124, 152);
+    color:rgb(255, 255, 255);
+  }
+  
+  
+  
+  
+  .element-book .miniature {
+    position:relative;
+    height:100% !important;
+    width:100% !important;
+  }
+  
+  
+  .element-book .miniature img {
+    width:100% !important;
+    height:100% !important;
+    margin-left:auto;
+    margin-right:auto;
+    object-fit: cover;
+    height: 100%;
+    width: auto;
+  }
+
+  /*linear-gradient(0deg, rgb(0, 18, 51), rgba(0, 16, 45, 0.71))*/
+  /*linear-gradient(65deg, rgb(0, 24, 68), rgba(4, 25, 64, 0.81))*/
+  .element-book .absolute-thumbnail-data {
+    
+    background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+    color:rgb(255, 255, 255);
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+    margin-left: auto;
+    padding: 2px 15px 3px 15px;
+    margin-right: auto;
+  }
+  
+  
+  .title-container {
+  display:flex;
+  flex-direction: column;
+  width:100%;
+  text-align:left;
+  }
+  
+  .title-container span.title {
+    font-weight: 700;
+    margin: auto auto;
+    font-size: 14px;
+    line-height: 17px;  
+    display: -webkit-box;
+    width: 100%;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    word-break: break-word;
+  }
+  
+  
+  .author-container {
+  display: flex;
+  width: 100%;
+  }
+  
+  .author-container .left-container {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  min-width: 29px !important;
+  min-height: 29px !important;
+  margin: auto 3px auto 0px;
+  }
+  
+  .author-container .left-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  }
+  
+  .author-container .right-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: calc( 100% - 40px );
+  margin: 0px 10px auto 5px;
+  }
+  .author-container .right-container span.author-name {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight:700;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  }
+  
+  .author-container .right-container span.author-description {
+    font-size: 11px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+  
+  .stats-container {    
+    width: 100%;
+    height: 22px;
+    color: #3b3b3b;
+    display: flex;
+    margin-top: 1px;
+    margin-bottom: 5px;
+    /*font-size: 1rem;*/
+    font-size: 12px;
+    justify-content: space-between;
+  }
+  
+  .figure-container
+  {
+    display: flex;
+    border-radius: 15px;
+    align-items: center;
+    min-width: 52px;
+    color:white;
+    border-bottom:1px solid #4bc7ff;
+  }
+  
+  
+  .figure-container.views {
+    /*background-image: linear-gradient(to left, #6f6f6f 0, #969696 100%);*/
+    /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  
+  }
+  
+  .figure-container.likes {
+    /*background-image: linear-gradient(to left, #2275be 0, #1b9fc0 100%);*/
+     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  }
+  
+  .figure-container.loves {    
+    /*background-image: linear-gradient(to left, #8a0101, #e60000);*/
+     /*box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.36);*/
+  }
+  
+  .figure-container
+  {
+    margin:auto;
+  }
+
+  .figure-container > div {
+    display:flex;
+    margin:auto auto;
+  }
+  
+
+  .stats-container .figure-container.views mat-icon {
+    height:unset;
+    width:unset;
+    font-size: 14px;
+    max-width:14px;
+    overflow: hidden;
+    color: #f9f9f9;
+    margin: 2px auto auto 5px;
+  }
+  .stats-container .figure-container.likes mat-icon {
+    height:unset;
+    width:unset;
+    color: #7ed7ff;
+    font-size: 14px;
+    max-width:14px;
+            overflow: hidden;
+    margin: 2px auto auto 5px;
+  }
+  .stats-container .figure-container.loves mat-icon {
+    height:unset;
+    width:unset;
+    color: #e41919;
+    font-size: 14px;
+    max-width:14px;
+            overflow: hidden;
+    margin: 2px auto auto 4px;
+  }
+  
+
+
+
+/*********Face verso*************/
+
+
+.border-verso .verso-resume {
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size:16px;
+  text-align:left;
+  display:flex;
+}
+
+
+.element-book .horizontal-line {
+  width: 60px;
+  height: 2px;
+  margin: 0px auto 0px 0px;
+  background: rgb(255, 255, 255);
+}
+
+.border-verso .verso-description {    
+  width: 100%;
+  text-align: left;
+  line-height: 1.5rem;
+  margin-top: 5px;
+  overflow-y: hidden;
+  word-break: break-word;
+  text-align: justify;
+}
+
+.border-verso .verso-description span {
+  margin: auto auto;
+  font-size: 11px;
+  line-height: 13px;
+  display: -webkit-box;
+  width: 100%;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  -webkit-line-clamp: 11;
+}
+
+  
+.categories-container {
+  width:100%;
+  display:flex;
+  align-items:center;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  text-align:left;
+  line-height: 20px;
+  margin-top: auto;
+  flex-wrap: wrap;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  }
+  
+.categories-container span {
+  font-size: 11px;
+  line-height: 11px;
+  margin: auto auto auto auto;
+}
+
+.tag-container{
+  border-radius: 20px;
+  padding: 3px 6px 5px 6px;
+  display: flex;
+  margin: auto 4px 3px 0px;
+  font-size:11px;
+  line-height: 11px;
+  /*background:rgb(32,56,100);
+  border:1px solid rgb(32,56,100);*/
+}
+.verso-type .tag-container.type {
+  background:unset !important;
+  border-bottom: solid 1px white;
+}
+.tag-container .mat-icon {
+  font-size: 11px;
+  max-width:11px;
+            overflow: hidden;
+  line-height: 11px;
+  margin-top: 1px;
+  margin-left: 3px;
+  width: unset !important;
+  height: unset !important;
+}
+
+.date-container {
+  width:100%;
+  line-height: 15px;
+  text-align:left;
+}
+
+.date-container span {
+  font-size:10px;
+}
+
+
+.border-verso .verso-type {
+  width: 100%;
+  /*display:flex;
+  flex-wrap: wrap;*/
+  margin-top: auto;
+  align-items:center;
+  text-align: left;
+  line-height: 1.15rem;
+}
+
+.border-verso .verso-type span {
+  font-size: 10px;
+  line-height: 11px;
+  margin: auto auto auto auto;
+}
+
+
+
+.swiper-categories {
+  position:relative;
+  height: 25px;
+  width: 100%;
+  margin-top: 2px;
+  padding:0px 25px 0px 25px;
+}
+
+.swiper-slide {
+  width:100% !important;
+}
+
+.swiper-categories .swiper-wrapper {
+  height: 100% !important;
+  width: 100% !important;
+}
+.swiper-categories .swiper-button-next, .swiper-button-prev {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  color: #ffffff;
+  /*background: #203864;*/
+  border-radius: 50px;
+  height: 20px;
+  width: 20px;
+  margin-top: unset !important;
+  outline: none !important;
+}
+.swiper-categories .swiper-button-next {
+  right:0;
+}
+.swiper-categories .swiper-button-prev {
+  left:0;
+}
+.swiper-categories .swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 11px !important;
+}
+
+
+.invisible{
+  visibility:hidden;
+  pointer-events: none;
+}
+
+.shiny {
+  background-color: rgb(220, 220, 220);
+  background-image: linear-gradient(to right, transparent 33%, rgba(255, 255, 255, 0.3) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;
+  }
+}

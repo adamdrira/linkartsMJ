@@ -1,0 +1,72 @@
+
+/*Style 0 :*/
+::ng-deep button.mat-raised-button.style0 {
+    outline:none !important;
+    text-align: center !important;
+    box-shadow: 0px 0px 4px rgb(71, 111, 183) !important;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+::ng-deep button.style0.mat-raised-button:hover {
+    background: rgb(240, 244, 251) !important;
+}
+
+::ng-deep button.style0 .mat-ripple *{
+    background-color: rgb(204, 218, 255) !important;
+}
+
+
+
+/*Style 1 :*/
+::ng-deep button.mat-raised-button.style1 {
+    outline:none !important;
+    text-align: center !important;
+    box-shadow: 0px 0px 4px rgb(71, 111, 183) !important;
+    background-color: rgb(32, 56, 100) !important;
+    color: white;
+}
+
+::ng-deep button.style1.mat-raised-button:hover {
+    background-color: rgb(46, 70, 116) !important;
+}
+
+::ng-deep button.style1 .mat-ripple *{
+    background-color: rgb(54, 79, 126) !important;
+}
+
+
+/*Style 1 : forms*/
+::ng-deep .form button.mat-raised-button.style1 {
+    outline: none !important;
+    text-align: center !important;
+    box-shadow: 0px 0px 4px rgb(71, 111, 183) !important;
+    background-image:linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185)) !important;
+    color: white;
+    border-radius: 40px;
+}
+
+::ng-deep .form button.style1.mat-raised-button:hover {
+    background-image:linear-gradient(0.02turn, rgb(115, 132, 172), rgb(61, 83, 124), rgb(111, 127, 167)) !important;
+}
+
+::ng-deep .form button.style1 .mat-ripple *{
+    background-color: unset !important;
+}
+
+
+
+.horizontal-line {
+    width: 10%;
+    height: 5px;
+    margin: auto 0px auto 0px;
+    border-bottom: 1px solid #d3d3db;
+}
+
+@keyframes shine {
+  0% {
+    background-position: right;    
+  }
+  /*100% {
+    background-position: left; it's the default value, no need to define it
+  }*/
+}
