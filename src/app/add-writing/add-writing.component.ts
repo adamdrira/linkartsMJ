@@ -133,7 +133,7 @@ export class AddWritingComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
-      panelClass:"panelAdAttachments",
+      panelClass: "popupDocumentClass",
     });
   }
 
@@ -204,14 +204,14 @@ export class AddWritingComponent implements OnInit {
       this.nextButton.nativeElement.disabled = false;
       if(this.fw.controls.fwTags.status=='INVALID' && this.fw.controls.fwTitle.status=='VALID' && this.fw.controls.fwDescription.status=='VALID' && this.fw.controls.fwCategory.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+          panelClass: "popupConfirmationClass",
         });
       }
     
@@ -285,22 +285,22 @@ export class AddWritingComponent implements OnInit {
     else {
       if( !this.fw.valid ) {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+          panelClass: "popupConfirmationClass",
         });
         this.validateButton.nativeElement.disabled = false;
       }
       else if ( !this.confirmation_writing_uploaded ){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez attendre la fin du téléchargement du PDF et le valider après l\'avoir téléchargé.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Veuillez attendre la fin du téléchargement du PDF et le valider après l\'avoir téléchargé'},
+          panelClass: "popupConfirmationClass",
         });
         this.validateButton.nativeElement.disabled = false;
       }
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Veuillez télécharger une miniature, puis la valider'},
+          panelClass: "popupConfirmationClass",
         });
         this.validateButton.nativeElement.disabled = false;
       }

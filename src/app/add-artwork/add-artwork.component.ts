@@ -172,6 +172,7 @@ export class AddArtworkComponent implements OnInit {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Attention, la sélection actuelle sera supprimée'},
+      panelClass: "popupConfirmationClass",
     });
 
     dialogRef.afterClosed().subscribe(result => {

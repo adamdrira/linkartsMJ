@@ -138,6 +138,7 @@ export class AddComicComponent implements OnInit {
     if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
+        panelClass: "popupConfirmationClass",
       });
       this.modal_displayed = true;
     }
@@ -188,7 +189,7 @@ export class AddComicComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
-      panelClass:"panelAdAttachments",
+      panelClass: "popupDocumentClass",
     });
   }
 
@@ -336,20 +337,20 @@ export class AddComicComponent implements OnInit {
    
         if(this.f00.value.f00Format == "Série" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
-            panelClass: 'dialogRefClassText'
+            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides'},
+            panelClass: "popupConfirmationClass",
           });
         }
         else if(this.f00.value.f00Format == "One-shot" &&  this.f00.controls.f00Tags.status=='INVALID' && this.f00.controls.f00Title.status=='VALID' && this.f00.controls.f00Description.status=='VALID' && this.f00.controls.f00Category.status=='VALID' &&  this.f00.controls.f00SerieFirstChapter.status=='VALID'){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
-            panelClass: 'dialogRefClassText'
+            data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides'},
+            panelClass: "popupConfirmationClass",
           });
         }
         else{
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-            panelClass: 'dialogRefClassText'
+            data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+            panelClass: "popupConfirmationClass",
           });
         }
 
@@ -357,8 +358,8 @@ export class AddComicComponent implements OnInit {
       }
       else {
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider'},
+          panelClass: "popupConfirmationClass",
         });
       }
     }

@@ -707,6 +707,7 @@ export class ArchivesComponent implements OnInit {
       console.log(this.list_of_stories)
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
         data: {list_of_pictures:this.list_of_stories,index_of_picture:indice},
+        panelClass: "popupDocumentClass",
       });
     }
    

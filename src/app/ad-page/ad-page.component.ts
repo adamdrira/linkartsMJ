@@ -537,26 +537,28 @@ export class AdPageComponent implements OnInit {
   read_pictures(i:number){
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
         data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
+        panelClass: "popupDocumentClass",
       });
   }
 
   read_attachment(i:number){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
-      panelClass:"panelAdAttachments",
+      panelClass: "popupDocumentClass",
     });
   }
 
   read_pictures_response(i:number){
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:this.response_list_of_pictures,index_of_picture:i},
+      panelClass: "popupDocumentClass",
     });
   }
 
   read_attachment_response(i:number){
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.response_list_of_attachments[i]},
-      panelClass:"panelAdAttachments",
+      panelClass: "popupDocumentClass",
     });
   }
 
@@ -567,6 +569,7 @@ export class AdPageComponent implements OnInit {
   delete(){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette annonce ?'},
+      panelClass: "popupConfirmationClass",
     });
     dialogRef.afterClosed().subscribe(result => {
       if(result){
@@ -1021,6 +1024,7 @@ export class AdPageComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
+        panelClass: "popupConfirmationClass",
       });
     }
   
@@ -1405,6 +1409,7 @@ export class AdPageComponent implements OnInit {
       if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{

@@ -143,7 +143,7 @@ export class AddDrawingComponent implements OnInit {
   read_conditions() {
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
-      panelClass:"panelAdAttachments",
+      panelClass: "popupDocumentClass",
     });
   }
 
@@ -152,7 +152,7 @@ export class AddDrawingComponent implements OnInit {
     if( (this.REAL_step != this.CURRENT_step) && (!this.modal_displayed) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Attention, changer le format annulera toute la sélection de l\'étape 2'},
-        panelClass: 'dialogRefClassText'
+        panelClass: "popupConfirmationClass",
       });
       this.modal_displayed = true;
     }
@@ -275,14 +275,14 @@ export class AddDrawingComponent implements OnInit {
       
       if(this.fd.controls.fdTags.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdDescription.status=='VALID' && this.fd.controls.fdCategory.status=='VALID' &&  this.fd.controls.fdFormat.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des genres valides'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+          panelClass: "popupConfirmationClass",
         });
       }
 

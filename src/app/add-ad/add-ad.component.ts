@@ -439,7 +439,7 @@ export class AddAdComponent implements OnInit {
             this.validateButton.nativeElement.disabled = false;
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Une annonce similaire publiée il y a moins d'une semaine est déjà disponible, veuillez la supprimer afin de pouvoir publier une annonce similaire"},
-              panelClass: 'dialogRefClassText'
+              panelClass: "popupConfirmationClass",
             });
           }
         })
@@ -453,14 +453,14 @@ export class AddAdComponent implements OnInit {
       console.log(this.fd)
       if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides'},
+          panelClass: "popupConfirmationClass",
         });
       }
       else{
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-          panelClass: 'dialogRefClassText'
+          data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires'},
+          panelClass: "popupConfirmationClass",
         });
       }
 
@@ -468,8 +468,8 @@ export class AddAdComponent implements OnInit {
     }
     else {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider.'},
-        panelClass: 'dialogRefClassText'
+        data: {showChoice:false, text:'Veuillez saisir une miniature, puis la valider'},
+        panelClass: "popupConfirmationClass",
       });
       this.validateButton.nativeElement.disabled = false;
     }

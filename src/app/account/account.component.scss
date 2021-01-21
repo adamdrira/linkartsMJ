@@ -8,7 +8,7 @@
 //**********************************************************************
 //**********************************************************************
 
-@import "../../material-styles.css";
+@import "../../material-styles.scss";
 @import "../../unsecured-ng-deeps.scss";
 
 
@@ -1877,9 +1877,10 @@
 
       transform: translateY(100%);
       animation: slideDown 600ms forwards 0s ease-in-out;
-    }
-    .mat-dialog-container {
-      padding: 24px 0px 0px 0px;
+      
+      .mat-dialog-container {
+        padding: 24px 0px 0px 0px;
+      }
     }
   }
   @keyframes slideDown {

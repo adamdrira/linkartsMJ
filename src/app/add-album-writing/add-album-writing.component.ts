@@ -239,18 +239,21 @@ export class AddAlbumWritingComponent implements OnInit {
     if( !this.grid || !this.album_list ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez sélectionner au moins une œuvre'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     if( !(this.album_list.length > 0) ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez sélectionner au moins une œuvre'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     if( !this.formName.valid ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez sélectionner un titre valide'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }

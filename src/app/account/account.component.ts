@@ -1316,6 +1316,7 @@ export class AccountComponent implements OnInit {
       if(this.add_album!=-1){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:true, text:'Voulez-vous quitter ce le mode création ?'},
+          panelClass: "popupConfirmationClass",
         });
         dialogRef.afterClosed().subscribe(result => {
           if(result){
@@ -1411,18 +1412,21 @@ export class AccountComponent implements OnInit {
     if(this.opened_category==0 && this.list_titles_albums_bd_added.length==10){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 10 sections'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     else if(this.opened_category==1 && this.list_titles_albums_drawings_added.length==10){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 10 sections'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
     else if(this.opened_category==2 && this.list_titles_albums_writings_added.length==10){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 10 sections'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
@@ -1622,6 +1626,7 @@ export class AccountComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
+        panelClass: "popupConfirmationClass",
       });
     }
   
@@ -1672,6 +1677,7 @@ export class AccountComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir supprimer cette section ? "},
+        panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -1690,6 +1696,7 @@ export class AccountComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir supprimer cette section ? "},
+        panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -1717,6 +1724,7 @@ export class AccountComponent implements OnInit {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir supprimer cette section ? "},
+        panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -2494,6 +2502,7 @@ block_user(){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir bloquer cet utilisateur ? Les concéquences sont les suivantes : - Il ne pourra plus avoir accès à votre page de profile; -vous ne pourrez plus avoir accès à sa page de profile; -les abonnements seront enlevés de part et d'autre; -Vous ne pourrez plus qu'échanger qu'en tant que spams; -Vous ne pourrez plus commenter ses oeuvres et ses annonces et vis versa; -ses oeuvres ne vous seront plus recommendées"},
+        panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -2572,6 +2581,7 @@ report(){
     if(r[0].nothing){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:true, text:'Vous ne pouvez pas signaler deux fois le même compte'},
+        panelClass: "popupConfirmationClass",
       });
     }
     else{

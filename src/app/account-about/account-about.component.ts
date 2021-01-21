@@ -2713,6 +2713,7 @@ export class AccountAboutComponent implements OnInit {
       this.display_error_validator_1=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet'},
+        panelClass: "popupConfirmationClass",
       });
       return
     }
@@ -2727,6 +2728,7 @@ export class AccountAboutComponent implements OnInit {
         this.display_error_validator_1=true;
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incomplet'},
+          panelClass: "popupConfirmationClass",
         });
         this.loading_validation_form_1=false;
       }
@@ -2833,6 +2835,7 @@ export class AccountAboutComponent implements OnInit {
       this.display_error_validator_2=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet'},
+        panelClass: "popupConfirmationClass",
       });
       return 
     }
@@ -2874,6 +2877,7 @@ export class AccountAboutComponent implements OnInit {
     if(this.links_titles.length>=3){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas ajouter plus de 3 liens externes'},
+        panelClass: "popupConfirmationClass",
       });
       return;
     }
@@ -2985,6 +2989,7 @@ export class AccountAboutComponent implements OnInit {
       this.display_error_validator_3=true;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Le formulaire est incomplet'},
+        panelClass: "popupConfirmationClass",
       });
       return 
     }

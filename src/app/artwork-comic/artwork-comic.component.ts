@@ -1744,6 +1744,7 @@ export class ArtworkComicComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+        panelClass: "popupConfirmationClass",
       });
     }
   }
@@ -1910,6 +1911,7 @@ export class ArtworkComicComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
+        panelClass: "popupConfirmationClass",
       });
     }
     
@@ -2037,6 +2039,7 @@ export class ArtworkComicComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
+        panelClass: "popupConfirmationClass",
       });
     }
   
@@ -2238,6 +2241,7 @@ export class ArtworkComicComponent implements OnInit {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
+      panelClass: "popupConfirmationClass",
     });
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
@@ -2263,6 +2267,7 @@ export class ArtworkComicComponent implements OnInit {
   set_public() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
+      panelClass: "popupConfirmationClass",
     });
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
@@ -2289,6 +2294,7 @@ export class ArtworkComicComponent implements OnInit {
   remove_artwork() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
+      panelClass: "popupConfirmationClass",
     });
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {

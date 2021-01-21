@@ -332,6 +332,7 @@ export class AccountMyAccountComponent implements OnInit {
           console.log("current password");
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Votre mot de passe doit être différent du mot de passe actuel'},
+            panelClass: "popupConfirmationClass",
           });
           this.checking_password=false;
         }
@@ -352,6 +353,7 @@ export class AccountMyAccountComponent implements OnInit {
 
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:true, text:'Ce mot de passe a déjà été utilisé par le passé. Continuer ?'},
+            panelClass: "popupConfirmationClass",
           });
           dialogRef.afterClosed().subscribe(result => {
             if( result ) {
@@ -625,6 +627,7 @@ export class AccountMyAccountComponent implements OnInit {
     if( this.a_share_is_in_edition){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous avez déjà une édition en cours'},
+        panelClass: "popupConfirmationClass",
       });
       return
     }
@@ -660,6 +663,7 @@ export class AccountMyAccountComponent implements OnInit {
     if(this.registerForm2.invalid){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Veuillez saisir une répartition valide (au moins 2 chiffres)'},
+        panelClass: "popupConfirmationClass",
       });
       return
     }
@@ -684,6 +688,7 @@ export class AccountMyAccountComponent implements OnInit {
     if(this.a_share_is_in_edition){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous devez terminer votre édition avant de valider'},
+        panelClass: "popupConfirmationClass",
       });
       
       this.validation_all=false;
@@ -700,6 +705,7 @@ export class AccountMyAccountComponent implements OnInit {
       this.validation_all=false;
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'La somme des gains doit être égale à 100. Elle est actuellement égale à : ' + compt},
+        panelClass: "popupConfirmationClass",
       });
     }
     else{
@@ -710,12 +716,14 @@ export class AccountMyAccountComponent implements OnInit {
             if(r[0].error=="already_validated"){
               const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                 data: {showChoice:false, text:'Vous avez déjà validé la création de ce groupe'},
+                panelClass: "popupConfirmationClass",
               });
             }
             else{
               let index=this.list_of_groups_ids.indexOf(id_group);
               const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                 data: {showChoice:false, text:"Ce groupe n'existe plus. Il a surement été refusé par un autre membre"},
+                panelClass: "popupConfirmationClass",
               });
               this.list_of_groups_names.splice(index,1);
               this.list_of_groups_ids.splice(index,1);
@@ -782,6 +790,7 @@ export class AccountMyAccountComponent implements OnInit {
     let index=this.list_of_groups_ids.indexOf(id_group);
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir refuser la création de ce groupe ? Ceci entrainera sa suppression'},
+      panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -834,6 +843,7 @@ export class AccountMyAccountComponent implements OnInit {
     if(this.list_of_groups_admins_ids[index]==this.id_user){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter ce groupe ? Votre départ mettra fin au groupe'},
+        panelClass: "popupConfirmationClass",
       });
     
       dialogRef.afterClosed().subscribe(result => {
@@ -882,6 +892,7 @@ export class AccountMyAccountComponent implements OnInit {
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:true, text:'Etes-vous sûr de vouloir quitter ce groupe ? Vous ne pourrez plus le rejoindre ni bénéficier de gains supplémentaires reliés à ce groupe '},
+        panelClass: "popupConfirmationClass",
       });
     
       dialogRef.afterClosed().subscribe(result => {
@@ -934,6 +945,7 @@ export class AccountMyAccountComponent implements OnInit {
     let exit_user = this.list_of_members_ids_by_group[id_group][index_user];
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer ce membre du groupe ?'},
+      panelClass: "popupConfirmationClass",
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -1018,12 +1030,14 @@ export class AccountMyAccountComponent implements OnInit {
   if(this.user_is_in_a_group){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Veillez à quitter tous les groupes auxquels vous appartenez avant la suspension de votre compte"},
+      panelClass: "popupConfirmationClass",
     });
   }
   else{
      
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:"Etes-vous sûr de vouloir suspendre votre compte ? La suspension du compte entrainera l'invisibilité de vos oeuvres, annonces, commentaires, mentions j'aime et j'adore. Vous pourrez néanmoins le récupérer en tout temps"},
+      panelClass: "popupConfirmationClass",
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -1058,11 +1072,13 @@ export class AccountMyAccountComponent implements OnInit {
   if(this.user_is_in_a_group){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Veillez à quitter tous les groupes auxquels vous appartenez avant la suppression de votre compte"},
+      panelClass: "popupConfirmationClass",
     });
   }
   else{
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer votre compte ?'},
+      panelClass: "popupConfirmationClass",
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -1992,6 +2008,7 @@ export class AccountMyAccountComponent implements OnInit {
   get_my_gains(){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir été créé il y a au moins 3 mois et avoir généré plus de 70.00 euros"},
+      panelClass: "popupConfirmationClass",
     });
   }
 }
