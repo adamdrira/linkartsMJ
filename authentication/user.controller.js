@@ -223,48 +223,64 @@ exports.create = (req, res) => {
 					})
 				})
 				.then(()=>{
-					let now= new Date();
-					chat_seq.list_of_chat_friends.create({
-						"id_user":r.id,
-						"id_receiver":1,
-						"is_a_group_chat":false,
-						"date":now,
-					}).catch(err => {
-						console.log(err);	
-						res.status(500).json({msg: "error", details: err});		
-					}).then(()=>{
-						chat_seq.list_of_messages.create({
-							"id_user_name":"Linkarts",
-							"id_receiver": r.id,
-							"id_user":1,
-							"message":"Bienvenue sur Linkarts",
-							"is_from_server":false,
-							"attachment_name":null,
-							"size":null,
-							"is_a_response":false,
-							"id_message_responding":null,
-							"message_responding_to":null,
-							"id_chat_section":1,
-							"is_an_attachment":false,
-							"attachment_type":null,
-							"is_a_group_chat":false,
-							"status":'received',
-						  }).catch(err => {
-							console.log(err);	
-							res.status(500).json({msg: "error", details: err});		
-						}).then(
-							  List_of_subscribings.create({
-								"status":"public",
-								"id_user":  r.id,
-								"id_user_subscribed_to":1,
-							  })
-							).catch(err => {
-								console.log(err);	
-								res.status(500).json({msg: "error", details: err});		
-							}).then(()=>{
-								res.status(200).json([{msg: "creation ok",id_user:r.id}])
-							})
-					})
+					User.findAll({
+						where:{
+							status:"account",
+						},
+						order: [
+							['createdAt', 'DESC']
+						],
+						limit:1}
+				   	).then(first_user=>{
+						   if(first_user.length>0){
+								let now= new Date();
+								chat_seq.list_of_chat_friends.create({
+									"id_user":r.id,
+									"id_receiver":first_user[0].id,
+									"is_a_group_chat":false,
+									"date":now,
+								}).catch(err => {
+									console.log(err);	
+									res.status(500).json({msg: "error", details: err});		
+								}).then(()=>{
+									chat_seq.list_of_messages.create({
+										"id_user_name":"Linkarts",
+										"id_receiver": r.id,
+										"id_user":first_user[0].id,
+										"message":"Bienvenue sur Linkarts",
+										"is_from_server":false,
+										"attachment_name":null,
+										"size":null,
+										"is_a_response":false,
+										"id_message_responding":null,
+										"message_responding_to":null,
+										"id_chat_section":1,
+										"is_an_attachment":false,
+										"attachment_type":null,
+										"is_a_group_chat":false,
+										"status":'received',
+									}).catch(err => {
+										console.log(err);	
+										res.status(500).json({msg: "error", details: err});		
+									}).then(
+										List_of_subscribings.create({
+											"status":"public",
+											"id_user":  r.id,
+											"id_user_subscribed_to":first_user[0].id,
+										})
+										).catch(err => {
+											console.log(err);	
+											res.status(500).json({msg: "error", details: err});		
+										}).then(()=>{
+											res.status(200).json([{msg: "creation ok",id_user:r.id}])
+										})
+								})
+						   }
+						   else{
+							res.status(200).json([{msg: "creation ok",id_user:r.id}])
+						   }
+					   })
+					
 				})
 			}
 		});
