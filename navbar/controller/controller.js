@@ -1553,11 +1553,14 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
                     publication_category:'Ad',
                 },
                 attributes: [
-                    [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],'id_user','target_id'],
-            }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(clicks=>{
+                    [Sequelize.fn('DISTINCT', Sequelize.col('id_user'),Sequelize.col('target_id')), 'users'],
+                    'id_user',
+                    'target_id'
+                ],
+                }).catch(err => {
+                    //console.log(err);	
+                    res.status(500).json({msg: "error", details: err});		
+                }).then(clicks=>{
                 number_of_views+=clicks.length;
                 compt++;
                 if(compt==list_of_ads_ids.length){

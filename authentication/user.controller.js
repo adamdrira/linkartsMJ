@@ -369,8 +369,8 @@ exports.reset_password = (req, res) => {
 						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 						// attachments: params.attachments
 					};
-					res.status(200).send([{sent:decrypted.toString()}])
-					/*transport.sendMail(mailOptions, (error, info) => {
+					
+					transport.sendMail(mailOptions, (error, info) => {
 						if (error) {
 							console.log('Error while sending mail: ' + error);
 							res.status(200).send([{error:error}])
@@ -380,7 +380,7 @@ exports.reset_password = (req, res) => {
 						}
 						
 			
-					})*/
+					})
 				}
 				else{
 					//res.status(200).send([{error:"user not found"}])
@@ -429,8 +429,7 @@ exports.reset_password = (req, res) => {
 							//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 							// attachments: params.attachments
 						};
-						res.status(200).send([{sent:pass}])
-						/*transport.sendMail(mailOptions, (error, info) => {
+						transport.sendMail(mailOptions, (error, info) => {
 							if (error) {
 								console.log('Error while sending mail: ' + error);
 								res.status(200).send([{error:error}])
@@ -440,7 +439,7 @@ exports.reset_password = (req, res) => {
 							}
 							
 				
-						})*/
+						})
 					})
 				}
 			})

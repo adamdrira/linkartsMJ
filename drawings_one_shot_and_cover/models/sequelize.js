@@ -2,9 +2,13 @@ const Sequelize = require('sequelize');
 const tables = require('./tables');
 
 
-const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
+/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
     host : 'localhost',
     dialect: 'postgres'
+});*/
+const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+  host : 'localhost',
+  dialect: 'postgres'
 });
 
 const Drawings_one_page = tables.Drawings_Onepage_Tables(sequelize, Sequelize).drawings;
