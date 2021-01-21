@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ComponentFactoryResolver, ViewContainerRef, ViewChild, Renderer2, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, ComponentFactoryResolver, ViewContainerRef, ViewChild, Renderer2, ViewChildren, QueryList, ElementRef, HostListener } from '@angular/core';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { Story_service } from '../services/story.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -35,24 +35,11 @@ export class PopupAdAttachmentsComponent implements OnInit {
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
 
-  //Swiper
-  swiper: any;
-
-  swiperComics: any;
-  swiperDrawings: any;
-  swiperWritings: any;
 
   total_pages:number;
-  fullscreen_mode: boolean;
-
   category_index: number = 0;
   pdfSrc:SafeUrl;
   
-  zoom: number = 1.0;
-  arrayOne(n: number): any[] {
-    return Array(n);
-  }
-
 
   /******************************************************* */
   /******************** ON INIT ****************** */
@@ -68,154 +55,24 @@ export class PopupAdAttachmentsComponent implements OnInit {
   /******************** AFTER VIEW INIT ****************** */
   /******************************************************* */
   ngAfterViewInit() {
-    let THIS = this;
-    $(".top-container .pages-controller-container input").keydown(function (e){
-      if(e.keyCode == 13){
-        THIS.setSlide( $(".top-container .pages-controller-container input").val() );
-      }
-    });
 
     
   }
 
   
-
-  
-
-
-  /******************************************************* */
-  /******************************************************* */
-  /******************* LEFT CONTROLLER ******************* */
-  /******************************************************* */
-  /******************************************************* */
-
-
-  initialize_swiper() {
-    
-    let THIS = this;
-
-    this.swiper = new Swiper('.swiper-container.artwork', {
-      speed: 500,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      keyboard: {
-        enabled: true,
-      },
-      on: {
-        slideChange: function () {
-          THIS.refresh_controls_pagination();
-        },
-      },
-    });
-
-    
-    this.swiper.update();
-    
-  }
-
-
-
-
-
-
-  /*afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
-    this.total_pages = pdf.numPages;
-    this.cd.detectChanges();
-    
-    if( (i+1) == this.total_pages ) {
-      this.initialize_swiper();
-      this.refresh_controls_pagination();
-    };
-    
-  }*/
-
-  writing_retrieved=false;
   afterLoadComplete(pdf: PDFDocumentProxy) {
     console.log(pdf)
     this.total_pages = pdf.numPages;
-    this.writing_retrieved=true;
     this.cd.detectChanges();
-    
-  }
-
-  refresh_controls_pagination() {
-    $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-    $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
   }
 
 
-  setSlide(i : any) {
-    if( isNaN(i) ) {
-      return;
-    }
-    else if ( (Number(i)<1) || (Number(i)> this.total_pages ) ) {
-      this.refresh_controls_pagination();
-      return;
-    }
-    else {
-      this.swiper.slideTo( Number(i) - 1 );
-    }
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.close_dialog();
   }
-
-
-
-  zoom_button() {
-    if( this.zoom == 1.3 ) {
-      this.zoom = 1;
-    }
-    else {
-      this.zoom = 1.3;
-    }
+  close_dialog(){
+    this.dialogRef.close();
   }
-
-
-  fullscreen_button() {
- 
-    const elem = this.leftContainer.nativeElement;
-    if( !this.fullscreen_mode ) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-        this.fullscreen_mode = true;
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-        this.fullscreen_mode = true;
-      } else if (elem.mozRequestFullScreen) {
-        elem.mozRequestFullScreen();
-        this.fullscreen_mode = true;
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-        this.fullscreen_mode = true;
-      }
-    }
-    else {
-      document.exitFullscreen();
-      this.fullscreen_mode = false;
-    }
-  }
-
-  
-
-  
-
-  left_container_category_index: number = 0;
-  open_left_container_category(i : number) {
-    this.left_container_category_index=i;
-  }
-
-  
-
-
- 
-
 
 
 

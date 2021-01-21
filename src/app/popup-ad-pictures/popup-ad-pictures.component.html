@@ -1,68 +1,34 @@
-<div id="left-container">
-
-          
-    <div #leftContainer class="first-div">
-
-
-        <div class="top-container">
-            <div class="dropdowns-container">
-                <div class="options-container">
-                    
-                   <mat-icon class="icon" *ngIf="!fullscreen_mode" (click)="fullscreen_button();">fullscreen</mat-icon>
-                    <mat-icon class="icon" *ngIf="fullscreen_mode" (click)="fullscreen_button();">fullscreen_exit</mat-icon>
-                    <mat-icon class="icon" *ngIf="zoom_mode" (click)="zoom_button();">zoom_out</mat-icon>
-                    <mat-icon class="icon" *ngIf="!zoom_mode" (click)="zoom_button();">zoom_in</mat-icon>
-                    
-                    <div class="pages-controller-container" >
-                        Page :
-                        <input type="text" aria-label="" role="navigation" size="5">
-                        <div class="total-pages">
-                            <span></span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+<button (click)="close_dialog()" class="close" tabIndex="-1">
+    <mat-icon>close</mat-icon>
+</button>
 
 
-        <div class="content-container">
-
-            <div #swiperContainer  class="swiper-container">
-                <div #swiperWrapper class="swiper-wrapper">
-                    <ng-container >
-                        <div *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide">
-
-                            <div class="slide-container" 
-                            [ngClass]="{'slide-container-ZM': zoom_mode}">
-
-                                <img class="slide-container-img" 
-                                [src]="list_of_pictures[i]"
-                                [ngClass]="{'slide-container-img-ZM': zoom_mode}">
-                            </div>
-
-                        </div>
-                </ng-container>
-                </div>
-                
-                <!-- Add Scrollbar -->
-                <div class="swiper-scrollbar"></div>
-                <!-- Add Arrows -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-            </div>
-
-
-
-        </div>
-
-    </div>
-
-
+<div class="component-container">
+    <div #swiperContainer class="swiper-container" *ngIf="list_of_pictures.length > 1">
+        <div #swiperWrapper class="swiper-wrapper">
     
-
-
-
-
-
+            <div #swiperSlide *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide">
+                <img [src]="list_of_pictures[i]" class="slide-container-img">
+            </div>
+            
+        </div>
+        <!-- Add Arrows -->
+        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-prev"></div>
+        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-next"></div>
+    </div>
+    
+    
+    <div class="bottom-thumbnails" *ngIf="list_of_pictures.length > 1">
+        <div *ngFor="let item of list_of_pictures; let i = index" class="thumbnail" (click)="set_slide(i);" [ngClass]="{'not-opened': swiper && swiper.activeIndex != i }">
+            <img [src]="list_of_pictures[i]">
+        </div>
+    </div>
+    
+    <div class="swiper-container" *ngIf="list_of_pictures.length == 1">
+        <div #swiperWrapper class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img [src]="list_of_pictures[0]" class="slide-container-img">
+            </div>
+        </div>
+    </div>    
 </div>

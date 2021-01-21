@@ -14,7 +14,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { NotationService } from '../services/notation.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Emphasize_service } from '../services/emphasize.service';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
 import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -47,40 +47,21 @@ export class PopupAdPicturesComponent implements OnInit {
     private AuthenticationService:AuthenticationService,
     private Subscribing_service:Subscribing_service,
     private Community_recommendation:Community_recommendation,
-    public dialog: MatDialog,
     private NotationService:NotationService,
     private Emphasize_service:Emphasize_service,
+    public dialogRef: MatDialogRef<PopupAdPicturesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
     ) { 
-    
-    this.zoom_mode = false;
-    this.fullscreen_mode = false;
-
   }
 
 
-  @ViewChildren('category') categories:QueryList<ElementRef>;
-  @ViewChild('leftContainer') leftContainer:ElementRef;
-  @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
-  @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
-  @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
-  @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
-
   //Swiper
   swiper: any;
-  //Zoom mode
-  zoom_mode: boolean;
-  //Fullscreen mode
-  fullscreen_mode: boolean;
   recommendation_index:number;
   category_index: number = 0;
   list_of_pictures:any[];
 
-
-
-
-
-
+  @ViewChild( "swiperContainer" ) swiperContainer:ElementRef;
 
 
   /******************************************************* */
@@ -89,15 +70,12 @@ export class PopupAdPicturesComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
     this.list_of_pictures=this.data.list_of_pictures;
-    /*for(let i=0; i<this.list_of_pictures.length; i++){
-      let url = (window.URL) ? window.URL.createObjectURL(this.list_of_pictures[i]) : (window as any).webkitURL.createObjectURL(this.list_of_pictures[i]);
-      const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-      this.list_of_pictures[i] = SafeURL;
-    }*/
 
-    console.log(this.list_of_pictures);
+    this.cd.detectChanges();
 
-
+    if( this.list_of_pictures.length > 1 ) {
+      this.initialize_swiper();
+    }
   }
 
 
@@ -109,21 +87,26 @@ export class PopupAdPicturesComponent implements OnInit {
   
 
   ngAfterViewInit() {
-    this.initialize_swiper();
-
   }
 
 
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.close_dialog();
+  }
+
   initialize_swiper() {
 
-      var THIS = this;
-      
-      this.swiper = new Swiper('.swiper-container', {
+    if(!this.swiper) {
+      this.swiper = new Swiper(this.swiperContainer.nativeElement, {
         speed: 500,
-        scrollbar: {
-          el: '.swiper-scrollbar',
-          hide: true,
-        },
+        spaceBetween: 100,
+        grabCursor: false,
+
+        initialSlide:this.data.index_of_picture,
+
+        simulateTouch: true,
+        allowTouchMove: true,
+
         pagination: {
           el: '.swiper-pagination',
         },
@@ -133,105 +116,23 @@ export class PopupAdPicturesComponent implements OnInit {
         },
         keyboard: {
           enabled: true,
-        },
-        observer: true,
-        on: {
-          slideChange: function () {
-            THIS.refresh_swiper_pagination();
-            window.dispatchEvent(new Event("resize"));
-          },
-          observerUpdate: function () {
-            THIS.refresh_swiper_pagination();
-            window.dispatchEvent(new Event("resize"));
-          }
-        },
-      });
-      this.refresh_swiper_pagination();
-      $(".top-container .pages-controller-container input").keydown(function (e){
-        if(e.keyCode == 13){
-          THIS.setSlide( $(".top-container .pages-controller-container input").val() );
         }
       });
-
-      
-      this.swiper.slideTo(this.data.index_of_picture,false,false);
-      this.swiper.update();
-
-    
-  }
-
-
-  refresh_swiper_pagination() {
-    
-      $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-      $(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
-  }
-
-
-  initialize_pages(){
-    
-      for( var i=0; i< this.swiperWrapperRef.nativeElement.children.length; i++ ) {
-        $(".swiper-wrapper").html( "/ " );
-        
-      }
-    
-  }
-
-
-  
-
-
-  
-  setSlide(i : any) {
-    if( isNaN(i) ) {
-      this.refresh_swiper_pagination();
-      return;
     }
-    else if ( (Number(i)<1) || (Number(i)> this.swiper.slides.length) ) {
-      this.refresh_swiper_pagination();
-      return;
-    }
-    else {
-      this.swiper.slideTo( Number(i) - 1 );
+
+  }
+
+  set_slide(i:number) {
+
+    console.log( this.swiper );
+    if( this.swiper ) {
+      this.swiper.slideTo(i);
     }
   }
 
-  
-
-
-  zoom_button() {
-    this.zoom_mode = !this.zoom_mode;
-    $("img.slide-container-img").each(function() {
-      $( this ).css("max-width",  $(this).prop("naturalWidth") * 1.3 + "px");
-    });
+  close_dialog(){
+    this.dialogRef.close();
   }
-
-
-  fullscreen_button() {
- 
-    const elem = this.leftContainer.nativeElement;
-    if( !this.fullscreen_mode ) {
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-        this.fullscreen_mode = true;
-      } else if (elem.msRequestFullscreen) {
-        elem.msRequestFullscreen();
-        this.fullscreen_mode = true;
-      } else if (elem.mozRequestFullScreen) {
-        elem.mozRequestFullScreen();
-        this.fullscreen_mode = true;
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-        this.fullscreen_mode = true;
-      }
-    }
-    else {
-      document.exitFullscreen();
-      this.fullscreen_mode = false;
-    }
-  }
-
-
 
 
 
