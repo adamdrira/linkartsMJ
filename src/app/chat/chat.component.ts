@@ -9,7 +9,7 @@ import { WebSocketService } from '../services/websocket.service';
 import { NavbarService } from '../services/navbar.service';
 import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component'
 import { MatDialog } from '@angular/material/dialog';
-import { FileUploader, FileItem } from 'ng2-file-upload';
+import { FileUploader, FileItem, FileUploaderOptions } from 'ng2-file-upload';
 import { Location } from '@angular/common';
 import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
@@ -19,9 +19,9 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
-
+import {HttpHeaders} from '@angular/common/http';
 declare var $: any;
-var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -100,6 +100,7 @@ export class ChatComponent implements OnInit  {
       //uploader
       this.uploader = new FileUploader({
         url:url,
+        method: 'POST',
       });
       this.hasBaseDropZoneOver = false;
       this.hasAnotherDropZoneOver = false;
@@ -676,7 +677,7 @@ export class ChatComponent implements OnInit  {
           });
         }
         else{
-          if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1]=="png" || re.exec(file._file.name)[1]=="jpg"){
+          if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1]=="jpg"){
             let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
             const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
             this.attachments.push(SafeURL);
@@ -695,11 +696,13 @@ export class ChatComponent implements OnInit  {
             this.attachments_name.push(file._file.name);
             this.display_attachments=true;
           }
-          file.withCredentials = true; 
+          file.withCredentials = false; 
           
         }
         console.log(this.attachments_name)
     };
+
+  
 
     this.uploader.onCompleteItem = (file) => {
       this.k++;
@@ -707,6 +710,8 @@ export class ChatComponent implements OnInit  {
       if(this.k<this.uploader.queue.length){
         console.log("checking complete 1")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).subscribe(r=>{
+          let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
+          this.uploader.setOptions({ url: URL});
           this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
           this.uploader.queue[this.k].upload();
         })
@@ -971,12 +976,17 @@ export class ChatComponent implements OnInit  {
   function_done=false;
  
   loaded_image(i){
+    console.log(i)
     if(i>=0){
       this.list_of_images_loaded[i]=true;
+      this.cd.detectChanges()
+      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;;
     }
     if(i<0){
       console.log(this.list_of_pp_loaded_classic)
       this.list_of_pp_loaded_classic[Math.abs(i+1)]=true;
+      this.cd.detectChanges()
+      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     if(!this.show_research_results && !this.first_turn_loaded){
       this.compteur_loaded+=1;
@@ -991,6 +1001,7 @@ export class ChatComponent implements OnInit  {
           this.can_get_other_messages=true;
           console.log("function_done");
           console.log(this.list_of_images_loaded)
+          
         }
       }
       else {
@@ -1376,7 +1387,14 @@ export class ChatComponent implements OnInit  {
         console.log(url)
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
           console.log(r[0]);
-          this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
+          var uo: FileUploaderOptions = {};
+          uo.headers = [{name:'attachment_name',value:`${r[0].value}`} ]
+          
+          let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
+          console.log('suivant : ' + URL)
+          
+          this.uploader.setOptions({ url: URL});
+          this.uploader.setOptions( uo);
           this.uploader.queue[0].upload();
           let message ={
             id_user:this.current_user_id,   
@@ -1436,6 +1454,8 @@ export class ChatComponent implements OnInit  {
         console.log(" checkin first file attachment")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
           console.log("file upload")
+           let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
+           this.uploader.setOptions({ url: URL});
            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
            console.log( this.uploader.queue[0])
            this.uploader.queue[0].upload();
