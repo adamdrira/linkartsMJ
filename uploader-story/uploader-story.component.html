@@ -1,0 +1,166 @@
+
+
+
+<div id="uploader-story-picture" class="thumbnail-container">
+
+    <div *ngIf="!afficherpreview" class="image-container">
+        <div class="dropzone-container">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)" [uploader]="uploader" class="dropzone">
+                <div class="icon-container">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">save_alt</mat-icon>
+                    <span><b>Sélectionnez un fichier</b> ou glissez le ici</span>
+
+                    
+                    <label>
+                        <div class="upload-picture">
+                            <div class="add-logo"></div>
+                            <span>Télécharger une photo</span>
+                            <input (click)="onFileClick($event)"  type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <ng-container *ngIf="afficherpreview" [@enterAnimation]>
+
+        
+        <button class="submit-button back-button" (click)="step_back();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+            <span>Retour</span>
+        </button>
+
+        <div class="uploaded-image-container-padding">
+            <div #image_container class="uploaded-image-container">
+                <img #image [src]="image_to_show" (click)="set_activated_popup(-1);" (load)="load_image()">
+
+                <ng-container *ngFor="let item of texts; let i = index">
+
+                    <div cdkDrag
+                    (click)="set_activated_popup(i);"
+                    cdkDragBoundary=".uploaded-image-container">
+                        <span [@enterAnimation]
+                        [ngStyle]="{'font-size': item.font_size + 'px',
+                        'font-style': item.font_italic ? 'italic' : 'unset',
+                        'font-family': item.font_family,
+                        'font-weight': item.font_bold ? 'bold' : '500',
+                        'color': item.font_color,
+                        'background': item.background_color != 'no-background' ? item.background_color : 'unset',
+                        'text-align': item.text_align,
+                        'transform': 'rotate(' + item.rotation + 'deg)'
+                        }">
+                            {{item.text}}
+                            <div class="absolute-square" *ngIf="activated_popup==i" [@enterAnimation]>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">border_color</mat-icon>
+                            </div>
+                        </span>
+
+                    </div>
+
+                </ng-container>
+            </div>
+            
+            <div class="controller" *ngIf="activated_popup!=-1" [@enterAnimation]>
+                <button (click)="bigger_size(activated_popup);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_size</mat-icon>
+                </button>
+                <button (click)="smaller_size(activated_popup);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">text_fields</mat-icon>
+                </button>
+                <button (click)="click_italic(activated_popup);" [ngClass]="{'opened': texts[activated_popup].font_italic}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_italic</mat-icon>
+                </button>
+                <button (click)="click_bold(activated_popup);" [ngClass]="{'opened': texts[activated_popup].font_bold}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_bold</mat-icon>
+                </button>
+                <button (click)="click_align_left(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='left'}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_left</mat-icon>
+                </button>
+                <button (click)="click_align_right(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='right'}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_right</mat-icon>
+                </button>
+                <button (click)="click_align_center(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='center'}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_center</mat-icon>
+                </button>
+                <button (click)="click_align_justify(activated_popup);" [ngClass]="{'opened': texts[activated_popup].text_align=='justify'}">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_align_justify</mat-icon>
+                </button>
+                <button (click)="rotate_clockwise(activated_popup);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_right</mat-icon>
+                </button>
+                <button (click)="rotate_anticlockwise(activated_popup);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">rotate_left</mat-icon>
+                </button>
+
+                <button [matMenuTriggerFor]="textColor">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_text</mat-icon>
+                </button>
+                <mat-menu #textColor="matMenu" class="storyColorSelect">
+                    <button class="storyColorSelect-item" *ngFor="let item of colors | slice:1" [ngStyle]="{'background-color': item}" (click)="set_font_color(item)" tabIndex="-1" mat-menu-item>
+                    </button>
+                </mat-menu>
+                
+                <button [matMenuTriggerFor]="backgroundColor">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">format_color_fill</mat-icon>
+                </button>
+                <mat-menu #backgroundColor="matMenu" class="storyColorSelect">
+                    <button class="storyColorSelect-item" *ngFor="let item of colors" [ngClass]="{'no-background': item=='no-background'}" [ngStyle]="{'background-color': item}" (click)="set_background_color(item)" tabIndex="-1" mat-menu-item>
+                    </button>
+                </mat-menu>
+                
+                <button [matMenuTriggerFor]="fontFamily">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">font_download</mat-icon>
+                </button>
+                <mat-menu #fontFamily="matMenu" class="fontSelect">
+                    <button class="fontSelect-item" *ngFor="let item of fonts" [ngStyle]="{'font-family': item}" (click)="set_font_family(item)" tabIndex="-1" mat-menu-item>
+                        <span>{{item}}</span>
+                    </button>
+                </mat-menu>
+                    
+            </div>
+
+        </div>
+        
+        <button class="submit-button" (click)="add_text();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">title</mat-icon>
+            <span>Ajouter un texte</span>
+        </button>
+        
+        
+        <div class="form-container" *ngFor="let item of texts; let i = index">
+            <div class="form-container-name">
+                <span>Texte {{i+1}}</span>
+            </div>
+            <div class="form-item input-multiple-lines">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Insérer un texte</mat-label>
+    
+                    <textarea matInput cdkTextareaAutosize maxLength="2000" [(ngModel)]="item.text"
+                        autocomplete="off"></textarea>
+                    <div class="length-indicator">{{item.text?.length || 0}}/2000</div>
+                </mat-form-field>
+            </div>
+            <button class="submit-button no-margin-top" (click)="reset_style(i);">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
+                <span>Réinitialiser les styles liés au texte {{i+1}}</span>
+            </button>
+            <button class="submit-button no-margin-top" (click)="remove_text(i);">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                <span>Supprimer le texte {{i+1}}</span>
+            </button>
+        </div>
+        
+        <button #validator class="submit-button" (click)="set_crop();" [disabled]="loading">
+            <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!loading">done_all</mat-icon>
+            <span  *ngIf="!loading">Valider</span>
+            <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
+        </button>
+        
+    </ng-container>
+
+        
+</div>
+
