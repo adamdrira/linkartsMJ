@@ -9,6 +9,7 @@ const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const authentification = require('../../authentication/db.config');
 const trendings_seq= require('../../p_trendings/model/sequelize');
 const favorites_seq= require('../../favorites/model/sequelize');
+var nodemailer = require('nodemailer');
 const Sequelize = require('sequelize');
 const Pool = require('pg').Pool;
 /*const pool = new Pool({
@@ -56,7 +57,7 @@ pool.connect((err, client, release) => {
 
 
   
-
+    console.log(date)
     favorites_seq.favorites.findAll({
       where:{
         date: date
@@ -97,7 +98,7 @@ pool.connect((err, client, release) => {
                 console.log(e)
             })
             .on("finish", function() {
-              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', user]);
+              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
                 //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 //console.log(pythonProcess)
                 pythonProcess.stderr.pipe(process.stderr);
@@ -137,6 +138,8 @@ pool.connect((err, client, release) => {
     
 
     function add_favorites(json,date){
+      var list_of_users_for_email=[];
+      var list_of_users_for_email_final=[];
       console.log("add_favorites")
       console.log(json)
       console.log(Object.keys(json.id).length)
@@ -178,16 +181,30 @@ pool.connect((err, client, release) => {
         console.log("add_to_data")
         console.log(list_of_users.length)
         for(let i=0;i<list_of_users.length;i++){
+
+          if(list_of_users[i] && list_of_users_for_email.indexOf(list_of_users[i].id)<0){
+            list_of_users_for_email.push(list_of_users[i].id)
+            list_of_users_for_email_final.push(list_of_users[i])
+          }
+          if(i==list_of_users.length-1){
+            send_email_to_users(list_of_users_for_email_final)
+          }
+
+
           let ranking=get_ranking(i);
           list_of_rankings[i]=ranking;
-          let remuneration= get_remuneration(list_of_users[i].subscribers.length,ranking);
-          if(Number(dd)!=1){
+          let remuneration= '0'
+          if(Number(dd)!=1 && Number(mm)<3){
             remuneration="0";
           }
-          if(list_of_users[i].gender=='Groupe'){
+          else if(list_of_users[i]){
+            remuneration= get_remuneration(list_of_users[i].subscribers.length,ranking);
+          }
+
+          if(list_of_users[i] && list_of_users[i].gender=='Groupe'){
             finalize_add_to_data(list_of_users[i],i,ranking,remuneration)
           }
-          else{
+          else if(list_of_users[i]){
             favorites_seq.favorites.create({
               "id_user": list_of_users[i].id,
               "date":date,
@@ -205,6 +222,14 @@ pool.connect((err, client, release) => {
                   
               }
             })
+          }
+          else{
+            compteur_done++;
+              if(compteur_done==list_of_users.length){
+                
+                return response.status(200).send([{list_of_users:list_of_users,list_of_rankings:list_of_rankings}]);
+                  
+              }
           }
         }
         
@@ -306,6 +331,57 @@ pool.connect((err, client, release) => {
           })
         }
   
+        function send_email_to_users(list_of_users){
+          console.log("send_email_to_users")
+          console.log(list_of_users)
+          for(let i=0;i<list_of_users.length;i++){
+            if(list_of_users[i]){
+
+              console.log("send email")
+              const transport = nodemailer.createTransport({
+                host: "pro2.mail.ovh.net",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                  user: "services@linkarts.fr", // compte expéditeur
+                  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+                },
+                    tls:{
+                      ciphers:'SSLv3'
+                }
+              });
+        
+              let html=''
+              if(Number(dd)==1){
+                html = `<p> Félicitation ${list_of_users[i].firstname} ! Vous avez atteint le top Coups de coeur du jour. Et puisque nous sommes le 1er du mois vous recevrai une réménuration ! Le montant de cette rémunération est disponible dans la section "rémunération" de votre compte</p>
+                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+              }
+              else{
+                html = `<p> Félicitation ${list_of_users[i].firstname} ! Vous avez atteint le top Coups de coeur du jour, si vous l'atteignez le 1er du mois vous en serez rémuéré</p>
+                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+              }
+              var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to:  list_of_users[i].email, 
+                  //cc:"adam.drira@etu.emse.fr",
+                  subject: `Top Coups de coeur !`, // Subject line
+                  //text: 'plain text', // plain text body
+                  html:  html
+                  // attachments: params.attachments
+              };
+        
+             /*transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                  } else {
+                      console.log('Message sent: %s', info.messageId);
+                  }
+              })*/
+            }
+          }
+         
+        }
+
       }
      
     }

@@ -18,6 +18,15 @@ const Sequelize = require('sequelize');
 var nodemailer = require('nodemailer');
 const Pool = require('pg').Pool;
 
+/*const pool = new Pool({
+  port: 5432,
+  database: 'linkarts',
+  user: 'postgres',
+  password: 'test',
+  host: 'localhost',
+  //dialect: 'postgres'
+});*/
+
 const pool = new Pool({
   port: 5432,
   database: 'linkarts',
@@ -137,7 +146,7 @@ pool.connect((err, client, release) => {
     
     const Op = Sequelize.Op;
     var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 2);
+    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 350);
   
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth()+1).padStart(2, '0'); 
@@ -214,10 +223,10 @@ pool.connect((err, client, release) => {
                             .on("finish", function() {
                               
                               //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', user]);
-          
-          //pour angular
-          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+                              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/rankings.py', date]);
+                          
+                              //pour angular
+                               //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
                               //console.log(pythonProcess)
                               pythonProcess.stderr.pipe(process.stderr);
                               pythonProcess.stdout.on('data', (data) => {
@@ -299,7 +308,10 @@ const get_drawings_trendings = (request, response) => {
   let mm = String(today.getMonth() + 1).padStart(2, '0'); 
   let yyyy= today.getFullYear();
   let date = yyyy.toString() + '-' +  mm + '-' + dd;
-
+  var set_money=true;
+  if(Number(mm)<3){
+    set_money=false;
+  }
   console.log("get_drawings_trendings")
   console.log(date)
   trendings_seq.trendings_drawings.findOne({
@@ -324,7 +336,7 @@ const get_drawings_trendings = (request, response) => {
 			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(result=>{
-           add_drawings_trendings(json,date)
+           add_drawings_trendings(json,date,set_money)
           return response.status(200).send([{"drawings_trendings":json}]); 
       })
      
@@ -344,6 +356,10 @@ const get_writings_trendings = (request, response) => {
   let yyyy= today.getFullYear();
   let date = yyyy.toString() + '-' +  mm + '-' + dd;
 
+  var set_money=true;
+  if(Number(mm)<3){
+    set_money=false;
+  }
   trendings_seq.trendings_writings.findOne({
     where:{
       date:date
@@ -365,7 +381,7 @@ const get_writings_trendings = (request, response) => {
           console.log(err);	
           res.status(500).json({msg: "error", details: err});		
         }).then(result=>{
-          add_writings_trendings(json,date)
+          add_writings_trendings(json,date,set_money)
           return response.status(200).send([{"writings_trendings":json}]); 
       })
 
@@ -384,6 +400,15 @@ const get_writings_trendings = (request, response) => {
     let list_of_comics=[];
     let obj=Object.keys(json.format);
     let compt=0;
+
+
+    let today = new Date();
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    var set_money=true;
+    if(Number(mm)<3){
+      set_money=false;
+    }
+
     for(let i=0;i<obj.length;i++){
       if(json.format[i]=='serie'){
         comics_serie_seq.Liste_Bd_Serie.findOne({
@@ -460,7 +485,13 @@ const get_writings_trendings = (request, response) => {
             console.log(err);	
             res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
-            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            let remuneration=''
+            if(set_money){
+              remuneration= get_remuneration(user.subscribers.length,ranking);
+            }
+            else{
+              remuneration='0'
+            }
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration)
             }
@@ -485,11 +516,19 @@ const get_writings_trendings = (request, response) => {
             where:{
               id:list_of_comics[i].authorid
             }
-          }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-            let remuneration= get_remuneration(user.subscribers.length,ranking);
+                  }).catch(err => {
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(user=>{
+            let remuneration=''
+            if(set_money){
+              remuneration= get_remuneration(user.subscribers.length,ranking);
+            }
+            else{
+              remuneration='0'
+            }
+
+           
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration)
             }
@@ -599,21 +638,22 @@ const get_writings_trendings = (request, response) => {
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
                   to:  user.email, // my mail
+                //to:'appaloosa-adam@hotmail.fr',
                   //cc:"adam.drira@etu.emse.fr",
                   subject: `Top tendances !`, // Subject line
                   //text: 'plain text', // plain text body
                   html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Bandes dessinées"</p>
-                  <p><a href="http://localhost:4200/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
                   // attachments: params.attachments
               };
         
-              transport.sendMail(mailOptions, (error, info) => {
+              /*transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                       console.log('Message sent: %s', info.messageId);
                   }
-              })
+              })*/
             }
           })
         }
@@ -624,7 +664,7 @@ const get_writings_trendings = (request, response) => {
   }
 
 
-  function add_drawings_trendings(json,date){
+  function add_drawings_trendings(json,date,set_money){
     console.log("add_drawings_trendings")
     console.log(Object.keys(json.format).length)
     let list_of_users_for_email=[]
@@ -706,17 +746,29 @@ const get_writings_trendings = (request, response) => {
             console.log(err);	
             res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
-            let remuneration= get_remuneration(user.subscribers.length,ranking);
-            trendings_seq.trendings_contents.create({
-              "publication_category": "drawing",
-              "id_user": list_of_drawings[i].authorid,
-              "date":date,
-              "rank":ranking,
-              "title":list_of_drawings[i].title,
-              "publication_id":json.publication_id[i],
-              "remuneration":remuneration,
-              "format":"one-shot"
-            })
+            let remuneration=''
+            if(set_money){
+              remuneration= get_remuneration(user.subscribers.length,ranking);
+            }
+            else{
+              remuneration='0'
+            }
+            if(user.gender=='Groupe'){
+              finalize_add_to_data(user,i,ranking,remuneration);
+            }
+            else{
+              trendings_seq.trendings_contents.create({
+                "publication_category": "drawing",
+                "id_user": list_of_drawings[i].authorid,
+                "date":date,
+                "rank":ranking,
+                "title":list_of_drawings[i].title,
+                "publication_id":json.publication_id[i],
+                "remuneration":remuneration,
+                "format":"one-shot"
+              })
+            }
+            
           })
           
         }
@@ -730,7 +782,13 @@ const get_writings_trendings = (request, response) => {
             console.log(err);	
             res.status(500).json({msg: "error", details: err});		
           }).then(user=>{
-            let remuneration= get_remuneration(user.subscribers.length,ranking);
+            let remuneration=''
+            if(set_money){
+              remuneration= get_remuneration(user.subscribers.length,ranking);
+            }
+            else{
+              remuneration='0'
+            }
             if(user.gender=='Groupe'){
               finalize_add_to_data(user,i,ranking,remuneration);
             }
@@ -838,22 +896,23 @@ const get_writings_trendings = (request, response) => {
         
             var mailOptions = {
                 from: 'Linkarts <services@linkarts.fr>', // sender address
-                to: user.email, // my mail
+                to:  user.email, // my mail
+                //to:'appaloosa-adam@hotmail.fr',
                 //cc:"adam.drira@etu.emse.fr",
                 subject: `Top tendances !`, // Subject line
                 //text: 'plain text', // plain text body
                 html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Dessins"</p>
-                <p><a href="http://localhost:4200/trendings/drawings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                <p><a href="http://linkarts.fr/trendings/drawings"> Cliquer ici pour voir les tendances</a></p>`, // html body
                 // attachments: params.attachments
             };
         
-            transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error while sending mail: ' + error);
-                } else {
-                    console.log('Message sent: %s', info.messageId);
-                }
-            })
+            /*transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                  } else {
+                      console.log('Message sent: %s', info.messageId);
+                  }
+              })*/
             }
           })
         }
@@ -864,7 +923,7 @@ const get_writings_trendings = (request, response) => {
   
 
 
-  function add_writings_trendings(json,date){
+  function add_writings_trendings(json,date,set_money){
     console.log("add_writings_trendings")
     console.log(Object.keys(json.format).length)
     let list_of_writings=[];
@@ -914,27 +973,33 @@ const get_writings_trendings = (request, response) => {
             where:{
               id:list_of_writings[i].authorid
             }
-          }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-            let remuneration= get_remuneration(user.subscribers.length,ranking)
-            if(user.gender='Groupe'){
-              finalize_add_to_data(user,i,ranking,remuneration)
-            }
-            else{
-              trendings_seq.trendings_contents.create({
-                "publication_category": "writing",
-                "id_user": list_of_writings[i].authorid,
-                "date":date,
-                "rank":ranking,
-                "title":list_of_writings[i].title,
-                "remuneration":remuneration,
-                "publication_id":json.publication_id[i],
-              })
-            }
-           
-          })
+                }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user=>{ 
+            let remuneration=''
+              if(set_money){
+                remuneration= get_remuneration(user.subscribers.length,ranking);
+              }
+              else{
+                remuneration='0'
+              }
+              if(user.gender='Groupe'){
+                finalize_add_to_data(user,i,ranking,remuneration)
+              }
+              else{
+                trendings_seq.trendings_contents.create({
+                  "publication_category": "writing",
+                  "id_user": list_of_writings[i].authorid,
+                  "date":date,
+                  "rank":ranking,
+                  "title":list_of_writings[i].title,
+                  "remuneration":remuneration,
+                  "publication_id":json.publication_id[i],
+                })
+              }
+            
+            })
           
         }
         
@@ -1026,22 +1091,23 @@ const get_writings_trendings = (request, response) => {
             var mailOptions = {
                 from: 'Linkarts <services@linkarts.fr>', // sender address
                 to:  user.email, // my mail
+                //to:'appaloosa-adam@hotmail.fr',
                 //cc:"adam.drira@etu.emse.fr",
                 subject: `Top tendances !`, // Subject line
                 //text: 'plain text', // plain text body
                 html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Ecrits"</p>
-                <p><a href="http://localhost:4200/trendings/writings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                <p><a href="http://linkarts.fr/trendings/writings"> Cliquer ici pour voir les tendances</a></p>`, // html body
                 // attachments: params.attachments
             };
         
-            transport.sendMail(mailOptions, (error, info) => {
+            /*transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('Error while sending mail: ' + error);
                 } else {
                     console.log('Message sent: %s', info.messageId);
                     
                 }
-            })
+            })*/
             }
           })
         }
