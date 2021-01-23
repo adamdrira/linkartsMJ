@@ -1488,20 +1488,21 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
 
-    router.post('/upload_attachments_for_chat/:friend_type/:friend_id', function (req, res) {
+    router.post('/upload_attachments_for_chat/:friend_type/:friend_id/:name', function (req, res) {
       var attachment_name=req.headers.attachment_name;
       //console.log(" we are uploading a file");
       //console.log(attachment_name)
       console.log("upload_attachments_for_chat")
+      console.log(req.headers)
       let friend_type = req.params.friend_type
       let friend_id = req.params.friend_id;
-
+      let name = req.params.name;
+      console.log(name)
       console.log(attachment_name)
       console.log(friend_type)
       console.log(friend_id)
-      const PATH= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${attachment_name}/`;
+      const PATH= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${name}/`;
       const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
-      //console.log('./data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${attachment_name}/`)
       console.log(PATH2)
       let storage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -1514,7 +1515,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
         },
       
         filename: (req, file, cb) => {
-          cb(null, attachment_name);
+          cb(null, name);
           
         }
       });
@@ -1526,10 +1527,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       upload_attachment(req, res, function(err){
         (async () => {
           console.log("path.extname(attachment_name)")
-          console.log(path.extname(attachment_name))
-          let sufix=path.extname(attachment_name).toLowerCase();
+          console.log(path.extname(name))
+          let sufix=path.extname(name).toLowerCase();
           if(sufix==".jpg" || sufix==".png" || sufix==".jpeg"){
-            let file_name = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` + attachment_name ;
+            let file_name = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` + name ;
             const files = await imagemin([file_name], {
             destination: './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`,
             plugins: [
@@ -3670,10 +3671,11 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
  })
 
  router.post('/remove_spam',function(req,res){
-  //console.log("remove_friend")
+  console.log("remove_spam")
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
-  //console.log(id_friend)
+  console.log(id_friend)
+  console.log(id_user)
   const Op = Sequelize.Op;
   list_of_chat_spams.findOne({
     where:{
@@ -3683,7 +3685,7 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
     //console.log(err);	
     res.status(500).json({msg: "error", details: err});		
   }).then(friend=>{
-    //console.log(friend)
+    console.log(friend)
     
     if(friend){
       let date=friend.date;
