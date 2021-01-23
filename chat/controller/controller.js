@@ -1540,6 +1540,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
             ]
             });
           }
+          console.log("image downloaded " + name)
           res.status(200).send([{ok:"ok"}])
         })();
             
@@ -1771,6 +1772,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   console.log("delete_message")
   let id=parseInt(req.params.id);
   console.log(id);
+  const Op = Sequelize.Op;
   list_of_messages.findOne({
     where:
     {id:id}
@@ -1785,40 +1787,108 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message=>{
       if(message.is_an_attachment){
-        if(message.attachment_type=="picture_message"){
-          fs.access('./data_and_routes/chat_images/' + message.attachment_name, fs.F_OK, (err) => {
-            if(err){
-              //console.log('suppression already done');
-              return res.status(200).send([{"ok":"ok"}]);
-            }
-            fs.unlink('./data_and_routes/chat_images/' + message.attachment_name,  function (err) {
-              if (err) {
-                //console.log(err);
-              }  
-              else {
-                //console.log( 'fichier supprimé');
+        if(message.is_a_group_chat){
+          let friend_type=(message.is_a_group_chat)?"group":"user";
+          let friend_id=message.id_receiver;
+  
+  
+          if(message.attachment_type=="picture_message"){
+            fs.access('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name, fs.F_OK, (err) => {
+              if(err){
+                //console.log('suppression already done');
                 return res.status(200).send([{"ok":"ok"}]);
               }
+              fs.unlink('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
+                if (err) {
+                  //console.log(err);
+                  //return res.status(200).send([{"ok":"ok"}]);
+                }  
+                else {
+                  //console.log( 'fichier supprimé');
+                  return res.status(200).send([{"ok":"ok"}]);
+                }
+              });
             });
-          });
+          }
+          else{
+            fs.access('./data_and_routes/chat_attachments/'  +`/${friend_type}/${friend_id}/`+ message.attachment_name, fs.F_OK, (err) => {
+              if(err){
+                //console.log('suppression already done');
+                return res.status(200)
+              }
+              fs.unlink('./data_and_routes/chat_attachments/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
+                if (err) {
+                  //console.log(err);
+                  //return res.status(200).send([{"ok":"ok"}]);
+                }  
+                else {
+                  //console.log( 'fichier supprimé');
+                  return res.status(200).send([{"ok":"ok"}]);
+                }
+              });
+            });
+          }
         }
         else{
-          fs.access('./data_and_routes/chat_attachments/' + message.attachment_name, fs.F_OK, (err) => {
-            if(err){
-              //console.log('suppression already done');
-              return res.status(200)
+          list_of_chat_friends.findOne({
+            where:{
+              is_a_group_chat:{[Op.not]: true},
+              [Op.or]:[ {[Op.and]:[{id_user:message.id_user},{id_receiver:message.id_receiver} ]},{[Op.and]:[{id_receiver:message.id_user}, {id_user:message.id_receiver}]}],      
             }
-            fs.unlink('./data_and_routes/chat_attachments/' + message.attachment_name,  function (err) {
-              if (err) {
-                //console.log(err);
-              }  
-              else {
-                //console.log( 'fichier supprimé');
-                return res.status(200).send([{"ok":"ok"}]);
+          }).catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(friend=>{
+            //console.log(friend)
+            if(friend){
+              let friend_type="user";
+              let friend_id=friend.id;
+      
+      
+              if(message.attachment_type=="picture_message"){
+                fs.access('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name, fs.F_OK, (err) => {
+                  if(err){
+                    //console.log('suppression already done');
+                    return res.status(200).send([{"ok":"ok"}]);
+                  }
+                  fs.unlink('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
+                    if (err) {
+                      //console.log(err);
+                      //return res.status(200).send([{"ok":"ok"}]);
+                    }  
+                    else {
+                      //console.log( 'fichier supprimé');
+                      return res.status(200).send([{"ok":"ok"}]);
+                    }
+                  });
+                });
               }
-            });
-          });
+              else{
+                fs.access('./data_and_routes/chat_attachments/'  +`/${friend_type}/${friend_id}/`+ message.attachment_name, fs.F_OK, (err) => {
+                  if(err){
+                    //console.log('suppression already done');
+                    return res.status(200)
+                  }
+                  fs.unlink('./data_and_routes/chat_attachments/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
+                    if (err) {
+                      //console.log(err);
+                      //return res.status(200).send([{"ok":"ok"}]);
+                    }  
+                    else {
+                      //console.log( 'fichier supprimé');
+                      return res.status(200).send([{"ok":"ok"}]);
+                    }
+                  });
+                });
+              }
+            }
+            else{
+              return res.status(200).send([{"ok":"ok"}]);
+            }
+            
+          })
         }
+       
       }
       else{
         return res.status(200).send([{"ok":"ok"}]);
