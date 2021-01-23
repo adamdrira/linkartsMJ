@@ -53,9 +53,13 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button class="chat-menu-item" mat-menu-item  (click)="remove_contact()">
+                        <button class="chat-menu-item" *ngIf="spam!='true'" mat-menu-item  (click)="remove_contact()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retirer de mes contacts</span>
+                        </button>
+                        <button class="chat-menu-item" *ngIf="spam=='true'" mat-menu-item  (click)="remove_spam()">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
+                            <span>Supprimer la conversation</span>
                         </button>
                         <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
@@ -1359,8 +1363,12 @@
             <div class="send-message-container">
 
                 <div *ngIf="respond_to_a_message" class="response">
-                    <div class="left-container" [@enterFromBottomAnimation]>
+                    <div class="left-container" *ngIf="friend_type=='user'" [@enterFromBottomAnimation]>
                         <span>Réponse à <b>{{friend_name}}</b></span>
+                        <span>{{message_responding_to}}</span>
+                    </div>
+                    <div class="left-container"  *ngIf="friend_type!='user'" [@enterFromBottomAnimation]>
+                        <span>Réponse à <b>{{list_of_users_names[id_user_message_responding_to]}}</b></span>
                         <span>{{message_responding_to}}</span>
                     </div>
                     <button (click)="cancel_response()" [@enterFromBottomAnimation]>

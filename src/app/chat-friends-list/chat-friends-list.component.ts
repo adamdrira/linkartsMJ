@@ -5,7 +5,7 @@ import { NavbarService } from '../services/navbar.service';
 import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -85,13 +85,16 @@ export class ChatFriendsListComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd: ChangeDetectorRef,
     public route: ActivatedRoute, 
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private AuthenticationService:AuthenticationService,
     ){
       this.navbar.set_using_chat();
       
       this.navbar.show();
-      
+      this.router.routeReuseStrategy.shouldReuseRoute = function() {
+        return false;
+      };
   }
 
   @ViewChild('input') input:ElementRef;
@@ -749,7 +752,7 @@ export class ChatFriendsListComponent implements OnInit {
             if(!r[0].value){
               this.spam='true';
 
-              this.set_category(1);
+              this.set_category(1,false);
               this.createFormAd();
 
               this.get_friends=false;
@@ -958,7 +961,7 @@ export class ChatFriendsListComponent implements OnInit {
       this.get_spams=false;
       
 
-      this.set_category(0);
+      this.set_category(0,false);
       this.createFormAd();
       console.log("radio changed")
       this.spam='false';
@@ -1306,7 +1309,7 @@ change_message_status(event){
   
   add_a_friend_to_the_group(event){
     this.cancel_create_group_chat();
-    this.set_category(0);
+    this.set_category(0,false);
     this.display_other_contacts=false;
     this.selected_list_of_new_friends_ids=[];
     this.selected_list_of_new_friends_names=[];
@@ -1461,6 +1464,7 @@ change_message_status(event){
     console.log(this.display_add_a_friend_to_a_group)
     this.display_first_propositions=false;
     this.number_of_new_friends_to_show=10;
+    this.new_friends_loaded=[];
     if(this.fd.value.fdSearchbar==''){
       console.log("research_friends_add + get_first_propositions_for_add_friend")
       this.display_other_contacts=false;
@@ -1814,11 +1818,18 @@ change_message_status(event){
   }
 
   
+  
   compteur_research=0;
   research_friends(){
     console.log("research friend")
     console.log(this.display_add_a_friend_to_a_group)
       this.compteur_research++;
+      this.contact_pp_loaded=[];
+      this.contact_group_pp_loaded=[]
+      this.related_contact_pp_loaded=[];
+      this.related_other_pp_loaded=[];
+      this.all_contacts_loaded=[];
+      this.propositions_groups_loaded=[];
       if(this.opened_category_for_research==1){
         this.number_of_groups_to_show=10;
         console.log(this.display_first_propositions);
@@ -2147,7 +2158,7 @@ change_message_status(event){
         if(r[0].value){
           if(this.spam=='true'){
             this.spam='false';
-            this.set_category(0);
+            this.set_category(0,false);
             this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
@@ -2156,7 +2167,7 @@ change_message_status(event){
         }
         else if( this.spam=='false'){
           this.spam='true';
-          this.set_category(1);
+          this.set_category(1,false);
           this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
@@ -2183,7 +2194,7 @@ change_message_status(event){
         if(r[0].value){
           if(this.spam=='true'){
             this.spam='false';
-            this.set_category(0);
+            this.set_category(0,false);
             this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
@@ -2191,7 +2202,7 @@ change_message_status(event){
         }
         else{
           this.spam='true';
-          this.set_category(1);
+          this.set_category(1,false);
           this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
@@ -2219,7 +2230,7 @@ change_message_status(event){
           console.log("is related");
           if(this.spam=='true'){
             this.spam='false';
-            this.set_category(0);
+            this.set_category(0,false);
             this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
@@ -2227,7 +2238,7 @@ change_message_status(event){
         }
         else{
           this.spam='true';
-          this.set_category(1);
+          this.set_category(1,false);
           this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
@@ -2255,7 +2266,7 @@ change_message_status(event){
           console.log("is related");
           if(this.spam=='true'){
             this.spam='false';
-            this.set_category(0);
+            this.set_category(0,false);
             this.createFormAd();
             this.get_friends=true;
             this.get_spams=false;
@@ -2263,7 +2274,7 @@ change_message_status(event){
         }
         else{
           this.spam='true';
-          this.set_category(1);
+          this.set_category(1,false);
           this.createFormAd();
           this.get_friends=false;
           this.get_spams=true;
@@ -2288,7 +2299,7 @@ change_message_status(event){
     if(indice==6){
       if(this.spam=='true'){
         this.spam='false';
-        this.set_category(0);
+        this.set_category(0,false);
         this.createFormAd();
         this.get_friends=true;
         this.get_spams=false;
@@ -2314,7 +2325,7 @@ change_message_status(event){
       console.log(this.spam)
       if(this.spam=='true'){
         this.spam='false';
-        this.set_category(0);
+        this.set_category(0,false);
         this.createFormAd();
         this.get_friends=true;
         this.get_spams=false;
@@ -2349,7 +2360,7 @@ change_message_status(event){
 
 
  
-  radioChange(i){
+  radioChange(i,from_html){
     
     if(this.opened_category != i){
       this.delete_placeholder();
@@ -2383,12 +2394,15 @@ change_message_status(event){
           console.log(this.friend_id)
         }
         else{
-          this.set_category(0);
+          this.set_category(0,false);
           this.createFormAd();
-          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-            data: {showChoice:false, text:"Vous n'avez aucun autre message"},          
-            panelClass: "popupConfirmationClass",
-          });
+          if(from_html){
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Vous n'avez aucune invitation"},          
+              panelClass: "popupConfirmationClass",
+            });
+          }
+          
           return false;
         }
         
@@ -2768,6 +2782,9 @@ get_connections_status(){
   /*************************************** LODING PP FUNCTIONS *******************************/
   /*************************************** LODING PP FUNCTIONS *******************************/
   /*************************************** LODING PP FUNCTIONS *******************************/
+
+  
+
   my_pp_loaded=false;
   load_my_pp(){
     this.my_pp_loaded=true;
@@ -2820,12 +2837,12 @@ get_connections_status(){
 
   
   opened_category:number = 0;
-  set_category(i: number) {
+  set_category(i: number,from_html) {
     if( this.opened_category == i ) {
       return;
     }
     else {
-      let bool = this.radioChange(i);
+      let bool = this.radioChange(i,from_html);
       if(bool) {
         this.opened_category = i;
       }

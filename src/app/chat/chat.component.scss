@@ -319,6 +319,8 @@
                     width: 369px;
                     display: flex;
                     justify-content: center;
+
+                    
                 }
             }
             .send-message-container {
@@ -668,6 +670,10 @@
 }
 
 ::ng-deep {
+
+    .emoji-mart-scroll {
+        overflow-x:hidden  !important;
+    }
     .chat-mat-menu {
         margin-top: 3px !important;
         border-radius: 12px 10px 12px 12px !important;

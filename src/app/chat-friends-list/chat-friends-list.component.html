@@ -39,7 +39,7 @@
             </div>
             
             <ng-container *ngIf="opened_category == 0 && !display_add_a_friend_to_a_group">
-                <button (click)="set_category(1)" [@enterFromRightAnimation]
+                <button (click)="set_category(1,true)" [@enterFromRightAnimation]
                 matTooltip="Invitations"
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
@@ -47,8 +47,8 @@
                     <mat-icon>mail</mat-icon>
                     <div [ngClass]="{ 'notif-size-1':10>number_of_unseen_messages,
                                   'notif-size-2':100>number_of_unseen_messages && number_of_unseen_messages>=10,
-                                  'notif-size-3':number_of_unseen_messages>=100}" style="cursor:pointer;" *ngIf="number_of_unseen_messages>0" (click)="set_category(1)">
-                        <div class="number-of-notifs" (click)="set_category(1)">
+                                  'notif-size-3':number_of_unseen_messages>=100}" style="cursor:pointer;" *ngIf="number_of_unseen_messages>0" (click)="set_category(1,true)">
+                        <div class="number-of-notifs" (click)="set_category(1,true)">
                             <div *ngIf="number_of_unseen_messages>=100" [@enterAnimation]>
                             +99
                             </div>
@@ -69,7 +69,7 @@
             </ng-container>
             
             <ng-container *ngIf="opened_category != 0 && !display_add_a_friend_to_a_group">
-                <button class="back-icon" (click)="cancel_create_group_chat();cancel_add_friend_group();this.set_category(0);" [@enterFromRightAnimation]>
+                <button class="back-icon" (click)="cancel_create_group_chat();cancel_add_friend_group();set_category(0,true);" [@enterFromRightAnimation]>
                     <mat-icon>chevron_left</mat-icon>
                     <span>retour</span>
                 </button>

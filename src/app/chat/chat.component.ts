@@ -18,9 +18,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 declare var $: any;
-var url = 'https://linkarts.fr/routes/upload_attachments_for_chat/';
+var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
@@ -86,6 +87,7 @@ export class ChatComponent implements OnInit  {
     private chatService:ChatService,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
+    private router: Router,
     private cd: ChangeDetectorRef,
     public dialog: MatDialog,
     private renderer: Renderer2,
@@ -139,7 +141,7 @@ export class ChatComponent implements OnInit  {
         this.emojis_reactions.toArray()[this.index_of_children_reactions].nativeElement.classList.add("closed");
         this.reactions_shown=false;
       }
-    }
+    }*/
 
     if(this.show_emojis){
       console.log("emoji shown");
@@ -148,7 +150,7 @@ export class ChatComponent implements OnInit  {
         this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
       }
-    }*/
+    }
 
 
 
@@ -1778,6 +1780,7 @@ export class ChatComponent implements OnInit  {
   respond_to_a_message=false;
   message_responding_to='';
   id_message_responding_to=-1;
+  id_user_message_responding_to=-1;
   respond_to_message(i){
     console.log(this.list_of_messages[i]);
     if(this.list_of_messages[i].is_an_attachment){
@@ -1786,6 +1789,7 @@ export class ChatComponent implements OnInit  {
     else if(this.list_of_messages[i].message){
       this.message_responding_to=this.list_of_messages[i].message;
     }
+    this.id_user_message_responding_to=this.list_of_messages[i].id_user;
     this.id_message_responding_to=this.list_of_messages[i].id
     this.respond_to_a_message=true;
   }
@@ -1834,9 +1838,17 @@ emojis_size_list=[30,30,30,30,30,30,30,30,30];
 list_show_reactions:any[]=[];
 //@ViewChildren('emojis_reactions') emojis_reactions: QueryList<ElementRef>;
 handleClick($event) {
-  this.selectedEmoji = $event.emoji;
+  //this.selectedEmoji = $event.emoji;
   let data = this.message_group.get('message');
-  data.patchValue(data.value + $event.emoji.native);
+  console.log(data.value)
+  console.log(data.value + $event.emoji.native)
+  if(data.value){
+    data.patchValue(data.value + $event.emoji.native);
+  }
+  else{
+    data.patchValue($event.emoji.native);
+  }
+ 
   this.cd.detectChanges();
 }
 
@@ -2185,7 +2197,13 @@ cancel_add_section(){
   this.activate_add_chat_section=false;
 }
 
+
+deleting_chat_section=false;
 delete_chat_section(){
+  if(this.deleting_chat_section){
+    return
+  }
+  
   if(this.id_chat_section==1){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:false, text:'Vous ne pouvez pas supprimer la discussion principale'},
@@ -2193,6 +2211,7 @@ delete_chat_section(){
     });
   }
   else{
+    
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer la discussion ainsi que tous les messages concernés ?'},
       panelClass: "popupConfirmationClass",
@@ -2200,15 +2219,19 @@ delete_chat_section(){
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        this.deleting_chat_section=true;
         this.chatService.delete_chat_section(this.id_chat_section,this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
           if(r[0].is_ok){
-            location.reload();
+            //location.reload();
+            this.deleting_chat_section=false;
+            this.router.navigateByUrl('/chat');
           }
           else{
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Vous ne pouvez pas supprimer une discussion dont vous n'êtes pas le créateur"},
               panelClass: "popupConfirmationClass",
             });
+            this.deleting_chat_section=false;
           }
         })
       }
@@ -3751,10 +3774,55 @@ chat_service_managment_function(msg){
 /*************************************************** BLOCK AND OTHER OPTIONS  *******************/
 
 
+remove_spam(){
+  if(this.friend_id>2){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de supprimer la conversation ?'},
+      panelClass: "popupConfirmationClass",
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+          this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).subscribe(s=>{
+            console.log(s)
+            this.chatService.remove_friend(this.friend_id).subscribe(m=>{
+              console.log(m);
+              this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).subscribe(r=>{
+                console.log(r);
+                let message_to_send ={
+                  id_user_name:this.current_user_pseudo,
+                  id_user:this.current_user_id,   
+                  id_receiver:this.friend_id, 
+                  message:"block",
+                  is_from_server:true,
+                  status:'block',
+                  id_chat_section:this.id_chat_section,
+                  attachment_name:"none",
+                  is_an_attachment:false,
+                  attachment_type:"none",
+                  is_a_group_chat:false,
+                  is_a_response:false,
+                }
+                console.log("send usr blocked")
+                this.chatService.messages.next(message_to_send);
+                //this.location.go('/chat');
+                //location.reload();
+                this.router.navigateByUrl('/chat');
+              })
+            })
+          });
+        
+      }
+    })
+  }
+}
+
+
+
 block_user(){
   console.log(this.friend_name);
   console.log(this.friend_id);
-  if(this.friend_id>1){
+  if(this.friend_id>2){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
       panelClass: "popupConfirmationClass",
@@ -3784,8 +3852,9 @@ block_user(){
                 }
                 console.log("send usr blocked")
                 this.chatService.messages.next(message_to_send);
-                this.location.go('/chat');
-                location.reload();
+                //this.location.go('/chat');
+                //location.reload();
+                this.router.navigateByUrl('/chat');
               })
             })
           });
@@ -3805,13 +3874,15 @@ unblock_user(){
       console.log(r[0].date)
       this.chatService.add_chat_friend(this.friend_id,r[0].date).subscribe(r=>{
         console.log(r[0])
-        this.location.go('/chat');
-        location.reload()
+        //this.location.go('/chat');
+        //location.reload()
+        this.router.navigateByUrl('/chat');
       })
     }
     else{
-      this.location.go('/chat');
-      location.reload()
+      //this.location.go('/chat');
+      //location.reload()
+      this.router.navigateByUrl('/chat');
     }
     
   })
@@ -3828,8 +3899,9 @@ remove_contact(){
     if(result){
       this.chatService.remove_friend(this.friend_id).subscribe(r=>{
         console.log(r[0])
-        this.location.go('/chat');
-        location.reload()
+        //this.location.go('/chat');
+        //location.reload()
+        this.router.navigateByUrl('/chat');
       })
     }
   })
