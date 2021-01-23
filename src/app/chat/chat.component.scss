@@ -167,14 +167,16 @@
             }
             .top-alert-message {
                 position: absolute;
-                bottom: -70px;
+                bottom: -50px;
                 width: 100%;
+                
                 padding: 0px 15px;
                 display: flex;
                 .message {
                     margin: auto auto;
                     display: flex;
                     line-height: 14px;
+                    max-width: 55%;
                     padding: 7px 18px 8px 18px;
                     border-radius: 50px;
                     background: #f3f3f3;

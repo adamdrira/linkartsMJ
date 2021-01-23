@@ -3774,7 +3774,11 @@ chat_service_managment_function(msg){
 /*************************************************** BLOCK AND OTHER OPTIONS  *******************/
 
 
+removing_spam=false;
 remove_spam(){
+  if(this.removing_spam){
+    return
+  }
   if(this.friend_id>2){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de supprimer la conversation ?'},
@@ -3783,34 +3787,21 @@ remove_spam(){
   
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-          this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).subscribe(s=>{
-            console.log(s)
-            this.chatService.remove_friend(this.friend_id).subscribe(m=>{
-              console.log(m);
-              this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).subscribe(r=>{
-                console.log(r);
-                let message_to_send ={
-                  id_user_name:this.current_user_pseudo,
-                  id_user:this.current_user_id,   
-                  id_receiver:this.friend_id, 
-                  message:"block",
-                  is_from_server:true,
-                  status:'block',
-                  id_chat_section:this.id_chat_section,
-                  attachment_name:"none",
-                  is_an_attachment:false,
-                  attachment_type:"none",
-                  is_a_group_chat:false,
-                  is_a_response:false,
-                }
-                console.log("send usr blocked")
-                this.chatService.messages.next(message_to_send);
-                //this.location.go('/chat');
-                //location.reload();
-                this.router.navigateByUrl('/chat');
-              })
-            })
-          });
+        this.removing_spam=true;
+        this.chatService.remove_spam(this.friend_id).subscribe(m=>{
+          console.log(m);
+          if(m[0].nothing){
+            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Il n'y a rien à supprimer..."},
+              panelClass: "popupConfirmationClass",
+            });
+          }
+          else{
+            this.router.navigateByUrl('/chat');
+          }
+          
+          this.removing_spam=false;
+        })
         
       }
     })
