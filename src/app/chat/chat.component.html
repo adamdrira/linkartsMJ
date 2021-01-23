@@ -261,13 +261,12 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment',
+                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':(list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user ),
-                                    'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver),
+                                    'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
                                     'padding-for-no-state':
-                                        !( ( list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted' ) ||
-                                           
+                                        !( ( list_of_messages[list_of_messages.length -1 - i].status=='received' || list_of_messages[list_of_messages.length -1 - i].status=='deleted' ) || 
                                             ( (index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen' ) ) ,
                                     'message-search-style': searched_message==i  }">
 
@@ -457,9 +456,9 @@
                             <div class="friend-message-content"
                                 [ngClass]="{ 
                                     
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment',
+                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
-                                    'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver),
+                                    'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
                                     'padding-for-no-state': !( list_of_show_pp_left[list_of_messages.length -1 - i] ),
                                     'message-search-style': searched_message==i  }">
@@ -771,10 +770,10 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment',
+                                'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user,
-                                'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server),
-                                'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]),
+                                'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id])  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
                                 
                                 'padding-for-no-state': !(list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1 && get_list_of_view_names(i))
@@ -1012,10 +1011,10 @@
 
                             <div class="friend-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment',
+                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
-                                    'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server),
-                                    'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]),
+                                    'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
+                                    'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
 
                                     'padding-for-no-state': !(list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw && list_of_messages[list_of_messages.length- i-1].list_of_users_who_saw.length>1 && get_list_of_view_names(i)),

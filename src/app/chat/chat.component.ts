@@ -707,6 +707,10 @@ export class ChatComponent implements OnInit  {
     this.uploader.onCompleteItem = (file) => {
       this.k++;
       console.log(file._file)
+      console.log(this.k)
+      console.log(this.uploader.queue.length)
+      console.log(this.uploader.queue[0]._file.name)
+      console.log(this.uploader.queue[1]._file.name)
       if(this.k<this.uploader.queue.length){
         console.log("checking complete 1")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).subscribe(r=>{
@@ -719,7 +723,7 @@ export class ChatComponent implements OnInit  {
       
       var type='';
       var re = /(?:\.([^.]+))?$/;
-      if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1]=="png" || re.exec(file._file.name)[1]=="jpg"){
+      if( re.exec(file._file.name)[1]=="jpeg" || re.exec(file._file.name)[1].toLowerCase()=="png" || re.exec(file._file.name)[1]=="jpg"){
         type='picture_attachment'
       }
       else{
@@ -759,6 +763,7 @@ export class ChatComponent implements OnInit  {
           this.attachments_for_sql=[];
           this.attachments=[];
           this.compt_at=0;
+          console.log("ini compt at 3")
           this.display_attachments=false;
         }
         else{
@@ -767,6 +772,7 @@ export class ChatComponent implements OnInit  {
           this.attachments_for_sql=[];
           this.attachments=[];
           this.compt_at=0;
+          console.log("ini compt at 4")
           this.display_attachments=false;
         }
         this.uploader.queue=[];  
@@ -862,7 +868,7 @@ export class ChatComponent implements OnInit  {
             this.list_of_messages_date[i]=this.date_of_message(r[0][0][i].createdAt,0);
             if(this.list_of_messages[i].is_an_attachment){
               console.log("here is an attachment ")
-              if(this.list_of_messages[i].attachment_type=='picture_message'){
+              if(this.list_of_messages[i].attachment_type=='picture_message' && this.list_of_messages[i].status!="deleted"){
                 this.compteur_image+=1;
                 this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
@@ -873,7 +879,7 @@ export class ChatComponent implements OnInit  {
                  
                 })
               }
-              else if(this.list_of_messages[i].attachment_type=='picture_attachment'){
+              else if(this.list_of_messages[i].attachment_type=='picture_attachment' && this.list_of_messages[i].status!="deleted"){
                 this.compteur_image+=1;
                 console.log("friend type " + this.friend_type)
                 console.log(" compteur" + this.compteur_get_messages)
@@ -888,7 +894,7 @@ export class ChatComponent implements OnInit  {
                   
                 })
               }
-              else if(this.list_of_messages[i].attachment_type=='file_attachment'){
+              else if(this.list_of_messages[i].attachment_type=='file_attachment' && this.list_of_messages[i].status!="deleted"){
                 this.compteur_image+=1;
                 this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
@@ -1148,6 +1154,7 @@ export class ChatComponent implements OnInit  {
   }
   
   on_keydown(event){
+    console.log("key down")
     if(event.key=="Shift"){
       this.number_of_shift=1;
     }
@@ -1162,7 +1169,11 @@ export class ChatComponent implements OnInit  {
         }
         else if(this.attachments.length>0 && this.put_messages_visible){
           this.compt_at=0;
+          console.log("ini")
+          console.log(this.attachments)
           for(let i=0;i<this.attachments.length;i++){
+            this.compt_at+=1;
+            console.log(this.compt_at)
             this.send_attachment_or_picture(i);
             if(i==0){
               this.input.nativeElement.blur();
@@ -1217,7 +1228,7 @@ export class ChatComponent implements OnInit  {
         });
         return
       }
-      if( re.exec(name)[1]=="jpeg" || re.exec(name)[1]=="png" || re.exec(name)[1]=="jpg"){
+      if( re.exec(name)[1]=="jpeg" || re.exec(name)[1].toLowerCase()=="png" || re.exec(name)[1]=="jpg"){
         let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
         const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
         this.attachments.push(SafeURL);
@@ -1363,6 +1374,7 @@ export class ChatComponent implements OnInit  {
         this.attachments_for_sql=[];
         this.attachments=[];
         this.compt_at=0;
+        console.log("ini compt at")
         this.display_attachments=false;
       }
     }
@@ -1380,7 +1392,8 @@ export class ChatComponent implements OnInit  {
       this.send_picture(i);
     }
     else if(this.attachments_type[i]=="picture_attachment"){
-      this.compt_at+=1;
+      
+      console.log(this.compt_at)
       if(this.compt_at==1){
         console.log("checking 1")
         console.log(this.attachments_name[i])
@@ -1446,7 +1459,7 @@ export class ChatComponent implements OnInit  {
       }
       this.cd.detectChanges();
       console.log("scroll dans send attachment pic")
-      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+      //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     else if(this.attachments_type[i]=="file_attachment"){
       this.compt_at+=1;
@@ -1512,9 +1525,12 @@ export class ChatComponent implements OnInit  {
       }
       this.cd.detectChanges();
       console.log("scroll dans send attachment file")
-      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+      //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
-    this.compt_at=0;
+    if(this.compt_at==this.attachments_type.length){
+      console.log("ini compt at 1")
+      this.compt_at=0;
+    }
     this.display_attachments=false;
     this.cd.detectChanges();
     
@@ -1590,7 +1606,7 @@ export class ChatComponent implements OnInit  {
          if(this.list_of_messages[i].is_an_attachment && (this.list_of_messages[i].attachment_type=='picture_attachment' || this.list_of_messages[i].attachment_type=='file_attachment')){
           this.reload_list_of_files_subject.next(true)
          }
-
+          console.log(this.list_of_messages[i])
           let message={
             id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
