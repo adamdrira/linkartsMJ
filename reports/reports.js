@@ -641,10 +641,10 @@ router.post('/cancel_report', function (req, res) {
 
 
 
-router.post('/upload_attachments_reports', function (req, res) {
+router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_name', function (req, res) {
   var current_user = get_current_user(req.cookies.currentUser);
-  var id_report = parseInt(req.headers.id_report);
-  var attachment_number=parseInt(req.headers.attachment_number)+1;
+  var id_report = parseInt(req.params.id_report);
+  var attachment_number=parseInt(req.params.attachment_number)+1;
   
   var file_name='';
   var name='';
