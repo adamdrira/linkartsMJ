@@ -7,7 +7,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 declare var $:any;
 
-const url = 'https://linkarts.fr/routes/upload_attachments_ad';
+const url = 'https://www.linkarts.fr/routes/upload_attachments_ad/';
 
 @Component({
   selector: 'app-uploader-attachments-ad',
@@ -103,8 +103,9 @@ export class UploaderAttachmentsAdComponent implements OnInit {
       var re = /(?:\.([^.]+))?$/;
       let index = this.uploader.queue.indexOf(file);
       let size = file._file.size/1024/1024;
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
 
-      if(re.exec(file._file.name)[1]!="pdf" && re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" &&  sufix!="pdf"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -152,6 +153,8 @@ export class UploaderAttachmentsAdComponent implements OnInit {
         this.uploaded1.emit( true );
       }
       else{
+        let URL = url + `${this.k}/${this.id_ad}/${this.uploader.queue[this.k]._file.name}/${this.uploader.queue.length}`;
+        this.uploader.setOptions({ url: URL});
         this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${this.k}`},
         {name:'id_ad',value:`${this.id_ad}`},
         {name:'file_name',value:this.uploader.queue[this.k]._file.name},
@@ -186,6 +189,8 @@ remove_beforeupload(item:FileItem,index){
 
 
  validate_all(){
+  let URL = url + `O/${this.id_ad}/${this.uploader.queue[0]._file.name}/${this.uploader.queue.length}`;
+  this.uploader.setOptions({ url: URL});
   this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${0}`},
   {name:'id_ad',value:`${this.id_ad}`},
   {name:'file_name',value:this.uploader.queue[0]._file.name},
