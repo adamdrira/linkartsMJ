@@ -11,7 +11,7 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 
 declare var Swiper:any;
 declare var $:any;
-const URL ='https://linkarts.fr/routes/upload_writing';
+const URL ='https://www.linkarts.fr/routes/upload_writing';
 
 @Component({
   selector: 'app-uploader-writting',
@@ -47,8 +47,6 @@ export class UploaderWrittingComponent implements OnInit {
     ){
     this.uploader = new FileUploader({
       url: URL,
-      headers:[],
-      //itemAlias:"writing",
     });
  
     this.hasBaseDropZoneOver = false;
@@ -86,7 +84,9 @@ export class UploaderWrittingComponent implements OnInit {
       var re = /(?:\.([^.]+))?$/;
       let size = file._file.size/1024/1024;
 
-      if(re.exec(file._file.name)[1]!="pdf"){
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
+
+      if(sufix!="pdf"){
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Veuillez sélectionner un fichier .pdf'},
@@ -111,7 +111,6 @@ export class UploaderWrittingComponent implements OnInit {
           this.afficherpreview = true;
 
         }
-        //this.uploader.setOptions({ headers: [{name:'type',value:re.exec(file._file.name)[1]}]});
       }
       
     };

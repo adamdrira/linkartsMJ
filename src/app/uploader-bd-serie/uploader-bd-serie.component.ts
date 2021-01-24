@@ -10,7 +10,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
-const url = 'https://linkarts.fr/routes/upload_page_bd_serie/';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
 
 declare var $:any;
 @Component({
@@ -135,7 +135,9 @@ export class UploaderBdSerieComponent implements OnInit{
       let size = file._file.size/1024/1024;
 
 
-      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
+
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {

@@ -15,7 +15,7 @@ declare var $:any;
 declare var Swiper:any;
 
 
-const url = 'https://linkarts.fr/routes/upload_cover_writing';
+const url = 'https://www.linkarts.fr/routes/upload_cover_writing';
 
 @Component({
   selector: 'app-uploader-cover-writing',
@@ -170,7 +170,9 @@ export class UploaderCoverWritingComponent implements OnInit {
       let size = file._file.size/1024/1024;
 
 
-      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
+
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {

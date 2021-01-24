@@ -16,7 +16,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 
-const url = 'https://linkarts.fr/routes/upload_page_bd_oneshot/';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
 
 declare var $:any;
 
@@ -125,9 +125,9 @@ get upload(): boolean {
       
       var re = /(?:\.([^.]+))?$/;
       let size = file._file.size/1024/1024;
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
 
-
-      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {

@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
 
-const url = 'https://linkarts.fr/routes/upload_drawing_artbook/';
+const url = 'https://www.linkarts.fr/routes/upload_drawing_artbook/';
 
 declare var $:any;
 @Component({
@@ -135,8 +135,9 @@ export class UploaderArtbookComponent implements OnInit {
       var re = /(?:\.([^.]+))?$/;
       let size = file._file.size/1024/1024;
 
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
 
-      if(re.exec(file._file.name)[1]!="jpeg" && re.exec(file._file.name)[1]!="png" && re.exec(file._file.name)[1]!="jpg"){
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {

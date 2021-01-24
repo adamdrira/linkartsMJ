@@ -5,7 +5,8 @@ import { MatSliderChange } from '@angular/material/slider';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { ChatService } from '../services/chat.service';
 import { Router } from '@angular/router';
-
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { MatDialog } from '@angular/material/dialog';
 
 declare var Cropper:any;
 declare var $:any;
@@ -20,6 +21,7 @@ export class UploaderChatProfilePictureComponent implements OnInit {
   constructor(
     private sanitizer:DomSanitizer, 
     private ChatService:ChatService,
+    public dialog: MatDialog,
     ) { 
     
     this.uploader = new FileUploader({
@@ -57,14 +59,42 @@ export class UploaderChatProfilePictureComponent implements OnInit {
   public fileOverAnother(e:any):void {
     this.hasAnotherDropZoneOver = e;
   }
-
+  image_to_show:SafeUrl;
 
   ngOnInit(): void {
 
     console.log(this.id_receiver)
     this.uploader.onAfterAddingFile = async (file) => {
-      this.image_uploaded = true;
-      file.withCredentials = true; 
+      var re = /(?:\.([^.]+))?$/;
+      let size = file._file.size/1024/1024;
+
+
+      let sufix =re.exec(file._file.name)[1].toLowerCase()
+
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
+        console.log(re.exec(file._file.name)[1])
+        this.uploader.queue.pop();
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+          panelClass: "popupConfirmationClass",
+        });
+      }
+      else{
+        if(Math.trunc(size)>=10){
+          this.uploader.queue.pop();
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo ("+ (Math.round(size * 10) / 10)  +"mo)"},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        else{
+          let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
+          this.image_to_show= this.sanitizer.bypassSecurityTrustUrl(url);
+          this.image_uploaded = true;
+          file.withCredentials = true; 
+        }
+      }
+      
     };
 
 
