@@ -153,8 +153,8 @@
                                 <div *ngIf="list_of_friends_connected[i]" class="connected">
                                 </div>
 
-                                <div *ngIf="!list_of_friends_connected[i]" class="last-connection">
-                                    <span *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
+                                <div *ngIf="!list_of_friends_connected[i] && list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'" class="last-connection">
+                                    <span>
                                     {{list_of_last_connection_dates[i]}} 
                                     </span>
                                 </div>

@@ -68,6 +68,12 @@ export class PopupNavbarComponent implements OnInit {
 
 
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if( window.innerWidth > 700 ) {
+      this.dialogRef.close("closed");
+    }
+  }
 
  
   

@@ -101,6 +101,15 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('fdselector') fdselector:ElementRef;
 
   
+  @HostListener('window:beforeunload', ['$event'])
+  WindowBeforeUnload($event: any) {
+    this.navbar.set_not_using_chat();
+  }
+  @HostListener('window:popstate', ['$event'])
+  onPopState($event: any) {
+    this.navbar.set_not_using_chat();
+  }
+  
   //current_user
   current_user:number=0;
   current_user_name:string;

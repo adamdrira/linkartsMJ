@@ -261,7 +261,6 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment' && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':(list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user ),
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
@@ -456,7 +455,6 @@
                             <div class="friend-message-content"
                                 [ngClass]="{ 
                                     
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
@@ -770,7 +768,6 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
-                                'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user,
                                 'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=current_user_id || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                 'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id])  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
@@ -1011,7 +1008,6 @@
 
                             <div class="friend-message-content"
                                 [ngClass]="{
-                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
                                     'more-margin-top-for-name':list_of_messages[list_of_messages.length- i] && (list_of_messages[list_of_messages.length- i].id_user!=list_of_messages[list_of_messages.length- i-1].id_user || list_of_messages[list_of_messages.length- i].is_from_server)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'margin-for-emojis': (list_of_messages_reactions[list_of_messages[list_of_messages.length -1 - i].id]) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',

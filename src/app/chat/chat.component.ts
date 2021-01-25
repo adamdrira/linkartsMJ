@@ -607,6 +607,7 @@ export class ChatComponent implements OnInit  {
                     let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
                     let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height
                     this.myScrollContainer.nativeElement.scrollTop=offset-height;
+                    
                     console.log("scroll dans interval")
                     this.can_get_other_messages=true;
                   }
@@ -706,11 +707,6 @@ export class ChatComponent implements OnInit  {
 
     this.uploader.onCompleteItem = (file) => {
       this.k++;
-      console.log(file._file)
-      console.log(this.k)
-      console.log(this.uploader.queue.length)
-      console.log(this.uploader.queue[0]._file.name)
-      console.log(this.uploader.queue[1]._file.name)
       if(this.k<this.uploader.queue.length){
         console.log("checking complete 1")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).subscribe(r=>{

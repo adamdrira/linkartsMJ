@@ -27,6 +27,7 @@ import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 declare var $: any;
 declare var Swiper: any;
@@ -1886,6 +1887,9 @@ initialize_selectors(){
 
 @ViewChild('navbarSelect') navbarSelect;
 @ViewChild('navbarSelect2') navbarSelect2;
+
+@ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
 @HostListener('window:resize', ['$event'])
 onResize(event) {
   if( this.navbarSelect ) {
@@ -1894,6 +1898,9 @@ onResize(event) {
   if( this.navbarSelect2 ) {
     this.navbarSelect2.close();
   }
+
+  this.trigger.closeMenu();
+
 }
 
 sectionChange(e:any) {

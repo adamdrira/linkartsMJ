@@ -86,8 +86,7 @@ $default-color: rgb(218, 220, 225);
                             height: 26px;
                             width: 26px;
                             font-size: 13px;
-                            max-width: 13px;
-        overflow: hidden;
+                            overflow: hidden;
                             left: 50%;
                             transform: translatex(-50%);
                             border: 1px solid #5e5e5e;
@@ -129,7 +128,7 @@ $default-color: rgb(218, 220, 225);
                     margin: auto auto;
                     font-size: 20px;
                     max-width: 20px;
-        overflow: hidden;
+                    overflow: hidden;
                     color: rgb(32, 56, 100);
                 }
 

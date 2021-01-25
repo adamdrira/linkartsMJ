@@ -525,8 +525,8 @@
                             <div *ngIf="list_of_friends_connected[i]" class="connected">
                             </div>
 
-                            <div *ngIf="!list_of_friends_connected[i]" class="last-connection">
-                              <span *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
+                            <div *ngIf="!list_of_friends_connected[i] && list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'" class="last-connection">
+                              <span>
                                 {{list_of_last_connection_dates[i]}} 
                               </span>
                             </div>
@@ -2468,10 +2468,10 @@
 
             <div class="options SMALL-SCREEN-OPTIONS HIDE-OPTIONS-ON-SMALL-SCREEN"
               *ngIf="(type_of_profile=='account' || type_of_profile=='suspended') && !activated_search">
-              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
+              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options3">
                 <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more">more_vert</mat-icon>
               </button>
-              <mat-menu #options2="matMenu" class="navbar-mat-menu">
+              <mat-menu #options3="matMenu" class="navbar-mat-menu">
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
