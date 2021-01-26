@@ -128,7 +128,7 @@ exports.create = (req, res) => {
 					"subscribings_number": 1,
 					"subscribers":[],
 					"subscribings":[1],
-					"profile_pic_file_name":"default_profile_picture.png",
+					"profile_pic_file_name":"default_profile_picture1.png",
 					"cover_pic_file_name":"default_cover_picture.png",
 					"status":"account",
 				}).catch(err => {
@@ -228,7 +228,7 @@ exports.create = (req, res) => {
 							status:"account",
 						},
 						order: [
-							['createdAt', 'DESC']
+							['createdAt', 'ASC']
 						],
 						limit:1}
 				   	).then(first_user=>{
@@ -380,7 +380,7 @@ exports.reset_password = (req, res) => {
 						from: 'Linkarts <services@linkarts.fr>', // sender address
 						to: user_found.email, // my mail
 						//cc:"adam.drira@etu.emse.fr",
-						subject: `Confirmation d'inscription`, // Subject line
+						subject: `Récupération du mot de passe`, // Subject line
 						text: decrypted.toString(), // plain text body
 						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 						// attachments: params.attachments
@@ -440,7 +440,7 @@ exports.reset_password = (req, res) => {
 							from: 'Linkarts <services@linkarts.fr>', // sender address
 							to: user_found.email, // my mail
 							//cc:"adam.drira@etu.emse.fr",
-							subject: `Confirmation d'inscription`, // Subject line
+							subject: `Récupération du mot de passe`, // Subject line
 							text: 'Votre nouveau mot de passe est : ' + pass, // plain text body
 							//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 							// attachments: params.attachments
