@@ -8,11 +8,10 @@
 .container-fluid {
     margin-top: 0px;
     width: 100%;
-    min-height: 100%;
     display: flex;
     background-color: white;
     justify-content: center;
-
+    min-height: calc(100% - 60px);
     * {
         color: rgb(32, 56, 100);
     }
