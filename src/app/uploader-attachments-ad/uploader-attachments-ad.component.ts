@@ -189,7 +189,7 @@ remove_beforeupload(item:FileItem,index){
 
 
  validate_all(){
-  let URL = url + `O/${this.id_ad}/${this.uploader.queue[0]._file.name}/${this.uploader.queue.length}`;
+  let URL = url + `0/${this.id_ad}/${this.uploader.queue[0]._file.name}/${this.uploader.queue.length}`;
   this.uploader.setOptions({ url: URL});
   this.uploader.setOptions({ headers: [{name:'attachment_number',value:`${0}`},
   {name:'id_ad',value:`${this.id_ad}`},
