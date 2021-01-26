@@ -26,13 +26,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
-import { ContentComponent } from './content/content.component';
 import { CategoryComponent } from './category/category.component';
-import { SimilarContentsComponent } from './similar-contents/similar-contents.component';
 import { NavbarLinkartsComponent } from './navbar-linkarts/navbar-linkarts.component';
 import { HomeLinkcollabComponent } from './home-linkcollab/home-linkcollab.component';
-import { ContentOfferComponent } from './content-offer/content-offer.component';
-import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
 import { LoginComponent } from './login/login.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NavbarService } from './services/navbar.service';
@@ -48,7 +44,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchbarComponent } from './searchbar/searchbar.component';
 import { StoriesComponent } from './stories/stories.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
-import { RecommendationcollabComponent } from './recommendationcollab/recommendationcollab.component';
 import { ArtworkComponent } from './artwork/artwork.component';
 import { AccountComponent } from './account/account.component';
 
@@ -182,19 +177,15 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     FilterAlbumPipe,
     AppComponent,
     HomeLinkartsComponent,
-    ContentComponent,
     CategoryComponent,
-    SimilarContentsComponent,
     NavbarLinkartsComponent,
     HomeLinkcollabComponent,
-    ContentOfferComponent,
     LoginComponent,
     SignupComponent,
     SearchbarComponent,
     StoriesComponent,
     RecommendationsComponent,
     ArtworkComponent,
-    RecommendationcollabComponent,
     AccountComponent,
     MediaComicsComponent,
     TrendsComponent,
@@ -206,7 +197,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     UploaderBdSerieComponent,
     FormSerieComponent,
     ThumbnailComicsComponent,
-    ThumbnailTopOfferComponent,
     AddDrawingComponent,
     AddWritingComponent,
     AddComicComponent,

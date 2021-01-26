@@ -11,22 +11,16 @@ import{ AccountComponent } from "./account/account.component";
 
 import { AuthGuard } from './helpers/auth.guard';
 import { TempAuthGuard } from './helpers/temp_auth.guard';
-import { Uploader_bd_oneshot } from './uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
 import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
 import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
-import { SubscribingsComponent } from './subscribings/subscribings.component';
-import { ThumbnailTopOfferComponent } from './thumbnail-top-offer/thumbnail-top-offer.component';
-import { AddAdComponent } from './add-ad/add-ad.component';
 import { MainSearchbarResultsComponent } from './main-searchbar-results/main-searchbar-results.component';
 import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.component';
 import { AdPageComponent } from './ad-page/ad-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
 import { PopupReportComponent } from './popup-report/popup-report.component';
-import { AccountAboutComponent } from './account-about/account-about.component';
-import { FavoritesComponent } from './favorites/favorites.component';
 
 const routes: Routes = [
 
@@ -81,9 +75,7 @@ const routes: Routes = [
   {path:'chat', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 1}},
   {path:'chat/:pseudo/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 2}},
   {path:'chat/group/:name/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},
-  //Components tests
-  {path:'uploadadvansed', component:Uploader_bd_oneshot, canActivate: [AuthGuard,TempAuthGuard]},
-  {path:'topoffer', component:ThumbnailTopOfferComponent, canActivate: [AuthGuard,TempAuthGuard]},
+
 
   
   //signalement
