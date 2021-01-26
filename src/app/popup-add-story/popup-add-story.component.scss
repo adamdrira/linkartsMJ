@@ -54,7 +54,7 @@ $default-color: rgb(218,220,225);
 
 .scrollable-container {
     overflow: auto;
-    height: 100%;
+    height: calc(100% - 57px);
     padding: 10px 20px 100px 20px;
 
     .component-container.popupFormComic {

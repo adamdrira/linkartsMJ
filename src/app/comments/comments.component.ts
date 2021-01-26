@@ -105,7 +105,7 @@ export class CommentsComponent implements OnInit {
       THIS.show_icon=true;
     });
 
-    this.skeleton_array = Array(this.number_of_comments_to_show);
+    this.skeleton_array = Array(5);
   }
 
 

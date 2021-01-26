@@ -84,8 +84,8 @@ export class MainSearchbarResultsComponent implements OnInit {
 
   comics_tags=["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
   "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
-  drawings_tags=["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
-  "Réaliste","Religion","Romantique","SF","Sociologie","Sport"];
+  drawings_tags=["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Motos","Paysage","Portrait",
+  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage"];
   writings_tags=["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
   "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
   ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];

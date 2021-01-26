@@ -101,7 +101,7 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }" >send</mat-icon>
                             <span>Écrire</span>
                     </button>
-                    <button *ngIf="!already_subscribed && !mode_visiteur" [disabled]="loading_subscribtion" (click)="subscribtion()">
+                    <button *ngIf="!already_subscribed " [disabled]="loading_subscribtion" (click)="subscribtion()">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                         <span>S'abonner</span>
                     </button>
@@ -575,13 +575,17 @@
                     </span>
                 </div>
 
-                <div class="add-artwork-button" *ngIf="no_new_contents">
+                <div class="add-artwork-button" *ngIf="no_new_contents && !mode_visiteur">
                     <a [routerLink]=get_add_artwork_link()>
                         <button>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                             <span>Publier votre première œuvre !</span>
                         </button>
                     </a>
+                </div>
+
+                <div class="add-artwork-button" *ngIf="no_new_contents && mode_visiteur">
+                    <span class="visitor">Aucune œuvre disponible</span>
                 </div>
 
                 <div *ngIf="display_new_comic_contents" class="bd-container" >

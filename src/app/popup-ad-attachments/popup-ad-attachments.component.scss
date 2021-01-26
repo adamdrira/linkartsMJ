@@ -5,7 +5,7 @@
     display: flex;
     position: absolute;
     right: 30px;
-    top: 16px;
+    top: 26px;
     outline: none;
     border-radius: 50px;
     border: 2px solid #4b4b4b;
@@ -39,7 +39,7 @@
                 }
                 &::-webkit-scrollbar-thumb {
                     border-radius: 15px;
-                    background-color: transparent;
+                    background-color: #d8d8d8fc;
                 }
             }
         }

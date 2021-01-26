@@ -85,7 +85,7 @@ export class PopupNavbarComponent implements OnInit {
   data_retrieved=this.data.data_retrieved;
   number_of_empties=this.data.number_of_empties
  
-
+  list_of_conditions=this.data.list_of_conditions;
   
 
 
@@ -279,17 +279,13 @@ export class PopupNavbarComponent implements OnInit {
   }
 
 
+
   open_options(i){
     console.log(i)
-    this.Writing_Upload_Service.retrieve_writing_for_options(i).subscribe(r=>{
-      console.log(r)
-      /*let file = new Blob([r], {type: 'application/pdf'});
-      let pdfSrc = URL.createObjectURL(file);*/
-      const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
-        data: {file:r},
-        panelClass: "popupDocumentClass",
-      });
-    })
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.list_of_conditions[i]},
+      panelClass: "popupDocumentClass",
+    });
    
   }
   

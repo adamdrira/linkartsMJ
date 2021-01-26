@@ -312,8 +312,8 @@ export class AddDrawingComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
 
-  allGenres: string[] = ["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
-  "Réaliste","Religion","Romantique","SF","Sociologie","Sport"];
+  allGenres: string[] = ["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Motos","Paysage","Portrait",
+  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

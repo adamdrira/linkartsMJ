@@ -2850,10 +2850,11 @@ change_message_status(event){
 
   popup_opened=false;
   open_menu_for_phone(){
-    if(this.data_retrieved && this.using_chat_retrieved){
+    if(this.data_retrieved && this.using_chat_retrieved && this.conditions_retrieved){
       this.popup_opened=true;
       const dialogRef = this.dialog.open(PopupNavbarComponent, {
         data: {
+          list_of_conditions:this.list_of_conditions,
           profile_picture:this.profile_picture,
           user_id:this.user_id,
           author_first_name:this.author_first_name,

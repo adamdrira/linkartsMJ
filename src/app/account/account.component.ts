@@ -428,6 +428,7 @@ export class AccountComponent implements OnInit {
       console.log(s)
       let user=s[0].user;
       this.visitor_id=s[0].visitor.id
+      this.visitor_name=s[0].visitor.nickname;
       this.type_of_profile=s[0].visitor.status;
       this.type_of_profile_retrieved=true;
       

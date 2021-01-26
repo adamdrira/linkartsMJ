@@ -993,14 +993,14 @@
   }
   button {
     margin: auto 0px auto 0px;
-    border-radius: 10px;
+    border-radius: 30px;
     background-color: unset;
     outline: none !important;
     border: unset;
     display: flex;
     padding: 14px 22px;
     box-shadow: 0px 2px 3px 1px #3f516d;
-    background-image: linear-gradient(0.02turn, rgba(7, 29, 80, 0.9), rgba(28, 65, 121, 0.9), rgba(64, 133, 182, 0.9));
+    background-image: linear-gradient(0.02turn, rgba(7, 29, 80, 0.9), rgba(28, 65, 121, 0.9));
     color: white;
     mat-icon {
       margin: auto 2px auto auto;
@@ -1028,6 +1028,13 @@
     &:active {
       background-image: linear-gradient(0.02turn, rgba(4, 20, 59, 0.9), rgba(17, 48, 94, 0.9), rgba(44, 104, 148, 0.9));
     }
+  }
+
+  .visitor{
+    margin: 80px auto;
+    font-size: 16px;
+    line-height: 14px;
+    font-weight: 600;
   }
 }
 

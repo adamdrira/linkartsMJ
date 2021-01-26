@@ -153,7 +153,7 @@
             </button>
         </div>
         
-        <button class="submit-button" (click)="set_crop();" [disabled]="loading">
+        <button #validator class="submit-button" (click)="set_crop();" [disabled]="loading">
             <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!loading">done_all</mat-icon>
             <span  *ngIf="!loading">Valider</span>
             <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
