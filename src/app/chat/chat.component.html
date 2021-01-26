@@ -261,6 +261,7 @@
                             *ngIf="list_of_messages[list_of_messages.length -1 - i].id_user==current_user_id && !list_of_messages[list_of_messages.length -1 - i].is_from_server">
                             <div class="my-message-content"
                                 [ngClass]="{
+                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':(list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i-2].id_user ),
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver) && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',
@@ -425,16 +426,12 @@
                                     </div>
                                 </div>
 
-                                <!--<div class="state" *ngIf="list_of_messages[list_of_messages.length -1 - i].status=='sent'">
-                                    <div *ngIf="display_retry[list_of_messages.length -1 - i]">
-                                        <span>Message non envoyé</span>
-                                        <div (click)="retry(list_of_messages.length -1 - i)">Réessayer</div> 
-                                    </div>
-                                    <div *ngIf="!display_retry[list_of_messages.length -1 - i]" class="send_in_progress">
-                                    </div>
-                                </div>-->
                                 
-                                <div *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'" class="state"  [@enterAnimation]>
+                                <div 
+                                matTooltip="vu"
+                                matTooltipClass='linkarts-tooltip'
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="100" *ngIf="(index_of_show_pp_right==list_of_messages.length -1 - i) && list_of_messages[list_of_messages.length -1 - i].status=='seen'" class="state"  [@enterAnimation]>
                                     <div class="friend-picture" [ngClass]="{'shiny':!list_of_pp_loaded_classic[list_of_messages.length -1 - i]}">
                                         <img (load)="loaded_image(-(list_of_messages.length -1 - i)-1)"
                                             [ngClass]="{'invisible':!list_of_pp_loaded_classic[list_of_messages.length -1 - i]}"
@@ -454,7 +451,7 @@
 
                             <div class="friend-message-content"
                                 [ngClass]="{ 
-                                    
+                                    'contains-picture':list_of_messages[list_of_messages.length -1 - i].attachment_type=='picture_attachment'  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'less-margin-for-user':list_of_messages[list_of_messages.length- i-2] &&  !list_of_messages[list_of_messages.length- i-2].is_from_server && list_of_messages[list_of_messages.length -1 - i].id_user==list_of_messages[list_of_messages.length- i-2].id_user,
                                     'margin-for-emojis': (list_of_messages[list_of_messages.length -1 - i].emoji_reaction_user || list_of_messages[list_of_messages.length -1 - i].emoji_reaction_receiver)  && list_of_messages[list_of_messages.length -1 - i].status!='deleted',
                                     'deleted': list_of_messages[list_of_messages.length -1 - i].status=='deleted',

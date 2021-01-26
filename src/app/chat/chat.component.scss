@@ -176,7 +176,6 @@
                     margin: auto auto;
                     display: flex;
                     line-height: 14px;
-                    max-width: 55%;
                     padding: 7px 18px 8px 18px;
                     border-radius: 50px;
                     background: #f3f3f3;
@@ -312,13 +311,13 @@
             .emojis-main-container {
                 position: absolute;
                 top: -356px;
-                right: 22px;
+                right: 0px;
                 visibility: hidden;
                 .emojis-container {
                     background-color: white;
                     border-radius: 10px;
-                    padding: 2px 2px 0px 2px;
-                    width: 369px;
+                    //padding: 2px 2px 0px 2px;
+                    //width: 369px;
                     display: flex;
                     justify-content: center;
 

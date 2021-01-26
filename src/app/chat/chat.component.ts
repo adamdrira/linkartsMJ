@@ -600,18 +600,20 @@ export class ChatComponent implements OnInit  {
                     this.sort_pp(num-1+i);
                   }
                   this.get_picture_for_message(num-1+i);
-                  if(i==r[0][0].length-1){
-                    this.calculate_dates_to_show()
-                    this.show_spinner=false;
-                    this.cd.detectChanges();
-                    let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
-                    let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height
-                    this.myScrollContainer.nativeElement.scrollTop=offset-height;
-                    
-                    console.log("scroll dans interval")
-                    this.can_get_other_messages=true;
-                  }
+                  
                 }
+              
+                this.calculate_dates_to_show()
+                this.show_spinner=false;
+                this.cd.detectChanges();
+                let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
+                let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height;
+                console.log("scroll bottom -1")
+                this.myScrollContainer.nativeElement.scrollTop=offset-height;
+                
+                console.log("scroll dans interval")
+                this.can_get_other_messages=true;
+                
               }
               else{
                 this.show_spinner=false;
@@ -942,6 +944,7 @@ export class ChatComponent implements OnInit  {
                   this.cd.detectChanges();
                   this.put_messages_visible=true;
                   console.log("scroll dans get messages")
+                  console.log("scroll bottom 0")
                   this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
                   if(this.list_of_messages.length>0){
                     this.can_get_other_messages=true;
@@ -982,19 +985,21 @@ export class ChatComponent implements OnInit  {
     if(i>=0){
       this.list_of_images_loaded[i]=true;
       this.cd.detectChanges()
-      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;;
+      //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+    
+      //;
     }
     if(i<0){
       console.log(this.list_of_pp_loaded_classic)
       this.list_of_pp_loaded_classic[Math.abs(i+1)]=true;
       this.cd.detectChanges()
-      this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
+      //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     if(!this.show_research_results && !this.first_turn_loaded){
       this.compteur_loaded+=1;
       if(this.compteur_image!=0){
         if (this.compteur_loaded==this.compteur_image + this.compteur_pp){
-          
+          console.log("scroll bottom 1")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
@@ -1008,7 +1013,7 @@ export class ChatComponent implements OnInit  {
       }
       else {
         if (this.compteur_loaded==this.compteur_pp){
-         
+          console.log("scroll bottom 2")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
