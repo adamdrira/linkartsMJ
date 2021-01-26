@@ -1898,8 +1898,10 @@ onResize(event) {
   if( this.navbarSelect2 ) {
     this.navbarSelect2.close();
   }
+  if(this.trigger){
+    this.trigger.closeMenu();
+  }
 
-  this.trigger.closeMenu();
 
 }
 
