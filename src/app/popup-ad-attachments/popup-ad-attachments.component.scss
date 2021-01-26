@@ -17,9 +17,17 @@
         color: white;
         font-size: 40px;
     }
+
+    @media (max-width: 799px) {
+        right: 18px;
+        top: 14px;
+        mat-icon {
+            font-size: 24px;
+        }
+    }
 }
 
-.component-container {
+.component-container.popupAdAttachments {
     height:100%;
     width:100%;
     display:flex;
@@ -30,16 +38,26 @@
 
         ::ng-deep {
             .ng2-pdf-viewer-container {
-                &::-webkit-scrollbar {
-                    width: 4px;
-                    height: 4px;
-                }
-                &::-webkit-scrollbar-track {
-                    border-radius: 15px;
-                }
-                &::-webkit-scrollbar-thumb {
-                    border-radius: 15px;
-                    background-color: #d8d8d8fc;
+
+                overflow:unset;
+
+                .pdfViewer {
+                    overflow:auto;
+                    width: fit-content;
+                    margin: auto auto;
+                    height: 100%;
+
+                    &::-webkit-scrollbar {
+                        width: 5px;
+                        height: 5px;
+                    }
+                    &::-webkit-scrollbar-track {
+                        border-radius: 15px;
+                    }
+                    &::-webkit-scrollbar-thumb {
+                        border-radius: 15px;
+                        background-color: #d8d8d8fc;
+                    }
                 }
             }
         }
@@ -53,6 +71,10 @@
         height: 100vh;
         .mat-dialog-container {
             background: rgba(0, 0, 0, 0.92);
+
+            @media (max-width: 799px) {
+                padding:10px 15px 10px 10px;
+            }
         }
     }
 }
