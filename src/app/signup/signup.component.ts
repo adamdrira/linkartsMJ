@@ -19,7 +19,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import * as moment from 'moment'; 
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
+import {Writing_Upload_Service} from '../services/writing.service';
+import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -58,6 +59,7 @@ export class SignupComponent implements OnInit {
       private sanitizer:DomSanitizer,
       private Profile_Edition_Service:Profile_Edition_Service,
       private router: Router,
+      private Writing_Upload_Service:Writing_Upload_Service,
       private formBuilder: FormBuilder,
       public navbar: NavbarService,
       private cd: ChangeDetectorRef,
@@ -122,14 +124,19 @@ export class SignupComponent implements OnInit {
     }
   }
   read_conditions() {
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Conditions en cours d'écriture"},
-      panelClass: "popupConfirmationClass",
+    const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
+      data: {file:this.conditions},
+      panelClass: "popupDocumentClass",
     });
   }
 
-  
+  conditions:any;
   ngOnInit() {
+
+    this.Writing_Upload_Service.retrieve_writing_for_options(0).subscribe(r=>{
+      console.log(r)
+      this.conditions=r
+    })
     const currentYear = moment().year();
       this.maxDate = moment([currentYear - 7, 11, 31]);
 
