@@ -57,11 +57,14 @@ export class PopupAdPicturesComponent implements OnInit {
 
   //Swiper
   swiper: any;
+  swiper2: any;
   recommendation_index:number;
   category_index: number = 0;
   list_of_pictures:any[];
 
   @ViewChild( "swiperContainer" ) swiperContainer:ElementRef;
+
+  @ViewChild( "swiperContainer2" ) swiperContainer2:ElementRef;
 
 
   /******************************************************* */
@@ -75,6 +78,7 @@ export class PopupAdPicturesComponent implements OnInit {
 
     if( this.list_of_pictures.length > 1 ) {
       this.initialize_swiper();
+      this.initialize_swiper2();
     }
   }
 
@@ -111,8 +115,136 @@ export class PopupAdPicturesComponent implements OnInit {
           el: '.swiper-pagination',
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+          nextEl: '.swiper-button-next.s1',
+          prevEl: '.swiper-button-prev.s1',
+        },
+        keyboard: {
+          enabled: true,
+        }
+      });
+    }
+
+  }
+
+  initialize_swiper2() {
+
+    if(!this.swiper2) {
+      this.swiper2 = new Swiper(this.swiperContainer2.nativeElement, {
+
+        speed: 500,
+        spaceBetween: 10,
+        slidesPerView: 1,
+
+        breakpoints: {
+          0: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          310: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          360: {
+            slidesPerView: 4,
+            slidesPerGroup: 4,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          410: {
+            slidesPerView: 5,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          460: {
+            slidesPerView: 6,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          510: {
+            slidesPerView: 7,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          560: {
+            slidesPerView: 8,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          610: {
+            slidesPerView: 9,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          660: {
+            slidesPerView: 10,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          710: {
+            slidesPerView: 11,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          760: {
+            slidesPerView: 12,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          810: {
+            slidesPerView: 13,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          860: {
+            slidesPerView: 14,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          },
+          910: {
+            slidesPerView: 15,
+            slidesPerGroup: 5,
+            simulateTouch: false,
+            allowTouchMove: false,
+            noSwiping: true,
+          }
+        },
+        grabCursor: false,
+
+        initialSlide:this.data.index_of_picture,
+
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        navigation: {
+          nextEl: '.swiper-button-next.s2',
+          prevEl: '.swiper-button-prev.s2',
         },
         keyboard: {
           enabled: true,

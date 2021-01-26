@@ -13,22 +13,34 @@
             
         </div>
         <!-- Add Arrows -->
-        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-prev"></div>
-        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-next"></div>
+        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-prev s1"></div>
+        <div [ngClass]="{'invisible': !swiper || !swiper.slides || 1>=swiper.slides.length}" class="swiper-button-next s1"></div>
     </div>
     
     
     <div class="bottom-thumbnails" *ngIf="list_of_pictures.length > 1">
-        <div *ngFor="let item of list_of_pictures; let i = index" class="thumbnail" (click)="set_slide(i);" [ngClass]="{'not-opened': swiper && swiper.activeIndex != i }">
-            <img [src]="list_of_pictures[i]">
+        <div class="swiper-thumbnails">
+            <div #swiperContainer2 class="swiper-container">
+                <div #swiperWrapper2 class="swiper-wrapper">
+    
+                <div *ngFor="let item of list_of_pictures; let i = index" class="swiper-slide thumbnail" (click)="set_slide(i);" [ngClass]="{'not-opened': swiper && swiper.activeIndex != i }">
+                    <img [src]="list_of_pictures[i]">
+                </div>
+            </div>
         </div>
+            
+        <!-- Add Arrows -->
+        <div class="swiper-button-next s2" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
+        <div class="swiper-button-prev s2" [ngClass]="{'invisible': swiper2 && swiper2.isBeginning && swiper2.isEnd }"></div>
     </div>
     
+
     <div class="swiper-container" *ngIf="list_of_pictures.length == 1">
         <div #swiperWrapper class="swiper-wrapper">
             <div class="swiper-slide">
                 <img [src]="list_of_pictures[0]" class="slide-container-img">
             </div>
         </div>
-    </div>    
+    </div>
+
 </div>
