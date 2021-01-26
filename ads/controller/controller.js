@@ -236,16 +236,16 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
  
 
 
-    router.post('/upload_attachments_ad', function (req, res) {
+    router.post('/upload_attachments_ad/:attachment_number/:id_ad/:file_name/:number_of_attachments', function (req, res) {
       
-      var id_ad = parseInt(req.headers.id_ad);
+      var id_ad = parseInt(req.params.id_ad);
       console.log(id_ad);
-      console.log(req.headers.number_of_attachments);
-      console.log(req.headers.file_name);
-      console.log(parseInt(req.headers.attachment_number)+1);
+      console.log(req.params.number_of_attachments);
+      console.log(req.params.file_name);
+      console.log(parseInt(req.params.attachment_number)+1);
       var number_of_attachments_retrieved=0;
-      var number_of_attachments=parseInt(req.headers.number_of_attachments);
-      var attachment_number=parseInt(req.headers.attachment_number)+1;
+      var number_of_attachments=parseInt(req.params.number_of_attachments);
+      var attachment_number=parseInt(req.params.attachment_number)+1;
       var current_user = get_current_user(req.cookies.currentUser);
       var file_name='';
       var name='';
@@ -984,12 +984,12 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
 
 
-router.post('/upload_attachments_ad_response', function (req, res) {
+router.post('/upload_attachments_ad_response/:attachment_number/:id_ad_response/:file_name/:number_of_attachments', function (req, res) {
 
-var id_ad_response = parseInt(req.headers.id_ad_response);
+var id_ad_response = parseInt(req.params.id_ad_response);
 var number_of_attachments_retrieved=0;
-var number_of_attachments=parseInt(req.headers.number_of_attachments);
-var attachment_number=parseInt(req.headers.attachment_number)+1;
+var number_of_attachments=parseInt(req.params.number_of_attachments);
+var attachment_number=parseInt(req.params.attachment_number)+1;
 var current_user = get_current_user(req.cookies.currentUser);
 var file_name='';
 var name='';
@@ -1302,7 +1302,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           subject: `Réponse à une annonce`, // Subject line
           //text: 'plain text', // plain text body
           html:  `<p>${user_name} a répondu à votre annonce : ${title}</p>
-          <p><a href="http://localhost:4200/ad-page/${title}/${ad_id}"> Cliquer ici pour consulter l'annonce</a></p>`, // html body
+          <p><a href="http://linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici pour consulter l'annonce</a></p>`, // html body
           // attachments: params.attachments
       };
   
