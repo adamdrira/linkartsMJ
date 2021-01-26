@@ -33,7 +33,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && l[0].status && l[0].status!="visitor"){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`ws://linkarts.fr/path?id=${l[0].id}`)
+          .connect(`wss://www.linkarts.fr/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               console.log(response)
@@ -52,45 +52,9 @@ export class ChatService {
     this.wsService.close();
   }
 
- reconnect(){
-      this.messages=null;
-      this.Profile_Edition_Service.get_current_user().subscribe(l=>{
-        if(l[0] && l[0].status && l[0].status!="visitor"){
-          this.messages=<Subject<Message>>this.wsService
-          .connect(`ws://linkarts.fr/path?id=${l[0].id}`)
-          .pipe(map((response:MessageEvent):Message=>{
-              console.log(this.wsService.check_state());
-              console.log(response)
-              let data = JSON.parse(response.data);
-              return data
-          }))
 
-          console.log(this.messages)
-        }
-        
-      });
-  }
 
-  /*public connect(url) {
  
-    if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = this.getNewWebSocket(url);
-      //console.log("connected 2 to " + url);
-      const messages = this.socket$.pipe(
-        tap({
-          error: error => //console.log(error),
-        }), catchError(_ => EMPTY));
-      this.messagesSubject$.next(messages);
-    }
-    return this.socket$;
-  }
-  
-  private getNewWebSocket(url) {
-    return webSocket(url);
-  }
-  sendMessage(msg: any) {
-    this.socket$.next(msg);
-  }*/
     
 
 
@@ -507,7 +471,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('https://linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
@@ -530,6 +494,12 @@ get_number_of_unseen_messages_spams(){
 
 remove_friend(id_friend){
   return this.httpClient.post('routes/remove_friend',{id_friend:id_friend},{withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+}
+
+remove_spam(id_friend){
+  return this.httpClient.post('routes/remove_spam',{id_friend:id_friend},{withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
 }
