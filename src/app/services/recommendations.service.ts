@@ -23,7 +23,7 @@ export class Community_recommendation {
 
   generate_recommendations(){
     return this.httpClient.post('routes/generate_recommendations', {}, {withCredentials:true}).pipe(map((information)=>{ 
-      this.CookieService.set('recommendations', JSON.stringify(information), 365*10, '/','linkarts.fr',undefined,'Lax');
+      this.CookieService.set('recommendations', JSON.stringify(information), 365*10, '/','localhost',undefined,'Lax');
       return information;
       }));
   }

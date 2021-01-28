@@ -33,7 +33,7 @@ export class ChatService {
     this.Profile_Edition_Service.get_current_user().subscribe(l=>{
         if(l[0]  && l[0].status && l[0].status!="visitor"){
           this.messages=<Subject<Message>>this.wsService
-          .connect(`wss://www.linkarts.fr/path?id=${l[0].id}`)
+          .connect(`ws:localhost:4600/path?id=${l[0].id}`)
           .pipe(map((response:MessageEvent):Message=>{
               this.wsService.check_state();
               console.log(response)
@@ -471,7 +471,7 @@ research_chat_sections(text:string,id_friend,is_a_group_chat):Observable<any>{
 //FRIENDS STATUS
 
 get_users_connected_in_the_chat(list_of_friends){
-  return this.httpClient.post('https://www.linkarts.fr/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
+  return this.httpClient.post('http://localhost:4600/get_users_connected_in_the_chat',{list_of_friends:list_of_friends}, {withCredentials:true} ).pipe(map((information)=>{
     return information;
   }));
 }
