@@ -21,7 +21,6 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Story_service } from '../services/story.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { pattern } from '../helpers/patterns';
 import * as moment from 'moment'; 

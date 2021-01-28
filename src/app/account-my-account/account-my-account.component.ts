@@ -1011,7 +1011,7 @@ export class AccountMyAccountComponent implements OnInit {
     })
   }
   create_a_group(){
-    const dialogRef = this.dialog.open(SignupComponent, {});
+    const dialogRef = this.dialog.open(SignupComponent, {panelClass:"signupComponentClass"});
   }
 
 

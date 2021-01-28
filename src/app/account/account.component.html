@@ -63,7 +63,7 @@
         </div>
 
             
-        <div class="small-screen-categories">
+        <div class="small-screen-categories component-account">
             <div class="loading-container">
                 <div class="loading shiny">
                 </div>
@@ -334,7 +334,7 @@
         </div>
 
             
-        <div class="small-screen-categories">
+        <div class="small-screen-categories component-account">
             <mat-form-field floatLabel='never'>
                 <mat-select  #accountSelect panelClass="accountCategorySelectClass" [(value)]="opened_section_small" disableOptionCentering (selectionChange)="onCategoryChange($event)">
                     
@@ -528,8 +528,7 @@
                     <div class="category">
                         <div class="category-title shiny"></div>
                     </div>
-                    <div  *ngIf="j==0" class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
-                        [@enterAnimation]>
+                    <div  *ngIf="j==0" class="container-skeletons d-flex flex-wrap skeleton" [@enterAnimation]>
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container"
                                 *ngIf="number_of_new_contents_to_show>i"
@@ -538,7 +537,7 @@
                         </ng-container>
                     </div>
 
-                    <div  *ngIf="j==1"  class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    <div  *ngIf="j==1"  class="container-skeletons d-flex flex-wrap skeleton"
                         [@enterAnimation]>
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -548,7 +547,7 @@
                         </ng-container>
                     </div>
 
-                    <div *ngIf="j==2" class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                    <div *ngIf="j==2" class="container-skeletons d-flex flex-wrap skeleton"
                         [@enterAnimation]>
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -579,7 +578,7 @@
                     <a [routerLink]=get_add_artwork_link()>
                         <button>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                            <span>Publier votre première œuvre !</span>
+                            <span>Publier votre première œuvre</span>
                         </button>
                     </a>
                 </div>
@@ -1014,7 +1013,7 @@
                                 <div class="category">
                                     <div class="category-title shiny"></div>
                                 </div>
-                                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                                <div class="container-skeletons d-flex flex-wrap skeleton"
                                     [@enterAnimation]>
                                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -1033,7 +1032,7 @@
                                 <div class="category">
                                     <div class="category-title shiny"></div>
                                 </div>
-                                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                                <div class="container-skeletons d-flex flex-wrap skeleton"
                                     [@enterAnimation]>
                                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -1049,7 +1048,7 @@
 
                         <ng-container *ngIf=" opened_category==1 && !list_visibility_albums_drawings && opened_album>0">
                             <div *ngFor="let item of categories_array.slice(0,1); index as i1">
-                                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                                <div class="container-skeletons d-flex flex-wrap skeleton"
                                     [@enterAnimation]>
                                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -1068,7 +1067,7 @@
                                 <div class="category">
                                     <div class="category-title shiny"></div>
                                 </div>
-                                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                                <div class="container-skeletons d-flex flex-wrap skeleton"
                                     [@enterAnimation]>
                                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                                         <app-thumbnail-skeleton class="thumbnail-component-container"
