@@ -96,7 +96,6 @@ $default-color: rgb(218,220,225);
                 height:14px !important;
                 margin: auto 10px auto 0px !important;
                 background-color:$default-color;
-                -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
                 mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
               }
             
@@ -105,7 +104,6 @@ $default-color: rgb(218,220,225);
                 height:14px !important;
                 margin: auto 10px auto 0px !important;
                 background-color: $default-color;
-                -webkit-mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
                 mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
               }
 
@@ -147,6 +145,9 @@ $default-color: rgb(218,220,225);
         }
     }
 
+    
+    //scrollbar-width:thin;
+    //scrollbar-color:#0f1e39 #001640cc;
     &::-webkit-scrollbar-track
     {
         background-color: #001640cc;
