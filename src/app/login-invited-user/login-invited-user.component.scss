@@ -329,11 +329,11 @@
       display: flex;
       width: 100%;
       .left-container {
-        width: -webkit-fill-available;
+        width: stretch;
         margin-right: 10px;
       }
       .right-container {
-        width: -webkit-fill-available;
+        width: stretch;
       }
     }
 
@@ -376,6 +376,9 @@
           font-size: 16px !important;
           color: rgb(136, 136, 136) !important;
         }
+          
+        scrollbar-width:thin;
+        scrollbar-color: #b7e1fb white;
         &::-webkit-scrollbar {
             width: 6px;
             height: 6px;

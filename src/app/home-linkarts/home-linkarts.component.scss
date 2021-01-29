@@ -26,11 +26,9 @@
   }
   @keyframes flip {
     from {
-      -webkit-transform: rotateY(0deg);
       transform: rotateY(0deg);
     }
     to {
-      -webkit-transform: rotateY(360deg);
       transform: rotateY(360deg);
     }
   }
@@ -41,25 +39,21 @@
   }
   .icon-recommendation {
     background-color: #53627d;
-    -webkit-mask: url("../../assets/img/svg/star.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/star.svg") no-repeat 50% 50%;
   }
 
   .icon-trendings {
     background-color: #53627d;
-    -webkit-mask: url("../../assets/img/svg/trendings.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/trendings.svg") no-repeat 50% 50%;
   }
 
   .icon-newsfeed {
     background-color: #53627d;
-    -webkit-mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
   }
 
   .icon-love {
     background-color: #53627d;
-    -webkit-mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
   }
 
@@ -415,27 +409,6 @@
     position: absolute;
     user-select: none;
     overflow: hidden;
-    
-    /*&:after, &:before {
-      position: absolute;
-      content: " ";
-      margin-left: -8px;
-      width: 0;
-      height: 0;
-      border-style: solid;
-    }
-    &:after {
-      top: -21px;
-      left: 40%;
-      border-color: transparent transparent #fff transparent;
-      border-width: 11px;
-    }
-    &:before {
-      top: -22px;
-      left: 40%;
-      border-color: transparent transparent #b1b1b1 transparent;
-      border-width: 11px;
-    }*/
 
     width: 230px !important;
     top: 26px;
@@ -480,25 +453,21 @@
           }
           .icon-recommendation {
             background-color: #53627d;
-            -webkit-mask: url("../../assets/img/svg/star.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/star.svg") no-repeat 50% 50%;
           }
         
           .icon-trendings {
             background-color: #53627d;
-            -webkit-mask: url("../../assets/img/svg/trendings.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/trendings.svg") no-repeat 50% 50%;
           }
         
           .icon-newsfeed {
             background-color: #53627d;
-            -webkit-mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
           }
         
           .icon-love {
             background-color: #53627d;
-            -webkit-mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
           }
         }

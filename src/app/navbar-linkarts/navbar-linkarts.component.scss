@@ -332,6 +332,10 @@
       0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     border-radius: 0px 5px 10px 10px;
     font-size: 14px;
+
+    .display-block {
+      display:block;
+    }
   }
   .first-block-container {
     display: flex;
@@ -564,7 +568,7 @@
     flex-direction: column;
     justify-content: space-between;
     text-align: left;
-    width: -webkit-fill-available;
+    width: stretch;
     max-width: calc( 100% - 52px );
 
 
@@ -800,11 +804,6 @@
     width: calc(100% - 30px);
     border: none;
     border-radius: 30px;
-    -webkit-transition: width 500ms;
-    transition: width 500ms;
-    -webkit-transition: border 0.2s ease-in;
-    -moz-transition: border 0.2s ease-in;
-    -o-transition: border 0.2s ease-in;
     transition: border 0.2s ease-in;
   }
 
@@ -934,7 +933,6 @@
   
   .icon-basket {
     background-color: #203864;
-    -webkit-mask: url("../../assets/img/svg/basket.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/basket.svg") no-repeat 50% 50%;
   }
 
@@ -943,7 +941,6 @@
     height:14px !important;
     margin:auto 10px auto 0px;
     background-color: #203864;
-    -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
   }
 
@@ -952,7 +949,6 @@
     height:15px !important;
     margin:auto 5px auto auto;
     background-color: #203864;
-    -webkit-mask: url("../../assets/img/svg/smile.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/smile.svg") no-repeat 50% 50%;
   }
 
@@ -962,18 +958,15 @@
     height:14px !important;
     margin:auto 10px auto 0px;
     background-color: #203864;
-    -webkit-mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
   }
 
   .icon-messenger {
     background-color: rgb(32, 56, 100);
-    -webkit-mask: url("../../assets/img/svg/send1.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/send1.svg") no-repeat 50% 50%;
     transition: mask-size 200ms;
     &:hover {
       background-color: rgb(32, 56, 100);
-      -webkit-mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
       mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
     }
     &:active {
@@ -983,12 +976,10 @@
 
   .icon-bell {
     background-color: rgb(32, 56, 100);
-    -webkit-mask: url("../../assets/img/svg/bell3.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/bell3.svg") no-repeat 50% 50%;
     transition: transform 200ms;
     &:hover {
       background-color: rgb(32, 56, 100);
-      -webkit-mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
       mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
     }
     &:active {
@@ -1008,14 +999,12 @@
   .icon-messenger-invisible {
     visibility: hidden;
     background-color: rgb(32, 56, 100);
-    -webkit-mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/send2.svg") no-repeat 50% 50%;
   }
 
   .icon-bell-invisible {
     visibility: hidden;
     background-color: rgb(32, 56, 100);
-    -webkit-mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/bell4.svg") no-repeat 50% 50%;
   }
   
@@ -1023,7 +1012,6 @@
 
   .icon-edit {
     background-color: #53627d;
-    -webkit-mask: url("../../assets/img/svg/edit1.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/edit1.svg") no-repeat 50% 50%;
   }
 
@@ -1033,24 +1021,20 @@
     height:14px !important;
     margin:auto 5px auto auto;
     background-color: #203864;
-    -webkit-mask: url("../../assets/img/svg/shopping.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/shopping.svg") no-repeat 50% 50%;
   }
 
   .icon-logo {
-    -webkit-mask: url("../../assets/img/svg/logo_la.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/logo_la.svg") no-repeat 50% 50%;
   }
 
   .icon-notification {
     background-color: rgb(0, 0, 0);
-    -webkit-mask: url("../../assets/img/svg/notification.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/notification.svg") no-repeat 50% 50%;
   }
 
   .icon-profile {
     background-color: rgb(0, 0, 0);
-    -webkit-mask: url("../../assets/img/svg/profile3.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/profile3.svg") no-repeat 50% 50%;
   }
 
@@ -1500,11 +1484,12 @@
     display: none !important;
   }
 
+
+
   ::-webkit-scrollbar {
     width: 5px;
     height: 5px;
   }
-
   ::-webkit-scrollbar-track {
     border-radius: 15px;
   }
@@ -1565,15 +1550,21 @@
     max-height: 245px;
     height: 100%;
     background: #f9f9f9;
-    overflow-y: scroll;
+    overflow-y: auto;
+
+    scrollbar-width:thin;
+    scrollbar-color:#dadada;
   }
   .notifications-container.notifications-model {
     position: relative;
     min-height: 110px;
     max-height: 265px;
     background: #f9f9f9;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-radius: 10px;
+    
+    scrollbar-width:thin;
+    scrollbar-color:#dadada;
   }
 
   .not-seen {
@@ -2222,7 +2213,6 @@
             height: 14px !important;
             margin: auto 13px auto 0px;
             background-color: #203864;
-            -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
           }
   
@@ -2231,7 +2221,6 @@
             height: 14px !important;
             margin: auto 10px auto 0px;
             background-color: #203864;
-            -webkit-mask: url("../../assets/img/svg/smile.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/smile.svg") no-repeat 50% 50%;
           }
 
@@ -2240,7 +2229,6 @@
             height: 14px !important;
             margin: auto 13px auto 0px;
             background-color: #203864;
-            -webkit-mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
             mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
           }
         }
@@ -2275,7 +2263,6 @@
         height:14px !important;
         margin: auto 10px auto 0px;
         background-color: #203864;
-        -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
       }
       
@@ -2284,7 +2271,6 @@
         height:14px !important;
         margin: auto 10px auto 0px;
         background-color: #203864;
-        -webkit-mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
       }
 
