@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import{ HomeLinkartsComponent } from "./home-linkarts/home-linkarts.component";
-import{ LoginComponent } from "./login/login.component";
-import{ SignupComponent } from "./signup/signup.component";
-import{ ArtworkComponent } from "./artwork/artwork.component";
-import{ ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
+
 import{ HomeLinkcollabComponent } from "./home-linkcollab/home-linkcollab.component";
 import{ AccountComponent } from "./account/account.component";
 
@@ -12,6 +9,7 @@ import{ AccountComponent } from "./account/account.component";
 import { AuthGuard } from './helpers/auth.guard';
 import { TempAuthGuard } from './helpers/temp_auth.guard';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
+import { ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
 import { ArtworkWritingComponent } from './artwork-writing/artwork-writing.component';
 import { ArtworkDrawingComponent } from './artwork-drawing/artwork-drawing.component';
@@ -20,7 +18,6 @@ import { ChatFriendsListComponent } from './chat-friends-list/chat-friends-list.
 import { AdPageComponent } from './ad-page/ad-page.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginInvitedUserComponent } from './login-invited-user/login-invited-user.component';
-import { PopupReportComponent } from './popup-report/popup-report.component';
 
 const routes: Routes = [
 
@@ -76,13 +73,8 @@ const routes: Routes = [
   {path:'chat/:pseudo/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 2}},
   {path:'chat/group/:name/:id', component:ChatFriendsListComponent, canActivate: [AuthGuard,TempAuthGuard],  data: {section: 3}},
 
-
-  
-  //signalement
-  {path:'report', component:PopupReportComponent, canActivate: [AuthGuard,TempAuthGuard]},
   
   //Contenu
-  {path:'artwork', component:ArtworkComponent,canActivate: [TempAuthGuard]},
   {path:'artwork-writing/:title/:writing_id', component:ArtworkWritingComponent,canActivate: [TempAuthGuard]},
   {path:'artwork-comic/:format/:title/:bd_id', component:ArtworkComicComponent,  data: {section: 1},canActivate: [TempAuthGuard]},
   {path:'artwork-comic/:format/:title/:bd_id/:chapter_number', component:ArtworkComicComponent,  data: {section: 2},canActivate: [TempAuthGuard]},
@@ -93,8 +85,8 @@ const routes: Routes = [
   {path:'linkcollab', component:HomeLinkcollabComponent,canActivate: [TempAuthGuard]},
 
   //Authentification
-  {path:'login', component:LoginComponent,canActivate: [TempAuthGuard]},
-  {path:'signup', component:SignupComponent,canActivate: [TempAuthGuard]},
+  {path:'login', component:HomeLinkartsComponent,  data: {category: 5},canActivate: [TempAuthGuard]},
+  {path:'signup', component:HomeLinkartsComponent,  data: {category: 6},canActivate: [TempAuthGuard]},
   {path:'login_invited_user', component:LoginInvitedUserComponent},
 
   //page not found
