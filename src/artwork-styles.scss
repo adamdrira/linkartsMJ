@@ -4,10 +4,13 @@ $default-color: #f9f9f9;
     //440px
     user-select: none;
     position: relative;
-    background: #040b19;
     height: calc(100vh - 54px);
-
     display: flex;
+
+    background: #040b19;
+    &.white-background {
+        background: white;
+    }
 
     a {
         color: $default-color;
@@ -24,18 +27,22 @@ $default-color: #f9f9f9;
 
         padding: 0px 0px;
 
-        overflow: auto;
+        overflow-x:hidden;
+        overflow-y:scroll;
+
+        scrollbar-width:thin;
+        scrollbar-color: #152646 #091731;
+
         &::-webkit-scrollbar-track {
-           
-            background-color: #081c40;
+            background-color: #091731;
         }
         &::-webkit-scrollbar {
-            width: 3px;
+            width: 5px;
             height: 0px;
             background-color: #081c40;
         }
         &::-webkit-scrollbar-thumb {
-            background-image: linear-gradient(0.02turn, rgb(8 28 64), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+            background: #152646;
         }
 
         .top-container {
@@ -54,7 +61,7 @@ $default-color: #f9f9f9;
                 justify-content: center;
                 box-shadow: 0px -1px 31px rgba(0, 0, 0, 0.5);
                 //background: #122951;
-                background: #021236;
+                background: #021133;
                 padding: 5px 15px;
 
                 min-height: 55px;
@@ -91,7 +98,14 @@ $default-color: #f9f9f9;
                         }
         
                         .title-option-artwork{
-                            max-width: 75px !important;
+                            max-width: 200px !important;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: normal;
+                            word-break: break-word;
+                            -webkit-line-clamp: 1;
                         }
 
                         span {
@@ -205,7 +219,6 @@ $default-color: #f9f9f9;
                                     > i {
                                         background-image: none !important;
                                         background-color: rgb(218, 227, 243);
-                                        -webkit-mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
                                         mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
                                     }
                                 }
@@ -338,6 +351,11 @@ $default-color: #f9f9f9;
                 position: relative;
                 padding: 20px 90px 20px 90px;
                 margin: auto 0px auto auto;
+                                
+                &.swiper-artwork-writing {
+                    padding: 20px 10px 20px 10px;
+                }
+
                 width: 100%;
                 //transition:width 200ms;
                 height: 100%;
@@ -380,21 +398,6 @@ $default-color: #f9f9f9;
                             overflow-y: scroll !important;
                         }
                     }
-
-                    .swiper-slide-writing{
-                        overflow-y: scroll;
-                        &::-webkit-scrollbar-track {
-                            background-color: #c4c5c54f;
-                        }
-                        &::-webkit-scrollbar {
-                            width: 10px;
-                            background-color: #ffffff;
-                        }
-                        &::-webkit-scrollbar-thumb {
-                            background-color: #021236;
-                            border-radius: 10px;
-                        }
-                    }
                 }
 
                 .swiper-button-prev,
@@ -426,7 +429,7 @@ $default-color: #f9f9f9;
                 }
 
                 @media (max-width: 800px), (min-width: 1000px) and (max-width: 1200px) {
-                    padding: 20px 10px 20px 10px;
+                    padding: 20px 10px 20px 10px !important;
                     .swiper-button-prev {
                         left: 0px;
                         width: 50%;
@@ -473,7 +476,10 @@ $default-color: #f9f9f9;
         /*background: #122951;*/
         background: #040b19;
         z-index: 10;
-        overflow: overlay;
+        
+        overflow-x:hidden;
+        overflow-y:scroll;
+        
         position: relative;
 
         .artwork-title{
@@ -483,15 +489,31 @@ $default-color: #f9f9f9;
                     color: white;
                     font-size: 14px;
                     font-weight: bold;
-                    display: flex;
                     justify-content: center;
+
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: normal;
+                    word-break: break-word;
+                    -webkit-line-clamp: 2;
+                    text-align: center;
                 }
                 .second-line{
                     margin-top: 10px;
                     color: #f9f9f9;
                     font-size: 12px;
-                    display: flex;
                     justify-content: center;
+
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: normal;
+                    word-break: break-word;
+                    -webkit-line-clamp: 2;
+                    text-align: center;
                 }
             }
         }
@@ -514,15 +536,21 @@ $default-color: #f9f9f9;
             padding: 14px 18px 6px 18px;
         }
 
+
+        scrollbar-color: #1a305e #0d1b36;
+        scrollbar-width: thin;
+        
+        
         &::-webkit-scrollbar-track {
-            background-color: #001640cc;
+            background-color:#0d1b36;
         }
         &::-webkit-scrollbar {
             width: 5px;
-            background-color: #ffffff;
+            height: 0px;
+            background-color: #000000;
         }
         &::-webkit-scrollbar-thumb {
-            background-color: #0f1e39;
+            background-color: #1a305e;
         }
 
         .options-buttons-artwork{
@@ -826,7 +854,7 @@ $default-color: #f9f9f9;
                 //background-color: #040b19 !important;
                 button{
                     
-                    background: #021236 !important;
+                    background: #021133 !important;
                 }
                 mat-icon {
                     color: #f9f9f9 !important;
@@ -836,7 +864,7 @@ $default-color: #f9f9f9;
                 }
             }
             .subscribing-container {
-                margin: auto 18px auto auto;
+                margin: auto 3px auto auto;
                 button {
                     padding: 5px 15px;
                     display: flex;
@@ -987,8 +1015,7 @@ $default-color: #f9f9f9;
                 padding: 0px 10px 0px 10px;
                 color: $default-color;
                 border-radius: 0px 0px 10px 10px;
-                background:#021236;
-                //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+                background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                 span {
                     font-size: 13px;
@@ -1017,15 +1044,21 @@ $default-color: #f9f9f9;
                     outline: none;
                     border: none;
                     cursor: pointer;
-                    margin: 0px 25px 0px 25px;
                     border-radius: 50px;
                     display: flex;
-                    padding: 7px 15px;
+                    padding: 10px 15px;
                     text-align: center;
                     justify-content: center;
                     align-self: center;
                     box-shadow: unset;
                     background: unset;
+
+                    &:first-of-type {
+                        margin-right:5px;
+                    }
+                    &:last-of-type {
+                        margin-left:5px;
+                    }
 
                     mat-icon {
                         color: $default-color;
@@ -1040,14 +1073,14 @@ $default-color: #f9f9f9;
                     span {
                         color: $default-color;
                         font-weight: 600;
-                        font-size: 13px;
+                        font-size: 12px;
                         margin: auto auto auto 0px;
                         opacity: 0.7;
                     }
 
                     &.opened {
                         /*background: rgb(32, 56, 100);*/
-                        background: #021236 !important;
+                        background: #021133 !important;
                         //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                         mat-icon {
@@ -1057,7 +1090,7 @@ $default-color: #f9f9f9;
                             opacity: 1;
                         }
                     }
-                    transition: transform 100ms;
+                    transition: transform 100ms, background-color 200ms;
                     &:active {
                         transform: scale(0.98);
                     }
@@ -1387,7 +1420,6 @@ $default-color: #f9f9f9;
         transparent 66%
     ) !important;
     background-size: 300% 100% !important;
-    -webkit-animation: shine 2s infinite !important;
     animation: shine 2s infinite !important;
 }
 @keyframes shine {
@@ -1411,8 +1443,8 @@ $default-color: #f9f9f9;
     /*background: #203864;*/
     background: rgba(2, 18, 54, 0.9);
     //background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-    border-radius: 40px 40px 40px 40px;
-    padding: 0px 0px 40px 0px;
+    border-radius: 20px;
+    padding: 0px 0px 0px 0px;
 
     .thumbnails-name {
         display: flex;
@@ -1439,7 +1471,7 @@ $default-color: #f9f9f9;
             cursor: pointer;
             height: unset;
             width: unset;
-            padding: 3px;
+            padding: 2px;
             font-size: 17px;
             margin: auto 5px auto 0px;
             background: #2d446f;
@@ -1458,9 +1490,12 @@ $default-color: #f9f9f9;
         border-radius: 0px 0px 8px 8px;
 
         overflow: auto;
+
+        scrollbar-width:thin;
+        scrollbar-color: #152646 #091731;
         &::-webkit-scrollbar-track {
             /*background-color: #001640cc;*/
-            background:rgb(5 22 58);
+            background: #091731;
         }
         &::-webkit-scrollbar {
             width: 5px;
@@ -1468,7 +1503,7 @@ $default-color: #f9f9f9;
         }
         &::-webkit-scrollbar-thumb {
             /*background-color: #0f1e39;*/
-            background-color: #040b19;
+            background-color: #152646;
             border-radius: 20px;
         }
 
