@@ -13,7 +13,6 @@ import { Emphasize_service } from '../services/emphasize.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormWritingComponent } from '../popup-form-writing/popup-form-writing.component';
-import { PopupEditCoverWritingComponent } from '../popup-edit-cover-writing/popup-edit-cover-writing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
@@ -106,11 +105,9 @@ export class ArtworkWritingComponent implements OnInit {
 
 
   @ViewChild('leftContainer') leftContainer:ElementRef;
-  @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
-  @ViewChild('swiperContainer') swiperContainerRef:ElementRef;
-  @ViewChild('slide') slide:ElementRef;
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;
+  @ViewChild('slide') slide:ElementRef;
 
 
   thumbnail_picture_retrieved=false;
@@ -629,28 +626,24 @@ export class ArtworkWritingComponent implements OnInit {
 
   show_icon=false;
   page_height=800;
+  page_width;
+
   ngAfterViewInit(){
     let THIS=this;
     $(window).ready(function () {
       THIS.show_icon=true;
     });
     this.open_category(0);
-    $(".top-container .pages-controller-container input").val(1 )
-
-    /*let width=this.slide.nativeElement.offsetWidth-10;
-    this.page_height=Math.trunc(width*1.4135);
-    console.log(width)
-    console.log(this.page_height)
-    this.rd.setStyle(  this.slide.nativeElement, "max-height", Math.trunc(width*1.4135) +"px" );*/
- 
-    fromEvent(this.slide.nativeElement,'scroll').subscribe((e: Event) =>{
+    $(".top-container .pages-controller-container input").val(1)
+    
+    document.getElementsByClassName('swiper-slide-writing')[0].addEventListener('scroll', e => {
+      this.page_height = document.getElementsByClassName('page')[0].clientHeight;
+      
       let page = Math.trunc(e.target['scrollTop']/(this.page_height+10) +1)
       this.page_number=page;
-      $(".top-container .pages-controller-container input").val(page )
+      $(".top-container .pages-controller-container input").val(page)
     });
   }
-  
-
 
   /******************************************************* */
   /******************************************************* */
@@ -712,14 +705,22 @@ export class ArtworkWritingComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.openOption(-1);
+
     if(this.slide){
+
+      this.first_page_rendered = false;
+      this.zoom = 1;
+
       let width=this.slide.nativeElement.offsetWidth-10;
       this.page_height=Math.trunc(width*1.4135);
       this.rd.setStyle(  this.slide.nativeElement, "max-height", Math.trunc(width*1.4135)+"px" );
     }
-   
   }
 
+  onPageChange(page: number) {
+    console.log('onPageChange');
+    console.log(page);
+  }
 
   see_description() {
     
@@ -766,97 +767,22 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
-  initialize_swiper() {
-
-    var THIS = this;
-
-    if( this.swiper ) {
-      this.swiper.update();
-      return;
-    }
-
-    this.swiper = new Swiper( this.swiperContainerRef.nativeElement, {
-      speed: 500,
-      spaceBetween: 100,
-      
-      simulateTouch: true,
-
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      keyboard: {
-        enabled: true,
-      },
-      observer: true,
-      on: {
-        observerUpdate: function () {
-          THIS.refresh_swiper_pagination();
-          window.dispatchEvent(new Event("resize"));
-        },
-        slideChange: function () {
-          THIS.refresh_swiper_pagination();
-          THIS.swiperContainerRef.nativeElement.scrollIntoView({behavior: 'smooth'});
-        }
-      },
-    });
-    
-    this.refresh_swiper_pagination();
-
-    $(".top-container .pages-controller-container input").width()
-    $(".top-container .pages-controller-container input").keydown(function (e){
-      if(e.keyCode == 13){
-        console.log( $(".top-container .pages-controller-container input").val())
-        
-
-      }
-    });
-  }
-
 
 
   @ViewChild('input') input:ElementRef;
   change_page(event){
-    console.log(this.input.nativeElement.value)
-    console.log(event)
+    
     if(event.code.includes("Enter")){
       let page=Number(this.input.nativeElement.value)
       console.log(page)
       if(page && page>=1 && page<=this.total_pages){
-        console.log("ok")
-        console.log(this.slide.nativeElement.scrollTop) 
-        console.log(this.page_height)
-        console.log(this.page_height*page)
-        this.slide.nativeElement.scrollTop=this.page_height*page-this.page_height + 10*page +1;
-      }
-      
-    }
-
-    let offset=this.slide.nativeElement.offsetTop;
-    let height =this.slide.nativeElement.getBoundingClientRect().height;
-    
-  }
-
-
-  refresh_swiper_pagination() {
-    if( this.swiper ) {
-      if( this.swiper.slides ) {
-        
-        
-        $(".top-container .pages-controller-container input").val( this.swiper.activeIndex + 1 );
-        //$(".top-container .pages-controller-container .total-pages span").html( "/ " + this.swiper.slides.length );
+        this.page_height = document.getElementsByClassName('page')[0].clientHeight;
+        document.getElementsByClassName('swiper-slide-writing')[0].scrollTop=this.page_height*page-this.page_height + 10*page +1;
       }
     }
   }
 
-  
+  isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
   open_category(i : number) {
     this.category_index=i;
@@ -876,68 +802,34 @@ export class ArtworkWritingComponent implements OnInit {
     this.left_container_category_index=i;
   }
 
-  
-  setSlide(i : any) {
-    if( isNaN(i) ) {
-      this.refresh_swiper_pagination();
-      return;
-    }
-    else if ( (Number(i)<1) || (Number(i)> this.swiper.slides.length) ) {
-      this.refresh_swiper_pagination();
-      return;
-    }
-    else {
-      this.swiper.slideTo( Number(i) - 1 );
-    }
-  }
-
-
-
-  click_thumbnails() {
-
-    if( !this.thumbnails ) {
-      (async () => { 
-        const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% - 190px )");
-        return Promise.resolve('Lyon');
-      };
-        await getCurrentCity();
-        this.swiper.update();
-      })();
-      this.thumbnails=true;
-    }
-    else {
-      (async () => { 
-        const getCurrentCity = () => {
-        this.rd.setStyle( this.swiperContainerRef.nativeElement, "width", "calc( 100% )");
-        return Promise.resolve('Lyon');
-      };
-        await getCurrentCity();
-        this.swiper.update();
-
-      })();
-      this.thumbnails=false;
-    }
-  }
-
 
   onRightClick() {
     return false;
   }
 
+
+  zoom_clicked=false;
   zoom_button() {
-    if( this.zoom == 1.3 ) {
+    if( this.zoom == 1.2 ) {
+
       this.zoom = 1;
+      this.zoom_clicked=true;
+      //window.dispatchEvent(new Event('resize'));
     }
     else {
-      this.zoom = 1.3;
+
+      this.zoom = 1.2;
+      this.zoom_clicked=true;
+      //window.dispatchEvent(new Event('resize'));
     }
   }
 
 
 
   fullscreen_button() {
- 
+    
+    window.dispatchEvent(new Event('resize'));
+
     const elem = this.leftContainer.nativeElement;
     if( !this.fullscreen_mode ) {
       if (elem.requestFullscreen) {
@@ -1354,18 +1246,40 @@ export class ArtworkWritingComponent implements OnInit {
 }
 
 writing_retrieved=false;
+first_page_rendered=false;
 afterLoadComplete(pdf: PDFDocumentProxy) {
   console.log(pdf)
   this.total_pages = pdf.numPages;
-  this.writing_retrieved=true;
   this.cd.detectChanges();
-  
+}
+
+pageRendered(e:any) {
+  if( !this.first_page_rendered ) {
+    if( e.source.canvas.width > e.source.canvas.height ) {
+      this.page_width = 1080;
+      this.rd.setStyle(  this.slide.nativeElement, "max-width", this.page_width+"px" );
+      this.cd.detectChanges();
+      this.writing_retrieved=true;
+    }
+    else {
+      this.page_width = 760;
+      this.rd.setStyle(  this.slide.nativeElement, "max-width", this.page_width+"px" );
+      this.cd.detectChanges();
+      this.writing_retrieved=true;
+    }
+    this.first_page_rendered = true;
+  }
+
+  if( this.zoom_clicked ) {
+    this.cd.detectChanges();
+    this.zoom_clicked = false;
+    this.page_width = e.source.canvas.width;
+    this.rd.setStyle(  this.slide.nativeElement, "max-width", this.page_width+"px" );
+  }
 }
 
 pdf_is_loaded(){
-  console.log("laod compelte")
-  
- 
+  console.log("laod compelte");
 }
 
 

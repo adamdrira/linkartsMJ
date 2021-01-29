@@ -1,8 +1,8 @@
-<div class="artwork" *ngIf="page_not_found">
+<div class="artwork white-background" *ngIf="page_not_found">
     <app-page-not-found></app-page-not-found>
 </div>
 
-<div class="artwork" *ngIf="!page_not_found">
+<div class="artwork writing" *ngIf="!page_not_found">
     
 
     <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -44,24 +44,24 @@
                     [matTooltipShowDelay]="200">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">apps</mat-icon>
                     </div>-->
-                    <div class="button" *ngIf="!fullscreen_mode" [@enterAnimation] (click)="fullscreen_button();"
+                    <div class="button" *ngIf="!fullscreen_mode && writing_retrieved" [@enterAnimation] (click)="fullscreen_button();"
                     matTooltip="Mode plein écran"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">fullscreen</mat-icon>
                     </div>
-                    <div class="button" *ngIf="fullscreen_mode" [@enterAnimation] (click)="fullscreen_button();"
+                    <div class="button" *ngIf="fullscreen_mode && writing_retrieved" [@enterAnimation] (click)="fullscreen_button();"
                     matTooltip="Quitter le mode plein écran"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">fullscreen_exit</mat-icon>
                     </div>
-                    <div class="button" *ngIf="zoom!=1" [@enterAnimation] (click)="zoom_button();">
+                    <div class="button" *ngIf="zoom!=1 && writing_retrieved" [@enterAnimation] (click)="zoom_button();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">zoom_out</mat-icon>
                     </div>
-                    <div class="button" *ngIf="zoom==1" [@enterAnimation] (click)="zoom_button();">
+                    <div class="button" *ngIf="zoom==1 && writing_retrieved" [@enterAnimation] (click)="zoom_button();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">zoom_in</mat-icon>
                     </div>
     
@@ -85,82 +85,50 @@
             </div>
         </div>
 
-
-         <div class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved || !mode_visiteur_added}">
-
-            <!--<div class="thumbnails-container" *ngIf="thumbnails==true">
-                <div class="thumbnails-name">
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="thumbnails-icon">apps</mat-icon>
-                    <span>Vignettes</span>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="close-icon" (click)="click_thumbnails();">close</mat-icon>
-                </div>
-
-               <div class="thumbnails-contents" *ngIf="swiper">
-                    <ng-container *ngFor="let element of arrayOne(total_pages); let i = index">
-                        <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
-                            [ngClass]="{'opened': i==swiper.activeIndex}">
-                            <pdf-viewer class="pdf-document" [src]="pdfSrc" [render-text]="true" [show-all]="false" [page]="(i+1)"
-                                [original-size]="false" style="display: block;" (contextmenu)="onRightClick()"></pdf-viewer>
-                        </div>
-                        <span>Page {{i+1}}</span>
-                    </ng-container>
-                </div>
-            </div>-->
-
-
+        <div class="content-container swiper-artwork-writing" [ngClass]="{'really-invisible': !item_retrieved || !mode_visiteur_added}">
           
             <div #swiperContainer class="swiper-container swiper-artwork-writing">
-                    <div #swiperWrapper class="swiper-wrapper swiper-artwork-writing">
+                <div #swiperWrapper class="swiper-wrapper swiper-artwork-writing">
 
-                        <div class="loading-page">
-                            <mat-spinner diameter="50" *ngIf="!item_retrieved" ></mat-spinner>
-                        </div>
-
-                        <div #slide class="swiper-slide swiper-slide-writing" >
-                            <pdf-viewer 
-                            class="pdf-document" 
-                            [src]="pdfSrc" 
-                            [zoom]="zoom"
-                            [render-text]="true" 
-
-                            [autoresize]="true" 
-                            [show-all]="true"
-                            [original-size]='true' 
-
-                            [fit-to-page]='true' 
-                            [render-text]='false'
-                            (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
-                        </div>
-
-                        <!--<div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
-                            <div class="slide-container">
-                                  <div class="loading-page">
-                                                                <mat-spinner diameter="50"  *ngIf="!display_writing "></mat-spinner>
-                                                            </div>
-                                <pdf-viewer class="pdf-document" 
-                                [src]="pdfSrc" 
-                                [zoom]="zoom"
-                                [render-text]="true" 
-                            
-                                [autoresize]="true"
-                                [original-size]='true'
-                                [fit-to-page]='true'
-
-                                [show-all]="false"
-                                [page]="(i+1)"
-                                (after-load-complete)="afterLoadComplete($event, i)"
-                                (contextmenu)="onRightClick()"></pdf-viewer>
-                        
-                            </div>
-                        </div>-->
+                    <div class="loading-page">
+                        <mat-spinner diameter="50" *ngIf="!item_retrieved" ></mat-spinner>
                     </div>
-                    <!-- Add Scrollbar -->
-                    <div class="swiper-scrollbar"></div>
-                    <!-- Add Arrows -->
-                    <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-prev"></div>
-                    <div [ngClass]="{'invisible': !swiper || 1>=swiper.slides.length}" class="swiper-button-next"></div>
+
+                    <div #slide class="swiper-slide swiper-slide-writing" [ngClass]="{'invisible': !writing_retrieved }">
+                        <pdf-viewer
+                        class="pdf-document" 
+                        [src]="pdfSrc" 
+                        [zoom]="zoom"
+                        [render-text]="true" 
+
+                        [autoresize]="true" 
+                        [show-all]="true"
+                        [original-size]='true' 
+
+                        [fit-to-page]='true' 
+                        [render-text]='false'
+                        (page-rendered)="pageRendered($event)"
+                        (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
+                    </div>
+
+                    <!--<div #slide class="pdf-viewer-container" [ngClass]="{'isFirefox': isFirefox}">
+                        <pdf-viewer 
+                        class="pdf-document" 
+                        [src]="pdfSrc" 
+                        
+                        [render-text]="true" 
+
+                        [autoresize]="true" 
+                        [show-all]="true"
+                        [original-size]="true"
+
+                        [fit-to-page]="true"
+                        [render-text]="false"
+                        (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
+                    </div>-->
                 </div>
             </div>
+        </div>
 
 
 

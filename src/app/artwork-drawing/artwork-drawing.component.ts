@@ -18,7 +18,6 @@ import { Emphasize_service } from '../services/emphasize.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
-import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';

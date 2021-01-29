@@ -2,6 +2,7 @@
 @import "../../unsecured-ng-deeps.scss";
 
 
+
 .artwork {
     .artwork-container {
         height:unset !important;
@@ -16,6 +17,64 @@
 }
 
 
+/*&.isFirefox {
+    ::ng-deep {
+        .ng2-pdf-viewer-container {
+            .pdfViewer {
+                padding-right:8px;
+            }
+        }
+    }
+}*/
+
+.swiper-slide-writing {
+
+    width:fit-content;
+    overflow:auto;
+    margin: auto auto;
+    height: 100%;
+    overflow-y: scroll;
+
+    scrollbar-width:thin;
+    scrollbar-color: #a0b0ce #091731;
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background-color:#091731;
+        border-radius: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background-color:#a0b0ce;
+    }
+
+    ::ng-deep {
+        .ng2-pdf-viewer-container {
+            scrollbar-width:thin;
+            scrollbar-color: #a0b0ce #091731;
+            &::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            &::-webkit-scrollbar-track {
+                background-color:#091731;
+                border-radius: 15px;
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: 15px;
+                background-color:#a0b0ce;
+            }
+        }
+    }
+
+    
+}
+
+.swiper-wrapper {
+    justify-content: center;
+}
 .swiper-artwork-writing{
     min-height: 500px;
 }
