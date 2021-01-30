@@ -199,7 +199,7 @@
         <div class="account-title-container">
             <!--TITRE + BOUTON EDITER/CACHER-->
             <div class="title">
-                <span>Gestion des mails</span>
+                <span>Gestion des e-mails</span>
             </div>
         </div>
 
@@ -209,12 +209,12 @@
 
             <button class="validate-form-button" *ngIf="!registerForm_activated" (click)="edit_email();" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">alternate_email</mat-icon>
-                <span>Changer mon adresse mail</span>
+                <span>Changer mon adresse e-mail</span>
             </button>
 
             <div class="form-item" *ngIf="registerForm_activated" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Adresse mail</mat-label>
+                    <mat-label>Adresse e-mail</mat-label>
                     <input matInput formControlName="email" maxLength="100" type="search" autocomplete="off">
                     <mat-error *ngIf="registerForm.controls['email'].invalid">Veuillez faire une saisie valide
                     </mat-error>
@@ -239,16 +239,16 @@
 
             <button class="validate-form-button" *ngIf="!email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
-                <span>Autoriser l'envoi de mails</span>
+                <span>Autoriser l'envoi de e-mails</span>
             </button>
             <button class="validate-form-button" *ngIf="email_agreement" (click)="change_mailing_agreement()" [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
-                <span>Ne plus autoriser l'envoi de mails</span>
+                <span>Ne plus autoriser l'envoi de e-mails</span>
             </button>
             <div class="text-lines"  [@enterAnimation]>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                 <span>L'autorisation ou le refut de recevoir des emails ne concerne que les points suivants :  </span>
-                <span> &nbsp;  - réception des emails pour promouvoir un partenaire ou un produit commercial </span>
+                <span> &nbsp;  - réception des e-mails pour promouvoir un partenaire ou un produit commercial </span>
                
             </div>
         </div>
@@ -273,12 +273,13 @@
                    
                 </div>
     
-                <ng-container *ngIf="!user_is_in_a_group" [@enterAnimation]>
+                <ng-container [@enterAnimation]>
                     <button class="validate-form-button" 
                     (click)="create_a_group()"
                     [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                        <span>Créer un groupe</span>
+                        <span *ngIf="!user_is_in_a_group"  >Créer un groupe</span>
+                        <span *ngIf="user_is_in_a_group"  >Créer un nouveau groupe</span>
                     </button>
                 </ng-container>
                
@@ -417,7 +418,7 @@
                                 </button>
                               
                                 <button class="validate-form-button" 
-                                *ngIf="group_in_edition[list_of_groups_ids[i]]"
+                                *ngIf="(group_in_edition[list_of_groups_ids[i]] && list_of_groups_admins_ids[i]==id_user) || (list_of_groups_admins_ids[i]!=id_user && list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated')"
                                 (click)="validate_all(list_of_groups_ids[i])"
                                 [@enterAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
@@ -880,7 +881,7 @@
                 <button class="validate-form-button" *ngIf="display_all_gains" (click)="get_my_gains();" [@enterAnimation]>
                     
                     <mat-icon [ngClass]="{'invisible': !show_icon }">monetization_on</mat-icon>
-                    <span>Réclamer mes gains</span>
+                    <span>Me rémunérer</span>
                 </button>
                
 

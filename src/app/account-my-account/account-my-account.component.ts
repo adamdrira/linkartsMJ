@@ -1011,7 +1011,10 @@ export class AccountMyAccountComponent implements OnInit {
     })
   }
   create_a_group(){
-    const dialogRef = this.dialog.open(SignupComponent, {panelClass:"signupComponentClass"});
+    const dialogRef = this.dialog.open(SignupComponent, {
+      data: {for_group_creation:true},
+      panelClass:"signupComponentClass"
+    });
   }
 
 
@@ -2005,10 +2008,41 @@ export class AccountMyAccountComponent implements OnInit {
   }
   
 
+  loading_remuneration=false;
   get_my_gains(){
-    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir été créé il y a au moins 3 mois et avoir généré plus de 70.00 euros"},
-      panelClass: "popupConfirmationClass",
-    });
+    if(this.loading_remuneration){
+      return
+    }
+    this.loading_remuneration=true;
+    this.Profile_Edition_Service.get_my_remuneration(this.total_gains).subscribe(r=>{
+      console.log(r[0])
+      if(r[0].is_ok){
+
+      }
+      else{
+        if(r[0].reason=="money"){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir été créé il y a au moins 3 mois"},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        else if(r[0].reason=="time"){
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. Votre compte doit avoir généré plus de 70.00 euros"},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        else{
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Cette option n'est pas disponible pour le moment. "},
+            panelClass: "popupConfirmationClass",
+          });
+        }
+        
+        this.loading_remuneration=false;
+      }
+      
+    })
+    
   }
 }

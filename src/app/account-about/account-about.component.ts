@@ -2642,8 +2642,8 @@ export class AccountAboutComponent implements OnInit {
       siret: [this.siret, 
         Validators.compose([
           Validators.pattern(pattern("siret")),
-          Validators.minLength(14),
-          Validators.maxLength(14),
+          Validators.minLength(9),
+          Validators.maxLength(9),
         ]),
       ],
       primary_description: [this.primary_description, 

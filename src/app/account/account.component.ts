@@ -2502,7 +2502,7 @@ block_user(){
   if(this.user_id>1){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
-        text:"Etes-vous sûr de vouloir bloquer cet utilisateur ? Les concéquences sont les suivantes : - Il ne pourra plus avoir accès à votre page de profile; -vous ne pourrez plus avoir accès à sa page de profile; -les abonnements seront enlevés de part et d'autre; -Vous ne pourrez plus qu'échanger qu'en tant que spams; -Vous ne pourrez plus commenter ses oeuvres et ses annonces et vis versa; -ses oeuvres ne vous seront plus recommendées"},
+        text:"Etes-vous sûr de vouloir bloquer cet utilisateur ? "},
         panelClass: "popupConfirmationClass",
     });
   

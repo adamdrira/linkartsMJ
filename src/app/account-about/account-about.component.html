@@ -130,30 +130,22 @@
             
             <div class="warning_text" *ngIf="registerForm1_activated && (registerForm1.value.type_of_account.includes('professionnel'))  
                 && !type_of_account.includes('professionnel')" [@enterAnimation]>
-                <span>Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIRET, avant l'obtention de votre statut pro.</span>
+                <span>Une vérification ultérieure sera réalisée après avoir enregistré votre numéro SIREN, avant l'obtention de votre statut pro.</span>
             </div>
 
 
-          <!--<div class="form-item" *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('professionnel')  && !type_of_account.includes('professionnel') ">
-                    <mat-form-field>
-                    <input matInput formControlName="siret" maxLength="14" autocomplete="off">
-                    <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro de SIRET valide
-                    </mat-error>
-                    <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/14</div>
-                </mat-form-field>
-                
-            </div>-->
+          
             <ng-container *ngIf="registerForm1_activated && registerForm1.value.type_of_account.includes('professionnel')  && type_of_account.includes('Artiste') ">
                 <div class="form-title">
-                    <span>Numéro de SIRET</span>
+                    <span>Numéro SIREN</span>
                 </div>
                 <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
-                        <mat-label>Numéro de SIRET</mat-label>
-                        <input matInput formControlName="siret" maxLength="14" type="search" autocomplete="off">
-                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro de SIRET valide
+                        <mat-label>Numéro SIREN</mat-label>
+                        <input matInput formControlName="siret" maxLength="9" type="search" autocomplete="off">
+                        <mat-error *ngIf="registerForm1.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide
                         </mat-error>
-                        <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/14</div>
+                        <div class="length-indicator">{{registerForm1.controls['siret'].value?.length || 0}}/9</div>
                     </mat-form-field>
                 </div>
             </ng-container>
@@ -437,8 +429,8 @@
 
             <ng-container *ngIf="(visitor_mode && list_of_privacy[2]=='public' && !(email_about==undefined || email_about=='')) || !visitor_mode">
                 <div class="form-title">
-                    <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>Mail de contact</span>
-                    <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>Mail de contact (optionnel)</span>
+                    <span *ngIf="!registerForm2_activated" class="no-margin-right" [@enterAnimation]>E-mail de contact</span>
+                    <span *ngIf="registerForm2_activated" class="no-margin-right" [@enterAnimation]>E-mail de contact (optionnel)</span>
 
                     
                     <button class="aboutVisibilityButton" [matMenuTriggerFor]="accountAboutVisiblity5" *ngIf="!visitor_mode && list_of_privacy[2]=='public'"
@@ -481,7 +473,7 @@
                 </div>
                 <div class="form-item" *ngIf="registerForm2_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
-                        <mat-label>Mail de contact</mat-label>
+                        <mat-label>E-mail de contact</mat-label>
                         <input matInput formControlName="email_about" maxLength="100" autocomplete="off">
                         <mat-error *ngIf="registerForm2.controls['email_about'].invalid ">Veuillez faire une saisie valide
                         </mat-error>
