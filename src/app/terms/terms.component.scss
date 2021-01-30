@@ -1,0 +1,120 @@
+.fake-navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    background: #f7f8f9;
+    height: 66px;
+    box-shadow: 0px 3px 0px -2px rgba(150, 150, 150, 0.11), 0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 0px 14px 0px rgba(109, 109, 109, 0.2);
+    z-index: 1000;
+
+    a {
+        margin: auto auto;
+        img {
+            margin: auto auto;
+            width: 130px;
+        }
+    }
+
+}
+
+.terms-container {
+    display:flex;
+    margin-top: 66px;
+    padding:30px 20px 20px 20px;
+
+
+    .left-container {    
+        
+        padding: 20px 20px 26px 20px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 15px;
+        background: #f7f8f9;
+        height: fit-content;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        a {
+            color: #203864;
+            margin-top: 20px;
+            margin-bottom: 0px;
+            font-size: 16px;
+
+            &.opened {
+                text-shadow: -0.03ex 0 rgb(32,56,100), 0.03ex 0 rgb(32,56,100);
+            }
+            &:hover {
+                text-shadow: -0.03ex 0 rgb(32,56,100), 0.03ex 0 rgb(32,56,100);
+            }
+        }
+        span {
+            color: #203864;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 26px;
+            &:last-of-type {
+                font-size: 14px;
+                margin-bottom: 20px;
+                font-weight: 400;
+            }
+        }
+    }
+
+    .right-container {
+        width: 800px;
+        display: flex;
+        padding: 0px 45px;
+        margin-bottom: 80px;
+        flex-direction: column;
+        span {
+            color:rgb(32,56,100);
+            text-align: justify;
+            &.text-large {
+                font-size: 34px;
+                font-weight: 600;
+            }
+            &.text-medium {
+                font-size: 18px;
+                font-weight: 600;
+                margin-top: 30px;
+            }
+            &.text-small {
+                font-size: 14px;
+                font-weight: unset;
+                margin-top: 14px;
+
+                &.no-margin {
+                    margin-top:unset;
+                }
+                &.weight600 {
+                    margin-top: 20px;
+                    font-weight:600;
+                }
+                &.list-element {
+                    margin-left: 16px;
+                    margin-top: 8px;
+                }
+            }
+            &.text-very-small {
+                font-size: 12px;
+                font-weight: unset;
+                margin-top: 10px;
+
+                &.no-margin {
+                    margin-top:unset;
+                }
+            }
+        }
+    }
+
+
+    @media (max-width: 1000px) {
+        flex-direction:column;
+        .right-container {
+            margin-top: 15px;
+            width: unset;
+            display: flex;
+            padding: 0px 20px;
+        }
+    }
+}

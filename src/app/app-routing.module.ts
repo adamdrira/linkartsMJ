@@ -8,6 +8,7 @@ import{ AccountComponent } from "./account/account.component";
 
 import { AuthGuard } from './helpers/auth.guard';
 import { TempAuthGuard } from './helpers/temp_auth.guard';
+import { TermsComponent } from './terms/terms.component';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
 import { ArtworkComicComponent } from "./artwork-comic/artwork-comic.component";
 import { AddComicsChapterComponent } from './add-comics-chapter/add-comics-chapter.component';
@@ -22,7 +23,6 @@ import { LoginInvitedUserComponent } from './login-invited-user/login-invited-us
 const routes: Routes = [
 
   {path:'', component:HomeLinkartsComponent,  data: {category: 0},canActivate: [TempAuthGuard]},
-  
 
   //Page mon compte
   //Category : Oeuvres, posters, annonces, etc.
@@ -91,6 +91,8 @@ const routes: Routes = [
 
   //page not found
   {path:'page_not_found', component:PageNotFoundComponent},
+
+  {path:'services/:article_number', component:TermsComponent},
   //Autre
   {path:'**', redirectTo:''}
 ];

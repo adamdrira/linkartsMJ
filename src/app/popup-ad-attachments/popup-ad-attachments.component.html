@@ -3,23 +3,17 @@
 </button>
 
 
-<div class="component-container popupAdAttachments">
+<div class="content-container">
+    <pdf-viewer
+    class="pdf-document" 
+    [src]="pdfSrc"
+    [render-text]="true" 
 
-    <div #slide class="pdf-viewer-container" >
-        <pdf-viewer 
-        class="pdf-document" 
-        [src]="pdfSrc" 
-        [render-text]='false'
+    [autoresize]="true" 
+    [show-all]="true"
+    [original-size]='true' 
 
-        [autoresize]="true"
-        [original-size]='true'
-        [fit-to-page]='true'
-
-        [fit-to-page]='true' 
-        (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
-    </div>
-
+    [fit-to-page]='true' 
+    [render-text]='false'
+    (after-load-complete)="afterLoadComplete($event)"></pdf-viewer>
 </div>
-
-
-

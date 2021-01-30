@@ -27,7 +27,7 @@ export class PopupAdAttachmentsComponent implements OnInit {
     
   @Inject(MAT_DIALOG_DATA) public data: any) {  }
 
-
+  
   @ViewChildren('category') categories:QueryList<ElementRef>;
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
@@ -54,12 +54,10 @@ export class PopupAdAttachmentsComponent implements OnInit {
   /******************************************************* */
   /******************** AFTER VIEW INIT ****************** */
   /******************************************************* */
-  ngAfterViewInit() {
-
-    
+  ngAfterViewInit(){
   }
 
-  
+
   afterLoadComplete(pdf: PDFDocumentProxy) {
     console.log(pdf)
     this.total_pages = pdf.numPages;
@@ -73,7 +71,6 @@ export class PopupAdAttachmentsComponent implements OnInit {
   close_dialog(){
     this.dialogRef.close();
   }
-
 
 
 }

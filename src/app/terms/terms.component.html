@@ -1,0 +1,831 @@
+
+<div class="fake-navbar">
+
+    <a href="/" class="logo-container">
+        <img class="logo" src='../../assets/img/svg/Logo-LA3-17-01.svg'>
+    </a>
+</div>
+
+
+<div class="terms-container">
+
+    <div class="left-container">
+        <span>Conditions d'utilisation</span>
+        <span>(en date du 27 janvier 2021)</span>
+        <a href="/services/1" [ngClass]="{'opened':article_number==1}">Article 1 : Mentions légales</a>
+        <a href="/services/2" [ngClass]="{'opened':article_number==2}">Article 2 : Conditions d'utilisation de LinkArts</a>
+        <a href="/services/3" [ngClass]="{'opened':article_number==3}">Article 3 : Politique d'utilisation des cookies</a>
+        <a href="/services/4" [ngClass]="{'opened':article_number==4}">Article 4 : Confidentialité et sécurité</a>
+        <a href="/services/5" [ngClass]="{'opened':article_number==5}">Article 5 : Politique d'utilisation des données</a>
+    </div>
+
+    <div class="right-container">
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 1-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==1">
+            <span class="text-large">Mentions légales</span>
+
+            <span class="text-small">
+                L’édition et l’hébergement du site est assurée par Adam Drira affilié en tant qu’auto-entrepreneur immatriculé à l’URSAF sous le numéro SIREN 892518739, situé au 7 rue Robespierre 78370 Plaisir, joignable au numéro de téléphone 0688090927 et à l’adresse e-mail appaloosa-adam@hotmail.fr.
+            </span>
+            <span class="text-small">
+                Le site est hébergé chez OVH sous un VPS.
+            </span>
+            <span class="text-medium">
+                Icônes et logos
+            </span>
+
+            <span class="text-small weight600">
+                • Home, linkcollab, recommendations, tendances, abonnements, coups de cœur :
+            </span>
+            <span class="text-very-small no-margin">
+                <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            </span>
+
+            <span class="text-small weight600">
+                • Bd home LinkArts :
+            </span>
+            <span class="text-very-small no-margin">
+                <div>Icons made by <a href="" title="Good Ware">Good Ware</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            </span>
+
+            <span class="text-small weight600">
+                • Writings home LinkArts :
+            </span>
+            <span class="text-very-small no-margin">
+                <div>Icons made by <a href="" title="photo3idea_studio">photo3idea_studio</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            </span>
+
+            <span class="text-small weight600">
+                • Dessins home LinkArts :
+            </span>
+            <span class="text-very-small no-margin">
+                <div>Icons made by <a href="https://www.flaticon.com/authors/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>                
+            </span>
+            
+            <span class="text-small weight600">
+                • Image help :
+            </span>
+            <span class="text-very-small no-margin">
+                Photo by Toa Heftiba on Unsplash                
+            </span>
+        </ng-container>
+
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 2-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==2">
+            <span class="text-large">Conditions d'utilisation de LinkArts</span>
+
+            
+            <span class="text-small">
+                Nous vous remercions d'utiliser la plateforme LinkArts ainsi que les produits, services et fonctionnalités LinkArts associés que nous mettons à votre disposition (collectivement désignés comme le "Service"). 
+            </span>
+
+            <span class="text-medium">
+                Notre Service
+            </span>
+            <span class="text-small">
+                Le Service vous permet de découvrir, regarder et partager des bandes dessinées des dessins et des écrits, vous offre un moyen de collaborer, d’échanger avec les internautes du monde entier, et sert de plateforme de distribution et de promotion pour tous les créateurs de contenus originaux et annonceurs, quelle que soit leur taille.
+            </span>
+
+            <span class="text-medium">
+                Entité vous fournissant le Service
+            </span>
+            <span class="text-small">
+                L'entité fournissant le Service dans l'Espace Économique Européen (EEE) est un auto-entrepreneur localisé en France sous l’identifiant SIREN : 892 518 739 00016.
+            </span>
+
+            <span class="text-medium">
+                Conditions applicables
+            </span>
+            <span class="text-small">
+                Votre utilisation du Service est soumise à ces conditions générales. Lorsque vous les acceptez, ces règles et conditions sont collectivement désignées comme le "Contrat". Veuillez lire attentivement les termes de ce Contrat et vous assurer de les avoir bien compris. Si vous ne comprenez pas ou refusez tout ou partie des termes du Contrat, vous ne devez pas utiliser le Service.
+            </span>
+
+
+            <span class="text-medium">
+                Qui peut utiliser le Service ?
+            </span>
+
+            <span class="text-small weight600">
+                • Âge minimal requis
+            </span>
+            <span class="text-small no-margin">
+                Pour utiliser le Service, vous devez avoir (a) au moins 15 ans ; ou (b) plus de 7 ans et avoir obtenu le consentement de votre parent ou tuteur légal.
+            </span>
+
+            <span class="text-small weight600">
+                • Consentement du parent ou tuteur légal
+            </span>
+            <span class="text-small no-margin">
+                Si vous avez moins de 18 ans, vous devez obtenir le consentement exprès de votre parent ou tuteur légal pour utiliser ce Service. Veuillez lire ce Contrat avec eux.
+                <br>
+                Si vous êtes le parent ou tuteur légal d'un utilisateur de moins de 18 ans, lorsque vous acceptez le Contrat vous reconnaissez qu’en autorisant votre enfant à utiliser le Service, vous êtes soumis aux termes du présent Contrat et êtes responsable des activités de votre enfant sur le Service.
+            </span>
+
+            <span class="text-small weight600">
+                • Entreprises
+            </span>
+            <span class="text-small no-margin">
+                Si vous utilisez le Service pour le compte d'une entreprise ou d'une organisation, vous confirmez avoir l'autorité d'agir au nom de cette entité, et que cette entité accepte les termes du présent Contrat.
+            </span>
+            
+
+            <span class="text-medium">
+                Votre utilisation du Service
+            </span>
+
+            <span class="text-small weight600">
+                • Contenu disponible sur le Service
+            </span>
+            <span class="text-small no-margin">
+                Le contenu disponible sur le Service comprend des graphismes, des photos, du texte (par exemple des commentaires ou des scripts), des marques (y compris des noms commerciaux, marques déposées, marques de service ou logos). Le Contenu peut être mis à disposition sur le Service et distribué par nos utilisateurs et LinkArts est un fournisseur de services d'hébergement pour ce Contenu. La personne ou l'entité qui met le Contenu à disposition sur le Service en est responsable. Si vous identifiez un Contenu qui, selon vous, ne respecte pas les termes du présent Contrat, par exemple en cas de non-respect du Règlement de la communauté ou de violation de la loi, vous pouvez nous le signaler en contactant l’entité fournissant le service.
+            </span>
+
+            <span class="text-small weight600">
+                • Comptes LinkArts
+            </span>
+            <span class="text-small no-margin">
+                Vous pouvez utiliser une partie des fonctionnalités du Service, par exemple naviguer ou rechercher du Contenu, sans posséder de compte LinkArts. Toutefois, un compte Linkarts est nécessaire pour accéder à certaines fonctionnalités. Avec un compte Linkarts, vous pouvez cliquer sur « J'aime », « J’adore », vous abonner aux comptes, créer votre propre compte LinkArts, envoyer des messages, mettre en ligne du contenu, répondre aux annonces, ajouter des commentaires, archiver du contenu, ou créer des listes des regroupements de contenus (Sections). 
+                <br>
+                Pour protéger votre compte LinkArts, veillez à ce que votre mot de passe reste confidentiel. Évitez de réutiliser le mot de passe de votre compte LinkArts dans des applications tierces. 
+            </span>
+
+            <span class="text-small weight600">
+                • Règlement de la communauté
+            </span>
+            <span class="text-small no-margin">
+                Nos Règles de confidentialité décrivent la manière dont nous traitons vos informations et protégeons votre vie privée lorsque vous utilisez le Service. Tous les contenus que vous mettez en ligne sur le Service sont traités par LinkArts conformément aux Conditions relatives au traitement des données de LinkArts.
+            </span>
+
+            <span class="text-small weight600">
+                • Autorisations et restrictions
+            </span>
+            <span class="text-small no-margin">
+                Vous pouvez accéder au Service et l’utiliser tel qu'il vous est proposé sous condition de respecter le présent Contrat ainsi que les dispositions légales.  Vous pouvez regarder ou lire du Contenu pour votre usage personnel et non commercial.
+                <br>
+                Les restrictions suivantes s'appliquent à votre utilisation du Service. Vous n'êtes pas autorisé à :
+            </span>
+            <span class="text-small no-margin list-element">1.	Accéder à, reproduire, télécharger, distribuer, transmettre, plagier, diffuser, afficher, vendre, concéder sous licence, altérer, modifier ou utiliser de toute autre façon tout ou partie du Service ou du Contenu sauf : (a) tel que permis explicitement par le Service ; (b) avec autorisation écrite préalable de LinkArts et, le cas échéant, des titulaires de droits ; ou (c) conformément à la législation applicable ;</span>
+            <span class="text-small no-margin list-element">2.	Détourner, désactiver, utiliser de manière frauduleuse le Service ou interférer de toute autre façon avec ce dernier (ou essayer de réaliser l'une de ces actions), notamment avec les fonctionnalités liées à la sécurité ou qui (a) empêchent ou restreignent la copie ou toute autre utilisation du Contenu, ou (b) limitent l'utilisation du Service ou du Contenu ;</span>
+            <span class="text-small no-margin list-element">3.	Accéder au Service par le biais de procédés automatisés (tels que les robots, botnets ou scrapers) sauf : (a) dans le cas des moteurs de recherche publics, en accord avec le fichier LinkArts robots.txt ; (b) avec autorisation écrite préalable de LinkArts, ou (c) lorsque la loi l’autorise ; ou (c) conformément à la loi applicable ;</span>
+            <span class="text-small no-margin list-element">4.	Recueillir ou utiliser toute information permettant d’identifier une personne (par exemple, collecter les noms d'utilisateurs), sauf si expressément autorisé par la ou les personnes concernées ou par les dispositions de la section 3 ci-dessus ;</span>
+            <span class="text-small no-margin list-element">5.	Utiliser le Service pour diffuser des contenus promotionnels ou commerciaux non sollicités, ou envoyer des sollicitations indésirables ou répétées (spam) ;</span>
+            <span class="text-small no-margin list-element">6.	Provoquer ou encourager l'inexactitude des mesures sur l'engagement réel des internautes sur le Service, notamment payer ou inciter de quelque façon que ce soit des utilisateurs à augmenter le nombre de vues, de mentions "J'aime" ou de mentions "J’adore", de commentaires, à accroître artificiellement le nombre d'abonnés à un compte, ou à manipuler de toute autre façon les statistiques ;</span>
+            <span class="text-small no-margin list-element">7.	Abuser des options de rapport (messagerie, commentaires, mentions), signalement, réclamation, contestation ou processus d'appel, y compris pour formuler des demandes ou accusations infondées, offensives ou frivoles ;</span>
+
+            <span class="text-small weight600">
+                • Réserves
+            </span>
+            <span class="text-small no-margin">
+                Tous droits non expressément accordés par ces conditions d'utilisation sont considérés comme étant des droits réservés à LinkArts ou aux titulaires de droits respectifs. Cela signifie, par exemple, que l'utilisation du Service ne vous octroie en aucun cas des droits de propriété intellectuelle sur le Contenu auquel vous accédez (ni sur les éléments de marques utilisés ou affichés dans le Service).
+            </span>
+
+            <span class="text-small weight600">
+                • Modifications du Service
+            </span>
+            <span class="text-small no-margin">
+                LinkArts modifie et optimise constamment le Service. Il est possible que nous altérions ou interrompions tout ou partie du Service afin d'en améliorer les performances et la sécurité, d'apporter des modifications aux fonctionnalités, ou des ajustements en vue d'assurer la conformité aux lois ou d'empêcher des activités illégales ou abusives sur nos systèmes. Nous prendrons en considération et mesurerons chaque fois l'impact de telles modifications sur l'utilisation du Service. Dans la mesure du possible, nous communiquerons au préalable tout interruption du Service ou changement significatif qui pourrait avoir une incidence négative sur son utilisation. Cependant, nous serons parfois contraints d'apporter de telles modifications sans préavis, par exemple dans les cas où nous devrions améliorer la sécurité ou le fonctionnement de notre Service, prévenir les abus ou nous conformer à la loi. 
+            </span>
+
+            
+            <span class="text-medium">
+                Rémunération
+            </span>
+
+            <span class="text-small weight600">
+                • Qui a le droit de recevoir une rémunération ?
+            </span>
+            <span class="text-small no-margin">
+                Seuls les artistes, professionnels ou non, peuvent avoir le droit d’être rémunérés par LinkArts. La demande de versement se fait au sein du Service, dans la section « Mon compte » puis « Rémunération ». La demande n’est possible que dans les conditions suivantes :
+            </span>
+            <span class="text-small no-margin list-element">1.  Votre compte a au moins 3 mois d’existence;</span>
+            <span class="text-small no-margin list-element">2.  Les revenus que vous avez générés s’élèvent à plus de 70 euros;</span>
+            <span class="text-small no-margin list-element">3.  L’entité fournissant le site n’a pas déclaré faillite avant la demande de votre versement.</span>
+            <span class="text-small">
+                Votre demande sera ensuite traitée dans un délai n’excédant pas les 3 mois, sauf si l’entité vous fournissant le site déclare faillite durant la période de votre demande de versement ou que votre profil a été suspendu durant cette période. En cas de manquement de la part du site vous pouvez alors faire appel auprès de l’entité fournissant le site. Si cela est dû à une erreur technique ou un manque de vigilance de la part d’un de nos employés, votre demande sera traitée dans un délai de 1 mois maximum, si le site ne déclare pas faillite durant ce mois ou que votre compte n’a pas été suspendu durant ce mois. Une fois passé ces délais vous pourrez porter plainte.
+            </span>
+
+
+            <span class="text-medium">
+                Calcul des gains
+            </span>
+            <span class="text-small">
+                Les gains générés par les artistes membres de LinkArts sont générés de plusieurs façons, selon que vous êtes indépendant ou membre d’un groupe d’artistes au sein de LinkArts. Si votre compte n’est affilié à aucun groupe, vos gains sont générés des 2 manières suivantes :
+            </span>
+            <span class="text-small no-margin list-element">1.  Selon votre rang au sein des « Tendances » quotidiennes et selon votre nombre d’abonnés. Ces gains sont consultables au sein du Service;</span>
+            <span class="text-small no-margin list-element">2.  Selon votre rang au sein des « Coups de cœur » si votre compte a moins de 6 mois d’âge.</span>
+
+            <span class="text-small">
+                Si vous faites partie d’un groupe d’artistes, vos gains sont d’abord générés des 2 façons précédentes puis générés selon les 2 façons suivante :
+            </span>
+            <span class="text-small no-margin list-element">1.  Selon le rang du groupe auquel vous êtes rattaché au sein des « Tendances » quotidiennes et selon le nombre d’abonnés de ce groupe. Une part de ces gains vous est alors ajouté à vos gains totaux personnels selon votre part au sein du groupe. Les gains sont consultables au sein du Service;</span>
+            <span class="text-small no-margin list-element">2.  Selon votre rang du groupe auquel vous êtes rattaché au sein des « Coups de cœur » si le compte a moins de 6 mois d’âge. Une part de ces gains vous est alors ajouté à vos gains totaux personnels selon votre part au sein du groupe. Les gains sont consultables au sein du Service.</span>
+
+
+            <span class="text-medium">
+                Votre contenu et votre conduite
+            </span>
+
+            
+            <span class="text-small weight600">
+                • Mise en ligne de Contenu
+            </span>
+            <span class="text-small no-margin">
+                Si vous avez un compte LinkArts, vous pouvez mettre du Contenu en ligne via le Service. Vous pouvez utiliser ledit Contenu pour faire la promotion de votre entreprise ou activité artistique. Si vous faites le choix de mettre du Contenu en ligne, vous ne devez pas soumettre au Service des Contenus qui ne respectent pas le présent Contrat ou qui enfreignent la loi. Par exemple, le Contenu que vous soumettez ne doit pas inclure la propriété intellectuelle d’un tiers (par exemple, des éléments protégés par le droit d'auteur), à moins que vous n'ayez l'autorisation expresse de ce tiers ou que vous ne bénéficiiez de toute autre autorisation légale de le faire. Vous êtes légalement responsable du Contenu que vous soumettez au Service. Il se peut que nous utilisions des systèmes automatisés afin d'analyser votre Contenu. Ces systèmes nous aident à détecter les abus ou violations, tels que les spams, les logiciels malveillants ou les contenus illégaux.
+            </span>
+
+            <span class="text-small weight600">
+                • Les droits que vous concédez
+            </span>
+            <span class="text-small no-margin">
+                Vous conservez tous les droits de propriété sur votre Contenu. Ce qui est à vous reste à vous. Cependant, nous requérons de vous que vous concédiez certains droits à LinkArts et aux autres utilisateurs du Service, comme décrit ci-dessous.
+            </span>
+
+            <span class="text-small weight600">
+                • Accord de licence à LinkArts
+            </span>
+            <span class="text-small no-margin">
+                En soumettant du Contenu au Service, vous concédez à LinkArts une licence pour le monde entier, non exclusive, libre de droits, transférable et cessible d'utiliser ce Contenu, le droit de le reproduire, l’héberger, en créer des copies techniques, le diffuser, le communiquer au public, le modifier, l’analyser, l'afficher et l'exécuter aux seules fins d'exploitation, de promotion et d'amélioration du Service.
+            </span>
+
+            <span class="text-small weight600">
+                • Accord de licence aux autres utilisateurs
+            </span>
+            <span class="text-small no-margin">
+                Vous concédez également à chaque utilisateur du Service une licence pour le monde entier, non exclusive et libre de droits permettant d'accéder à votre Contenu par le biais du Service, et d'utiliser ce Contenu (y compris le droit de le diffuser, le modifier, l'afficher ou l'exécuter). Le droit de reproduire votre contenu n’est cependant possible qu’avec votre autorisation tel qu’autorisé par les fonctionnalités du Service.
+            </span>
+
+            <span class="text-small weight600">
+                • Durée de la licence
+            </span>
+            <span class="text-small no-margin">
+                Les licences que vous accordez n'expirent qu'à la suppression du Contenu, comme décrit ci-dessous. Une fois le Contenu supprimé, les licences prennent fin, sauf lorsque le fonctionnement du Service, l’utilisation du Contenu autorisée avant la suppression, ou la loi l’exigent.  Par exemple, si vous supprimez vous-même votre Contenu, LinkArts n'est pas tenu de (a) rappeler le Contenu que d'autres internautes utilisent via une fonctionnalité de visionnage hors connexion limitée, ou de (b) supprimer les copies que nous sommes obligés de conserver pour des raisons légales.
+            </span>
+
+            <span class="text-small weight600">
+                • Suppression de votre Contenu
+            </span>
+            <span class="text-small no-margin">
+                Vous pouvez supprimer votre Contenu du Service à tout moment.. Vous devez supprimer votre Contenu si vous ne possédez plus les droits requis par les présentes conditions.
+            </span>
+
+            <span class="text-small weight600">
+                • Suppression de Contenu par LinkArts
+            </span>
+            <span class="text-small no-margin">
+                S’il existe des raisons objectives et concrètes de croire qu'un élément de votre Contenu constitue un manquement aux termes de ce Contrat ou un risque pour LinkArts, nos utilisateurs ou des tiers, nous pouvons supprimer ou retirer tout ou partie dudit Contenu. Nous vous informerons de la raison de cette mesure, sauf s’il existe des raisons objectives et concrètes de croire que ceci pourrait : (a) enfreindre la loi, aller à l'encontre des directives des autorités chargées d'appliquer la loi, ou risquer de toute autre façon d'engager la responsabilité juridique de LinkArts ou celle de nos Sociétés affiliées ; (b) compromettre une enquête ou l'intégrité ou le fonctionnement du Service ; ou (c) nuire de quelque façon que ce soit à nos utilisateurs, à des tiers, à LinkArts ou à ses Sociétés affiliées. Pour faire appel il vous suffit de contacter l’entité fournissant le site dont les coordonnées sont disponibles dans les Mentions légales.
+                <br>
+                Si vous pensez que vos droits d'auteur n'ont pas été respectés dans le cadre du Service, veuillez-nous en avertir en signalant le contenu ou, si cela est urgent, en contactant l’entité fournissant le site.
+                <br>
+                Nous répondons aux notifications d'atteinte présumée aux droits d'auteur que ces soit après un signalement par le biais du Service ou après avoir contacté l’entité fournissant le site. Les règles de LinkArts prévoient la clôture, dans certains cas, des comptes des personnes ayant enfreint le règlement à plusieurs reprises. Il vous sera cependant possible de faire appel.
+            </span>
+
+
+
+            <span class="text-medium">
+                Suspension et clôture de compte
+            </span>
+
+            <span class="text-small weight600">
+                • Suspension et clôture par vous-même
+            </span>
+            <span class="text-small no-margin">
+                Vous pouvez cesser d'utiliser le Service à tout moment. Si votre compte est suspendu par vous-même vous pourrez le reprendre à tout moment depuis votre page de profile. 
+            </span>
+
+            <span class="text-small weight600">
+                • Suspension et clôture de compte par LinkArts pour raison particulière
+            </span>
+            <span class="text-small no-margin">
+                LinkArts peut suspendre ou clôturer vos accès, votre compte LinkArts ou l'accès de votre compte LinkArts à tout ou partie du Service si (a) vous commettez un manquement substantiel ou répété aux termes de ce Contrat, (b) nous sommes contraints d'agir afin de nous conformer à la loi ou à une décision de justice, ou (c) nous avons des motifs raisonnables de croire en une conduite susceptible d'engager la responsabilité de nos utilisateurs, de tiers, de LinkArts ou de ses Sociétés affiliées, ou de nuire de quelque façon que ce soit à ces derniers.
+            </span>
+
+            <span class="text-small weight600">
+                • Clôture de compte par LinkArts pour modification du Service
+            </span>
+            <span class="text-small no-margin">
+                LinkArts peut clôturer votre accès à votre compte LinkArts à tout ou partie du Service si nous avons des motifs raisonnables de croire que la mise à disposition du Service n'est plus commercialement viable. 
+            </span>
+
+            <span class="text-small weight600">
+                • Préavis de suspension ou de clôture
+            </span>
+            <span class="text-small no-margin">
+                Dans le cas du signalement de votre compte LinkArts pour plagiats, contenus indésirables ou autres manquements indésirables, répétitifs et non conformes au Règlement de la communauté, votre compte recevra un « Strike ». Si vous atteignez les 3 « Strikes » votre compte sera démonétisé si vous bénéficiez des droits de rémunérations. Si vous atteignez les 4 « Strikes » votre compte sera suspendu. Dans le cas du signalement d’un de vos contenus pour les différents motifs cités précédemment, votre contenu sera retiré du site et vous recevrai un « Strike ». Si vous atteignez 3 « Strikes » votre compte sera suspendu.
+                <br>
+                Nous vous informerons de la raison pour laquelle votre compte a été suspendu ou clôturé, sauf s’il existe des raisons objectives et concrètes de croire que ceci pourrait : (a) enfreindre la loi, aller à l'encontre des directives des autorités chargées d'appliquer la loi, ou risquer de toute autre façon que ce soit d'engager notre responsabilité juridique ou celle de nos Sociétés affiliées ; (b) compromettre une enquête ou l'intégrité ou le fonctionnement du Service ; ou (c) nuire de quelque façon que ce soit à nos utilisateurs, à des tiers, à LinkArts ou à ses Sociétés affiliées. Dans le cas où LinkArts serait contraint de clôturer votre accès au Service dans le but d'apporter des modifications à ce dernier, nous vous fournirons, dans la mesure du possible, un délai raisonnable pour exporter votre Contenu du Service.
+            </span>
+
+            <span class="text-small weight600">
+                • Effet de la suspension ou clôture de compte
+            </span>
+            <span class="text-small no-margin">
+                Si votre compte LinkArts est clôturé ou si l'accès au Service est restreint, vous pouvez continuer d'utiliser certaines fonctionnalités du Service sans posséder de compte, et les termes de ce Contrat s'appliquent à une telle utilisation. Si vous pensez que votre compte Google a été clôturé par erreur, vous pouvez faire appel en contactant l’entité fournissant le site.
+            </span>
+
+
+            
+
+            <span class="text-medium">
+                Autres clauses
+            </span>
+
+            <span class="text-small weight600">
+                • Garantie
+            </span>
+            <span class="text-small no-margin">
+                Nous fournissons le Service avec une diligence et un soin raisonnable.                  
+            </span>
+
+            <span class="text-small weight600">
+                • Clause de non-responsabilité
+            </span>
+            <span class="text-small no-margin">
+                En vertu de la loi, les consommateurs détiennent certains droits qui ne peuvent être ni exclus, ni modifiés par un contrat. Aucune clause du présent Contrat n'affecte ces droits dont vous disposez en tant que consommateur. Outre les dispositions expressément décrites dans le présent Contrat et les exigences légales, LinkArts n'accorde aucune garantie spécifique concernant le Service. Par exemple, nous ne faisons aucune promesse concernant : le Contenu fourni par le biais du Service ; les fonctionnalités spécifiques du Service, ou sa précision, sa fiabilité, sa disponibilité ou sa capacité à répondre à vos besoins ; ou le fait que tout Contenu que vous soumettez soit accessible et stocké sur le Service.                
+            </span>
+
+            <span class="text-small weight600">
+                • Limitation de responsabilité
+            </span>
+            <span class="text-small no-margin">
+                Concernant tous les utilisateurs : Aucune disposition du présent Contrat n'a pas pour objet d’exclure ou de limiter la responsabilité des parties en cas de : décès ou dommage corporel ; fraude ; déclaration frauduleuse ; ou responsabilité qui ne peut être exclue ou limitée par la loi.
+                <br>
+                Dans les limites autorisées par la loi applicable, LinkArts et ses Sociétés affiliées ne seront pas responsables :
+            </span>
+            <span class="text-small no-margin list-element">1.	des pertes qui ne résultent pas d'un manquement au présent Contrat par LinkArts ou ses Sociétés Affiliées;</span>
+            <span class="text-small no-margin list-element">2.  des pertes ou dommages qui, au moment où le présent Contrat entre vous et LinkArts est entré en vigueur, ne constituaient pas des conséquences raisonnablement prévisibles de manquements par LinkArts et ses Sociétés affiliées au Contrat;</span>
+            <span class="text-small no-margin list-element">3.	de tout Contenu soumis par un utilisateur, ou de toute conduite d’un utilisateur de nature diffamatoire, injurieuse ou illégale.</span>
+            <span class="text-small">
+                Utilisateurs professionnels : si vous utilisez le Service à des fins commerciales, entrepreneuriales, artisanales ou professionnelles (vous êtes ci-après désigné comme un "Utilisateur professionnel"), dans les limites autorisées par la loi applicable, les limitations de responsabilité suivantes s'appliquent également :
+            </span>
+            <span class="text-small no-margin list-element">1.	LinkArts et ses Sociétés affiliées ne seront pas responsables d'éventuelles pertes de profits, de revenus ou de données ; pertes d'opportunités ou d'économies prévues ; pertes indirectes ou consécutives, ou dommages punitifs (que ces pertes aient été prévisibles ou non);</span>
+            <span class="text-small no-margin list-element">2.	La responsabilité totale de LinkArts et de ses Sociétés affiliées pour toute réclamation découlant du ou rattachée au Service est limitée au montant le plus élevé entre : (a) le montant des revenus que LinkArts vous a versés pour votre utilisation du Service dans les 12 mois précédant votre notification de ladite réclamation par écrit à LinkArts et (b) 500 €.</span>
+
+            <span class="text-small weight600">
+                • Liens vers des sites tiers
+            </span>
+            <span class="text-small no-margin">
+                Le Service peut inclure des liens vers des sites Web et des services en ligne tiers n'appartenant pas à LinkArts et sur lesquels nous n'avons aucun contrôle. LinkArts ne gère pas lesdits sites Web et services en ligne, et décline toute responsabilité quant à leur utilisation. Nous vous recommandons d'être vigilant lorsque vous quittez le Service, et de lire attentivement les conditions générales et les règles de confidentialité de chaque site Web et service en ligne tiers auquel vous accédez.
+            </span>
+
+
+            <span class="text-medium">
+                À propos du Contrat
+            </span>
+
+            <span class="text-small weight600">
+                • Modification du Contrat
+            </span>
+            <span class="text-small no-margin">
+                Il est possible que nous modifiions le présent Contrat, par exemple dans le but de refléter des ajustements apportés à notre Service ou pour des raisons légales, réglementaires ou de sécurité. LinkArts vous fournira, dans des délais raisonnables, un préavis pour toute modification significative des termes du Contrat, ainsi que l'occasion de consulter ces modifications. Cependant, certaines modifications concernant des fonctionnalités nouvellement ajoutées au Service ou apportées pour des raisons légales peuvent entrer en vigueur immédiatement. Les changements s'appliquent à compter de leur activation et n'ont aucun effet rétroactif. Si vous n'acceptez pas les conditions modifiées, vous devez supprimer tout Contenu mis en ligne sur le Service et cesser l'utilisation de ce dernier.          
+            </span>
+
+            <span class="text-small weight600">
+                • Continuité du Contrat
+            </span>
+            <span class="text-small no-margin">
+                Si vous mettez un terme à votre utilisation du Service, les conditions suivantes du présent Contrat continueront de s'appliquer à vous : "Autres clauses", "À propos du Contrat" ; les licences que vous concédez seront maintenues dans certains cas limités, tels que décrits dans "Durée de la licence".   
+            </span>
+
+            <span class="text-small weight600">
+                • Indépendance des clauses
+            </span>
+            <span class="text-small no-margin">
+                S'il s'avère qu'une condition particulière de ce Contrat ne peut être appliquée pour quelque raison que ce soit, cela n'a aucun effet sur le reste des conditions, sauf dispositions contraires de la loi applicable.
+            </span>
+
+            <span class="text-small weight600">
+                • Cession
+            </span>
+            <span class="text-small no-margin">
+                Il est possible que LinkArts cède tout ou partie de ce Contrat à l'une de ses Sociétés affiliées ou, si LinkArts fait l’objet d’une cession, à un tiers, à condition que cela n’ait pas pour conséquence de restreindre vos droits sans votre consentement. 
+            </span>
+
+            <span class="text-small weight600">
+                • Absence de renonciation
+            </span>
+            <span class="text-small no-margin">
+                Si vous ne respectez pas le présent Contrat et que nous ne prenons pas immédiatement de mesure à ce sujet, cela ne signifie pas que nous renonçons à nos droits (par exemple, le droit de prendre une mesure ultérieurement).
+            </span>
+
+            <span class="text-small weight600">
+                • Loi applicable
+            </span>
+            <span class="text-small no-margin">
+                Si vous résidez dans l'Espace économique européen (EEE) ou en Suisse, ce Contrat ainsi que votre relation avec LinkArts en vertu de ce Contrat seront régis par les lois en vigueur dans votre pays de résidence, et des procédures juridiques pourront être intentées dans vos tribunaux locaux.
+            </span>
+        </ng-container>
+
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 3-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==3">
+            <span class="text-large">Politique d'utilisation des cookies</span>
+
+            <span class="text-medium">
+                Que sont les cookies ?
+            </span>
+            <span class="text-small">
+                Les cookies sont de petits éléments de texte qui servent à stocker des informations sur les navigateurs web. Les cookies sont notamment utilisés pour stocker et recevoir des identifiants et d’autres informations sur des appareils comme les ordinateurs ou les téléphones. D’autres technologies, dont les données que nous stockons sur votre navigateur web ou sur votre appareil, les identifiants associés à votre appareil et d’autres logiciels, sont utilisées dans des buts similaires. Dans la présente politique, nous désignons toutes ces technologies par le terme « cookies ». 
+                <br>
+                Nous utilisons des cookies si vous avez un compte LinkArts, si vous utilisez les Produits LinkArts, même si vous n’avez pas de compte, ou si vous consultez d’autres sites web et applications qui ont recours aux Produits LinkArts. Les cookies permettent à LinkArts de vous proposer les Produits adaptés à vos préférences. Cette politique explique comment nous utilisons les cookies et présente les choix dont vous disposez à cet égard. Sauf indication contraire dans la présente politique, la Politique d’utilisation des données s’appliquera à nos traitements des données que nous collectons au moyen des cookies.
+                </span>
+
+            <span class="text-medium">
+                Dans quel cadre les utilisons-nous ?
+            </span>
+            <span class="text-small">
+                Les cookies nous aident à proposer, à protéger et à améliorer les Produits LinkArts (par exemple, en personnalisant le contenu), ainsi qu’à adapter et à mesurer les publicités, et à offrir une expérience plus sûre. 
+                <br>
+                Les cookies que nous utilisons comprennent des cookies de session, qui sont supprimés lorsque vous fermez votre navigateur, et des cookies permanents, qui restent sur votre navigateur jusqu’à ce qu’ils expirent ou que vous les supprimiez. Bien que les cookies que nous utilisons puissent changer au fil des améliorations et des mises à jour des Produits LinKarts, nous les utilisons aux fins suivantes : 
+            </span>
+            <span class="text-small weight600">
+                • Authentification
+            </span>
+            <span class="text-small no-margin">
+                Nous utilisons des cookies pour vérifier votre compte et pour déterminer les moments où vous êtes connecté(e), de façon à faciliter votre accès aux Produits Facebook et à vous proposer une expérience et des fonctionnalités adaptées à votre utilisation. Par exemple : Nous utilisons des cookies pour que vous restiez connecté(e) lorsque vous naviguez d’une Page LinkArts à l’autre. Ils nous aident aussi à enregistrer votre navigateur web pour que vous n’ayez pas à vous reconnecter à LinkArts à chaque fois et pour que vous puissiez plus facilement vous connecter à LinkArts par le biais d’applications et de sites web tiers. Par exemple, nous utilisons les cookies « currentUser » and « currentVisitor » à cette fin, dont la durée de vie est de 365 jours. 
+            </span>
+
+            <span class="text-small weight600">
+                • Publicités et recommandations
+            </span>
+            <span class="text-small no-margin">
+                Les cookies nous aident à enregistrer les préférences, à savoir quand vous avez vu ou interagi avec le contenu des Produits LinkArts, et à vous proposer un contenu et des expériences personnalisés. Par exemple, le cookie « recommendations », dont la durée de vie est de 365 jours, nous permet de faire des suggestions, mais aussi de personnaliser le contenu du site.
+            </span>
+
+        </ng-container>
+
+
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 4-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==4">
+            <span class="text-large">Confidentialité et sécurité</span>
+
+            <span class="text-medium">
+                Comment modifier mes paramètres de confidentialité ?
+            </span>
+
+            <span class="text-small">
+                Lorsque vous créez un compte ou publiez un contenu au sein du site, des options de confidentiels vous sont disponibles. 
+            </span>
+
+            <span class="text-small weight600">
+                • Les œuvres
+            </span>
+            <span class="text-small no-margin">
+                Pour les œuvres peuvent être archivés et donc rendus privés. Pour cela il suffit de vous rendre sur le mode lecture d’une œuvre (« https://www/linkarts.fr/artwork-[...] » et de cliquer dans les options en haut à droite. L’option « archiver » sera alors disponible que vous soyez le propriétaire de l’œuvre ou non. Si vous en êtes le propriétaire l’œuvre ne sera plus disponible au grand public et sera uniquement accessible depuis vos archives, eux-mêmes disponibles au sein de votre page de profile. Les titres de vos œuvres ne seront cependant pas supprimés des recherches afin de vous garantir une visibilité si vous décidez de rendre vos œuvres publiques à nouveau.
+            </span>
+
+            <span class="text-small weight600">
+                • Les informations du compte
+            </span>
+            <span class="text-small no-margin">
+                Certaines informations du compte peuvent être entrés puis rendues privés soit pour masquer temporairement des informations optionnelles sans les supprimer (description principale, e-mail de contact, formation ou compétences, profession), soit pour masquer des informations nécessaires au site qui ne peuvent être supprimés (âge, type de profile). Les autres informations optionnelles que vous ne désirez plus rendre publique peuvent être supprimés si vous le désirez.
+                <br>
+                Votre e-mail personnel ainsi que vos mots de passes restent strictement confidentiels.
+            </span>
+
+            <span class="text-small weight600">
+                • Les statistiques
+            </span>
+            <span class="text-small no-margin">
+                Les statistiques du compte disponibles dans la section « Qui suis-je » de votre page de profile sont des informations relatives à vos œuvres, vos annonces et à votre compte qui sont privés par défaut mais qui peuvent être rendus publiques. Pour cela il suffit simplement de se rendre dans la rubrique « Statistiques » et de modifier les paramètres de visibilités pour chaque groupe d’informations (tendances, annonces, bandes dessinées, dessins, écrits, profil).
+            </span>
+
+            <span class="text-small weight600">
+                • Historique de recherche
+            </span>
+            <span class="text-small no-margin">
+                Lorsque vous recherchez une œuvre, une annonce ou un utilisateur dans la barre de navigation principale, la recherche est récupérée et peut vous être proposée pour une recherche ultérieure au premier clic sur la barre de recherche. Ceci constitue votre historique de recherche. Vous pouvez supprimer chaque ligne de cet historique en cliquant sur la croix à droite de chacun des historiques de recherche.
+            </span>
+
+            <span class="text-small weight600">
+                • Réactivité de la barre de recherche à la suppression 
+            </span>
+            <span class="text-small no-margin">
+                Lorsque vous supprimez une œuvre ou une annonce les résultats publiques de la barre de recherche seront affectés afin que votre contenu n’apparaisse plus dans les propositions de la barre de recherche pour tous les utilisateurs. 
+            </span>
+
+
+            <span class="text-medium">
+                Prudence
+            </span>
+
+            <span class="text-small weight600">
+                • Signalez les abus
+            </span>
+            <span class="text-small no-margin">
+                Nous appliquons une tolérance zéro vis-à-vis des comportements qui mettent les personnes en danger, qu’il s’agisse d’organiser ou d’encourager la violence dans le monde réel, ou de harceler d’autres personnes. Veuillez consulter les conditions d’utilisation pour connaître le type de contenus pouvant être publiés sur LinkArts, et celui susceptible d’être signalé et supprimé. Si un contenu semble nécessiter votre signalement, n’hésitez pas à le signaler.
+                <br>
+                Pour signaler un contenu ou une annonce il vous suffit de cliquer sur le menu des options dans le mode de lecture d’une œuvre ou bien dans certains types de miniatures qui le permettent. Pour signaler un compte il vous suffit de consulter la page de profile d’un utilisateur et de cliquer sur le menu des options dans sa bio globale. Les contenus d’un auteur que vous avez signalés ne vous seront plus disponibles.
+            </span>
+
+            <span class="text-small weight600">
+                • Bloquer un utilisateur
+            </span>
+            <span class="text-small no-margin">
+                Si un utilisateur vous importune par messages ou pour ses réactions concernant vos contenus vous pouvez décidez de le bloquer. Il ne lui sera alors plus disponible de commenter vos contenus ou de communiquer avec vous depuis votre liste de contacts. Il lui sera cependant toujours possible de vous écrire en tant qu’invité. Ses messages seront alors visibles dans la liste des invitations de la messagerie. La page de profile de l’utilisateur ne vous sera alors plus disponible et votre page de profile ne sera plus disponible pour lui non plus.
+            </span>
+
+            <span class="text-small weight600">
+                • Gérer vos mots de passe
+            </span>
+            <span class="text-small no-margin">
+                Personne n’est à l’abris d’une usurpation de compte. Prenez soin à changer régulièrement vos mots de passe et à ne divulguer aucune information sur ceux-ci. Il vous sera en effet conseillez de changer vos mots de passe chaque année. Ne révéler jamais les informations dans la console du navigateur à un tier. Des informations confidentielles sur vos mots de passe peuvent s’y trouver. Il vous est par ailleurs conseillé de ne pas révéler votre e-mail afin de limiter la mise les tests d’hacking sur votre compte.
+            </span>
+
+            <span class="text-small weight600">
+                • Evitez les messages non sollicités et arnaques
+            </span>
+            <span class="text-small no-margin">
+                Certains utilisateurs inconnus peuvent vous envoyer des messages afin de solliciter votre intérêt pour vous nuire. Si l’utilisateur ne s’est pas abonné à votre profile ses messages seront répertoriés dans la liste des invitations et ne vous dérangeront pas. Cependant, si l’utilisateur est un abonné alors ses messages seront disponibles dans votre liste des contacts. Soyez donc prudent vis-à-vis des abonnés néfastes. N’hésitez pas à bloquer ces utilisateurs afin d’assurer votre tranquillité et prenez gardes aux messages attractifs. Que ce soient des propositions de collaboration ou des messages aux contenus explicites attractifs. 
+            </span>
+
+            <span class="text-small weight600">
+                • Soyez prudent dans vos collaborations
+            </span>
+            <span class="text-small no-margin">
+                Tous les collaborateurs ne sont pas honnêtes ! Certains n’hésitent pas à vous dérober vos œuvres ou à vous arnaquer d’une quelconque autre manière. Ne divulguez aucune information sans vous assurer de la crédibilité du collaborateur ou sans protéger vos œuvres. Le site n’est pas garant de vos collaborations malencontreuses et des erreurs de jugement que vous commettez.
+            </span>
+
+
+            <span class="text-medium">
+                Autres
+            </span>
+
+            <span class="text-small weight600">
+                • La navigation sécurisée (HTTPS)
+            </span>
+            <span class="text-small no-margin">
+                La navigation sécurisée (HTTPS) est une fonctionnalité de sécurité qui chiffre automatiquement votre connexion à LinkArts. Ce mécanisme contribue à protéger votre compte en faisant en sorte qu’il soit plus difficile d’accéder à vos informations LinkArts sans votre autorisation.
+                <br>
+                Une connexion sécurisée est requise pour se connecter à LinkArts et ne peut pas être désactivée.
+            </span>
+
+            <span class="text-small weight600">
+                • Suppression d’une discussion
+            </span>
+            <span class="text-small no-margin">
+                Vous ne pouvez supprimer entièrement une discussion en un clic. Vous pouvez cependant retirer un utilisateur de votre liste de contacts ou d’invités. S’il s’agit d’un contact, il sera redirigé dans la liste des invités. Mais s’il est toujours abonné à votre compte ou vis-versa, il pourra à nouveau vous contacter et il sera à nouveau visible dans la liste des contacts. Nous vous conseillons donc de bloquer un utilisateur avec qui vous ne désirez plus communiquer. Tous ses messages seront alors redirigés.
+            </span>
+
+        </ng-container>
+
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 4-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==5">
+            <span class="text-large">Politique d’utilisation des données</span>
+
+            <span class="text-small">
+                La présente politique décrit les informations que nous traitons pour le fonctionnement de LinkArts.
+            </span>
+
+
+            <span class="text-medium">
+                Quels types d’informations recueillons-nous ?
+            </span>
+            
+            <span class="text-small">
+                Pour fournir les Produits LinkArts, nous devons traiter des informations vous concernant. Les types d’informations que nous recueillons dépendent de la manière dont vous utilisez nos Produits. 
+            </span>
+
+            <span class="text-small weight600">
+                • Ce que vous et d’autres personnes faites et fournissez :
+            </span>
+            <span class="text-small no-margin list-element">-   <b>Informations et contenus que vous fournissez.</b> Nous recueillons le contenu, les communications ainsi que d’autres informations que vous fournissez lorsque vous utilisez nos Produits, notamment lorsque vous créez un compte, lorsque vous créez ou partagez du contenu, ou lorsque vous communiquez avec d’autres personnes ou leur envoyez des messages. Cela peut comprendre des informations présentes dans le contenu que vous fournissez (par exemple, des métadonnées) ou concernant un tel contenu, telles que le lieu d’une photo ou la date à laquelle un fichier a été créé. Nos systèmes traitent automatiquement le contenu et les communications que vous et d’autres fournissez afin d’analyser le contexte et ce qu’ils contiennent aux fins décrites ci-dessous. Apprenez-en davantage sur la manière de gérer les personnes qui peuvent accéder aux éléments que vous partagez;</span>
+            <span class="text-small no-margin list-element">-   <b>Réseaux et connexions.</b> Nous recueillons des informations sur les personnes, les œuvres, les annonces, les comptes, et les personnes avec lesquels vous êtes en contact, ainsi que la manière dont vous interagissez avec eux sur nos Produits, par exemple, les personnes avec lesquelles vous communiquez le plus ou les groupes dont vous faites partie;</span>
+            <span class="text-small no-margin list-element">-   <b>Votre utilisation.</b> Nous recueillons des informations concernant la manière dont vous utilisez nos Produits, telles que les types de contenu que vous consultez ou avec lesquels vous interagissez, les fonctionnalités que vous utilisez, les actions que vous réalisez, les personnes ou les comptes avec lesquels vous interagissez, et l’heure, la fréquence et la durée de vos activités. Par exemple, nous enregistrons quand vous utilisez et quand vous avez utilisé pour la dernière fois nos Produits, ainsi que les œuvres, les annonces ou tout autre contenu que vous visualisez sur nos Produits;</span>
+            <span class="text-small no-margin list-element">-   <b>Les activités d’autres personnes et les informations qu’elles fournissent vous concernant.</b> Nous recevons et analysons également le contenu, les communications et les informations que d’autres personnes fournissent lorsqu’elles utilisent nos Produits. Il peut s’agir d’informations vous concernant, par exemple lorsque d’autres personnes aiment, adorent ou commentent une de vos œuvres ou une de vos annonces, vous envoient un message, ou téléchargent vos fichiers partagés.</span>
+
+
+            <span class="text-small weight600">
+                • Informations sur les appareils
+            </span>
+            <span class="text-small">
+                Comme décrit ci-dessous, nous recueillons des informations depuis et concernant les ordinateurs, les téléphones, les téléviseurs connectés et les autres appareils connectés au web que vous utilisez et qui s’intègrent à nos Produits, et nous combinons ces informations sur les différents appareils que vous utilisez. Par exemple, nous utilisons les informations recueillies concernant votre utilisation de nos Produits sur votre téléphone afin de mieux personnaliser le contenu (notamment les publicités) ou les fonctionnalités qui s’affichent lorsque vous utilisez nos Produits sur un autre appareil, notamment votre ordinateur portable ou votre tablette, ou afin d’évaluer si vous avez effectué sur un autre appareil une action en réaction à une publicité que nous vous avions montrée sur votre téléphone.
+                <br>
+                Les informations que nous obtenons depuis ces appareils comprennent :
+            </span>
+            <span class="text-small no-margin list-element">-   <b>Attributs des appareils :</b> des informations telles que le système d’exploitation, les versions matérielles et logicielles, le niveau de batterie, l’intensité du signal, l’espace de stockage disponible, le type de navigateur, le nom et le type des applications et des fichiers, ainsi que les plugins;</span>
+            <span class="text-small no-margin list-element">-   <b>Activités sur l’appareil :</b> les informations concernant les opérations et les comportements sur l’appareil, par exemple, lorsqu’une fenêtre est mise au premier plan ou en arrière-plan, ainsi que les mouvements de la souris (permettant de différencier les humains des bots);</span>
+            <span class="text-small no-margin list-element">-   <b>Identifiants :</b> les identifiants uniques, identifiants d’appareils et autres identifiants, notamment ceux des comptes que vous utilisez;</span>
+            <span class="text-small no-margin list-element">-   <b>Données issues des cookies :</b> données provenant des cookies enregistrés sur votre appareil, notamment les identifiants et paramètres des cookies. Pour en savoir plus sur notre utilisation des cookies, consultez la Politique d’utilisation des cookies LinkArts.</span>
+
+
+
+            <span class="text-medium">
+                Comment utilisons-nous ces informations ?
+            </span>
+            
+            <span class="text-small">
+                Nous utilisons les informations à notre disposition (en fonction des choix que vous effectuez) de la façon décrite ci-dessous, afin de fournir et de prendre en charge les Produits LinkArts et les services associés décrits dans les Conditions d’utilisation de LinkArts :
+            </span>
+
+            <span class="text-small weight600">
+                • Proposer, personnaliser et améliorer nos Produits
+            </span>
+            <span class="text-small">
+                CNous utilisons les informations à notre disposition pour fournir nos Produits, notamment pour en personnaliser les fonctionnalités et le contenu (notamment la section Recommandation et Abonnements et les publicités) et pour vous faire des suggestions (comme des groupes ou des recommandations d’œuvres et d’annonces susceptibles de vous intéresser) sur nos Produits et en dehors. Pour créer des Produits personnalisés à la fois uniques et pertinents, nous utilisons vos connexions, préférences, centres d’intérêt et activités à partir des données que nous recueillons, des informations que vous ou des tiers nous fournissez et d’autres renseignements; nous nous servons également des données sur la façon dont vous utilisez et interagissez avec nos Produits ; ainsi que des données concernant les personnes, ou éléments avec lesquels vous êtes connectés ou qui vous intéressent sur nos Produits et en dehors. Apprenez-en davantage sur notre utilisation des informations vous concernant afin de personnaliser vos expériences LinkArts, notamment les fonctionnalités, le contenu et les recommandations figurant dans les Produits LinkArts.
+            </span>
+
+            <span class="text-small no-margin list-element">-   <b>Informations sur l’ensemble des Produits LinkArts et des appareils :</b> nous relions les informations concernant vos activités sur les différents Produits LinkArts et appareils afin de vous fournir une expérience plus personnalisée et plus cohérente sur l’ensemble des Produits LinkArts que vous utilisez, quel que soit le support sur lequel vous les utilisez. Nous pouvons également faire en sorte que votre expérience soit plus fluide, par exemple en remplissant automatiquement vos informations d’inscription (notamment votre numéro téléphone) à partir d’un Produit LinkArts lorsque vous créez un compte sur un autre Produit;</span>
+            <span class="text-small no-margin list-element">-   <b>Recherche et développement des Produits :</b> nous utilisons les informations à notre disposition pour développer, tester et améliorer nos Produits, notamment en réalisant des sondages et des recherches, et en testant et en dépannant les nouveaux produits et les nouvelles fonctionnalités;</span>
+            <span class="text-small no-margin list-element">-   <b>Publicités et autres contenus sponsorisés :</b> nous utilisons les informations vous concernant à notre disposition (notamment les informations concernant vos centres d’intérêt, vos actions et vos connexions) pour sélectionner et pour personnaliser les publicités, les offres et les autres contenus sponsorisés que nous vous montrons;</span>
+
+
+            <span class="text-small weight600">
+                • Favoriser la sûreté, l’intégrité et la sécurité
+            </span>
+            <span class="text-small">
+                Nous utilisons les informations à notre disposition pour fournir nos Produits, notamment pour en personnaliser les fonctionnalités et le contenu (notamment la section Recommandation et Abonnements et les publicités) et pour vous faire des suggestions (comme des groupes ou des recommandations d’œuvres et d’annonces susceptibles de vous intéresser) sur nos Produits et en dehors. Pour créer des Produits personnalisés à la fois uniques et pertinents, nous utilisons vos connexions, préférences, centres d’intérêt et activités à partir des données que nous recueillons, des informations que vous ou des tiers nous fournissez et d’autres renseignements; nous nous servons également des données sur la façon dont vous utilisez et interagissez avec nos Produits ; ainsi que des données concernant les personnes, ou éléments avec lesquels vous êtes connectés ou qui vous intéressent sur nos Produits et en dehors. Apprenez-en davantage sur notre utilisation des informations vous concernant afin de personnaliser vos expériences LinkArts, notamment les fonctionnalités, le contenu et les recommandations figurant dans les Produits LinkArts.
+            </span>
+
+            <span class="text-small weight600">
+                • Communiquer avec vous
+            </span>
+            <span class="text-small">
+                Nous utilisons les informations à notre disposition pour vous envoyer des communications commerciales, vous parler de nos Produits et vous faire part de nos conditions et de nos règlements. Nous nous servons également de vos informations pour vous répondre lorsque vous nous contactez.
+            </span>
+
+
+            <span class="text-medium">
+                Comment ces informations sont-elles partagées ?
+            </span>
+            <span class="text-small">
+                Vos informations sont partagées avec d’autres personnes des manières suivantes :
+            </span>
+
+            <span class="text-small weight600">
+                • Personnes et comptes avec lesquels vous communiquez et partagez du contenu
+            </span>
+            <span class="text-small">
+                Lorsque vous partagez et communiquez à l’aide de nos Produits, vous avez la possibilité de rendre priver une information que vous avez partagé. Ceci concerne en particulier les œuvres que vous avez partagés mais aussi les informations de votre compte. Certaines informations, comme la bio, le pseudo, le prénom, le nom, le type de compte, le type de profile, ainsi que les annonces ne peuvent pas être rendus privés, mais peuvent être supprimé dans certains cas (nom, annonces et bio). Votre réseau peut également voir les actions que vous avez effectuées sur nos Produits, notamment vos interactions avec des publicités et du contenu sponsorisé. Nous permettons également aux autres comptes de voir les personnes qui ont consulté leurs LinkArts Stories.
+            </span>
+            
+            <span class="text-small weight600">
+                • Informations publiques
+            </span>
+            <span class="text-small">
+                Celles-ci peuvent être vues par tout le monde, sur nos Produits ou en dehors, même par les personnes qui n’ont pas de compte. Cela inclut votre nom d’utilisateur, toute information publique que vous partagez avec tout le monde, les informations figurant dans votre profile LinkArts. Vous, d’autres personnes utilisant LinkArts, et nous pouvons accorder un accès à des informations publiques ou envoyer de telles informations à n’importe qui sur nos produits ou en dehors, y compris sur les autres Produits des entités LinkArts, dans les résultats de recherche ou par le biais des outils et des API. Il est également possible de consulter, de repartager ou de télécharger les informations publiques au moyen de services tiers, notamment les moteurs de recherche, les API et les médias hors ligne comme la télévision, et au moyen d’applications, de sites web et d’autres services intégrés dans nos Produits.
+                <br>
+                Pour découvrir quelles informations sont publiques et comment contrôler votre visibilité sur LinkArts il suffit de rejoindre la section « Mon compte » ou « Qui suis-je » de votre page de profile.
+            </span>
+            
+            <span class="text-small weight600">
+                • Informations relatives à votre statut actif ou à votre présence sur nos Produits
+            </span>
+            <span class="text-small">
+                Les membres de votre réseau peuvent voir des signaux leur indiquant si vous êtes actif ou non sur nos Produits, y compris si vous êtes actuellement actif sur LinkArts, ou à quel moment vous avez utilisé nos Produits pour la dernière fois.
+            </span>
+            
+            <span class="text-small weight600">
+                • Nouveau propriétaire
+            </span>
+            <span class="text-small">
+                Si les droits de propriété ou le contrôle d’une partie ou de l’intégralité de nos Produits ou de leurs éléments changent, nous avons la possibilité de communiquer vos informations au nouveau propriétaire.
+            </span>
+            
+            <span class="text-small weight600">
+                • Partage avec des partenaires tiers
+            </span>
+            <span class="text-small">
+                Nous collaborons avec des partenaires tiers qui nous aident à fournir et à améliorer nos Produits ou qui utilisent les outils professionnels LinkArts pour développer leur activité, ce qui nous permet d’exploiter nos sociétés et de proposer des services gratuits dans le monde entier. Nous ne vendons aucune de vos informations à quiconque et nous ne le ferons jamais. Nous imposons également des restrictions strictes quant à la façon dont les partenaires peuvent utiliser et révéler les données que nous leur communiquons. Voici les types de tiers avec lesquels nous partageons des informations.
+            </span>
+            
+            <span class="text-small weight600">
+                • Service d'analyse
+            </span>
+            <span class="text-small">
+                Nous fournissons des statistiques et des informations agrégées qui permettent aux individus, aux utilisateurs et aux entreprises de comprendre la façon dont les gens interagissent avec leurs publications, leurs annonces, leurs pages de profiles, leurs œuvres et tout autre contenu sur les Produits LinkArts dans la page « Qui suis-je ». Les utilisateurs peuvent choisir de rendre ces informations privées pour tous les autres utilisateurs LinkArts. 
+            </span>
+            
+            <span class="text-small weight600">
+                • Annonceurs
+            </span>
+            <span class="text-small">
+                Nous fournissons aux annonceurs des rapports sur les types de personnes qui voient leurs publicités et sur les performances de leurs publicités, mais nous ne partageons pas d’informations permettant de vous identifier personnellement (des informations telles que votre nom ou votre adresse e-mail qui peuvent être en elles-mêmes utilisées pour vous contacter ou vous identifier), sauf si vous nous en donnez l’autorisation. Par exemple, nous communiquerons aux annonceurs des informations générales concernant la démographie et les centres d’intérêt (par exemple, une publicité a été vue par une femme entre 25 et 34 ans qui vit à Madrid et qui est artiste professionnelle) pour les aider à mieux comprendre leur audience. Nous vérifions également les publicités LinkArts qui vous ont incité(e) à effectuer un achat ou à entreprendre une action auprès d’un annonceur.
+            </span>
+            
+            <span class="text-small weight600">
+                • Partenaires de mesure
+            </span>
+            <span class="text-small">
+                Nous partageons des informations vous concernant avec des entreprises qui les regroupent pour fournir des analyses et des rapports de mesure à nos partenaires.
+            </span>
+            
+            <span class="text-small weight600">
+                • Fournisseurs et prestataires de services
+            </span>
+            <span class="text-small">
+                Nous donnons des informations et du contenu aux fournisseurs et prestataires de services qui soutiennent nos activités, notamment en proposant des services d’infrastructure technique, en analysant l’utilisation de nos Produits, en fournissant un service à la clientèle, en facilitant les processus de paiement ou en réalisant des sondages.
+            </span>
+            
+            <span class="text-small weight600">
+                • Forces de l’ordre ou demandes légales
+            </span>
+            <span class="text-small">
+                Nous partageons des informations avec les forces de l’ordre ou en réponse à des demandes légales dans les circonstances décrites ci-dessous.
+            </span>
+            
+
+            <span class="text-medium">
+                Sur quel fondement juridique nous appuyons-nous pour traiter les données ?
+            </span>
+            
+            <span class="text-small">
+                Nous recueillons, utilisons et partageons les données en notre possession des manières décrites ci-dessous :
+            </span>
+            <span class="text-small no-margin list-element">-	Dans la mesure nécessaire pour respecter nos Conditions d’utilisation;</span>
+            <span class="text-small no-margin list-element">-	En respectant votre consentement, que vous pouvez révoquer à tout moment par l’intermédiaire des paramètres de votre compte et votre page « Qui suis-je »;</span>
+            <span class="text-small no-margin list-element">-	Dans la mesure nécessaire pour remplir nos obligations légales;</span>
+            <span class="text-small no-margin list-element">-	Pour protéger vos intérêts vitaux ou ceux des autres;</span>
+            <span class="text-small no-margin list-element">-	Dans la mesure nécessaire dans l’intérêt du public;</span>
+            <span class="text-small no-margin list-element">-	Dans la mesure nécessaire pour nos intérêts légitimes (ou ceux des autres), notamment nos intérêts quant à la fourniture d’un service innovant, personnalisé, sûr et profitable à l’attention de nos utilisateurs et partenaires, sauf si ces intérêts sont supplantés par vos intérêts ou vos libertés et droits fondamentaux exigeant la protection de vos données personnelles.</span>
+
+
+
+            <span class="text-medium">
+                Comment pouvez-vous exercer vos droits prévus par le Règlement général sur la protection des données ?
+            </span>
+
+            <span class="text-small">
+                Conformément au Règlement général sur la protection des données, vous avez le droit de consulter, de rectifier, de transférer et de supprimer vos données. Pour en savoir plus sur ces droits et pour savoir comment vous pouvez exercer vos droits, consultez les Conditions d’utilisation LinkArts. Vous avez également le droit de vous opposer et de restreindre le traitement de vos données. Cela inclut :
+            </span>
+            <span class="text-small no-margin list-element">-   Le droit de vous opposer à ce que nous traitions vos données à des fins de marketing direct, que vous pouvez exercer au moyen du lien « annuler l’abonnement » dans les communications marketing en question;</span>
+            <span class="text-small no-margin list-element">-   Le droit de vous opposer à ce que nous traitions vos données lorsque nous effectuons une mission dans l’intérêt public ou que nous faisons valoir nos intérêts légitimes ou ceux d’un tiers.</span>
+
+
+            <span class="text-medium">
+                Conservation des données, désactivation et suppression d’un compte
+            </span>
+            <span class="text-small">
+                Nous stockons les données jusqu’à ce qu’il ne soit plus nécessaire de fournir nos services et nos Produits LinkArts, ou jusqu’à ce que votre compte soit supprimé, selon la première de ces éventualités. Il s’agit d’une décision au cas par cas qui dépend d’aspects tels que la nature des données, la raison de leur collecte et de leur traitement et les besoins de conservations légaux ou opérationnels concernés. Par exemple, lorsque vous faites une recherche sur LinkArts, vous pouvez consulter et supprimer cette recherche de votre historique de recherche à tout moment, mais l’enregistrement de cette recherche n’est supprimé qu’au bout de 6 mois. Si vous envoyez une copie de votre pièce d’identité officielle à des fins de vérification de votre compte, nous supprimons cette copie 30 jours après l’examen, sauf disposition contraire.
+                <br>
+                <br>
+                Lorsque vous supprimez votre compte, nous supprimons du site tous les contenus que vous avez publié, comme vos œuvres et vos annonces, ainsi que vos réactions aux contenus et annonces (commentaires et mentions), et vous ne pourrez plus récupérer ces informations par la suite. Une suppression définitive de tous votre contenu sauvegardé dans nos serveurs se fera dans un délai de 30 jours suivant la suppression de vote compte. Les informations vous concernant que d’autres personnes ont partagées ne font pas partie de votre compte et ne seront pas supprimées. Si vous ne souhaitez pas supprimer votre compte, vous pouvez désactiver votre compte. Pour supprimer votre compte à tout moment, n’hésitez pas à consulter les paramètres de votre compte.
+            </span>
+
+            <span class="text-medium">
+                Comment procédons-nous pour répondre aux demandes légales et pour éviter tout risque de dommage ?
+            </span>
+            <span class="text-small">
+                Nous accédons à vos informations, les conservons et les partageons avec les organismes de réglementation, les autorités judiciaires ou d’autres :
+            </span>
+            <span class="text-small no-margin list-element">-   Pour répondre à une demande légale, si nous pensons en toute bonne foi que la loi l’exige. Nous pouvons également répondre aux demandes légales lorsque nous pensons en toute bonne foi que la réponse est requise par la loi de cette juridiction, qu’elle affecte des utilisateurs de cette juridiction, et qu’elle est conforme aux normes internationalement reconnues;</span>
+            <span class="text-small no-margin list-element">-   Lorsque nous avons des raisons de penser en toute bonne foi que cela est nécessaire pour détecter, empêcher et maîtriser la fraude, l’utilisation non autorisée des Produits, des violations de nos conditions ou règlements, ou toutes autres activités dangereuses ou illégales ; pour nous protéger nous-mêmes (notamment nos droits, notre propriété ou nos Produits), vous ou d’autres, notamment dans le cadre d’enquêtes ou de demandes réglementaires ; ou pour éviter tout décès ou toute blessure corporelle imminente. Par exemple, le cas échéant, nous fournissons des informations à des partenaires tiers et nous recevons des informations desdits partenaires à propos de la fiabilité de votre compte pour éviter une fraude, un abus ou toute autre activité dommageable dans nos Produits comme en dehors de ceux-ci.</span>
+            <span class="text-small">
+                Les informations vous concernant que nous recevons (notamment les données de transactions financières liées aux achats effectués avec LinkArts) peuvent être consultées et conservées pendant une période prolongée lorsqu’elles font l’objet d’une demande ou d’une obligation légale, d’une enquête gouvernementale ou d’enquêtes sur d’éventuelles violations de nos conditions d’utilisation ou de nos règlements, ou pour éviter tout autre dommage. Nous conservons également pendant une durée minimale d’un an les informations des comptes désactivés suite à une violation des conditions d’utilisation, et ce, afin d’éviter les abus répétés ou d’autres violations des conditions d’utilisation.
+            </span>
+
+            <span class="text-medium">
+                Comment procédons-nous pour vous aviser des modifications apportées à la présente politique ?
+            </span>
+            <span class="text-small">
+                Nous vous aviserons de toute modification importante apportée à la présente politique et vous donnerons la possibilité de consulter la version révisée avant de continuer à utiliser nos Produits.
+            </span>
+
+            <span class="text-medium">
+                Comment adresser vos questions à LinkArts ?
+            </span>
+            <span class="text-small">
+                Vous pouvez en savoir plus sur la confidentialité LinkArts. Pour toutes questions concernant de la présente politique, vous pouvez contacter l’instance fournissant le site mentionné dans les mentions légales ou nous contacter sur le service de messagerie du site.
+            </span>
+
+
+
+        </ng-container>
+
+
+    </div>
+
+</div>
