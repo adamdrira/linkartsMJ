@@ -101,7 +101,14 @@ export class Drawings_Artbook_Service {
   }
 
   retrieve_drawing_artbook_by_id(drawing_id: number) {
-    return this.httpClient.get(`routes/retrieve_drawing_artbook_by_id/${drawing_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_drawing_artbook_by_id/${drawing_id}`, {withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+    
+  }
+
+  retrieve_drawing_artbook_by_id2(drawing_id: number) {
+    return this.httpClient.get(`routes/retrieve_drawing_artbook_by_id2/${drawing_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
     

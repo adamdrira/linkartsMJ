@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {HttpClient, HttpHeaders } from '@angular/common/http';
 
+const httpOptions = {
+headers: new HttpHeaders({
+    'Access-Control-Allow-Origin':'*',
+})
+};
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -40,6 +45,8 @@ export class AuthenticationService {
         return this.inviteduserSubject.value;
     }
 
+   
+
     login_invited_user(mail:string,password:string):Observable<any>{
         return this.http.post<any>('api/users/encrypt_data', { mail: mail, password: password }).pipe(map(r=>{
             this.CookieService.set('inviteduser', r.token, 365*10, '/','localhost',undefined,'Lax');
@@ -74,8 +81,16 @@ export class AuthenticationService {
 
     }
 
-    login(username, password) {
-        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password }).pipe(map(res => {
+    get_ip(){
+        console.log("getting ip")
+        return this.http.get<any>("https://cors-anywhere.herokuapp.com/https://api.ipify.org/?format=json").pipe(map(res => {
+            console.log(res)
+            return res
+        }))
+    }
+
+    login(username, password,ip) {
+        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password,ip}).pipe(map(res => {
                 console.log(res);
                 if(!res.msg){
                     //console.log("reset cookie")
@@ -116,29 +131,34 @@ export class AuthenticationService {
     }
 
     logout() {
-        let visitor=this.CookieService.get('currentVisitor');
-        //console.log(visitor);
-        if(visitor){
-            //console.log("dans visitor")
-            //this.CookieService.delete('currentUser', '/')
-            this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
-            this.currentUserSubject.next(visitor);
-            this.currentUserTypeSubject.next("visitor");
+        return this.http.post<any>('api/users/logout', { withCredentials:true}).pipe(map(res => {
+            let visitor=this.CookieService.get('currentVisitor');
+            //console.log(visitor);
+            if(visitor){
+                //console.log("dans visitor")
+                //this.CookieService.delete('currentUser', '/')
+                this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
+                this.currentUserSubject.next(visitor);
+                this.currentUserTypeSubject.next("visitor");
 
-            let  recommendations=this.CookieService.get('visitor_recommendations');
-            if( recommendations ){
-                this.CookieService.set('recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+                let  recommendations=this.CookieService.get('visitor_recommendations');
+                if( recommendations ){
+                    this.CookieService.set('recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+                }
+                else{
+                    this.CookieService.delete('recommendations','/');
+                }
             }
             else{
-                this.CookieService.delete('recommendations','/');
+                //console.log("dans autre");
+                this.create_visitor().subscribe(l=>{
+                    //console.log(l)
+                });
             }
-        }
-        else{
-            //console.log("dans autre");
-            this.create_visitor().subscribe(l=>{
-                //console.log(l)
-            });
-        }
+            
+            return res;
+        }));
+        
         
     }
 

@@ -83,12 +83,21 @@ export class Profile_Edition_Service {
     }));
   }
 
+
+
   retrieve_profile_data_and_check_visitor(user_id: number){
     return this.httpClient.get(`routes/retrieve_profile_data_and_check_visitor/${user_id}`, {withCredentials:true}).pipe(map((information)=>{
       return information;
     }));
   }
 
+
+  get_my_remuneration(total_gains){
+    return this.httpClient.post('routes/get_my_remuneration',{total_gains:total_gains},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
+  
   retrieve_number_of_contents(id){
     return this.httpClient.post('routes/retrieve_number_of_contents',{id:id},{withCredentials:true} ).pipe(map((information)=>{
       return information;
@@ -200,7 +209,6 @@ export class Profile_Edition_Service {
   }
 
   check_email_and_password(email,password,index){
-    console.log(email)
     return this.httpClient.post<any>('api/users/check_email_and_password', { email: email,password:password}).pipe(map(res => {
         return [res,index];
     }));
@@ -238,7 +246,6 @@ export class Profile_Edition_Service {
   //information privacy
 
   get_information_privacy(id_user){
-    console.log(id_user)
     return this.httpClient.post('routes/get_information_privacy',{id_user:id_user},{withCredentials:true} ).pipe(map((information)=>{
       return information;
     }));

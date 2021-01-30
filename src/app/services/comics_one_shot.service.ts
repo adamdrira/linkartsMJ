@@ -96,7 +96,14 @@ export class BdOneShotService {
     }
 
     retrieve_bd_by_id(bd_id: number) {
-      return this.httpClient.get(`routes/retrieve_bd_by_id/${bd_id}`).pipe(map(information=>{
+      return this.httpClient.get(`routes/retrieve_bd_by_id/${bd_id}`, {withCredentials:true}).pipe(map(information=>{
+        return information;   
+      }));
+      
+    }
+
+    retrieve_bd_by_id2(bd_id: number) {
+      return this.httpClient.get(`routes/retrieve_bd_by_id2/${bd_id}`, {withCredentials:true}).pipe(map(information=>{
         return information;   
       }));
       

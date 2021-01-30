@@ -36,7 +36,7 @@ export function pattern(type: string) {
     }
 
     if( type == "siret" ) {
-        return "^[0-9]{14}$";
+        return "^[0-9]{9}$";
     }
     if(type == "share") {
         return "[0-9][0-9.]*[0-9]";

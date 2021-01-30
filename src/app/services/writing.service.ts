@@ -116,13 +116,21 @@ export class Writing_Upload_Service {
 
    
   retrieve_writings_information_by_user_id(user_id){
-    return this.httpClient.get(`routes/retrieve_writings_information_by_user_id/${user_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_writings_information_by_user_id/${user_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
   }
 
+ 
+
   retrieve_writing_information_by_id(writing_id){
-    return this.httpClient.get(`routes/retrieve_writing_information_by_id/${writing_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_writing_information_by_id/${writing_id}`, {withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));
+  }
+
+  retrieve_writing_information_by_id2(writing_id){
+    return this.httpClient.get(`routes/retrieve_writing_information_by_id2/${writing_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));
   }

@@ -138,7 +138,13 @@ export class BdSerieService {
   }
 
   retrieve_bd_by_id(user_id: number) {
-    return this.httpClient.get(`routes/retrieve_bd_serie_by_id/${user_id}`).pipe(map(information=>{
+    return this.httpClient.get(`routes/retrieve_bd_serie_by_id/${user_id}`, {withCredentials:true}).pipe(map(information=>{
+      return information;   
+    }));  
+  }
+
+  retrieve_bd_by_id2(user_id: number) {
+    return this.httpClient.get(`routes/retrieve_bd_serie_by_id2/${user_id}`, {withCredentials:true}).pipe(map(information=>{
       return information;   
     }));  
   }
