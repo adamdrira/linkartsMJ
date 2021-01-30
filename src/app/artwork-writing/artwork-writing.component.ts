@@ -137,8 +137,6 @@ export class ArtworkWritingComponent implements OnInit {
   //Thumbnails
   thumbnails: boolean;
   thumbnails_links: string[] = [];
-  //Zoom mode
-  //zoom_mode: boolean;
   //Fullscreen mode
   fullscreen_mode: boolean;
 
@@ -154,7 +152,6 @@ export class ArtworkWritingComponent implements OnInit {
   pdfSrc:SafeUrl;
   
   page_number=1;
-  zoom: number = 1.0;
 
   writing_id:number;
   viewsnumber:number;
@@ -268,132 +265,137 @@ export class ArtworkWritingComponent implements OnInit {
      
     }) 
 
-    this.Writing_Upload_Service.retrieve_writing_information_by_id(this.writing_id).subscribe(r => {
-      if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended"){
-        if(r[0] && r[0].status=="deleted"){
-          this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
+    this.Writing_Upload_Service.retrieve_writing_information_by_id2(this.writing_id).subscribe(m => {
+      if(m[0]){
+        let r=m[0].data;
+        console.log(r[0]);
+        if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
+          if(r[0] && r[0].status=="deleted"){
+            this.navbar.delete_research_from_navbar("Writing","unknown",this.writing_id).subscribe(r=>{
+              this.page_not_found=true;
+              this.cd.detectChanges();
+              return
+            });
+          }
+          else{
             this.page_not_found=true;
             this.cd.detectChanges();
             return
-          });
+          }
         }
         else{
-          this.page_not_found=true;
-          this.cd.detectChanges();
-          return
-        }
-      }
-      else{
-        let title =this.activatedRoute.snapshot.paramMap.get('title');
-        if(r[0].title !=title ){
-          this.page_not_found=true;
-          return;
-        }
-        else{
-          let file_name=r[0].file_name;
-          this.authorid=r[0].authorid;
-          this.list_of_reporters=r[0].list_of_reporters;
-          this.highlight=r[0].highlight;
-          this.title=r[0].title;
-          this.style=r[0].category;
-          this.monetization=r[0].monetization
-          this.firsttag=r[0].firsttag;
-          this.secondtag=r[0].secondtag;
-          this.thirdtag=r[0].thirdtag;
-          this.likesnumber =r[0].likesnumber ;
-          this.lovesnumber =r[0].lovesnumber ;
-          this.status=r[0].status;
-          this.thumbnail_picture=r[0].name_coverpage ;
-          this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
-          this.thumbnail_picture_retrieved=true;
-
-          this.check_archive();
-
-          this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
-            this.pseudo = r[0].nickname;
-            this.user_name = r[0].firstname + ' ' + r[0].lastname;
-            this.primary_description=r[0].primary_description;
-            this.type_of_account_checked=r[0].type_of_account_checked;
-            this.certified_account=r[0].certified_account;
-            this.profile_data_retrieved=true;
-          });
-
-          this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
-            if (l[0]!=null && l[0]!=undefined){
-              if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
-                this.content_emphasized=true;
+          let title =this.activatedRoute.snapshot.paramMap.get('title');
+          if(r[0].title !=title ){
+            this.page_not_found=true;
+            return;
+          }
+          else{
+            let file_name=r[0].file_name;
+            this.authorid=r[0].authorid;
+            this.list_of_reporters=r[0].list_of_reporters;
+            this.highlight=r[0].highlight;
+            this.title=r[0].title;
+            this.style=r[0].category;
+            this.monetization=r[0].monetization
+            this.firsttag=r[0].firsttag;
+            this.secondtag=r[0].secondtag;
+            this.thirdtag=r[0].thirdtag;
+            this.likesnumber =r[0].likesnumber ;
+            this.lovesnumber =r[0].lovesnumber ;
+            this.status=r[0].status;
+            this.thumbnail_picture=r[0].name_coverpage ;
+            this.date_upload_to_show = get_date_to_show( date_in_seconds(this.now_in_seconds,r[0].createdAt) );
+            this.thumbnail_picture_retrieved=true;
+  
+            this.check_archive();
+  
+            this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
+              this.pseudo = r[0].nickname;
+              this.user_name = r[0].firstname + ' ' + r[0].lastname;
+              this.primary_description=r[0].primary_description;
+              this.type_of_account_checked=r[0].type_of_account_checked;
+              this.certified_account=r[0].certified_account;
+              this.profile_data_retrieved=true;
+            });
+  
+            this.Emphasize_service.get_emphasized_content(r[0].authorid).subscribe(l=>{
+              if (l[0]!=null && l[0]!=undefined){
+                if (l[0].publication_id==this.writing_id && l[0].publication_category=="writing"){
+                  this.content_emphasized=true;
+                }
               }
-            }
-            this.emphasized_contend_retrieved=true;
-          });
-          
-          this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
-            if(information[0].value){
-              this.already_subscribed=true;
-            }
-          }); 
-          
-          this.get_author_recommendations();
-          this.get_recommendations_by_tag();
-          
-       
-          this.ready_to_check_view=true;
-          this.check_view_after_current()
-    
-          this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
-            if(information[0].value){
-              this.already_subscribed=true;
-            }
-            this.subscribtion_retrieved=true;
-          });
-          
-         
-
-          this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).subscribe(r=>{
-            //views and comments
-            this.commentariesnumber=r[0].list_of_comments.length;
-            this.viewsnumber= r[0].list_of_views.length;
-            //loves
-            this.list_of_loves= r[0].list_of_loves;
-            this.lovesnumber=this.list_of_loves.length;
-            if (this.list_of_loves.length != 0){
-              this.loves_retrieved_but_not_checked=true;
-              this.check_loves_after_current()
-            }
-            else{
-              this.list_of_users_ids_loves_retrieved=true;
-            }
-    
-            //likes
-            this.list_of_likes= r[0].list_of_likes;
-            this.likesnumber=this.list_of_likes.length;
-            if (this.list_of_likes.length != 0){
-              this.likes_retrieved_but_not_checked=true;
-              this.check_likes_after_current()
-            }
-            else{
-              this.list_of_users_ids_likes_retrieved=true;
-            }
-          })
-          
-    
-          this.Writing_Upload_Service.retrieve_writing_by_name(file_name).subscribe(r=>{
-            let file = new Blob([r], {type: 'application/pdf'});
-            this.pdfSrc = URL.createObjectURL(file);
-            this.item_retrieved=true;
-          });
-    
-          this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).subscribe(r=> {
-            let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.profile_picture = SafeURL;
+              this.emphasized_contend_retrieved=true;
+            });
             
-          });
-    
+            this.Subscribing_service.check_if_visitor_susbcribed(this.authorid).subscribe(information=>{
+              if(information[0].value){
+                this.already_subscribed=true;
+              }
+            }); 
+            
+            this.get_author_recommendations();
+            this.get_recommendations_by_tag();
+            
          
+            this.ready_to_check_view=true;
+            this.check_view_after_current()
+      
+            this.Subscribing_service.check_if_visitor_susbcribed(r[0].authorid).subscribe(information=>{
+              if(information[0].value){
+                this.already_subscribed=true;
+              }
+              this.subscribtion_retrieved=true;
+            });
+            
+           
+  
+            this.NotationService.get_content_marks('writing',  "unknown", this.writing_id,0).subscribe(r=>{
+              //views and comments
+              this.commentariesnumber=r[0].list_of_comments.length;
+              this.viewsnumber= r[0].list_of_views.length;
+              //loves
+              this.list_of_loves= r[0].list_of_loves;
+              this.lovesnumber=this.list_of_loves.length;
+              if (this.list_of_loves.length != 0){
+                this.loves_retrieved_but_not_checked=true;
+                this.check_loves_after_current()
+              }
+              else{
+                this.list_of_users_ids_loves_retrieved=true;
+              }
+      
+              //likes
+              this.list_of_likes= r[0].list_of_likes;
+              this.likesnumber=this.list_of_likes.length;
+              if (this.list_of_likes.length != 0){
+                this.likes_retrieved_but_not_checked=true;
+                this.check_likes_after_current()
+              }
+              else{
+                this.list_of_users_ids_likes_retrieved=true;
+              }
+            })
+            
+      
+            this.Writing_Upload_Service.retrieve_writing_by_name(file_name).subscribe(r=>{
+              let file = new Blob([r], {type: 'application/pdf'});
+              this.pdfSrc = URL.createObjectURL(file);
+              this.item_retrieved=true;
+            });
+      
+            this.Profile_Edition_Service.retrieve_profile_picture( r[0].authorid).subscribe(r=> {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.profile_picture = SafeURL;
+              
+            });
+      
+           
+          }
         }
+  
       }
-
+      
       
 
     });
@@ -705,17 +707,27 @@ export class ArtworkWritingComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.openOption(-1);
+    if(this.full_compt==1){
+      this.full_compt=2;
+    }
+    else if(this.full_compt==2){
+      this.full_compt=0;
+      this.fullscreen_mode = false;
+    }
 
-    if(this.slide){
-
+    if(this.slide ){
+      console.log("enter resize")
       this.first_page_rendered = false;
-      this.zoom = 1;
 
       let width=this.slide.nativeElement.offsetWidth-10;
       this.page_height=Math.trunc(width*1.4135);
       this.rd.setStyle(  this.slide.nativeElement, "max-height", Math.trunc(width*1.4135)+"px" );
     }
   }
+
+  
+
+ 
 
   onPageChange(page: number) {
     console.log('onPageChange');
@@ -808,30 +820,18 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
-  zoom_clicked=false;
-  zoom_button() {
-    if( this.zoom == 1.2 ) {
-
-      this.zoom = 1;
-      this.zoom_clicked=true;
-      //window.dispatchEvent(new Event('resize'));
-    }
-    else {
-
-      this.zoom = 1.2;
-      this.zoom_clicked=true;
-      //window.dispatchEvent(new Event('resize'));
-    }
-  }
+  
 
 
-
+  full_compt=0;
   fullscreen_button() {
-    
     window.dispatchEvent(new Event('resize'));
+
+  
 
     const elem = this.leftContainer.nativeElement;
     if( !this.fullscreen_mode ) {
+      this.full_compt=1;
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
         this.fullscreen_mode = true;
@@ -845,8 +845,10 @@ export class ArtworkWritingComponent implements OnInit {
         elem.webkitRequestFullscreen();
         this.fullscreen_mode = true;
       }
+
     }
     else {
+      this.full_compt=0;
       document.exitFullscreen();
       this.fullscreen_mode = false;
     }
@@ -1160,13 +1162,23 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   archive(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     this.Subscribing_service.archive("writings","unknown",this.writing_id).subscribe(r=>{
       this.content_archived=true;
+      this.archive_loading=false;
     });
   }
   unarchive(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     this.Subscribing_service.unarchive("writings","unknown",this.writing_id).subscribe(r=>{
       this.content_archived=false;
+      this.archive_loading=false;
     });
   }
 
@@ -1211,14 +1223,24 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   emphasize(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     this.Emphasize_service.emphasize_content("writing","unknown",this.writing_id,0).subscribe(r=>{
       this.content_emphasized=true;
+      this.archive_loading=false;
     });
   }
 
   remove_emphasizing(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
       this.Emphasize_service.remove_emphasizing("writing","unknown",this.writing_id,0).subscribe(t=>{
         this.content_emphasized=false;
+        this.archive_loading=false;
       });
   }
 
@@ -1270,12 +1292,7 @@ pageRendered(e:any) {
     this.first_page_rendered = true;
   }
 
-  if( this.zoom_clicked ) {
-    this.cd.detectChanges();
-    this.zoom_clicked = false;
-    this.page_width = e.source.canvas.width;
-    this.rd.setStyle(  this.slide.nativeElement, "max-width", this.page_width+"px" );
-  }
+
 }
 
 pdf_is_loaded(){
@@ -1330,22 +1347,30 @@ pdf_is_loaded(){
   }
 
   
-
+  archive_loading=false;
   set_private() {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"private").subscribe(r=>{
           console.log(r);
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"private").subscribe(r=>{
             this.status="private";
+            this.archive_loading=false;
           });
         })
         
+      }
+      else{
+        this.archive_loading=false;
       }
     });
   }
@@ -1354,15 +1379,23 @@ pdf_is_loaded(){
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         this.Subscribing_service.change_content_status("writing","unknown",this.writing_id,0,"ok").subscribe(r=>{
           console.log(r);
           this.Writing_Upload_Service.change_writing_status(this.writing_id,"public").subscribe(r=>{
             this.status="public";
+            this.archive_loading=false;
           });
         })
        
+      }
+      else{
+        this.archive_loading=false;
       }
     });
   }
@@ -1372,11 +1405,17 @@ pdf_is_loaded(){
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         console.log(this.writing_id);
-        this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
-          this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).subscribe(r=>{
+        
+
+        this.navbar.delete_publication_from_research("Writing","unknown",this.writing_id).subscribe(r=>{
+          this.Writing_Upload_Service.Remove_writing(this.writing_id).subscribe(r=>{
             this.NotificationsService.remove_notification('add_publication','writing','unknown',this.writing_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
@@ -1393,13 +1432,18 @@ pdf_is_loaded(){
                 is_comment_answer:false,
                 comment_id:0,
               }
+              this.archive_loading=false;
               this.chatService.messages.next(message_to_send);
               this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
               return;
             })
-          })
-        });
+          });
+          
+        })
 
+      }
+      else{
+        this.archive_loading=false;
       }
     });
   }

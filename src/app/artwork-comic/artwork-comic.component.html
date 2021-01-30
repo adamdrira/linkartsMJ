@@ -403,7 +403,12 @@
             
             
             <div class="options-buttons options-buttons-artwork">
-                <button *ngIf="subscribtion_retrieved && !mode_visiteur && type_of_comic_retrieved && thumbnail_picture_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
+
+                <div *ngIf="archive_loading" class="archive-loading"> 
+                    <mat-spinner diameter="18"  ></mat-spinner>
+                </div>
+
+                <button *ngIf="!archive_loading && subscribtion_retrieved && !mode_visiteur && type_of_comic_retrieved && thumbnail_picture_retrieved" tabIndex="-1" [matMenuTriggerFor]="artworkOptions01">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #artworkOptions01="matMenu" class="artwork-mat-menu">
@@ -419,11 +424,11 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">view_carousel</mat-icon>
                         <span>Modifier la miniature</span>
                     </button>
-                    <button *ngIf="!content_emphasized" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
+                    <button *ngIf="!content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="emphasize()">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">trending_up</mat-icon>
                         <span>Mettre l'oeuvre en avant</span>
                     </button>
-                    <button *ngIf="content_emphasized" class="artwork-button-menu-item" mat-menu-item (click)="remove_emphasizing()">
+                    <button *ngIf="content_emphasized && status=='public'" class="artwork-button-menu-item" mat-menu-item (click)="remove_emphasizing()">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">trending_down</mat-icon>
                         <span>Annuler la mise en avant</span>
                     </button>
@@ -439,14 +444,14 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">clear</mat-icon>
                         <span>Supprimer</span>
                     </button>
-                    <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true'" disabled>
+                    <button class="artwork-button-menu-item" mat-menu-item *ngIf="monetization=='true' && status=='public'" disabled>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">euro_symbol</mat-icon>
                         <span>Œuvre monétisée</span>
                     </button>
                 </mat-menu>
 
                 <!--options pour un visiteur -->
-                <button *ngIf="subscribtion_retrieved && mode_visiteur && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
+                <button *ngIf="!archive_loading && subscribtion_retrieved && mode_visiteur && archive_retrieved && type_of_account=='account'" class="optionsMenu" [matMenuTriggerFor]="artworkOptions02">
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                 </button>
                 <mat-menu #artworkOptions02="matMenu" class="artwork-mat-menu">
@@ -633,6 +638,9 @@
         
 
         <div class="ad-container" [ngClass]="{'really-invisible': !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved}">
+            <div class="ad-link2">
+                <span>Votre site a besoin de vous !</span>
+            </div>
             <div class="ad">
             </div>
             <div class="ad-link">

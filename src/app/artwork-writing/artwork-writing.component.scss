@@ -36,35 +36,31 @@
     overflow-y: scroll;
 
     scrollbar-width:thin;
-    scrollbar-color: #a0b0ce #091731;
+    scrollbar-color: #152646 #091731;
     &::-webkit-scrollbar {
         width: 8px;
         height: 8px;
     }
     &::-webkit-scrollbar-track {
         background-color:#091731;
-        border-radius: 15px;
     }
     &::-webkit-scrollbar-thumb {
-        border-radius: 15px;
-        background-color:#a0b0ce;
+        background-color: #152646;
     }
 
     ::ng-deep {
         .ng2-pdf-viewer-container {
             scrollbar-width:thin;
-            scrollbar-color: #a0b0ce #091731;
+            scrollbar-color: #455573 #091731;
             &::-webkit-scrollbar {
                 width: 8px;
                 height: 8px;
             }
             &::-webkit-scrollbar-track {
                 background-color:#091731;
-                border-radius: 15px;
             }
             &::-webkit-scrollbar-thumb {
-                border-radius: 15px;
-                background-color:#a0b0ce;
+                background-color: #455573;
             }
         }
     }

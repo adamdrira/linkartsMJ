@@ -113,7 +113,7 @@ export class ArtworkDrawingComponent implements OnInit {
     this.add_time_of_view();
   }
 
-  
+ 
 
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChild('swiperWrapper') swiperWrapperRef:ElementRef;
@@ -287,64 +287,74 @@ export class ArtworkDrawingComponent implements OnInit {
     }) 
     
     if (this.type =="one-shot"){
-      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.drawing_id).subscribe(r => {
-        if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended"){
-          if(r[0] && r[0].status=="deleted"){
-            this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
+      this.Drawings_Onepage_Service.retrieve_drawing_information_by_id2(this.drawing_id).subscribe(m => {
+        if(m[0]){
+          let r=m[0].data;
+          console.log(r[0]);
+          if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
+            if(r[0] && r[0].status=="deleted"){
+              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
+                this.page_not_found=true;
+                this.cd.detectChanges()
+                return
+              });
+            }
+            else{
               this.page_not_found=true;
               this.cd.detectChanges()
               return
-            });
+            }
           }
           else{
-            this.page_not_found=true;
-            this.cd.detectChanges()
-            return
+            let title =this.activatedRoute.snapshot.paramMap.get('title');
+            if(r[0].title !=title ){
+              this.page_not_found=true;
+              return;
+            }
+            else{
+              
+              this.check_archive();
+              this.drawing_one_shot_calls(r);
+            }
           }
         }
-        else{
-          let title =this.activatedRoute.snapshot.paramMap.get('title');
-          if(r[0].title !=title ){
-            this.page_not_found=true;
-            return;
-          }
-          else{
-            
-            this.check_archive();
-            this.drawing_one_shot_calls();
-          }
-        }
+       
       })
     }
 
     else if (this.type =="artbook"){
-      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.drawing_id).subscribe(r => {
-        if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended"){
-          if(r[0] && r[0].status=="deleted"){
-            this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
+      this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id2(this.drawing_id).subscribe(m => {
+        if(m[0]){
+          let r=m[0].data;
+          console.log(r[0]);
+          if(!r[0] || r[0].status=="deleted" || r[0].status=="suspended" || (r[0].authorid!=m[0].current_user && r[0].status!="public")){
+            if(r[0] && r[0].status=="deleted"){
+              this.navbar.delete_research_from_navbar("Drawing",this.type,this.drawing_id).subscribe(r=>{
+                this.page_not_found=true;
+                this.cd.detectChanges()
+                return
+              });
+            }
+            else{
               this.page_not_found=true;
               this.cd.detectChanges()
               return
-            });
+            }
+           
           }
           else{
-            this.page_not_found=true;
-            this.cd.detectChanges()
-            return
-          }
-         
-        }
-        else{
-          let title =this.activatedRoute.snapshot.paramMap.get('title');
-          if(r[0].title !=title ){
-            this.page_not_found=true;
-            return
-          }
-          else{
-            this.check_archive();
-            this.drawing_artbook_calls();
+            let title =this.activatedRoute.snapshot.paramMap.get('title');
+            if(r[0].title !=title ){
+              this.page_not_found=true;
+              return
+            }
+            else{
+              this.check_archive();
+              this.drawing_artbook_calls(r);
+            }
           }
         }
+        
       })
     }
     
@@ -359,9 +369,8 @@ export class ArtworkDrawingComponent implements OnInit {
     })
   }
 
-  drawing_one_shot_calls(){
+  drawing_one_shot_calls(r){
    console.log("one shot call")
-    this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(this.drawing_id).subscribe(r => {
       let drawing_name=r[0].drawing_name;
       this.authorid= r[0].authorid;
       this.list_of_reporters=r[0].list_of_reporters;
@@ -464,7 +473,6 @@ export class ArtworkDrawingComponent implements OnInit {
       this.get_recommendations_by_tag();
     
       this.item_retrieved=true;
-    });
   }
 
 
@@ -505,9 +513,8 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
 
-  drawing_artbook_calls(){
+  drawing_artbook_calls(r){
    console.log("drawing artbook call")
-    this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(this.drawing_id).subscribe(r => {
       this.authorid= r[0].authorid;
       
 
@@ -598,7 +605,6 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.item_retrieved=true;
 
-    });
   }
 
 
@@ -901,6 +907,13 @@ export class ArtworkDrawingComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.openOption(-1);
+    if(this.full_compt==1){
+      this.full_compt=2;
+    }
+    else if(this.full_compt==2){
+      this.full_compt=0;
+      this.fullscreen_mode = false;
+    }
   }
 
   see_description() {
@@ -1112,10 +1125,15 @@ export class ArtworkDrawingComponent implements OnInit {
 
 
 
+  full_compt=0;
   fullscreen_button() {
- 
+    window.dispatchEvent(new Event('resize'));
+
+  
+
     const elem = this.leftContainer.nativeElement;
     if( !this.fullscreen_mode ) {
+      this.full_compt=1;
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
         this.fullscreen_mode = true;
@@ -1129,8 +1147,10 @@ export class ArtworkDrawingComponent implements OnInit {
         elem.webkitRequestFullscreen();
         this.fullscreen_mode = true;
       }
+
     }
     else {
+      this.full_compt=0;
       document.exitFullscreen();
       this.fullscreen_mode = false;
     }
@@ -1610,14 +1630,24 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   archive(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     this.Subscribing_service.archive("drawings",this.type,this.drawing_id).subscribe(r=>{
       this.content_archived=true;
+      this.archive_loading=false;
     });
   }
 
   unarchive(){
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     this.Subscribing_service.unarchive("drawings",this.type,this.drawing_id).subscribe(r=>{
       this.content_archived=false;
+      this.archive_loading=false;
     });
   }
 
@@ -1659,15 +1689,25 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   emphasize(){
-      this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id,0).subscribe(r=>{
-        this.content_emphasized=true;
-      });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    this.Emphasize_service.emphasize_content("drawing",this.type,this.drawing_id,0).subscribe(r=>{
+      this.content_emphasized=true;
+      this.archive_loading=false;
+    });
   }
 
   remove_emphasizing(){
-      this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id,0).subscribe(t=>{
-        this.content_emphasized=false;
-      });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
+    this.Emphasize_service.remove_emphasizing("drawing",this.type,this.drawing_id,0).subscribe(t=>{
+      this.content_emphasized=false;
+      this.archive_loading=false;
+    });
   }
 
   /******************************************DISPLAY IMAGES ****************************************/
@@ -1782,12 +1822,17 @@ export class ArtworkDrawingComponent implements OnInit {
     });     
   }
 
+  archive_loading=false;
   set_private() {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if( result ) {
@@ -1796,6 +1841,7 @@ export class ArtworkDrawingComponent implements OnInit {
               console.log(r)
               this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
+                this.archive_loading=false;
               });
             })
            
@@ -1805,6 +1851,7 @@ export class ArtworkDrawingComponent implements OnInit {
               console.log(r)
               this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"private").subscribe(r=>{
                 this.status="private";
+                this.archive_loading=false;
               });
             })
             
@@ -1813,6 +1860,9 @@ export class ArtworkDrawingComponent implements OnInit {
         }
 
       }
+      else{
+        this.archive_loading=false;
+      }
     });
   }
   set_public() {
@@ -1820,6 +1870,10 @@ export class ArtworkDrawingComponent implements OnInit {
       data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
@@ -1827,6 +1881,7 @@ export class ArtworkDrawingComponent implements OnInit {
             console.log(r)
             this.Drawings_Onepage_Service.change_oneshot_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
+              this.archive_loading=false;
             });
           })
           
@@ -1836,11 +1891,15 @@ export class ArtworkDrawingComponent implements OnInit {
             console.log(r)
             this.Drawings_Artbook_Service.change_artbook_drawing_status(this.drawing_id,"public").subscribe(r=>{
               this.status="public";
+              this.archive_loading=false;
             });
           })
          
         }
           
+      }
+      else{
+        this.archive_loading=false;
       }
     });
   }
@@ -1850,12 +1909,16 @@ export class ArtworkDrawingComponent implements OnInit {
       data: {showChoice:true, text:'Êtes-vous sûr de vouloir supprimer cette œuvre ? Toutes les données associées seront définitivement supprimées'},
       panelClass: "popupConfirmationClass",
     });
+    if(this.archive_loading){
+      return
+    }
+    this.archive_loading=true;
     dialogRef.afterClosed().subscribe(result => {
       if( result ) {
         if(this.type=="one-shot"){
           console.log("suppression en cours");
-          this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
-            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+            this.Drawings_Onepage_Service.remove_drawing_from_sql(this.drawing_id).subscribe(r=>{
               this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
@@ -1871,17 +1934,21 @@ export class ArtworkDrawingComponent implements OnInit {
                   is_comment_answer:false,
                   comment_id:0,
                 }
+                this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
                 return;
               })
-            })
-          });
+            });
+            
+          })
+          
         }
         else{
           console.log("suppression en cours");
-          this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
-            this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+          
+          this.navbar.delete_publication_from_research("Drawing",this.type,this.drawing_id).subscribe(r=>{
+            this.Drawings_Artbook_Service.RemoveDrawingArtbook(this.drawing_id).subscribe(r=>{
               this.NotificationsService.remove_notification('add_publication','drawing',this.type,this.drawing_id,0,false,0).subscribe(l=>{
                 let message_to_send ={
                   for_notifications:true,
@@ -1897,14 +1964,19 @@ export class ArtworkDrawingComponent implements OnInit {
                   is_comment_answer:false,
                   comment_id:0,
                 }
+                this.archive_loading=false;
                 this.chatService.messages.next(message_to_send);
                 this.router.navigateByUrl( `/account/${this.pseudo}/${this.authorid}`);
                 return;
               })
-            })
-          });
+            });
+            
+          })
         }
 
+      }
+      else{
+        this.archive_loading=false;
       }
     });
   }
