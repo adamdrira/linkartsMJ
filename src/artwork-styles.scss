@@ -474,7 +474,7 @@ $default-color: #f9f9f9;
         padding: 0px 0px;
         color: $default-color;
         /*background: #122951;*/
-        background: #040b19;
+        background: rgb(8,20,43);
         z-index: 10;
         
         overflow-x:hidden;
@@ -561,6 +561,7 @@ $default-color: #f9f9f9;
             }
         }
         .options-buttons {
+
             position: absolute;
             right: 0px;
             margin: auto;
@@ -614,6 +615,11 @@ $default-color: #f9f9f9;
                 &:active {
                     background: #030a1654;
                 }
+            }
+
+            .archive-loading{
+                position:absolute;
+                right:2px;
             }
         }
 
@@ -997,17 +1003,42 @@ $default-color: #f9f9f9;
 
         .ad-container {
             width: 100%;
-            height: 222px;
+            height: 278px;
             .ad {
                 position: relative;
                 width: 100%;
-                height: 150px;
+                max-width: 340px;
+                height: 172px;
+                margin: auto;
+                max-width: 340px;
                 background-size: cover;
-                background-image: url("/assets/img/pub-manga.jpg");
+                background-image: url("/assets/img/help.jpg");
+            }
+            .ad-link2 {
+                cursor: pointer;
+                font-weight: 600;
+                margin: auto;
+                max-width: 340px;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+                height: 35px;
+                width: 100%;
+                padding: 0px 10px 0px 10px;
+                color: $default-color;
+                border-radius: 10px 10px 0px 0px;
+                background: #040b19;
+                //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+                span {
+                    font-size: 13px;
+                }
             }
             .ad-link {
                 cursor: pointer;
                 font-weight: 600;
+                margin: auto;
+                max-width: 340px;
                 text-align: center;
                 display: flex;
                 height: 35px;
@@ -1015,11 +1046,15 @@ $default-color: #f9f9f9;
                 padding: 0px 10px 0px 10px;
                 color: $default-color;
                 border-radius: 0px 0px 10px 10px;
-                background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
+                background: #040b19;
+                //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                 span {
                     font-size: 13px;
                     margin: auto 15px auto auto;
+                    &:hover {
+                        text-shadow: -0.01ex 0 $default-color, 0.01ex 0 $default-color;
+                    }
                 }
                 .ad-icon {
                     width: 16px;
@@ -1080,7 +1115,8 @@ $default-color: #f9f9f9;
 
                     &.opened {
                         /*background: rgb(32, 56, 100);*/
-                        background: #021133 !important;
+                        //background: #021133 !important;
+                        background: #040b19!important;
                         //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                         mat-icon {
@@ -1224,7 +1260,7 @@ $default-color: #f9f9f9;
 
                 &.opened {
                     /*background: rgb(32, 56, 100);*/
-                    background: rgba(2, 18, 54, 0.9);
+                    background: #040b19!important;
                     //background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
                     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     mat-icon {
@@ -1322,7 +1358,6 @@ $default-color: #f9f9f9;
             width: 100%;
             height: unset;
             overflow: visible;
-            background: #040b19;
             min-height:800px !important;
             .description-and-comments {
                 display: none;
