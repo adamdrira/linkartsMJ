@@ -4,6 +4,7 @@ import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser'
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -23,10 +24,15 @@ export class UploaderAttachmentsAdComponent implements OnInit {
     private rd:Renderer2,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    private navbar: NavbarService,
     
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       itemAlias: 'cover', 
       url:url,
@@ -85,16 +91,7 @@ export class UploaderAttachmentsAdComponent implements OnInit {
   
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
-  
   ngOnInit() {
-
     this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 
 
     this.uploader.onAfterAddingFile = async (file) => {

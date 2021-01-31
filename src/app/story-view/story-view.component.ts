@@ -8,6 +8,7 @@ import {PopupReportComponent} from '../popup-report/popup-report.component';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 declare var Swiper:any;
 declare var $: any;
 
@@ -38,8 +39,14 @@ export class StoryViewComponent implements OnInit {
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
     private Story_service:Story_service,
-
-  ) { }
+    private navbar: NavbarService,
+  ) {
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+   }
 
   
 
@@ -102,10 +109,11 @@ export class StoryViewComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+show_icon=false;
+ngOnInit() {
+  let THIS=this;
 
     console.log(this.list_of_data)
-    let THIS=this;
     $(window).on('blur', function(){
       if(!THIS.paused){
         THIS.clickPause();
@@ -167,17 +175,7 @@ export class StoryViewComponent implements OnInit {
 
   }
 
-  /*ngAfterViewInit() {
-    this.initialize_swiper();
-    console.log(this.index_debut);
-    this.swiper.slideTo( 3, false, false );
-    
-    this.timeLeft = 10;
-    this.cd.detectChanges();
-
-    
-  }*/
-
+  
 
   initialize_swiper() {
       this.swiper = new Swiper( this.swiperStory.nativeElement, {

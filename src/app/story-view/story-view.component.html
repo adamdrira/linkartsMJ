@@ -23,25 +23,25 @@
             [matTooltipShowDelay]="100">
                 <span>0</span><!--ngif liste vide-->
                 <!--<span>12</span> Coucou adam-->
-                <mat-icon>visibility</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
             </button>
 
             <button [matMenuTriggerFor]="storyOptions">
-                <mat-icon >more_horiz</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }" >more_horiz</mat-icon>
             </button>
             <mat-menu  #storyOptions="matMenu" class="story-mat-menu">
                 <button *ngIf="!visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="delete_story( swiper.activeIndex )"> 	
-                    <mat-icon>close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                     <span>Supprimer la story</span>
                 </button>
                 <button *ngIf="visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="report( swiper.activeIndex )"> 	
-                    <mat-icon>flag</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">flag</mat-icon>
                     <span>Signaler</span>
                 </button>
             </mat-menu>
 
             <button class="close-button" (click)="close_stories()">
-                <mat-icon>close</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
             </button>
 
         </div>
@@ -75,7 +75,7 @@
 
 
                 <button (click)="close_list_of_viewers()" class="close-list-of-views" *ngIf="!loading_list_of_viewers && show_list_of_viewers">
-                    <mat-icon>keyboard_arrow_left</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                     <span>Retour</span>
                 </button>
 
@@ -97,7 +97,7 @@
                                     <div class="right-container">
                                         <span class="author-name">
                                             <div>{{item.firstname}} {{item.lastname}}</div>
-                                            <mat-icon *ngIf="list_of_viewers[k].certified_account"
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_viewers[k].certified_account"
                                             matTooltip="Compte certifié" 
                                             matTooltipClass='linkarts-tooltip' 
                                             [matTooltipPosition]="'below'"
@@ -111,12 +111,12 @@
                         </div>
             
                         <button *ngIf="!list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
-                            <mat-icon>add</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                             <span>S'abonner</span>
                         </button>
                         <button *ngIf="list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
                             
-                            <mat-icon>notifications_active</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                             <span>Abonné(e)</span>
                         </button>
             
@@ -125,11 +125,11 @@
 
                 <!--
                         <button mat-raised-button *ngIf="!list_of_check_subscribtion[k]" class="button style1 subscriptions" (click)="subscribtion(k)">
-                            <mat-icon class="icon">person_add</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">person_add</mat-icon>
                             <span>S'abonner</span>
                         </button>
                         <button mat-raised-button *ngIf="list_of_check_subscribtion[k]" class="button style0 subscriptions" (click)="subscribtion(k)">
-                            <mat-icon class="icon">person_add_disabled</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">person_add_disabled</mat-icon>
                             <span>Se désabonner</span>
                         </button>
                     -->

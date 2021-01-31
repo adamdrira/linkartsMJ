@@ -6,15 +6,12 @@ import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import {MatMenuModule} from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
-import { PopupAdWriteResponsesComponent } from '../popup-ad-write-responses/popup-ad-write-responses.component';
 import { Reports_service } from '../services/reports.service';
 
 import {get_date_to_show} from '../helpers/dates';
-import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
@@ -59,7 +56,11 @@ export class ThumbnailAdComponent implements OnInit {
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
     ) { 
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     //this.navbar.setActiveSection(1);
     this.navbar.show();
   }
@@ -178,8 +179,8 @@ export class ThumbnailAdComponent implements OnInit {
   id_user:number;
   list_of_reporters:any[]=[];
   profile_data_retrieved=false;
+  show_icon=false;
   ngOnInit() {
-
     console.log(this.item);
     this.list_of_reporters=this.item.list_of_reporters;
     this.author_id=this.item.id_user;
@@ -261,7 +262,6 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   
-  show_icon=false;
   ngAfterViewInit(){
 
     if(this.for_ad_page){
@@ -307,10 +307,7 @@ export class ThumbnailAdComponent implements OnInit {
   
     }
     
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
   }
   
 

@@ -1,16 +1,14 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
-import { FormControl } from '@angular/forms';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { Subscribing_service } from '../services/subscribing.service';
 import { BdSerieService} from '../services/comics_serie.service';
-import { async } from '@angular/core/testing';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
+const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
 
 declare var $:any;
 @Component({
@@ -27,8 +25,13 @@ export class UploaderBdSerieComponent implements OnInit{
     private BdSerieService: BdSerieService, 
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
       
@@ -117,14 +120,9 @@ export class UploaderBdSerieComponent implements OnInit{
   }
   
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+ 
   image_to_show:any;
+  show_icon=false;
   ngOnInit() {
 
     console.log(this.bd_id);

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, SimpleChange, HostListener, ChangeDetectorRef, SimpleChanges } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import { Community_recommendation } from '../services/recommendations.service';
+
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -9,8 +8,8 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
-import { ConstantsService } from '../services/constants.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any
 
@@ -41,8 +40,15 @@ export class SubscribingsComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
     private cd:ChangeDetectorRef,
+    private navbar: NavbarService,
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
 
-    ) { }
+    }
 
   skeleton_array = Array(15);
   skeleton:boolean=true;
@@ -82,7 +88,9 @@ export class SubscribingsComponent implements OnInit {
  
  
 
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;

@@ -38,20 +38,20 @@
                 <div class="figure-container views">
                     <div>
                         <span>{{viewnumber}}</span>
-                        <mat-icon>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
                         <!--<div class="view-logo"></div>-->
                     </div>
                 </div>
                 <div class="figure-container likes">
                     <div>
                         <span>{{likesnumber}}</span>
-                        <mat-icon>thumb_up</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
                     </div>
                 </div>
                 <div class="figure-container loves">
                     <div>
                         <span>{{lovesnumber}}</span>
-                        <mat-icon>favorite</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                     </div>
                 </div>
             </div>
@@ -63,12 +63,12 @@
     </div>
     <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && selected"
         (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
-        <mat-icon>done_all</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Sélectionné</span>
     </button>
     <button class="add-or-remove-button" *ngIf="state=='swiper' && loaded_thumbnail && !selected"
         (click)="add_or_remove(); $event.stopPropagation();" [@enterAnimation]>
-        <mat-icon>add</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
         <span>Sélectionner</span>
     </button>
 </div>

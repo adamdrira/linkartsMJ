@@ -6,12 +6,12 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { UploaderArtbookComponent } from '../uploader-artbook/uploader-artbook.component';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $:any;
@@ -53,8 +53,13 @@ export class SwiperUploadArtbookComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
     private router:Router,
+    private navbar: NavbarService,
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
@@ -111,16 +116,14 @@ export class SwiperUploadArtbookComponent implements OnInit {
   confirmation:boolean=false;
   
   
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
     console.log(this.drawing_id)
   }
 
-  show_icon=false;
+ 
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+   
     this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();

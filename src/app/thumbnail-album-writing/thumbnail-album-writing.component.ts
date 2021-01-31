@@ -5,6 +5,7 @@ import { Writing_Upload_Service } from '../services/writing.service';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -31,10 +32,15 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private rd:Renderer2,
     private Writing_Upload_Service:Writing_Upload_Service,
+    private navbar: NavbarService,
 
     
     ) { 
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     }
 
     /*Inputs*/
@@ -69,9 +75,8 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
     loaded_thumbnail = false;
 
   
-  ngOnInit(): void {
-
-
+    show_icon=false;
+    ngOnInit() {
     this.viewnumber = number_in_k_or_m(this.writing_element.viewnumber)
     this.likesnumber = number_in_k_or_m(this.writing_element.likesnumber)
     this.lovesnumber = number_in_k_or_m(this.writing_element.lovesnumber)
@@ -97,27 +102,7 @@ export class ThumbnailAlbumWritingComponent implements OnInit {
 
 
   
-  ngAfterViewInit() {
-    
-    /*
-    if( this.writing_element.category == "Illustrated novel" ) {
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
-    }
-    else if( this.writing_element.category == "Roman" ) {
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
-    }
-    else if( this.writing_element.category == "Scenario" ) {
-
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
-    }
-    else if( this.writing_element.category == "Article" ) {
-
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
-    }*/
-
-
-  }
-
+  
 
   async add_or_remove() {
     if( this.action_in_progress ) {

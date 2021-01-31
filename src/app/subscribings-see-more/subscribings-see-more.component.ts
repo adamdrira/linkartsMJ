@@ -1,6 +1,4 @@
 import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -9,7 +7,6 @@ import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
-import { ConstantsService } from '../services/constants.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 declare var $: any

@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, EventEmitter, Output, SecurityContext, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
 
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import { Router  } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { animate, style, transition, trigger } from '@angular/animations';
 import {Subscribing_service} from '../services/subscribing.service';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NavbarService } from '../services/navbar.service';
 declare var $:any;
 
 @Component({
@@ -40,8 +40,16 @@ export class ThumbnailUserComponent implements OnInit {
     private sanitizer:DomSanitizer,
     private router:Router,
     public dialog:MatDialog,
+    private navbar: NavbarService,
     private Subscribing_service:Subscribing_service,
-    private cd:ChangeDetectorRef) { }
+    private cd:ChangeDetectorRef) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+
+    }
 
   /*Inputs*/
   @Input() item:any;
@@ -77,7 +85,8 @@ export class ThumbnailUserComponent implements OnInit {
   display_thumbnail=false;
   date_retrieved=false;
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
     if(this.item && this.item.id){
       this.user_id = this.item.id;
       
@@ -136,13 +145,7 @@ export class ThumbnailUserComponent implements OnInit {
   }
 
 
-  show_icon=false;
-  ngAfterViewInit() {
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+  
 
   load_pp(){
     this.pp_is_loaded=true;
@@ -156,26 +159,8 @@ export class ThumbnailUserComponent implements OnInit {
 
 
 
-  /*subscribtion(){
-    if(this.type_of_profile=='account'){
-      if(!this.subscribed_to_user){
-        this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
-          this.subscribed_to_user=true;
-        });
-      }
-      else{
-        this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
-          this.subscribed_to_user=false;
-        });
-      }
-    }
-    else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
-      });
-    }
   
-  }*/
+  
 
   stop(e: Event) {
     e.preventDefault();

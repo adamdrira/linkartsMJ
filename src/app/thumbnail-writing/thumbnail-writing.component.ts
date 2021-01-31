@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {Writing_Upload_Service} from '../services/writing.service';
-import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import {NotationService} from '../services/notation.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
@@ -10,6 +9,7 @@ import {date_in_seconds} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 import { Router  } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper: any;
 declare var $:any;
@@ -29,8 +29,16 @@ export class ThumbnailWritingComponent implements OnInit {
     private NotationService:NotationService,
     private router:Router,
     private cd:ChangeDetectorRef,
+    private navbar: NavbarService,
 
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+
+    }
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -87,6 +95,7 @@ export class ThumbnailWritingComponent implements OnInit {
 
   marks_retrieved=false;
 
+  show_icon=false;
   ngOnInit() {
     //console.log(this.item)
     this.user_id = this.item.authorid;
@@ -160,12 +169,9 @@ export class ThumbnailWritingComponent implements OnInit {
   }
   
 
-  show_icon=false;
+
   ngAfterViewInit() {
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+ 
 
     if( this.category == "Illustrated novel" ) {
       //this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );

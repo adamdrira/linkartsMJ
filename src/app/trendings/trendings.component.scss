@@ -106,6 +106,7 @@
         //background: #7891ad;
       background:#a8b5c4;
         transition: all 300ms;
+        -webkit-mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
       }
       .image2 {
@@ -115,6 +116,7 @@
         //background: #7891ad;
       background:#a8b5c4;
         transition: all 300ms;
+        -webkit-mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
       }
       .image3 {
@@ -124,6 +126,7 @@
         //background: #7891ad;
       background:#a8b5c4;
         transition: all 300ms;
+        -webkit-mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
       }
 
@@ -205,6 +208,7 @@
   width:30px;
   height:30px;
   margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
 }
 .pencil-icon {
@@ -213,6 +217,7 @@
   width:25px;
   height:25px;
   margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
 }
 .writing2-icon {
@@ -221,6 +226,7 @@
   width:28px;
   height:28px;
   margin:auto 10px auto auto;
+  -webkit-mask:  url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
   mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
 }
 

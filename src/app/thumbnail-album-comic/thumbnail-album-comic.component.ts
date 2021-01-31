@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener, Output, EventEmitter, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -6,6 +6,7 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -62,15 +63,20 @@ export class ThumbnailAlbumComicComponent implements OnInit {
     private BdSerieService: BdSerieService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private rd:Renderer2,
+    private navbar: NavbarService,
     
-    
-  ) { }
+  ) { navbar.visibility_observer_font.subscribe(font=>{
+    if(font){
+      this.show_icon=true;
+    }
+  })}
 
   
   @ViewChild("thumbnailRecto", {static:false}) thumbnailRecto: ElementRef;
 
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
 
     this.viewnumber = number_in_k_or_m(this.bd_element.viewnumber)
     this.likesnumber = number_in_k_or_m(this.bd_element.likesnumber)
@@ -108,26 +114,7 @@ export class ThumbnailAlbumComicComponent implements OnInit {
 
   }
 
-  ngAfterViewInit() {
-
-    /*
-    if( this.bd_element.category == "BD" ) {
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );
-    }
-    else if( this.bd_element.category == "Comics" ) {
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#1a844e,#77d05a)" );
-    }
-    else if( this.bd_element.category == "Manga" ) {
-
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#ee5842,#ed973c)" );
-    }
-    else if( this.bd_element.category == "Webtoon" ) {
-
-      this.rd.setStyle( this.thumbnailRecto.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
-    }*/
-
-
-  }
+  
 
 
   async add_or_remove() {

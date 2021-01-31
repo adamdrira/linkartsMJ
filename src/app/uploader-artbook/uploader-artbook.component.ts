@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
-import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
@@ -10,8 +9,9 @@ import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
+import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_drawing_artbook/';
+const url = 'http://localhost:4600/routes/upload_drawing_artbook/';
 
 declare var $:any;
 @Component({
@@ -32,8 +32,13 @@ export class UploaderArtbookComponent implements OnInit {
     private router: Router,
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       url:url,
       //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
@@ -113,15 +118,10 @@ export class UploaderArtbookComponent implements OnInit {
     this.afficheruploader = true;
   }
   
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+  
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
     console.log(this.drawing_id)
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;

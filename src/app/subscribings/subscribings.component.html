@@ -17,7 +17,7 @@
 
     <ng-container *ngIf="display_nothing_found">
         <div class="text-lines large" [@enterAnimation]>
-            <mat-icon>info_outline</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
             <span>Aucun contenu disponible pour le moment.</span>
         </div>
     </ng-container>

@@ -1,16 +1,13 @@
 import { Component, OnInit, ViewChild, ViewChildren, QueryList, ViewContainerRef, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, Output, EventEmitter, Input, HostListener } from '@angular/core';
 import { UploadService } from '../services/upload.service';
-import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
-import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
 import { UploaderBdSerieComponent } from '../uploader-bd-serie/uploader-bd-serie.component';
-import { Observable, Subscription } from 'rxjs';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var Swiper: any;
@@ -42,9 +39,14 @@ export class SwiperUploadSerieComponent implements OnInit {
     private BdSerieService:BdSerieService,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
+    private navbar: NavbarService,
 
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   @Input() disabled: boolean;
@@ -79,6 +81,7 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   
 
+  show_icon=false;
   ngOnInit() {
     
     this.createFormControls00();
@@ -86,12 +89,7 @@ export class SwiperUploadSerieComponent implements OnInit {
 
   }
 
-  show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
     this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();

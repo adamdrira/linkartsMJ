@@ -362,7 +362,7 @@
             border-radius: 20px;
             padding: 5px 9px 5px 9px;
             display: flex;
-            background: #3c719a;
+            background: #203864;
             margin: auto 4px 3px 0px;
             color: white;
             span {
@@ -435,7 +435,6 @@
             margin: auto 4px auto 6px;
             display: flex;
             padding: 0px 6px;
-            background: white;
             border-bottom: solid 2px rgba(2, 18, 54, 0.9);
             border-radius: 20px;
             span {
@@ -451,6 +450,11 @@
             &.views {
                 mat-icon {
                     margin-top: 1px;
+                }
+            }
+            &.likes {
+                mat-icon {
+                    margin-top: 1.5px;
                 }
             }
             &.loves {

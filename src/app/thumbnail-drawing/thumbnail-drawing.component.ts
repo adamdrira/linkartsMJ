@@ -4,7 +4,6 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {NotationService} from '../services/notation.service';
-import { get_color_code } from '../helpers/drawings-colors';
 
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
@@ -14,6 +13,7 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 import { Router  } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $:any;
@@ -44,7 +44,13 @@ export class ThumbnailDrawingComponent implements OnInit {
     private NotationService:NotationService,
     private cd:ChangeDetectorRef,
     private router:Router,
+    private navbar: NavbarService,
     ) {
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   @Output() sendLoaded = new EventEmitter<boolean>();
@@ -125,7 +131,8 @@ export class ThumbnailDrawingComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
 
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
@@ -191,13 +198,10 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.date_upload_to_show = get_date_to_show( date_in_seconds( this.now_in_seconds, this.date_upload ) );
   }
 
-  show_icon=false;
+ 
   ngAfterViewInit() {
 
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+
 
     if(!this.prevent_shiny){
 

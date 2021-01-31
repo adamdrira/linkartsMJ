@@ -21,6 +21,7 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
 declare var $:any;
@@ -67,8 +68,16 @@ export class ThumbnailArtworkComponent implements OnInit {
     private rd:Renderer2,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
+    private navbar: NavbarService,
 
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+
+    }
 
 
   @ViewChild('image') image:ElementRef;
@@ -79,7 +88,6 @@ export class ThumbnailArtworkComponent implements OnInit {
       
 
       if(this.list_of_images_to_show_retrieved && this.image2){
-        //console.log("resize rendered")
         let width2 = this.image2.nativeElement.width;
         let height2 = this.image2.nativeElement.height;
         if( window.innerWidth<=600 && this.category!="drawing" ) {
@@ -158,7 +166,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   type_of_thumbnail:number // 0 pour emphasized et 1 pour trendings et subscribtions
   report_done=false;
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
 
     if( !this.skeleton ) {
       
@@ -753,55 +762,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         this.cd.detectChanges()
         ////console.log("swiper initialized for " + this.item.bd_id + ' ' + this.item.chaptersnumber)
       };
-      //console.log(this.swiperThumbnails )
-      //console.log(this.swiper2_initialized )
-      /*if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
-        
-        this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
-          speed: 500,
-          initialSlide:0,
-          slidesPerView:1,
-          navigation: {
-            nextEl: '.swiper--button-next',
-            prevEl: '.swiper--button-prev',
-          },
-          pagination: {
-            el: '.thumbnail-artwork-pagination',
-            type: 'bullets'
-          },
-          simulateTouch:true,
-          observer:true,
-          
-
-        })
-        this.swiper2_initialized=true;
-        this.cd.detectChanges()
-      };
-
-      if( this.subscribing_category=='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
-        this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
-          speed: 500,
-          initialSlide:0,
-          slidesPerView:1,
-          navigation: {
-            nextEl: '.swiper--button-next',
-            prevEl: '.swiper--button-prev',
-          },
-          pagination: {
-            el: '.thumbnail-artwork-pagination',
-            type: 'bullets'
-          },
-          simulateTouch:true,
-          observer:true,
-          on: {
-            slideChange: function () {
-              THIS.load_pdf();
-            },
-          },
-        })
-        this.swiper2_initialized=true;
-        this.cd.detectChanges()
-      }*/
+      
 
       return;
   };
@@ -869,13 +830,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+  
 
   /******************************************** SHOW IMAGES PREVIEW  *******************************************/
   /******************************************** SHOW IMAGES PREVIEW   *******************************************/

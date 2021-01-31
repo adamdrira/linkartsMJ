@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer, } from '@angular/platform-browser';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
-const url = 'https://www.linkarts.fr/routes/upload_attachments_ad_response/';
+const url = 'http://localhost:4600/routes/upload_attachments_ad_response/';
 
 @Component({
   selector: 'app-uploader-ad-response-attachments',
@@ -23,10 +24,15 @@ export class UploaderAdResponseAttachmentsComponent implements OnInit {
     private rd:Renderer2,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     private sanitizer:DomSanitizer
     
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       itemAlias: 'cover', 
       url:url,
@@ -85,15 +91,10 @@ export class UploaderAdResponseAttachmentsComponent implements OnInit {
   }
   
 
+ 
+
+
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
-
   ngOnInit() {
 
     this.Ads_service.send_confirmation_for_add_ad(this.confirmation); 

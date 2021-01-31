@@ -4,14 +4,11 @@ import { BdOneShotService } from '../services/comics_one_shot.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Uploader_bd_oneshot } from '../uploader_bd_oneshot/uploader_bd_oneshot.component';
-import { Observable, Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
-import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var Swiper: any;
@@ -42,10 +39,15 @@ export class SwiperUploadOneshotComponent implements OnInit {
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     private Subscribing_service:Subscribing_service
 
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
@@ -69,18 +71,13 @@ export class SwiperUploadOneshotComponent implements OnInit {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
+  show_icon=false;
   ngOnInit() {
     
   }
 
-  show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
 
-    this.cd.detectChanges;
     this.initialize_swiper();
     this.initialize_swiper_controller();
   }

@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, HostListener, Renderer2, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, HostListener, Renderer2, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { Drawings_CoverService} from '../services/drawings_cover.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
-import { first } from 'rxjs/operators';
-
-import { get_color_code } from '../helpers/drawings-colors';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $: any;
@@ -45,8 +43,14 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
     public dialog: MatDialog,
     private cd:ChangeDetectorRef,
     private router:Router,
+    private navbar: NavbarService,
      ) { 
     this.image_uploaded = false;
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
   }
 
   @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
@@ -91,18 +95,12 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
   confirmation:boolean=false;
 
   
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
    
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
+ 
 
 
   showDetails() {

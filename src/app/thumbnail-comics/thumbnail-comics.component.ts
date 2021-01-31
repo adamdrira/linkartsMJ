@@ -10,6 +10,7 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 
 
 import { Router  } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var Swiper: any;
@@ -33,8 +34,16 @@ export class ThumbnailComicsComponent implements OnInit {
     private NotationService:NotationService,
     private router:Router,
     private cd:ChangeDetectorRef,
+    private navbar: NavbarService,
 
-  ) { }
+  ) { 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+
+  }
 
 
   @HostListener('window:resize', ['$event'])
@@ -95,6 +104,7 @@ export class ThumbnailComicsComponent implements OnInit {
   marks_retrieved=false;
 
 
+  show_icon=false;
   ngOnInit() {
     //console.log(this.format)
     this.user_id = this.item.authorid
@@ -203,14 +213,9 @@ export class ThumbnailComicsComponent implements OnInit {
   }
 
 
-  show_icon=false;
+ 
 
   ngAfterViewInit() {
-
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
 
     if( this.category == "BD" ) {
       this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#044fa9,#25bfe6)" );

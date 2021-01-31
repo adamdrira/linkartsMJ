@@ -1,12 +1,9 @@
 
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
-import { FormControl } from '@angular/forms';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import { BdOneShotService} from '../services/comics_one_shot.service';
-import { async } from '@angular/core/testing';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 
@@ -14,9 +11,10 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import {NotificationsService}from '../services/notifications.service';
-import {ChatService}from '../services/chat.service';
+import {ChatService} from '../services/chat.service';
+import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_page_bd_oneshot/';
+const url = 'http://localhost:4600/routes/upload_page_bd_oneshot/';
 
 declare var $:any;
 
@@ -35,13 +33,18 @@ export class Uploader_bd_oneshot implements OnInit{
      private sanitizer:DomSanitizer,  
      private bdOneShotService: BdOneShotService, 
      private router: Router,
+     private navbar: NavbarService,
      private Profile_Edition_Service:Profile_Edition_Service,
      public dialog: MatDialog,
      ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       //itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
-
+     
     });
 
     this.hasBaseDropZoneOver = false;
@@ -111,6 +114,7 @@ get upload(): boolean {
     this.afficheruploader = true;
   }
 
+  show_icon=false;
   ngOnInit() {
 
     console.log(this.bd_id)
@@ -186,14 +190,7 @@ get upload(): boolean {
     }
   };
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
+  
 //on affiche le preview du fichier ajouté
  displayContent(item: FileItem): SafeUrl {
      let url = (window.URL) ? window.URL.createObjectURL(item._file) : (window as any).webkitURL.createObjectURL(item._file);

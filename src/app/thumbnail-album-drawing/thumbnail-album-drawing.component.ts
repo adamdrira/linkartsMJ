@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, QueryList, ElementRef, Renderer2, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
@@ -8,6 +8,7 @@ import {date_in_seconds} from '../helpers/dates';
 import {get_date_to_show} from '../helpers/dates';
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -33,8 +34,14 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    private navbar: NavbarService,
     ) {
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   cancelled: number;
@@ -88,8 +95,8 @@ export class ThumbnailAlbumDrawingComponent implements OnInit {
     this.pp_is_loaded=true;
   }
 
-  ngOnInit(): void {
-
+  show_icon=false;
+  ngOnInit() {
     this.user_id = this.item.authorid;
     this.file_name = this.item.name_coverpage;
     this.title = this.item.title;
