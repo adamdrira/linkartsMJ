@@ -2,6 +2,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-popup-linkcollab-filters',
@@ -24,10 +25,16 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupLinkcollabFiltersComponent>,
     private cd:ChangeDetectorRef,
     private rd:Renderer2,
+    private navbar: NavbarService,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       dialogRef.disableClose = true;
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
   
   ads_types = ["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
@@ -52,7 +59,9 @@ export class PopupLinkcollabFiltersComponent implements OnInit {
   remuneration=this.data.remuneration;
 
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
 
   }
 

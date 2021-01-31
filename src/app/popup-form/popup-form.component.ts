@@ -1,5 +1,4 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, ElementRef, ViewChild, HostListener } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -7,7 +6,7 @@ import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { pattern } from '../helpers/patterns';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
 
 
@@ -28,9 +27,15 @@ export class PopupFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private NotificationsService:NotificationsService,
     private sanitizer:DomSanitizer,
+    private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       dialogRef.disableClose = true;
 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   display_errors:boolean = false;
@@ -40,7 +45,9 @@ export class PopupFormComponent implements OnInit {
   id_retrieved=false;
 
   number_of_artists:number;
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
 
     if(this.data.type=='add_artist'){
       console.log(this.data)
@@ -58,11 +65,7 @@ export class PopupFormComponent implements OnInit {
 
   }
 
-  ngAfterViewInit() {
-
-
-  }
-
+ 
 
 
   /************************************************** ADD ARTIST  **************************************/

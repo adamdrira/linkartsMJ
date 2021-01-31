@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -12,11 +12,12 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -34,13 +35,17 @@ export class PopupFormDrawingComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     public dialog: MatDialog,
-
+    private navbar: NavbarService,
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
       dialogRef.disableClose = true;
-      
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.filteredGenres = this.genreCtrl.valueChanges.pipe(
         startWith(null),
         map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
@@ -54,7 +59,9 @@ export class PopupFormDrawingComponent implements OnInit {
 
 
 
-  ngOnInit() {
+ show_icon=false;
+ ngOnInit() {
+   let THIS=this;
 
     this.createFormControlsDrawings();
     this.createFormDrawings();

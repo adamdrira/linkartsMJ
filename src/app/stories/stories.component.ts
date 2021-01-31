@@ -1,16 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, EventEmitter, Output } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener} from '@angular/core';
+import {Renderer2} from '@angular/core';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Story_service } from '../services/story.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import {  DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
 import { PopupStoriesComponent } from '../popup-stories/popup-stories.component';
 import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
 
 
 declare var $: any

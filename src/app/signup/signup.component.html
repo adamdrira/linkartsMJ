@@ -1,11 +1,11 @@
 
 
 <button class="close-button" (click)="close_dialog()">
-    <mat-icon>close</mat-icon>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
 <button *ngIf="step>0" class="back-button" (click)="step_back();">
-    <mat-icon>keyboard_arrow_left</mat-icon>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
 </button>
 
 <div class="popup-signup">
@@ -51,8 +51,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
                 </mat-form-field>
             </div>
@@ -67,8 +67,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
                 </mat-form-field>
             </div>
@@ -81,7 +81,7 @@
         <div class="error">
             <span *ngIf="display_need_information" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
             <span *ngIf="!display_need_information && display_email_and_password_found_1 && !display_email_found_1 " [@enterAnimation]>Attention, un compte avec les mêmes identifiants existe déjà</span>
-            <span *ngIf="!display_need_information && display_email_and_password_found_1 && display_email_found_1 " [@enterAnimation]>Attention, un compte avec la même adresse email existe déjà</span>
+            <span *ngIf="!display_need_information && display_email_and_password_found_1 && display_email_found_1 " [@enterAnimation]>Attention, un compte avec la même adresse e-mail existe déjà</span>
         </div>
 
     </ng-container>
@@ -133,11 +133,11 @@
 
             <div class="form-item" *ngIf="registerForm2.value.type_of_account && (registerForm2.value.type_of_account.includes('Artiste professionnel') ||registerForm2.value.type_of_account.includes('Maison'))">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Numéro SIRET</mat-label>
-                    <input matInput formControlName="siret" autocomplete="off" maxLength="14" type="search">
-                    <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIRET valide
+                    <mat-label>Numéro SIREN</mat-label>
+                    <input matInput formControlName="siret" autocomplete="off" maxLength="9" type="search">
+                    <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide
                     </mat-error>
-                    <div class="length-indicator">{{registerForm2.controls['siret'].value?.length || 0}}/14</div>
+                    <div class="length-indicator">{{registerForm2.controls['siret'].value?.length || 0}}/9</div>
                 </mat-form-field>
             </div>
 
@@ -167,7 +167,7 @@
                     <mat-label>Date de naissance</mat-label>
                     <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
                     <mat-datepicker-toggle matSuffix [for]="picker">
-                        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
                     </mat-datepicker-toggle>
                     <mat-error *ngIf="registerForm2.controls['birthday'].invalid">Veuillez saisir une date de naissance valide</mat-error>
                     <mat-datepicker #picker disabled="false" panelClass="signup-datepicker" startView="multi-year"></mat-datepicker>
@@ -281,7 +281,7 @@
                         </div>
 
                         <button class="unsubscribe-button" (click)="remove_member(i)">
-                            <mat-icon>remove</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">remove</mat-icon>
                             <span>Retirer</span>
                         </button>
                     </div>
@@ -297,7 +297,7 @@
                         </div>
                         <div class="add-container">
                             <button mat-button class="mat-icon-button" style="display:flex;justify-content: center;align-items: center;" tabIndex="-1" (click)="remove_member(i)"> 	
-                                <mat-icon style=" color: #203864;">person_remove</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" style=" color: #203864;">person_remove</mat-icon>
                             </button>
                         </div>
                     </div>
@@ -359,7 +359,7 @@
 
                                 <ng-container *ngIf="check_if_pseudos_added()">
                                     <button class="subscribe-button" (click)="add_member()">
-                                        <mat-icon>add</mat-icon>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                         <span>Ajouter</span>
                                     </button>
                                 </ng-container>
@@ -421,8 +421,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide2" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide2" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide2" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide2" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
 
                 </mat-form-field>
@@ -455,17 +455,11 @@
     
 
     <ng-container *ngIf="step==4 && registerForm1.value.gender=='Groupe' &&  !need_authentication">
-
-        <!--<div class="step-back">
-            <div (click)="step_back();" class="left">Retour</div>
-        </div>-->
-
-            
-        <!-- A TERMINER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        
         <div class="step-form" [formGroup]="registerForm6">
         
             <div class="step-name">
-                <span>Localisation du groupe</span>
+                <span>Informations complémentaires</span>
             </div>
             
             <div class="form-item">
@@ -515,7 +509,7 @@
                         </mat-form-field>
                     </div>
                     <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon>add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                     </button>
                 </div>
             </div>
@@ -538,11 +532,11 @@
                         </div>
 
                         <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0">
-                            <mat-icon>more_vert</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                         </button>
                         <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="signup-mat-menu">
                             <button class="signup-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                <mat-icon>close</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                 <span>Supprimer</span>
                             </button>
                         </mat-menu>
@@ -564,7 +558,8 @@
         </div>
 
         <button [disabled]="loading_signup" class="submit-button" (click)="register();">
-            <span *ngIf="!loading_signup">M'inscrire</span>
+            <span *ngIf="!loading_signup && !registerForm2.value.type_of_account.includes('Artiste')">M'inscrire</span>
+            <span *ngIf="!loading_signup && registerForm2.value.type_of_account.includes('Artiste')">Créer</span>
             <div class="loading-dots" *ngIf="loading_signup">
                 &nbsp; <span>.</span><span>.</span><span>.</span>
             </div>
@@ -580,8 +575,8 @@
 
         <div class="error">
             <span *ngIf="display_pseudo_found_2" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre pseudonyme semble avoir été utilisé par un autre utilisateur</span>
-            <span *ngIf="display_email_found_2" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre email semble avoir été utilisée par un autre utilisateur</span>
-            <span *ngIf="display_email_or_pseudo_found" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre email ou votre pseudonyme semble avoir été utilisé par un autre utilisateur</span>
+            <span *ngIf="display_email_found_2" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre e-mail semble avoir été utilisée par un autre utilisateur</span>
+            <span *ngIf="display_email_or_pseudo_found" [@enterAnimation]>Une erreur s'est produite lors de l'inscription. Votre e-mail ou votre pseudonyme semble avoir été utilisé par un autre utilisateur</span>
         </div>
 
     </ng-container>
@@ -667,7 +662,7 @@
                         </mat-form-field>
                     </div>
                     <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon>add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                     </button>
                 </div>
             </div>
@@ -690,11 +685,11 @@
                         </div>
 
                         <button class="aboutLinkButton" [matMenuTriggerFor]="accountAboutOptions0">
-                            <mat-icon>more_vert</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">more_vert</mat-icon>
                         </button>
                         <mat-menu #accountAboutOptions0="matMenu" xPosition='before' class="signup-mat-menu">
                             <button class="signup-menu-item" mat-menu-item (click)="remove_link(i)"> 	
-                                <mat-icon>close</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
                                 <span>Supprimer</span>
                             </button>
                         </mat-menu>

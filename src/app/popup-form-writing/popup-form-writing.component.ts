@@ -1,23 +1,20 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
-import { ConstantsService } from '../services/constants.service';
-import { UploadService } from '../services/upload.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit, Renderer2, ElementRef, ChangeDetectorRef, ViewChild, Inject } from '@angular/core';
 
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Writing_Upload_Service } from '../services/writing.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { SafeUrl } from '@angular/platform-browser';
 
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -33,7 +30,7 @@ export class PopupFormWritingComponent implements OnInit {
     private cd:ChangeDetectorRef,
     private rd:Renderer2,
     private Writing_Upload_Service:Writing_Upload_Service,
-
+    private navbar: NavbarService,
     public dialog: MatDialog,
 
 
@@ -41,7 +38,11 @@ export class PopupFormWritingComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       
       dialogRef.disableClose = true;
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.filteredGenres = this.genreCtrl.valueChanges.pipe(
         startWith(null),
         map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
@@ -56,7 +57,9 @@ export class PopupFormWritingComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+ show_icon=false;
+ ngOnInit() {
+   let THIS=this;
 
     this.createFormControlsWritings();
     this.createFormWritings();

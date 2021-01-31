@@ -11,7 +11,7 @@
         <span>Abonnements</span>
 
         <button class="close-button" [mat-dialog-close]="true">
-            <mat-icon>close</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
         </button>
     </div>
 
@@ -42,7 +42,7 @@
                                 
                                 <span class="author-name">
                                     <div>{{item.firstname}} {{item.lastname}}</div>
-                                    <mat-icon *ngIf="list_of_subscribings_information[i].certified_account"
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_subscribings_information[i].certified_account"
                                     matTooltip="Compte certifié" 
                                     matTooltipClass='linkarts-tooltip' 
                                     [matTooltipPosition]="'below'"
@@ -59,11 +59,11 @@
     
                 <ng-container *ngIf="type_of_profile=='account' && list_of_subscribings_information[i].id!=visitor_id">
                     <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
-                        <mat-icon>add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                         <span>S'abonner</span>
                     </button>
                     <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
-                        <mat-icon>notifications_active</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                         <span>Abonné(e)</span>
                     </button>
                 </ng-container>

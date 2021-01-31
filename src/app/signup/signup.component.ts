@@ -9,7 +9,6 @@ import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { pattern } from '../helpers/patterns';
 import { MustMatch } from '../helpers/must-match.validator';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -18,9 +17,11 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import * as moment from 'moment'; 
 import { trigger, transition, style, animate } from '@angular/animations';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+
+declare var $: any;
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -69,7 +70,11 @@ export class SignupComponent implements OnInit {
       public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       dialogRef.disableClose = true;
-      
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   registerForm1: FormGroup;
@@ -80,7 +85,7 @@ export class SignupComponent implements OnInit {
   registerForm6: FormGroup;
   registerForm7: FormGroup;
   
-
+  for_group_creation=this.data.for_group_creation
   //LinksGroup:FormGroup;
   links_submitted=false;
   user = new User();
@@ -131,6 +136,7 @@ export class SignupComponent implements OnInit {
   }
 
   conditions:any;
+  show_icon=false;
   ngOnInit() {
 
     this.Writing_Upload_Service.retrieve_writing_for_options(0).subscribe(r=>{
@@ -150,7 +156,7 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(100),
         ]),
       ],
-      gender: ['', 
+      gender: [(this.for_group_creation)?"Groupe":"", 
         Validators.compose([
           Validators.required,
         ]),
@@ -197,8 +203,8 @@ export class SignupComponent implements OnInit {
       siret: ['', 
         Validators.compose([
           Validators.pattern(pattern("siret")),
-          Validators.minLength(14),
-          Validators.maxLength(14),
+          Validators.minLength(9),
+          Validators.maxLength(9),
         ]),
       ],
       firstName: ['', 
@@ -344,6 +350,8 @@ export class SignupComponent implements OnInit {
     });
       
   }
+
+ 
 
   listOfGenders = ["Femme","Homme","Groupe"];
   listOfAccounts_group = ["Artistes","Artistes professionnels","Maison d'édition","Professionnels non artistes"];
@@ -659,20 +667,21 @@ export class SignupComponent implements OnInit {
   }
 
   validate_step() {
-    //console.log("validate step")
-    //console.log(this.step)
-    //console.log(this.registerForm2)
+    console.log("validate step")
+    console.log(this.step)
+    console.log(this.registerForm2)
     if(this.step==1 && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
-        //console.log(this.registerForm2.value.siret)
-        if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<14)){
-          //console.log("siret prob")
+        console.log(this.registerForm2.value.siret)
+        if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<9)){
+          console.log("siret prob")
+          console.log(this.registerForm2);
           this.display_need_information=true;
           this.display_email_and_password_found_1=false;
           return;
         }
         else if((this.registerForm2.valid && this.registerForm1.value.gender!='Groupe') || (this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID')){
-          //console.log(this.registerForm2);
-          //console.log("cas 5")
+          console.log(this.registerForm2);
+          console.log("cas ")
           this.display_need_members=false;
           this.display_need_information=false;
           this.display_email_and_password_found_1=false;
@@ -684,7 +693,7 @@ export class SignupComponent implements OnInit {
     || (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && ( (this.registerForm1.value.gender=='Groupe' && (this.registerForm2.value.type_of_account=='Artistes' || this.registerForm2.value.type_of_account=='Artistes professionels') ) || (this.registerForm1.value.gender!='Groupe') ))
     || (this.step==3 && this.registerForm1.value.gender=='Groupe' && this.list_of_pseudos.length>1 ) ) {
       if(this.step==3 && this.registerForm1.value.gender=="Groupe"){
-        //console.log("cas 2")
+        console.log("cas 2")
        
         if( this.registerForm2.value.type_of_account.includes('Artiste')){
         this.need_authentication=true;
@@ -706,7 +715,7 @@ export class SignupComponent implements OnInit {
     else if (this.step == 2 && this.registerForm3.valid && !this.display_pseudo_found_1 && this.registerForm1.value.gender=='Groupe' 
     &&  (this.registerForm2.value.type_of_account!='Artistes' 
     && this.registerForm2.value.type_of_account!='Artistes professionels')){
-      //console.log("cas 3")
+      console.log("cas 3")
       this.display_need_members=false;
       this.display_need_information=false;
       this.step+=2; 
@@ -714,12 +723,12 @@ export class SignupComponent implements OnInit {
       this.cd.detectChanges();
     }
     else if(this.step==3 && this.list_of_pseudos.length<2 ){
-      //console.log("cas 4")
+      console.log("cas 4")
       this.display_need_members=true;
     }
     else if(this.step==1 &&  this.registerForm1.value.gender=='Groupe' && this.registerForm2.controls.birthday.status=='INVALID' && this.registerForm2.controls.firstName.status=='VALID'){
-      //console.log(this.registerForm2);
-      //console.log("cas 5")
+      console.log(this.registerForm2);
+      console.log("cas 5")
       this.display_need_members=false;
       this.display_need_information=false;
       this.display_email_and_password_found_1=false;
@@ -727,8 +736,8 @@ export class SignupComponent implements OnInit {
       this.cd.detectChanges();
     }
     else{
-      //console.log("cas 6")
-      //console.log(this.registerForm3);
+      console.log("cas 6")
+      console.log(this.registerForm3);
       //console.log(this.display_email_and_password_error)
       //console.log(this.display_email_and_password_found_1)
       //console.log(this.display_email_found_1)

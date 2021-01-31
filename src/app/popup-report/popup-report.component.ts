@@ -1,9 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { User } from '../services/user';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '../services/authentication.service';
 import { Reports_service } from '../services/reports.service';
 
 import { pattern } from '../helpers/patterns';
@@ -11,10 +9,7 @@ import { pattern } from '../helpers/patterns';
 
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-
 
 
 @Component({
@@ -57,7 +52,11 @@ export class PopupReportComponent implements OnInit {
     // redirect to home if already logged in
       dialogRef.disableClose = true;
     
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   from_account=false;
@@ -71,7 +70,9 @@ export class PopupReportComponent implements OnInit {
   message:string;
   type_of_report:string;
   
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
     console.log(this.data)
     this.step = 0;
     this.from_account=this.data.from_account;

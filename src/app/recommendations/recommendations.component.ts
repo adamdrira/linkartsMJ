@@ -1,9 +1,6 @@
-import { Component, OnInit, Input, SimpleChange, ChangeDetectorRef, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
+import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';

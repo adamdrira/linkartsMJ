@@ -1,6 +1,6 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2,  ChangeDetectorRef,  Inject } from '@angular/core';
 
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -41,11 +42,15 @@ export class PopupSubscribingsComponent implements OnInit {
     public dialog: MatDialog,
     private Profile_Edition_Service:Profile_Edition_Service,
 
-
+    private navbar: NavbarService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
       dialogRef.disableClose = true;
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
 
   }
 
@@ -57,7 +62,9 @@ export class PopupSubscribingsComponent implements OnInit {
   type_of_profile=this.data.type_of_profile;
   visitor_id=this.data.visitor_id;
   visitor_name=this.data.visitor_name;
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
     console.log(this.data.visitor_id)
     console.log(this.data.visitor_name)
     console.log(this.data.type_of_profile)

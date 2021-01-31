@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-popup-confirmation',
@@ -10,12 +10,20 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class PopupConfirmationComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<PopupConfirmationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private navbar: NavbarService,) {
       dialogRef.disableClose = true;
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
      }
 
 
-  ngOnInit(): void {
+     show_icon=false;
+     ngOnInit() {
+     
 
   }
 

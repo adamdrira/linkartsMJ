@@ -2,7 +2,7 @@
 <div class="title">
     <span>Edition de la miniature</span>
     <button [mat-dialog-close]="true">
-        <mat-icon>close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
     </button>
 </div>
 

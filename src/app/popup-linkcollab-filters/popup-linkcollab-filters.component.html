@@ -9,7 +9,7 @@
             <ng-container *ngIf="category_index==2">Produits et services</ng-container></span>
 
         <button class="close-button" (click)="validate();">
-            <mat-icon>close</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
         </button>
 
     </div>
@@ -137,7 +137,7 @@
     </div>
 
     <button class="validate" (click)="validate()">
-        <mat-icon>done_all</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider</span>
     </button>
 

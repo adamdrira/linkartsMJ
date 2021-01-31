@@ -5,6 +5,7 @@ import { Story_service } from '../services/story.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
 declare var $:any;
@@ -34,11 +35,16 @@ export class PopupStoriesComponent implements OnInit {
     private viewref: ViewContainerRef,
     private rd:Renderer2,
     private location:Location,
+    private navbar: NavbarService,
     private Story_service:Story_service,
     
   @Inject(MAT_DIALOG_DATA) public data: any) { 
     dialogRef.disableClose = true;
-    
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
   }
 
 
@@ -57,7 +63,9 @@ export class PopupStoriesComponent implements OnInit {
   list_of_data=[];
   index_id_of_user=this.data.index_id_of_user
   for_account=this.data.for_account;
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
 
     
     console.log( this.data.list_of_users );
@@ -80,7 +88,6 @@ export class PopupStoriesComponent implements OnInit {
       console.log(this.data.list_of_users)
     }
 
-    let THIS = this;
 
     this.swiper = new Swiper('.swiper-container-stories', {
       

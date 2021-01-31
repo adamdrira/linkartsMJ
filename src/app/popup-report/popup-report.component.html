@@ -1,7 +1,7 @@
 
  <div class="button-container-close">
     <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
-        <mat-icon class="item-icon" >close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >close</mat-icon>
     </button>
 </div>
 
@@ -19,15 +19,15 @@
         <button class="motif" (click)="validate_step(0);">
             <span *ngIf="!from_account">Contenu indésirable</span>
             <span *ngIf="from_account">Contenus indésirables</span>
-            <mat-icon>keyboard_arrow_right</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
         </button>
         <button class="motif" (click)="validate_step(1);">
             <span>Plagiat</span>
-            <mat-icon>keyboard_arrow_right</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
         </button>
         <button class="motif" (click)="validate_step(0);">
             <span>Spam</span>
-            <mat-icon>keyboard_arrow_right</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
         </button>
 
     </div>
@@ -35,7 +35,7 @@
     <div *ngIf="step==1" [@enterAnimation]>
 
         <button class="step-back" (click)="step_back();">
-            <mat-icon>keyboard_arrow_left</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
             <span>Retour</span>
         </button>
 
@@ -80,7 +80,7 @@
         
         <button class="submit-button" (click)="validate_all();">
             <ng-container *ngIf="!display_loading">
-                <mat-icon>done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                 <span>Envoyer</span>
             </ng-container>
             <ng-container *ngIf="display_loading">

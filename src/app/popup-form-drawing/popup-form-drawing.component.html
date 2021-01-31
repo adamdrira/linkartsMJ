@@ -2,7 +2,7 @@
 <div class="title">
     <span>Edition des informations</span>
     <button [mat-dialog-close]="true">
-        <mat-icon>close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
     </button>
 </div>
 
@@ -58,7 +58,7 @@
                             [removable]="removable"
                             (removed)="remove(genre)">
                             {{genre}}
-                            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
                           </mat-chip>
                           <input
                             placeholder="Genres (maximum : 3)"
@@ -96,7 +96,7 @@
             </div>
 
             <button class="submit-button" (click)="validateForm00();">
-                <mat-icon>done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                 <span>Valider</span>
             </button>
 

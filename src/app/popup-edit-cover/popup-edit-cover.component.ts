@@ -1,7 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
@@ -10,14 +8,11 @@ import { Writing_CoverService } from '../services/writing_cover.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
-import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NavbarService } from '../services/navbar.service';
 
-declare var $:any;
-declare var Cropper;
-const url_drawing = 'http://localhost:4600/routes/upload_cover_drawing_oneshot';
+
 
 @Component({
   selector: 'app-popup-edit-cover',
@@ -39,26 +34,25 @@ export class PopupEditCoverComponent implements OnInit {
     private Drawings_CoverService:Drawings_CoverService,
     public dialog: MatDialog,
 
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private navbar: NavbarService,) {
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       dialogRef.disableClose = true;
       
   }
 
   for_edition=true;
-  ngOnInit(): void {
-
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
     console.log(this.data)
   
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
 
 
 

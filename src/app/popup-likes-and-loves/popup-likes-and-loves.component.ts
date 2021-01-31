@@ -1,6 +1,6 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2,  ChangeDetectorRef, Inject } from '@angular/core';
 
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -42,10 +43,15 @@ export class PopupLikesAndLovesComponent implements OnInit {
     public dialog: MatDialog,
     private Profile_Edition_Service:Profile_Edition_Service,
 
-
+    private navbar: NavbarService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
       dialogRef.disableClose = true;
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   list_of_users_ids=this.data.list_of_users_ids;
@@ -59,7 +65,9 @@ export class PopupLikesAndLovesComponent implements OnInit {
 
   visitor_id=this.data.visitor_id;
   visitor_name=this.data.visitor_name;
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
     console.log(this.data.visitor_id)
     console.log(this.data.visitor_name)
     if(this.data.title=="likes"){

@@ -2,7 +2,7 @@
 <div class="popup-container">
 
     <div class="alert-icon">
-        <mat-icon>error_outline</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">error_outline</mat-icon>
     </div>
 
     <span>

@@ -1,8 +1,7 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef, HostListener, ViewChild, Inject } from '@angular/core';
 
 
 import { MatDialog,MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { ChatService } from '../services/chat.service';
 import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
@@ -21,7 +20,6 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import {trigger, style, animate, transition} from '@angular/animations';
-import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 declare var $: any;
 
 @Component({
@@ -62,7 +60,11 @@ export class PopupNavbarComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupNavbarComponent>,
    
     ) { 
-       
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     dialogRef.disableClose = true;
   }
 
@@ -114,7 +116,9 @@ export class PopupNavbarComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
 
     if(!this.list_of_friends_retrieved){
       this.chatService.get_number_of_unseen_messages().subscribe(a=>{
@@ -232,13 +236,7 @@ export class PopupNavbarComponent implements OnInit {
 
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+
 
 
   disconnecting=false;

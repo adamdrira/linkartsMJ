@@ -12,7 +12,7 @@ export class NavbarService {
     account: string;
     component_visible=false;
     using_chat=false;
-
+    show_font=false;
     connexion_status=true;
 
     private notificationSubject: BehaviorSubject<object>;
@@ -23,6 +23,10 @@ export class NavbarService {
 
     private visibilitySubject: BehaviorSubject<boolean>;
     public visibility_observer: Observable<boolean>;
+
+    private visibilitySubjectFont: BehaviorSubject<boolean>;
+    public visibility_observer_font: Observable<boolean>;
+    
 
     private chatSubject: BehaviorSubject<boolean>;
     public check_using_chat: Observable<boolean>;
@@ -38,6 +42,9 @@ export class NavbarService {
 
         this.visibilitySubject = new BehaviorSubject<boolean>(false);
         this.visibility_observer = this.visibilitySubject.asObservable();
+
+        this.visibilitySubjectFont = new BehaviorSubject<boolean>(this.show_font);
+        this.visibility_observer_font = this.visibilitySubjectFont.asObservable();
 
         this.chatSubject = new BehaviorSubject<boolean>(false);
         this.check_using_chat = this.chatSubject.asObservable();
@@ -57,6 +64,10 @@ export class NavbarService {
       this.visibilitySubject.next(true);
       this.visible = true;
      }
+    showfont(){
+      this.show_font=true;
+      this.visibilitySubjectFont.next(true);
+    }
      
     set_account_type(account){this.account=account}
     getAccount(){ return this.account; }

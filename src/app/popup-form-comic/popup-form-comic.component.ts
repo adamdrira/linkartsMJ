@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -18,6 +18,7 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -36,13 +37,17 @@ export class PopupFormComicComponent implements OnInit {
     private BdSerieService:BdSerieService,
     private BdOneShotService:BdOneShotService,
     private Bd_CoverService: Bd_CoverService,
-
+    private navbar: NavbarService,
     public dialog: MatDialog,
 
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       dialogRef.disableClose = true;
       
       this.filteredGenres = this.genreCtrl.valueChanges.pipe(
@@ -56,8 +61,9 @@ export class PopupFormComicComponent implements OnInit {
     window.dispatchEvent(new Event('resize'));
  }
 
-  ngOnInit(): void {
-
+ show_icon=false;
+ ngOnInit() {
+   let THIS=this;
     
     this.createFormControls00();
     this.createForm00();

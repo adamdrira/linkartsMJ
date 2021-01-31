@@ -1,7 +1,7 @@
 <div class="title">
     <span>{{title}}</span>
     <button [mat-dialog-close]="true">
-        <mat-icon>close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
     </button>
 </div>
 
@@ -12,7 +12,7 @@
         
 
         <div class="title-no-data" *ngIf="list_of_users_information.length==0  && subscribtion_info_added">
-            <mat-icon>info_outline</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
             <span *ngIf="data.title=='likes'">Aucune mention j'aime</span>
             <span *ngIf="data.title=='loves'">Aucune mention j'adore</span>
         </div>
@@ -39,7 +39,7 @@
 
                             <div class="right-container">
                                 <span class="author-name">{{item.firstname}} {{item.lastname}}
-                                    <mat-icon *ngIf="list_of_users_information[i].certified_account"
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_users_information[i].certified_account"
                                     matTooltip="Compte certifié" 
                                     matTooltipClass='linkarts-tooltip' 
                                     [matTooltipPosition]="'below'"
@@ -54,12 +54,12 @@
     
                 <ng-container *ngIf="type_of_account=='account' && list_of_users_ids[i]!=visitor_id">
                     <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
-                        <mat-icon>add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                         <span>S'abonner</span>
                     </button>
                     <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
                         
-                        <mat-icon>notifications_active</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                         <span>Abonné(e)</span>
                     </button>
                 </ng-container>

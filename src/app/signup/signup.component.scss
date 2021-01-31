@@ -115,6 +115,8 @@
         mat-icon {
           color: #203864;     
           font-size: 20px;
+          max-width: 20px;
+      overflow: hidden;
         }
       }
       
@@ -541,7 +543,8 @@
                             margin: 3px 0px 5px 3px;
                             color: #4bc7ff;
                             height: 16px;
-                            width: unset;
+                            max-width: 16px;
+                            overflow: hidden;
                             font-size: 16px;
                             }
                             .pro-logo {
@@ -563,28 +566,7 @@
             }
         }
 
-        /*.certifications {
-            display: flex;
-            margin: auto 5px auto auto;
-
-            span {
-                cursor:default;
-                background: #00c7d0;
-                color: #203864;
-                font-weight: 800;
-                font-size: 11px;
-                border-radius: 4px;
-                margin: auto 2px auto auto;
-                padding: 1px 3px 1px 3px;
-            }
-            mat-icon {
-                cursor:default;
-                width: unset;
-                height:unset;
-                font-size: 24px;
-                color: #00c7d0;
-            }
-        }*/
+      
     }
 
     button {
@@ -602,6 +584,8 @@
             width: unset;
             height: unset;
             font-size: 18px;
+            max-width: 18px;
+             overflow: hidden;
             font-weight: 600;
         }
         span {
