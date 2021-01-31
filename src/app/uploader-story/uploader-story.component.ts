@@ -1,17 +1,13 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit,  ElementRef,  ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { DomSanitizer, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { Story_service } from '../services/story.service';
-import { first } from 'rxjs/operators';
-
-import { MatSliderChange } from '@angular/material/slider';
 import { MatDialog } from '@angular/material/dialog';
 
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-
-import {DragDropModule} from '@angular/cdk/drag-drop';
 import domtoimage from 'dom-to-image';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Cropper: any;
 declare var $: any;
@@ -51,9 +47,13 @@ export class UploaderStoryComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     public dialog: MatDialog,
-
+    private navbar: NavbarService,
   ) {
-
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.uploader = new FileUploader({
       itemAlias: 'cover',
       url: url,
@@ -83,13 +83,6 @@ export class UploaderStoryComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
   ngOnInit() {
 
     this.uploader.onAfterAddingFile = async (file) => {

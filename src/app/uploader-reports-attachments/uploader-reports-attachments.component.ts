@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer} from '@angular/platform-browser';
 import { Reports_service } from '../services/reports.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
-const url = 'https://www.linkarts.fr/routes/upload_attachments_reports/';
+const url = 'http://localhost:4600/routes/upload_attachments_reports/';
 
 @Component({
   selector: 'app-uploader-reports-attachments',
@@ -21,7 +22,8 @@ export class UploaderReportsAttachmentsComponent implements OnInit {
     private rd:Renderer2,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    private navbar: NavbarService,
     
     ){
 
@@ -30,7 +32,11 @@ export class UploaderReportsAttachmentsComponent implements OnInit {
       url:url,
 
     });
-
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.hasBaseDropZoneOver = false;
     this.hasAnotherDropZoneOver = false;
 
@@ -83,16 +89,6 @@ export class UploaderReportsAttachmentsComponent implements OnInit {
   }
   
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
-
-
-
   ngOnInit() {
 
 

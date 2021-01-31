@@ -26,7 +26,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { HomeLinkartsComponent } from './home-linkarts/home-linkarts.component';
-import { CategoryComponent } from './category/category.component';
 import { NavbarLinkartsComponent } from './navbar-linkarts/navbar-linkarts.component';
 import { HomeLinkcollabComponent } from './home-linkcollab/home-linkcollab.component';
 import { LoginComponent } from './login/login.component';
@@ -41,16 +40,13 @@ import { JwtInterceptor  } from './helpers/jwt.interceptor';
 import { ErrorInterceptor  } from './helpers/error.interceptor';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SearchbarComponent } from './searchbar/searchbar.component';
 import { StoriesComponent } from './stories/stories.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
-import { ArtworkComponent } from './artwork/artwork.component';
 import { AccountComponent } from './account/account.component';
 
 import { KeysPipe } from './helpers/pipemodule';
 import { FilterAlbumPipe } from './helpers/pipemodule';
 import { MediaComicsComponent } from './media-comics/media-comics.component';
-import { TrendsComponent } from './trends/trends.component';
 import { AddArtworkComponent } from './add-artwork/add-artwork.component';
 
 import { ConstantsService } from './services/constants.service';
@@ -74,7 +70,6 @@ import { SwiperUploadDessinUniqueComponent } from './swiper-upload-dessin-unique
 import { UploaderDessinUniqueComponent } from './uploader-dessin-unique/uploader-dessin-unique.component';
 import { SwiperUploadArtbookComponent } from './swiper-upload-artbook/swiper-upload-artbook.component';
 import { UploaderArtbookComponent } from './uploader-artbook/uploader-artbook.component';
-import { CropSelectionComponent } from './crop-selection/crop-selection.component';
 import { UploaderProfilePictureComponent } from './uploader-profile-picture/uploader-profile-picture.component';
 import { UploaderCoverPictureComponent } from './uploader-cover-picture/uploader-cover-picture.component';
 import { MediaDrawingsComponent } from './media-drawings/media-drawings.component';
@@ -105,15 +100,11 @@ import { ThumbnailAlbumWritingComponent } from './thumbnail-album-writing/thumbn
 import { MediaSeeMoreComicsComponent } from './media-see-more-comics/media-see-more-comics.component';
 import { PopupFormComicComponent } from './popup-form-comic/popup-form-comic.component';
 import { ArchivesComponent } from './archives/archives.component';
-import { PopupEditCoverComicComponent } from './popup-edit-cover-comic/popup-edit-cover-comic.component';
 import { PopupFormDrawingComponent } from './popup-form-drawing/popup-form-drawing.component';
 import { PopupFormWritingComponent } from './popup-form-writing/popup-form-writing.component';
-import { PopupEditCoverDrawingComponent } from './popup-edit-cover-drawing/popup-edit-cover-drawing.component';
-import { PopupEditCoverWritingComponent } from './popup-edit-cover-writing/popup-edit-cover-writing.component';
 import { CommentsComponent } from './comments/comments.component';
 import { CommentElementComponent } from './comment-element/comment-element.component';
 import { MediaSeeMoreWritingsComponent } from './media-see-more-writings/media-see-more-writings.component';
-import { MediaSeeMoreDrawingsComponent } from './media-see-more-drawings/media-see-more-drawings.component';
 import { PopupSubscribingsComponent } from './popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from './popup-subscribers/popup-subscribers.component';
 import { UploaderCoverWritingComponent } from './uploader-cover-writing/uploader-cover-writing.component';
@@ -125,7 +116,6 @@ import { StoryViewComponent } from './story-view/story-view.component';
 import { AddAdComponent } from './add-ad/add-ad.component';
 import { UploaderThumbnailAdComponent } from './uploader-thumbnail-ad/uploader-thumbnail-ad.component';
 import { UploaderAttachmentsAdComponent } from './uploader-attachments-ad/uploader-attachments-ad.component';
-import { UploaderPicturesAdComponent } from './uploader-pictures-ad/uploader-pictures-ad.component';
 import { ThumbnailAdComponent } from './thumbnail-ad/thumbnail-ad.component';
 import { PopupAdPicturesComponent } from './popup-ad-pictures/popup-ad-pictures.component';
 import { PopupAdAttachmentsComponent } from './popup-ad-attachments/popup-ad-attachments.component';
@@ -167,6 +157,7 @@ import { PopupCommentsComponent } from './popup-comments/popup-comments.componen
 import { PopupNavbarComponent } from './popup-navbar/popup-navbar.component';
 import { PopupChatSearchComponent } from './popup-chat-search/popup-chat-search.component';
 import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popup-linkcollab-filters.component';
+import { TermsComponent } from './terms/terms.component';
 
 
 @NgModule({
@@ -177,18 +168,14 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     FilterAlbumPipe,
     AppComponent,
     HomeLinkartsComponent,
-    CategoryComponent,
     NavbarLinkartsComponent,
     HomeLinkcollabComponent,
     LoginComponent,
     SignupComponent,
-    SearchbarComponent,
     StoriesComponent,
     RecommendationsComponent,
-    ArtworkComponent,
     AccountComponent,
     MediaComicsComponent,
-    TrendsComponent,
     AddArtworkComponent,
     Uploader_bd_oneshot,
     SwiperUploadOneshotComponent,
@@ -204,7 +191,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     UploaderDessinUniqueComponent,
     SwiperUploadArtbookComponent,
     UploaderArtbookComponent,
-    CropSelectionComponent,
     UploaderProfilePictureComponent,
     UploaderCoverPictureComponent,
     MediaDrawingsComponent,
@@ -230,15 +216,11 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     MediaSeeMoreComicsComponent,
     PopupFormComicComponent,
     ArchivesComponent,
-    PopupEditCoverComicComponent,
     PopupFormDrawingComponent,
     PopupFormWritingComponent,
-    PopupEditCoverDrawingComponent,
-    PopupEditCoverWritingComponent,
     CommentsComponent,
     CommentElementComponent,
     MediaSeeMoreWritingsComponent,
-    MediaSeeMoreDrawingsComponent,
     PopupSubscribingsComponent,
     PopupSubscribersComponent,
     UploaderCoverWritingComponent,
@@ -250,7 +232,6 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     AddAdComponent,
     UploaderThumbnailAdComponent,
     UploaderAttachmentsAdComponent,
-    UploaderPicturesAdComponent,
     ThumbnailAdComponent,
     PopupAdPicturesComponent,
     PopupAdAttachmentsComponent,
@@ -280,6 +261,7 @@ import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popu
     PopupNavbarComponent,
     PopupChatSearchComponent,
     PopupLinkcollabFiltersComponent,
+    TermsComponent,
   ],
   imports: [
     BrowserModule,

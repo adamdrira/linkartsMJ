@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, ChangeDetectorRef, NgZone, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSliderChange } from '@angular/material/slider';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { ChatService } from '../services/chat.service';
-import { Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Cropper:any;
 declare var $:any;
@@ -22,8 +21,13 @@ export class UploaderChatProfilePictureComponent implements OnInit {
     private sanitizer:DomSanitizer, 
     private ChatService:ChatService,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     ) { 
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
     itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
 
@@ -61,8 +65,8 @@ export class UploaderChatProfilePictureComponent implements OnInit {
   }
   image_to_show:SafeUrl;
 
-  ngOnInit(): void {
-
+  show_icon=false;
+  ngOnInit() {
     console.log(this.id_receiver)
     this.uploader.onAfterAddingFile = async (file) => {
       var re = /(?:\.([^.]+))?$/;
@@ -100,13 +104,6 @@ export class UploaderChatProfilePictureComponent implements OnInit {
 
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
 
   initialize_cropper(content: ElementRef) {
     

@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
-import { first } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
@@ -10,8 +9,9 @@ import {ChatService}from '../services/chat.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { Subscribing_service } from '../services/subscribing.service';
+import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
+const url = 'http://localhost:4600/routes/upload_drawing_onepage';
 declare var $:any;
 @Component({
   selector: 'app-uploader-dessin-unique',
@@ -31,8 +31,13 @@ export class UploaderDessinUniqueComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       url : url ,
      // itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
@@ -96,15 +101,10 @@ export class UploaderDessinUniqueComponent implements OnInit {
     this.hasAnotherDropZoneOver = e;
   }
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+ 
   
   image_to_show:any;
+  show_icon=false;
   ngOnInit() {
     console.log(this.drawing_id)
     let URL = url + '/' + this.drawing_id;

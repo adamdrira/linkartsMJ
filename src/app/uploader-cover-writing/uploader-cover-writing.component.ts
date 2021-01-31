@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, OnChanges, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, SimpleChanges, Input, ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { Writing_CoverService} from '../services/writing_cover.service';
-import { Router } from '@angular/router';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { first } from 'rxjs/operators';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $:any;
@@ -42,9 +41,14 @@ export class UploaderCoverWritingComponent implements OnInit {
     private cd:ChangeDetectorRef,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     
     ){
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
       itemAlias: 'cover', 
       url:url,
@@ -143,19 +147,13 @@ export class UploaderCoverWritingComponent implements OnInit {
   }
   
 
-  show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
 
   load_pp(){
     this.pp_loaded=true;
   }
   
   cover_loading=false;
+  show_icon=false;
   ngOnInit() {
 
     if(this.description){

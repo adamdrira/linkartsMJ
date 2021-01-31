@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit,ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -7,6 +7,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var Swiper:any;
@@ -42,13 +43,18 @@ export class UploaderWrittingComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private cd:ChangeDetectorRef,
     public dialog: MatDialog,
-    private sanitizer:DomSanitizer
+    private sanitizer:DomSanitizer,
+    private navbar: NavbarService,
     
     ){
     this.uploader = new FileUploader({
       url: URL,
     });
- 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.hasBaseDropZoneOver = false;
     this.hasAnotherDropZoneOver = false;
  
@@ -66,14 +72,7 @@ export class UploaderWrittingComponent implements OnInit {
   total_pages:number;
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-  
-  ngOnInit(): void {
+  ngOnInit() {
 
     this.Writing_Upload_Service.send_confirmation_for_addwriting(false,0); 
    

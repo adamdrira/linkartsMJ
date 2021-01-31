@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { MatSliderChange } from '@angular/material/slider';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Cropper:any;
 declare var $:any;
@@ -39,8 +40,13 @@ export class UploaderProfilePictureComponent implements OnInit {
     private router: Router,
     private cd: ChangeDetectorRef,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     ) { 
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.uploader = new FileUploader({
     itemAlias: 'image', // pour la fonction en backend, préciser multer.single('image')
 
@@ -78,16 +84,7 @@ export class UploaderProfilePictureComponent implements OnInit {
   }
   
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
-  ngOnInit(): void {
-
-
+  ngOnInit() {
     this.uploader.onAfterAddingFile = async (file) => {
       
       var re = /(?:\.([^.]+))?$/;
