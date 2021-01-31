@@ -170,6 +170,10 @@ export class HomeLinkcollabComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
+    if( this.homeLinkcollabSelect ) {
+      this.homeLinkcollabSelect.close();
+    }
+
   };
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {

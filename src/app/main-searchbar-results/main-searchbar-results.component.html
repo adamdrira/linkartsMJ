@@ -48,10 +48,10 @@
     </div>
 
 
-    <div *ngIf="!show_tags" class="swiper-container" style=" align-items: center;justify-content: center; display: flex;">
-        <div class="swiper-item" style=" align-items: center; display: flex;justify-content: center"> 
+    <div *ngIf="!show_tags" class="swiper-container custom-class">
+        <div class="swiper-item"> 
             <div class="swiper-wrapper">
-                <div class="shiny" style=" height: 34px; width:90px" *ngFor="let item of shinies2"></div>
+                <div class="shiny" *ngFor="let item of shinies2"></div>
             </div>
         </div>
     </div>

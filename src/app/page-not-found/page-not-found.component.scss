@@ -65,7 +65,6 @@
                 width: 14px !important;
                 height: 14px !important;
                 background-color: #ffffff;
-                -webkit-mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
                 mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
             }
             span {
@@ -90,11 +89,9 @@
 
 @keyframes flip {
     from {
-        -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
     }
     to {
-        -webkit-transform: rotateY(360deg);
         transform: rotateY(360deg);
     }
 }

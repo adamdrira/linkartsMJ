@@ -104,6 +104,8 @@
       overflow-x: auto ;
       flex-wrap: unset !important;
 
+      scrollbar-width: thin;
+      scrollbar-color: #0a1c4d #f9f9f9;
       &::-webkit-scrollbar {
           height: 10px;
           background-color: #f9f9f9;

@@ -28,7 +28,7 @@ $default-color: rgb(218,220,225);
     }
 
     > .right-container {
-        width: -webkit-fill-available;
+        width: stretch;
 
         .comment {
             //max-height: 180px;
@@ -40,7 +40,7 @@ $default-color: rgb(218,220,225);
             border-radius: 12px;
             padding: 6px 12px 12px 12px;
             font-size: 12px;
-            overflow: auto;
+            overflow-y: scroll;
 
             a {
                 color: white;
@@ -48,6 +48,9 @@ $default-color: rgb(218,220,225);
                 font-size: 12px;
                 line-height: 27px;
             }
+
+            scrollbar-width:thin;
+            scrollbar-color: #122951 transparent;
             &::-webkit-scrollbar {
                 width: 4px;
                 height: 4px;
@@ -188,7 +191,7 @@ $default-color: rgb(218,220,225);
 
             .left-container {
                 display: flex;
-                width: -webkit-fill-available;
+                width: stretch;
 
                 .profile-picture {
                     margin: 2px 5px auto 0px;
@@ -207,10 +210,10 @@ $default-color: rgb(218,220,225);
                 }
 
                 .comment-container {
-                    width: -webkit-fill-available;
+                    width: stretch;
                 }
                 .comment {
-                    width: -webkit-fill-available;
+                    width: stretch;
                 }
             }
 
@@ -274,7 +277,7 @@ $default-color: rgb(218,220,225);
             }
 
             .right-container {
-                width: -webkit-fill-available;
+                width: stretch;
                 textarea {
                     //max-height: 180px;
                     color:$default-color;
@@ -287,6 +290,8 @@ $default-color: rgb(218,220,225);
                     font-size: 12px;
                     max-width: calc(100% - 29px);
                     
+                    scrollbar-width:thin;
+                    scrollbar-color: #122951 transparent;
                     &::-webkit-scrollbar {
                         width: 3px;
                         height: 3px;

@@ -128,19 +128,15 @@
       }
 
       .icon-artist {
-        -webkit-mask:  url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
       }
       .icon-comic {
-        -webkit-mask:  url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
       }
       .icon-drawing {
-        -webkit-mask:  url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
       }
       .icon-writing {
-        -webkit-mask:  url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
         mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
       }
     }
@@ -481,8 +477,22 @@
     background-color: gainsboro;
     background-image: linear-gradient(to right, transparent 33%, rgb(255 255 255 / 70%) 50%, transparent 66%);
     background-size: 300% 100%;
-    -webkit-animation: shine 2s infinite;
     animation: shine 1500ms infinite;
+  }
+
+  .custom-class {
+    align-items: center;
+    justify-content: center; 
+    display: flex;
+    .swiper-item {
+      align-items: center; 
+      justify-content: center;
+      display: flex;
+      .shiny {
+        height: 34px; 
+        width:90px
+      }
+    }
   }
 
   .loading_height_5{

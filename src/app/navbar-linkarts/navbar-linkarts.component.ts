@@ -1770,23 +1770,28 @@ export class NavbarLinkartsComponent implements OnInit {
     this.disconnecting=true;
     clearInterval(this.get_connection_interval)
     
-    this.AuthenticationService.logout().subscribe(r=>{
-      let recommendations_string = this.CookieService.get('recommendations');
-      if(recommendations_string){
+    this.AuthenticationService.logout();
+    //this.router.navigate(["/"]);
+    let recommendations_string = this.CookieService.get('recommendations');
+    //console.log(recommendations_string)
+    if(recommendations_string){
+      this.disconnecting=false;
+      this.location.go('/')
+      location.reload();
+     
+    }
+    else{
+      this.Community_recommendation.generate_recommendations().subscribe(r=>{
         this.disconnecting=false;
+        this.cd.detectChanges();
         this.location.go('/')
         location.reload();
-       
-      }
-      else{
-        this.Community_recommendation.generate_recommendations().subscribe(r=>{
-          this.disconnecting=false;
-          this.cd.detectChanges();
-          this.location.go('/')
-          location.reload();
-        })
-      }
-    });
+      })
+    }
+    
+    /*)*/
+  
+    //this.type_of_profile="visitor";
     
   }
 
@@ -1799,7 +1804,6 @@ export class NavbarLinkartsComponent implements OnInit {
 
   signup(){
     const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
       panelClass:"signupComponentClass"
     });
   }
@@ -2817,7 +2821,7 @@ change_message_status(event){
 
 
 
-  open_options(i){
+  /*open_options(i){
     //console.log(i)
     if(!this.conditions_retrieved){
       return
@@ -2827,7 +2831,7 @@ change_message_status(event){
       panelClass:"popupDocumentClass",
     });
    
-  }
+  }*/
 
 
   show_cookies=false;

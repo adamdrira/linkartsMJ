@@ -232,8 +232,6 @@ export class CommentsComponent implements OnInit {
   /************************************************ COMMENTS MANAGMENT ********************************/
   /************************************************ COMMENTS MANAGMENT ********************************/
 
-
-
   SHIFT_CLICKED=false;
   keyup(event) {
     if(event.key=="Shift"){
@@ -246,8 +244,9 @@ export class CommentsComponent implements OnInit {
     }
     else if(event.key=="Enter"){
       if( !this.SHIFT_CLICKED ){
-        console.log(this.comment_container.value.comment)
+
         if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
+          event.preventDefault();
 
           this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
             console.log(r[0])

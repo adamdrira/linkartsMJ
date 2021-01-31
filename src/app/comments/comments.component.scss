@@ -36,7 +36,7 @@ $default-color: rgb(218,220,225);
         }
     }
     .right-container {
-        width: -webkit-fill-available;
+        width: stretch;
         height: 100px;
         border-radius: 12px;
     }
@@ -86,7 +86,7 @@ $default-color: rgb(218,220,225);
         }
 
         .right-container {
-            width: -webkit-fill-available;
+            width: stretch;
             textarea {
                 //max-height: 180px;
                 min-height: 50px;
@@ -100,6 +100,9 @@ $default-color: rgb(218,220,225);
                 padding: 6px 12px;
                 font-size: 12px;
                 max-width: calc(100% - 29px);
+                
+                scrollbar-width:thin;
+                scrollbar-color: #122951 transparent;
                 &::-webkit-scrollbar {
                     width: 3px;
                     height: 3px;
@@ -120,7 +123,7 @@ $default-color: rgb(218,220,225);
         display:flex;
         margin-top: 20px;
         .left-container {
-            width: -webkit-fill-available;
+            width: stretch;
         }
         .right-container {
             .optionsMenu {

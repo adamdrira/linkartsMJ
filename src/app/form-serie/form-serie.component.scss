@@ -103,7 +103,6 @@
     height: 20px;
     margin: auto auto;
     background-color: rgb(43, 185, 0);
-    -webkit-mask: url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
 }
 
@@ -199,7 +198,6 @@
     height:15px;
     margin:auto auto;
     background-color: rgb(40, 40, 40);
-    -webkit-mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
     mask:  url("../../assets/img/svg/validate.svg") no-repeat 50% 50%;
 }
 
@@ -224,7 +222,6 @@
     height:15px;
     margin:auto auto;
     background-color: rgb(32, 56, 100);
-    -webkit-mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
     mask:  url("../../assets/img/svg/edit.svg") no-repeat 50% 50%;
 }
 
@@ -235,7 +232,6 @@
     height:15px;
     margin:auto auto;
     background-color: rgb(148, 23, 23);
-    -webkit-mask:  url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/close.svg") no-repeat 50% 50%;
 }
 
@@ -249,7 +245,6 @@
 
 
 //ScrollBar
-
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;

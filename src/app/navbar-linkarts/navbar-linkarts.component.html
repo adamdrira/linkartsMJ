@@ -2405,22 +2405,22 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                </a>
+                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
                   <span>Sécurité et confidentialité</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous ?</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Mentions légales</span>
-                </button>
+                  <span>Crédits</span>
+                </a>
               </mat-menu>
             </div>
 
@@ -2447,22 +2447,22 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                   <span>S'inscrire</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                </a>
+                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
                   <span>Sécurité et confidentialité</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous ?</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Mentions légales</span>
-                </button>
+                  <span>Crédits</span>
+                </a>
               </mat-menu>
             </div>
 
@@ -2476,22 +2476,22 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="open_options(0)">
+                <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(1)">
+                </a>
+                <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
                   <span>Sécurité et confidentialité</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(2)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
                   <span>Qui sommes-nous ?</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item  (click)="open_options(3)">
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Mentions légales</span>
-                </button>
+                  <span>Crédits</span>
+                </a>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
                   <span>Se déconnecter</span>
@@ -2522,7 +2522,7 @@
       </div>
 
       <div class="small-screen text-container ">
-        <span>Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site.  <span class="see-more" (click)="open_options(4)"> Voir plus</span></span>
+        <span>Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site.  <a class="see-more" href="/services/3"> Voir plus</a></span>
         
        
       </div>
@@ -2530,9 +2530,9 @@
         <div class="first-button equal-width" (click)="agree_on_cookies()">
           Ok
         </div>
-        <div class="first-button large-screen" (click)="open_options(4)"> 
+        <a class="first-button large-screen" href="/services/3"> 
           Voir plus
-        </div>
+        </a>
 
       </div>
     </div>
