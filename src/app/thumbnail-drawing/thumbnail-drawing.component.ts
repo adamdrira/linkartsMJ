@@ -58,6 +58,7 @@ export class ThumbnailDrawingComponent implements OnInit {
   thumbnail_picture:SafeUrl;
   author_name:string;
   pseudo:string;
+  certified_account:boolean;
   primary_description:string;
   /*Inputs*/
   user_id: number;
@@ -183,6 +184,7 @@ export class ThumbnailDrawingComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(Number(this.user_id)).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.pseudo=r[0].nickname;
+      this.certified_account=r[0].certified_account;
       this.primary_description=r[0].primary_description;
     });
 

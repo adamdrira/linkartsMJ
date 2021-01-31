@@ -66,6 +66,7 @@ export class ThumbnailComicsComponent implements OnInit {
   //author
   pseudo:string;
   author_name:string;
+  certified_account:boolean;
   profile_picture: SafeUrl;
   primary_description:string;
   user_id: number;
@@ -120,6 +121,7 @@ export class ThumbnailComicsComponent implements OnInit {
     this.Profile_Edition_Service.retrieve_profile_data(this.user_id).subscribe(r=> {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.pseudo=r[0].nickname;
+      this.certified_account=r[0].certified_account;
       this.primary_description=r[0].primary_description;
     });
 

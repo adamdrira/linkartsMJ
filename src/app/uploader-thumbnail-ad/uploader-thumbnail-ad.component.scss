@@ -19,6 +19,7 @@
 .col-book {
   position: relative;
   margin:40px auto 30px auto;
+  display:flex;
   flex-basis: 0;
   flex-grow: 1;
   max-width: 100%;
@@ -29,12 +30,6 @@
 ::ng-deep .ad .border-recto {
   border-radius:10px;
 }
-
-/*
-.col-book:empty {
-  height: 0;
-  width:250px
-}*/
 
 
 .swiper-slide {

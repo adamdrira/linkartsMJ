@@ -138,7 +138,6 @@ export class ThumbnailAdComponent implements OnInit {
   @Input() for_ad_page: boolean;
   
   type_of_account:string;
-  type_of_account_checked:boolean;
   certified_account:boolean;  
 
 
@@ -206,7 +205,7 @@ export class ThumbnailAdComponent implements OnInit {
       this.primary_description=r[0].primary_description;
       this.pseudo = r[0].nickname;
       
-      this.type_of_account_checked=r[0].type_of_account_checked;
+      
       this.certified_account=r[0].certified_account;
       this.profile_data_retrieved=true;
     });
@@ -245,6 +244,13 @@ export class ThumbnailAdComponent implements OnInit {
 
 
   open_category(i : number) {
+
+    if(i==1 && this.list_of_pictures.length==0) {
+      return;
+    }
+    if(i==2 && this.list_of_attachments.length==0) {
+      return;
+    }
     this.category_index=i;
     this.cd.detectChanges();
   }

@@ -23,6 +23,9 @@
         justify-content: center;
     }
 
+    .ng2-pdf-viewer-container {
+        scrollbar-width:none;
+    }
     .ng2-pdf-viewer-container::-webkit-scrollbar {
         display: none;
     }
@@ -33,6 +36,8 @@
         width:100%;
         //transition:width 200ms;
         height:100%;
+        
+        scrollbar-width:none !important;
     }
     .swiper-wrapper {
         position:relative;

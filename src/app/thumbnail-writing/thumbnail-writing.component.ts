@@ -52,6 +52,7 @@ export class ThumbnailWritingComponent implements OnInit {
   author_name:string;
   primary_description:string;
   pseudo:string;
+  certified_account:boolean;
   /*Inputs*/
 
   pdfSrc:SafeUrl;
@@ -135,6 +136,7 @@ export class ThumbnailWritingComponent implements OnInit {
       this.author_name = r[0].firstname + ' ' + r[0].lastname;
       this.primary_description=r[0].primary_description;
       this.pseudo=r[0].nickname;
+      this.certified_account=r[0].certified_account;
     });
 
 

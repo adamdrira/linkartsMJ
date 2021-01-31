@@ -15,7 +15,7 @@ declare var $:any;
 declare var Swiper:any;
 
 
-const url = 'https://www.linkarts.fr/routes/upload_cover_writing';
+const url = 'http://localhost:4600/routes/upload_cover_writing';
 
 @Component({
   selector: 'app-uploader-cover-writing',

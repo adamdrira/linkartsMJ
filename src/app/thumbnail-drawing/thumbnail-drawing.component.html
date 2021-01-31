@@ -26,7 +26,16 @@
                         <img [src]="profile_picture" (load)="pp_loaded()" >
                     </div>
                     <div class="right-container" [ngClass]="{'small-right-container':small_thumbnail}">
-                        <span class="author-name" [ngClass]="{'small-author-name':small_thumbnail}">{{author_name}}</span>
+                        <span class="author-name" [ngClass]="{'small-author-name':small_thumbnail}">
+                            <div>
+                                {{author_name}}
+                            </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
+                            matTooltip="Compte certifié" 
+                            matTooltipClass='linkarts-tooltip' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="200">verified</mat-icon>
+                        </span>
                         <span class="author-description" *ngIf="pseudo!=null" [ngClass]="{'small-author-description':small_thumbnail}">@{{pseudo}}</span>
                     </div>
                 </div>

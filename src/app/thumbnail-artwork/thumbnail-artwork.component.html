@@ -91,13 +91,12 @@
             <!--********************-->
             <!--Data container-->
             <!--********************-->
-            <div class="bottom-container" [ngClass]="{ 'invisible':!marks_retrieved}">
+            <!--<div class="bottom-container" [ngClass]="{ 'invisible':!marks_retrieved}">
                 <div class="stats-container">
                     <div class="figure-container views">
                         <div>
                             <span>{{viewnumber}}</span>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
-                            <!--<div class="view-logo"></div>-->
                         </div>
                     </div>
                     <div class="figure-container likes">
@@ -113,7 +112,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
         </div>
 
@@ -396,12 +395,6 @@
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="200">verified</mat-icon>
 
-                        <div *ngIf="type_of_account_checked" class="pro-logo"
-                        matTooltip="Compte professionnel" 
-                        matTooltipClass='linkarts-tooltip' 
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="200">PRO</div>
-
                     </span>
                     <span class="author-description">@{{author_pseudo}}</span>
                 </div>
@@ -411,6 +404,19 @@
             <!--Date container-->
             <!--********************-->
             <div class="date-container">
+                
+                <div class="figure-container views">
+                    <span>{{viewnumber}}</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                </div>
+                <div class="figure-container likes">
+                    <span>{{likesnumber}}</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                </div>
+                <div class="figure-container loves">
+                    <span>{{lovesnumber}}</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                </div>
                 <span>{{date_upload_to_show}} <ng-container *ngIf="recent_chapter"> • Nouveau chapitre !</ng-container></span>
             </div>
 

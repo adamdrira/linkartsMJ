@@ -16,9 +16,6 @@ import { Router  } from '@angular/router';
 
 import { interval, Subscription } from 'rxjs';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
-import { PopupEditCoverComicComponent } from '../popup-edit-cover-comic/popup-edit-cover-comic.component';
-import { PopupEditCoverWritingComponent } from '../popup-edit-cover-writing/popup-edit-cover-writing.component';
-import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
@@ -113,7 +110,6 @@ export class ThumbnailArtworkComponent implements OnInit {
 
 
   type_of_account:string;
-  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   display_evenif_reported=false;
@@ -206,7 +202,7 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.author_pseudo = r[0].nickname;
           this.author_id=r[0].id;
           
-          this.type_of_account_checked=r[0].type_of_account_checked;
+          
           this.certified_account=r[0].certified_account;
         });
 
@@ -241,7 +237,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               
               });
 
@@ -283,7 +278,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
             });
@@ -327,7 +321,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
             });
@@ -369,7 +362,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
             });
@@ -413,7 +405,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
             });
@@ -463,7 +454,6 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.author_pseudo = r[0].nickname;
           this.author_id=r[0].id;
           
-          this.type_of_account_checked=r[0].type_of_account_checked;
           this.certified_account=r[0].certified_account;
         });
 
@@ -502,7 +492,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
                 
               });
           }
@@ -540,7 +529,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
 
@@ -583,7 +571,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
           }
           else{
@@ -622,7 +609,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 this.thumbnail_picture_received=true;
                 
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               });
 
 
@@ -665,7 +651,6 @@ export class ThumbnailArtworkComponent implements OnInit {
             this.thumbnail_picture_received=true;
             
             this.initialize_swiper();
-            window.dispatchEvent(new Event('resize'));
           });
         }
 
@@ -770,7 +755,7 @@ export class ThumbnailArtworkComponent implements OnInit {
       };
       //console.log(this.swiperThumbnails )
       //console.log(this.swiper2_initialized )
-      if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
+      /*if( this.subscribing_category!='writing' && this.swiperThumbnails && !this.swiper2_initialized ) {
         
         this.swiper2 = new Swiper( this.swiperThumbnails.nativeElement, {
           speed: 500,
@@ -816,7 +801,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         })
         this.swiper2_initialized=true;
         this.cd.detectChanges()
-      }
+      }*/
 
       return;
   };
@@ -949,7 +934,6 @@ export class ThumbnailArtworkComponent implements OnInit {
                 //console.log(this.list_of_images_to_show)
                 //console.log("list_of_images_to_show_retrieved" + bd_id + ' serie')
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
                
               }
             });
@@ -974,8 +958,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               //console.log(this.list_of_images_to_show)
               ////console.log("list_of_images_to_show_retrieved" + bd_id + ' one shot')
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
-             
+
             }
           });
         };
@@ -999,7 +982,6 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.list_of_images_to_show_retrieved=true;
               this.cd.detectChanges();
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
               ////console.log("list_of_images_to_show_retrieved" + drawing_id)
               ////console.log(this.list_of_images_to_show)
             }
@@ -1015,7 +997,6 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.list_of_images_to_show_retrieved=true;
           this.cd.detectChanges();
                 this.initialize_swiper();
-                window.dispatchEvent(new Event('resize'));
         });
       }
     }

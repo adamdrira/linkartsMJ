@@ -36,7 +36,16 @@
                                                     <img [src]="profile_picture" (load)="pp_loaded()"  [ngClass]="{ 'invisible':!pp_is_loaded}">
                                                 </div>
                                                 <div class="right-container">
-                                                    <span class="author-name">{{author_name}}</span>
+                                                    <span class="author-name">
+                                                        <div>
+                                                            {{author_name}}
+                                                        </div>
+                                                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account"
+                                                        matTooltip="Compte certifié" 
+                                                        matTooltipClass='linkarts-tooltip' 
+                                                        [matTooltipPosition]="'below'"
+                                                        [matTooltipShowDelay]="200">verified</mat-icon>
+                                                    </span>
                                                     <!--<span class="author-description" *ngIf="primary_description!=null">{{primary_description}}</span>-->
                                                     <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
                                                 </div>
@@ -95,16 +104,16 @@
                                         <!--********************-->
                                         <!--Type container-->
                                         <!--********************-->
-                                        <div class="verso-type" style="display:block">
+                                        <div class="verso-type block">
                                             <!--&bull;-->
-                                            <div style="display:flex" *ngIf="format=='one-shot'">
+                                            <div class="d-flex" *ngIf="format=='one-shot'">
                                                 <div class="tag-container" #tags><span>One shot</span></div>
                                                 <div class="tag-container" #tags>
                                                     <span>{{pagesnumber}}</span>
                                                     <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
                                                 </div>
                                             </div>
-                                            <div style="display:flex" *ngIf="format!='one-shot'">
+                                            <div class="d-flex" *ngIf="format!='one-shot'">
                                                 <div class="tag-container" #tags><span>Série</span></div>
                                                 <div class="tag-container" #tags>
                                                     <span>{{chaptersnumber}}</span>
@@ -115,12 +124,12 @@
                                             </div >
                                             
                                             
-                                            <div style="display:flex" *ngIf="thirdtag==null">
+                                            <div class="d-flex" *ngIf="thirdtag==null">
                                                 <div class="tag-container type"><span  class="categories" >{{firsttag}}</span></div>
                                                 <div  *ngIf="secondtag!=null" class="tag-container type"><span  class="categories" >{{secondtag}}</span></div>
                                             </div>
 
-                                            <div style="display:flex" *ngIf="thirdtag!=null">
+                                            <div class="d-flex" *ngIf="thirdtag!=null">
                                                 <div #swiperCategories class="swiper-categories">
                                                     <div class="swiper-wrapper">
                                                         <div class="swiper-slide">

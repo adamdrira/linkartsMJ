@@ -89,12 +89,6 @@
                                 matTooltipClass='linkarts-tooltip' 
                                 [matTooltipPosition]="'below'"
                                 [matTooltipShowDelay]="200">verified</mat-icon>
-
-                                <div *ngIf="type_of_account_checked" class="pro-logo"
-                                matTooltip="Compte professionnel" 
-                                matTooltipClass='linkarts-tooltip' 
-                                [matTooltipPosition]="'below'"
-                                [matTooltipShowDelay]="200">PRO</div>
                                 
                             </span>
                         </div>
@@ -198,7 +192,7 @@
                     <div *ngIf="category_index==1" class="attachments-container" [@enterAnimation]>
                         <div *ngFor="let picture of list_of_pictures, let i=index"
                             (click)="read_pictures(i);stop($event);" class="image-container">
-                            <img [src]="list_of_pictures[i]" style="width:100%;height:100%;object-fit: cover;">
+                            <img [src]="list_of_pictures[i]">
                         </div>
                     </div>
                     <div *ngIf="category_index==2" class="attachments-container" [@enterAnimation]>
