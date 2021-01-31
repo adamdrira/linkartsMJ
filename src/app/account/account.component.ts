@@ -195,7 +195,6 @@ export class AccountComponent implements OnInit {
 
 
   type_of_account:string;
-  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   //NEW VARIABLES
@@ -463,8 +462,6 @@ export class AccountComponent implements OnInit {
           this.primary_description=user.primary_description;
          
           this.type_of_account=user.type_of_account;
-
-          this.type_of_account_checked=user.type_of_account_checked;
           this.certified_account=user.certified_account;
 
           this.user_location=user.location;
@@ -520,7 +517,6 @@ export class AccountComponent implements OnInit {
         this.primary_description_extended=user.primary_description_extended;
         console.log(user)
         console.log(this.primary_description_extended)
-        this.type_of_account_checked=user.type_of_account_checked;
         this.certified_account=user.certified_account;
 
         this.user_location=user.location;

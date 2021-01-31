@@ -162,9 +162,10 @@
             display: flex;
             flex-direction: column;
             mat-icon {
+                margin: auto auto;
                 font-size:34px;
                 max-width:34px;
-          overflow: hidden;
+                overflow: hidden;
                 width: unset;
                 height: unset;
                 color:rgb(32,56,100);
@@ -222,10 +223,11 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            mat-icon {
+            mat-icon {    
+                margin: auto auto;
                 font-size:30px;
                 max-width:30px;
-          overflow: hidden;
+                overflow: hidden;
                 width: unset;
                 height: unset;
                 color:rgb(32,56,100);

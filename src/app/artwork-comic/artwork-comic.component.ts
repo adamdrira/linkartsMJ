@@ -380,7 +380,6 @@ export class ArtworkComicComponent implements OnInit {
 
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
-                this.type_of_account_checked=r[0].type_of_account_checked;
                 this.certified_account=r[0].certified_account;
                 this.user_name = r[0].firstname + ' ' + r[0].lastname;
                 this.primary_description=r[0].primary_description;
@@ -664,7 +663,6 @@ export class ArtworkComicComponent implements OnInit {
               this.user_name = r[0].firstname + ' ' + r[0].lastname;
               this.primary_description=r[0].primary_description;
               
-              this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
               this.profile_data_retrieved=true;
             });
@@ -1029,7 +1027,6 @@ export class ArtworkComicComponent implements OnInit {
   
 
   
-  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   optionOpened:number = -1;

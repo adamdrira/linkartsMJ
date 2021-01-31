@@ -281,9 +281,6 @@
                                                 <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_certified_account[i]" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
                                                     [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
                                         
-                                                <span *ngIf="list_of_type_of_account_checked[i]" class="pro-logo" matTooltip="Compte professionnel"
-                                                    matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">PRO</span>
-                                        
                                             </span>
                                             <span class="author-description" *ngIf="pseudo!=''">@{{list_of_pseudos[i]}}</span>
                                         </div>
@@ -545,9 +542,6 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="certified_account" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
                                 [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
             
-                            <span *ngIf="type_of_account_checked" class="pro-logo" matTooltip="Compte professionnel"
-                                matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'"
-                                [matTooltipShowDelay]="200">PRO</span>
             
                         </span>
                         <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>

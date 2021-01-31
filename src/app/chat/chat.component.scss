@@ -13,7 +13,7 @@
 
     .main-left-container {
         height: 100%;
-        width: -webkit-fill-available;
+        width: stretch;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -230,7 +230,7 @@
         }
         .middle-container {
             position: relative;
-            height: -webkit-fill-available;
+            height: 5000px;
             overflow-y: auto;
             width: 100%;
 
@@ -389,6 +389,9 @@
                     padding: 0px 10px 6px 20px;
                     overflow-y: auto;
 
+                    scrollbar-width:thin;
+                    scrollbar-color:rgba(255, 255, 255, 0)  white;
+
                     &::-webkit-scrollbar {
                         width: 4px;
                         height: 4px;
@@ -401,6 +404,7 @@
                         background-color: transparent;
                     }
                     &:hover {
+                        scrollbar-color:#2d4f7b69  white;
                         &::-webkit-scrollbar-thumb {
                             background-image: linear-gradient(0deg, #2d4f7b24, #2d4f7b69, #2d4f7b2b);
                         }
@@ -526,7 +530,7 @@
                         background: white;
                         border: 1px solid #c7c7c7;
                         box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.051);
-                        width: -webkit-fill-available;
+                        width: stretch;
                         margin: 0px 6px;
                         min-height: 60px;
                         padding-top: 8px;
@@ -536,7 +540,7 @@
                         textarea {
                             max-height: 180px;
 
-                            width: -webkit-fill-available;
+                            width: stretch;
                             padding: 0px 16px 0px 16px;
                             font-size: 14px;
                             font-weight: 600;
@@ -547,9 +551,12 @@
                                 color: rgb(32, 56, 100);
                             }
                             &::selection {
-                                color: rgb(32, 56, 100);
-                                background: rgb(0, 247, 255);
+                                color: rgb(255, 255, 255);
+                                background: rgb(32, 56, 100);
                             }
+                            
+                            scrollbar-width:thin;
+                            scrollbar-color:rgba(255, 255, 255, 0)  white;
                             &::-webkit-scrollbar {
                                 width: 4px;
                                 height: 4px;
@@ -562,6 +569,7 @@
                                 background-color: transparent;
                             }
                             &:hover {
+                                scrollbar-color:#91919169  white;
                                 &::-webkit-scrollbar-thumb {
                                     background-image: linear-gradient(0deg, #2d4f7b24, #2d4f7b69, #2d4f7b2b);
                                 }
@@ -650,7 +658,6 @@
         transparent 66%
     ) !important;
     background-size: 300% 100% !important;
-    -webkit-animation: shine 2s infinite !important;
     animation: shine 2s infinite !important;
 }
 @keyframes shine {
@@ -841,7 +848,6 @@
 ::ng-deep .discussions-container .SumoSelect > .CaptionCont > label > i {
     background-image: none !important;
     background-color: rgb(218, 227, 243);
-    -webkit-mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
     mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
 }
 
@@ -1001,6 +1007,8 @@ button.show-more {
     padding: 30px 0px;
 
 
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255, 255, 255, 0)  white;
     &::-webkit-scrollbar {
         width: 4px;
         height: 4px;
@@ -1013,6 +1021,7 @@ button.show-more {
         background-color: transparent;
     }
     &:hover {
+        scrollbar-color:#b1b1b169  white;
         &::-webkit-scrollbar-thumb {
             background-color: #dadada;
         }

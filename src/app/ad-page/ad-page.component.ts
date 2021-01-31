@@ -132,7 +132,6 @@ export class AdPageComponent implements OnInit {
   list_of_dates:any[]=[];
   list_of_profile_pictures:any[]=[];
   list_of_authors_name:any[]=[];
-  list_of_type_of_account_checked:any[]=[];
   list_of_certified_account:any[]=[];
   list_of_ids:any[]=[];
   list_of_pseudos:any[]=[];
@@ -305,7 +304,6 @@ export class AdPageComponent implements OnInit {
           this.primary_description=r[0].primary_description;
           this.pseudo = r[0].nickname;
           
-          this.type_of_account_checked=r[0].type_of_account_checked;
           this.certified_account=r[0].certified_account;
           this.profile_data_retrieved=true;
         });
@@ -1092,7 +1090,6 @@ export class AdPageComponent implements OnInit {
             this.Profile_Edition_Service.retrieve_profile_data(r[0][i].id_user).subscribe(q=> {
               this.list_of_authors_name[i] = q[0].firstname + ' ' + q[0].lastname;
               
-              this.list_of_type_of_account_checked[i] = q[0].type_of_account_checked;
               this.list_of_certified_account[i] = q[0].certified_account;
 
               this.list_of_ids[i]=q[0].id; 
@@ -1464,7 +1461,6 @@ export class AdPageComponent implements OnInit {
   };
 
   
-  type_of_account_checked:boolean;
   certified_account:boolean;  
   stop(e: Event) {
     e.preventDefault();

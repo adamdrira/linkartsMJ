@@ -63,7 +63,7 @@
 
             .users-container {
                 width: 100%;
-                height: -webkit-fill-available;
+                height: 5000px;
                 padding: 10px;
                 overflow-y: hidden;
                 position: relative;
@@ -80,7 +80,7 @@
     }
 
     .chat-container-skeleton {
-        width: -webkit-fill-available;
+        width: stretch;
         display:flex;
 
         @media (max-width: 850px) {
@@ -89,7 +89,7 @@
 
         .left-container {
             height: 100%;
-            width: -webkit-fill-available;
+            width: stretch;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -147,7 +147,7 @@
                 }
                 .right-textarea {
                     border-radius: 18px;
-                    width: -webkit-fill-available;
+                    width: stretch;
                     margin: 0px 6px;
                     min-height: 60px;
                     padding-top: 8px;
@@ -427,9 +427,9 @@
 
         .subscribers-container {
             width:100%;
-            height: -webkit-fill-available;
+            height: 5000px;
             padding: 10px;
-            overflow-y: auto;
+            overflow-y: scroll;
             position: relative;
 
             .see-all {
@@ -548,7 +548,7 @@
                         flex-direction: column;
                         justify-content: space-between;
                         text-align: left;
-                        width: -webkit-fill-available;
+                        width: stretch;
                         max-width: calc( 100% - 60px );
 
 
@@ -640,6 +640,8 @@
                 }
             }
 
+            scrollbar-width:thin;
+            scrollbar-color:rgba(255, 255, 255, 0)  white;
             &::-webkit-scrollbar {
                 width: 4px;
                 height: 4px;
@@ -652,6 +654,7 @@
                 background-color: transparent;
             }
             &:hover {
+                scrollbar-color:#b1b1b169  white;
                 &::-webkit-scrollbar-thumb {
                     background-color: #dadada;
                 }
@@ -851,7 +854,7 @@
     }
 
     .chat-container {
-        width:-webkit-fill-available;
+        width: stretch;
 
         @media (max-width: 850px) {
             position: absolute;
@@ -892,7 +895,6 @@
         transparent 66%
     ) !important;
     background-size: 300% 100% !important;
-    -webkit-animation: shine 2s infinite !important;
     animation: shine 2s infinite !important;
 }
 @keyframes shine {

@@ -85,7 +85,7 @@
 
         <ng-container *ngIf="opened_album==1 && !list_visibility_albums_drawings && ( (opened_category==0 && private_list_of_drawings.length>0) || (opened_category==1 && list_of_drawings.length>0) )">
             <div *ngFor="let item of categories_array; index as i1">
-                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                <div class="container-skeletons d-flex flex-wrap skeleton"
                     [@enterAnimation]>
                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -105,7 +105,7 @@
 
         <ng-container *ngIf="opened_album==0 &&  ((opened_category==0 && !private_list_of_comics_sorted) || (opened_category==1 && !list_of_comics_added) )">
             <div *ngFor="let item of categories_array; index as i1">
-                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                <div class="container-skeletons d-flex flex-wrap skeleton"
                     [@enterAnimation]>
                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -125,7 +125,7 @@
 
         <ng-container *ngIf="opened_album==2 &&  ((opened_category==0 && !private_list_of_writings_sorted) || (opened_category==1 && !list_of_writings_added) )">
             <div *ngFor="let item of categories_array; index as i1">
-                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                <div class="container-skeletons d-flex flex-wrap skeleton"
                     [@enterAnimation]>
                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                         <app-thumbnail-skeleton class="thumbnail-component-container"
@@ -144,7 +144,7 @@
 
         <ng-container *ngIf="opened_album==3 && !list_of_stories_received">
             <div *ngFor="let item of categories_array; index as i1">
-                <div class="container-skeletons d-flex flex-wrap skeleton" style="justify-content:center;"
+                <div class="container-skeletons d-flex flex-wrap skeleton"
                     [@enterAnimation]>
                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                         <app-thumbnail-skeleton class="thumbnail-component-container"

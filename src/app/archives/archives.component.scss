@@ -35,7 +35,7 @@
         border: none;
         display: flex;
         flex-direction: column;
-        padding: 10px 15px 10px 15px;
+        padding: 10px 20px 10px 20px;
         width: 145px;
         height: 145px;
         margin-left: 15px;
@@ -250,6 +250,10 @@
 
   .artworks-container {
     min-height:600px;
+
+    .container-skeletons {
+      justify-content:center;
+    }
   }
 
   .bd-container {

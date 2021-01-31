@@ -151,7 +151,7 @@ export class AddWritingComponent implements OnInit {
   
   createFormControlsWritings() {
     this.fwTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(290), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
     this.fwCategory = new FormControl('', [Validators.required]);
     this.fwTags = new FormControl( this.genres , [Validators.required]);
     //this.fwFormat = new FormControl('', Validators.required);

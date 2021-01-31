@@ -59,7 +59,7 @@
                         </button>
                         <button class="chat-menu-item" *ngIf="spam=='true'" mat-menu-item  (click)="remove_spam()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
-                            <span>Supprimer la conversation</span>
+                            <span>Supprimer de mes invitations</span>
                         </button>
                         <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>

@@ -1,9 +1,11 @@
 .main-right-container {
     height: 100%;
-    overflow: auto;
+    overflow: scroll;
     background:white;
     z-index:10;
 
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255, 255, 255, 0)  white;
     &::-webkit-scrollbar {
         width: 4px;
         height: 4px;
@@ -16,6 +18,7 @@
         background-color: transparent;
     }
     &:hover {
+        scrollbar-color:#b1b1b169  white;
         &::-webkit-scrollbar-thumb {
             background-color: #dadada;
         }
@@ -259,6 +262,8 @@
         background-color: rgba(0, 0, 0, 0);
         transition: background-color 400ms;
 
+        scrollbar-width:thin;
+        scrollbar-color:rgba(255, 255, 255, 0)  white;
         &::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -271,6 +276,7 @@
             background-color: transparent;
         }
         &:hover {
+            scrollbar-color:#b1b1b169  white;
             &::-webkit-scrollbar-thumb {
                 background-color: #dadada;
             }
@@ -376,6 +382,7 @@
             font-weight: 600;
         }
 
+        scrollbar-color: #b6b6b6 white;
         &::-webkit-scrollbar {
             width: 6px;
             height: 6px;

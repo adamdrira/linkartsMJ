@@ -393,7 +393,6 @@ export class ArtworkDrawingComponent implements OnInit {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
 
-        this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
         this.profile_data_retrieved=true;
       });
@@ -539,7 +538,6 @@ export class ArtworkDrawingComponent implements OnInit {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
         
-        this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
       });
 
@@ -872,7 +870,6 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
 
  
-  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   optionOpened:number = -1;

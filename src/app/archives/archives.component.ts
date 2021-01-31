@@ -19,7 +19,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Story_service } from '../services/story.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PopupFormComponent } from '../popup-form/popup-form.component';
+
 import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
