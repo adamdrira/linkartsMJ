@@ -1,32 +1,28 @@
 import { Component, OnInit, ChangeDetectorRef, Renderer2, ElementRef, ComponentFactoryResolver, ViewContainerRef, Output, EventEmitter, ViewChild, HostListener, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
-import { first } from 'rxjs/operators';
 import { Bd_CoverService } from '../services/comics_cover.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
-import { ThemePalette } from '@angular/material/core';
 
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { NavbarService } from '../services/navbar.service';
 
-declare var Swiper: any;
-declare var $ : any;
+
 
 @Component({
   selector: 'app-add-comic',
@@ -55,13 +51,17 @@ export class AddComicComponent implements OnInit {
     private bdSerieService: BdSerieService,
     private Bd_CoverService: Bd_CoverService,
     public dialog: MatDialog,
-
+    private navbar: NavbarService,
   ) { 
     this.REAL_step = 0;
     this.CURRENT_step = 0;
     this.modal_displayed = false;
 
-    
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
       map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
@@ -91,7 +91,8 @@ export class AddComicComponent implements OnInit {
 
   conditions:any;
   ngOnInit() {
-
+    let THIS=this;
+   
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
     })
@@ -109,13 +110,7 @@ export class AddComicComponent implements OnInit {
 
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
+  
 
   //********************************************************************************************************* */
   //********************************************************************************************************* */

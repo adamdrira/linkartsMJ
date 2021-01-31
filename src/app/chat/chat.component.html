@@ -8,7 +8,7 @@
         <!--PARTIE HAUTE DU CHAT-->
         <!-------------------------------------->
         <!-------------------------------------->
-        <div class="top-container">
+        <div class="top-container" [ngClass]="{'margin-bottom-for-alert':block_chat || spam=='true'}">
 
 
             <div class="display-flex">
@@ -59,7 +59,7 @@
                         </button>
                         <button class="chat-menu-item" *ngIf="spam=='true'" mat-menu-item  (click)="remove_spam()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
-                            <span>Supprimer de mes invitations</span>
+                            <span>Retier de mes invitations</span>
                         </button>
                         <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
@@ -148,9 +148,10 @@
             <div *ngIf="spam!='false' && !block_chat && !response_exist && response_exist_retrieved" class="top-alert-message" [@enterFromTopAnimation]>
                 <div class="message">
                     <mat-icon>info_outline</mat-icon>
-                    <span>{{friend_name}} ne fait pas partie de vos contacts. Vous devrez attendre qu'il accepte votre invitation si vous lui envoyez un message</span>
+                    <span> Vous devez attendre que {{friend_name}} réponde à votre message pour l'ajouter à vos contacts</span>
                 </div>
             </div>
+
             <div *ngIf="block_chat" class="top-alert-message" [@enterFromTopAnimation]>
                 <div class="message">
                     <mat-icon>info_outline</mat-icon>

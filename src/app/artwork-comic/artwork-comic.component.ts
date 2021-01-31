@@ -3,8 +3,6 @@ import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import {MatMenuModule} from '@angular/material/menu';
-import { delay } from 'rxjs/operators';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -94,22 +92,18 @@ export class ArtworkComicComponent implements OnInit {
     private Emphasize_service:Emphasize_service,
     private NotificationsService:NotificationsService,
     private chatService:ChatService,
+    
     ) { 
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
       };
 
-    /*this.AuthenticationService.currentUserType.subscribe(r=>{
-      console.log(r);
-      if(r!=''){
-        this.type_of_account=r;
-        this.type_of_account_retrieved=true;
-        if(this.pp_loaded){
-          this.display_right_container=true;
-        }
-      }
-    })*/
+    
     
     this.thumbnails = false;
     this.zoom_mode = false;
@@ -270,6 +264,7 @@ export class ArtworkComicComponent implements OnInit {
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
+    let THIS=this;
     window.scroll(0,0);
     setInterval(() => {
 
@@ -380,6 +375,7 @@ export class ArtworkComicComponent implements OnInit {
 
               this.Profile_Edition_Service.retrieve_profile_data(r[0].authorid).subscribe(r=>{
                 this.pseudo = r[0].nickname;
+                this.type_of_account_checked=r[0].type_of_account_checked;
                 this.certified_account=r[0].certified_account;
                 this.user_name = r[0].firstname + ' ' + r[0].lastname;
                 this.primary_description=r[0].primary_description;
@@ -663,6 +659,7 @@ export class ArtworkComicComponent implements OnInit {
               this.user_name = r[0].firstname + ' ' + r[0].lastname;
               this.primary_description=r[0].primary_description;
               
+              this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
               this.profile_data_retrieved=true;
             });
@@ -1007,10 +1004,7 @@ export class ArtworkComicComponent implements OnInit {
   
   show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
     this.open_category(0);
   }
 
@@ -1027,6 +1021,7 @@ export class ArtworkComicComponent implements OnInit {
   
 
   
+  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   optionOpened:number = -1;

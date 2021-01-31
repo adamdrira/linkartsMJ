@@ -7,6 +7,7 @@ import { NotificationsService } from '../services/notifications.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
@@ -66,9 +67,16 @@ export class CommentElementComponent implements OnInit {
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd:ChangeDetectorRef,
+    private navbar: NavbarService,
     private NotationService:NotationService
     
-    ) { }
+    ) {
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+     }
 
 
   @ViewChild('textareaREAD', {static:false}) textareaREAD:ElementRef;
@@ -143,6 +151,7 @@ export class CommentElementComponent implements OnInit {
   
 
   ngOnInit(): void {
+    let THIS=this;
     this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
     console.log(this.date_upload_to_show)
     this.comment=this.comment_information.commentary;
@@ -674,14 +683,7 @@ export class CommentElementComponent implements OnInit {
     }
   }
   show_icon=false;
-  ngAfterViewInit() {
-
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-
-  }
+ 
 
   edit_response(i:number) {
     

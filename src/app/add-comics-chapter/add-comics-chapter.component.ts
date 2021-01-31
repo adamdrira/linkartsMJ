@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+
 
 declare var $ : any;
 
@@ -43,7 +44,8 @@ export class AddComicsChapterComponent implements OnInit {
   }
   
   ngOnInit(): void {
-
+    let THIS=this;
+    window.scroll(0,0);
     this.bd_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     console.log(this.bd_id)
 

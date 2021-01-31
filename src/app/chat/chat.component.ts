@@ -1,6 +1,6 @@
 
 import { Component, OnInit, HostListener, Input, Output, EventEmitter, SimpleChanges, ChangeDetectorRef, ElementRef, ViewChild, Renderer2, ViewChildren, QueryList } from '@angular/core';
-import { FormControl, Validators, FormGroup} from '@angular/forms';
+import { FormControl, FormGroup} from '@angular/forms';
 import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -11,7 +11,6 @@ import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmati
 import { MatDialog } from '@angular/material/dialog';
 import { FileUploader, FileItem, FileUploaderOptions } from 'ng2-file-upload';
 import { Location } from '@angular/common';
-import { NavbarLinkartsComponent } from '../navbar-linkarts/navbar-linkarts.component';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popup-chat-group-members.component';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -19,7 +18,6 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
-import {HttpHeaders} from '@angular/common/http';
 declare var $: any;
 var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
 
@@ -95,9 +93,12 @@ export class ChatComponent implements OnInit  {
     private WebSocketService:WebSocketService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
-      //navbar
-     
-      //uploader
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+
       this.uploader = new FileUploader({
         url:url,
         method: 'POST',
@@ -384,7 +385,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_chat_sections_id=[1];
     this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
-    this.top_pp_loaded=false;
+    //this.top_pp_loaded=false;
     this.number_of_sections_unseen=0;
 
     this.cd.detectChanges();
@@ -454,7 +455,7 @@ export class ChatComponent implements OnInit  {
     this.list_of_chat_sections_id=[1];
     this.compteur_chat_section=0;
     this.list_of_chat_sections=["Discussion principale"];
-    this.top_pp_loaded=false;
+    //this.top_pp_loaded=false;
     
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,true);
@@ -522,7 +523,7 @@ export class ChatComponent implements OnInit  {
   /*******************************************ON INIT ************************** */
 
   ngOnInit() {
-    
+    let THIS=this;
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     console.log(this.id_chat_section);
     if(this.friend_type=='group'){
@@ -1092,7 +1093,6 @@ export class ChatComponent implements OnInit  {
       status:"writing",
       is_a_group_chat:(this.friend_type=='user')?false:true,
     } 
-    console.log("sending writing")
     if(this.spam=='true'){
       //pas de mention vue pour les spams
       /*console.log("changing status to seen spam")
@@ -1149,7 +1149,6 @@ export class ChatComponent implements OnInit  {
         status:"not-writing",
         is_a_group_chat:(this.friend_type=='user')?false:true,
       } 
-      console.log("sending noooot writing")
       this.chatService.messages.next(msg);
     }
   }
@@ -1302,6 +1301,8 @@ export class ChatComponent implements OnInit  {
     this.temporary_id+=1;
     this.respond_to_a_message=false;
     this.list_of_messages.splice(0,0,(this.message_one));
+    console.log("received first")
+                console.log(this.list_of_messages)
     this.list_of_messages_files.splice(0,0,false);
     this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
     this.list_of_messages_pictures.splice(0,0,false);
@@ -1363,6 +1364,8 @@ export class ChatComponent implements OnInit  {
     this.list_of_messages_files.splice(0,0,this.attachments[i]);
     this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
     this.list_of_messages.splice(0,0,(message));
+    console.log("received first")
+                console.log(this.list_of_messages)
     this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
     if(i==this.attachments.length-1){
       this.end_of_past_images=true;
@@ -1430,6 +1433,8 @@ export class ChatComponent implements OnInit  {
           this.list_of_messages_files.splice(0,0,this.attachments[i]);
           this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
           this.list_of_messages.splice(0,0,(message));
+          console.log("received first")
+                console.log(this.list_of_messages)
           this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
         })
       }
@@ -1456,6 +1461,8 @@ export class ChatComponent implements OnInit  {
           this.list_of_messages_files.splice(0,0,this.attachments[i]);
           this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
           this.list_of_messages.splice(0,0,(message));
+          console.log("received first")
+                console.log(this.list_of_messages)
         })
       }
       this.cd.detectChanges();
@@ -1495,6 +1502,8 @@ export class ChatComponent implements OnInit  {
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
            this.list_of_messages.splice(0,0,(message));
+           console.log("received first")
+                console.log(this.list_of_messages)
          })
       }
       else{
@@ -1522,6 +1531,8 @@ export class ChatComponent implements OnInit  {
            this.list_of_messages_files.splice(0,0,this.attachments[i]);
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages.splice(0,0,(message));
+           console.log("received first")
+                console.log(this.list_of_messages)
          })
       }
       this.cd.detectChanges();
@@ -2874,13 +2885,7 @@ see_less_messages(){
 
 
 show_icon=false;
-ngAfterViewInit(){
-  let THIS=this;
-  $(window).ready(function () {
-    console.log("load")
-    THIS.show_icon=true;
-  });
-}
+
 
 
 /*********************************************  GROUP FUNCTIONS ******************************/
@@ -3116,7 +3121,10 @@ chat_service_managment_function(msg){
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
+                
                 this.list_of_messages.splice(0,0,message);
+                console.log("received first")
+                console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3130,7 +3138,10 @@ chat_service_managment_function(msg){
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
+                
                 this.list_of_messages.splice(0,0,message);
+                console.log("received first")
+                console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3147,6 +3158,8 @@ chat_service_managment_function(msg){
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_files.splice(0,0,SafeURL)
                 this.list_of_messages.splice(0,0,message);
+                console.log("received first")
+                console.log(this.list_of_messages)
                 this.list_of_messages_pictures.splice(0,0,false);
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3157,6 +3170,8 @@ chat_service_managment_function(msg){
           }
           else{
             this.list_of_messages.splice(0,0,message);
+            console.log("received first")
+                console.log(this.list_of_messages)
             this.list_of_messages_pictures.splice(0,0,false)
             this.list_of_messages_files.splice(0,0,false);
             if(this.list_of_messages.length==1){
@@ -3245,7 +3260,7 @@ chat_service_managment_function(msg){
             console.log("not talking to myself");
             this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
             let message = msg[0];
-
+            this.response_exist=true;
             //add message to list
             if(msg[0].attachment_type=="picture_message"){
               this.chatService.get_picture_sent_by_msg(msg[0].attachment_name).subscribe(r=>{
@@ -3253,6 +3268,8 @@ chat_service_managment_function(msg){
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
                 this.list_of_messages.splice(0,0,message);
+                console.log("received first")
+                console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length>1){
                   console.log("list not empty");
@@ -3272,8 +3289,7 @@ chat_service_managment_function(msg){
                     console.log(this.index_of_show_pp_right);
                   }
                 }
-                if(this.list_of_messages.length==1){
-                  this.list_of_messages.push(message);
+                else if(this.list_of_messages.length==1){
                   this.list_of_show_pp_left.push(true);
                   this.display_messages=true;
                 }
@@ -3287,6 +3303,8 @@ chat_service_managment_function(msg){
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_pictures.splice(0,0,SafeURL)
                   this.list_of_messages.splice(0,0,message);
+                  console.log("received first")
+                console.log(this.list_of_messages)
                   this.list_of_messages_files.splice(0,0,false)
                   if(this.list_of_messages.length>1){
                     console.log("list not empty");
@@ -3306,8 +3324,7 @@ chat_service_managment_function(msg){
                       console.log(this.index_of_show_pp_right);
                     }
                   }
-                  if(this.list_of_messages.length==1){
-                    this.list_of_messages.push(message);
+                  else if(this.list_of_messages.length==1){
                     this.list_of_show_pp_left.push(true);
                     this.display_messages=true;
                   }
@@ -3324,6 +3341,8 @@ chat_service_managment_function(msg){
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
                   this.list_of_messages.splice(0,0,message);
+                  console.log("received first")
+                console.log(this.list_of_messages)
                   this.list_of_messages_pictures.splice(0,0,false);
                   if(this.list_of_messages.length>1){
                     console.log("list not empty");
@@ -3343,8 +3362,7 @@ chat_service_managment_function(msg){
                       console.log(this.index_of_show_pp_right);
                     }
                   }
-                  if(this.list_of_messages.length==1){
-                    this.list_of_messages.push(message);
+                  else if(this.list_of_messages.length==1){
                     this.list_of_show_pp_left.push(true);
                     this.display_messages=true;
                   }
@@ -3355,6 +3373,8 @@ chat_service_managment_function(msg){
             else{
               this.list_of_messages_files.splice(0,0,false)
               this.list_of_messages.splice(0,0,message);
+              console.log("received first")
+                console.log(this.list_of_messages)
               this.list_of_messages_pictures.splice(0,0,false);
               if(this.list_of_messages.length>1){
                 console.log("list not empty");
@@ -3374,8 +3394,7 @@ chat_service_managment_function(msg){
                   console.log(this.index_of_show_pp_right);
                 }
               }
-              if(this.list_of_messages.length==1){
-                this.list_of_messages.push(message);
+              else if(this.list_of_messages.length==1){
                 this.list_of_show_pp_left.push(true);
                 this.display_messages=true;
               }
@@ -3612,6 +3631,7 @@ chat_service_managment_function(msg){
       }
       else{
         if(this.spam=='true'){
+          console.log("add new spam to contact")
           this.add_spam_to_contacts.emit({spam_id:msg[0].id_user,message:msg[0]});
           this.cd.detectChanges;
           console.log("in spam with spam");
@@ -3626,6 +3646,8 @@ chat_service_managment_function(msg){
       console.log("received_new_friend_in_the_group")
       if(this.user_present){
         this.list_of_messages.splice(0,0,msg[0].message);
+        console.log("received first")
+                console.log(this.list_of_messages)
         if(this.friend_type=='group' && this.friend_id==msg[0].id_receiver){
           for(let i=0;i<this.list_of_messages.length;i++){
             this.list_of_messages[i].list_of_users_in_the_group=msg[0].list_of_users_in_the_group;
@@ -3651,6 +3673,8 @@ chat_service_managment_function(msg){
         if(this.friend_id==msg[0].id_user && this.friend_type=='group'){
           console.log('cur tak')
           this.list_of_messages.splice(0,0,msg[0]);
+          console.log("received first")
+                console.log(this.list_of_messages)
         }
       }
       this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'group',value:false});
@@ -3661,7 +3685,10 @@ chat_service_managment_function(msg){
       console.log("Exit");
       if(msg[0].is_a_group_chat){
         if(this.friend_id==msg[0].id_user && this.friend_type=='group'){
+          console.log("received first")
           this.list_of_messages.splice(0,0,msg[0]);
+          console.log("received first")
+                console.log(this.list_of_messages)
           for(let i=0;i<this.list_of_messages.length;i++){
             this.list_of_messages[i].list_of_users_in_the_group=msg[0].list_of_users_in_the_group;
           }
@@ -3671,9 +3698,6 @@ chat_service_managment_function(msg){
       }
     }
     else if(msg[0].server_message=="writing" ){
-      console.log("writing message")
-      console.log(msg[0].group_chat_id )
-      console.log(msg[0].id_user_writing)
       if(!msg[0].group_chat_id && this.friend_id==msg[0].id_user_writing && this.friend_type=="user"){
         this.display_writing=true;
         this.section_where_is_writing=msg[0].message;
@@ -3692,7 +3716,6 @@ chat_service_managment_function(msg){
       
     }
     else if(msg[0].server_message=="not-writing" ){
-      console.log(" not-writing message")
       if(!msg[0].group_chat_id && this.friend_id==msg[0].id_user_writing && this.friend_type=="user"){
         this.display_writing=false;
         this.cd.detectChanges();

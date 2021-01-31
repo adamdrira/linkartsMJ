@@ -12,6 +12,7 @@ import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { MatDialog } from '@angular/material/dialog';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -38,8 +39,13 @@ export class CommentsComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
+    private navbar: NavbarService,
   ) { 
-
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
   }
   @Input() type_of_account:string;
   @Input() authorid:number;
@@ -100,17 +106,13 @@ export class CommentsComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
 
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-
+  
     this.skeleton_array = Array(5);
   }
 
 
   ngOnInit(): void {
-
+    let THIS=this;
     if(this.format=="serie"){
       this.chapter_number+=1;
     }

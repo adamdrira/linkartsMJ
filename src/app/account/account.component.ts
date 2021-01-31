@@ -93,6 +93,12 @@ export class AccountComponent implements OnInit {
     ) {
     //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+
     this.router.routeReuseStrategy.shouldReuseRoute = function() {
       return false;
     };
@@ -364,7 +370,10 @@ export class AccountComponent implements OnInit {
 
   ngOnInit()  {
  
+    let THIS=this;
    
+    window.scroll(0,0);
+    
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     if(!(this.user_id && this.user_id>0) || !( this.pseudo && this.pseudo.length>0)){
@@ -647,6 +656,7 @@ export class AccountComponent implements OnInit {
     });
 
     this.Subscribing_service.get_new_comic_contents(this.user_id).subscribe(r=>{
+      console.log(r)
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -1155,11 +1165,6 @@ export class AccountComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
     
-    let THIS=this;
-    $(window).ready(function () {
-      console.log("load")
-      THIS.show_icon=true;
-    })
     
     this.update_background_position( this.opened_section );
     if(this.main_container.nativeElement.offsetWidth<570){

@@ -28,8 +28,9 @@
 
             .top-container {
                 display: flex;
-                height: 80px;
-                min-height: 80px;
+                height: 64px;
+                min-height: 64px;
+                margin-bottom: 16px;
                 .pp {
                     width: 40px;
                     height: 40px;
@@ -214,8 +215,9 @@
 
         .top-options-container {
             display:flex;
-            height: 80px;
-            min-height: 80px;
+            height: 64px;
+            min-height: 64px;
+            margin-bottom: 16px;
             .profile-picture-container {
                 width:40px;
                 height:40px;
@@ -534,7 +536,7 @@
                             padding: 2px 3px 4px 3px;
                             line-height: 6px;
                             border-radius: 50px;
-                            top: 37px;
+                            top: 35px;
                             right: -2px;
                           span {
                             margin: auto auto;

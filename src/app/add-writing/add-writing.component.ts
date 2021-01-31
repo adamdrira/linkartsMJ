@@ -1,6 +1,5 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
-import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Router } from '@angular/router';
@@ -18,8 +17,8 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { pattern } from '../helpers/patterns';
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
-import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
 declare var $: any;
@@ -48,12 +47,17 @@ export class AddWritingComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private Writing_CoverService:Writing_CoverService,
-    private Profile_Edition_Service:Profile_Edition_Service
+    private Profile_Edition_Service:Profile_Edition_Service,
+    private navbar: NavbarService,
   ) { 
 
     this.REAL_step = 0;
     this.CURRENT_step = 0;
-
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.filteredGenres = this.genreCtrl.valueChanges.pipe(
       startWith(null),
       map((genre: string | null) => genre ? this._filter(genre) : this.allGenres.slice()));
@@ -93,7 +97,8 @@ export class AddWritingComponent implements OnInit {
   conditions:any;
 
   ngOnInit() {
-
+    let THIS=this;
+    window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
     })
@@ -115,12 +120,7 @@ export class AddWritingComponent implements OnInit {
   
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+ 
 
   setMonetisation(e){
     if(e.checked){

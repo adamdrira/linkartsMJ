@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChildren, QueryList, ElementRef } from '@angular/core';
 
-import {MatInputModule} from '@angular/material/input';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
 
@@ -14,6 +12,7 @@ import { pattern } from '../helpers/patterns';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var Swiper:any;
@@ -46,7 +45,14 @@ export class AddAlbumComicComponent implements OnInit {
     private Albums_service:Albums_service,
     private router:Router,
     public dialog: MatDialog,
-  ) { }
+    private NavbarService:NavbarService,
+  ) {
+    NavbarService.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+   }
   
 
 
@@ -112,7 +118,7 @@ export class AddAlbumComicComponent implements OnInit {
  
 
   ngOnInit(): void {
-
+    let THIS=this;
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
   }
 
@@ -121,10 +127,7 @@ export class AddAlbumComicComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
 
     this.swiper = new Swiper('.swiper-container', {
       scrollbar: {

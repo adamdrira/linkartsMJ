@@ -3,8 +3,6 @@ import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import {MatMenuModule} from '@angular/material/menu';
-import { delay } from 'rxjs/operators';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -20,7 +18,6 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupLikesAndLovesComponent } from '../popup-likes-and-loves/popup-likes-and-loves.component';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
@@ -32,7 +29,6 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-
 declare var Swiper: any;
 declare var $: any;
 
@@ -94,7 +90,11 @@ export class ArtworkDrawingComponent implements OnInit {
     private Emphasize_service:Emphasize_service,
 
     ) { 
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
       };
@@ -241,6 +241,7 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
 
   ngOnInit() {
+    let THIS=this;
     window.scroll(0,0);
 
     setInterval(() => {
@@ -393,6 +394,7 @@ export class ArtworkDrawingComponent implements OnInit {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
 
+        this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
         this.profile_data_retrieved=true;
       });
@@ -538,6 +540,7 @@ export class ArtworkDrawingComponent implements OnInit {
         this.user_name = r[0].firstname + ' ' + r[0].lastname;
         this.primary_description=r[0].primary_description;
         
+        this.type_of_account_checked=r[0].type_of_account_checked;
         this.certified_account=r[0].certified_account;
       });
 
@@ -854,10 +857,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
   show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
     this.open_category(0);
   }
 
@@ -870,6 +870,7 @@ export class ArtworkDrawingComponent implements OnInit {
   /******************************************************* */
 
  
+  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   optionOpened:number = -1;

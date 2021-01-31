@@ -19,6 +19,7 @@ import { startWith, map } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -55,8 +56,13 @@ export class AddDrawingComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
+    private navbar: NavbarService,
   ) { 
-    
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.REAL_step = 0;
     this.CURRENT_step = 0;
     this.modal_displayed = false;
@@ -89,7 +95,8 @@ export class AddDrawingComponent implements OnInit {
   conditions:any;
 
   ngOnInit() {
-
+    let THIS=this;
+    window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
     })
@@ -106,12 +113,7 @@ export class AddDrawingComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+ 
 
   
 

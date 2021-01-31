@@ -89,6 +89,12 @@ export class ChatFriendsListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private AuthenticationService:AuthenticationService,
     ){
+
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.navbar.set_using_chat();
       
       this.navbar.show();
@@ -238,7 +244,7 @@ export class ChatFriendsListComponent implements OnInit {
   @ViewChild('myScrollContainer') private myScrollContainer: ElementRef;
 
   ngOnInit() {
-    
+    let THIS=this;
     this.active_section = this.route.snapshot.data['section'];
     console.log(this.active_section)
     if(this.active_section==2){
@@ -372,11 +378,7 @@ export class ChatFriendsListComponent implements OnInit {
   
   show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      console.log("load")
-      THIS.show_icon=true;
-    });
+    
     
     if( window.innerWidth>850 ) {
       this.chat_right_container_is_opened = true;
@@ -916,12 +918,16 @@ export class ChatFriendsListComponent implements OnInit {
     // set sumo selector manu
     console.log("adding new user");
     console.log(event )
+    
+   
     let index=this.list_of_spams_ids.indexOf(event.spam_id);
     let chat_friend_id=event.message.chat_id;
     let name =  this.list_of_spams_names[index];
     let profile_picture =this.list_of_spams_profile_pictures[index]
     let pseudo = this.list_of_spams_pseudos[index];
 
+    console.log(profile_picture)
+    console.log(this.list_of_spams_profile_pictures[index])
     this.list_of_spams_ids.splice(index,1);
     this.list_of_spams_last_message.splice(index,1);
     this.list_of_spams_names.splice(index,1);
@@ -937,7 +943,10 @@ export class ChatFriendsListComponent implements OnInit {
     this.friend_pp_loaded.splice(0,0,false);
     this.list_of_friends_pseudos.splice(0,0,pseudo);
     this.list_of_friends_last_message.splice(0,0,event.message);
+    this.list_of_friends_users_only.splice(0,0,event.spam_id);
 
+    console.log( this.list_of_friends_users_only)
+    console.log(this.friend_pp_loaded)
     if(this.list_of_spams_ids.length>0){
       this.spam_id=this.list_of_spams_ids[0];
       this.spam_pseudo=  this.list_of_spams_pseudos[0];
@@ -958,7 +967,7 @@ export class ChatFriendsListComponent implements OnInit {
       this.friend_name=name;
       this.friend_picture=profile_picture;
       this.chat_friend_id=chat_friend_id;
-
+      console.log(this.friend_picture)
       this.waiting_friend_type='user';
       this.waiting_friend_id=this.friend_id;
       this.waiting_chat_friend_id=this.chat_friend_id;
@@ -976,7 +985,7 @@ export class ChatFriendsListComponent implements OnInit {
       this.spam='false';
 
     }
-    
+    this.sort_spams_list();
     this.cd.detectChanges();
   }
 
@@ -1181,15 +1190,16 @@ change_message_status(event){
               if(event.friend_id==this.current_user){
                 console.log("it s me")
                 this.list_of_friends_types.splice(0,0,'user');
+                this.list_of_friends_users_only.splice(0,0,event.friend_id);
                 this.list_of_friends_ids.splice(0,0,event.friend_id);
-                  this.list_of_friends_last_message.splice(0,0,event.message);
-                  this.list_of_friends_last_message[0].status="received";
-                  this.list_of_friends_names.splice(0,0,this.current_user_name);
-                  this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
-                  this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
-                  this.friend_pp_loaded.splice(0,0,false);
-                  this.list_of_friends_pseudos.splice(0,0,this.current_user_pseudo);
-                  this.cd.detectChanges();
+                this.list_of_friends_last_message.splice(0,0,event.message);
+                this.list_of_friends_last_message[0].status="received";
+                this.list_of_friends_names.splice(0,0,this.current_user_name);
+                this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
+                this.friend_pp_loaded.splice(0,0,false);
+                this.list_of_friends_pseudos.splice(0,0,this.current_user_pseudo);
+                this.cd.detectChanges();
               }
               else{
                 console.log("related but not me")
@@ -1219,6 +1229,7 @@ change_message_status(event){
                 function check_all(THIS){
                   if(data_retrieved && pp_retrieved){
                     THIS.list_of_friends_types.splice(0,0,'user');
+                    THIS.list_of_friends_users_only.splice(0,0,event.friend_id);
                     THIS.list_of_friends_ids.splice(0,0,event.friend_id);
                     THIS.list_of_friends_last_message.splice(0,0,event.message);
                     THIS.list_of_friends_last_message[0].status="received";
@@ -1643,12 +1654,14 @@ change_message_status(event){
   }
 
   delete_placeholder(){
-
+    console.log("delte placeholde")
     if( this.input ) {
+      console.log("if")
       this.input.nativeElement.value='';
     }
     this.fd.value.fdSearchbar='';
     if(!this.select_group_chat_contacts && !this.display_add_a_friend_to_a_group){
+      console.log("other if")
       this.get_propositions=false;
       this.loading_other_propositions=false;
       this.display_first_propositions=false;
@@ -2235,6 +2248,7 @@ change_message_status(event){
     //other contacts propositions
     if(indice==4){
       this.chatService.check_if_is_related(this.list_of_other_contacts_ids[i]).subscribe(r=>{
+        console.log(r)
         if(r[0].value){
           console.log("is related");
           if(this.spam=='true'){
@@ -2246,6 +2260,7 @@ change_message_status(event){
           }
         }
         else{
+          console.log("open spam")
           this.spam='true';
           this.set_category(1,false);
           this.createFormAd();
@@ -2370,10 +2385,11 @@ change_message_status(event){
 
  
   radioChange(i,from_html){
-    
+    console.log("radio change " + i + ' ' + from_html);
     if(this.opened_category != i){
       this.delete_placeholder();
       if( i == 1){
+        console.log("1")
         if(this.list_of_spams_ids.length>0){
           console.log("ya un spam");
           console.log(this.list_of_spams_ids);
@@ -2402,16 +2418,14 @@ change_message_status(event){
           console.log(this.friend_type)
           console.log(this.friend_id)
         }
-        else{
-          this.set_category(0,false);
-          this.createFormAd();
-          if(from_html){
+        else if(from_html){
+            console.log("else")
+            this.createFormAd();
+            this.set_category(0,false);
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Vous n'avez aucune invitation"},          
               panelClass: "popupConfirmationClass",
             });
-          }
-          
           return false;
         }
         
@@ -2429,9 +2443,11 @@ change_message_status(event){
           this.get_friends=true;
           this.get_spams=false;
           this.spam='false';
+          this.cd.detectChanges();
+          this.delete_placeholder();
       }
-      this.delete_placeholder();
-      this.cd.detectChanges();
+      
+      
       return true;
     }
   }
@@ -2717,7 +2733,8 @@ get_group_chat_name(id,message,value){
 
 
 get_connections_status(){
-  //console.log("gtting connexion stats")
+  console.log("gtting connexion stats")
+  console.log(this.list_of_friends_users_only)
   this.chatService.get_users_connected_in_the_chat(this.list_of_friends_users_only).subscribe(r=>{
     let compt=0;
     if(this.list_of_groups_ids.length>0){
@@ -2847,6 +2864,7 @@ get_connections_status(){
   
   opened_category:number = 0;
   set_category(i: number,from_html) {
+    console.log("set category " + i + ' ' + from_html);
     if( this.opened_category == i ) {
       return;
     }

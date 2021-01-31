@@ -1,11 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { UploadService } from '../services/upload.service';
 import { Trending_service } from '../services/trending.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { NotationService } from '../services/notation.service';
@@ -24,12 +22,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { pattern } from '../helpers/patterns';
 import * as moment from 'moment'; 
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
+
 
 
 
@@ -97,7 +95,13 @@ export class AccountAboutComponent implements OnInit {
     private Albums_service:Albums_service,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
-  ) { }
+  ) { 
+    NavbarService.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+  }
 
 
 
@@ -193,6 +197,9 @@ export class AccountAboutComponent implements OnInit {
 
   ngOnInit(): void {
     
+    let THIS=this;
+   
+
       console.log(this.id_user);
       console.log("open accout about");
       const currentYear = moment().year();
@@ -309,13 +316,7 @@ export class AccountAboutComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
+ 
   
   open_category(i){
     if(i==this.opened_category){

@@ -10,7 +10,7 @@
         </div>-->
         
         <button class="add-chapter-button style0" (click)="add_series_chapter();">
-            <mat-icon>add</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
             <span>Ajouter un chapitre</span>
         </button>
 
@@ -58,13 +58,13 @@
                 <div class="chapter-icons">     
 
                     <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();">
-                        <mat-icon>done</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                     </button>  
                     <button mat-icon-button *ngIf="edit_name==-1" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
-                        <mat-icon>edit</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                     </button>         
                     <button mat-icon-button *ngIf="edit_name==-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();">
-                        <mat-icon>delete_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
                     </button>
                     
                   
@@ -113,13 +113,13 @@
                     
                                                 
                     <button mat-icon-button *ngIf="edit_name==i" (click)="validate_name(i);$event.stopPropagation();">
-                        <mat-icon>done</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                     </button> 
                     <button mat-icon-button *ngIf="edit_name==-1 && list_of_new_chapters[i]" (click)="set_edit_name(i,'modify');$event.stopPropagation();">
-                        <mat-icon>edit</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                     </button>         
                     <button mat-icon-button *ngIf="edit_name==-1 && i==list_of_chapters.length-1 && i>0" (click)="openDeleteDialog(i);$event.stopPropagation();">
-                        <mat-icon>delete_outline</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">delete_outline</mat-icon>
                     </button>
                 </div>
 
@@ -152,7 +152,7 @@
 
 <button #validateButton mat-raised-button class="submit-button style1" (click)="validateAll();">
     <ng-container *ngIf="!display_loading">
-        <mat-icon>done_all</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
         <span>Valider la série</span>
     </ng-container>
     <ng-container *ngIf="display_loading">

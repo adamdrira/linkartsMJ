@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ViewChildren, ElementRef, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Renderer2 } from '@angular/core';
 import { ViewContainerRef, ComponentFactoryResolver} from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
@@ -21,9 +21,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
-declare var Swiper: any;
-declare var $: any;
-
 
 @Component({
   selector: 'app-add-artwork',
@@ -51,13 +48,17 @@ export class AddArtworkComponent implements OnInit {
     private bdOneShotService: BdOneShotService,
     private Bd_CoverService: Bd_CoverService,
     private BdSerieService: BdSerieService,
-    public navbar: NavbarService,
+    private navbar: NavbarService,
     private location: Location,
     public dialog: MatDialog,
     private sanitizer:DomSanitizer,
 
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     //this.navbar.setActiveSection(0);
     this.navbar.hide();
 
@@ -94,7 +95,8 @@ export class AddArtworkComponent implements OnInit {
   //********************************************************************************************************* */
   ngOnInit() {
     
-    
+    let THIS=this;
+    window.scroll(0,0);
     this._upload.category.next( this.route.snapshot.data['section'] );
     this.cd.detectChanges();
 
@@ -105,12 +107,7 @@ export class AddArtworkComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+  
   
 
   get_user_data() {

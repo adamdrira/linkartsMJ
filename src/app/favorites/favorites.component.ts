@@ -66,7 +66,6 @@ export class FavoritesComponent implements OnInit {
 
   ngOnInit() {
 
-
     this.Favorites_service.generate_or_get_favorites().subscribe(info=>{
       console.log(info[0])
       if(info[0].favorites){

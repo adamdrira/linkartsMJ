@@ -26,7 +26,6 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { fromEvent } from 'rxjs';
 
 declare var Swiper: any;
 declare var $: any;
@@ -95,6 +94,11 @@ export class ArtworkWritingComponent implements OnInit {
       this.fullscreen_mode = false;
       this.navbar.setActiveSection(-1);
       this.navbar.show();
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
 
@@ -235,6 +239,7 @@ export class ArtworkWritingComponent implements OnInit {
   /******************** ON INIT ****************** */
   /******************************************************* */
   ngOnInit() {
+    let THIS=this;
     window.scroll(0,0);
     setInterval(() => {
 
@@ -313,6 +318,7 @@ export class ArtworkWritingComponent implements OnInit {
               this.pseudo = r[0].nickname;
               this.user_name = r[0].firstname + ' ' + r[0].lastname;
               this.primary_description=r[0].primary_description;
+              this.type_of_account_checked=r[0].type_of_account_checked;
               this.certified_account=r[0].certified_account;
               this.profile_data_retrieved=true;
             });
@@ -630,10 +636,7 @@ export class ArtworkWritingComponent implements OnInit {
   page_width;
 
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
     this.open_category(0);
     $(".top-container .pages-controller-container input").val(1)
     
@@ -652,6 +655,7 @@ export class ArtworkWritingComponent implements OnInit {
   /******************************************************* */
   /******************************************************* */
 
+  type_of_account_checked:boolean;
   certified_account:boolean;  
 
   optionOpened:number = -1;

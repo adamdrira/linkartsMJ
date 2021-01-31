@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, Input } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
@@ -9,11 +8,10 @@ import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
 import { Trending_service } from '../services/trending.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Subscribing_service } from '../services/subscribing.service';
-import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
@@ -28,6 +26,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SignupComponent } from '../signup/signup.component';
+import { NavbarService } from '../services/navbar.service';
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
@@ -79,7 +78,14 @@ export class AccountMyAccountComponent implements OnInit {
     private NotificationsService:NotificationsService,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
-  ) { }
+    private navbar: NavbarService, 
+  ) {
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+   }
 
 
 
@@ -124,6 +130,8 @@ export class AccountMyAccountComponent implements OnInit {
 
 
   ngOnInit(): void {
+    let THIS=this;
+    
         this.status=this.author.status;
         this.gender=this.author.gender;
         this.type_of_account=this.author.type_of_account;
@@ -145,13 +153,7 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
-
+  
 
   sumo_ready=false;
   open_category(i){

@@ -5,7 +5,6 @@ import { AuthenticationService } from '../services/authentication.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { UploadService } from '../services/upload.service';
 
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -20,10 +19,10 @@ import { Story_service } from '../services/story.service';
 import { Ads_service } from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 
-import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -73,9 +72,13 @@ export class ArchivesComponent implements OnInit {
     private Albums_service:Albums_service,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
-
+    private navbar: NavbarService,
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.router.routeReuseStrategy.shouldReuseRoute = function() {
       return false;
     };
@@ -152,11 +155,7 @@ export class ArchivesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    let user_id= parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
-    
-    
-    
+    let THIS=this;
     // get other comics archived
     this.Subscribing_service.get_archives_comics().subscribe(l=>{
       let r=l[0];
@@ -379,11 +378,6 @@ export class ArchivesComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
     
-    let THIS=this;
-    $(window).ready(function () {
-      console.log("load")
-      THIS.show_icon=true;
-    })
     this.width=this.main_container.nativeElement.offsetWidth*0.9;
 
     this.get_number_of_comics_to_show();

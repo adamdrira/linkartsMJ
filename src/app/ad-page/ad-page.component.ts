@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import {ElementRef, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
@@ -7,7 +7,6 @@ import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Reports_service } from '../services/reports.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import {MatMenuModule} from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
@@ -21,11 +20,9 @@ import { ChatService } from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {get_date_to_show_for_ad} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
-import { Location } from '@angular/common';
 
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
-import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 
@@ -83,6 +80,11 @@ export class AdPageComponent implements OnInit {
     private cd:ChangeDetectorRef,
     ) { 
       
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       this.router.routeReuseStrategy.shouldReuseRoute = function() {
         return false;
       };
@@ -213,6 +215,8 @@ export class AdPageComponent implements OnInit {
   /**********************************************   ON INIT  **************************************/
   number_of_pictures=0;
   ngOnInit() {
+    let THIS=this;
+  
     window.scroll(0,0);
     setInterval(() => {
 
@@ -496,10 +500,7 @@ export class AdPageComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
 
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+    
 
     console.log(window.innerWidth)
     if( window.innerWidth<=1000 ) {

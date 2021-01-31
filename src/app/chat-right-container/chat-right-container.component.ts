@@ -1,14 +1,12 @@
 
-import { Component, OnInit, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges, ViewChildren, QueryList, Query, EventEmitter, Output } from '@angular/core';
-import { FormControl, Validators, FormGroup, FormsModule,ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Input, ElementRef, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges, ViewChildren, QueryList, Query, EventEmitter, Output } from '@angular/core';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Subscribing_service } from '../services/subscribing.service';
 import { ChatComponent } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
-import { getMatIconFailedToSanitizeLiteralError } from '@angular/material/icon';
 import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures.component';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -82,7 +80,13 @@ export class ChatRightContainerComponent implements OnInit {
     public navbar: NavbarService, 
     private Profile_Edition_Service:Profile_Edition_Service,
     private cd: ChangeDetectorRef
-    ) { }
+    ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
+    }
 
   //chat_section
   @Input() id_chat_section: number;
@@ -185,7 +189,7 @@ export class ChatRightContainerComponent implements OnInit {
   show_scroll_pictures=false;
 
   ngOnInit(): void {
-
+    let THIS=this;
     this.createFormAd();
 
     this.current_friend_type=this.friend_type;
@@ -311,13 +315,7 @@ export class ChatRightContainerComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      console.log("load")
-      THIS.show_icon=true;
-    });
-  }
+  
 
   get_files_and_pictures(id_chat_section){
     console.log("get_files_and_pictures")

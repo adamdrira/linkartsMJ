@@ -1,18 +1,13 @@
 
-import { Component, OnInit, ViewChildren, QueryList, ElementRef, SimpleChanges, Input, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChild, ComponentRef, HostListener } from '@angular/core';
-import { FileUploader, FileItem } from 'ng2-file-upload';
-import {DomSanitizer, SafeUrl, SafeResourceUrl} from '@angular/platform-browser';
+import { Component, OnInit,  ElementRef, SimpleChanges, Input, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChild, ComponentRef, HostListener } from '@angular/core';
+
 import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import {NotificationsService}from '../services/notifications.service';
 import {ChatService}from '../services/chat.service';
 import {Subscribing_service}from '../services/subscribing.service';
-import { async } from '@angular/core/testing';
-import { Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { BdSerieService } from '../services/comics_serie.service';
-import { UploadService } from '../services/upload.service';
-import { ConstantsService } from '../services/constants.service';
-import { SwiperUploadSerieComponent } from '../swiper-upload-serie/swiper-upload-serie.component';
 import { Router } from '@angular/router';
 
 
@@ -20,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $: any;
@@ -53,13 +49,18 @@ value:string="add";
     private bdSerieService: BdSerieService,
     private router:Router,
     public dialog: MatDialog,
+    private navbar: NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
 
     ){
       this.edit_name = -1;
       this.current_chapter = 0;
       this.initialized = false;
-      
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
 
   }
 
@@ -98,9 +99,10 @@ value:string="add";
 
 
   display_chapters=false;
-
+  show_icon=false;
   ngOnInit() {
-
+    let THIS=this;
+    window.scroll(0,0);
     console.log(this.form_number);
     console.log(this.list_of_chapters);
     console.log(this.bd_id)
@@ -145,11 +147,7 @@ value:string="add";
 
   };
   
-  ngAfterViewInit() {
-    
-
-  }
-  
+ 
 
   
   get chapters(): FormArray { 

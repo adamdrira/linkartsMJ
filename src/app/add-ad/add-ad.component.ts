@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, Input, HostListener, ViewChild } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -18,6 +18,7 @@ import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $: any;
@@ -54,9 +55,15 @@ export class AddAdComponent implements OnInit {
     private Ads_service:Ads_service,
     private router:Router,
     public dialog: MatDialog,
-    private Subscribing_service:Subscribing_service,
-  ) { 
     
+    private Subscribing_service:Subscribing_service,
+    private NavbarService:NavbarService,
+  ) { 
+    NavbarService.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.CURRENT_step = 0;
     this.stepChanged.emit(0);
     
@@ -91,7 +98,8 @@ export class AddAdComponent implements OnInit {
   id_ad=0;
 
   ngOnInit() {
-
+    let THIS=this;
+    window.scroll(0,0);
     this.createFormControlsAds();
     this.createFormAd();
 
@@ -101,12 +109,7 @@ export class AddAdComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+ 
 
 
   back_home() {

@@ -460,6 +460,12 @@
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200">verified</mat-icon>
 
+                    <span *ngIf="type_of_account_checked" class="pro-logo"
+                    matTooltip="Compte professionnel" 
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="200">PRO</span>
+
                 </span>
                 <span class="author-description" *ngIf="pseudo!=''">@{{pseudo}}</span>
             </div>
