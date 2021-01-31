@@ -23,10 +23,17 @@ export class PageNotFoundComponent implements OnInit {
     public navbar: NavbarService,
     private cd:ChangeDetectorRef,
   ) { 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.navbar.show();
   }
 
-  ngOnInit(): void {
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
   }
 
 }

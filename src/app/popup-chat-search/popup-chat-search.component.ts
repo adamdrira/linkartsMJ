@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, HostListener, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-popup-chat-search',
@@ -14,12 +14,17 @@ export class PopupChatSearchComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private cd: ChangeDetectorRef,
+    private navbar: NavbarService,
     public dialogRef: MatDialogRef<PopupChatSearchComponent,any>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // redirect to home if already logged in
       dialogRef.disableClose = false;
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     
   }
 
@@ -29,7 +34,9 @@ export class PopupChatSearchComponent implements OnInit {
     this.validate_all();
   }
 
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
 
     this.searchForm = this.formBuilder.group({
       search: ['', 

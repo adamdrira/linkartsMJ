@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
@@ -8,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
+import { SignupComponent } from '../signup/signup.component';
 
 
 declare var Swiper: any
@@ -32,7 +32,11 @@ export class HomeLinkartsComponent implements OnInit {
     
     ) {
 
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.navbar.setActiveSection(0);
     this.navbar.show();
     
@@ -65,7 +69,8 @@ export class HomeLinkartsComponent implements OnInit {
 
   change_profile_number=0;
   ngOnInit() {
-
+    let THIS=this;
+    window.scroll(0,0);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       
       if(r[0]){
@@ -108,6 +113,18 @@ export class HomeLinkartsComponent implements OnInit {
           }
         })
       }
+      else if (this.category_index==5){
+        const dialogRef = this.dialog.open(LoginComponent, {
+          data: {usage:"login"},
+           panelClass:"loginComponentClass"
+        });
+      }
+      else if (this.category_index==6){
+        const dialogRef = this.dialog.open(SignupComponent, {
+          data:{for_group_creation:false},
+          panelClass:"signupComponentClass"
+        });
+      }
       this.type_of_profile_retrieved=true;
       this.cd.detectChanges();
       this.initialize_swiper();
@@ -121,7 +138,8 @@ export class HomeLinkartsComponent implements OnInit {
     
   }
  
-
+  show_icon=false;
+  
  
   open_category(i : number) {
     console.log("open cate")

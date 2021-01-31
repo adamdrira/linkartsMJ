@@ -1,7 +1,7 @@
 <div class="title">
     <span>Répondre à l'offre</span>
     <button [mat-dialog-close]="true">
-        <mat-icon>close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
     </button>
 </div>
 
@@ -37,7 +37,7 @@
             </div>
             
             <button class="submit-button" (click)="send_response();">
-                <mat-icon>done_all</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                 <span>Soumettre ma réponse</span>
             </button>
         

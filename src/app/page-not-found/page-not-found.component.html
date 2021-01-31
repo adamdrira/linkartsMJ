@@ -1,9 +1,9 @@
 
 <div class="absolute-centered-message">
     <div class="animated-logo">
-        <mat-icon class="file">insert_drive_file</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }" class="file">insert_drive_file</mat-icon>
         <div>
-            <mat-icon class="search">search_off</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }" class="search">search_off</mat-icon>
         </div>
     </div>
     <span class="text">Page non trouvée</span>

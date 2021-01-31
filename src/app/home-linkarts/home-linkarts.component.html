@@ -40,7 +40,7 @@
                         </ng-container>
                         
                         <div class="arrow-container" [ngClass]="{'opened': homeLinkartsSelect && homeLinkartsSelect.panelOpen }">
-                            <mat-icon>arrow_back_ios_new</mat-icon>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back_ios_new</mat-icon>
                         </div>
                     </mat-select-trigger>
 

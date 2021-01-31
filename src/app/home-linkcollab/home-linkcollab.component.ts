@@ -1,16 +1,13 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener, ViewChild } from '@angular/core';
-import {ElementRef, Renderer2, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import {ElementRef, Renderer2} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 import { Ads_service } from '../services/ads.service';
-import { SearchbarService } from '../services/searchbar.service';
 
 import { MatDialog } from '@angular/material/dialog';
 
-import {MatInputModule} from '@angular/material/input';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 declare var Swiper: any
 declare var $: any 
@@ -82,7 +79,11 @@ export class HomeLinkcollabComponent implements OnInit {
     public dialog: MatDialog,
     private fb: FormBuilder
     ) {
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.navbar.setActiveSection(1);
     this.navbar.show();
   }
@@ -135,6 +136,8 @@ export class HomeLinkcollabComponent implements OnInit {
   /*********************************************************************** */
   /*********************************************************************** */
   ngOnInit() {
+    let THIS=this;
+    window.scroll(0,0);
     this.open_category(0, true);
 
     this.f1 = this.fb.group({
@@ -157,10 +160,6 @@ export class HomeLinkcollabComponent implements OnInit {
     
   ngAfterViewInit() {
 
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
     this.initialize_swiper();
     
     this.initialize_swiper2();

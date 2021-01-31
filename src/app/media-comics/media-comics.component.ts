@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef, SimpleChanges } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import { Renderer2} from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any
 
@@ -35,8 +35,13 @@ export class MediaComicsComponent implements OnInit {
     private Community_recommendation:Community_recommendation,
     private BdOneShotService:BdOneShotService,
     private router:Router,
+    private navbar: NavbarService,
     private BdSerieService:BdSerieService) { 
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.cancelled = 0;
   }
 
@@ -83,8 +88,10 @@ export class MediaComicsComponent implements OnInit {
   number_of_thumbnails=0;
 
 
-
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
+    window.scroll(0,0);
     var n = Math.floor(this.width/250);
     if(n>3){
       this.number_of_comics_to_show=(n<6)?n:6;

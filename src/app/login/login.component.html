@@ -1,6 +1,6 @@
 
 <button class="close-button" (click)="close_dialog()">
-    <mat-icon>close</mat-icon>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
 <div class="popup-login">
@@ -35,8 +35,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
 
                 </mat-form-field>
@@ -50,9 +50,7 @@
             </div>
         </button>
 
-        <div class="loading-span" *ngIf="loading">
-            <span>Connexion en cours</span>
-        </div>
+       
         
         <div class="error">
             <span *ngIf="display_wrong_data" [@enterAnimation]>Le mot de passe ou l'e-mail sont incorrects</span>
@@ -136,8 +134,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
 
                 </mat-form-field>
@@ -253,8 +251,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
 
                 </mat-form-field>

@@ -1,10 +1,8 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef, Inject } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef, Inject } from '@angular/core';
+import {ElementRef, Renderer2, ViewChild} from '@angular/core';
+
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
-import {MatMenuModule} from '@angular/material/menu';
-import { delay } from 'rxjs/operators';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Community_recommendation } from '../services/recommendations.service';
@@ -14,7 +12,7 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { NotationService } from '../services/notation.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Emphasize_service } from '../services/emphasize.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 
@@ -49,6 +47,11 @@ export class PopupAdPicturesComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupAdPicturesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
     ) { 
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
 
@@ -67,8 +70,9 @@ export class PopupAdPicturesComponent implements OnInit {
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
+  show_icon=false;
   ngOnInit() {
-    console.log(this.data);
+    let THIS=this;
     this.list_of_pictures=this.data.list_of_pictures;
 
     this.cd.detectChanges();
@@ -87,8 +91,7 @@ export class PopupAdPicturesComponent implements OnInit {
 
   
 
-  ngAfterViewInit() {
-  }
+  
 
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {

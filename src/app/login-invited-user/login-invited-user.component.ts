@@ -1,12 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, Inject, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
+
 declare var $: any;
 @Component({
   selector: 'app-login-invited-user',
@@ -44,18 +43,28 @@ export class LoginInvitedUserComponent implements OnInit {
   
   ) {
       
+    navbar.visibility_observer_font.subscribe(font=>{
+      console.log(font)
+      if(font){
+        this.show_icon=true;
+      }
+    })
   }
 
   hide=true;
+
+ 
   ngOnInit() {
 
+    
+    
 
-      this.loginForm = this.formBuilder.group({
-          mail: ['', Validators.required],
-          password: ['', Validators.required]
-      });
+    this.loginForm = this.formBuilder.group({
+        mail: ['', Validators.required],
+        password: ['', Validators.required]
+    });
 
-      this.ResetPasswordForm=this.formBuilder.group({
+    this.ResetPasswordForm=this.formBuilder.group({
         mail_recuperation: ['', 
         Validators.compose([
           Validators.required,
@@ -69,12 +78,7 @@ export class LoginInvitedUserComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+
 
 
   // convenience getter for easy access to form fields

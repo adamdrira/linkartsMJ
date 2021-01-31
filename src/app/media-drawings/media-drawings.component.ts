@@ -1,6 +1,7 @@
-import { Component, OnInit, Renderer2, HostListener, ViewChildren, QueryList, ElementRef, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Renderer2, HostListener,  Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
 
 import { Router } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any
 
@@ -25,8 +26,13 @@ export class MediaDrawingsComponent implements OnInit {
   constructor(
     private router:Router,
     private cd: ChangeDetectorRef,
+    private navbar: NavbarService,
     ) { 
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   
@@ -45,7 +51,9 @@ export class MediaDrawingsComponent implements OnInit {
   
   
   
-  ngOnInit(){
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
     }

@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -33,9 +34,13 @@ export class PopupArtworkDataComponent implements OnInit {
     public dialog: MatDialog,
 
 
-
+    private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
 
   }
 
@@ -96,8 +101,9 @@ export class PopupArtworkDataComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-    
+  show_icon=false;
+  ngOnInit() {
+    let THIS=this;
     
   }
 

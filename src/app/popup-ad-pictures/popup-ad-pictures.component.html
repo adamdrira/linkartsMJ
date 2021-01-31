@@ -1,5 +1,5 @@
 <button (click)="close_dialog()" class="close" tabIndex="-1">
-    <mat-icon>close</mat-icon>
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
 

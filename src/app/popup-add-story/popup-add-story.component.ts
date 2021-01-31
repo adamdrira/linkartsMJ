@@ -1,7 +1,8 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 
 
 import { MatDialogRef } from '@angular/material/dialog';
+import { NavbarService } from '../services/navbar.service';
 declare var $: any;
 @Component({
   selector: 'app-popup-add-story',
@@ -12,19 +13,20 @@ export class PopupAddStoryComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PopupAddStoryComponent>,
+    private navbar: NavbarService,
     ) { 
     dialogRef.disableClose = true;
-  }
-
-  ngOnInit(): void {
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
+  ngOnInit() {
   }
+
+
 
 }

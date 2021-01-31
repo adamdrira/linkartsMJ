@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
@@ -12,7 +11,7 @@ import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-
+declare var $: any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -54,6 +53,11 @@ export class LoginComponent implements OnInit {
       if(this.usage=="registration"){
         this.show_welcome=true;
       }
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
   }
 
   suspend_account=false;
@@ -85,6 +89,8 @@ export class LoginComponent implements OnInit {
 
   hide=true;
   ngOnInit() {
+    let THIS=this;
+    window.scroll(0,0);
       this.loginForm = this.formBuilder.group({
           username: ['', 
             Validators.compose([
@@ -117,6 +123,9 @@ export class LoginComponent implements OnInit {
         ],
       });
   }
+
+  show_icon=false;
+ 
 
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
@@ -179,81 +188,77 @@ export class LoginComponent implements OnInit {
    
   }
 
-  login_validated=false;
   recommendation_done=false;
   login() {
-
     if(this.loading) {
       return;
     }
     
     this.submitted = true;
 
-    // stop here if form is invalid
-    /*if (this.loginForm.invalid) {
-        return;
-    }*/
-
     this.loading = true;
 
+      
+    // check email_checked
     
-  // check email_checked
-  
-  this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
-      //console.log(data)
-      if(data.user  && data.user.email_checked ){
-        //console.log('first if')
-        this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
-         
-         
-          if(data.token){
-            //console.log(data.user)
-            this.display_email_not_checked=false;
-            this.Community_recommendation.delete_recommendations_cookies();
-            this.login_validated=true;
-            this.Community_recommendation.generate_recommendations().subscribe(r=>{
-                this.recommendation_done=true;
-                location.reload();
-            })
-            
-            
-            
-          }
-          else{
-            this.display_email_not_checked=false;
-            this.loading=false;
-            if(data.msg=="error"){
-              //console.log("error");
-              this.display_wrong_data=true;
-            }
-            if(data.msg=="error_old_value"){
-              //console.log("error_old_value");
-              this.display_old_password=true;
-            }
-            if(data.msg=="error_group"){
-              //console.log("error_group");
-              this.display_error_group=true;
-            }
-          }
+    this.authenticationService.check_email_checked(this.f.username.value, this.f.password.value).subscribe( data => {
+        //console.log(data)
+        if(data.user  && data.user.email_checked ){
+          //console.log('first if')
+          this.authenticationService.get_ip().subscribe(ip=>{
+            console.log(ip)
+            this.authenticationService.login(this.f.username.value, this.f.password.value,ip.ip).subscribe( data => {
           
-        },
-        error => {
-            this.loading = false;
-        });
-      }
-      else if(data.error){
-        //console.log("not checked")
-        this.loading=false;
-        this.display_email_not_checked=true;
-        this.cd.detectChanges()
-      }
-      else{
-        this.loading=false;
-        this.display_email_not_checked=false;
-        this.display_wrong_data=true;
-        this.cd.detectChanges()
-      }
-    })
+          
+              if(data.token){
+                //console.log(data.user)
+                this.display_email_not_checked=false;
+                this.Community_recommendation.delete_recommendations_cookies();
+                this.Community_recommendation.generate_recommendations().subscribe(r=>{
+                    this.recommendation_done=true;
+                    location.reload();
+                })
+                
+                
+                
+              }
+              else{
+                this.display_email_not_checked=false;
+                this.loading=false;
+                if(data.msg=="error"){
+                  //console.log("error");
+                  this.display_wrong_data=true;
+                }
+                if(data.msg=="error_old_value"){
+                  //console.log("error_old_value");
+                  this.display_old_password=true;
+                }
+                if(data.msg=="error_group"){
+                  //console.log("error_group");
+                  this.display_error_group=true;
+                }
+              }
+              
+            },
+            error => {
+                this.loading = false;
+            });
+          })
+          
+        }
+        else if(data.error){
+          //console.log("not checked")
+          this.loading=false;
+          this.display_email_not_checked=true;
+          this.cd.detectChanges()
+        }
+        else{
+          this.loading=false;
+          this.display_email_not_checked=false;
+          this.display_wrong_data=true;
+          this.cd.detectChanges()
+        }
+      })
 
     
   }
@@ -304,9 +309,11 @@ export class LoginComponent implements OnInit {
             this.Profile_Edition_Service.suspend_account(this.selected_motif).subscribe(r=>{
               //console.log(r[0])
               this.loading=false
-              this.authenticationService.logout();
-              this.location.go('/')
-              location.reload();
+              this.authenticationService.logout().subscribe(r=>{
+                this.location.go('/')
+                location.reload();
+              });
+              
             })
         }
         else {
@@ -328,9 +335,10 @@ export class LoginComponent implements OnInit {
                 this.Profile_Edition_Service.delete_account(this.selected_motif).subscribe(r=>{
                   //console.log(r[0])
                   this.loading=false
-                  this.authenticationService.logout();
-                  this.location.go('/')
-                  location.reload();
+                  this.authenticationService.logout().subscribe(r=>{
+                    this.location.go('/')
+                    location.reload();
+                  });;
                 })
             }
             else{

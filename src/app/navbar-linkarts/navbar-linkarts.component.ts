@@ -1,7 +1,6 @@
 import { ChatService} from '../services/chat.service';
 import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
-import {ElementRef,Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import {ElementRef,Renderer2, ViewChild} from '@angular/core';
 import { Location } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -26,8 +25,8 @@ import { SignupComponent } from '../signup/signup.component';
 import {get_date_to_show_chat} from '../helpers/dates';
 import {get_date_to_show_navbar} from '../helpers/dates';
 import {Community_recommendation} from '../services/recommendations.service';
-import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { MatMenuTrigger } from '@angular/material/menu';
+import * as WebFont from 'webfontloader';
 
 declare var $: any;
 declare var Swiper: any;
@@ -268,7 +267,13 @@ export class NavbarLinkartsComponent implements OnInit {
   current_user_type='';
   change_number=0;
   ngOnInit() {
-    //console.log(this.navbar.visible)
+    let THIS=this;
+    WebFont.load({ google: { families: [ 'Material+Icons' ] } , active: function () {
+      console.log("m")
+      THIS.navbar.showfont();
+      THIS.show_icon=true;
+    }});
+    
     window.addEventListener('scroll', this.scroll, true);
     
     //this.setHeight();
@@ -1822,12 +1827,7 @@ export class NavbarLinkartsComponent implements OnInit {
   }
   show_icon=false;
   ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      //console.log("load")
-      THIS.show_icon=true;
-    });
-
+ 
     //console.log(this.navbar.visible)
     if( this.navbar.visible ) {
       this.rd.setStyle(this.navbarMargin.nativeElement, "height", "54px");
@@ -2839,7 +2839,7 @@ change_message_status(event){
     //console.log("agree")
     this.show_cookies=false;
     this.Profile_Edition_Service.agree_on_cookies().subscribe(r=>{
-     //console.log(r[0])
+     console.log(r[0])
     })
   }
 

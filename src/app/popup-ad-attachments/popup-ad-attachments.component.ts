@@ -3,7 +3,8 @@ import { PDFDocumentProxy } from 'ng2-pdf-viewer';
 import { Story_service } from '../services/story.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Location } from '@angular/common';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
+import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
 declare var $:any;
@@ -24,8 +25,14 @@ export class PopupAdAttachmentsComponent implements OnInit {
     private rd:Renderer2,
     private location:Location,
     private Story_service:Story_service,
-    
-  @Inject(MAT_DIALOG_DATA) public data: any) {  }
+    private navbar: NavbarService,
+  @Inject(MAT_DIALOG_DATA) public data: any) { 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+   }
 
   
   @ViewChildren('category') categories:QueryList<ElementRef>;
@@ -44,7 +51,9 @@ export class PopupAdAttachmentsComponent implements OnInit {
   /******************************************************* */
   /******************** ON INIT ****************** */
   /******************************************************* */
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
     console.log(this.data.file);
     let file = new Blob([this.data.file], {type: 'application/pdf'});
     this.pdfSrc = URL.createObjectURL(file);
@@ -54,8 +63,7 @@ export class PopupAdAttachmentsComponent implements OnInit {
   /******************************************************* */
   /******************** AFTER VIEW INIT ****************** */
   /******************************************************* */
-  ngAfterViewInit(){
-  }
+ 
 
 
   afterLoadComplete(pdf: PDFDocumentProxy) {

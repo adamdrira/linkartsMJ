@@ -1,10 +1,11 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, Renderer2,  ChangeDetectorRef, Inject } from '@angular/core';
 
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NavbarService } from '../services/navbar.service';
 
 declare var $: any;
 
@@ -31,11 +32,15 @@ export class PopupCommentsComponent implements OnInit {
     private rd:Renderer2,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
-
+    private navbar: NavbarService,
 
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
       dialogRef.disableClose = true;
 
   }
@@ -61,8 +66,9 @@ export class PopupCommentsComponent implements OnInit {
     this.commentariesnumber--;
   }
 
+  show_icon=false;
   ngOnInit() {
-    
+    let THIS=this;
   }
 
 

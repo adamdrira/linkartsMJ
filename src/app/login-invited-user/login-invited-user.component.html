@@ -25,8 +25,8 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
-                        <mat-icon *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
-                        <mat-icon *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="hide" [@enterAnimation]>visibility</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!hide" [@enterAnimation]>visibility_off</mat-icon>
                     </div>
     
                 </mat-form-field>

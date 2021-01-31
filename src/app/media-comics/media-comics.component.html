@@ -65,7 +65,7 @@
                 <div *ngIf="!show_more[sorted_style_list.indexOf(item)] && see_more_comics(item)" class="see-more" (click)="see_more(item)">
                     <!--<div class="icon">
                     </div>-->
-                    <mat-icon class="icon">expand_more</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">expand_more</mat-icon>
                 </div>
 
                 <div *ngIf="show_more[sorted_style_list.indexOf(item)]" >

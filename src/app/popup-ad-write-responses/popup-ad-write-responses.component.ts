@@ -8,6 +8,7 @@ import {ChatService} from '../services/chat.service';
 import { Router } from '@angular/router';
 
 import { pattern } from '../helpers/patterns';
+import { NavbarService } from '../services/navbar.service';
 
 @Component({
   selector: 'app-popup-ad-write-responses',
@@ -23,10 +24,19 @@ export class PopupAdWriteResponsesComponent implements OnInit {
     public dialog: MatDialog,
     private Ads_service:Ads_service,
     private router:Router,
+    private navbar: NavbarService,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) { }
+  ) { 
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
+  }
 
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
  
     this.createFormControlsAds();
     this.createFormAd();

@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {ElementRef, ViewChild} from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +13,6 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import {Ads_service} from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Route } from '@angular/compiler/src/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 
@@ -55,7 +53,11 @@ export class MainSearchbarResultsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private router:Router,
   ) { 
-
+    navbar.visibility_observer_font.subscribe(font=>{
+      if(font){
+        this.show_icon=true;
+      }
+    })
     this.router.routeReuseStrategy.shouldReuseRoute = function() {
       return false;
     };
@@ -137,7 +139,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   display_title_style_and_tags=false;
   category_to_show:string;
   ngOnInit(): void {
-    
+    let THIS=this;
     this.opened_section = this.route.snapshot.data['section'];
     console.log( this.opened_section )
     console.log(parseInt(this.route.snapshot.paramMap.get('page')))
@@ -223,12 +225,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   }
 
   show_icon=false;
-  ngAfterViewInit(){
-    let THIS=this;
-    $(window).ready(function () {
-      THIS.show_icon=true;
-    });
-  }
+  
 
 
   @ViewChild("swiperCategories") swiperCategories:ElementRef;

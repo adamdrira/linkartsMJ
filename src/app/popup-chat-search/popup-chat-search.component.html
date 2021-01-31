@@ -1,7 +1,7 @@
 
 <div class="button-container-close">
     <button mat-button class="mat-icon-button close-button" (click)="close_dialog()" tabIndex="-1">
-        <mat-icon class="item-icon" >close</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon" >close</mat-icon>
     </button>
 </div>
 
@@ -24,7 +24,7 @@
     </div>
     
     <button class="submit-button" (click)="validate_all();">
-        <mat-icon>search</mat-icon>
+        <mat-icon [ngClass]="{'invisible': !show_icon }">search</mat-icon>
         <span>Rechercher</span>
     </button>
 

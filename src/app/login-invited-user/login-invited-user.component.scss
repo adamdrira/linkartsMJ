@@ -2,6 +2,7 @@
 @import "../../unsecured-ng-deeps.scss";
 
 
+
 .close-button {
   position: absolute;
   right: 14px;
@@ -104,6 +105,8 @@
       width: unset;
       height: unset;
       font-size: 25px;
+      max-width:25px;
+      overflow: hidden;
       color: #203864;
     }
 
@@ -151,12 +154,15 @@
         position:absolute;
         right: 5px;
         top: 50%;
+        display: flex;
         transform: translateY(-50%);
         cursor: pointer;
 
         mat-icon {
           color: #203864;     
           font-size: 20px;
+          max-width:20px;
+          overflow: hidden;
         }
       }
 

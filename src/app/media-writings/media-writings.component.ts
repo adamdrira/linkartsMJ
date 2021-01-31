@@ -1,8 +1,9 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import {Renderer2} from '@angular/core';
 
 import { Router } from '@angular/router';
+import { NavbarService } from '../services/navbar.service';
 
 
 declare var $: any
@@ -29,8 +30,13 @@ export class MediaWritingsComponent implements OnInit {
   constructor(private rd: Renderer2,
     private router:Router,
     private cd: ChangeDetectorRef,
+    private navbar: NavbarService,
     ) { 
-
+      navbar.visibility_observer_font.subscribe(font=>{
+        if(font){
+          this.show_icon=true;
+        }
+      })
     this.cancelled = 0;
   }
 
@@ -65,7 +71,9 @@ export class MediaWritingsComponent implements OnInit {
   list_of_contents_sorted:boolean=false;
   number_of_thumbnails=0;
  
+  show_icon=false;
   ngOnInit() {
+    let THIS=this;
     //var width = $('.media-container').width();
     var n = Math.floor(this.width/250);
     this.number_of_writings_to_show=(n<6)?n:6;
