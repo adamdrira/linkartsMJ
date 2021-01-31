@@ -80,6 +80,16 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 
+	const users_remuneration = sequelize.define('users_remuneration', {
+		id_user:{type: Sequelize.INTEGER},
+		remuneration_asked:{type: Sequelize.STRING},
+		status:{type: Sequelize.STRING},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
 	const users_strikes = sequelize.define('users_strikes', {
 		id_user:{type: Sequelize.INTEGER},
 		number_of_strikes:{type: Sequelize.INTEGER},
@@ -93,6 +103,31 @@ module.exports = (sequelize, Sequelize) => {
 	const users_cookies = sequelize.define('users_cookies', {
 		id_user:{type: Sequelize.INTEGER},
 		agreement:{type: Sequelize.BOOLEAN},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+	const users_connexions = sequelize.define('users_connexions', {
+		id_user:{type: Sequelize.INTEGER},
+		connexion_time:{type: Sequelize.STRING},
+		deconnexion_time:{type: Sequelize.STRING},
+		ip:{type: Sequelize.STRING},
+	},
+	{
+		freezeTableName: true, // Model tableName will be the same as the model name,
+		//timestamps: false,
+	});
+
+	const users_ips = sequelize.define('users_ips', {
+		id_user:{type: Sequelize.INTEGER},
+		list_of_ips:{type: Sequelize.ARRAY(Sequelize.STRING)},
+		list_of_latitudes:{type: Sequelize.ARRAY(Sequelize.STRING)},
+		list_of_longitudes:{type: Sequelize.ARRAY(Sequelize.STRING)},
+		list_of_areas:{type: Sequelize.ARRAY(Sequelize.STRING)},
+		list_of_countries:{type: Sequelize.ARRAY(Sequelize.STRING)},
+		list_of_regions:{type: Sequelize.ARRAY(Sequelize.STRING)},
 	},
 	{
 		freezeTableName: true, // Model tableName will be the same as the model name,
@@ -162,5 +197,5 @@ module.exports = (sequelize, Sequelize) => {
 	});
 
 
-	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies};
+	return {User,User_links,User_blocked,reports,users_information_privacy,User_passwords,User_groups_managment,users_mailing,users_strikes,users_cookies,users_remuneration,users_connexions,users_ips};
 }

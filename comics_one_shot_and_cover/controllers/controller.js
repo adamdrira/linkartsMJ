@@ -29,6 +29,8 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
   router.post('/get_covername_comic', (req, res)=>{ 
     let current_user = get_current_user(req.cookies.currentUser);
     let covername=list_covers_by_id[current_user];
+    console.log(list_covers_by_id)
+    console.log(current_user)
     if(covername){
       res.status(200).send([{covername:covername}]);
     }
@@ -481,6 +483,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
       }).any();
 
       upload_cover(req, res, function(err){
+      
         let filename = "./data_and_routes/covers_bd/" + file_name ;
          (async () => {
             const files = await imagemin([filename], {
@@ -492,7 +495,10 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               ]
             });
             console.log("respong name_cover")
+            console.log("upload_cover")
+            
             list_covers_by_id[current_user]=file_name;
+            console.log(file_name)
             console.log(list_covers_by_id)
             res.status(200).send([{file_name:file_name}]);
         })();
@@ -660,6 +666,7 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                    //on valide l'upload
   router.get('/retrieve_bd_by_user_id/:user_id', function (req, res) {
 
+  
 
        const user_id= parseInt(req.params.user_id);
          Liste_bd_os.findAll({
@@ -672,9 +679,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               ],
           })
           .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(bd =>  {
             
             res.status(200).send([bd]);
             
@@ -753,9 +760,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
               }
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
               if(bd){
                 trendings_contents.findOne({
                   where:{
@@ -764,9 +771,9 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
                     publication_id:bd.bd_id
                   }
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(tren=>{
+                  //console.log(err);	
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(tren=>{
                   if(tren){
                     if(bd.trending_rank){
                       if(bd.trending_rank<tren.rank){
@@ -798,6 +805,62 @@ module.exports = (router, Liste_bd_os, pages_bd_os,list_of_users,trendings_conte
             }); 
       });
       
+
+      router.get('/retrieve_bd_by_id2/:bd_id', function (req, res) {
+        let current_user = get_current_user(req.cookies.currentUser);
+        const bd_id= parseInt(req.params.bd_id);
+        //console.log(bd_id);
+        //console.log(typeof(bd_id));
+          Liste_bd_os.findOne({
+             where: {
+               bd_id: bd_id,
+             }
+           })
+           .catch(err => {
+             //console.log(err);	
+             res.status(500).json({msg: "error", details: err});		
+           }).then(bd =>  {
+             if(bd){
+               trendings_contents.findOne({
+                 where:{
+                   publication_category:"comics",
+                   format:"one-shot",
+                   publication_id:bd.bd_id
+                 }
+               }).catch(err => {
+                 //console.log(err);	
+                 res.status(500).json({msg: "error", details: err});		
+               }).then(tren=>{
+                 if(tren){
+                   if(bd.trending_rank){
+                     if(bd.trending_rank<tren.rank){
+                       bd.update({
+                         "trending_rank":tren.rank
+                       })
+                       res.status(200).send([{current_user:current_user,data:[bd]}]);
+                     }
+                     else{
+                      res.status(200).send([{current_user:current_user,data:[bd]}]);
+                     }
+                   }
+                   else{
+                     bd.update({
+                       "trending_rank":tren.rank
+                     })
+                     res.status(200).send([{current_user:current_user,data:[bd]}]);
+                   }
+                  
+                 }
+                 else{
+                  res.status(200).send([{current_user:current_user,data:[bd]}]);
+                 }
+               })
+             }
+             else{
+              res.status(200).send([{current_user:current_user,data:[bd]}]);
+             }
+           }); 
+     });
     
   router.get('/retrieve_thumbnail_bd_picture/:file_name', function (req, res) {
 

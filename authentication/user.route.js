@@ -21,6 +21,7 @@ module.exports = function(app) {
 
     // 
     app.post('/api/users/login', users.login);
+    app.post('/api/users/logout', users.logout);
     app.post('/api/users/reset_password', users.reset_password);
     
     app.post('/api/users/decrypt_password', users.decrypt_password);

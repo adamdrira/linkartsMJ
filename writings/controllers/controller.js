@@ -175,9 +175,9 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
             "number_of_writings":number_of_writings,
           })
         }
-        writing.destroy({
-          truncate: false
-          })
+        writing.update({
+          status: "deleted"
+        })
           res.json([writing]);
       });
     })
@@ -670,9 +670,64 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       
       });
 
-  
-    
+      router.get('/retrieve_writing_information_by_id2/:writing_id', function (req, res) {
 
+        let current_user = get_current_user(req.cookies.currentUser);
+  
+        const writing_id= parseInt(req.params.writing_id);
+          Liste_Writings.findOne({
+             where: {
+               writing_id: writing_id,
+             }
+           })
+           .catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(writing =>  {
+             if(writing){
+               trendings_contents.findOne({
+                 where:{
+                   publication_category:"writing",
+                   publication_id:writing.writing_id
+                 }
+               }).catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(tren=>{
+                 if(tren){
+                   if(writing.trending_rank){
+                     if(writing.trending_rank<tren.rank){
+                       writing.update({
+                         "trending_rank":tren.rank
+                       })
+                       res.status(200).send([{current_user:current_user,data:[writing]}]);
+                     }
+                     else{
+                      res.status(200).send([{current_user:current_user,data:[writing]}]);
+                     }
+                   }
+                   else{
+                     writing.update({
+                       "trending_rank":tren.rank
+                     })
+                     res.status(200).send([{current_user:current_user,data:[writing]}]);
+                   }
+                   
+                 }
+                 else{
+                  res.status(200).send([{current_user:current_user,data:[writing]}]);
+                 }
+               })
+               
+             }
+             else{
+              res.status(200).send([{current_user:current_user,data:[writing]}]);
+             }
+           }); 
+     
+     });
+    
+      
   router.get('/retrieve_writing_by_name/:file_name', function (req, res) {
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;

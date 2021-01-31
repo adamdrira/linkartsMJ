@@ -1,5 +1,6 @@
 const db = require('./db.config.js');
 const User = db.users;
+
 const User_passwords = db.user_passwords;
 const User_cookies = db.users_cookies;
 const User_links = db.user_links;
@@ -18,8 +19,7 @@ const crypto = require('crypto');
 var nodemailer = require('nodemailer');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
-
-
+var geoip = require('geoip-lite');
 // Post a User
 exports.create = (req, res) => {
 	// Save to PostgreSQL database
@@ -717,9 +717,9 @@ exports.login = async (req, res) => {
 					['createdAt', 'DESC']
 				],
 				}).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(pass=>{
+					console.log(err);	
+					res.status(500).json({msg: "error", details: err});		
+				}).then(pass=>{
 					if(pass.length>0){
 						let exist=false;
 						for(let i=0;i<pass.length;i++){
@@ -774,8 +774,165 @@ exports.login = async (req, res) => {
 			
 		}
 		else{
-			const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
-			return res.status(200).json( { token:token,user:user } );
+			//console.log(user.list_of_ips)
+			console.log("ip")
+			console.log(req.body.ip)
+			let ip =req.body.ip
+			var geo = geoip.lookup(ip);
+			console.log(geo)
+			
+			let now = new Date();
+			let connexion_time = now.toString();
+			db.users_connexions.create({
+				"id_user":user.id,
+				"connexion_time":connexion_time,
+				"ip":ip,
+			})
+
+			db.users_ips.findOne({where:{
+				id_user:user.id
+			}}).then(user_ips=>{
+				if(user_ips){
+					if(user_ips.list_of_ips.indexOf(ip)<0){
+						// send email with geo
+						let list_of_ips =user_ips.list_of_ips;
+						let list_of_latitudes =user_ips.list_of_latitudes;
+						let list_of_longitudes =user_ips.list_of_longitudes;
+						let list_of_areas =user_ips.list_of_areas;
+						let list_of_countries =user_ips.list_of_countries;
+						let list_of_regions =user_ips.list_of_regions;
+
+						let lat=Number(list_of_latitudes[list_of_latitudes.length-1])
+						let long =Number(list_of_longitudes[list_of_longitudes.length-1])
+					
+						
+						let distance =calcCrow(geo.ll[0],geo.ll[1],lat,long);
+	
+						
+						list_of_ips.push(ip);
+						list_of_latitudes.push(geo.ll[0]);
+						list_of_longitudes.push(geo.ll[1]);
+						list_of_areas.push(geo.area);
+						list_of_countries.push(geo.country);
+						list_of_regions.push(geo.region);
+						
+						
+						user_ips.update({
+							"list_of_ips":list_of_ips,
+							"list_of_latitudes":list_of_latitudes,
+							"list_of_longitudes":list_of_longitudes,
+							"list_of_areas":list_of_areas,
+							"list_of_countries":list_of_countries,
+							"list_of_regions":list_of_regions,
+						});
+
+						if(distance>100){
+							const transport = nodemailer.createTransport({
+								host: "pro2.mail.ovh.net",
+								port: 587,
+								secure: false, // true for 465, false for other ports
+								auth: {
+								  user: "services@linkarts.fr", // compte expéditeur
+								  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+								},
+									tls:{
+									  ciphers:'SSLv3'
+								}
+							  });
+						
+							var mailOptions = {
+								from: 'Linkarts <services@linkarts.fr>', // sender address
+								//to: user.email, // my mail
+								to:"appaloosa-adam@hotmail.fr",
+								subject: `Fraude potentielle !`, // Subject line
+								//text: decrypted.toString(), // plain text body
+								html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel </p>
+									<ul>
+										<li>pays : ${geo.country}</li>
+										<li>région : ${geo.region}</li>
+										<li>latitude : ${geo.ll[0]}</li>
+										<li>longitude: ${geo.ll[1]}</li>
+										<li>fuseau horaire : ${geo.timezone}</li>
+									</ul>
+								<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer votre mot de passe imédiatement.</p> 
+									<ul>
+										<li><a href="http://localhost:4200/account/${user.nickname}/${user.id}"> Cliquer ici pour changer mon mot de passe </a></li>
+					
+									</ul> 
+								<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à récupérer le nouveau mot de passe et puis de le changer soigneusement. </p>
+									<ul>
+										<li><a href="http://localhost:4200/login"> Cliquer ici pour me connecter et renseigner un mot de passe oublié</a></li>
+					
+									</ul>
+								<p> Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons de régler votre problème. </p>
+									<ul>
+										<li><a href="http://localhost:4200/chat"> Cliquer ici pour regoindre la messagerie</a></li>
+						
+									</ul>
+								<p> Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>`, // html body
+							
+							};
+							
+							transport.sendMail(mailOptions, (error, info) => {
+								if (error) {
+									console.log('Error while sending mail: ' + error);
+									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+									return res.status(200).json( { token:token,user:user } );
+								} else {
+									console.log('Message sent: %s', info.messageId);
+									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+									return res.status(200).json( { token:token,user:user } );
+								}
+								
+					
+							})
+						}
+						else{
+							const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+							return res.status(200).json( { token:token,user:user } );
+						}
+						
+						
+					}
+					else{
+						const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+						return res.status(200).json( { token:token,user:user } );
+					}
+				}
+				else{
+					db.users_ips.create({
+						"id_user":user.id,
+						"list_of_ips":[ip],
+						"list_of_latitudes":[geo.ll[0]],
+						"list_of_longitudes":[geo.ll[1]],
+						"list_of_areas":[geo.area],
+						"list_of_countries":[geo.country],
+						"list_of_regions":[geo.region],
+					});
+					const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+					return res.status(200).json( { token:token,user:user } );
+				}
+			})
+			
+			function calcCrow(lat1, lon1, lat2, lon2) {
+				var R = 6371; // km
+				var dLat = toRad(lat2-lat1);
+				var dLon = toRad(lon2-lon1);
+				var lat1 = toRad(lat1);
+				var lat2 = toRad(lat2);
+
+				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+				
+				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+				var d = R * c;
+				return d;
+			}
+
+			// Converts numeric degrees to radians
+			function toRad(Value) 
+			{
+				return Value * Math.PI / 180;
+			}
 		}
 		
 	}
@@ -784,7 +941,39 @@ exports.login = async (req, res) => {
 	
 };
 
+exports.logout = (req,res) =>{
+	let value = req.cookies;
+	console.log("deconnexion")
+	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
+		if(err){
+			return res.status(200).json({msg: "error"});
+		}
+		else{
+			console.log(decoded.id)
+			db.users_connexions.findAll({
+				where: {
+				  id_user:decoded.id,
+				},
+				order: [
+				  ['createdAt', 'DESC']
+				],
+				limit:1,
+			  }).then(user1=>{
+				
+				if(user1){
+				  let now = new Date();
+				  let deconnexion_time = now.toString();
+				  user1[0].update({
+					"deconnexion_time":deconnexion_time,
+				  })
+				}
+				return res.status(200).json( { deconnexion:"ok" } );
+			  })
+		}
+	})
 
+	
+}
 
 exports.check_email_and_password = async (req, res) => {
 	const Op = Sequelize.Op;

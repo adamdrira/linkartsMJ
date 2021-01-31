@@ -686,7 +686,7 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
  
     router.get('/retrieve_drawing_info_onepage_by_id/:drawing_id', function (req, res) {
 
-      
+     
   
          const drawing_id= parseInt(req.params.drawing_id);
          drawings_one_page.findOne({
@@ -695,9 +695,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
               }
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
               if(drawing){
                 
                 trendings_contents.findOne({
@@ -707,9 +707,9 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
                     publication_id:drawing.drawing_id
                   }
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(tren=>{
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(tren=>{
                   if(tren){
                     if(drawing.trending_rank){
                       if(drawing.trending_rank<tren.rank){
@@ -744,6 +744,66 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
     });
       
+
+    router.get('/retrieve_drawing_info_onepage_by_id2/:drawing_id', function (req, res) {
+
+      let current_user = get_current_user(req.cookies.currentUser);
+  
+         const drawing_id= parseInt(req.params.drawing_id);
+         drawings_one_page.findOne({
+              where: {
+                drawing_id: drawing_id,
+              }
+            })
+            .catch(err => {
+            //console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(drawing =>  {
+              if(drawing){
+                
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"drawing",
+                    format:"one-shot",
+                    publication_id:drawing.drawing_id
+                  }
+                }).catch(err => {
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(tren=>{
+                  if(tren){
+                    if(drawing.trending_rank){
+                      if(drawing.trending_rank<tren.rank){
+                        drawing.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([{current_user:current_user,data:[drawing]}]);
+                      }
+                      else{
+                        res.status(200).send([{current_user:current_user,data:[drawing]}]);
+                      }
+                    }
+                    else{
+                      drawing.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([{current_user:current_user,data:[drawing]}]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([{current_user:current_user,data:[drawing]}]);
+                  }
+                })
+              }
+              else{
+                res.status(200).send([{current_user:current_user,data:[drawing]}]);
+              }
+              
+              
+            }); 
+      
+    });
     
   router.get('/retrieve_drawing_thumbnail_picture/:file_name', function (req, res) {
 

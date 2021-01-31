@@ -821,10 +821,10 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
             }); 
       
     });
- 
+
     router.get('/retrieve_bd_serie_by_id/:bd_id', function (req, res) {
 
-      
+  
   
          const bd_id= parseInt(req.params.bd_id);
            Liste_bd_serie.findOne({
@@ -833,9 +833,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               }
             })
             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
               if(bd){
                 trendings_contents.findOne({
                   where:{
@@ -844,9 +844,9 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
                     publication_id:bd.bd_id
                   }
                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(tren=>{
+                  //console.log(err);	
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(tren=>{
                   if(tren){
                     if(bd.trending_rank){
                       if(bd.trending_rank<tren.rank){
@@ -875,6 +875,64 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
               }
               else{
                 res.status(200).send([bd]);
+              }
+            }); 
+      
+      });
+ 
+    router.get('/retrieve_bd_serie_by_id2/:bd_id', function (req, res) {
+
+      let current_user = get_current_user(req.cookies.currentUser);
+  
+         const bd_id= parseInt(req.params.bd_id);
+           Liste_bd_serie.findOne({
+              where: {
+                bd_id: bd_id,
+              }
+            })
+            .catch(err => {
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(bd =>  {
+              if(bd){
+                trendings_contents.findOne({
+                  where:{
+                    publication_category:"comics",
+                    format:"serie",
+                    publication_id:bd.bd_id
+                  }
+                }).catch(err => {
+                  //console.log(err);	
+                  res.status(500).json({msg: "error", details: err});		
+                }).then(tren=>{
+                  if(tren){
+                    if(bd.trending_rank){
+                      if(bd.trending_rank<tren.rank){
+                        bd.update({
+                          "trending_rank":tren.rank
+                        })
+                        res.status(200).send([{current_user:current_user,data:[bd]}]);
+                      }
+                      else{
+                        res.status(200).send([{current_user:current_user,data:[bd]}]);
+                      }
+                    }
+                    else{
+                      bd.update({
+                        "trending_rank":tren.rank
+                      })
+                      res.status(200).send([{current_user:current_user,data:[bd]}]);
+                    }
+                   
+                  }
+                  else{
+                    res.status(200).send([{current_user:current_user,data:[bd]}]);
+                  }
+                })
+                
+              }
+              else{
+                res.status(200).send([{current_user:current_user,data:[bd]}]);
               }
             }); 
       
