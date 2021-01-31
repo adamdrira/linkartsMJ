@@ -207,6 +207,9 @@ $default-color: rgb(218,220,225);
                     textarea {
                         max-height: 180px;
                         min-height: 100px;
+
+                        scrollbar-width: thin;
+                        scrollbar-color: #152d5a #001337;
                         &::-webkit-scrollbar {
                             width: 6px;
                             height: 6px;
@@ -308,6 +311,8 @@ $default-color: rgb(218,220,225);
         padding: 10px 10px 100px 10px;
     }
 
+    scrollbar-width: thin;
+    scrollbar-color: #152d5a #001337;
     &::-webkit-scrollbar-track
     {
         background-color: #001640cc;
@@ -398,6 +403,8 @@ $default-color: rgb(218,220,225);
         .mat-ripple * {
             background-color: unset !important;
         }
+        
+        scrollbar-color: #152d5a #001337;
         &::-webkit-scrollbar {
             width: 6px;
             height: 6px;

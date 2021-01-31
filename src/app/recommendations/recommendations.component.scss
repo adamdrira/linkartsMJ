@@ -77,7 +77,6 @@
          //background: #7891ad;
         background:#a8b5c4;
           transition: all 300ms;
-          -webkit-mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
           mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
         }
         .image2 {
@@ -87,7 +86,6 @@
          //background: #7891ad;
         background:#a8b5c4;
           transition: all 300ms;
-          -webkit-mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
           mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
         }
         .image3 {
@@ -97,7 +95,6 @@
           //background: #7891ad;
         background:#a8b5c4;
           transition: all 300ms;
-          -webkit-mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
           mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
         }
 
@@ -151,6 +148,7 @@
     padding-left: 10px;
     padding-right: 10px;
     margin: auto;
+    justify-content:center;
   }
 
   .category {

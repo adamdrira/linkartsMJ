@@ -116,7 +116,7 @@ $default-color: rgb(218,220,225);
     
                 display: flex;
                 margin: auto 0px auto 0px;
-                width: -webkit-fill-available;
+                width: stretch;
     
                 .user-container {
                     margin:auto auto auto 0px;
@@ -160,27 +160,14 @@ $default-color: rgb(218,220,225);
                             -webkit-line-clamp: 2;
                 
                             mat-icon {
-                            vertical-align: middle;
-                            display: inline-block;
-                            margin: 3px 0px 5px 3px;
-                            color: #4bc7ff;
-                            height: 16px;
-                            width: unset;
-                            font-size: 16px;
-                            }
-                            .pro-logo {
-                            display: inline-block;
-                            vertical-align: middle;
-                            -webkit-text-stroke: 0.5px black;
-                            background-image: linear-gradient(0.125turn, #002d88, #0081b3, deepskyblue);
-                            color: #ffffff;
-                            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-                            font-weight: 800;
-                            font-size: 10px;
-                            border-radius: 7px;
-                            margin: 2px 0px 5px 3px;
-                            padding: 0px 3px 1px 5px;
-                            line-height: 16px;
+                                vertical-align: middle;
+                                display: inline-block;
+                                margin: 3px 0px 1px 3px;
+                                color: #4bc7ff;
+                                height: 15px;
+                                overflow: hidden;
+                                width: unset;
+                                font-size: 15px;
                             }
                         }
                     }
@@ -282,6 +269,7 @@ $default-color: rgb(218,220,225);
         padding: 10px 10px 100px 10px;
     }
 
+    scrollbar-color: #152d5a #001337;
     &::-webkit-scrollbar-track
     {
         background-color: #001640cc;

@@ -15,9 +15,6 @@ import { NotationService } from '../services/notation.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { Emphasize_service } from '../services/emphasize.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PopupFormDrawingComponent } from '../popup-form-drawing/popup-form-drawing.component';
-import { PopupEditCoverDrawingComponent } from '../popup-edit-cover-drawing/popup-edit-cover-drawing.component';
-import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
 

@@ -275,7 +275,7 @@ export class PopupNavbarComponent implements OnInit {
   }
 
 
-
+/*
   open_options(i){
     console.log(i)
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
@@ -283,7 +283,7 @@ export class PopupNavbarComponent implements OnInit {
       panelClass: "popupDocumentClass",
     });
    
-  }
+  }*/
   
 /*********************************************  NOTIFICATIONS ****************************/
 /*********************************************  NOTIFICATIONS ****************************/

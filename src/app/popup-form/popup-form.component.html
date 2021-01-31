@@ -24,20 +24,6 @@
                 <div #research class="searchbar-container" >
     
                     <input #input
-                    style="display: block;
-                    width: 100%;
-                    box-shadow: 0px 0px 5px #afafaf;
-                    height: calc(1.5em + .75rem + 2px);
-                    padding: .375rem .75rem;
-                    font-size: 14px;
-                    cursor:text;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #495057;
-                    background-color: unset;
-                    background: unset;
-                    border-radius: 5px;
-                    border: unset;"
                     formControlName="fdSearchbar"
                     (click)="activateFocus_add()"
                     onfocus="this.placeholder = ''"
@@ -98,7 +84,7 @@
                             <span class="author-name" > {{list_of_pseudos[i]}} </span>
                         </div>
                         <div class="add-container">
-                            <button mat-button class="mat-icon-button" style="display:flex;justify-content: center;align-items: center;" tabIndex="-1" (click)="remove_member(i)"> 	
+                            <button mat-button class="mat-icon-button" tabIndex="-1" (click)="remove_member(i)"> 	
                                 <mat-icon style=" color: #203864;">person_remove</mat-icon>
                             </button>
                         </div>

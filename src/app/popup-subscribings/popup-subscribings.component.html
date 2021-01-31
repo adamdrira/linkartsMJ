@@ -40,18 +40,14 @@
                             <div class="right-container">
                                 
                                 
-                                <span class="author-name">{{item.firstname}} {{item.lastname}}
+                                <span class="author-name">
+                                    <div>{{item.firstname}} {{item.lastname}}</div>
                                     <mat-icon *ngIf="list_of_subscribings_information[i].certified_account"
                                     matTooltip="Compte certifié" 
                                     matTooltipClass='linkarts-tooltip' 
                                     [matTooltipPosition]="'below'"
                                     [matTooltipShowDelay]="200">verified</mat-icon>
             
-                                    <div *ngIf="list_of_subscribings_information[i].type_of_account_checked" class="pro-logo"
-                                    matTooltip="Compte professionnel" 
-                                    matTooltipClass='linkarts-tooltip'
-                                    [matTooltipPosition]="'below'"
-                                    [matTooltipShowDelay]="200">PRO</div>
                                 </span>
                                 <span class="user-description">@{{item.nickname}}</span>
                             </div>
@@ -68,7 +64,7 @@
                     </button>
                     <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
                         <mat-icon>notifications_active</mat-icon>
-                        <span>Abonné</span>
+                        <span>Abonné(e)</span>
                     </button>
                 </ng-container>
                 

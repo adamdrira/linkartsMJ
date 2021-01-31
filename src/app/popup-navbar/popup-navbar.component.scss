@@ -82,7 +82,8 @@ $default-color: rgb(218,220,225);
         }
 
         .option-element{
-            padding:10px;
+            outline:none;
+            padding:12px 20px;
             display:flex;
             align-items: center;
             justify-content: left;
@@ -146,8 +147,6 @@ $default-color: rgb(218,220,225);
     }
 
     
-    //scrollbar-width:thin;
-    //scrollbar-color:#0f1e39 #001640cc;
     &::-webkit-scrollbar-track
     {
         background-color: #001640cc;

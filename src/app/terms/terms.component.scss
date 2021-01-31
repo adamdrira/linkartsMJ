@@ -66,6 +66,56 @@
         padding: 0px 45px;
         margin-bottom: 80px;
         flex-direction: column;
+
+        img {
+            width: 280px;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            margin-bottom: 6px;
+        }
+        .icons-container {
+            display:flex;
+            .icon {
+                width: 18px;
+                height: 18px;
+                margin: 0px 12px 4px 0px;
+                color: #203864;
+                background: #203864;
+                &.icon-home {
+                    mask: url("../../assets/img/svg/home.svg") no-repeat 50% 50%;
+                }
+                &.icon-collaboration {
+                    mask: url("../../assets/img/svg/friends.svg") no-repeat 50% 50%;
+                }
+                &.icon-recommendation {
+                    mask: url("../../assets/img/svg/star.svg") no-repeat 50% 50%;
+                }
+                &.icon-trendings {
+                    mask: url("../../assets/img/svg/trendings.svg") no-repeat 50% 50%;
+                }
+                &.icon-newsfeed {
+                    mask: url("../../assets/img/svg/friends1.svg") no-repeat 50% 50%;
+                }
+                &.icon-love {
+                    mask: url("../../assets/img/svg/love.svg") no-repeat 50% 50%;
+                }
+                &.icon-bd {
+                    width: 34px;
+                    height: 34px;
+                    mask: url("../../assets/img/svg/comic-bubble.svg") no-repeat 50% 50%;
+                }
+                &.icon-writing {
+                    width: 34px;
+                    height: 34px;
+                    mask: url("../../assets/img/svg/writing2.svg") no-repeat 50% 50%;
+                }
+                &.icon-drawing {
+                    width: 34px;
+                    height: 34px;
+                    mask: url("../../assets/img/svg/pencil.svg") no-repeat 50% 50%;
+                }
+            }
+        }
         span {
             color:rgb(32,56,100);
             text-align: justify;

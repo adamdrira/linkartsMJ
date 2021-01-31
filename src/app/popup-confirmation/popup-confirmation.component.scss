@@ -80,6 +80,8 @@
             max-width: 94vw;
         }
 
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
         &::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -92,6 +94,7 @@
             background-color: transparent;
         }
         &:hover {
+            scrollbar-color: #dadada transparent;
             &::-webkit-scrollbar-thumb {
                 background-color: #dadada;
             }

@@ -95,22 +95,22 @@
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
               <span>Mon compte</span>
             </div>
-            <div class="option-element" (click)="open_options(0)">
+            <a href="/services/2" class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
               <span>Conditions d'utilisation</span>
-            </div>
-            <div class="option-element"  (click)="open_options(1)">
+            </a>
+            <a href="/services/4" class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
               <span>Sécurité et confidentialité</span>
-            </div>
-            <div class="option-element"  (click)="open_options(2)">
+            </a>
+            <a href="/services/1" class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
               <span>Qui sommes-nous ?</span>
-            </div>
-            <div class="option-element"  (click)="open_options(3)">
+            </a>
+            <a href="/services/1" class="option-element">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
               <span>Crédits</span>
-            </div>
+            </a>
            
             <div class="option-element" (click)="logout()">
               <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
