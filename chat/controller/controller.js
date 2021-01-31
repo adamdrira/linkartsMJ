@@ -771,12 +771,18 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
                 id:searchs[i].id_receiver
               }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(history=>{
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(history=>{
               list_of_history[i]=history;
               compt++;
               if(compt==end){
+                let len=list_of_history.length;
+                for(let i=0;i<len;i++){
+                  if(!list_of_history[len-i-1]){
+                    list_of_history.splice(len-i-1,1);
+                  }
+                }
                 res.status(200).send([{"list_of_history":list_of_history}]);
               }
             })

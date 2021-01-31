@@ -20,6 +20,7 @@ module.exports = (router,
   users_mailing,
   users_strikes,
   users_cookies,
+  users_remuneration,
   List_of_views,
   List_of_likes,
   List_of_loves,
@@ -103,7 +104,7 @@ router.post('/add_profile_pic', function (req, res) {
               destination: './data_and_routes/profile_pics',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality: [0.8, 0.9]
               })
               ]
             });
@@ -168,7 +169,7 @@ router.post('/add_cover_pic', function (req, res) {
               destination: './data_and_routes/cover_pics',
               plugins: [
                 imageminPngquant({
-                  quality: [0.7, 0.8]
+                  quality: [0.8, 0.9]
               })
               ]
             });
@@ -324,16 +325,16 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
 
   router.post('/agree_on_cookies', function (req, res) {
-  
+    console.log("agree_on_cookies")
     const user_id = get_current_user(req.cookies.currentUser);
-
+    console.log(user_id)
     users_cookies.findOne({
       where: {
-        id: user_id,
+        id_user: user_id,
       }
     })
     .catch(err => {
-      //console.log(err);	
+      console.log(err);	
       res.status(500).json({msg: "error", details: err});		
     }).then(user_found =>  {
       if(user_found){
@@ -344,7 +345,7 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
           "id_user":user_id,
           "agreement":true,
         }).catch(err => {
-          //console.log(err);	
+          console.log(err);	
           res.status(500).json({msg: "error", details: err});		
         }).then(user=>{
           res.status(200).send([user])
@@ -397,6 +398,42 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
   });
 
 
+  router.post('/get_my_remuneration', function (req, res) {
+    const user_id = get_current_user(req.cookies.currentUser);
+    const total_gains = req.body.total_gains;
+    if(Number(total_gains)<70){
+      res.status(200).send([{is_ok:false,reason:"money"}]) 
+    }
+    else{
+      users.findOne({
+        where: {
+          id: user_id,
+        }
+      })
+      .catch(err => {
+        //console.log(err);	
+        res.status(500).json({msg: "error", details: err});		
+      }).then(User_found =>  {
+        if(User_found){
+          let now_in_seconds= Math.trunc( new Date().getTime()/1000);
+                  
+          let time =(User_found.createdAt).toString();
+          let uploaded_date_in_second = new Date(time).getTime()/1000;
+          if((now_in_seconds - uploaded_date_in_second)<7884000){
+            res.status(200).send([{is_ok:false,reason:"time"}]) 
+          }
+          else{
+            res.status(200).send([{is_ok:false,reason:"other"}]) 
+          }
+        }
+        else{
+          res.status(200).send([{is_ok:false,reason:"other"}]) 
+        }
+        
+      } );
+    }
+   
+});
 
 router.get('/retrieve_profile_data/:user_id', function (req, res) {
 
@@ -1337,9 +1374,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 id_user:list_of_ids[i]
               },
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user_of_group=>{
+              //console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(user_of_group=>{
               if(user_of_group && user_of_group.id_user==current_user){
                 user_of_group.update({
                   "share":list_of_shares[i],
@@ -2324,6 +2361,62 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       }
     }).then(user=>{
       if(user){
+          /*user.update({
+            email_checked:true
+          })
+          res.status(200).send([{sent:'Message sent '}])*/
+
+          let mail_to_send='';
+          let name = user.firstname + ' ' + user.lastname;
+          if(user.gender=="Homme"){
+            mail_to_send=`<p>Cher ${name},</p>`
+          }
+          else if(user.gender=="Femme"){
+            mail_to_send=`<p>Chere ${name},</p>`
+          }
+          else if(user.gender=="Groupe"){
+            mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+          }
+
+          mail_to_send+= `<p>Nous vous souhaitons la bienvenue sur LinkArts.</p>
+            <p><a href="http://linkarts.fr/registration/${user.id}/${password}"> Cliquer ici pour confirmer votre inscription et pouvoir vous connecter.</a></p>
+            <p>LinkArts est un site dédié à la collaboration éditoriale et à la mise en avant des artistes du monde de l'édition.`
+
+          if(user.type_of_account.includes("Artiste")){
+            mail_to_send+= `En tant qu'${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            <ul>
+										<li>Rémunération : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apapritions en tendances,</li>
+										<li>Visibilité : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
+										<li>Collaboration : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
+										<li>Communauté : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
+										<li>Exploration : Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
+						</ul>`
+          }
+          else if(user.type_of_account.includes("non art")){
+            mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            <ul>
+										<li>Visibilité : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                    <li>Collaboration : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                    
+						</ul>`
+          }
+          else if(user.type_of_account.includes("Maison")){
+            mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            <ul>
+										<li>Visibilité : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                    <li>Collaboration : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                    <li>Communauté : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
+						</ul>`
+          }
+          else {
+            mail_to_send+= `Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres.</p> `
+          }
+          mail_to_send+=`<p> Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
+          <p> Très sincérement, l'équipe de LinkArts</p>`
+           
+
+
+          
           let password=genere_random_id(user.id);
           console.log(user.email)
           console.log(password)
@@ -2349,10 +2442,9 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             from: 'Linkarts <services@linkarts.fr>', // sender address
             to: user.email, // my mail
             //cc:"adam.drira@etu.emse.fr",
-            subject: `Confirmation d'inscription`, // Subject line
+            subject: `Bienvenue sur LinkArts !`, // Subject line
             //text: 'plain text', // plain text body
-            html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
-            // attachments: params.attachments
+            html:  mail_to_send,
           };
       
        
@@ -2416,7 +2508,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 //cc:"adam.drira@etu.emse.fr",
                 subject: `Adhésion à un groupe`, // Subject line
                 //text: 'plain text', // plain text body
-                html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter votre adhésion au groupe </a></p>`, // html body
+                html:  `<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter votre adhésion au groupe </a></p>`, // html body
                 // attachments: params.attachments
               };
               
@@ -2491,7 +2583,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   //cc:"adam.drira@etu.emse.fr",
                   subject: `Création d'un groupe`, // Subject line
                   //text: 'plain text', // plain text body
-                  html:  `<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
+                  html:  `<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
                   // attachments: params.attachments
                 };
               }
@@ -2508,7 +2600,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                   //cc:"adam.drira@etu.emse.fr",
                   subject: `Confirmation d'inscription`, // Subject line
                   //text: 'plain text', // plain text body
-                  html:  `<p><a href="http://localhost:4200/registration/${user_found.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+                  html:  `<p><a href="http://linkarts.fr/registration/${user_found.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
                   // attachments: params.attachments
                 };
               }
