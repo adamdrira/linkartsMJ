@@ -49,7 +49,7 @@ export class AuthenticationService {
 
     login_invited_user(mail:string,password:string):Observable<any>{
         return this.http.post<any>('api/users/encrypt_data', { mail: mail, password: password }).pipe(map(r=>{
-            this.CookieService.set('inviteduser', r.token, 365*10, '/','localhost',undefined,'Lax');
+            this.CookieService.set('inviteduser', r.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
             this.inviteduserSubject.next(r.token);
             return r
         }))
@@ -63,7 +63,7 @@ export class AuthenticationService {
             }
             else if( res.msg == "TOKEN_REFRESH" ) {
                 //this.CookieService.delete('currentUser','/');
-                this.CookieService.set('inviteduser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                this.CookieService.set('inviteduser', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                 return true;
             }
             else{
@@ -94,13 +94,13 @@ export class AuthenticationService {
                 console.log(res);
                 if(!res.msg){
                     //console.log("reset cookie")
-                    this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                    this.CookieService.set('currentUser', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                     this.currentUserSubject.next( this.CookieService.get('currentUser') );
                     this.currentUserTypeSubject.next("account");
 
                     let  recommendations=this.CookieService.get('recommendations');
                     if( recommendations ){
-                        this.CookieService.set('visitor_recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+                        this.CookieService.set('visitor_recommendations', recommendations, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                     }
                    
 
@@ -122,8 +122,8 @@ export class AuthenticationService {
         return this.http.post<any>('api/users/create_visitor', { })
             .pipe(map(res => {
                 //console.log(res);
-                this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
-                this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                this.CookieService.set('currentVisitor', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
+                this.CookieService.set('currentUser', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                 this.currentUserSubject.next( this.CookieService.get('currentUser') );
                 this.currentUserTypeSubject.next("visitor");
                 return res
@@ -137,13 +137,13 @@ export class AuthenticationService {
             if(visitor){
                 //console.log("dans visitor")
                 //this.CookieService.delete('currentUser', '/')
-                this.CookieService.set('currentUser', visitor, 365*10, '/','localhost',undefined,'Lax');
+                this.CookieService.set('currentUser', visitor, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                 this.currentUserSubject.next(visitor);
                 this.currentUserTypeSubject.next("visitor");
 
                 let  recommendations=this.CookieService.get('visitor_recommendations');
                 if( recommendations ){
-                    this.CookieService.set('recommendations', recommendations, 365*10, '/','localhost',undefined,'Lax');
+                    this.CookieService.set('recommendations', recommendations, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                 }
                 else{
                     this.CookieService.delete('recommendations','/');
@@ -175,14 +175,14 @@ export class AuthenticationService {
                 }
                 if( res.msg == "TOKEN_REFRESH" ) {
                     //this.CookieService.delete('currentUser','/');
-                    this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                    this.CookieService.set('currentUser', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                     
                 }
                 else if(res.status=="visitor"){
                     //console.log("visitor mode");
                     if(res.token){
-                        this.CookieService.set('currentVisitor', res.token, 365*10, '/','localhost',undefined,'Lax');
-                        this.CookieService.set('currentUser', res.token, 365*10, '/','localhost',undefined,'Lax');
+                        this.CookieService.set('currentVisitor', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
+                        this.CookieService.set('currentUser', res.token, 365*10, '/','www.linkarts.fr',undefined,'Lax');
                     }
                 }
                 this.currentUserSubject.next(this.CookieService.get('currentUser'));

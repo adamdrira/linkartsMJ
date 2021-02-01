@@ -19,7 +19,7 @@ import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 declare var $: any;
-var url = 'http://localhost:4600/routes/upload_attachments_for_chat/';
+var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
 @Component({
   selector: 'app-chat',
