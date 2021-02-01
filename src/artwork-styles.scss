@@ -1330,6 +1330,11 @@ $default-color: #f9f9f9;
     }
     @media (max-width: 999px) {
         display: block;
+        
+        .right-container span.author-name   a{
+            max-width: 230px !important;
+        }
+
         .artwork-container {
             width: 100%;
             height: 100%;
@@ -1379,7 +1384,7 @@ $default-color: #f9f9f9;
     @media (max-width: 500px) {
         
         .right-container span.author-name   a{
-                    max-width: 150px !important;
+                    max-width: 180px !important;
         }
 
        .author-container .subscribing-container button span {
@@ -1393,7 +1398,7 @@ $default-color: #f9f9f9;
             font-size: 10px !important;
         }
         .right-container span.author-name   a{
-                    max-width: 130px !important;
+                    max-width: 180px !important;
         }
         .author-container .subscribing-container button  {
             box-shadow: unset !important;
@@ -1409,8 +1414,14 @@ $default-color: #f9f9f9;
     @media (max-width: 390px) {
         
         .right-container span.author-name   a{
-                    max-width: 110px !important;
-                }
+            max-width: 170px !important;
+        }
+    }
+    @media (max-width: 360px) {
+        
+        .right-container span.author-name   a{
+            max-width: 140px !important;
+        }
     }
 }
 
