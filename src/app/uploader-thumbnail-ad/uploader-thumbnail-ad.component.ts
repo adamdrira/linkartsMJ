@@ -13,7 +13,7 @@ import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
-const url = 'http://localhost:4600/routes/upload_thumbnail_ad';
+const url = 'https://www.linkarts.fr/routes/upload_thumbnail_ad';
 
 @Component({
   selector: 'app-uploader-thumbnail-ad',

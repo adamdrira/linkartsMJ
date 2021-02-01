@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'http://localhost:4600/routes/upload_page_bd_serie/';
+const url = 'https://www.linkarts.fr/routes/upload_page_bd_serie/';
 
 declare var $:any;
 @Component({

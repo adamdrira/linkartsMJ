@@ -12,7 +12,7 @@ import { NavbarService } from '../services/navbar.service';
 declare var $:any;
 declare var Swiper:any;
 
-const url = 'http://localhost:4600/routes/upload_cover_bd_oneshot';
+const url = 'https://www.linkarts.fr/routes/upload_cover_bd_oneshot';
 
 @Component({
   selector: 'app-uploader-bd-cover',
