@@ -1,12 +1,7 @@
-const category = require('../../comics_one_shot_and_cover/controllers/controller');
-const fetch = require("node-fetch");
+
 var {spawn} = require("child_process")
-const usercontroller = require('../../authentication/user.controller');
-var Request = require('request');
 var fastcsv = require("fast-csv");
 const fs = require("fs");
-const jwt = require('jsonwebtoken');
-const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const authentification = require('../../authentication/db.config');
 const comics_oneshot_seq= require('../../comics_one_shot_and_cover/models/sequelize');
 const comics_serie_seq= require('../../comics_serie/models/sequelize');
@@ -24,7 +19,6 @@ const Pool = require('pg').Pool;
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-  //dialect: 'postgres'
 });*/
 
 const pool = new Pool({
@@ -49,94 +43,7 @@ pool.connect((err, client, release) => {
   })
 
   const get_trendings_for_tomorrow=(request,response) =>{
-  /*  var today = new Date();
-    
-    
-    let Path1=`/csvfiles_for_python/view_rankings.csv`;
-    let Path2=`/csvfiles_for_python/likes_rankings.csv`;
-    let Path3=`/csvfiles_for_python/loves_rankings.csv`
-    let ws = fs.createWriteStream('./data_and_routes/routes' + Path1);
-    let ws1 = fs.createWriteStream('./data_and_routes/routes' + Path2);
-    let ws2= fs.createWriteStream('./data_and_routes/routes' + Path3);
-
-    const Op = Sequelize.Op;
-    var _before_before_yesterday = new Date();
-    _before_before_yesterday.setDate(_before_before_yesterday.getDate() - 89);
-
-    var tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() +1);
-    var dd = String(tomorrow.getDate()).padStart(2, '0');
-    var mm = String(tomorrow.getMonth()+1).padStart(2, '0'); 
-    var yyyy = tomorrow.getFullYear();
-  
-    const date = yyyy.toString() + '-' +  mm  + '-' + dd;
-    console.log(date)
-    console.log("voici date")
-
-    pool.query(' SELECT * FROM list_of_views WHERE "createdAt" ::date  <= $1 AND "createdAt" ::date >= $2 AND view_time is not null ', [today,_before_before_yesterday], (error, results) => {
-      if (error) {
-        console.log(error)
-        response.status(200).send([{"error":error}]); 
-      }
-      else{
-        let json_view = JSON.parse(JSON.stringify(results.rows));
-        fastcsv.write(json_view, { headers: true })
-        .pipe(ws)
-        .on('error', function(e){
-          console.log(e)
-        })
-        .on("finish", function() {
-          pool.query(' SELECT * FROM list_of_likes WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2  AND monetization=$3 ', [today,_before_before_yesterday,'true'], (error, results) => {
-            if (error) {
-              console.log(error)
-              response.status(200).send([{"error":error}]); 
-            }
-            else{
-              let json_view = JSON.parse(JSON.stringify(results.rows));
-              fastcsv.write(json_view, { headers: true })
-              .pipe(ws1)
-              .on('error', function(e){
-                console.log(e)
-              })
-              .on("finish", function() {
-                pool.query(' SELECT * FROM list_of_loves WHERE "createdAt" ::date <= $1 AND "createdAt" ::date >= $2   AND monetization=$3', [today,_before_before_yesterday,'true'], (error, results) => {
-                    if (error) {
-                      console.log(error)
-                      response.status(200).send([{"error":error}]); 
-                    }
-                      else{
-                      let json_loves = JSON.parse(JSON.stringify(results.rows));
-                      fastcsv.write(json_loves, { headers: true })
-                      .pipe(ws2)
-                        .on('error', function(e){
-                          console.log(e)
-                        })
-                        .on("finish", function() {
-
-                          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/rankings.py', date]);
-                          //console.log(pythonProcess)
-                          pythonProcess.stderr.pipe(process.stderr);
-                          pythonProcess.stdout.on('data', (data) => {
-                            console.log("python res")
-                            //console.log(data.toString())
-                          });
-                          pythonProcess.stdout.on("end", (data) => {
-                            console.log("end received data python: ");
-                             response.status(200).send([{"data":"ok"}]); 
-                                   
-                          });
-
-
-
-                        });
-                        }
-                      })                           
-                });
-                  }
-              })  
-            })
-          }
-      })*/
+ 
 
   }
 
@@ -642,18 +549,19 @@ const get_writings_trendings = (request, response) => {
                   //cc:"adam.drira@etu.emse.fr",
                   subject: `Top tendances !`, // Subject line
                   //text: 'plain text', // plain text body
-                  html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Bandes dessinées"</p>
-                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                  html:  `<p> Félicitation ${user.firstname} !</p>
+                  <p>L'une de vos ouvres a atteint le top tendances pour la catégorie <b>Bandes dessinées</b></p>
+                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici</a> pour voir les tendances</p>`, // html body
                   // attachments: params.attachments
               };
         
-              /*transport.sendMail(mailOptions, (error, info) => {
+              transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                       console.log('Message sent: %s', info.messageId);
                   }
-              })*/
+              })
             }
           })
         }
@@ -901,18 +809,19 @@ const get_writings_trendings = (request, response) => {
                 //cc:"adam.drira@etu.emse.fr",
                 subject: `Top tendances !`, // Subject line
                 //text: 'plain text', // plain text body
-                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Dessins"</p>
-                <p><a href="http://linkarts.fr/trendings/drawings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                html:  `<p> Félicitation ${user.firstname} !</p>
+                <p> l'une de vos ouvres a atteint le top tendances pour la catégorie <b>Dessins</b>.</p>
+                <p><a href="https://linkarts.fr/trendings/drawings"> Cliquer ici</a> pour voir les tendances.</p>`, // html body
                 // attachments: params.attachments
             };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
+            transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                       console.log('Message sent: %s', info.messageId);
                   }
-              })*/
+              })
             }
           })
         }
@@ -1093,21 +1002,22 @@ const get_writings_trendings = (request, response) => {
                 to:  user.email, // my mail
                 //to:'appaloosa-adam@hotmail.fr',
                 //cc:"adam.drira@etu.emse.fr",
-                subject: `Top tendances !`, // Subject line
+                subject: `Top tendances !`, // Subject lineÉcrit
                 //text: 'plain text', // plain text body
-                html:  `<p> Félicitation ${user.firstname} ! l'une de vos ouvres a atteint le top tendances pour la catégorie "Ecrits"</p>
-                <p><a href="http://linkarts.fr/trendings/writings"> Cliquer ici pour voir les tendances</a></p>`, // html body
+                html:  `<p> Félicitation ${user.firstname} !</p>
+                <p> l'une de vos ouvres a atteint le top tendances pour la catégorie <b>Écrit</b>.</p>
+                <p><a href="https://linkarts.fr/trendings/drawings"> Cliquer ici</a> pour voir les tendances.</p>`, // html body
                 // attachments: params.attachments
             };
         
-            /*transport.sendMail(mailOptions, (error, info) => {
+            transport.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log('Error while sending mail: ' + error);
                 } else {
                     console.log('Message sent: %s', info.messageId);
                     
                 }
-            })*/
+            })
             }
           })
         }

@@ -18,7 +18,6 @@ const Pool = require('pg').Pool;
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-  //dialect: 'postgres'
 });*/
 
 const pool = new Pool({
@@ -353,12 +352,19 @@ pool.connect((err, client, release) => {
         
               let html=''
               if(Number(dd)==1){
-                html = `<p> Félicitation ${list_of_users[i].firstname} ! Vous avez atteint le top Coups de coeur du jour. Et puisque nous sommes le 1er du mois vous recevrai une réménuration ! Le montant de cette rémunération est disponible dans la section "rémunération" de votre compte</p>
-                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+                html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
+                <p> Vous avez atteint le top <b>coups de cœurs</b> du jour. Et puisque nous sommes le 1er du mois vous recevrai un gain bonus ! Le montant de ce gain est disponible dans la section "rémunération" de votre compte</p>
+                  
+                <ul>
+										<li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top <b>coups de cœurs</b> du jour</li>
+										<li><a href="https://linkarts.fr/account/${list_of_users[i].nickname}/${list_of_users[i].id}/my_account"> Cliquer ici</a> pour consuler mon compte.</li>
+                </ul>
+                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
               }
               else{
-                html = `<p> Félicitation ${list_of_users[i].firstname} ! Vous avez atteint le top Coups de coeur du jour, si vous l'atteignez le 1er du mois vous en serez rémuéré</p>
-                  <p><a href="http://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+                html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
+                 <p>Vous avez atteint le top <b>coups de cœurs</b> du jour. Si vous atteignez ce top le premier du mois vous en serez recevrez un gain bonus. Continuez ainsi !</p>
+                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
               }
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
@@ -366,17 +372,17 @@ pool.connect((err, client, release) => {
                   //cc:"adam.drira@etu.emse.fr",
                   subject: `Top Coups de coeur !`, // Subject line
                   //text: 'plain text', // plain text body
-                  html:  html
+                  html:  html,
                   // attachments: params.attachments
               };
         
-             /*transport.sendMail(mailOptions, (error, info) => {
+             transport.sendMail(mailOptions, (error, info) => {
                   if (error) {
                       console.log('Error while sending mail: ' + error);
                   } else {
                       console.log('Message sent: %s', info.messageId);
                   }
-              })*/
+              })
             }
           }
          

@@ -7,6 +7,14 @@ const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
+/*const pool = new Pool({
+  port: 5432,
+  database: 'linkarts',
+  user: 'postgres',
+  password: 'test',
+  host: 'localhost',
+});*/
+
 const pool = new Pool({
     port: 5432,
     database: 'linkarts',

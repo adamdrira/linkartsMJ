@@ -16,6 +16,14 @@ const Sequelize = require('sequelize');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
+/*const pool = new Pool({
+  port: 5432,
+  database: 'linkarts',
+  user: 'postgres',
+  password: 'test',
+  host: 'localhost',
+});*/
+
 const pool = new Pool({
   port: 5432,
   database: 'linkarts',
@@ -44,7 +52,7 @@ pool.connect((err, client, release) => {
 const generate_recommendations = (request, response) => {
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 30);
+  last_week.setDate(last_week.getDate() - 350);
 
 
 
@@ -1251,7 +1259,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 30);
+  last_week.setDate(last_week.getDate() - 350);
   let list_to_send=[];
  
   pool.query('SELECT * FROM (SELECT DISTINCT publication_category,format, style, publication_id  FROM  list_of_views WHERE author_id_who_looks != $1  AND view_time is not null AND style=$2 AND format=$5 AND "createdAt" ::date <=$3 AND "createdAt" ::date >= $4 ) as t GROUP BY t.publication_category,t.format, t.style, t.publication_id ORDER BY Count(*) limit 20', [user,style,_today,last_week,format], (error, results1) => {
@@ -1377,7 +1385,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 30);
+    last_week.setDate(last_week.getDate() - 350);
   
   
     let list_to_send=[];
@@ -1455,7 +1463,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
 
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 30);
+    last_week.setDate(last_week.getDate() - 350);
   
     let list_to_send=[];
    
@@ -1579,7 +1587,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 30);
+  last_week.setDate(last_week.getDate() - 350);
 
 
   let list_to_send=[];
@@ -1656,7 +1664,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   console.log("complete_recommendation_writing")
   var _today = new Date();
   var last_week = new Date();
-  last_week.setDate(last_week.getDate() - 30);
+  last_week.setDate(last_week.getDate() - 350);
   console.log(style)
   let list_to_send=[];
  
@@ -1733,7 +1741,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
     
     var _today = new Date();
     var last_week = new Date();
-    last_week.setDate(last_week.getDate() - 30);
+    last_week.setDate(last_week.getDate() - 350);
   
   
     let list_to_send=[];

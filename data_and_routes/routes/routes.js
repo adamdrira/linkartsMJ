@@ -49,7 +49,7 @@ const authentification = require('../../authentication/db.config');
 
 // Cors
 const corsOptions = {
-   origin: ['https://linkarts.fr'],
+   origin: ['https://www.linkarts.fr'],
    optionsSuccessStatus: 200
  };
  router.use(cors(corsOptions));
@@ -108,6 +108,7 @@ profile_edition(router,
   authentification.users_mailing,
   authentification.users_strikes,
   authentification.users_cookies,
+  authentification.users_remuneration,
   profile_notation_seq.List_of_views,
   profile_notation_seq.List_of_likes,
   profile_notation_seq.List_of_loves,
@@ -180,7 +181,7 @@ controller_chat(router,chat_seq.list_of_messages,
   chat_seq.list_of_chat_groups_reactions
   );
 controller_trendings(router,trendings_seq.trendings_comics,trendings_seq.trendings_drawings,trendings_seq.trendings_writings,trendings_seq.trendings_contents)
-controller_favorites(router,favorites_seq.favorites)
+controller_favorites(router,favorites_seq.favorites,authentification.users)
 controller_notifications(router,
   notifications_seq.list_of_notifications,
   notifications_seq.list_of_notifications_spams,
