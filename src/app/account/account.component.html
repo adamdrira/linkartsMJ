@@ -888,7 +888,7 @@
                         <!-- Titres des albums writing-->
                         <div class="albums-title-container" *ngIf="opened_category==2 && list_albums_writings_added && (list_writings.length != 0)" >
                             
-                            <ng-container *ngIf="list_titles_albums_writings_added.length>0  &&  opened_album>=0">
+                            <ng-container *ngIf="list_titles_albums_writings_added.length==0  && !show_selector_for_album &&  opened_album>=0">
                                 <ng-container *ngFor="let element of list_titles_albums_writings; let i=index">
 
                                     <div class="albums-title">
