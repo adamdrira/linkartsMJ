@@ -1295,28 +1295,44 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           }
         });
   
-      var mailOptions = {
-          from: 'Linkarts <services@linkarts.fr>', // sender address
-          to: user.email, // my mail
-          //cc:"adam.drira@etu.emse.fr",
-          subject: `Réponse à une annonce`, // Subject line
-          //text: 'plain text', // plain text body
-          html:  `<p>${user_name} a répondu à votre annonce : ${title}</p>
-          <p><a href="http://linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici pour consulter l'annonce</a></p>`, // html body
-          // attachments: params.attachments
-      };
-  
-      transport.sendMail(mailOptions, (error, info) => {
-          if (error) {
-              console.log('Error while sending mail: ' + error);
-              res.status(200).send([{error:error}])
-          } else {
-              console.log('Message sent: %s', info.messageId);
-              res.status(200).send([{sent:'Message sent ' + info.messageId }])
-          }
-          
+        let mail_to_send='';
+        let name = user.firstname + ' ' + user.lastname;
+        if(user.gender=="Homme"){
+          mail_to_send=`<p>Cher ${name},</p>`
+        }
+        else if(user.gender=="Femme"){
+          mail_to_send=`<p>Chere ${name},</p>`
+        }
+        else if(user.gender=="Groupe"){
+          mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+        }
 
-      })
+        mail_to_send+=`<p>${user_name} a répondu à votre annonce <b> ${title}</b>.</p>
+            <p><a href="https://linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici</a> pour consulter l'annonce et les réponses la concernant.</p>`
+        mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+
+
+        var mailOptions = {
+            from: 'Linkarts <services@linkarts.fr>', // sender address
+            to: user.email, // my mail
+            //cc:"adam.drira@etu.emse.fr",
+            subject: `Réponse à une annonce`, // Subject line
+            //text: 'plain text', // plain text body
+            html:  mail_to_send, // html body
+            // attachments: params.attachments
+        };
+    
+        transport.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error while sending mail: ' + error);
+                res.status(200).send([{error:error}])
+            } else {
+                console.log('Message sent: %s', info.messageId);
+                res.status(200).send([{sent:'Message sent ' + info.messageId }])
+            }
+            
+
+        })
 
     }
     else{

@@ -2355,6 +2355,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/send_email_for_account_creation', function (req, res) {
     console.log("send_email_for_account_creation")
     let id = req.body.id;
+    console.log(id)
     users.findOne({
       where:{
         id:id
@@ -2365,7 +2366,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             email_checked:true
           })
           res.status(200).send([{sent:'Message sent '}])*/
+          
 
+          
+          let password=genere_random_id(user.id);
+          console.log(user.email)
+          console.log(password)
+          user.update({
+            "password_registration":password
+          })
+
+          console.log("user found sending email")
           let mail_to_send='';
           let name = user.firstname + ' ' + user.lastname;
           if(user.gender=="Homme"){
@@ -2379,50 +2390,41 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           }
 
           mail_to_send+= `<p>Nous vous souhaitons la bienvenue sur LinkArts.</p>
-            <p><a href="http://linkarts.fr/registration/${user.id}/${password}"> Cliquer ici pour confirmer votre inscription et pouvoir vous connecter.</a></p>
+            <p><a href="https://linkarts.fr/registration/${user.id}/${password}"> Cliquer ici</a> pour confirmer votre inscription et pouvoir vous connecter.</p>
             <p>LinkArts est un site dédié à la collaboration éditoriale et à la mise en avant des artistes du monde de l'édition.`
 
           if(user.type_of_account.includes("Artiste")){
             mail_to_send+= `En tant qu'${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
-            <ul>
-										<li>Rémunération : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apapritions en tendances,</li>
-										<li>Visibilité : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
-										<li>Collaboration : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
-										<li>Communauté : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
-										<li>Exploration : Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
-						</ul>`
+            <ol>
+										<li><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apapritions en tendances.</li>
+										<li><b>Visibilité</b> : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
+										<li><b>Collaboration</b> : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
+										<li><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
+										<li><b>Exploration </b>: Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
+						</ol>`
           }
           else if(user.type_of_account.includes("non art")){
             mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
-            <ul>
-										<li>Visibilité : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                    <li>Collaboration : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+            <ol>
+										<li><b>Visibilité</b> : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                    <li><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
                     
-						</ul>`
+						</ol>`
           }
           else if(user.type_of_account.includes("Maison")){
             mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
-            <ul>
-										<li>Visibilité : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
-                    <li>Collaboration : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
-                    <li>Communauté : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
-						</ul>`
+            <ol>
+										<li><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                    <li><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                    <li><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
+						</ol>`
           }
           else {
             mail_to_send+= `Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres.</p> `
           }
           mail_to_send+=`<p> Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
-          <p> Très sincérement, l'équipe de LinkArts</p>`
+          <p> Très sincérement, l'équipe de LinkArts.</p>`
            
-
-
-          
-          let password=genere_random_id(user.id);
-          console.log(user.email)
-          console.log(password)
-          user.update({
-            "password_registration":password
-          })
 
           const transport = nodemailer.createTransport({
             host: "pro2.mail.ovh.net",
@@ -2441,7 +2443,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
             to: user.email, // my mail
-            //cc:"adam.drira@etu.emse.fr",
+            //to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send,
@@ -2473,7 +2475,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/send_email_for_group_edition', function (req, res) {
     console.log("send_email_for_group_edition")
     let id =req.body.id;
-    const list_of_ids=req.body.list_of_ids
+    const list_of_ids=req.body.list_of_ids;
     const transport = nodemailer.createTransport({
       host: "pro2.mail.ovh.net",
       port: 587,
@@ -2502,13 +2504,37 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               }
             }).then(user_found=>{
 
+             
+              let mail_to_send='';
+              let name = user_found.firstname + ' ' + user_found.lastname;
+              
+              if(user_found.gender=="Homme"){
+                mail_to_send=`<p>Cher ${name},</p>`
+              }
+              else if(user_found.gender=="Femme"){
+                mail_to_send=`<p>Chere ${name},</p>`
+              }
+              else if(user_found.gender=="Groupe"){
+                mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+              }
+
+              
+              mail_to_send+=`Vous venez d'être ajouté au groupe <b>${user.firstname}</b>.</p>`
+              
+              
+              mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour confirmer ou rejeter votre adhésion au groupe.</p>`
+
+              mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+
+
               var mailOptions = {
                 from: 'Linkarts <services@linkarts.fr>', // sender address
                 to: user_found.email, // my mail
+                // to:"appaloosa-adam@hotmail.fr",
                 //cc:"adam.drira@etu.emse.fr",
                 subject: `Adhésion à un groupe`, // Subject line
                 //text: 'plain text', // plain text body
-                html:  `<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter votre adhésion au groupe </a></p>`, // html body
+                html: mail_to_send , // html body
                 // attachments: params.attachments
               };
               
@@ -2547,6 +2573,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   router.post('/send_email_for_group_creation', function (req, res) {
     console.log("send_email_for_group_creation")
     let id =req.body.id;
+    let admin_name='';
     const transport = nodemailer.createTransport({
       host: "pro2.mail.ovh.net",
       port: 587,
@@ -2568,70 +2595,119 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
       if(user){
           let list_of_members=user.list_of_members;
           let compt=0;
-          for(let i=0; i<list_of_members.length;i++){
-            users.findOne({
-              where:{
-                id:list_of_members[i],
-                status:"account",
-              }
-            }).then(user_found=>{
+          users.findOne({
+            where:{
+              id:list_of_members[0],
+              status:"account",
+            }
+          }).then(user_found=>{
 
-              if(user.type_of_account.includes('Artiste')){
-                var mailOptions = {
-                  from: 'Linkarts <services@linkarts.fr>', // sender address
-                  to: user_found.email, // my mail
-                  //cc:"adam.drira@etu.emse.fr",
-                  subject: `Création d'un groupe`, // Subject line
-                  //text: 'plain text', // plain text body
-                  html:  `<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici pour confirmer ou rejeter la création du groupe </a></p>`, // html body
-                  // attachments: params.attachments
-                };
-              }
-              else{
-                let password=genere_random_id(user_found.id);
-                console.log(user.email)
-                console.log(password)
-                user_found.update({
-                  "password_registration":password
-                })
-                var mailOptions = {
-                  from: 'Linkarts <services@linkarts.fr>', // sender address
-                  to: user_found.email, // my mail
-                  //cc:"adam.drira@etu.emse.fr",
-                  subject: `Confirmation d'inscription`, // Subject line
-                  //text: 'plain text', // plain text body
-                  html:  `<p><a href="http://linkarts.fr/registration/${user_found.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
-                  // attachments: params.attachments
-                };
-              }
-             
+            let mail_to_send='';
+            let name = user_found.firstname + ' ' + user_found.lastname;
+            
+            if(user_found.gender=="Homme"){
+              mail_to_send=`<p>Cher ${name},</p>`
+            }
+            else if(user_found.gender=="Femme"){
+              mail_to_send=`<p>Chere ${name},</p>`
+            }
 
-              transport.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error while sending mail: ' + error);
-                    compt++;
-                    if(compt==list_of_members.length){
-                      res.status(200).send([{error:error}])
-                    }
-                   
-                } else {
-                    console.log('Message sent: %s', info.messageId);
-                    compt++;
-                    if(compt==list_of_members.length){
-                      res.status(200).send([{sent:'Message sent ' + info.messageId}])
-                    }
-                  
+            
+            admin_name=name;
+            mail_to_send+=` <p>Vous venez de crééer le groupe <b>${user.firstname}</b>.</p>`
+            mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour valider ou annuler la création du groupe. </p>`
+
+            mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+
+            var mailOptions = {
+              from: 'Linkarts <services@linkarts.fr>', // sender address
+              to: user_found.email, // my mail
+              //to:"appaloosa-adam@hotmail.fr",
+              //cc:"adam.drira@etu.emse.fr",
+              subject: `Création de groupe`, // Subject line
+              //text: 'plain text', // plain text body
+              html:  mail_to_send, // html body
+              // attachments: params.attachments
+            };
+            
+           
+
+            transport.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                  console.log('Error while sending mail: ' + error);
+                  compt++;
+                  if(compt==list_of_members.length){
+                    res.status(200).send([{error:error}])
+                  }
+                 
+              } else {
+                  console.log('Message sent: %s', info.messageId);
+                  compt++;
+                  if(compt==list_of_members.length){
+                    res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                  }
+                
+              }
+            })
+
+            for(let i=1; i<list_of_members.length;i++){
+              users.findOne({
+                where:{
+                  id:list_of_members[i],
+                  status:"account",
                 }
-            })
-            })
-          }
+              }).then(user_found=>{
+  
+                let mail_to_send='';
+                let name = user_found.firstname + ' ' + user_found.lastname;
+                
+                if(user_found.gender=="Homme"){
+                  mail_to_send=`<p>Cher ${name},</p>`
+                }
+                else if(user_found.gender=="Femme"){
+                  mail_to_send=`<p>Chere ${name},</p>`
+                }
+                
+                mail_to_send+=` <p>Le groupe <b>${user.firstname}</b> vient d'être créé par ${admin_name}.</p>`
+                
+                
+                mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour valider ou rejeter la proposition de création de groupe. </p>`
 
-        
-    
-        
-    
-      
+                mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
 
+                var mailOptions = {
+                  from: 'Linkarts <services@linkarts.fr>', // sender address
+                  to: user_found.email, // my mail
+                  //to:"appaloosa-adam@hotmail.fr",
+                  subject: `Création de groupe`, // Subject line
+                  //text: 'plain text', // plain text body
+                  html:  mail_to_send, // html body
+                  // attachments: params.attachments
+                };
+               
+  
+                transport.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                      console.log('Error while sending mail: ' + error);
+                      compt++;
+                      if(compt==list_of_members.length){
+                        res.status(200).send([{error:error}])
+                      }
+                     
+                  } else {
+                      console.log('Message sent: %s', info.messageId);
+                      compt++;
+                      if(compt==list_of_members.length){
+                        res.status(200).send([{sent:'Message sent ' + info.messageId}])
+                      }
+                    
+                  }
+                })
+              })
+            }
+
+          })
+          
       }
       else{
         res.status(200).send([{error:"error"}])

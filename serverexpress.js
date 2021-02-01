@@ -20,9 +20,11 @@ global.appRoot = __dirname;  //pour testdb
   app.use(cookieParser());
   app.use(bodyParser.json())
   //Réglage des headers
+  app.set('trust proxy', 'loopback') // specify a single subnet
   app.use(function(req, res, next) {
+    
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Origin", ["https://linkarts.fr"]); 
+    res.setHeader("Access-Control-Allow-Origin", ["http://localhost:4200"]); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     //pour l'upload de contenus
@@ -30,7 +32,7 @@ global.appRoot = __dirname;  //pour testdb
   });
   //Peut-être que cette partie est un doublons des headers précedents
   const corsOptions = {
-    origin: ['https://linkarts.fr'],
+    origin: ['http://localhost:4200'],
     optionsSuccessStatus: 200
   };
   app.use(cors(corsOptions));

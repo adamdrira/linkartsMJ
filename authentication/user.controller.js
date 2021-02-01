@@ -374,14 +374,33 @@ exports.reset_password = (req, res) => {
 							tls:{
 							  ciphers:'SSLv3'
 						}
-					  });
+					});
 				
+
+					let mail_to_send='';
+					let name = user_found.firstname + ' ' + user_found.lastname;
+					if(user_found.gender=="Homme"){
+					mail_to_send=`<p>Cher ${name},</p>`
+					}
+					else if(user_found.gender=="Femme"){
+					mail_to_send=`<p>Chere ${name},</p>`
+					}
+					else if(user_found.gender=="Groupe"){
+					mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+					}
+
+					mail_to_send+=`<p>Votre mot de passe est le suivant : ${decrypted.toString()}. </p>`
+
+					mail_to_send+=`<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
+					
+					mail_to_send+=`<p>Très sincérement, l'équipe de LinkArts.</p>`
+						
 					var mailOptions = {
 						from: 'Linkarts <services@linkarts.fr>', // sender address
 						to: user_found.email, // my mail
 						//cc:"adam.drira@etu.emse.fr",
 						subject: `Récupération du mot de passe`, // Subject line
-						text: decrypted.toString(), // plain text body
+						html: mail_to_send, // plain text body
 						//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
 						// attachments: params.attachments
 					};
@@ -423,6 +442,25 @@ exports.reset_password = (req, res) => {
 							"content":password_hash.content,
 						})
 
+						let mail_to_send='';
+						let name = user_found.firstname + ' ' + user_found.lastname;
+						if(user_found.gender=="Homme"){
+						mail_to_send=`<p>Cher ${name},</p>`
+						}
+						else if(user_found.gender=="Femme"){
+						mail_to_send=`<p>Chere ${name},</p>`
+						}
+						else if(user_found.gender=="Groupe"){
+						mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+						}
+
+						mail_to_send+=`<p>Votre mot de passe est :${pass}. </p>`
+
+						mail_to_send+=`<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
+						
+						mail_to_send+=`<p>Très sincérement, l'équipe de LinkArts.</p>`
+
+
 						const transport = nodemailer.createTransport({
 							host: "pro2.mail.ovh.net",
 							port: 587,
@@ -441,8 +479,7 @@ exports.reset_password = (req, res) => {
 							to: user_found.email, // my mail
 							//cc:"adam.drira@etu.emse.fr",
 							subject: `Récupération du mot de passe`, // Subject line
-							text: 'Votre nouveau mot de passe est : ' + pass, // plain text body
-							//html:  `<p><a href="http://localhost:4200/registration/${user.id}/${password}"> Cliquer ici pour confirmer son inscription </a></p>`, // html body
+							html:mail_to_send , // html body
 							// attachments: params.attachments
 						};
 						transport.sendMail(mailOptions, (error, info) => {
@@ -842,11 +879,11 @@ exports.login = async (req, res) => {
 						
 							var mailOptions = {
 								from: 'Linkarts <services@linkarts.fr>', // sender address
-								//to: user.email, // my mail
-								to:"appaloosa-adam@hotmail.fr",
+								to: user.email, // my mail
+								//to:"appaloosa-adam@hotmail.fr",
 								subject: `Fraude potentielle !`, // Subject line
 								//text: decrypted.toString(), // plain text body
-								html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel </p>
+								html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel.</p>
 									<ul>
 										<li>pays : ${geo.country}</li>
 										<li>région : ${geo.region}</li>
@@ -856,20 +893,21 @@ exports.login = async (req, res) => {
 									</ul>
 								<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer votre mot de passe imédiatement.</p> 
 									<ul>
-										<li><a href="http://localhost:4200/account/${user.nickname}/${user.id}"> Cliquer ici pour changer mon mot de passe </a></li>
+										<li><a href="http://localhost:4200/account/${user.nickname}/${user.id}/my_account"> Cliquer ici</a> pour changer mon mot de passe. </li>
 					
 									</ul> 
 								<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à récupérer le nouveau mot de passe et puis de le changer soigneusement. </p>
 									<ul>
-										<li><a href="http://localhost:4200/login"> Cliquer ici pour me connecter et renseigner un mot de passe oublié</a></li>
+										<li><a href="http://localhost:4200/login"> Cliquer ici</a> pour me connecter et renseigner un mot de passe oublié.</li>
 					
 									</ul>
-								<p> Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons de régler votre problème. </p>
+								<p>Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons de régler votre problème dans les plus brefs délais. </p>
 									<ul>
-										<li><a href="http://localhost:4200/chat"> Cliquer ici pour regoindre la messagerie</a></li>
+										<li><a href="http://localhost:4200/chat"> Cliquer ici</a> pour regoindre la messagerie</li>
 						
 									</ul>
-								<p> Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>`, // html body
+								<p>Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>
+								<p>Très sincérement, l'équipe de LinkArts.</p>`, // html body
 							
 							};
 							

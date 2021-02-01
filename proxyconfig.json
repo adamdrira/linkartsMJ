@@ -1,16 +1,16 @@
 {
     "/api/*":{
-        "target":"https://linkarts.fr",
+        "target":"http://localhost:4600",
         "secure":false,
         "changeOrigin":true
     },
     "/routes/*":{
-        "target":"https://linkarts.fr",
+        "target":"http://localhost:4600",
         "secure":false,
         "changeOrigin":true
     },
     "/python/*":{
-        "target":"https://linkarts.fr",
+        "target":"http://localhost:4600",
         "secure":false,
         "changeOrigin":true
     }

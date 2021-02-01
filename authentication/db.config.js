@@ -2,14 +2,14 @@ const env = require('./env.js');
 
 // Connect to database
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
+/*const sequelize = new Sequelize('linkarts', 'postgres', 'test', {
     host : 'localhost',
     dialect: 'postgres'
-});
-/*const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
+});*/
+const sequelize = new Sequelize('linkarts', 'adamdrira', 'E273adamZ9Qvps', {
   host : 'localhost',
   dialect: 'postgres'
-});*/
+});
 
 sequelize.authenticate().then(() => {
   console.log('Connection established successfully.');

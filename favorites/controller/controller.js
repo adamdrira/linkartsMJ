@@ -8,7 +8,7 @@ var path = require('path');
 
 
 
-module.exports = (router, favorites) => {
+module.exports = (router, favorites,users) => {
 
     function get_current_user(token){
         var user = 0
@@ -33,22 +33,58 @@ module.exports = (router, favorites) => {
             date.setDate(date.getDate() - 30);
         }
         
-        favorites.findAll({
+        users.findOne({
             where:{
-                createdAt: (date_format<1)?{[Op.gte]: date}:{[Op.lte]: date},
-                id_user:id_user,
+                id:id_user,
             }
-            ,order: [
-                ['createdAt', 'DESC']
-            ]
         }).catch(err => {
 			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(favorites=>{
-            res.status(200).send([{list_of_favorites:favorites}])
-                        
-                    
+		}).then(user=>{
+            if(user && user.status=="account"){
+                if(user.gender=="Groupe"){
+                    favorites.findAll({
+                        where:{
+                            createdAt: (date_format<1)?{[Op.gte]: date}:{[Op.lte]: date},
+                            id_user:id_user,
+                            shares:{[Op.not]: null}
+                        }
+                        ,order: [
+                            ['createdAt', 'DESC']
+                        ]
+                    }).catch(err => {
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(favorites=>{
+                        res.status(200).send([{list_of_favorites:favorites}])
+                                    
+                                
+                    })
+                }
+                else{
+                    favorites.findAll({
+                        where:{
+                            createdAt: (date_format<1)?{[Op.gte]: date}:{[Op.lte]: date},
+                            id_user:id_user,
+                        }
+                        ,order: [
+                            ['createdAt', 'DESC']
+                        ]
+                    }).catch(err => {
+                        console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(favorites=>{
+                        res.status(200).send([{list_of_favorites:favorites}])
+                                    
+                                
+                    })
+                }
+            }
+            else{
+                res.status(200).send([{list_of_favorites:[]}])
+            }
         })
+       
         
     });
  
@@ -83,13 +119,15 @@ module.exports = (router, favorites) => {
 
     router.post('/get_total_favorites_gains_by_users_group', function (req, res) {
         console.log("get_total_favorites_gains_by_users_group")
-        
+        const Op = Sequelize.Op;
         let current_user = get_current_user(req.cookies.currentUser);
         let list_of_ids=req.body.list_of_ids
         let total_gains=0;
+        console.log(list_of_ids)
         favorites.findAll({
             where:{
                 id_user:list_of_ids,
+                shares:{[Op.not]: null}
             }
             ,order: [
                 ['createdAt', 'DESC']
