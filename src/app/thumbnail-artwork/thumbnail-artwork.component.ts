@@ -84,24 +84,26 @@ export class ThumbnailArtworkComponent implements OnInit {
   @ViewChild('image2') image2:ElementRef;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
+    this.update_image_size();
+  }
+
+  update_image_size() {
+    this.cd.detectChanges();
     if( this.image ) {
-      
 
-      if(this.list_of_images_to_show_retrieved && this.image2){
-        let width2 = this.image2.nativeElement.width;
-        let height2 = this.image2.nativeElement.height;
-        if( window.innerWidth<=600 && this.category!="drawing" ) {
-          this.rd.setStyle(this.swiperThumbnails.nativeElement, 'height', width2*(32/24)+'px');
-          this.rd.setStyle(this.swiperThumbnails.nativeElement, 'width', '100%');
-        }
-        else if( window.innerWidth<=600 && this.category=="drawing" ) {
-          this.rd.setStyle(this.swiperThumbnails.nativeElement, 'height', height2+'px');
-          this.rd.setStyle(this.swiperThumbnails.nativeElement, 'width', '100%');
-        }
+      let width = this.image.nativeElement.width;
+      let height = this.image.nativeElement.height;
+      if( window.innerWidth<=600 && this.category!="drawing" ) {
+        this.rd.setStyle(this.image.nativeElement, 'height', width*(32/24)+'px');
+        this.rd.setStyle(this.image.nativeElement, 'width', '100%');
       }
-    
-      
-
+      else if( window.innerWidth<=600 && this.category=="drawing" ) {
+        this.rd.setStyle(this.image.nativeElement, 'height', 'unset');
+        this.rd.setStyle(this.image.nativeElement, 'width', '100%');
+      }
+      else {
+        this.rd.setStyle(this.image.nativeElement, 'height', '266.66px');
+      }
       
     }
   }
@@ -688,6 +690,8 @@ export class ThumbnailArtworkComponent implements OnInit {
     //console.log("thumbnail_is_loaded")
     this.thumbnail_is_loaded=true;
     this.cd.detectChanges();
+
+    this.update_image_size();
     //this.initialize_swiper();
   };
 

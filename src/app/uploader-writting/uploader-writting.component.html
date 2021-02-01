@@ -22,30 +22,20 @@
     <ng-container  *ngIf="afficherpreview">
         <div class="element-container writing">
             
-            <div #swiperContainer class="swiper-container swiper-artwork-writing" >
-                <div #swiperWrapper class="swiper-wrapper">
-                    <div *ngFor="let item of arrayOne( total_pages ); let i = index" class="swiper-slide">
-                        <div class="slide-container" #pdfDocument>
-                            <pdf-viewer
-                            class="pdf-document"
-                            [src]="pdfSafeUrl"
-                            [render-text]="false"
-    
-                            [autoresize]="true"
-                            [original-size]='true'
-                            [fit-to-page]='true'
-    
-                            [show-all]="false"
-                            [page]="(i+1)"
-                            (after-load-complete)="afterLoadComplete($event, i)"
-                            ></pdf-viewer>
-    
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-scrollbar"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+        
+            <div class="pdf-container" #pdfDocument>
+                <pdf-viewer
+                class="pdf-document"
+                [src]="pdfSafeUrl"
+                [render-text]="false"
+
+                [autoresize]="true"
+                [original-size]='true'
+                [fit-to-page]='true'
+
+                [show-all]="true"
+                (after-load-complete)="afterLoadComplete($event)"
+                ></pdf-viewer>
             </div>
 
             <div class="name-container">

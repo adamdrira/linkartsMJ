@@ -6,121 +6,114 @@
 </div>
 
 
-<ng-container *ngIf="data.type=='add_artist'">
-    <div class="popup-step">
+<div class="popup-add-group-member" *ngIf="data.type=='add_artist'">
 
-        <div class="back-and-logo">
-            
-            <div class="logo" style="width:40px">
-                <img class="logo" (load)="logo_loaded()" src='../../assets/img/svg/Logo-LA3.svg' [ngClass]="{'invisible':!logo_is_loaded}">
-            </div>
-        </div>
+    <div class="step-name">
+        <span>Ajouter un membre</span>
+    </div>
 
-        <div class="step-name">
-            <span>Ajout d'un nouveau membre</span>
-        </div>
-        <div class="step-form" [formGroup]="registerForm5">
 
-                <div #research class="searchbar-container" >
-    
-                    <input #input
-                    style="display: block;
-                    width: 100%;
-                    box-shadow: 0px 0px 5px #afafaf;
-                    height: calc(1.5em + .75rem + 2px);
-                    padding: .375rem .75rem;
-                    font-size: 14px;
-                    cursor:text;
-                    font-weight: 400;
-                    line-height: 1.5;
-                    color: #495057;
-                    background-color: unset;
-                    background: unset;
-                    border-radius: 5px;
-                    border: unset;"
-                    formControlName="fdSearchbar"
-                    (click)="activateFocus_add()"
-                    onfocus="this.placeholder = ''"
-                    (input)="research_member();"
-                    onblur="this.placeholder = 'Rechercher par pseudo'"
-                    class="form-control form-control-dark large-form" type="text" [placeholder]="'Rechercher par pseudo'">
-    
-                    <div  class="research-results" *ngIf="research_member_loading">
-                        <div *ngIf="display_no_pseudos_found">
-                            <div *ngIf="display_max_length_members" class="display-message">
-                                La limite de 10 membres par groupe a était atteinte
+    <div class="step-form" [formGroup]="registerForm5">
+
+        <ng-container *ngIf="list_of_pseudos.length>0">
+            <div class="subscriber-card" *ngFor=" let item of list_of_pseudos;let i=index" [@enterAnimation]>
+                <div class="subscriber">
+                    <div class="user-container">
+                        <div>
+                            <div class="left-container"  [ngClass]="{'shiny':!list_of_pp_found[i]}">
+                                <img [src]="list_of_profile_pictures[i]" (load)="list_of_pp_found_load(i)"  [ngClass]="{ 'invisible':!list_of_pp_found[i]}">
                             </div>
-                            <div *ngIf="!display_max_length_members" class="display-message">
-                                Aucun résultat
-                            </div>
-                            
                         </div>
-                        <ng-container *ngIf="!display_no_pseudos_found">
-                            <div class="title-proposition" *ngIf="!pp_found_loaded && registerForm5.value.fdSearchbar">
-                               &nbsp; <span>.</span><span>.</span><span>.</span>
+                        <div>
+                            <div class="right-container">
+                                <span class="author-name"> {{list_of_pseudos[i]}} </span>
                             </div>
-                            <div class="display-message" *ngIf="!pp_found_loaded && !registerForm5.value.fdSearchbar">
-                                Rechercher un artiste
-                             </div>
-                            <div class="author-container" [ngClass]="{'really-invisible':!pp_found_loaded}">
-                                <div class="left-container">
-                                    <img [src]="profile_picture_found" (load)="pp_found_load()">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="unsubscribe-button" (click)="remove_member(i)">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">remove</mat-icon>
+                    <span>Retirer</span>
+                </button>
+            </div>
+        </ng-container>
+
+        <div class="warning2">
+            <span>-Vous pouvez ajouter jusqu'à {{number_of_artists}} artistes</span>
+            <span>-Le compte ne sera accessible qu'après confirmation par les nouveaux membres du groupe</span>
+            <span>-Les rémunérations seront réparties équitablement puis modifiables ultérieurement.</span>
+        </div>
+
+        <div #research>
+            <div class="form-item">
+                <mat-form-field floatLabel='never'>
+                    <mat-label>Rechercher par pseudonyme</mat-label>
+                    <input #input matInput formControlName="fdSearchbar" 
+                    type="text" 
+                    autocomplete="off" 
+                    (click)="activateFocus_add()" 
+                    onfocus="this.placeholder = ''" 
+                    (input)="research_member();"
+                    onblur="this.placeholder = 'Rechercher par pseudonyme'"
+                    [placeholder]="'Rechercher par pseudonyme'">
+                </mat-form-field>
+            </div>
+
+            <ng-container *ngIf="research_member_loading">
+
+                <div class="error add-group-members" *ngIf="display_no_pseudos_found">
+                    <span *ngIf="display_max_length_members" [@enterAnimation]>La limite de 10 artistes par groupe a été atteinte</span>
+                    <span *ngIf="!display_max_length_members" [@enterAnimation]>Aucun résultat</span>
+                </div>
+
+                <ng-container *ngIf="!display_no_pseudos_found">
+                    
+                    <div class="loading-dots" *ngIf="!pseudo_found && registerForm5.value.fdSearchbar">
+                        &nbsp; <span>.</span><span>.</span><span>.</span>
+                    </div>
+                    <!--<div class="display-message" *ngIf="!pp_found_loaded && !registerForm5.value.fdSearchbar">
+                        Rechercher un artiste
+                        </div>-->
+                        
+                    <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'really-invisible':!pp_found_loaded}" [@enterAnimation]>
+                        <div class="subscriber">
+                            <div class="user-container">
+                                <div>
+                                    <div class="left-container"  [ngClass]="{'shiny':!pp_found_loaded}">
+                                        <img [src]="profile_picture_found" (load)="pp_found_load()"  [ngClass]="{ 'invisible':!pp_found_loaded}">
+                                    </div>
                                 </div>
-                                <div class="right-container">
-                                    <span class="author-name">{{pseudo_found}} </span>
-                                </div>
-                                
-                                <div class="add-container">
-                                    <button mat-raised-button *ngIf="check_if_pseudos_added()" class="button-add" (click)="add_member();" >
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }" style="font-size: 23px;margin: auto 5px auto auto;">person_add</mat-icon>
-                                        Ajouter 
-                                    </button>
+                                <div>
+                                    <div class="right-container">
+                                        <span class="author-name">{{pseudo_found}}</span>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <ng-container *ngIf="check_if_pseudos_added()">
+                            <button class="subscribe-button" (click)="add_member()">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                                <span>Ajouter</span>
+                            </button>
                         </ng-container>
                     </div>
-        
-                </div>
-    
-                <div class="list-of-members" *ngIf="list_of_pseudos.length==0">
-                    <div>-Vous pouvez ajouter jusqu'à {{number_of_artists}} artistes.</div>
-                    <div>-Le compte ne sera accessible qu'après confirmation de tous les nouveaux membres du groupe.</div>
-                    <div>-Les rémunérations seront réparties équitablement puis modifiables ultérieurement.</div>
-                </div>
 
-    
-                <div class="list-of-members" *ngIf="list_of_pseudos.length>0">
-                    <div class="author-container" *ngFor=" let item of list_of_pseudos;let i=index">
-                        <div class="left-container" [ngClass]="{'invisible':!list_of_pp_found[i]}" >
-                            <img [src]="list_of_profile_pictures[i]" (load)="list_of_pp_found_load(i)">
-                        </div>
-                        <div class="right-container">
-                            <span class="author-name" > {{list_of_pseudos[i]}} </span>
-                        </div>
-                        <div class="add-container">
-                            <button mat-button class="mat-icon-button" style="display:flex;justify-content: center;align-items: center;" tabIndex="-1" (click)="remove_member(i)"> 	
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" style=" color: #203864;">person_remove</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            
+                </ng-container>
+            </ng-container>
         </div>
-
-
-        <div class="step-validation" style=" margin-bottom: 15px;position: relative;">
-
-            <button [disabled]="validation_loading" mat-raised-button class="submit-button style0" (click)="validate_add();">
-                <span *ngIf="!validation_loading">Valider</span>
-                <mat-spinner *ngIf="validation_loading" diameter="20"  style="margin:auto;"></mat-spinner>
-            </button>
-            
-            <div class="pseudo-found2" style="padding-left: 20px;" *ngIf="display_need_members">Vous devez mentionner au moins 1 nouveau membre du groupe</div>
-        </div>
-        
-
     </div>
-</ng-container>
+
+    <button class="submit-button" (click)="validate_add();">
+        <span>Valider</span>
+    </button>
+
+    <div class="error">
+        <span *ngIf="display_need_members" [@enterAnimation]>Vous devez choisir au moins 1 nouveau membre</span>
+    </div>
+</div>
+
 
 
 <ng-container *ngIf="data.type=='edit_cover_picture'">

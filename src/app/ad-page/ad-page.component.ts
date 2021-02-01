@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import {ElementRef, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -26,6 +26,9 @@ import { PopupCommentsComponent } from '../popup-comments/popup-comments.compone
 import { trigger, transition, style, animate } from '@angular/animations';
 
 
+import { NoopScrollStrategy } from '@angular/cdk/overlay';
+import { DOCUMENT } from '@angular/common';
+
 declare var $: any
 declare var Swiper: any
 
@@ -35,28 +38,53 @@ declare var Swiper: any
   styleUrls: ['./ad-page.component.scss'],
   animations: [
     trigger(
-      'leaveAnimation', [
-        transition(':leave', [
-          style({transform: 'translateY(0)', opacity: 1}),
-          animate('200ms', style({transform: 'translateX(0px)', opacity: 0}))
+      'enterFromTopAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromLeftAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(-100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromRightAnimation', [
+        transition(':enter', [
+          style({transform: 'translateX(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ],
+    ),
+    trigger(
+      'enterFromBottomAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('400ms ease-in-out', style({transform: 'translateY(0px)', opacity: 1}))
         ])
       ],
     ),
     trigger(
       'enterAnimation', [
         transition(':enter', [
-          style({transform: 'translateY(0)', opacity: 0}),
-          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
         ])
-      ]
+      ],
     ),
+    //LEAVING ANIMATIONS
     trigger(
-      'enterFromLeft', [
-        transition(':enter', [
-          style({transform: 'translateX(-100%)', opacity: 0}),
-          animate('200ms', style({transform: 'translateX(0px)', opacity: 1}))
+      'leaveAnimation', [
+        transition(':leave', [
+          style({transform: 'translateX(0%)', opacity: 1}),
+          animate('200ms ease-in-out', style({transform: 'translateX(-30px)', opacity: 0}))
         ])
-      ]
+      ],
     )
   ],
 })
@@ -76,7 +104,7 @@ export class AdPageComponent implements OnInit {
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private AuthenticationService:AuthenticationService,
-
+    @Inject(DOCUMENT) private document: Document,
     private cd:ChangeDetectorRef,
     ) { 
       
@@ -534,6 +562,7 @@ export class AdPageComponent implements OnInit {
  
 
   read_pictures(i:number){
+    
       const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
         data: {list_of_pictures:this.list_of_pictures,index_of_picture:i},
         panelClass: "popupDocumentClass",
@@ -541,9 +570,12 @@ export class AdPageComponent implements OnInit {
   }
 
   read_attachment(i:number){
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 
@@ -555,9 +587,12 @@ export class AdPageComponent implements OnInit {
   }
 
   read_attachment_response(i:number){
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.response_list_of_attachments[i]},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 

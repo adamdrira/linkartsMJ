@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
@@ -19,6 +19,7 @@ import {NotificationsService} from '../services/notifications.service';
 import { ChatService} from '../services/chat.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { NavbarService } from '../services/navbar.service';
+import { DOCUMENT } from '@angular/common';
 
 declare var Swiper:any;
 declare var $: any;
@@ -49,6 +50,7 @@ export class AddWritingComponent implements OnInit {
     private Writing_CoverService:Writing_CoverService,
     private Profile_Edition_Service:Profile_Edition_Service,
     private navbar: NavbarService,
+    @Inject(DOCUMENT) private document: Document,
   ) { 
 
     this.REAL_step = 0;
@@ -131,9 +133,12 @@ export class AddWritingComponent implements OnInit {
   }
 
   read_conditions() {
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 

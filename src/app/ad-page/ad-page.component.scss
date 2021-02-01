@@ -1,5 +1,5 @@
 @import "../../artwork-styles.scss";
-@import "../../unsecured-ng-deeps.scss";
+
 
 $default-color: rgb(218, 220, 225);
 
@@ -74,22 +74,36 @@ div.data-container {
         }
     }
 }
+
+.artwork-container {
+    padding: 0px 30px !important;
+    @media (max-width: 600px) {
+        padding: 0px 10px !important;
+    }
+}
 .content-container {
     height: unset !important;
     display: flex !important;
     flex-direction: column !important;
-    padding-top: 14px !important;
-    padding-bottom: 30px !important;
-    margin: 0px auto 0px auto !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
     max-width: 900px !important;
     padding-left: 30px;
     padding-right: 30px;
+    overflow:hidden;
+
+    margin: 30px auto 20px auto !important;
+    @media (max-width: 600px) {
+        margin: 15px auto 15px auto !important;
+    }
+    border-radius: 30px;
+    background: #08142b;
 
     .horizontal-line {
         margin-top: 20px;
         margin-bottom: 30px;
         height: 1px;
-        border-bottom: 1px solid #1e355e;
+        border-bottom: 1px solid #0f1e3a;
         //box-shadow: 0px 2px 4px 1px #12264c;
     }
 
@@ -130,13 +144,14 @@ div.data-container {
             outline: none !important;
             border: unset;
             display: flex;
-            padding: 6px 20px;
+            padding: 8px 20px;
             font-weight: bold;
             color: #203864;
             border-radius: 25px !important;
-            background: rgba(2, 18, 54, 0.9);
-            /* background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9)); */
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
+            
+            background-color: #152646;
+            box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.36);
+
             /* background: #2a4575 !important; */
             /* box-shadow: 0 2px 4px 0 #525cd8a3; */
             min-width: -webkit-fit-content;
@@ -356,7 +371,7 @@ div.data-container {
             .attachments-container {
                 margin-right: 20px;
                 margin-top: 12px;
-                width: 90px;
+                width: 70px;
                 text-align: center;
                 span {
                     color: rgb(255, 255, 255);
@@ -374,7 +389,7 @@ div.data-container {
                 .attachment-item {
                     border-radius: 10px;
                     margin-bottom: 5px;
-                    height: 90px;
+                    height: 70px;
                     background: #203864;
                     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
                     width: 100%;
@@ -406,8 +421,8 @@ div.data-container {
             }
         }
         .image-container {
-            width: 90px;
-            height: 90px;
+            width: 70px;
+            height: 70px;
             margin-top: 12px;
             margin-right: 20px;
             margin-bottom: 10px;
@@ -420,13 +435,13 @@ div.data-container {
     }
 
     .responses-container {
-        background: #203864;
-        box-shadow: 0 2px 4px 0 #525cd8a3;
+        background: #152646;
+        box-shadow: 0 2px 4px 0 #040b19;
         margin-top: 20px;
         margin-bottom: 25px;
-        padding: 15px 15px 0px 15px;
+        padding: 15px 15px 4px 15px;
         width: 100%;
-        border-radius: 15px;
+        border-radius: 20px;
 
         .subscriber-card {
             display: flex;
@@ -512,7 +527,7 @@ div.data-container {
                                 height: unset;
                                 font-size: 16px;
                                 max-width:16px;
-                overflow: hidden;
+                                overflow: hidden;
                                 margin: auto 2px auto 2px;
                                 color: #00c7d0;
                             }
@@ -524,9 +539,10 @@ div.data-container {
             button {
                 margin: auto 0px auto 0px;
                 border-radius: 50px;
-                background-color: #122951;
-                outline: none !important;
+                background-color: #20345a;
                 border: unset;
+                box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.36);
+                outline: none !important;
                 display: flex;
                 padding: 12px 20px;
                 justify-content: center;
@@ -596,8 +612,8 @@ div.data-container {
             font-weight: 600;
             color: #203864;
             border-radius: 25px !important;
-            background: #2a4575 !important;
-            box-shadow: 0 2px 4px 0 #525cd8a3;
+            background-color: #152646 !important;
+            box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.36);
             mat-icon {
                 height: unset !important;
                 width: unset !important;
@@ -628,10 +644,10 @@ div.data-container {
             border-radius: 10px;
             margin-right: 20px;
             margin-top: 12px;
-            height: 90px;
+            height: 70px;
             background: #203864;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-            width: 90px;
+            width: 70px;
             overflow: hidden;
             cursor: pointer;
             transition: all 200ms;

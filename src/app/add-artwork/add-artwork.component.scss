@@ -5,6 +5,10 @@
     height:0px !important;
 }*/
 
+::ng-deep body.popup-attachment-scroll .add-artwork > .fake-navbar {
+    right: 17px !important;
+}
+
 .container-fluid {
     margin-top: 0px;
     width: 100%;

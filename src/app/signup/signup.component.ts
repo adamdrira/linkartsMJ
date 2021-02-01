@@ -19,6 +19,7 @@ import * as moment from 'moment';
 import { trigger, transition, style, animate } from '@angular/animations';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
+import { DOCUMENT } from '@angular/common';
 
 declare var $: any;
 
@@ -68,6 +69,7 @@ export class SignupComponent implements OnInit {
       public dialogRef: MatDialogRef<SignupComponent,any>,
       private _adapter: DateAdapter<any>,
       public dialog: MatDialog,
+      @Inject(DOCUMENT) private document: Document,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       dialogRef.disableClose = true;
       navbar.visibility_observer_font.subscribe(font=>{
@@ -129,9 +131,12 @@ export class SignupComponent implements OnInit {
     }
   }
   read_conditions() {
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 

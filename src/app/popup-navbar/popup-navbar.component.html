@@ -1617,7 +1617,16 @@
             
                         </div>
                         <div class="right-container">
-                          <span class="author-name">{{list_of_friends_names[i]}} </span>
+                          <span class="author-name">
+                            <div>
+                              {{list_of_friends_names[i]}}
+                            </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            matTooltip="Compte certifié" 
+                            matTooltipClass='linkarts-tooltip' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="200">verified</mat-icon>      
+                          </span>
                           <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
                             <div class="last-message">
             

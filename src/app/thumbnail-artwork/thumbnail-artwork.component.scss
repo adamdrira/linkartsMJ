@@ -443,23 +443,23 @@
             mat-icon {
                 height: unset;
                 width: unset;
-                font-size: 18px;
+                font-size: 15px;
                 margin-left: 3px;
             }
             
             &.views {
                 mat-icon {
-                    margin-top: 1px;
+                    margin-top: 2.5px;
                 }
             }
             &.likes {
                 mat-icon {
-                    margin-top: 1.5px;
+                    margin-top: 2px;
                 }
             }
             &.loves {
                 mat-icon {
-                    margin-top: 1.5px;
+                    margin-top: 2.5px;
                 }
             }
         }

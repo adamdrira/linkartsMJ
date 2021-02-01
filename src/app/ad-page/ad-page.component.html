@@ -80,7 +80,7 @@
                 
                 <div class="horizontal-line"></div>
     
-                <div *ngIf="see_responses==0 " [@enterAnimation]>
+                <div *ngIf="see_responses==0" [@enterFromLeftAnimation]>
     
                     <ng-container  *ngIf="!attachments_retrieved">
 
@@ -248,8 +248,9 @@
                     <mat-spinner diameter="40"></mat-spinner>
                 </div>
                 
-                <div *ngIf="see_responses==1 && answers_retrieved" [@enterAnimation]>
+                <div *ngIf="see_responses==1 && answers_retrieved" [@enterFromRightAnimation]>
                     <div class="project-type" *ngIf="list_of_profile_pictures.length">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">dehaze</mat-icon>
                         <span>Liste des réponses</span>
                     </div>
                     <div class="project-no-response" *ngIf="!list_of_profile_pictures.length">
@@ -275,11 +276,15 @@
                                             <span class="author-name" *ngIf="list_of_authors_name[i]!=''">
                                                 <a [routerLink]=get_response_author_link(i) (click)="stop($event)" matTooltip="Voir le profil"
                                                     matTooltipClass='linkarts-tooltip' [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">
-                                                    {{list_of_authors_name[i]}}
+                                                    
+                                                    <div>{{list_of_authors_name[i]}}</div>
                                                 </a>
-                                        
-                                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_certified_account[i]" matTooltip="Compte certifié" matTooltipClass='linkarts-tooltip'
-                                                    [matTooltipPosition]="'below'" [matTooltipShowDelay]="200">verified</mat-icon>
+                                                
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="list_of_certified_account[i]"
+                                                matTooltip="Compte certifié" 
+                                                matTooltipClass='linkarts-tooltip' 
+                                                [matTooltipPosition]="'below'"
+                                                [matTooltipShowDelay]="200">verified</mat-icon>
                                         
                                             </span>
                                             <span class="author-description" *ngIf="pseudo!=''">@{{list_of_pseudos[i]}}</span>
@@ -414,7 +419,7 @@
                 <button [ngClass]="{'opened': left_container_category_index==1 }"
                     (click)="open_left_container_category(1);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">burst_mode</mat-icon>
-                    <span>Dimilaires</span>
+                    <span>Similaires</span>
                 </button>
             </div>
 

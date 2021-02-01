@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, ViewChild, Inject } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { NavbarService } from '../services/navbar.service';
+import { DOCUMENT } from '@angular/common';
 
 declare var $: any;
 
@@ -57,6 +58,7 @@ export class AddDrawingComponent implements OnInit {
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     public dialog: MatDialog,
     private navbar: NavbarService,
+    @Inject(DOCUMENT) private document: Document,
   ) { 
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -143,9 +145,12 @@ export class AddDrawingComponent implements OnInit {
   }
 
   read_conditions() {
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.conditions},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 

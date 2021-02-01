@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
 import {QueryList} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
@@ -17,6 +17,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
+import { DOCUMENT } from '@angular/common';
 
 declare var $: any
 
@@ -55,6 +56,7 @@ export class ThumbnailAdComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
+    @Inject(DOCUMENT) private document: Document,
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -321,13 +323,16 @@ export class ThumbnailAdComponent implements OnInit {
   }
 
   read_attachment(i:number){
+    this.document.body.classList.add('popup-attachment-scroll');
     const dialogRef = this.dialog.open(PopupAdAttachmentsComponent, {
       data: {file:this.list_of_attachments[i]},
       panelClass: "popupDocumentClass",
+    }).afterClosed().subscribe(result => {
+      this.document.body.classList.remove('popup-attachment-scroll');
     });
   }
 
-  read_pictures_response(i:number){
+  /*read_pictures_response(i:number){
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:this.response_list_of_pictures,index_of_picture:i},
       panelClass: "popupDocumentClass",
@@ -339,7 +344,7 @@ export class ThumbnailAdComponent implements OnInit {
       data: {file:this.response_list_of_attachments[i]},
       panelClass: "popupDocumentClass",
     });
-  }
+  }*/
 
   update(){
     //fonction pour mettre à jour une annonce, possible que chaque semaine, gratuit au début

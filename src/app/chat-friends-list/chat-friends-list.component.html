@@ -162,7 +162,16 @@
 
                         </div>
                         <div class="right-container">
-                            <span class="author-name">{{list_of_friends_names[i]}} </span>
+                            <span class="author-name">
+                                <div>
+                                    {{list_of_friends_names[i]}}
+                                </div>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                matTooltip="Compte certifié" 
+                                matTooltipClass='linkarts-tooltip' 
+                                [matTooltipPosition]="'below'"
+                                [matTooltipShowDelay]="200">verified</mat-icon>
+                            </span>
                             <div class="last-message-container" *ngIf="list_of_friends_last_message[i]">
                                 <div class="last-message" >
 
@@ -419,7 +428,16 @@
                             </div>
                         </div>
                             <div class="right-container">
-                                <span class="author-name">{{list_of_spams_names[i]}} </span>
+                                <span class="author-name">
+                                    <div>
+                                        {{list_of_spams_names[i]}}
+                                    </div>
+                                    <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                    matTooltip="Compte certifié" 
+                                    matTooltipClass='linkarts-tooltip' 
+                                    [matTooltipPosition]="'below'"
+                                    [matTooltipShowDelay]="200">verified</mat-icon>
+                                </span>
                                 <div class="last-message-container" *ngIf="list_of_spams_last_message[i]">
                                     <div class="last-message" >
                                         <div  *ngIf="list_of_spams_last_message[i].is_an_attachment">
@@ -516,7 +534,16 @@
                                         </div>
                                     </div>
                                     <div class="right-container">
-                                        <span class="author-name">{{list_of_contacts_names[i]}} </span>
+                                        <span class="author-name">
+                                            <div>
+                                                {{list_of_contacts_names[i]}}
+                                            </div>
+                                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                            matTooltip="Compte certifié" 
+                                            matTooltipClass='linkarts-tooltip' 
+                                            [matTooltipPosition]="'below'"
+                                            [matTooltipShowDelay]="200">verified</mat-icon>
+                                        </span>
                                         <span class="author-name">@{{list_of_contacts_pseudos[i]}}</span>
                                     </div>
                                 </div>
@@ -549,7 +576,11 @@
                                         </div>
                                     </div>
                                     <div class="right-container">
-                                        <span class="author-name">{{list_of_contacts_groups_names[i]}} </span>
+                                        <span class="author-name">
+                                            <div>
+                                                {{list_of_contacts_groups_names[i]}}
+                                            </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -592,7 +623,16 @@
                                             </div>
                                         </div>
                                         <div class="right-container">
-                                            <span class="author-name">{{list_of_related_contacts_names[i]}} </span>
+                                            <span class="author-name">
+                                                <div>
+                                                    {{list_of_related_contacts_names[i]}}
+                                                </div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                                matTooltip="Compte certifié" 
+                                                matTooltipClass='linkarts-tooltip' 
+                                                [matTooltipPosition]="'below'"
+                                                [matTooltipShowDelay]="200">verified</mat-icon>
+                                            </span>
                                             <span class="author-name">@{{list_of_related_contacts_pseudos[i]}}</span>
                                         </div>
                                     </div>
@@ -620,7 +660,16 @@
                                                 </div>
                                             </div>
                                             <div class="right-container">
-                                                <span class="author-name">{{list_of_other_contacts_names[i]}} </span>
+                                                <span class="author-name">
+                                                    <div>
+                                                        {{list_of_other_contacts_names[i]}}
+                                                    </div>
+                                                    <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                                    matTooltip="Compte certifié" 
+                                                    matTooltipClass='linkarts-tooltip' 
+                                                    [matTooltipPosition]="'below'"
+                                                    [matTooltipShowDelay]="200">verified</mat-icon>
+                                                </span>
                                                 <span class="author-name">@{{list_of_other_contacts_pseudos[i]}}</span>
                                             </div>
                                         </div>
@@ -642,7 +691,16 @@
                                             </div>
                                         </div>
                                         <div class="right-container">
-                                            <span class="author-name">{{list_of_all_contacts_names[i]}} </span>
+                                            <span class="author-name">
+                                                <div>
+                                                    {{list_of_all_contacts_names[i]}}
+                                                </div>
+                                                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                                matTooltip="Compte certifié" 
+                                                matTooltipClass='linkarts-tooltip' 
+                                                [matTooltipPosition]="'below'"
+                                                [matTooltipShowDelay]="200">verified</mat-icon>
+                                            </span>
                                             <span class="author-name">@{{list_of_all_contacts_pseudos[i]}}</span>
                                         </div>
                                     </div>
@@ -682,7 +740,11 @@
                                         </div>
                                     </div>
                                     <div class="right-container">
-                                        <span class="author-name">{{item}}</span>
+                                        <span class="author-name">
+                                            <div>
+                                                {{item}}
+                                            </div>
+                                        </span>
                                     </div>
                                 </div>
                                 
@@ -711,7 +773,16 @@
                                     </div>
                                 </div>
                                 <div class="right-container">
-                                    <span class="author-name">{{list_of_new_friends_names[i]}} </span>
+                                    <span class="author-name">
+                                        <div>
+                                            {{list_of_new_friends_names[i]}}
+                                        </div>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                        matTooltip="Compte certifié" 
+                                        matTooltipClass='linkarts-tooltip' 
+                                        [matTooltipPosition]="'below'"
+                                        [matTooltipShowDelay]="200">verified</mat-icon>
+                                    </span>
                                     <span class="author-name">@{{list_of_new_friends_pseudos[i]}}</span>
                                 </div>
                             </div>

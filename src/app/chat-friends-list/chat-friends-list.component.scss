@@ -574,10 +574,29 @@
                         span.author-name {
                             font-size: 12px;
                             line-height: 18px;
+                            display:flex;
                             font-weight: bold;
                             white-space: nowrap;
                             overflow: hidden !important;
                             text-overflow: ellipsis;
+
+                            div {
+                              font-weight: bold;
+                              white-space: nowrap;
+                              overflow: hidden !important;
+                              text-overflow: ellipsis;
+                              max-width: calc(100% - 20px);
+                            }
+                            mat-icon {
+                                vertical-align: middle;
+                                display: inline-block;
+                                margin: 1px 0px 0px 2px;
+                                color: #00c0d4;
+                                height: 15px;
+                                overflow: hidden;
+                                width: unset;
+                                font-size: 15px;
+                            }
                         }
                         .date-container {
                             margin: auto 0px auto auto;

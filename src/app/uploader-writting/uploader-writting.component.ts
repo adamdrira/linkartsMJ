@@ -158,45 +158,12 @@ export class UploaderWrittingComponent implements OnInit {
 
   @ViewChild('pdfDocument')
   pdfDocumentRef: ElementRef;
-
-  initialize_swiper() {
-    let THIS = this;
-    this.swiper = new Swiper('.swiper-container.swiper-artwork-writing', {
-      speed: 500,
-      spaceBetween:100,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      keyboard: {
-        enabled: true,
-      },
-      on: {
-        slideChange: function () {
-          THIS.cd.detectChanges();
-          THIS.pdfDocumentRef.nativeElement.scrollIntoView({behavior: 'smooth'});
-        },
-      },
-    });
-    this.can_operate=true;
-  }
   
-  afterLoadComplete(pdf: PDFDocumentProxy, i: number) {
+  
+  afterLoadComplete(pdf: PDFDocumentProxy) {
     this.total_pages = pdf.numPages;
+    this.can_operate=true;
     this.cd.detectChanges();
-    if( (i+1) == this.total_pages ) {
-      this.initialize_swiper();
-      //this.refresh_controls_pagination();
-      //this.display_writing=true;
-      //this.display_pages=true;
-    };
   }
 
 

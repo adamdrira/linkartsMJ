@@ -7,6 +7,7 @@ import { ChatService } from '../services/chat.service';
 import { pattern } from '../helpers/patterns';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NavbarService } from '../services/navbar.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 
@@ -15,7 +16,17 @@ declare var $:any;
 @Component({
   selector: 'app-popup-form',
   templateUrl: './popup-form.component.html',
-  styleUrls: ['./popup-form.component.scss']
+  styleUrls: ['./popup-form.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('150ms', style({opacity: 1}))
+        ])
+      ],
+    )
+  ]
 })
 export class PopupFormComponent implements OnInit {
 

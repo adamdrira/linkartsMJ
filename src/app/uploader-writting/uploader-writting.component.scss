@@ -17,6 +17,7 @@
 
 ::ng-deep .element-container.writing {
 
+    width:100% !important;
     .pdf-document {
         width:calc(100%);
         height:100%;
@@ -24,55 +25,27 @@
     }
 
     .ng2-pdf-viewer-container {
-        scrollbar-width:none;
-    }
-    .ng2-pdf-viewer-container::-webkit-scrollbar {
-        display: none;
+        max-height: 800px;
+        overflow: auto;
+        padding-top: 35px;
+
+        scrollbar-width:thin;
+        scrollbar-color: #2f4d86 #091731;
+        &::-webkit-scrollbar-track {
+            /*background-color: #001640cc;*/
+            background: #091731;
+        }
+        &::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 20px;
+        }
+        &::-webkit-scrollbar-thumb {
+            /*background-color: #0f1e39;*/
+            background-color: #2f4d86;
+            border-radius: 20px;
+        }
     }
     
-    .swiper-container {
-        padding:30px;
-        margin:auto 0px auto auto;
-        width:100%;
-        //transition:width 200ms;
-        height:100%;
-        
-        scrollbar-width:none !important;
-    }
-    .swiper-wrapper {
-        position:relative;
-    }
-    .swiper-slide {
-        width:100%;
-        height:100%;
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-    .swiper-slide .slide-container {
-        width: 100%;
-        height: 100%;
-        display:flex;
-        justify-content: center;
-        //Without zoom
-        overflow-y:unset;
-    }
-    .slide-container::-webkit-scrollbar {
-        display: none !important;
-    }
-    .swiper-slide .slide-container .slide-container-img {
-        margin:auto auto;
-        object-fit:contain;
-        //Without zoom
-        max-width:100%;
-        max-height:100%;
-    }
-    .swiper-button-prev, ::ng-deep .swiper-button-next  {
-        outline:none !important;
-        color:white !important;
-    }
-    .swiper-scrollbar-drag {
-        background:white !important;
-    }
     
 }
 

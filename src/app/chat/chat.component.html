@@ -23,9 +23,19 @@
                         <img [src]="friend_picture" (load)="top_pp_is_loaded()" [ngClass]="{'invisible': !top_pp_loaded }">
                     </a>
                     <a [routerLink]="open_friend_link()" class="friend-link">
-                        <span>{{friend_name}} </span>
+                        <span>
+                            <div>
+                                {{friend_name}}
+                            </div>
+                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            matTooltip="Compte certifié" 
+                            matTooltipClass='linkarts-tooltip' 
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="200">verified</mat-icon>
+                        </span>
                     </a>
                 </ng-container>
+                
                 <ng-container *ngIf="friend_type!='user'">
                     <div class="profile-picture-container"
                         [ngClass]="{'shiny': !top_pp_loaded }">
