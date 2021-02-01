@@ -10,8 +10,9 @@
 <div class="terms-container">
 
     <div class="left-container">
-        <span>Conditions générales d'utilisation</span>
+        <span>Le guide LinkArts</span>
         <span>(en date du 27 janvier 2021)</span>
+        <a href="/services/0" [ngClass]="{'opened':article_number==0}">Article 0 : Qui sommes nous ?</a>
         <a href="/services/1" [ngClass]="{'opened':article_number==1}">Article 1 : Mentions légales</a>
         <a href="/services/2" [ngClass]="{'opened':article_number==2}">Article 2 : Conditions d'utilisation de LinkArts</a>
         <a href="/services/3" [ngClass]="{'opened':article_number==3}">Article 3 : Politique d'utilisation des cookies</a>
@@ -28,14 +29,52 @@
         <!-------------------------------------------------------->
         <!-------------------------------------------------------->
         <!-------------------------------------------------------->
+        <ng-container *ngIf="article_number==0">
+            <span class="text-large">Qui sommes nous ?</span>
+
+            
+            <span class="text-small">
+                Le site a été réalisé par Adam Drira et Mokhtar Meghaichi, deux simples amis d'enfances et passionés par le monde de l'édition et en particulier par le monde de la bande dessinée. Leur passion pour le monde de la bande dessinée s'est tout d'abord transformé en ambition,
+                l'ambition de réaliser sa propre bande dessinée et de la publier. Cette aventure leur a alors permis de connaître les grandes difficultés du monde de l'édition pour un artiste ambitieux. La difficulté que peut avoir un artiste pour se promouvoir, pour se vendre auprès des maisons d'édition ou pour trouver des collaborateurs, mais aussi la difficulté de réaliser des projets ambitieux sans générer le moindre profit. 
+            </span>
+            <span class="text-small">
+                 C'est donc avant tout pour satisfaire l'objectif de visibilité, de rémunération, de collaboration, et de communauté des artistes du monde de l'édition que LinkArts a été créé. 
+                 Nous ésperons donc faire de ce site un réseau où les artistes et les professionels du monde de l'édition peuvent se vendre, collaborer, échanger avec leur communauté ou simplement partager dans l'objetif de réaliser les grandes œuvres de demain. 
+            </span>
+            <span class="text-small">
+                Très sincérement, l'équipe de LinkArts.
+           </span>
+
+            
+
+        </ng-container>
+
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!--ARTICLE 1-->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
+        <!-------------------------------------------------------->
         <ng-container *ngIf="article_number==1">
             <span class="text-large">Mentions légales</span>
 
             <span class="text-small">
-                L’édition et l’hébergement du site est assurée par Adam Drira affilié en tant qu’auto-entrepreneur immatriculé à l’URSAF sous le numéro SIREN 892518739, situé au 7 rue Robespierre 78370 Plaisir, joignable au numéro de téléphone 0688090927 et à l’adresse e-mail appaloosa-adam@hotmail.fr.
+                L’édition et l’hébergement du site est assurée par Adam Drira affilié en tant qu’auto-entrepreneur immatriculé à l’URSAF sous le numéro SIREN 892518739, situé au 7 rue Robespierre 78370 Plaisir, joignable au numéro de téléphone 0688090927 et à l’adresse e-mail services@linkarts.fr.
             </span>
             <span class="text-small">
                 Le site est hébergé chez OVH sous un VPS.
+            </span>
+            <span class="text-medium">
+                Présentation des auteurs
+            </span>
+            <span class="text-small">
+                Le site a été réalisé par Adam Drira et Mokhtar Meghaichi, deux amis d'enfances et passionés par le monde de l'édition et en particulier le monde de la bande dessinés. Leur passion pour le monde de la bande dessinée s'est tout d'abord transformé en ambition,
+                 l'ambition de réaliser sa propre bande dessinée et de la publier. Cette aventure leur a alors permis de connaître les grandes difficultés du monde de l'édition. La difficulté que peut avoir un artiste pour se promouvoir, pour se vendre auprès des maisons d'édition ou pour trouver des collaborateurs, mais aussi la difficulté de réaliser des projets ambitieux sans générer le moindre profit. 
+                
+            </span>
+            <span class="text-small">
+                 C'est donc avant tout pour satisfaire l'objectif de visibilité, de rémunération, de collaboration, et de communauté des artistes du monde de l'édition que LinkArts a été créé. Nous ésperon donc faire de ce site un réseau où les artistes et les professionels du monde de l'édition peuvent se vendre, collaborer, échanger ou partager dans l'objetif de réaliser les grandes œuvres de demain.
             </span>
             <span class="text-medium">
                 Icônes et logos
@@ -117,7 +156,7 @@
                 Entité vous fournissant le Service
             </span>
             <span class="text-small">
-                L'entité fournissant le Service dans l'Espace Économique Européen (EEE) est un auto-entrepreneur localisé en France sous l’identifiant SIREN : 892 518 739 00016.
+                L'entité fournissant le Service dans l'Espace Économique Européen (EEE) est un auto-entrepreneur localisé en France sous l’identifiant SIREN : 892 518 739.
             </span>
 
             <span class="text-medium">

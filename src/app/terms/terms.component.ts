@@ -15,7 +15,7 @@ export class TermsComponent implements OnInit {
   ngOnInit(): void {
 
     this.article_number = parseInt(this.route.snapshot.paramMap.get('article_number'));
-    if( ! (this.article_number>0 && this.article_number<6) ) {
+    if( ! (this.article_number>=0 && this.article_number<6) ) {
       this.article_number = 1;
     }
   }
