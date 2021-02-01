@@ -83,6 +83,7 @@ export class PopupNavbarComponent implements OnInit {
   user_id=this.data.user_id;
   author_first_name=this.data.author_first_name;
   author_name=this.data.author_name;
+  author_certification=this.data.author_certification;
   pseudo=this.data.pseudo;
   data_retrieved=this.data.data_retrieved;
   number_of_empties=this.data.number_of_empties
@@ -679,6 +680,7 @@ list_of_friends_types=this.data.list_of_friends_types;
 list_of_friends_profile_pictures=this.data.list_of_friends_profile_pictures;
 list_of_friends_pseudos=this.data.list_of_friends_pseudos;
 list_of_friends_names=this.data.list_of_friends_names;
+list_of_friends_certifications=this.data.list_of_friends_certifications;
 list_of_friends_ids=this.data.list_of_friends_ids;
 list_of_friends_last_message=this.data.list_of_friends_last_message;
 list_of_friends_retrieved=this.data.list_of_friends_retrieved;
@@ -755,6 +757,7 @@ sort_friends_list() {
   this.list_of_friends_profile_pictures=[];
   this.list_of_friends_pseudos=[];
   this.list_of_friends_names=[];
+  this.list_of_friends_certifications=[];
   this.list_of_friends_ids=[];
   this.list_of_friends_last_message=[];
   this.list_of_friends_retrieved=false;
@@ -789,6 +792,7 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_receiver).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.list_of_friends_certifications[i]=s[0].certified_account;
               data_retrieved=true;
               all_retrieved(this);
             });
@@ -828,6 +832,7 @@ sort_friends_list() {
             this.Profile_Edition_Service.retrieve_profile_data(friends[i].id_user).subscribe(s=>{
               this.list_of_friends_pseudos[i]=s[0].nickname;
               this.list_of_friends_names[i]=s[0].firstname + ' ' + s[0].lastname;
+              this.list_of_friends_certifications[i]=s[0].certified_account;
               data_retrieved=true;
               all_retrieved(this);
             });
@@ -879,6 +884,7 @@ sort_friends_groups_chats_list(){
         
         list_of_names.push(l[0][k].name)
         this.list_of_friends_names[len+k]=l[0][k].name;
+        this.list_of_friends_certifications[len+k]=null;
         this.list_of_friends_pseudos[len+k]=l[0][k].name
         this.list_of_groups_ids[k]=l[0][k].id;
         if(k==l[0].length-1){
@@ -942,6 +948,7 @@ sort_list_of_groups_and_friends(){
         this.list_of_friends_ids.splice(j,0,this.list_of_friends_ids.splice(i,1)[0]);
         this.list_of_friends_types.splice(j,0,this.list_of_friends_types.splice(i,1)[0]);
         this.list_of_friends_names.splice(j,0,this.list_of_friends_names.splice(i,1)[0]);
+        this.list_of_friends_certifications.splice(j,0,this.list_of_friends_certifications.splice(i,1)[0]);
         this.list_of_friends_pseudos.splice(j,0,this.list_of_friends_pseudos.splice(i,1)[0]);
       }
     }
@@ -1051,6 +1058,7 @@ display_exit(event){
   this.list_of_friends_last_message[index]=event.message;
   this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
   this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+  this.list_of_friends_certifications.splice(0,0,this.list_of_friends_certifications.splice(index,1)[0]);
   this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
   this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
   this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
@@ -1128,6 +1136,7 @@ change_message_status(event){
         this.list_of_friends_ids.splice(0,0,this.list_of_friends_ids.splice(index,1)[0]);
         this.list_of_friends_last_message.splice(0,0,this.list_of_friends_last_message.splice(index,1)[0]);
         this.list_of_friends_names.splice(0,0,this.list_of_friends_names.splice(index,1)[0]);
+        this.list_of_friends_certifications.splice(0,0,this.list_of_friends_certifications.splice(index,1)[0]);
         this.list_of_chat_friends_ids.splice(0,0,this.list_of_chat_friends_ids.splice(index,1)[0]);
         this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
         this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
@@ -1149,6 +1158,7 @@ change_message_status(event){
                   this.list_of_friends_last_message.splice(0,0,event.message);
                   this.list_of_friends_last_message[0].status="received";
                   this.list_of_friends_names.splice(0,0,this.author_name);
+                  this.list_of_friends_certifications.splice(0,0,this.author_certification);
                   this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
                   this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
                   this.list_of_friends_pseudos.splice(0,0,this.pseudo);
@@ -1161,9 +1171,11 @@ change_message_status(event){
                 let picture;
                 let data_retrieved=false;
                 let pp_retrieved=false;
+                let certification= false;
                 this.Profile_Edition_Service.retrieve_profile_data(event.friend_id).subscribe(s=>{
                   console.log(s);
                   pseudo = s[0].nickname;
+                  certification = s[0].certified_account;
                   name =s[0].firstname + ' ' + s[0].lastname;
                   data_retrieved=true;
                   check_all(this)
@@ -1185,6 +1197,7 @@ change_message_status(event){
                     THIS.list_of_friends_last_message.splice(0,0,event.message);
                     THIS.list_of_friends_last_message[0].status="received";
                     THIS.list_of_friends_names.splice(0,0,name);
+                    THIS.list_of_friends_certifications.splice(0,0,certification);
                     THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
                     THIS.list_of_friends_profile_pictures.splice(0,0,picture);
                     THIS.list_of_friends_pseudos.splice(0,0,pseudo);
@@ -1231,6 +1244,7 @@ change_message_status(event){
         this.list_of_friends_last_message.splice(0,0,message);
         this.list_of_friends_last_message[0].status="received";
         this.list_of_friends_names.splice(0,0,name);
+        this.list_of_friends_certifications.splice(0,0,null);
         this.list_of_friends_profile_pictures.splice(0,0,picture);
         this.list_of_friends_pseudos.splice(0,0,pseudo);
         //console.log(this.list_of_friends_last_message);
@@ -1316,6 +1330,7 @@ change_message_status(event){
       this.list_of_friends_ids.splice(index,1);
       this.list_of_friends_last_message.splice(index,1);
       this.list_of_friends_names.splice(index,1);
+      this.list_of_friends_certifications.splice(index,1);
       this.list_of_chat_friends_ids.splice(index,1);
       this.list_of_friends_profile_pictures.splice(index,1);
       this.list_of_friends_pseudos.splice(index,1);

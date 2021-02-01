@@ -27,7 +27,7 @@
                             <div>
                                 {{friend_name}}
                             </div>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            <mat-icon *ngIf="friend_certification" [ngClass]="{'invisible': !show_icon }"
                             matTooltip="Compte certifié" 
                             matTooltipClass='linkarts-tooltip' 
                             [matTooltipPosition]="'below'"

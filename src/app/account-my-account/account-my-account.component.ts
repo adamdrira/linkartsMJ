@@ -975,7 +975,7 @@ export class AccountMyAccountComponent implements OnInit {
     if(10>this.list_of_members_ids_by_group[i].length){
       const dialogRef = this.dialog.open(PopupFormComponent, {
         data: {type:"add_artist",id_group:i,members:this.list_of_members_ids_by_group[i],id_admin:this.id_user,pseudo:this.pseudo,group_name:this.list_of_groups_names[index]},
-        panelClass: 'popupUploadPictureClass',
+        panelClass: 'popupAddArtist',
       });
      
     }

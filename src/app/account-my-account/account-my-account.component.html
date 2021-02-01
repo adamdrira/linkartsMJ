@@ -418,7 +418,7 @@
                                 </button>
                               
                                 <button class="validate-form-button" 
-                                *ngIf="(group_in_edition[list_of_groups_ids[i]] && list_of_groups_admins_ids[i]==id_user) || (list_of_groups_admins_ids[i]!=id_user && list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated')"
+                                *ngIf="(group_in_edition[list_of_groups_ids[i]] && list_of_groups_admins_ids[i]==id_user) || ( list_of_members_status_by_group[list_of_groups_ids[i]][list_of_members_ids_by_group[list_of_groups_ids[i]].indexOf(id_user)]!='validated')"
                                 (click)="validate_all(list_of_groups_ids[i])"
                                 [@enterAnimation]>
                                     <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>

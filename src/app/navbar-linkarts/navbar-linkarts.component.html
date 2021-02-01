@@ -266,7 +266,7 @@
                             <div class="name-container block">
                               <div>{{list_of_last_propositions[i].firstname}} {{list_of_last_propositions[i].lastname}}
 
-                                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                <mat-icon *ngIf="list_of_last_propositions[i].certified_account" [ngClass]="{'invisible': !show_icon }"
                                 matTooltip="Compte certifié" 
                                 matTooltipClass='linkarts-tooltip' 
                                 [matTooltipPosition]="'below'"
@@ -376,7 +376,7 @@
                               <div>{{list_of_last_propositions_history[i].firstname}}
                                 {{list_of_last_propositions_history[i].lastname}} 
                               
-                                <mat-icon [ngClass]="{'invisible': !show_icon }"
+                                <mat-icon *ngIf="list_of_last_propositions_history[i].certified_account" [ngClass]="{'invisible': !show_icon }"
                                 matTooltip="Compte certifié" 
                                 matTooltipClass='linkarts-tooltip' 
                                 [matTooltipPosition]="'below'"
@@ -552,7 +552,7 @@
                             <div>
                               {{list_of_friends_names[i]}}
                             </div>
-                            <mat-icon [ngClass]="{'invisible': !show_icon }"
+                            <mat-icon *ngIf="list_of_friends_certifications[i]" [ngClass]="{'invisible': !show_icon }"
                             matTooltip="Compte certifié" 
                             matTooltipClass='linkarts-tooltip' 
                             [matTooltipPosition]="'below'"
@@ -2350,36 +2350,7 @@
                 <div class="notif-size-0" >
                 </div>
               </ng-container>
-              <!--<div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" tabIndex="-1" [matMenuTriggerFor]="options2">
-                <img [src]="profile_picture" (load)="pp_loaded()"
-                  [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
-
-              </div>
-
-             
-              <mat-menu #options2="matMenu" class="navbar-mat-menu">
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_profile()">
-                  <img [src]="profile_picture" (load)="pp_loaded()"
-                    [ngClass]="{'invisible': !pp_is_loaded || !data_retrieved}">
-                  <span>Mon profil</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="really_open_my_account()">
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
-                  <span>Mon compte</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
-                </button>
-                <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>
-                  <span>Se déconnecter</span>
-                </button>
-              </mat-menu>-->
+              
 
             </div>
 
@@ -2427,21 +2398,22 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
+                
+                <a href="/services/0" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+                  <span>Mentions légales</span>
+                </a>
                 <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
                 </a>
                 <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-                  <span>Sécurité et confidentialité</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous ?</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Confidentialité et sécurité</span>
                 </a>
               </mat-menu>
             </div>
@@ -2469,21 +2441,22 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">edit</mat-icon>
                   <span>S'inscrire</span>
                 </button>
+                
+                <a href="/services/0" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+                  <span>Mentions légales</span>
+                </a>
                 <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
                 </a>
                 <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-                  <span>Sécurité et confidentialité</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous ?</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Confidentialité et sécurité</span>
                 </a>
               </mat-menu>
             </div>
@@ -2498,21 +2471,21 @@
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">settings</mat-icon>
                   <span>Mon compte</span>
                 </button>
+                <a href="/services/0" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
+                  <span>Qui sommes-nous ?</span>
+                </a>
+                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
+                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
+                  <span>Mentions légales</span>
+                </a>
                 <a href="/services/2" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">menu_book</mat-icon>
                   <span>Conditions d'utilisation</span>
                 </a>
                 <a href="/services/4" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">security</mat-icon>
-                  <span>Sécurité et confidentialité</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">help</mat-icon>
-                  <span>Qui sommes-nous ?</span>
-                </a>
-                <a href="/services/1" class="navbar-button-menu-item" tabIndex="-1" mat-menu-item>
-                  <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">lock</mat-icon>
-                  <span>Crédits</span>
+                  <span>Confidentialité et sécurité</span>
                 </a>
                 <button class="navbar-button-menu-item" tabIndex="-1" mat-menu-item (click)="logout()">
                   <mat-icon [ngClass]="{'invisible': !show_icon }" class="item-icon">login</mat-icon>

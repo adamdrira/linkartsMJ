@@ -440,6 +440,8 @@ export class AccountComponent implements OnInit {
       this.type_of_profile=s[0].visitor.status;
       this.type_of_profile_retrieved=true;
       
+  
+
       if( user  && this.visitor_id==user.id){
         console.log("visitor data retrieved")
         this.mode_visiteur = false;

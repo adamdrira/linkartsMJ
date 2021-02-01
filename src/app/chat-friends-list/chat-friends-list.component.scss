@@ -548,7 +548,7 @@
                     .right-container {
                         display: flex;
                         flex-direction: column;
-                        justify-content: space-between;
+                        justify-content: space-evenly;
                         text-align: left;
                         width: stretch;
                         max-width: calc( 100% - 60px );
@@ -590,12 +590,12 @@
                             mat-icon {
                                 vertical-align: middle;
                                 display: inline-block;
-                                margin: 1px 0px 0px 2px;
+                                margin: 3px 0px 0px 2px;
                                 color: #00c0d4;
-                                height: 15px;
+                                height: 13px;
                                 overflow: hidden;
                                 width: unset;
-                                font-size: 15px;
+                                font-size: 13px;
                             }
                         }
                         .date-container {

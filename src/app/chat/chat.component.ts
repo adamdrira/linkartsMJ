@@ -221,6 +221,8 @@ export class ChatComponent implements OnInit  {
   current_friend_id:number=-1;
   current_friend_type:string='';
   @Input() friend_pseudo: string;
+  @Input() friend_certification: any;
+  
   @Input() friend_type: string;
   @Input() friend_name: string;
   @Input() friend_picture: SafeUrl;
