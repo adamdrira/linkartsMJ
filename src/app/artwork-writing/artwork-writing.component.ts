@@ -468,7 +468,7 @@ export class ArtworkWritingComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
+    /*this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
       console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -491,7 +491,7 @@ export class ArtworkWritingComponent implements OnInit {
       }
       this.list_of_author_recommendations_drawings_retrieved=true;
       this.check_recommendations();
-    })
+    })*/
     this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -508,9 +508,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   check_recommendations(){
-    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
-      console.log( this.list_of_author_recommendations_comics)
-      console.log( this.list_of_author_recommendations_drawings)
+    if(  this.list_of_author_recommendations_writings_retrieved ){
       console.log( this.list_of_author_recommendations_writings)
       this.list_of_author_recommendations_retrieved=true;
     }
@@ -701,6 +699,7 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   stop(e: Event) {
+    this.add_time_of_view();
     e.preventDefault();
     e.stopPropagation();
   };

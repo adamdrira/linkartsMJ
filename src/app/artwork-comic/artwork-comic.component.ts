@@ -117,6 +117,11 @@ export class ArtworkComicComponent implements OnInit {
     this.add_time_of_view();
   }
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log("back")
+    this.add_time_of_view();
+  }
 
 
   
@@ -432,7 +437,7 @@ export class ArtworkComicComponent implements OnInit {
       this.check_author_recommendations();
     })
 
-    this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+    /*this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,0).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -457,7 +462,7 @@ export class ArtworkComicComponent implements OnInit {
       this.list_of_author_recommendations_writings_retrieved=true;
       
       this.check_author_recommendations();
-    })
+    })*/
   }
 
   first_propositions_retrieved=false;
@@ -467,7 +472,7 @@ export class ArtworkComicComponent implements OnInit {
 
 
   check_author_recommendations(){
-    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
+    if( this.list_of_author_recommendations_comics_retrieved){
       console.log( this.list_of_author_recommendations_comics)
       console.log( this.list_of_author_recommendations_drawings)
       console.log( this.list_of_author_recommendations_writings)
@@ -1049,6 +1054,7 @@ export class ArtworkComicComponent implements OnInit {
   }
 
   stop(e: Event) {
+    this.add_time_of_view();
     e.preventDefault();
     e.stopPropagation();
   };
@@ -1968,13 +1974,20 @@ export class ArtworkComicComponent implements OnInit {
 
   
   add_time_of_view(){
+    console.log("view time added")
     if(this.mode_visiteur){
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && ending_time_of_view>3){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
+        console.log(this.id_view_created)
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
+          console.log(r)
+        });
       }
       if(this.type=='serie' && ending_time_of_view>3){
-        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe();
+        console.log(this.id_view_created)
+        this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
+          console.log(r)
+        });
       }
     }
   }
