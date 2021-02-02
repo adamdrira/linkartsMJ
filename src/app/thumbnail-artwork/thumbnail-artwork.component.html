@@ -216,7 +216,13 @@
                 matTooltipClass='tooltip-thumbnail-artwork' 
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event)"><span>{{style}}</span></a>
+                    (click)="stop($event)">
+                    <span *ngIf="style=='Article'">{{style}}</span>
+                    <span *ngIf="style=='Roman'">{{style}}</span>
+                    <span *ngIf="style=='Poetry'">Poésie</span>
+                    <span *ngIf="style=='Illustrated novel'">Roman illustré</span>
+                    <span *ngIf="style=='Scenario'">Scénario</span>
+                </a>
                 <div class="type-container" *ngIf="subscribing_category=='writing'">
                     <span>{{total_pages_for_writing}}</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">insert_drive_file</mat-icon>
