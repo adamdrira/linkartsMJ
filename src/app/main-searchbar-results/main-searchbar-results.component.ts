@@ -85,11 +85,11 @@ export class MainSearchbarResultsComponent implements OnInit {
   first_filters=[this.first_filters_accounts,this.first_filters_ads,this.first_filters_comics,this.first_filters_drawings,this.first_filters_writings];
 
   comics_tags=["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
-  drawings_tags=["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Motos","Paysage","Portrait",
-  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage"];
-  writings_tags=["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
+  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Voyage","Western","Yaoi","Yuri"];
+  drawings_tags=["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Montagnes","Motos","Nature","Nature morte","Paysage","Personnages","Portrait",
+  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"];
+  writings_tags = ["Action","Animation","Aventure","BD","Caricatural","Comics","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Manga","Nature","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Voyage","Webtoon","Western"];;
   ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
 
 
