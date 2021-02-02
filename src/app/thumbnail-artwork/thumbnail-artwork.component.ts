@@ -391,7 +391,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         if(this.category=="writing"){
           
             this.Writing_Upload_Service.retrieve_writing_information_by_id(this.item.publication_id).subscribe(r=>{
-              //console.log(r[0])
+              console.log(r[0])
               this.file_name = r[0].name_coverpage
               this.title = r[0].title
               this.style = r[0].category
@@ -407,7 +407,14 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = r[0].chaptersnumber
               this.date_upload = r[0].createdAt
               this.data_retrieved=true;
+
               
+              
+              this.Writing_Upload_Service.retrieve_writing_by_name(r[0].file_name).subscribe(r=>{
+                let file = new Blob([r], {type: 'application/pdf'});
+                this.pdfSrc = URL.createObjectURL(file);
+              });
+
               this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
               this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
                 let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -654,6 +661,10 @@ export class ThumbnailArtworkComponent implements OnInit {
           this.date_upload_to_show = get_date_to_show( this.date_in_seconds() );
           
 
+          this.Writing_Upload_Service.retrieve_writing_by_name(this.item.file_name).subscribe(r=>{
+            let file = new Blob([r], {type: 'application/pdf'});
+            this.pdfSrc = URL.createObjectURL(file);
+          });
           
           this.Writing_Upload_Service.retrieve_thumbnail_picture( this.file_name ).subscribe(r=> {
             let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
@@ -811,12 +822,7 @@ export class ThumbnailArtworkComponent implements OnInit {
   show_absolute_cover=true;
   load_pdf() {
     this.show_absolute_cover = false;
-    if( !this.pdfSrc ) {
-      this.Writing_Upload_Service.retrieve_writing_by_name(this.item.file_name).subscribe(r=>{
-        let file = new Blob([r], {type: 'application/pdf'});
-        this.pdfSrc = URL.createObjectURL(file);
-      });
-    }
+    
   };
   close_pdf() {
     this.show_absolute_cover = true;

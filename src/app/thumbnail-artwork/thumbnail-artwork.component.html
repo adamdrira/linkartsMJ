@@ -301,8 +301,7 @@
 
         </div>
 
-        <div class="preview" *ngIf="subscribing_category!='writing' " (mouseenter)="launch_swiper();"
-            (mouseleave)="stop_swiper();">
+        <div class="preview" *ngIf="subscribing_category!='writing' " (mouseenter)="launch_swiper();">
             <div class="hover-to-preview fade-on-hover">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
@@ -322,12 +321,12 @@
                 </div>
             </div>
         </div>
-        <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing' " (mouseleave)="close_pdf();">
+        <div class="preview pdf-document-container" *ngIf="subscribing_category=='writing' " >
             <div class="hover-to-preview" *ngIf="show_absolute_cover" [@leaveAnimation] (mouseenter)="load_pdf();">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>
             </div>
-            <pdf-viewer class="pdf-document" [src]="pdfSrc" [autoresize]="true" [show-all]="true" [original-size]='true'
+            <pdf-viewer *ngIf="pdfSrc" class="pdf-document" [src]="pdfSrc" [autoresize]="true" [page]="1" [show-all]="false" [original-size]='true'
                 [fit-to-page]='true' [render-text]='false' (after-load-complete)="afterLoadComplete($event)">
             </pdf-viewer>
         </div>

@@ -184,7 +184,7 @@
                     </div>
                 </div>
 
-                <div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved">
+                <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 && list_of_author_recommendations_comics_retrieved">
                     <div class="title">Bandes dessinées</div>
                     <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
 
@@ -204,7 +204,7 @@
                         <app-thumbnail-artwork  [item]=item[0] page='subscribings' now_in_seconds={{now_in_seconds}}
                             subscribing_category='writing'></app-thumbnail-artwork>
                     </div>
-                </div>
+                </div>-->
                 
                 <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
                     <div class="no-recommendation">
@@ -693,7 +693,7 @@
                         </div>
                     </div>
     
-                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 ">
+                    <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length>0 ">
                         <div class="title">Bandes dessinées</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
     
@@ -713,7 +713,7 @@
                             <app-thumbnail-artwork  [item]=item[0] page='subscribings' now_in_seconds={{now_in_seconds}}
                                 subscribing_category='writing'></app-thumbnail-artwork>
                         </div>
-                    </div>
+                    </div>-->
                     
                     <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
                         <div class="no-recommendation">

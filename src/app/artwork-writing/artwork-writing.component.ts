@@ -1275,9 +1275,11 @@ afterLoadComplete(pdf: PDFDocumentProxy) {
   console.log(pdf)
   this.total_pages = pdf.numPages;
   this.cd.detectChanges();
+ 
 }
 
 pageRendered(e:any) {
+ 
   if( !this.first_page_rendered ) {
     if( e.source.canvas.width > e.source.canvas.height ) {
       this.page_width = 1080;
@@ -1293,6 +1295,7 @@ pageRendered(e:any) {
     }
     this.first_page_rendered = true;
   }
+  window.dispatchEvent(new Event('resize'));
 
 
 }
