@@ -348,8 +348,8 @@ export class AddWritingComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
 
-  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
+  allGenres: string[] = ["Action","Animation","Aventure","BD","Caricatural","Comics","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Manga","Nature","Philosophie",
+  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Voyage","Webtoon","Western"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
