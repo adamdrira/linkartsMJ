@@ -7,7 +7,6 @@
     min-height: 800px !important;
     background:#182338;
     margin-top: 30px;
-    border-radius: 35px;
     overflow: hidden;
 }
 
@@ -16,10 +15,10 @@
 }
 
 ::ng-deep .element-container.writing {
-
+    padding-left:8px;
     width:100% !important;
     .pdf-document {
-        width:calc(100%);
+        width:calc(100% - 8px);
         height:100%;
         justify-content: center;
     }
@@ -27,13 +26,13 @@
     .ng2-pdf-viewer-container {
         max-height: 800px;
         overflow: auto;
-        padding-top: 35px;
+        padding-top: 8px;
 
         scrollbar-width:thin;
-        scrollbar-color: #2f4d86 #091731;
+        scrollbar-color: #bfc8d5 #182338;
         &::-webkit-scrollbar-track {
             /*background-color: #001640cc;*/
-            background: #091731;
+            background:#182338;
         }
         &::-webkit-scrollbar {
             width: 8px;
@@ -41,7 +40,7 @@
         }
         &::-webkit-scrollbar-thumb {
             /*background-color: #0f1e39;*/
-            background-color: #2f4d86;
+            background-color: #bfc8d5;
             border-radius: 20px;
         }
     }
