@@ -915,6 +915,12 @@ export class ArtworkDrawingComponent implements OnInit {
     }
   }
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log("back")
+    this.add_time_of_view();
+  }
+
   see_description() {
     
     this.dialog.open(PopupArtworkDataComponent, {

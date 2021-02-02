@@ -704,6 +704,11 @@ export class ArtworkWritingComponent implements OnInit {
     e.stopPropagation();
   };
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log("back")
+    this.add_time_of_view();
+  }
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
