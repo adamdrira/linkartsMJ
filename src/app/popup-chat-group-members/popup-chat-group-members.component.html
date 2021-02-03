@@ -1,19 +1,66 @@
 
-<div class="component-container">
+<div class="component-popupchatgroupmembers-container">
+    
+    <div class="title">
+        <span *ngIf="!is_for_emojis">Membres du groupe</span>
+        <span *ngIf="is_for_emojis">Liste des réactions</span>
 
-    <div class="title" *ngIf="!is_for_emojis">
-        <span>
-            Membres du groupes
-        </span>
+        <button class="close-button" [mat-dialog-close]="true">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
+
+
+
+    <div class="subscribers-container" *ngIf="list_of_ids.length>0" [@enterAnimation]>
+        <div *ngFor="let item of list_of_ids; let i=index" class="subscriber-card">
+            
+            <!--********************-->
+            <!--Author container-->
+            <!--********************-->
+            <div class="subscriber">
+                <div class="user-container">
+                    
+                    <a [routerLink]=get_user_link(i) (click)="close_dialog();">
+                        <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
+                            <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
+                        </div>
+                    </a>
+                    <a [routerLink]=get_user_link(i) (click)="close_dialog();">
+                        <div class="right-container">
+                            
+                            <span class="author-name">
+                                <div>{{list_of_names}}</div>
+                            </span>
+                            <span class="user-description">@{{list_of_pseudos[i]}}</span>
+                        </div>
+                    </a>
+
+                    <div class="emoji-reaction-content-center" *ngIf="is_for_emojis">
+                        <ngx-emoji 
+                        useButton="true"
+                        set="apple"
+                        emoji="{{list_of_emojis[item]}}"
+                        size="30"
+                        ></ngx-emoji>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="component-container">
+
 
     <div class="subscribers-container">
         <div *ngFor="let item of list_of_ids; let i=index" class="subscriber-card">
 
 
-            <!--********************-->
-            <!--Author container-->
-            <!--********************-->
+            
             <div class="author-container">
                 <div class="left-container">
                     <img [src]="list_of_pictures[i]" (load)="load_pp(i)" [ngClass]="{'invisible':!list_of_pp_laoded[i]}">
@@ -43,4 +90,4 @@
 
 
 
-</div>
+</div>-->

@@ -1,14 +1,19 @@
 <div class="navbar-component">
 
- 
+  <img src="../../assets/img/svg/home.svg" class="hidden-img">
+  <img src="../../assets/img/svg/friends.svg" class="hidden-img">
+  <img src="../../assets/img/svg/star.svg" class="hidden-img">
+  <img src="../../assets/img/svg/trendings.svg" class="hidden-img">
+  <img src="../../assets/img/svg/friends1.svg" class="hidden-img">
+  <img src="../../assets/img/svg/love.svg" class="hidden-img">
+  
 
   <div class="fixed-top" *ngIf="navbar.visible"
     [ngClass]="{'navbarBoxShadow': navbarBoxShadow}">
 
-
-
     <!--Navbar : ligne 1 : logo / searchbar / icones-->
     <div class="navbar-container">
+
       <nav class="navbar first-navbar"
         [ngClass]="{'invisible': !logo_is_loaded, 'connected-user': type_of_profile=='account' || type_of_profile=='suspended', 'disconnected-user': type_of_profile!='account' && type_of_profile!='suspended'}">
 
@@ -118,7 +123,7 @@
             </a>-->
             
             <a (click)="activate_search();">
-              <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">search</mat-icon>
+              <mat-icon [ngClass]="{'invisible': !show_icon, 'invisible2': !logo_is_loaded2}" class="optionsButton">search</mat-icon>
             </a>
           </div>
 
@@ -497,7 +502,11 @@
 
             <div #chat class="icon-container  none-for-phone" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
               <div class="icon icon-messenger" (click)="open_messages()"
-                [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"></div>
+                [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"
+                matTooltip="Messagerie" 
+                matTooltipClass='linkarts-tooltip' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200"></div>
               <ng-container *ngIf="number_of_unseen_messages>0">
 
                 <div #number_of_notifs [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved || !using_chat_retrieved || using_chat,
@@ -814,10 +823,10 @@
                             </div>
 
                             <div *ngIf="!list_of_friends_last_message[i].date" class="date-container">
-                              - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
+                              • {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
                             </div>
                             <div *ngIf="list_of_friends_last_message[i].date" class="date-container">
-                              - {{list_of_friends_last_message[i].date}}
+                              • {{list_of_friends_last_message[i].date}}
                             </div>
 
                           </div>
@@ -842,7 +851,11 @@
 
             <div #notifications class="icon-container none-for-phone" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}">
               <div class="icon icon-bell" (click)="open_notifications() "
-                [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}">
+                [ngClass]="{ 'invisible': !pp_is_loaded || !data_retrieved}"
+                matTooltip="Notifications" 
+                matTooltipClass='linkarts-tooltip' 
+                [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="200">
               </div>
               <ng-container *ngIf="number_of_unchecked_notifications>0">
                 <div [ngClass]="{ 'invisible':!pp_is_loaded || !data_retrieved || !using_chat_retrieved ,
@@ -915,7 +928,7 @@
                             </div>
                           </div>
                           <div class="right-container">
-                            <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour.</span>
+                            <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour</span>
                           
                             <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                           </div>
@@ -2337,7 +2350,7 @@
               <span [ngClass]="{'invisible': !data_retrieved}">Mon profil</span>
             </a>
 
-            <div class="profile-container SMALL-SCREEN-PP">
+            <div class="profile-container SMALL-SCREEN-PP" [ngClass]="{'invisible2': !logo_is_loaded2}">
 
               <div class="profile-picture" [ngClass]="{ 'shiny': !pp_is_loaded || !data_retrieved}" (click)="open_menu_for_phone()">
                 <img [src]="profile_picture" (load)="pp_loaded()"
@@ -2420,11 +2433,11 @@
 
             <div class="options SMALL-SCREEN-OPTIONS"   
               *ngIf="type_of_profile!='account' && type_of_profile!='suspended' && !activated_search">
-              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options2">
+              <button mat-icon-button class="optionsMenu" tabIndex="-1" [matMenuTriggerFor]="options">
                 <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more more_vert ">more_vert</mat-icon>
-                <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton more menu">menu</mat-icon>
+                <mat-icon [ngClass]="{'invisible': !show_icon, 'invisible2': !logo_is_loaded2 }" class="optionsButton more menu">menu</mat-icon>
               </button>
-              <mat-menu #options2="matMenu" class="navbar-mat-menu">
+              <mat-menu #options="matMenu" class="navbar-mat-menu">
                 <button   class="navbar-button-menu-item menu" tabIndex="-1" mat-menu-item (click)="go_to_home()">
                   <div class="icon-home"></div>
                 <span>Accueil</span>
@@ -2522,7 +2535,7 @@
        
       </div>
       <div class="buttons-container">
-        <div class="first-button equal-width" (click)="agree_on_cookies()">
+        <div class="first-button" (click)="agree_on_cookies()">
           Ok
         </div>
         <a class="first-button large-screen" href="/services/3"> 

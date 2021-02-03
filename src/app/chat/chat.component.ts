@@ -2996,6 +2996,7 @@ display_members_of_the_group(){
             console.log(list_of_names);
             const dialogRef = THIS.dialog.open(PopupChatGroupMembersComponent, {
               data: {is_for_emojis:false,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
+              panelClass:"popupChatGroupMembersClass"
             });
             THIS.displaying_members_of_the_group=false;
           }
@@ -3007,7 +3008,7 @@ display_members_of_the_group(){
 }
 
 
-emojis_loading=false;
+emojis_loading:boolean=false;
 see_emoji_reaction_by_user(id_message){
 
   if(this.emojis_loading){
@@ -3051,8 +3052,9 @@ see_emoji_reaction_by_user(id_message){
               console.log(list_of_names);
               const dialogRef = THIS.dialog.open(PopupChatGroupMembersComponent, {
                 data: {is_for_emojis:true,list_of_emojis:list_of_emojis,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
+                panelClass:"popupChatGroupMembersClass"
               });
-              this.emojis_loading=false;
+              THIS.emojis_loading=false;
             }
           }
         }

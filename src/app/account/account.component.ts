@@ -32,6 +32,7 @@ import { NotificationsService } from '../services/notifications.service';
 import { Ads_service } from '../../app/services/ads.service'
 import { trigger, transition, style, animate } from '@angular/animations';
 
+import {LoginComponent} from '../login/login.component';
 
 
 declare var Muuri:any;
@@ -1142,7 +1143,15 @@ export class AccountComponent implements OnInit {
 
 
   open_chat_link() {
-    this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.user_id);
+    if(this.type_of_profile!='visitor') {
+      this.router.navigateByUrl('/chat/'+ this.pseudo +'/'+ this.user_id);
+    }
+    else {
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
+      });
+    }
   }
   get_add_artwork_link() {
     return "/add-artwork";
@@ -1556,6 +1565,7 @@ export class AccountComponent implements OnInit {
   
   loading_subscribtion=false;
   subscribtion(){
+    
     if(this.type_of_profile=='account' ){
       if(this.loading_subscribtion){
         return
@@ -1628,12 +1638,11 @@ export class AccountComponent implements OnInit {
       }
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
-  
   }
 
   /************************************************ */

@@ -19,7 +19,11 @@
 
                 <div #chat class="icon-container" *ngIf="using_chat_retrieved && !using_chat">
                     <div class="icon icon-messenger" (click)="open_messages()"
-                      [ngClass]="{ 'invisible':  !data_retrieved}"></div>
+                      [ngClass]="{ 'invisible':  !data_retrieved}"
+                      matTooltip="Messagerie" 
+                      matTooltipClass='linkarts-tooltip' 
+                      [matTooltipPosition]="'below'"
+                      [matTooltipShowDelay]="200"></div>
                     <ng-container *ngIf="number_of_unseen_messages>0">
             
                       <div #number_of_notifs [ngClass]="{ 'invisible':  using_chat,
@@ -39,12 +43,16 @@
                       
                     </ng-container>
                    
-                </div>
+                </div>*
 
 
                 <div #notifications class="icon-container">
                     <div class="icon icon-bell" (click)="open_notifications() "
-                      [ngClass]="{ 'invisible': !data_retrieved}">
+                      [ngClass]="{ 'invisible': !data_retrieved}"
+                      matTooltip="Notifications" 
+                      matTooltipClass='linkarts-tooltip' 
+                      [matTooltipPosition]="'below'"
+                      [matTooltipShowDelay]="200">
                     </div>
                     <ng-container *ngIf="number_of_unchecked_notifications>0">
                       <div [ngClass]="{ 
@@ -175,7 +183,7 @@
                               </div>
                             </div>
                             <div class="right-container">
-                              <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour.</span>
+                              <span><b>Bravo !</b> Vous avez atteint le top <b>{{notif.chapter_number}}</b> des coups de coeur du jour</span>
                             
                               <span class="notification-date">{{list_of_notifications_dates[i]}}</span>
                             </div>
@@ -1883,10 +1891,10 @@
                             </div>
             
                             <div *ngIf="!list_of_friends_last_message[i].date" class="date-container">
-                              - {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
+                              • {{show_date_of_timestamp(list_of_friends_last_message[i],i)}}
                             </div>
                             <div *ngIf="list_of_friends_last_message[i].date" class="date-container">
-                              - {{list_of_friends_last_message[i].date}}
+                              • {{list_of_friends_last_message[i].date}}
                             </div>
             
                           </div>

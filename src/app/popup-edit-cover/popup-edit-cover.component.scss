@@ -145,7 +145,7 @@ $default-color: rgb(218,220,225);
                     width: 20px !important;
                     font-size: 22px !important;
                     max-width:22px !important;
-          overflow: hidden;
+                    overflow: hidden;
                     margin: auto 10px auto auto !important;
                 }
                 span {
@@ -153,6 +153,9 @@ $default-color: rgb(218,220,225);
                     font-size: 18px !important;
                     font-weight: 600 !important;
                     margin: auto auto auto 0px !important;
+                }
+                mat-spinner circle {
+                  stroke: rgb(255, 255, 255) !important;
                 }
                 &:hover {
                     background: #2a4575 !important;

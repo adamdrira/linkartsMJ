@@ -215,5 +215,7 @@ export class PopupSubscribersComponent implements OnInit {
   load_pp(i){
     this.pp_is_loaded[i]=true;
   }
-
+  close_dialog() {
+    this.dialogRef.close();
+  }
 }

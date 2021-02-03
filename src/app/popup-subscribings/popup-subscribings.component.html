@@ -31,12 +31,12 @@
             <ng-container *ngIf="list_of_subscribings_information[i]">
                 <div class="subscriber">
                     <div class="user-container">
-                        <a [routerLink]=get_user_link(i)>
+                        <a [routerLink]=get_user_link(i) (click)="close_dialog();">
                             <div class="left-container"  [ngClass]="{'shiny':!pp_is_loaded[i]}">
                                 <img [src]="list_of_profile_pictures[i]" (load)="load_pp(i)"  [ngClass]="{ 'invisible':!pp_is_loaded[i]}">
                             </div>
                         </a>
-                        <a [routerLink]=get_user_link(i)>
+                        <a [routerLink]=get_user_link(i) (click)="close_dialog();">
                             <div class="right-container">
                                 
                                 

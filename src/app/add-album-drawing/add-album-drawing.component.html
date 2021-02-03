@@ -1,4 +1,4 @@
-<div class="add-album-drawing-container">
+<div class="add-album-drawing-container" [@enterAnimation]>
         
     <div class="form-container">
         <form [formGroup]="albumForm" novalidate>
@@ -86,9 +86,9 @@
     </div>
 
 
-    <button class="submit-button" (click)="get_solution();" [disabled]="loading">
+    <button class="submit-button style1" (click)="get_solution();" [disabled]="loading">
         <mat-icon [ngClass]="{'invisible': !show_icon }"  *ngIf="!loading">done_all</mat-icon>
-        <span  *ngIf="!loading">Valider</span>
+        <span *ngIf="!loading">Valider</span>
         <mat-spinner *ngIf="loading" diameter="25"  style="margin:auto;"></mat-spinner>
     </button>
     

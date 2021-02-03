@@ -394,7 +394,7 @@ export class AddComicComponent implements OnInit {
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
   allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Voyage","Western","Yaoi","Yuri"];
+  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

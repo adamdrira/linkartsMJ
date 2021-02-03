@@ -73,9 +73,14 @@
         </div>
 
                 
-        <button class="validate-button" *ngIf="!validated_chapter && !disabled" (click)="validateAll();">
-            <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
-            <span>Valider ce chapitre</span>
+        <button #validateButton class="validate-button style0" *ngIf="!validated_chapter && !disabled" (click)="validateAll();">
+            <ng-container *ngIf="!display_loading">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
+                <span>Valider ce chapitre</span>
+            </ng-container>
+            <ng-container *ngIf="display_loading">
+                <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+            </ng-container>
         </button>
         
 

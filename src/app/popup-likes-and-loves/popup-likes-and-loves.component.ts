@@ -225,6 +225,9 @@ export class PopupLikesAndLovesComponent implements OnInit {
   get_user_link(i:number) {
     return "/account/"+ this.list_of_users_information[i].nickname +"/"+ this.list_of_users_ids[i];
   }
+  close_dialog() {
+    this.dialogRef.close();
+  }
   
   stop(e: Event) {
     e.preventDefault();

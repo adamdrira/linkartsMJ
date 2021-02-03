@@ -251,8 +251,6 @@
         height: 60px;
         outline: none !important;
         text-align: center !important;
-        box-shadow: 0px 0px 4px rgb(71, 111, 183) !important;
-        background-image: linear-gradient(0.02turn, rgb(128,145,184), rgb(72,95,137), rgb(129,146,185)) !important;
         border-radius: 40px;
         mat-icon {
             width:unset;
@@ -266,11 +264,8 @@
         span {
             margin:auto auto auto 0px;
             color:white;
-            font-weight:bold;
+            font-weight:600;
             font-size: 20px;
-        }
-        &:hover {
-            background-image: linear-gradient(0.02turn, rgb(115, 132, 172), rgb(61, 83, 124), rgb(111, 127, 167)) !important;
         }
     }
 

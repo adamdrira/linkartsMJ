@@ -25,7 +25,7 @@
         </div>
 
         <div class="subscribers-container" *ngIf="subscribtion_info_added" [@enterAnimation]>
-            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card">
+            <a [routerLink]=get_user_link(i) *ngFor="let item of list_of_users_information; let i=index" class="subscriber-card" (click)="close_dialog();">
                 
                 <!--********************-->
                 <!--Author container-->

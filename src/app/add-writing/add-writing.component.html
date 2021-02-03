@@ -165,7 +165,7 @@
             </div>
 
             
-            <button #nextButton mat-raised-button class="submit-button style1" (click)="validateForm00()">
+            <button #nextButton class="submit-button style1" (click)="validateForm00()">
                 <span>Suivant</span>
             </button>
 
@@ -206,7 +206,7 @@
 
 
         
-        <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_writing();" >
+        <button #validateButton class="submit-button-with-done-all style1" (click)="validate_form_writing();" >
             <ng-container *ngIf="!display_loading">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                 <span>Valider </span>

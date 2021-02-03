@@ -210,5 +210,8 @@ export class PopupSubscribingsComponent implements OnInit {
   get_user_link(i:number) {
     return "/account/"+ this.list_of_subscribings_information[i].nickname +"/"+ this.list_of_subscribings_information[i].id;
   }
+  close_dialog() {
+    this.dialogRef.close();
+  }
 
 }

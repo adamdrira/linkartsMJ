@@ -334,10 +334,14 @@ export class SwiperUploadSerieComponent implements OnInit {
 
 
 
+  @ViewChild('validateButton', { read: ElementRef }) validateButton:ElementRef;
+  display_loading=false;
 
 
   validateAll() {
     
+    this.validateButton.nativeElement.disabled = true;
+
     if( !this.validated_chapter ) {
       
       let errorMsg : string = "La ou les pages suivantes n'ont pas été téléchargées : "
@@ -348,6 +352,7 @@ export class SwiperUploadSerieComponent implements OnInit {
           errorMsg = errorMsg + (step+1) + ", ";
           valid = false;
         }
+      this.validateButton.nativeElement.disabled = false;
       }
 
       if(!valid) {
@@ -356,13 +361,16 @@ export class SwiperUploadSerieComponent implements OnInit {
           data: {showChoice:false, text:errorMsg},
           panelClass: "popupConfirmationClass",
         });
+        this.validateButton.nativeElement.disabled = false;
       }
       else {
+        this.display_loading=true;
         for (let step = 0; step < this.componentRef.length; step++) {
           this.componentRef[ step ].instance.total_pages = this.componentRef.length;
           this.componentRef[ step ].instance.upload = true;
           this.componentRef[ step ].instance.sendValidated.subscribe( v => {
               console.log("received validated")
+              this.display_loading=false
               this.validated.emit();
               this.validated_chapter=true;
           });

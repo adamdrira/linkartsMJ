@@ -229,7 +229,7 @@
                 </div>
 
                 
-                <button #validateButton mat-raised-button class="submit-button-with-done-all style1" (click)="validate_form_ads();">
+                <button #validateButton class="submit-button-with-done-all style1" (click)="validate_form_ads();">
                     <ng-container *ngIf="!display_loading">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
                         <span>Valider </span>

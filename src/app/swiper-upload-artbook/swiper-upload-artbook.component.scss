@@ -65,24 +65,6 @@
 }
 
 
-.form-container-data .img-container .buttons-container {
-  display:flex;
-  justify-content: center;
-}
-
-.form-container-data .img-container .buttons-container button {
-  display: flex;
-  outline: none;
-}
-
-.form-container-data .img-container .buttons-container button.style1 mat-icon {
-  margin: auto 5px auto 10px;
-  color: white;
-  font-size: 25px;
-  width:unset !important;
-  height:unset !important;
-}
-
 .form-container-data .img-preview {
   display:flex;
   width:200px !important;

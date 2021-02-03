@@ -866,6 +866,7 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //for navbar extension
   cancel_search(){
+    this.logo_is_loaded2=false;
     this.activated_search=false;
   }
   

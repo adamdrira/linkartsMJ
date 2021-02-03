@@ -39,8 +39,9 @@ export class PopupChatGroupMembersComponent implements OnInit {
   list_of_emojis=(this.data.is_for_emojis)?this.data.list_of_emojis:{};
   list_of_pseudos=this.data.list_of_pseudos;
   list_of_names=this.data.list_of_names;
-  list_of_pictures=this.data.list_of_pictures;
-  list_of_pp_laoded=[];
+  list_of_profile_pictures=this.data.list_of_pictures;
+  pp_is_loaded=[];
+
 
   ngOnInit(): void {
     
@@ -49,7 +50,13 @@ export class PopupChatGroupMembersComponent implements OnInit {
 
   load_pp(i){
    
-    this.list_of_pp_laoded[i]=true;
+    this.pp_is_loaded[i]=true;
   }
 
+  get_user_link(i:number) {
+    return "/account/"+ this.list_of_pseudos[i] +"/"+ this.list_of_ids[i];
+  }
+  close_dialog() {
+    this.dialogRef.close();
+  }
 }

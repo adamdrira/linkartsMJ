@@ -271,7 +271,7 @@
             <div #buttonSection>
                 <button *ngIf="!my_profile_is_suspended" [ngClass]="{'opened': opened_section == 0 }" (click)="open_section(0,true);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
-                    <span>Accueil</span>
+                    <span>Mon accueil</span>
                 </button>
             </div>
             <div #buttonSection>
@@ -335,7 +335,7 @@
                     <mat-select-trigger>
                         <ng-container *ngIf="opened_section==0">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
-                            <span>Accueil</span>
+                            <span>Mon accueil</span>
                         </ng-container>
                         <ng-container *ngIf="opened_section==1">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
@@ -375,7 +375,7 @@
 
                     <mat-option [value]="0" *ngIf="!my_profile_is_suspended">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">home</mat-icon>
-                        <span>Accueil</span>
+                        <span>Mon accueil</span>
                     </mat-option>
                     <mat-option [value]="1" *ngIf="!my_profile_is_suspended">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">palette</mat-icon>
@@ -742,10 +742,13 @@
                                                     <span>{{list_titles_albums_bd[opened_album_selector]}}</span>
                                             </mat-select-trigger>
                                             
-                                            <mat-option  *ngFor="let item of list_titles_albums_bd; let j=index" [value]="j">
-                                                <span>{{ item }}</span>
-                                            </mat-option>
-
+                                            <ng-container *ngFor="let item of list_titles_albums_bd; let j=index">
+                                                <ng-container *ngIf="!(j==1 && list_bd_oneshot.length==0) && !(j==2 && list_bd_series.length==0)">
+                                                    <mat-option *ngIf="!mode_visiteur || (mode_visiteur && (3>j || (list_albums_bd[j-3] && list_albums_bd[j-3].length>0) ) && list_bd_albums_status[j-1]!='hidden' && list_bd_albums_status[j-1]!='private')" [value]="j">
+                                                        <span>{{item}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </ng-container>
                                             
                                             
                                         </mat-select>
@@ -841,10 +844,14 @@
                                             <mat-select-trigger>
                                                     <span>{{list_titles_albums_drawings[opened_album_selector]}}</span>
                                             </mat-select-trigger>
-                                            
-                                            <mat-option  *ngFor="let item of list_titles_albums_drawings; let j=index" [value]="j">
-                                                <span>{{ item }}</span>
-                                            </mat-option>
+
+                                            <ng-container *ngFor="let item of list_titles_albums_drawings; let j=index">
+                                                <ng-container *ngIf="!(j==1 && list_drawings_onepage.length==0) && !(j==2 && list_drawings_artbook.length==0)">
+                                                    <mat-option *ngIf="!mode_visiteur || (mode_visiteur && (3>j || (list_albums_drawings[j-3] && list_albums_drawings[j-3].length>0) ) && list_drawing_albums_status[j-1]!='hidden' && list_drawing_albums_status[j-1]!='private')" [value]="j">
+                                                        <span>{{item}}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </ng-container>
 
                                             
                                             
@@ -935,9 +942,11 @@
                                                     <span>{{list_titles_albums_writings[opened_album_selector]}}</span>
                                             </mat-select-trigger>
                                             
-                                            <mat-option  *ngFor="let item of list_titles_albums_writings; let j=index" [value]="j">
-                                                <span>{{ item }}</span>
-                                            </mat-option>
+                                            <ng-container *ngFor="let item of list_titles_albums_writings; let j=index">
+                                                <mat-option *ngIf="!mode_visiteur || (mode_visiteur && (1>j || (list_albums_writings[j-1] && list_albums_writings[j-1].length>0) ) && list_writings_albums_status[j-1]!=='hidden' && list_writings_albums_status[j-1]!=='private')" [value]="j">
+                                                    <span>{{item}}</span>
+                                                </mat-option>
+                                            </ng-container>
 
                                             
                                             
