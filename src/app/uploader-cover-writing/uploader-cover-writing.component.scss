@@ -5,10 +5,6 @@
 @import '../../thumbnail-writing-styles.scss';
 
 
-.loading_thumbnail{
-  background:#101c32 !important;
-}
-
 .comic-container {
     overflow:hidden;
   }
@@ -133,7 +129,7 @@
     transition:opacity 200ms;
   }
   
-  
+
 .buttons-container {
   display: flex;
   flex-direction: column;
@@ -148,10 +144,6 @@
   margin: 10px 0px;
   width: 100%;
   padding: 8px;
-  border-radius:40px;
-  border: 1px solid rgb(32,56,100);
-  color:rgb(32,56,100);
-  background: white;
   outline:none;
   mat-icon {
     width:unset;
@@ -168,16 +160,6 @@
     font-weight: 600;
   }
 }
-.buttons-container .button:hover {
-    background:#eeeff3;
-    box-shadow:0px 0px 0px 1px rgb(32,56,100);
-}
-.buttons-container .button:active {
-    background: #e2e5eb;
-    box-shadow:0px 0px 0px 1px rgb(32,56,100);
-}
-
-  
 
 .swiper-categories {
   position:relative;

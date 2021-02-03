@@ -170,7 +170,7 @@
             <mat-icon [ngClass]="{'invisible': !show_icon }">refresh</mat-icon>
             <span class="">Recommencer</span>
         </button>
-        <button class="button style1" [ngClass]="{'loading_thumbnail':cover_loading}" (click)="validate()"
+        <button class="button style0" (click)="validate()"
             [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess || cover_loading">
             <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!cover_loading">done</mat-icon>
             <span *ngIf="!cover_loading">Valider</span>
