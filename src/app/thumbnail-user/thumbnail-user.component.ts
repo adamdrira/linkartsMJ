@@ -121,7 +121,7 @@ export class ThumbnailUserComponent implements OnInit {
        
       });
 
-      this.Subscribing_service.get_all_subscribings_by_user_id(this.user_id).subscribe(information=>{
+      this.Subscribing_service.get_all_subscribed_users(this.user_id).subscribe(information=>{
         this.subscribers_number= information[0].length;
         this.subscribtion_retrieved=true;
         if(this.date_retrieved && this.number_of_contents_retrieved && this.subscribtion_retrieved){
