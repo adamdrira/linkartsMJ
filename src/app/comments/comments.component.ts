@@ -401,6 +401,7 @@ export class CommentsComponent implements OnInit {
   
   signup(){
     const dialogRef = this.dialog.open(SignupComponent, {
+      data:{for_group_creation:false},
       panelClass:"signupComponentClass"
     });
   }
