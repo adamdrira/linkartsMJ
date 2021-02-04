@@ -1,4 +1,12 @@
 //code propre
+.icon-messenger-invisible{
+    visibility: hidden;
+    pointer-events: none;
+    width: 0px !important;
+    height: 0px !important;
+    mask: url("../../assets/img/svg/send3.svg") no-repeat 50% 50%;
+}
+
 .main-chat-container {
     display:flex;
     position:relative;

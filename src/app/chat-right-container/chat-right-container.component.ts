@@ -133,11 +133,11 @@ export class ChatRightContainerComponent implements OnInit {
   total_size_of_files:any[]=[];
   total_size_of_pictures:any[]=[];
   ngOnChanges(changes: SimpleChanges) {
-    console.log("changements right compt")
-    console.log(changes)
+    //console.log("changements right compt")
+    //console.log(changes)
     if(this.change_number>0){
       if(this.current_friend_id!=this.friend_id || this.friend_type!= this.current_friend_type){
-        console.log("loading new files");
+        //console.log("loading new files");
         this.current_friend_type=this.friend_type;
         this.current_friend_id=this.friend_id;
         this.list_of_files_retrieved=false;
@@ -145,13 +145,13 @@ export class ChatRightContainerComponent implements OnInit {
         this.total_size_of_pictures=[];
        
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
-          console.log(l[0][0])
+          //console.log(l[0][0])
           this.total_size_of_files[0]=Number(l[0][0].total);
          
         })
 
         this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-          console.log(r[0][0])
+          //console.log(r[0][0])
           this.total_size_of_pictures[0]=Number(r[0][0].total);
           //this.get_files_and_pictures(this.id_chat_section);
         })
@@ -159,17 +159,17 @@ export class ChatRightContainerComponent implements OnInit {
         this.change_number=0;
       }
       if(this.current_id_chat_section!=this.id_chat_section){
-        console.log(this.total_size_of_files)
+        //console.log(this.total_size_of_files)
         this.total_size_of_files=[];
         this.total_size_of_pictures=[];
         this.current_id_chat_section=this.id_chat_section;
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
-          console.log(Number(l[0][0].total))
+          //console.log(Number(l[0][0].total))
           this.total_size_of_files[0]=Number(l[0][0].total);
          
         })
         this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-          console.log(r[0][0])
+          //console.log(r[0][0])
           this.total_size_of_pictures[0]=Number(r[0][0].total);
           //this.get_files_and_pictures(this.id_chat_section);
         })
@@ -196,12 +196,12 @@ export class ChatRightContainerComponent implements OnInit {
     this.current_id_chat_section=this.id_chat_section;
     this.current_friend_id=this.friend_id;
     this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
-      console.log(l[0][0])
+      //console.log(l[0][0])
       this.total_size_of_files[0]=Number(l[0][0].total);
       
     })
     this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-      console.log(r[0][0])
+      //console.log(r[0][0])
       this.total_size_of_pictures[0]=Number(r[0][0].total);
       
     })
@@ -211,15 +211,15 @@ export class ChatRightContainerComponent implements OnInit {
       if(this.panelOpenState_0||this.panelOpenState_1){
         if(this.myScrollContainer.nativeElement.scrollTop>=(this.myScrollContainer.nativeElement.scrollHeight-this.myScrollContainer.nativeElement.getBoundingClientRect().height)*0.7 ){
           if(this.panelOpenState_0 && this.can_get_other_files){
-            console.log(3);
+            //console.log(3);
             this.show_scroll_files=true;
             this.chatService.get_all_files(this.date_of_last_file,this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-              console.log(r);
+              //console.log(r);
               if(r[0][0]){
                 this.list_of_files=this.list_of_files.concat(r[0]);
                 let length =this.list_of_files_src.length;
-                console.log(r[0]);
-                console.log(this.list_of_files)
+                //console.log(r[0]);
+                //console.log(this.list_of_files)
                 let compt=0;
                   for(let i=0;i<r[0].length;i++){
                     //this.total_size_of_files[0]+=Number(r[0][i].size);
@@ -249,15 +249,15 @@ export class ChatRightContainerComponent implements OnInit {
           }
 
           if(this.panelOpenState_1 && this.can_get_other_pictures){
-            console.log(3);
+            //console.log(3);
             this.show_scroll_pictures=true;
             this.chatService.get_all_pictures(this.date_of_last_picture,this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-              console.log(r);
+              //console.log(r);
               if(r[0][0]){
                 this.list_of_pictures=this.list_of_pictures.concat(r[0]);
                 let length =this.list_of_pictures_src.length;
-                console.log(r[0]);
-                console.log(this.list_of_pictures)
+                //console.log(r[0]);
+                //console.log(this.list_of_pictures)
                 let compt=0;
                   for(let i=0;i<r[0].length;i++){
                     //this.total_size_of_pictures[0]+=Number(r[0][i].size);
@@ -300,12 +300,12 @@ export class ChatRightContainerComponent implements OnInit {
         this.list_of_files_src=[];
         this.list_of_pictures_src=[];
         this.chatService.get_size_of_files(this.friend_id,this.id_chat_section,this.friend_type).subscribe(l=>{
-          console.log(l[0][0])
+          //console.log(l[0][0])
           this.total_size_of_files[0]=Number(l[0][0].total);
           
         })
         this.chatService.get_size_of_pictures(this.friend_id,this.id_chat_section,this.friend_type).subscribe(r=>{
-          console.log(r[0][0])
+          //console.log(r[0][0])
           this.total_size_of_pictures[0]=Number(r[0][0].total);
          
         })
@@ -318,7 +318,7 @@ export class ChatRightContainerComponent implements OnInit {
   
 
   get_files_and_pictures(id_chat_section){
-    console.log("get_files_and_pictures")
+    //console.log("get_files_and_pictures")
     this.chatService.get_all_files("now",this.friend_id,id_chat_section,this.friend_type).subscribe(l=>{
       this.list_of_files=l[0];
       let compt=0;
@@ -399,8 +399,8 @@ export class ChatRightContainerComponent implements OnInit {
   /********************************************* SHOW IMAGES *****************************************/
 
   show_images(indice){
-    console.log(indice)
-    console.log(this.list_of_pictures)
+    //console.log(indice)
+    //console.log(this.list_of_pictures)
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:this.list_of_pictures_src,index_of_picture:indice},      
       panelClass:"popupDocumentClass",

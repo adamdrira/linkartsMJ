@@ -4,7 +4,7 @@
   <div class="display-flex" *ngIf="spam=='false'">
 
     <button (click)="arrow_back();" class="arrow-back" [@enterAnimation]>
-      <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+      <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
     </button>
 
     <button [matMenuTriggerFor]="artworkOptions" [@enterAnimation]>

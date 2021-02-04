@@ -1,5 +1,6 @@
-<div class="chat-container">
+<div class="chat-container" >
 
+    
     <div class="main-left-container">
 
 
@@ -14,7 +15,7 @@
             <div class="display-flex">
                 
                 <button (click)="arrow_back();" class="arrow-back" [@enterAnimation]>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">arrow_back</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
                 </button>
 
                 <ng-container *ngIf="friend_type=='user'">
@@ -372,7 +373,7 @@
                                         'my-bottom-message': (list_of_messages[list_of_messages.length- i] && list_of_messages[list_of_messages.length- i-2] && current_user_id!=list_of_messages[list_of_messages.length- i-2].id_user && current_user_id==list_of_messages[list_of_messages.length- i].id_user)
                                             || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && current_user_id==list_of_messages[list_of_messages.length- i].id_user) }">
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response"
-                                        class="response-content"
+                                        class="response-content text-with-line-break"
                                         (click)="show_response(list_of_messages.length -1 - i)">
                                             {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
                                     </div>
@@ -403,7 +404,7 @@
                                         </div>
                                         <span style="color: darkgrey;padding: 0px 5px 0px 5px;">2</span>
                                     </div>
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
+                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
                                         {{list_of_messages[list_of_messages.length -1 - i].message}}
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
@@ -524,7 +525,7 @@
                                         || ( !list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2]
                                         )}">
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response"
-                                        class="response-content"
+                                        class="response-content text-with-line-break"
                                         (click)="show_response(list_of_messages.length -1 - i)">
                                             {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
                                     </div>
@@ -559,7 +560,7 @@
                                     </div>
 
 
-                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
+                                    <div *ngIf="!list_of_messages[list_of_messages.length -1 - i].is_an_attachment" class="text-with-line-break">
                                         {{list_of_messages[list_of_messages.length -1 - i].message}}
                                     </div>
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_an_attachment">
@@ -895,7 +896,7 @@
 
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response"
-                                        class="response-content"
+                                        class="response-content text-with-line-break"
                                         (click)="show_response(list_of_messages.length -1 - i)">
                                             {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
                                     </div>
@@ -1097,7 +1098,7 @@
                                             || (list_of_messages[list_of_messages.length- i] && !list_of_messages[list_of_messages.length- i-2] && list_of_messages[list_of_messages.length- i-1].id_user==list_of_messages[list_of_messages.length- i].id_user)}">
 
                                     <div *ngIf="list_of_messages[list_of_messages.length -1 - i].is_a_response"
-                                        class="response-content"
+                                        class="response-content text-with-line-break"
                                         (click)="show_response(list_of_messages.length -1 - i)">
                                             {{list_of_messages[list_of_messages.length -1 - i].message_responding_to}}
                                     </div>
@@ -1422,19 +1423,31 @@
                     </button>
 
                     <div class="textarea-container">
-                        <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="1500"
-                            (keydown)="on_keydown($event)" (click)="activateFocus()" (blur)="desactivateFocus()"
+                        <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
+                            (keydown)="on_keydown($event)" (input)="check_message_for_phone()" (click)="activateFocus()" (blur)="desactivateFocus()"
                             (paste)="onPaste($event);" onblur="this.placeholder = 'Ecrivez un message...'" type="text"
                             [placeholder]="'Ecrivez un message...'" autocomplete="off" autocorrect="off"
                             autocapitalize="off" spellcheck="false"></textarea>
 
-                        <button #emoji_button (click)="open_emojis()"
-                        matTooltip="Réagir"
-                        matTooltipClass='linkarts-tooltip'
-                        [matTooltipPosition]="'below'"
-                        [matTooltipShowDelay]="100">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
-                        </button>
+                        <div class="messages-options-container">
+
+                            <div class="icon-messenger-container">
+                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon }">
+
+                                </div>
+                            </div>
+
+                            <button #emoji_button (click)="open_emojis()"
+                            matTooltip="Emojis"
+                            matTooltipClass='linkarts-tooltip'
+                            [matTooltipPosition]="'below'"
+                            [matTooltipShowDelay]="100">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
+                            </button>
+                            
+                            
+                        </div>
+                        
                     </div>
                 </div>
 
