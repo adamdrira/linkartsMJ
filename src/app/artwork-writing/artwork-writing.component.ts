@@ -21,6 +21,7 @@ import { ChatService} from '../services/chat.service';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { Location } from '@angular/common';
+import { LoginComponent } from '../login/login.component';
 
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
@@ -468,7 +469,7 @@ export class ArtworkWritingComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    /*this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
+    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
       console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -491,7 +492,7 @@ export class ArtworkWritingComponent implements OnInit {
       }
       this.list_of_author_recommendations_drawings_retrieved=true;
       this.check_recommendations();
-    })*/
+    })
     this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,this.writing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -508,7 +509,9 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   check_recommendations(){
-    if(  this.list_of_author_recommendations_writings_retrieved ){
+    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
+      console.log( this.list_of_author_recommendations_comics)
+      console.log( this.list_of_author_recommendations_drawings)
       console.log( this.list_of_author_recommendations_writings)
       this.list_of_author_recommendations_retrieved=true;
     }
@@ -699,16 +702,10 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
   stop(e: Event) {
-    this.add_time_of_view();
     e.preventDefault();
     e.stopPropagation();
   };
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
-    console.log("back")
-    this.add_time_of_view();
-  }
   
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -952,9 +949,9 @@ export class ArtworkWritingComponent implements OnInit {
       
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
   }
@@ -1044,9 +1041,9 @@ export class ArtworkWritingComponent implements OnInit {
       
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
 
@@ -1159,9 +1156,9 @@ export class ArtworkWritingComponent implements OnInit {
       }
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
   

@@ -29,6 +29,9 @@ import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.co
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { PopupArtworkDataComponent } from '../popup-artwork-data/popup-artwork-data.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+
+import { LoginComponent } from '../login/login.component';
+
 declare var Swiper: any;
 declare var $: any;
 
@@ -685,7 +688,7 @@ export class ArtworkDrawingComponent implements OnInit {
   /********************************************** RECOMMENDATIONS **************************************/
 
   get_author_recommendations(){
-    /* this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
+    this.Community_recommendation.get_comics_recommendations_by_author(this.authorid,0).subscribe(e=>{
       console.log(e[0].list_to_send)
       if(e[0].list_to_send.length>0){
         for(let j=0;j<e[0].list_to_send.length;j++){
@@ -697,8 +700,8 @@ export class ArtworkDrawingComponent implements OnInit {
       this.list_of_author_recommendations_comics_retrieved=true;
 
       this.check_recommendations();
-    })*/
-   this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).subscribe(e=>{
+    })
+    this.Community_recommendation.get_drawings_recommendations_by_author(this.authorid,this.drawing_id).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -711,7 +714,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
       this.check_recommendations();
     })
-     /*this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
+    this.Community_recommendation.get_writings_recommendations_by_author(this.authorid,0).subscribe(e=>{
       if(e[0].list_to_send.length >0){
         for(let j=0;j<e[0].list_to_send.length;j++){
           if(e[0].list_to_send[j].length>0){
@@ -723,11 +726,11 @@ export class ArtworkDrawingComponent implements OnInit {
       this.list_of_author_recommendations_writings_retrieved=true;
       this.check_recommendations();
       
-    })*/
+    })
   }
 
   check_recommendations(){
-    if( this.list_of_author_recommendations_drawings_retrieved ){
+    if(  this.list_of_author_recommendations_writings_retrieved && this.list_of_author_recommendations_drawings_retrieved && this.list_of_author_recommendations_comics_retrieved){
       console.log( this.list_of_author_recommendations_comics)
       console.log( this.list_of_author_recommendations_drawings)
       console.log( this.list_of_author_recommendations_writings)
@@ -898,7 +901,6 @@ export class ArtworkDrawingComponent implements OnInit {
   }
 
   stop(e: Event) {
-    this.add_time_of_view();
     e.preventDefault();
     e.stopPropagation();
   };
@@ -913,12 +915,6 @@ export class ArtworkDrawingComponent implements OnInit {
       this.full_compt=0;
       this.fullscreen_mode = false;
     }
-  }
-
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event) {
-    console.log("back")
-    this.add_time_of_view();
   }
 
   see_description() {
@@ -1335,9 +1331,9 @@ export class ArtworkDrawingComponent implements OnInit {
 
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
     
@@ -1499,9 +1495,9 @@ export class ArtworkDrawingComponent implements OnInit {
       
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir réagir à la publication'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
 
@@ -1626,9 +1622,9 @@ export class ArtworkDrawingComponent implements OnInit {
       }
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
   

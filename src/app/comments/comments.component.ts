@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { convert_timestamp_to_number } from '../helpers/dates';
-import { SignupComponent } from '../signup/signup.component';
+import { LoginComponent } from '../login/login.component';
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { MatDialog } from '@angular/material/dialog';
@@ -399,10 +399,10 @@ export class CommentsComponent implements OnInit {
 
 
   
-  signup(){
-    const dialogRef = this.dialog.open(SignupComponent, {
-      data:{for_group_creation:false},
-      panelClass:"signupComponentClass"
+  login(){
+    const dialogRef = this.dialog.open(LoginComponent, {
+      data: {usage:"login"},
+      panelClass:"loginComponentClass"
     });
   }
 

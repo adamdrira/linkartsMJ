@@ -144,7 +144,7 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }" class="close-icon" (click)="click_thumbnails();">close</mat-icon>
                 </div>
                 
-                <div class="thumbnails-contents" *ngIf="swiper">
+                <div class="thumbnails-contents" *ngIf="swiper && style!='Manga'">
                     <ng-container *ngFor="let element of thumbnails_links; let i = index">
                         <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
                             [ngClass]="{'opened': i==swiper.activeIndex}">
@@ -153,6 +153,17 @@
                         <span>Page {{i+1}}</span>
                     </ng-container>
                 </div>
+
+                <div class="thumbnails-contents" *ngIf="swiper && style=='Manga'">
+                    <ng-container *ngFor="let element of thumbnails_links.slice().reverse(); let i = index">
+                        <div #thumbnail class="thumbnail-container" (click)="setSlide(i+1);"
+                            [ngClass]="{'opened': (thumbnails_links.length-i-1)==swiper.activeIndex}">
+                            <img [src]=element>
+                        </div>
+                        <span>Page {{i+1}}</span>
+                    </ng-container>
+                </div>
+
             </div>
             <div #swiperContainer class="swiper-container swiper-artwork-comic">
                 <div #swiperWrapper class="swiper-wrapper">
@@ -249,18 +260,38 @@
                         <div class="title">Bandes dessinées</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0" (click)="add_time_of_view()"    [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0"    [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" (click)="add_time_of_view()"   [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null"    [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
                         </div>
                     </div>
     
+                    <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved">
+                        <div class="title">Dessins</div>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
+    
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"    [item]=item[0] page='subscribings'
+                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="artbook">
+                            </app-thumbnail-artwork>
+    
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"    [item]=item[0] page='subscribings'
+                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="one-shot">
+                            </app-thumbnail-artwork>
+                        </div>
+                    </div>
+    
+                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_writings_retrieved">
+                        <div class="title">Écrits</div>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
+                            <app-thumbnail-artwork [item]=item[0]    page='subscribings' now_in_seconds={{now_in_seconds}}
+                                subscribing_category='writing'></app-thumbnail-artwork>
+                        </div>
+                    </div>-->
                     
-                    
-                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length ">
+                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
                         <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
@@ -279,10 +310,10 @@
                     <div class="recommendation-group">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" (click)="add_time_of_view()"   [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0"    [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null"  (click)="add_time_of_view()"  [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null"    [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
             
@@ -505,7 +536,7 @@
         <!--Author container-->
         <!--********************-->
         <div class="author-container " [ngClass]="{'really-invisible': !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved}">
-            <a [routerLink]=open_account() (click)="stop($event);"  [ngClass]="{'dark-shiny':!pp_loaded}"
+            <a [routerLink]=open_account() (click)="stop($event)"  [ngClass]="{'dark-shiny':!pp_loaded}"
             class="left-container"
             matTooltip="Voir le profil"
             matTooltipClass='linkarts-tooltip' 
@@ -763,18 +794,38 @@
                         <div class="title">Bandes dessinées</div>
                         <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_comics; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0"  (click)="add_time_of_view()"  [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber >=0"    [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null" (click)="add_time_of_view()"   [item]=item[0] page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item[0].chaptersnumber == null"    [item]=item[0] page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
                         </div>
                     </div>
     
-                  
+                    <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_drawings.length>0 ">
+                        <div class="title">Dessins</div>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
+    
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"    [item]=item[0] page='subscribings'
+                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="artbook">
+                            </app-thumbnail-artwork>
+    
+                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"    [item]=item[0] page='subscribings'
+                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="one-shot">
+                            </app-thumbnail-artwork>
+                        </div>
+                    </div>
+    
+                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 ">
+                        <div class="title">Écrits</div>
+                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
+                            <app-thumbnail-artwork [item]=item[0]    page='subscribings' now_in_seconds={{now_in_seconds}}
+                                subscribing_category='writing'></app-thumbnail-artwork>
+                        </div>
+                    </div>-->
                     
-                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length ">
+                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
                         <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
@@ -793,10 +844,10 @@
                     <div class="recommendation-group">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0" (click)="add_time_of_view()"   [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0"    [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='serie'>
                             </app-thumbnail-artwork>
-                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null" (click)="add_time_of_view()"   [item]=item page='subscribings'
+                            <app-thumbnail-artwork *ngIf="item.chaptersnumber == null"    [item]=item page='subscribings'
                                 now_in_seconds={{now_in_seconds}} subscribing_category='comic' subscribing_format='one-shot'>
                             </app-thumbnail-artwork>
             

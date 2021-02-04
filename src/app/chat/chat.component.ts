@@ -2906,7 +2906,7 @@ show_icon=false;
 change_profile_picture() {
   const dialogRef = this.dialog.open(PopupFormComponent, {
     data: {type:"edit_chat_profile_picture",id_receiver:this.friend_id},
-    panelClass: 'popupChatProfilePictureClass',
+    panelClass: 'popupUploadPictureClass',
   })
 
   //fonction pour prévenir  que la photo de profiel a été modifiéé

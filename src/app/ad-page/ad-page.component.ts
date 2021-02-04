@@ -24,6 +24,7 @@ import {date_in_seconds} from '../helpers/dates';
 import { PopupEditCoverComponent } from '../popup-edit-cover/popup-edit-cover.component';
 import { PopupCommentsComponent } from '../popup-comments/popup-comments.component';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { LoginComponent } from '../login/login.component';
 
 
 import { NoopScrollStrategy } from '@angular/cdk/overlay';
@@ -1056,9 +1057,9 @@ export class AdPageComponent implements OnInit {
       }
     }
     else{
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Vous devez avoir un compte Linkarts pour pouvoir vous abonner'},
-        panelClass: "popupConfirmationClass",
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
       });
     }
   
