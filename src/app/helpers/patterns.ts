@@ -20,11 +20,11 @@ export function pattern(type: string) {
     }
     //alpha numérique + accents + pas plus de deux tirets ou underscore à la suite
     if( type == "nickname" ) {
-        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+"_-]+(?<![])$";
+        return "^(?=.*[a-zA-Z0-9"+accents+"_-])(?!.*[_-]{3})[a-zA-Z0-9"+accents+"_-]+([a-zA-Z0-9"+accents+special_characters+"])$";
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text" ) {
-        return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9 "+accents+special_characters+"]+(?<![ ])$";
+        return "^([a-zA-Z0-9"+accents+special_characters+"])[a-zA-Z0-9 "+accents+special_characters+"]+([a-zA-Z0-9"+accents+special_characters+"])$";
     }
     //alpha numérique + accents + caractères spéciaux + ne doit pas commencer ni finir par un espace
     if( type == "text_with_linebreaks" ) {
