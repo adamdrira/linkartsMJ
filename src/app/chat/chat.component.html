@@ -1424,12 +1424,18 @@
 
                     <div class="textarea-container">
                         <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
-                            (keydown)="on_keydown($event)" (keyup)="keyup($event)" (input)="check_message_for_phone()" (click)="activateFocus()" (blur)="desactivateFocus()"
+                            (keydown)="on_keydown($event)" (input)="check_message_for_phone()" (click)="activateFocus()" (blur)="desactivateFocus()"
                             (paste)="onPaste($event);" onblur="this.placeholder = 'Ecrivez un message...'" type="text"
                             [placeholder]="'Ecrivez un message...'" autocomplete="off" autocorrect="off"
                             autocapitalize="off" spellcheck="false"></textarea>
 
                         <div class="messages-options-container">
+
+                            <div class="icon-messenger-container">
+                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon }">
+
+                                </div>
+                            </div>
 
                             <button #emoji_button (click)="open_emojis()"
                             matTooltip="Emojis"
@@ -1441,11 +1447,8 @@
                             
                             
                         </div>
+                        
                     </div>
-
-                    <button class="send-message" (click)="send_message_phone();" *ngIf="!show_send_icon && show_send_message_button">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">send</mat-icon>
-                    </button>
                 </div>
 
             </div>

@@ -840,7 +840,9 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
   }
 
-  
+   ngAfterViewInit() {
+    this.update_image_size();
+   }
 
   /******************************************** SHOW IMAGES PREVIEW  *******************************************/
   /******************************************** SHOW IMAGES PREVIEW   *******************************************/

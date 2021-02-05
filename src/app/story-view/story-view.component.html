@@ -21,8 +21,7 @@
             matTooltipClass='linkarts-tooltip' 
             [matTooltipPosition]="'below'"
             [matTooltipShowDelay]="100">
-                <span>0</span><!--ngif liste vide-->
-                <!--<span>12</span> Coucou adam-->
+                <span>{{number_of_views}}</span>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
             </button>
 
@@ -122,17 +121,6 @@
             
                     </a>
                 </div>
-
-                <!--
-                        <button mat-raised-button *ngIf="!list_of_check_subscribtion[k]" class="button style1 subscriptions" (click)="subscribtion(k)">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">person_add</mat-icon>
-                            <span>S'abonner</span>
-                        </button>
-                        <button mat-raised-button *ngIf="list_of_check_subscribtion[k]" class="button style0 subscriptions" (click)="subscribtion(k)">
-                            <mat-icon [ngClass]="{'invisible': !show_icon }" class="icon">person_add_disabled</mat-icon>
-                            <span>Se désabonner</span>
-                        </button>
-                    -->
 
                 
                 <div class="left-absolute-container" *ngIf="!loading_list_of_viewers && !show_list_of_viewers" (click)="previous_slide();"></div>

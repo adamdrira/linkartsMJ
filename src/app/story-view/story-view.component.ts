@@ -74,7 +74,7 @@ export class StoryViewComponent implements OnInit {
   author_name:string;
   pseudo:string;
   profile_picture: SafeUrl;
-
+  number_of_views:number;
   index_of_story_to_show:number;
   test=false;
   page_closed=false;
@@ -143,7 +143,10 @@ ngOnInit() {
         k++;
         if(k== this.list_of_data.length ){
 
-          
+          this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.index_debut].id).subscribe(r=>{
+            console.log(r[0])
+            this.number_of_views=r[0].length;
+          })
           this.cd.detectChanges();
           this.initialize_swiper();
           this.swiper.update();
@@ -200,6 +203,12 @@ ngOnInit() {
     console.log("next slide adding vew " + this.user_id)
     this.cd.detectChanges();
     let id_story =this.list_of_data[this.swiper.activeIndex].id;
+    if(this.list_of_data[this.swiper.activeIndex+1]){
+      this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex+1].id).subscribe(r=>{
+        console.log(r[0])
+        this.number_of_views=r[0].length;
+      })
+    }
     this.Story_service.check_if_story_already_seen(id_story).subscribe(r=>{
       if(r[0]){
         this.Story_service.add_view(this.user_id,id_story,false).subscribe();
@@ -244,6 +253,11 @@ ngOnInit() {
       this.startTimer();
     }
     
+    this.Story_service.get_list_of_viewers_for_story(this.list_of_data[this.swiper.activeIndex - 1].id).subscribe(r=>{
+      console.log(r[0])
+      this.number_of_views=r[0].length;
+    })
+
     this.swiper.slideTo( this.swiper.activeIndex - 1 );
     this.cd.detectChanges();
 
@@ -371,6 +385,11 @@ get_list_of_viewers(i){
         })
         
       }
+    }
+    else{
+      this.show_list_of_viewers=true;
+      this.loading_list_of_viewers=false;
+      this.viewers_found=false;
     }
   })
 }

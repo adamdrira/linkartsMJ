@@ -13,7 +13,7 @@ declare var Cropper: any;
 declare var $: any;
 
 
-const url = 'https://www.linkarts.fr/routes/upload_story';
+const url = 'https://www.linakrts.fr/routes/upload_story';
 
 @Component({
   selector: 'app-uploader-story',
@@ -105,7 +105,7 @@ export class UploaderStoryComponent implements OnInit {
       else {
         if (Math.trunc(size) >= 10) {
           this.uploader.queue.pop();
-          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          const dialogRef2 = this.dialog.open(PopupConfirmationComponent, {
             data: { showChoice: false, text: "Votre fichier est trop volumineux, veuillez saisir un fichier de moins de 10mo (" + (Math.round(size * 10) / 10) + "mo)" },
             panelClass: "popupConfirmationClass",
           });
@@ -280,16 +280,24 @@ export class UploaderStoryComponent implements OnInit {
     .then(function (blob) {
         
         THIS.Story_service.upload_story( blob ).subscribe(res => {
-          if(res[0].ok){
+          console.log(res)
+          if(!res[0].num && !res[0].error && !res[0].msg){
             location.reload();
           }
-          else{
-            const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          else if(res[0].num){
+            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
               data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
               panelClass: "popupConfirmationClass",
             });
-            this.loading=false;
+            THIS.loading=false;
 
+          }
+          else{
+            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+              data: { showChoice: false, text: 'Une erreur est survenue' },
+              panelClass: "popupConfirmationClass",
+            });
+            THIS.loading=false;
           }
           
         })
