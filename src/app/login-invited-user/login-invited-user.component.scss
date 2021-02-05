@@ -38,6 +38,7 @@
 
   .centered {
     min-width: 500px;
+    max-width: 500px;
     margin: auto auto;
 
     @media (max-width: 600px) {

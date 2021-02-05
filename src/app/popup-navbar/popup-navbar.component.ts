@@ -331,6 +331,7 @@ open_my_account() {
   if(this.show_notifications){
     this.close_notifications();
   }
+  this.close_dialog()
 }
 get_my_account() {
   return "/account/" + this.pseudo + "/" + this.user_id + "/my_account";
@@ -388,6 +389,7 @@ get_account_for_notification(notif:any) {
 open_comic(notif:any) {
   this.not_using_chat();
   this.close_notifications();
+  this.close_dialog();
 }
 get_comic(notif:any) {
   return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
@@ -396,6 +398,7 @@ get_comic(notif:any) {
 open_comic_chapter(notif:any) {
   this.not_using_chat();
   this.close_notifications();
+  this.close_dialog();
 }
 get_comic_chapter(notif:any) {
   return "/artwork-comic/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id + "/" + notif.chapter_number;
@@ -403,6 +406,7 @@ get_comic_chapter(notif:any) {
 open_drawing(notif:any) {
   this.not_using_chat();
   this.close_notifications();
+  this.close_dialog();
 }
 get_drawing(notif:any) {
   return "/artwork-drawing/" + notif.format + "/" + notif.publication_name + "/" + notif.publication_id;
@@ -410,6 +414,7 @@ get_drawing(notif:any) {
 open_writing(notif:any) {
   this.not_using_chat();
   this.close_notifications();
+  this.close_dialog();
 }
 get_writing(notif:any) {
   return "/artwork-writing/" + notif.publication_name + "/" + notif.publication_id;
@@ -417,6 +422,7 @@ get_writing(notif:any) {
 open_ad(notif:any) {
   this.not_using_chat();
   this.close_notifications();
+  this.close_dialog();
 }
 get_ad(notif:any) {
   return "/ad-page/" + notif.publication_name + "/" + notif.publication_id;
@@ -701,6 +707,7 @@ list_of_pictures_by_ids_groups=this.data.list_of_pictures_by_ids_groups;
 
 open_chat_2() {
   this.show_chat_messages=false;
+  this.close_dialog();
 }
 get_chat_2(i:number) {
   return "/chat/" + this.get_chat_url(i);

@@ -156,7 +156,7 @@
                         <!-- ---------------------------subscribtion----------------------------------->
                         <ng-container *ngIf="notif.type=='subscribtion'">
   
-                          <a (click)="close_notifications();not_using_chat()" [routerLink]="get_account_for_notification(notif)">
+                          <a (click)="close_notifications();not_using_chat();close_dialog()" [routerLink]="get_account_for_notification(notif)">
                             <div class="left-container">
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -174,7 +174,7 @@
                         <!-- ---------------------------favorites----------------------------------->
                         <ng-container *ngIf="notif.type=='favorites'">
   
-                          <a (click)="close_notifications();not_using_chat();" [routerLink]="get_my_favorite()">
+                          <a (click)="close_notifications();not_using_chat();close_dialog();" [routerLink]="get_my_favorite()">
                             <div class="left-container">
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">
@@ -193,7 +193,7 @@
                         <!-- ---------------------------trendings----------------------------------->
                         <ng-container *ngIf="notif.type=='trendings'">
   
-                          <a (click)="close_notifications();" [routerLink]="get_my_trending(notif.publication_category)">
+                          <a (click)="close_notifications();close_dialog();" [routerLink]="get_my_trending(notif.publication_category)">
                             <div class="left-container">
                               <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
                                 [ngClass]="{'invisible':!notification_loaded[i]}">

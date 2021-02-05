@@ -465,7 +465,7 @@ $default-color: rgb(218, 220, 225);
     }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     .icon-container span {
         font-size: 13px !important;
     }
@@ -484,6 +484,12 @@ $default-color: rgb(218, 220, 225);
                 max-width: 90vw;
             }
         }
+    }
+}
+@media (max-width: 500px) {
+    .dropzone {
+        padding: 50px 20px !important;
+        width: 100% !important;
     }
 }
 

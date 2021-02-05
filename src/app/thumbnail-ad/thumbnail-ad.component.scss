@@ -250,9 +250,11 @@
         width: 100% !important;
         background-image: linear-gradient(0.5turn, #e0e0e0, #efefef, whitesmoke) !important;
 
+        padding: 6px 10px 0px 10px !important;
+
         .left-container{
           display: flex!important;
-          margin: auto!important;
+          margin: 14px auto auto auto;
         }
 
         .right-container{
@@ -285,11 +287,19 @@
         padding-left: 10px !important;
         margin: auto!important;
         text-align: center !important;
+        display:flex;
+        flex-direction: column;
         background-image: linear-gradient(0.5turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9))!important;
 
+        .cible-title {
+          margin-top:auto;
+        }
         .cible-description-container {
           display: flex  !important;
           justify-content: center  !important;
+          &:last-of-type {
+            margin-bottom: auto;
+          }
         }
       }
     }

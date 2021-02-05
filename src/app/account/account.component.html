@@ -385,11 +385,11 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">announcement</mat-icon>
                         <span>Annonces ({{list_of_ads.length}})</span>
                     </mat-option>
-                    <mat-option [value]="3" *ngIf="!my_profile_is_suspended">
+                    <mat-option [value]="3" *ngIf="!my_profile_is_suspended" (click)="stop_event($event);see_subscribers();" disabled>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">group</mat-icon>
                         <span>Abonnés ({{subscribed_users_list.length}})</span>
                     </mat-option>
-                    <mat-option [value]="4" *ngIf="!my_profile_is_suspended">
+                    <mat-option [value]="4" *ngIf="!my_profile_is_suspended" (click)="stop_event($event);see_subscribings();" disabled>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">subscriptions</mat-icon>
                         <span>Abonnements ({{users_subscribed_to_list.length}})</span>
                     </mat-option>
@@ -772,10 +772,9 @@
                             </ng-container>
                             
                             <!--AJOUT ALBUM-->
-                            <div class="albums-title-container" style=" padding-bottom: unset;">
+                            <div class="albums-title-container" style=" padding-bottom: unset;" *ngIf="!mode_visiteur && opened_category==0 && number_of_comics!=0">
                                 <div class="albums-title">
-                                    <button *ngIf="!mode_visiteur && opened_category==0 && number_of_comics!=0"
-                                    class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
+                                    <button class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
                                         <ng-container *ngIf="add_album == -1">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                             <span>Créer</span>
@@ -874,10 +873,9 @@
                             </ng-container>
                             
                             <!--AJOUT ALBUM-->
-                            <div class="albums-title-container" style=" padding-bottom: unset;">
+                            <div class="albums-title-container" style=" padding-bottom: unset;" *ngIf="!mode_visiteur && opened_category==1 && number_of_drawings!=0">
                                 <div class="albums-title">
-                                    <button *ngIf="!mode_visiteur && opened_category==1 && number_of_drawings!=0"
-                                    class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
+                                    <button class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
                                         <ng-container *ngIf="add_album == -1">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                             <span>Créer</span>
@@ -970,10 +968,9 @@
 
                             
                             <!--AJOUT ALBUM-->
-                            <div class="albums-title-container" style=" padding-bottom: unset;">
+                            <div class="albums-title-container" style=" padding-bottom: unset;" *ngIf=" (!mode_visiteur && opened_category==2 && number_of_writings!=0)">
                                 <div class="albums-title">
-                                    <button *ngIf=" (!mode_visiteur && opened_category==2 && number_of_writings!=0)"
-                                    class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
+                                    <button class="albums-title-button albums-title-button2" (click)="start_add_album( opened_category )" [@enterAnimation]>
                                         <ng-container *ngIf="add_album == -1">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                                             <span>Créer</span>

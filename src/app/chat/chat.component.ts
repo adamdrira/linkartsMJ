@@ -18,6 +18,8 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { DeviceDetectorService } from 'ngx-device-detector';
+
 declare var $: any;
 var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
@@ -91,7 +93,8 @@ export class ChatComponent implements OnInit  {
     private renderer: Renderer2,
     private navbar :NavbarService,
     private WebSocketService:WebSocketService,
-    private Profile_Edition_Service:Profile_Edition_Service
+    private Profile_Edition_Service:Profile_Edition_Service,
+    private deviceService: DeviceDetectorService
     ){
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
@@ -125,7 +128,10 @@ export class ChatComponent implements OnInit  {
         }
         
       })
+
   }
+
+  show_send_message_button:boolean = this.deviceService.isMobile() || this.deviceService.isTablet();
 
   connexion_status=false;
   //for chat-right
@@ -257,7 +263,7 @@ export class ChatComponent implements OnInit  {
   //upload files
   @ViewChild('file_upload') file_upload:ElementRef;
   //validate enter to send message
-  number_of_shift:number=0;
+  SHIFT_CLICKED=false;
  
   //show messages 
   compteur_image=0;
@@ -1256,19 +1262,23 @@ export class ChatComponent implements OnInit  {
     }
   }
 
+  keyup(event) {
+    if(event.key=="Shift"){
+      this.SHIFT_CLICKED = false;
+    }
+  }
   on_keydown(event){
     //console.log(this.can_show_send_icon)
     //console.log(window.innerWidth)
     //console.log(event)
-    if(!this.can_show_send_icon){
+    if(!this.can_show_send_icon && !this.show_send_message_button){
+
       if(event.key=="Shift"){
-        this.number_of_shift=1;
+        this.SHIFT_CLICKED = true;
       }
-      else if(event.key!="Enter"){
-        this.number_of_shift=0;
-      }
+
       else if(event.key=="Enter"){
-        if(this.number_of_shift==0){
+        if( !this.SHIFT_CLICKED ){
           
           if(this.check_if_message_valide() && this.put_messages_visible){
             this.send_message();
@@ -1290,7 +1300,6 @@ export class ChatComponent implements OnInit  {
             return false;
           }  
         }
-        this.number_of_shift=0;
       }
     }
     

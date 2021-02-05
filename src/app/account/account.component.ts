@@ -1058,7 +1058,9 @@ export class AccountComponent implements OnInit {
 
 
 
-
+  stop_event(e:any) {
+    e.stopPropagation();
+  }
 
 
 
@@ -1111,6 +1113,7 @@ export class AccountComponent implements OnInit {
 
 
   see_subscribers(){
+
 
     if(this.subscribed_users_list.length == 0) {
       return;

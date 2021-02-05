@@ -7,6 +7,9 @@
     display:flex;
     flex-direction: column;
     cursor:default; 
+    text-align: center;
+    padding-left:15px;
+    padding-right:15px;
     
     mat-icon {
       height:unset !important;
@@ -36,6 +39,10 @@
     display:flex;
     flex-direction: column;
     cursor:default;
+    text-align: center;
+    padding-left:15px;
+    padding-right:15px;
+
     mat-icon {
       height:unset !important;
       width:unset !important;
@@ -62,6 +69,8 @@
     font-weight: 600;
     color: #5b6b87;
     cursor:default;
+    padding-left:15px;
+    padding-right:15px;
   }
 
   .categories-container{
