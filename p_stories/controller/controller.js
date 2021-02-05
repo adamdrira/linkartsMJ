@@ -27,6 +27,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         var file_name='';
         const PATH2= './data_and_routes/stories';
         const Op = Sequelize.Op;
+        var yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         list_of_stories.count({
             where: {
