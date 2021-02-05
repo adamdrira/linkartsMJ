@@ -26,67 +26,95 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         console.log(current_user)
         var file_name='';
         const PATH2= './data_and_routes/stories';
-        let storage = multer.diskStorage({
-            destination: (req, file, cb) => {
-            cb(null, PATH2);
+        const Op = Sequelize.Op;
+        yesterday.setDate(yesterday.getDate() - 1);
+        list_of_stories.count({
+            where: {
+                status:"public",
+                id_user: current_user,
+                createdAt: {[Op.gte]: yesterday}
             },
-        
-            filename: (req, file, cb) => {
-            var today = new Date();
-            var ms = String(today.getMilliseconds()).padStart(2, '0');
-            var ss = String(today.getSeconds()).padStart(2, '0');
-            var mi = String(today.getMinutes()).padStart(2, '0');
-            var hh = String(today.getHours()).padStart(2, '0');
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-            var yyyy = today.getFullYear();
-            let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-            file_name = current_user + '-' + Today + '.png';
-            cb(null, current_user + '-' + Today + '.png');
-            }
-        });
-        
-        let upload_cover = multer({
-            storage: storage
-        }).any();
-
-        upload_cover(req, res, function(err){
-            if(err){
-                console.log(err)
-                res.status(500).send([{error:err}])
+        }).catch(err => {
+            console.log(err)
+            res.status(500).send([{error:err}])
+        }).then(num=>{
+            if(num>15){
+                res.status(500).send([{num:15}])
             }
             else{
-
-                (async () => {
-                    let filename = "./data_and_routes/stories/" + file_name ;
-                    const files = await imagemin([filename], {
-                    destination: './data_and_routes/stories',
-                    plugins: [
-                        imageminPngquant({
-                            quality: [0.7, 0.8]
-                        })
-                    ]
-                    });
-
-                    list_of_stories.create({
-                        "id_user": current_user,
-                        "status":"public",
-                        "file_name": file_name,
-                        "views_number": 0,
-                    }).catch(err => {
-                        console.log(err);	
-                        res.status(500).json({msg: "error", details: err});		
-                    }).then(stories=>{
-                        res.status(200).send([stories]);
-                    });
-                })();
-                
-
-                
+                add_story()
             }
-                
+        })
+
+
+        function add_story(){
+            let storage = multer.diskStorage({
+                destination: (req, file, cb) => {
+                cb(null, PATH2);
+                },
             
-        });
+                filename: (req, file, cb) => {
+                var today = new Date();
+                var ms = String(today.getMilliseconds()).padStart(2, '0');
+                var ss = String(today.getSeconds()).padStart(2, '0');
+                var mi = String(today.getMinutes()).padStart(2, '0');
+                var hh = String(today.getHours()).padStart(2, '0');
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+                var yyyy = today.getFullYear();
+                let Today = yyyy + mm + dd + hh+ mi + ss + ms;
+                
+                file_name = current_user + '-' + Today + '.png';
+                console.log(file_name)
+                cb(null, current_user + '-' + Today + '.png');
+                }
+            });
+            
+            let upload_story = multer({
+                storage: storage
+            }).any();
+    
+            upload_story(req, res, function(err){
+                if(err){
+                    console.log(err)
+                    res.status(500).send([{error:err}])
+                }
+                else{
+                    console.log("else upload cover")
+                    (async () => {
+                        let filename = "./data_and_routes/stories/" + file_name ;
+                        const files = await imagemin([filename], {
+                        destination: './data_and_routes/stories',
+                        plugins: [
+                            imageminPngquant({
+                                quality: [0.7, 0.8]
+                            })
+                        ]
+                        });
+    
+                        console.log("creation")
+                        list_of_stories.create({
+                            "id_user": current_user,
+                            "status":"public",
+                            "file_name": file_name,
+                            "views_number": 0,
+                        }).catch(err => {
+                            console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(stories=>{
+                            console.log(stories)
+                            res.status(200).send([stories]);
+                        });
+                    })();
+                    
+    
+                    
+                }
+                    
+                
+            });
+        }
+        
 
     });
 
