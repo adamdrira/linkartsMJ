@@ -314,7 +314,7 @@
         }
         .middle-container {
             position: relative;
-            height: 5000px;
+            height: calc( 100% - 65px - 112px );
             overflow-y: auto;
             width: 100%;
 
@@ -356,7 +356,9 @@
         }
 
         .bottom-container {
-            position: relative;
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
 
             .writing-container {
                 position: absolute;
