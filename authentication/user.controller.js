@@ -391,9 +391,9 @@ exports.reset_password = (req, res) => {
 
 					mail_to_send+=`<p>Votre mot de passe est le suivant : ${decrypted.toString()}. </p>`
 
-					mail_to_send+=`<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
+					mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
 					
-					mail_to_send+=`<p>Très sincérement, l'équipe de LinkArts.</p>`
+					mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
 						
 					var mailOptions = {
 						from: 'Linkarts <services@linkarts.fr>', // sender address
@@ -456,9 +456,9 @@ exports.reset_password = (req, res) => {
 
 						mail_to_send+=`<p>Votre mot de passe est :${pass}. </p>`
 
-						mail_to_send+=`<p><a href="http://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
+						mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
 						
-						mail_to_send+=`<p>Très sincérement, l'équipe de LinkArts.</p>`
+						mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
 
 
 						const transport = nodemailer.createTransport({
@@ -813,10 +813,8 @@ exports.login = async (req, res) => {
 		else{
 			//console.log(user.list_of_ips)
 			console.log("ip")
-			console.log(req.body.ip)
-			let ip =req.body.ip
-			var geo = geoip.lookup(ip);
-			console.log(geo)
+			//var geo = geoip.lookup(ip);
+			//console.log(geo)
 			
 			let now = new Date();
 			let connexion_time = now.toString();
@@ -829,7 +827,7 @@ exports.login = async (req, res) => {
 			db.users_ips.findOne({where:{
 				id_user:user.id
 			}}).then(user_ips=>{
-				if(user_ips){
+				/*if(user_ips){
 					if(user_ips.list_of_ips.indexOf(ip)<0){
 						// send email with geo
 						let list_of_ips =user_ips.list_of_ips;
@@ -893,32 +891,32 @@ exports.login = async (req, res) => {
 									</ul>
 								<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer votre mot de passe imédiatement.</p> 
 									<ul>
-										<li><a href="http://localhost:4200/account/${user.nickname}/${user.id}/my_account"> Cliquer ici</a> pour changer mon mot de passe. </li>
+										<li><a href="https://www.linkarts.fr/account/${user.nickname}/${user.id}/my_account"> Cliquer ici</a> pour changer mon mot de passe. </li>
 					
 									</ul> 
 								<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à récupérer le nouveau mot de passe et puis de le changer soigneusement. </p>
 									<ul>
-										<li><a href="http://localhost:4200/login"> Cliquer ici</a> pour me connecter et renseigner un mot de passe oublié.</li>
+										<li><a href="https://www.linkarts.fr/login"> Cliquer ici</a> pour me connecter et renseigner un mot de passe oublié.</li>
 					
 									</ul>
 								<p>Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons de régler votre problème dans les plus brefs délais. </p>
 									<ul>
-										<li><a href="http://localhost:4200/chat"> Cliquer ici</a> pour regoindre la messagerie</li>
+										<li><a href="https://www.linkarts.fr/chat"> Cliquer ici</a> pour regoindre la messagerie</li>
 						
 									</ul>
 								<p>Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>
-								<p>Très sincérement, l'équipe de LinkArts.</p>`, // html body
+								<p>Très sincèrement, l'équipe de LinkArts.</p>`, // html body
 							
 							};
 							
 							transport.sendMail(mailOptions, (error, info) => {
 								if (error) {
 									console.log('Error while sending mail: ' + error);
-									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30  } );
 									return res.status(200).json( { token:token,user:user } );
 								} else {
 									console.log('Message sent: %s', info.messageId);
-									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 } );
 									return res.status(200).json( { token:token,user:user } );
 								}
 								
@@ -926,30 +924,24 @@ exports.login = async (req, res) => {
 							})
 						}
 						else{
-							const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+							const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30  } );
 							return res.status(200).json( { token:token,user:user } );
 						}
 						
 						
 					}
 					else{
-						const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+						const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 } );
 						return res.status(200).json( { token:token,user:user } );
 					}
-				}
-				else{
+				}*/
+				//else{
 					db.users_ips.create({
 						"id_user":user.id,
-						"list_of_ips":[ip],
-						"list_of_latitudes":[geo.ll[0]],
-						"list_of_longitudes":[geo.ll[1]],
-						"list_of_areas":[geo.area],
-						"list_of_countries":[geo.country],
-						"list_of_regions":[geo.region],
 					});
 					const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
 					return res.status(200).json( { token:token,user:user } );
-				}
+				//}
 			})
 			
 			function calcCrow(lat1, lon1, lat2, lon2) {
@@ -998,7 +990,7 @@ exports.logout = (req,res) =>{
 				limit:1,
 			  }).then(user1=>{
 				
-				if(user1){
+				if(user1.length>0){
 				  let now = new Date();
 				  let deconnexion_time = now.toString();
 				  user1[0].update({
