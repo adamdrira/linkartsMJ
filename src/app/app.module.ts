@@ -159,6 +159,7 @@ import { PopupChatSearchComponent } from './popup-chat-search/popup-chat-search.
 import { PopupLinkcollabFiltersComponent } from './popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { TermsComponent } from './terms/terms.component';
 
+import { AngularResizedEventModule } from 'angular-resize-event';
 
 @NgModule({
 
@@ -299,6 +300,7 @@ import { TermsComponent } from './terms/terms.component';
     MatAutocompleteModule,
     NgxChartsModule,
     MatTooltipModule,
+    AngularResizedEventModule
   ],
   providers: [
     ConstantsService,
