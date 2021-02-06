@@ -283,6 +283,19 @@
                         margin: auto 14px auto 0px;
                     }
                 }
+
+                &.arrow-right{
+                    display:none;
+                    margin: auto 10px auto 0px;
+                    background: #2b3c5d !important;
+                    @media (max-width: 850px) {
+                        display:flex;
+                    }
+                    mat-icon {
+                        font-size: 30px;
+                        max-width: 30px;
+                    }
+                }
                 
                 .notif-size-1 {
                     height: 18px;

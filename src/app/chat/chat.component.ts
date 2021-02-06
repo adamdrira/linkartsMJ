@@ -116,7 +116,7 @@ export class ChatComponent implements OnInit  {
           this.connexion_status=r
          
           if(r){
-            console.log("connected")
+            //console.log("connected")
             chatService.messages.subscribe(msg=>{
               this.chat_service_managment_function(msg);
               
@@ -137,9 +137,9 @@ export class ChatComponent implements OnInit  {
   clickout(btn) {
 
     if(this.show_emojis){
-      console.log("emoji shown");
+      //console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
-        console.log('on est ailleurs');
+        //console.log('on est ailleurs');
         this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
       }
@@ -274,16 +274,16 @@ export class ChatComponent implements OnInit  {
 
   compteur_user=0;
   ngOnChanges(changes: SimpleChanges) {
-    console.log("change");
-    console.log(this.friend_id)
-    console.log(this.friend_type)
+    //console.log("change");
+    //console.log(this.friend_id)
+    //console.log(this.friend_type)
     if(changes.user_present ){
       if(this.user_present && this.spam=='false'){
-        console.log(this.id_chat_section);
-        console.log("user presence change")
+        //console.log(this.id_chat_section);
+        //console.log("user presence change")
         this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,(this.friend_type=='group')?true:false).subscribe(l=>{
-          console.log("11111111111111111111111111111111");
-          console.log(l)
+          //console.log("11111111111111111111111111111111");
+          //console.log(l)
           if(!(l[0].message)){
             let message_to_send ={
               id_user_name:this.current_user_pseudo,
@@ -299,12 +299,12 @@ export class ChatComponent implements OnInit  {
               is_a_group_chat:(this.friend_type=='group')?true:false,
               is_a_response:false,
             }
-            console.log("send seen after change 1")
+            //console.log("send seen after change 1")
             this.chatService.messages.next(message_to_send);
           }
           
          });
-          console.log("changing status to seen friend")
+          //console.log("changing status to seen friend")
          
          
           this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"seen",friend_id:this.friend_id,friend_type:this.friend_type,spam:false,real_friend_id:this.current_user_id});
@@ -318,7 +318,7 @@ export class ChatComponent implements OnInit  {
       return
     }
     if((this.friend_type!=this.current_friend_type)|| (this.friend_id!=this.current_friend_id)){
-      console.log("changement de friend");
+      //console.log("changement de friend");
       
       if(this.show_research_results){
         this.first_turn_loaded=false;
@@ -336,9 +336,9 @@ export class ChatComponent implements OnInit  {
       return;
     }
     if(changes.spam){
-      console.log("changement de spam value")
+      //console.log("changement de spam value")
       if(this.spam=='false'){
-        console.log("value false")
+        //console.log("value false")
         this.change_user();
       }
     }
@@ -350,10 +350,10 @@ export class ChatComponent implements OnInit  {
   show_spinner=false;
   
   change_user(){
-    console.log("change_user");
-    console.log(this.chat_friend_id)
-    console.log(this.friend_id)
-    console.log( this.list_of_users_blocked );
+    //console.log("change_user");
+    //console.log(this.chat_friend_id)
+    //console.log(this.friend_id)
+    //console.log( this.list_of_users_blocked );
 
     this.cancel_show_research_results();
     this.response_exist_retrieved = false;
@@ -384,16 +384,16 @@ export class ChatComponent implements OnInit  {
     this.cd.detectChanges();
     this.get_messages(this.id_chat_section,false);
     this.change_number=0;
-    console.log("cheking user present")
-    console.log(this.user_present)
-    console.log(this.spam);
+    //console.log("cheking user present")
+    //console.log(this.user_present)
+    //console.log(this.spam);
     if(this.user_present && this.spam=='false'){
-      console.log(this.id_chat_section);
-      console.log("putting messages to seen")
-      console.log(this.friend_id)
+      //console.log(this.id_chat_section);
+      //console.log("putting messages to seen")
+      //console.log(this.friend_id)
       this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(l=>{
-        console.log("11111111111111111111111111111111");
-        console.log(l)
+        //console.log("11111111111111111111111111111111");
+        //console.log(l)
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -409,13 +409,13 @@ export class ChatComponent implements OnInit  {
             is_a_group_chat:false,
             is_a_response:false,
           }
-          console.log("send seen after change 2")
+          //console.log("send seen after change 2")
           this.chatService.messages.next(message_to_send);
         }
         
       });
       
-      console.log("change message status 5")
+      //console.log("change message status 5")
       this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"seen",friend_id:this.friend_id,friend_type:this.friend_type,spam:false});
 
         
@@ -429,8 +429,8 @@ export class ChatComponent implements OnInit  {
     this.cancel_show_research_results();
 
     this.list_of_messages=[];
-    console.log(this.chat_friend_id)
-    console.log("getting messages group");
+    //console.log(this.chat_friend_id)
+    //console.log("getting messages group");
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
     this.function_done=false;
     this.trigger_no_more=false;
@@ -467,9 +467,9 @@ export class ChatComponent implements OnInit  {
           this.list_of_users_names[r[0].id]=r[0].firstname + ' ' + r[0].lastname;
           compt_user++;
           if(compt_user==list_of_receivers_ids.length){
-            console.log("list_of_users_names")
-            console.log(this.list_of_users_names)
-            console.log(this.list_of_users_profile_pictures)
+            //console.log("list_of_users_names")
+            //console.log(this.list_of_users_names)
+            //console.log(this.list_of_users_profile_pictures)
             this.list_of_users_names_retrieved=true;
           }
           
@@ -479,11 +479,11 @@ export class ChatComponent implements OnInit  {
     })
     
     if(this.user_present){
-      console.log(this.id_chat_section);
-      console.log("putting messages to seen")
+      //console.log(this.id_chat_section);
+      //console.log("putting messages to seen")
       this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,true).subscribe(l=>{
-        console.log("11111111111111111111111111111111");
-        console.log(l)
+        //console.log("11111111111111111111111111111111");
+        //console.log(l)
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -499,7 +499,7 @@ export class ChatComponent implements OnInit  {
             is_a_group_chat:true,
             is_a_response:false,
           }
-          console.log("send seen after change 3")
+          //console.log("send seen after change 3")
           this.chatService.messages.next(message_to_send);
         }
         });
@@ -518,7 +518,7 @@ export class ChatComponent implements OnInit  {
   ngOnInit() {
     let THIS=this;
     this.uploader.setOptions({ url: url+`${this.friend_type}/${this.chat_friend_id}/`});
-    console.log(this.id_chat_section);
+    //console.log(this.id_chat_section);
     if(this.friend_type=='group'){
       this.chatService.get_group_chat_information(this.friend_id).subscribe(info=>{
         let compt_user=0;
@@ -543,9 +543,9 @@ export class ChatComponent implements OnInit  {
             if(data_retrieved){
               compt_user++;
               if(compt_user==list_of_receivers_ids.length){
-                console.log("list_of_users_names")
-                console.log(THIS.list_of_users_names)
-                console.log(THIS.list_of_users_profile_pictures)
+                //console.log("list_of_users_names")
+                //console.log(THIS.list_of_users_names)
+                //console.log(THIS.list_of_users_profile_pictures)
                 THIS.list_of_users_names_retrieved=true;
               }
             }
@@ -568,7 +568,7 @@ export class ChatComponent implements OnInit  {
     this.current_id_chat_section=this.id_chat_section;
     this.current_friend_type=this.friend_type;
     this.current_friend_id=this.friend_id;
-    console.log(this.friend_type)
+    //console.log(this.friend_type)
     setInterval(() => {
 
       //scroll bar managment
@@ -577,13 +577,13 @@ export class ChatComponent implements OnInit  {
           this.compteur_get_messages++;
           this.can_get_other_messages=false;
           this.show_spinner=true;
-          console.log("on est au bout")
-          console.log(this.list_of_messages)
+          //console.log("on est au bout")
+          //console.log(this.list_of_messages)
           if(this.list_of_messages.length>0){
             this.chatService.get_other_messages(this.compteur_get_messages, this.friend_id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.list_of_messages_reactions,(this.friend_type=='group')?true:false).subscribe(r=>{
-              console.log(r[0][0]);
-              console.log(r[0][1].list_of_messages_reactions)
-              console.log(r[1])
+              //console.log(r[0][0]);
+              //console.log(r[0][1].list_of_messages_reactions)
+              //console.log(r[1])
               if(r[0][0][0] && this.compteur_get_messages==r[1]){
                 let num=this.list_of_messages.length;
                 this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
@@ -602,10 +602,10 @@ export class ChatComponent implements OnInit  {
                 this.cd.detectChanges();
                 let offset=this.message_children.toArray()[r[0][0].length].nativeElement.offsetTop;
                 let height =this.message_children.toArray()[r[0][0].length].nativeElement.getBoundingClientRect().height;
-                console.log("scroll bottom -1")
+                //console.log("scroll bottom -1")
                 this.myScrollContainer.nativeElement.scrollTop=offset-height;
                 
-                console.log("scroll dans interval")
+                //console.log("scroll dans interval")
                 this.can_get_other_messages=true;
                 
               }
@@ -613,7 +613,7 @@ export class ChatComponent implements OnInit  {
                 this.show_spinner=false;
                 this.can_get_other_messages=false;
                 this.trigger_no_more=true;
-                console.log("on cherche d'autres msg");
+                //console.log("on cherche d'autres msg");
               }
             })
           }
@@ -621,7 +621,7 @@ export class ChatComponent implements OnInit  {
               this.show_spinner=false;
               this.can_get_other_messages=false;
               this.trigger_no_more=true;
-              console.log("on cherche d'autres msg");
+              //console.log("on cherche d'autres msg");
           }
           
         }
@@ -657,8 +657,8 @@ export class ChatComponent implements OnInit  {
 
       var re = /(?:\.([^.]+))?$/;
       let size = file._file.size/1024/1024;
-      console.log(file._file.name);
-      console.log(this.uploader.queue)
+      //console.log(file._file.name);
+      //console.log(this.uploader.queue)
       if(this.uploader.queue.length==6){
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -684,7 +684,7 @@ export class ChatComponent implements OnInit  {
           this.display_attachments=true;
         }
         else{
-          console.log("dans le else");
+          //console.log("dans le else");
           this.attachments_size.push(size);
           let url = (window.URL) ? window.URL.createObjectURL(file._file) : (window as any).webkitURL.createObjectURL(file._file);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
@@ -699,7 +699,7 @@ export class ChatComponent implements OnInit  {
         file.withCredentials = false; 
         
       }
-      console.log(this.attachments_name)
+      //console.log(this.attachments_name)
     };
 
   
@@ -707,7 +707,7 @@ export class ChatComponent implements OnInit  {
     this.uploader.onCompleteItem = (file) => {
       this.k++;
       if(this.k<this.uploader.queue.length){
-        console.log("checking complete 1")
+        //console.log("checking complete 1")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.uploader.queue[this.k]._file.name,0).subscribe(r=>{
           let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
           this.uploader.setOptions({ url: URL});
@@ -724,7 +724,7 @@ export class ChatComponent implements OnInit  {
       else{
         type='file_attachment';
       }
-      console.log("checking complete 2")
+      //console.log("checking complete 2")
       this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,file._file.name,1).subscribe(r=>{
         let message ={
           id_user_name:this.current_user_pseudo,
@@ -746,7 +746,7 @@ export class ChatComponent implements OnInit  {
           is_a_group_chat:(this.friend_type=='user')?false:true,
         };
         this.temporary_id+=1;
-        console.log(message);
+        //console.log(message);
         this.chatService.messages.next(message);
       })
       if(this.k==this.uploader.queue.length){
@@ -758,7 +758,7 @@ export class ChatComponent implements OnInit  {
           this.attachments_for_sql=[];
           this.attachments=[];
           this.compt_at=0;
-          console.log("ini compt at 3")
+          //console.log("ini compt at 3")
           this.display_attachments=false;
         }
         else{
@@ -767,7 +767,7 @@ export class ChatComponent implements OnInit  {
           this.attachments_for_sql=[];
           this.attachments=[];
           this.compt_at=0;
-          console.log("ini compt at 4")
+          //console.log("ini compt at 4")
           this.display_attachments=false;
         }
         this.uploader.queue=[];  
@@ -779,13 +779,13 @@ export class ChatComponent implements OnInit  {
   };
 
   ngAfterViewInit(){
-    console.log(window.innerWidth)
+    //console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
+      //console.log("can sho ok")
       this.can_show_send_icon=true;
     }
     else{
-      console.log("can sho false")
+      //console.log("can sho false")
       this.can_show_send_icon=false;
     }
   
@@ -800,7 +800,7 @@ export class ChatComponent implements OnInit  {
   compteur_selector=0;
   compteur_get_messages=0;
   get_messages(id_chat_section,bool){
-    console.log(this.friend_id)
+    //console.log(this.friend_id)
     this.compteur_get_messages++;
     this.compteur_image=0;
     this.compteur_loaded=0;
@@ -822,8 +822,8 @@ export class ChatComponent implements OnInit  {
         }
 
       }
-      console.log(this.block_chat)
-      console.log( this.who_blocked)
+      //console.log(this.block_chat)
+      //console.log( this.who_blocked)
     }
     
     this.list_of_messages_pictures=[];
@@ -832,12 +832,12 @@ export class ChatComponent implements OnInit  {
     this.list_of_messages=[];
     this.list_of_time=[];
     this.compteur_pp=0;
-    console.log("getting messages");
-    console.log(this.user_present);
+    //console.log("getting messages");
+    //console.log(this.user_present);
     if(this.spam=='false' && this.user_present){
       this.chatService.let_all_friend_messages_to_seen(this.friend_id,id_chat_section,bool).subscribe(l=>{
-        console.log("11111111111111111111111111111111");
-        console.log(l);
+        //console.log("11111111111111111111111111111111");
+        //console.log(l);
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -853,30 +853,30 @@ export class ChatComponent implements OnInit  {
             is_a_group_chat:false,
             is_a_response:false,
           }
-          console.log("message after let all friend messages to seen")
+          //console.log("message after let all friend messages to seen")
           this.chatService.messages.next(message_to_send);
         }
         
       })
     }
-    console.log(this.friend_id)
+    //console.log(this.friend_id)
     this.get_chat_sections();
-    console.log(this.current_user_id)
+    //console.log(this.current_user_id)
     this.chatService.get_first_messages(this.current_user_id,this.friend_id,id_chat_section,bool,this.compteur_get_messages).subscribe(r=>{
       if(bool){
         this.list_of_messages_reactions=r[0][1].list_of_messages_reactions;
-        console.log(r[0][1]);
-        console.log( this.list_of_messages_reactions)
+        //console.log(r[0][1]);
+        //console.log( this.list_of_messages_reactions)
       }
-      console.log(this.list_of_messages)
-      console.log([this.list_of_messages.length-1])
+      //console.log(this.list_of_messages)
+      //console.log([this.list_of_messages.length-1])
       if(r[1]==this.compteur_get_messages){
         if(r[0][0].length>0){
           this.list_of_messages=r[0][0];
           for(let i=0;i<r[0][0].length;i++){
             this.list_of_messages_date[i]=this.date_of_message(r[0][0][i].createdAt,0);
             if(this.list_of_messages[i].is_an_attachment){
-              console.log("here is an attachment ")
+              //console.log("here is an attachment ")
               if(this.list_of_messages[i].attachment_type=='picture_message' && this.list_of_messages[i].status!="deleted"){
                 this.compteur_image+=1;
                 this.chatService.get_picture_sent_by_msg(this.list_of_messages[i].attachment_name).subscribe(t=>{
@@ -890,14 +890,14 @@ export class ChatComponent implements OnInit  {
               }
               else if(this.list_of_messages[i].attachment_type=='picture_attachment' && this.list_of_messages[i].status!="deleted"){
                 this.compteur_image+=1;
-                console.log("friend type " + this.friend_type)
-                console.log(" compteur" + this.compteur_get_messages)
+                //console.log("friend type " + this.friend_type)
+                //console.log(" compteur" + this.compteur_get_messages)
                 this.chatService.get_attachment(this.list_of_messages[i].attachment_name,(this.friend_type=='user')?'user':'group',this.chat_friend_id).subscribe(t=>{
                   let url = (window.URL) ? window.URL.createObjectURL(t) : (window as any).webkitURL.createObjectURL(t);
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                  console.log(r[1] + "compteur")
+                  //console.log(r[1] + "compteur")
                   if(r[1]==this.compteur_get_messages){
-                    console.log(this.list_of_messages_pictures)
+                    //console.log(this.list_of_messages_pictures)
                     this.list_of_messages_pictures[i]=SafeURL;
                   }
                   
@@ -922,19 +922,19 @@ export class ChatComponent implements OnInit  {
               if(i==0 && r[0][0][i].id_user==this.friend_id && this.current_user_id!=this.friend_id){
                 this.list_of_show_pp_left[i]=true;
                 this.compteur_pp+=1;
-                console.log("add pp left");
+                //console.log("add pp left");
                 
               }
               if(r[0][0][i].id_user==this.current_user_id && r[0][0][i].status=="seen" && this.index_of_show_pp_right<0){
                 this.index_of_show_pp_right=i;
                 this.compteur_pp+=1;
-                console.log("add pp right");
+                //console.log("add pp right");
               }
               if(i>0){  
                 if(r[0][0][i].id_user==this.friend_id && r[0][0][i].id_user!=r[0][0][i-1].id_user){
                   this.list_of_show_pp_left[i]=true;
                   this.compteur_pp+=1;
-                  console.log("add pp left");
+                  //console.log("add pp left");
                 }
               }
             }
@@ -954,15 +954,15 @@ export class ChatComponent implements OnInit  {
                 if(this.compteur_pp==0 && this.compteur_image==0){
                   this.cd.detectChanges();
                   this.put_messages_visible=true;
-                  console.log("scroll dans get messages")
-                  console.log("scroll bottom 0")
+                  //console.log("scroll dans get messages")
+                  //console.log("scroll bottom 0")
                   this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
                   if(this.list_of_messages.length>0){
                     this.can_get_other_messages=true;
                   }
                 };
-                console.log(this.list_of_messages)
-                console.log("messages retrieved");
+                //console.log(this.list_of_messages)
+                //console.log("messages retrieved");
               })
             }
           }
@@ -992,7 +992,7 @@ export class ChatComponent implements OnInit  {
   function_done=false;
  
   loaded_image(i){
-    console.log(i)
+    //console.log(i)
     if(i>=0){
       this.list_of_images_loaded[i]=true;
       this.cd.detectChanges()
@@ -1001,7 +1001,7 @@ export class ChatComponent implements OnInit  {
       //;
     }
     if(i<0){
-      console.log(this.list_of_pp_loaded_classic)
+      //console.log(this.list_of_pp_loaded_classic)
       this.list_of_pp_loaded_classic[Math.abs(i+1)]=true;
       this.cd.detectChanges()
       //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
@@ -1010,50 +1010,50 @@ export class ChatComponent implements OnInit  {
       this.compteur_loaded+=1;
       if(this.compteur_image!=0){
         if (this.compteur_loaded==this.compteur_image + this.compteur_pp){
-          console.log("scroll bottom 1")
+          //console.log("scroll bottom 1")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
           this.function_done=true;
           
           this.can_get_other_messages=true;
-          console.log("function_done");
-          console.log(this.list_of_images_loaded)
+          //console.log("function_done");
+          //console.log(this.list_of_images_loaded)
           
         }
       }
       else {
         if (this.compteur_loaded==this.compteur_pp){
-          console.log("scroll bottom 2")
+          //console.log("scroll bottom 2")
           this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
           this.put_messages_visible=true;
           this.first_turn_loaded=true;
           this.function_done=true;
           this.can_get_other_messages=true;
-          console.log("function_done");
-          console.log(this.list_of_images_loaded)
+          //console.log("function_done");
+          //console.log(this.list_of_images_loaded)
         }
       }
     }
     else if(this.show_research_results){
       this.compteur_loaded_research+=1;
-      console.log( this.compteur_loaded_research)
+      //console.log( this.compteur_loaded_research)
 
       if(this.compteur_image_research!=0){
-        console.log("over")
-        console.log(this.compteur_image_research + this.compteur_pp)
+        //console.log("over")
+        //console.log(this.compteur_image_research + this.compteur_pp)
         if (this.compteur_loaded_research==this.compteur_image_research + this.compteur_pp){
-          console.log("c'est bon on affiche")
+          //console.log("c'est bon on affiche")
           this.put_messages_visible=true;
           this.can_get_other_messages=true;
           this.function_done=true;
         }
       }
       else{
-        console.log("over")
-        console.log(this.compteur_pp)
+        //console.log("over")
+        //console.log(this.compteur_pp)
         if (this.compteur_loaded_research==this.compteur_pp){
-          console.log("c'est bon on affiche")
+          //console.log("c'est bon on affiche")
           this.put_messages_visible=true;
           this.can_get_other_messages=true;
           this.function_done=true;
@@ -1105,9 +1105,9 @@ export class ChatComponent implements OnInit  {
     } 
     if(this.spam=='true'){
       //pas de mention vue pour les spams
-      /*console.log("changing status to seen spam")
+      /*//console.log("changing status to seen spam")
       this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(l=>{
-        console.log(l[0])
+        //console.log(l[0])
         if(!(l[0].message)){
           let message_to_send ={
             id_user_name:this.current_user_pseudo,
@@ -1123,10 +1123,10 @@ export class ChatComponent implements OnInit  {
             is_a_group_chat:false,
             is_a_response:false,
           }
-          console.log("send seen after activating focus")
+          //console.log("send seen after activating focus")
          
           if(this.list_of_messages[0].id_user!=this.current_user_id){
-            console.log("change message status 7")
+            //console.log("change message status 7")
             this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"seen",friend_id:this.friend_id,friend_type:this.friend_type,spam:true});
           }
           this.chatService.messages.next(message_to_send);
@@ -1171,11 +1171,11 @@ export class ChatComponent implements OnInit  {
     }
     else if(this.attachments.length>0 && this.put_messages_visible){
       this.compt_at=0;
-      console.log("ini")
-      console.log(this.attachments)
+      //console.log("ini")
+      //console.log(this.attachments)
       for(let i=0;i<this.attachments.length;i++){
         this.compt_at+=1;
-        console.log(this.compt_at)
+        //console.log(this.compt_at)
         this.send_attachment_or_picture(i);
         if(i==0){
           this.input.nativeElement.blur();
@@ -1186,14 +1186,14 @@ export class ChatComponent implements OnInit  {
   }
 
   onPaste(event: ClipboardEvent) {
-    console.log("we are pasting")
+    //console.log("we are pasting")
     var re = /(?:\.([^.]+))?$/;
-    console.log(event);
-    console.log(window.innerWidth)
-    console.log(this.can_show_send_icon);
+    //console.log(event);
+    //console.log(window.innerWidth)
+    //console.log(this.can_show_send_icon);
     if(this.can_show_send_icon){
       this.show_send_icon=true;
-      console.log(this.show_send_icon)
+      //console.log(this.show_send_icon)
     }
     if(event.clipboardData.files[0]){
       let size = event.clipboardData.files[0].size/1024/1024;
@@ -1232,24 +1232,24 @@ export class ChatComponent implements OnInit  {
         this.attachments_size.push(size);
         this.attachments_type.push('picture_message');
         this.display_attachments=true;
-        console.log(this.show_send_icon)
+        //console.log(this.show_send_icon)
       }
     }
   }
 
   check_message_for_phone(){
     if(this.can_show_send_icon){
-      console.log(this.check_if_message_valide())
+      //console.log(this.check_if_message_valide())
       if(this.check_if_message_valide() && this.put_messages_visible){
-        console.log(1)
+        //console.log(1)
         this.show_send_icon=true;
       }
       else if(this.attachments.length>0 && this.put_messages_visible){
-        console.log(3)
+        //console.log(3)
         this.show_send_icon=true;
       }
       else{
-        console.log(2)
+        //console.log(2)
         this.show_send_icon=false;
       }
       
@@ -1257,9 +1257,9 @@ export class ChatComponent implements OnInit  {
   }
 
   on_keydown(event){
-    console.log(this.can_show_send_icon)
-    console.log(window.innerWidth)
-    console.log(event)
+    //console.log(this.can_show_send_icon)
+    //console.log(window.innerWidth)
+    //console.log(event)
     if(!this.can_show_send_icon){
       if(event.key=="Shift"){
         this.number_of_shift=1;
@@ -1275,11 +1275,11 @@ export class ChatComponent implements OnInit  {
           }
           else if(this.attachments.length>0 && this.put_messages_visible){
             this.compt_at=0;
-            console.log("ini")
-            console.log(this.attachments)
+            //console.log("ini")
+            //console.log(this.attachments)
             for(let i=0;i<this.attachments.length;i++){
               this.compt_at+=1;
-              console.log(this.compt_at)
+              //console.log(this.compt_at)
               this.send_attachment_or_picture(i);
               if(i==0){
                 this.input.nativeElement.blur();
@@ -1299,9 +1299,9 @@ export class ChatComponent implements OnInit  {
   }
 
   check_if_message_valide(){
-    console.log(this.message_group.value.message)
+    //console.log(this.message_group.value.message)
     if(this.message_group.value.message!=''){
-      console.log(this.message_group.value.message.replace(/\s/g, '').length);
+      //console.log(this.message_group.value.message.replace(/\s/g, '').length);
       if (this.message_group.value.message.replace(/\s/g, '').length>0 ) {
         return true;
       }
@@ -1333,7 +1333,7 @@ export class ChatComponent implements OnInit  {
   //envoie de message
   send_message(){
 
-    console.log("sending messages")
+    //console.log("sending messages")
     if(this.attachments.length>0){
       for(let i=0;i<this.attachments.length;i++){
         this.send_attachment_or_picture(i);
@@ -1368,8 +1368,8 @@ export class ChatComponent implements OnInit  {
     this.temporary_id+=1;
     this.respond_to_a_message=false;
     this.list_of_messages.splice(0,0,(this.message_one));
-    console.log("received first")
-                console.log(this.list_of_messages)
+    //console.log("received first")
+                //console.log(this.list_of_messages)
     this.list_of_messages_files.splice(0,0,false);
     this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
     this.list_of_messages_pictures.splice(0,0,false);
@@ -1382,15 +1382,15 @@ export class ChatComponent implements OnInit  {
     this.message.reset();
     this.message_group.value.message='';
     this.cd.detectChanges();
-    console.log("scroll dans send message");
+    //console.log("scroll dans send message");
     this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
-    console.log(this.message_one);
+    //console.log(this.message_one);
 
   }
 
   
   send_picture(i){
-    console.log("sending picture");
+    //console.log("sending picture");
     this.an_image_is_pasted=true;
     var re = /(?:\.([^.]+))?$/;
     var num=0;
@@ -1423,7 +1423,7 @@ export class ChatComponent implements OnInit  {
     };
     this.temporary_id+=1;
     this.chatService.chat_sending_images(file,re.exec(file.name)[1],file_name).subscribe(l=>{
-      console.log(l);
+      //console.log(l);
       this.chatService.messages.next(message);
     })
     this.index_of_show_pp_right=this.index_of_show_pp_right+1;
@@ -1431,8 +1431,8 @@ export class ChatComponent implements OnInit  {
     this.list_of_messages_files.splice(0,0,this.attachments[i]);
     this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
     this.list_of_messages.splice(0,0,(message));
-    console.log("received first")
-                console.log(this.list_of_messages)
+    //console.log("received first")
+                //console.log(this.list_of_messages)
     this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
     if(i==this.attachments.length-1){
       this.end_of_past_images=true;
@@ -1445,37 +1445,37 @@ export class ChatComponent implements OnInit  {
         this.attachments_for_sql=[];
         this.attachments=[];
         this.compt_at=0;
-        console.log("ini compt at")
+        //console.log("ini compt at")
         this.display_attachments=false;
       }
     }
     this.cd.detectChanges();
-    console.log("scroll dans send picture")
+    //console.log("scroll dans send picture")
     this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
   }
 
  
   send_attachment_or_picture(i){
     this.respond_to_a_message=false;
-    console.log("sending attachment or picture");
+    //console.log("sending attachment or picture");
     if(this.attachments_type[i]=="picture_message"){
-      console.log("picture_message")
+      //console.log("picture_message")
       this.send_picture(i);
     }
     else if(this.attachments_type[i]=="picture_attachment"){
       
-      console.log(this.compt_at)
+      //console.log(this.compt_at)
       if(this.compt_at==1){
-        console.log("checking 1")
-        console.log(this.attachments_name[i])
-        console.log(url)
+        //console.log("checking 1")
+        //console.log(this.attachments_name[i])
+        //console.log(url)
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
-          console.log(r[0]);
+          //console.log(r[0]);
           var uo: FileUploaderOptions = {};
           uo.headers = [{name:'attachment_name',value:`${r[0].value}`} ]
           
           let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
-          console.log('suivant : ' + URL)
+          //console.log('suivant : ' + URL)
           
           this.uploader.setOptions({ url: URL});
           this.uploader.setOptions( uo);
@@ -1500,13 +1500,13 @@ export class ChatComponent implements OnInit  {
           this.list_of_messages_files.splice(0,0,this.attachments[i]);
           this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
           this.list_of_messages.splice(0,0,(message));
-          console.log("received first")
-                console.log(this.list_of_messages)
+          //console.log("received first")
+                //console.log(this.list_of_messages)
           this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
         })
       }
       else{
-        console.log("checking 2")
+        //console.log("checking 2")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
           let message ={
             id_user:this.current_user_id,   
@@ -1528,24 +1528,24 @@ export class ChatComponent implements OnInit  {
           this.list_of_messages_files.splice(0,0,this.attachments[i]);
           this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
           this.list_of_messages.splice(0,0,(message));
-          console.log("received first")
-                console.log(this.list_of_messages)
+          //console.log("received first")
+                //console.log(this.list_of_messages)
         })
       }
       this.cd.detectChanges();
-      console.log("scroll dans send attachment pic")
+      //console.log("scroll dans send attachment pic")
       //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     else if(this.attachments_type[i]=="file_attachment"){
       this.compt_at+=1;
       if(this.compt_at==1){
-        console.log(" checkin first file attachment")
+        //console.log(" checkin first file attachment")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
-          console.log("file upload")
+          //console.log("file upload")
            let URL = url + `${this.friend_type}/${this.chat_friend_id}/` + r[0].value;
            this.uploader.setOptions({ url: URL});
            this.uploader.setOptions({ headers: [ {name:'attachment_name',value:`${r[0].value}`}]});
-           console.log( this.uploader.queue[0])
+           //console.log( this.uploader.queue[0])
            this.uploader.queue[0].upload();
            let message ={
              id_user:this.current_user_id,   
@@ -1564,20 +1564,20 @@ export class ChatComponent implements OnInit  {
            };
            this.index_of_show_pp_right=this.index_of_show_pp_right+1;
            this.list_of_show_pp_left.splice(0,0,false);
-           console.log(this.attachments[i])
+           //console.log(this.attachments[i])
            this.list_of_messages_files.splice(0,0,this.attachments[i]);
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages_date.splice(0,0,this.date_of_message("time",1));
            this.list_of_messages.splice(0,0,(message));
-           console.log("received first")
-                console.log(this.list_of_messages)
+           //console.log("received first")
+                //console.log(this.list_of_messages)
          })
       }
       else{
-        console.log("checking 6")
+        //console.log("checking 6")
         this.chatService.check_if_file_exists((this.friend_type=='user')?'user':'group',this.chat_friend_id,this.attachments_name[i],0).subscribe(r=>{
-          console.log("not a file to uplaod");
-          console.log(i);
+          //console.log("not a file to uplaod");
+          //console.log(i);
            let message ={
              id_user:this.current_user_id,   
              id_receiver:this.friend_id,  
@@ -1598,16 +1598,16 @@ export class ChatComponent implements OnInit  {
            this.list_of_messages_files.splice(0,0,this.attachments[i]);
            this.list_of_messages_pictures.splice(0,0,this.attachments[i]);
            this.list_of_messages.splice(0,0,(message));
-           console.log("received first")
-                console.log(this.list_of_messages)
+           //console.log("received first")
+                //console.log(this.list_of_messages)
          })
       }
       this.cd.detectChanges();
-      console.log("scroll dans send attachment file")
+      //console.log("scroll dans send attachment file")
       //this.myScrollContainer.nativeElement.scrollTop= this.myScrollContainer.nativeElement.scrollHeight;
     }
     if(this.compt_at==this.attachments_type.length){
-      console.log("ini compt at 1")
+      //console.log("ini compt at 1")
       this.compt_at=0;
     }
     this.display_attachments=false;
@@ -1617,7 +1617,7 @@ export class ChatComponent implements OnInit  {
 
   retry(i){
     let message=this.list_of_messages[i];
-    console.log(message);
+    //console.log(message);
   }
 
   onFileClick(event) {
@@ -1630,12 +1630,12 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des spams***********************************/
 /*************************************Partie gestion des spams***********************************/
   add_to_contacts(){
-    console.log("adding to contacts");
+    //console.log("adding to contacts");
     this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(r=>{
-      console.log("11111111111111111111111111111111");
-      console.log(r);
+      //console.log("11111111111111111111111111111111");
+      //console.log(r);
       this.chatService.add_spam_to_contacts(this.friend_id).subscribe(l=>{
-        console.log(l);
+        //console.log(l);
         let message_one ={
           id_user_name:this.current_user_pseudo,
           chat_id:l[0].id,
@@ -1668,8 +1668,8 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des messages***********************************/
 
   delete_message(i){
-    console.log(this.list_of_messages[i])
-    console.log(this.list_of_messages[i].id);
+    //console.log(this.list_of_messages[i])
+    //console.log(this.list_of_messages[i].id);
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir supprimer le message ?'},
       panelClass: "popupConfirmationClass",
@@ -1685,7 +1685,7 @@ export class ChatComponent implements OnInit  {
          if(this.list_of_messages[i].is_an_attachment && (this.list_of_messages[i].attachment_type=='picture_attachment' || this.list_of_messages[i].attachment_type=='file_attachment')){
           this.reload_list_of_files_subject.next(true)
          }
-          console.log(this.list_of_messages[i])
+          //console.log(this.list_of_messages[i])
           let message={
             id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
@@ -1792,7 +1792,7 @@ export class ChatComponent implements OnInit  {
   date_of_message(timestamp,index){
     
     if(index==0){
-      //console.log(new Date(timestamp))
+      ////console.log(new Date(timestamp))
       let today=new Date(timestamp);
       let hour =String(today.getHours()).padStart(2, '0');
       let min =String(today.getMinutes()).padStart(2, '0');
@@ -1897,7 +1897,7 @@ export class ChatComponent implements OnInit  {
   id_message_responding_to=-1;
   id_user_message_responding_to=-1;
   respond_to_message(i){
-    console.log(this.list_of_messages[i]);
+    //console.log(this.list_of_messages[i]);
     if(this.list_of_messages[i].is_an_attachment){
       this.message_responding_to="pièce jointe : " + this.list_of_messages[i].attachment_name;
     }
@@ -1918,16 +1918,16 @@ export class ChatComponent implements OnInit  {
   @ViewChildren('message_children') message_children: QueryList<ElementRef>;
   show_response(i){
     let id=this.list_of_messages[i].id_message_responding;
-    console.log(this.list_of_messages[i].id_message_responding);
+    //console.log(this.list_of_messages[i].id_message_responding);
     for(let j=0;j<this.list_of_messages.length;j++){
       if(this.list_of_messages[j].id==id){
-        console.log(this.list_of_messages[j]);
-        console.log(this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.offsetTop);
+        //console.log(this.list_of_messages[j]);
+        //console.log(this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.offsetTop);
         let offset=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.offsetTop;
         let top=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect().top;
         let height=this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect().height;
-        console.log(this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect());
-        console.log(this.myScrollContainer.nativeElement.scrollHeight+top);
+        //console.log(this.message_children.toArray()[this.list_of_messages.length-1-j].nativeElement.getBoundingClientRect());
+        //console.log(this.myScrollContainer.nativeElement.scrollHeight+top);
         this.myScrollContainer.nativeElement.scrollTop=offset;
         
       }
@@ -1955,8 +1955,8 @@ list_show_reactions:any[]=[];
 handleClick($event) {
   //this.selectedEmoji = $event.emoji;
   let data = this.message_group.get('message');
-  console.log(data.value)
-  console.log(data.value + $event.emoji.native)
+  //console.log(data.value)
+  //console.log(data.value + $event.emoji.native)
   if(data.value){
     data.patchValue(data.value + $event.emoji.native);
   }
@@ -1985,33 +1985,33 @@ reaction_click($event,i) {
   
   //this.emojis_reactions.toArray()[this.list_of_messages.length -1 -i].nativeElement.classList.add("closed");
   this.selectedEmoji = $event.emoji;
-  console.log($event.emoji);
+  //console.log($event.emoji);
   if(this.friend_type=='group'){
     this.chatService.get_my_emojis_reactions_for_msg_group(this.list_of_messages[i].id_receiver,this.list_of_messages[i].id).subscribe(r=>{
-      console.log(r[0]);
+      //console.log(r[0]);
       if(!r[0].message){
         if(r[0].emoji_reaction==$event.emoji.id){
           this.chatService.delete_emoji_reaction(r[0].id,"user",true).subscribe(l=>{
-            console.log(r)
+            //console.log(r)
             let index= this.list_of_messages_reactions[this.list_of_messages[i].id].indexOf($event.emoji.id)
             this.list_of_messages_reactions[this.list_of_messages[i].id].splice(index,1)
-            console.log( this.list_of_messages_reactions[this.list_of_messages[i].id])
+            //console.log( this.list_of_messages_reactions[this.list_of_messages[i].id])
           })
         }
         else{
           this.chatService.add_emoji_reaction(r[0].id,$event.emoji.id,"update",true).subscribe(l=>{
-            console.log(r)
+            //console.log(r)
             let index= this.list_of_messages_reactions[this.list_of_messages[i].id].indexOf(r[0].emoji_reaction)
             this.list_of_messages_reactions[this.list_of_messages[i].id].splice(index,1,$event.emoji.id)
-            console.log( this.list_of_messages_reactions[this.list_of_messages[i].id]);
+            //console.log( this.list_of_messages_reactions[this.list_of_messages[i].id]);
           })
         }
       }
       else{
-        console.log(this.list_of_messages[i].id)
+        //console.log(this.list_of_messages[i].id)
         this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"create",true).subscribe(l=>{
-          console.log(r)
-          console.log(this.list_of_messages_reactions[this.list_of_messages[i].id])
+          //console.log(r)
+          //console.log(this.list_of_messages_reactions[this.list_of_messages[i].id])
           if(this.list_of_messages_reactions[this.list_of_messages[i].id]){
             this.list_of_messages_reactions[this.list_of_messages[i].id].push($event.emoji.id);
           }
@@ -2064,10 +2064,10 @@ reaction_click($event,i) {
       is_a_group_chat:false,
     }
     if(this.list_of_messages[i].id_user==this.current_user_id){
-      console.log("moi meme")
+      //console.log("moi meme")
       if(this.list_of_messages[i].emoji_reaction_user==$event.emoji.id){
         this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"user",false).subscribe(r=>{
-          console.log(r)
+          //console.log(r)
           this.list_of_messages[i].emoji_reaction_user=null;
         })
         message.old_emoji=$event.emoji.id;
@@ -2075,7 +2075,7 @@ reaction_click($event,i) {
       }
       else{
         this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"user",false).subscribe(r=>{
-          console.log(r)
+          //console.log(r)
           this.list_of_messages[i].emoji_reaction_user=$event.emoji.id;
         })
         message.old_emoji=this.list_of_messages[i].emoji_reaction_user;
@@ -2084,10 +2084,10 @@ reaction_click($event,i) {
 
     }
     else{
-      console.log("friend");
+      //console.log("friend");
       if(this.list_of_messages[i].emoji_reaction_receiver==$event.emoji.id){
         this.chatService.delete_emoji_reaction(this.list_of_messages[i].id,"receiver",false).subscribe(r=>{
-          console.log(r)
+          //console.log(r)
           this.list_of_messages[i].emoji_reaction_receiver=null;
         })
         message.old_emoji=$event.emoji.id;
@@ -2096,7 +2096,7 @@ reaction_click($event,i) {
       }
       else{
         this.chatService.add_emoji_reaction(this.list_of_messages[i].id,$event.emoji.id,"receiver",false).subscribe(r=>{
-          console.log(r)
+          //console.log(r)
           this.list_of_messages[i].emoji_reaction_receiver=$event.emoji.id;
         })
         message.old_emoji=this.list_of_messages[i].emoji_reaction_receiver;
@@ -2115,15 +2115,15 @@ index_of_children_reactions=0;
 reactions_shown=false;
 target_clicked:any;
 show_reactions(i,event ){
-  console.log(i);
-  //console.log(this.emojis_reactions.toArray())
-  //console.log(this.emojis_reactions.toArray().length)
+  //console.log(i);
+  ////console.log(this.emojis_reactions.toArray())
+  ////console.log(this.emojis_reactions.toArray().length)
   this.target_clicked=event.target
   this.list_show_reactions[i]=true;
   this.reactions_shown=true;
   this.index_of_children_reactions=i;
   //this.emojis_reactions.toArray()[i].nativeElement.classList.remove("closed");
-  console.log("adding reaction shown")
+  //console.log("adding reaction shown")
 }
 
 
@@ -2157,8 +2157,8 @@ today_triggered=false;
 
 
 changed_section(e:any) {
-  console.log("change section")
-  console.log(e)
+  //console.log("change section")
+  //console.log(e)
 
   this.function_done=false;
   this.nothing_selected=false;
@@ -2168,10 +2168,10 @@ changed_section(e:any) {
   this.first_turn_loaded=false;
 
   if(e.value!=''){
-    console.log(e.value)
+    //console.log(e.value)
     let index =this.list_of_chat_sections.indexOf(e.value)
-    console.log(index)
-    console.log(this.list_of_chat_sections_notifications)
+    //console.log(index)
+    //console.log(this.list_of_chat_sections_notifications)
     this.id_chat_section=this.list_of_chat_sections_id[index];
     this.change_section.emit({id_chat_section:this.id_chat_section});
     
@@ -2195,7 +2195,7 @@ changed_section(e:any) {
     this.cd.detectChanges();
   }
   else{
-    console.log("getting messages from selector 0");
+    //console.log("getting messages from selector 0");
     this.id_chat_section=1;
     this.change_section.emit({id_chat_section:this.id_chat_section});
     this.get_messages(this.id_chat_section,(this.friend_type=='user')?false:true);
@@ -2230,7 +2230,7 @@ changed_section(e:any) {
 
 activate_add_chat_section=false;
 add_chat_section(){
-  console.log("add chat section")
+  //console.log("add chat section")
   this.activate_add_chat_section=true;
 }
 
@@ -2243,7 +2243,7 @@ add_chat_section_name(e: any){
     return
   }
   this.adding_chat_section_name=true;
-  console.log( e );
+  //console.log( e );
   let name= e;
   
   this.chatService.add_chat_section(name,this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
@@ -2277,10 +2277,10 @@ add_chat_section_name(e: any){
           compt+=1;
         }
       }
-      console.log(this.list_of_chat_sections);
+      //console.log(this.list_of_chat_sections);
       let indice=this.list_of_chat_sections.indexOf(name);
-      console.log(indice);
-      console.log(r[0].id_chat_section);
+      //console.log(indice);
+      //console.log(r[0].id_chat_section);
       this.list_of_chat_sections_id.splice(indice,0,r[0].id_chat_section);
       this.list_of_chat_sections_notifications.splice(indice,0,false);
       this.activate_add_chat_section=false;
@@ -2357,36 +2357,36 @@ delete_chat_section(){
 compteur_chat_section=0;
 get_chat_sections(){
   
-  console.log("getting chat sections")
-  console.log(this.friend_id);
-  console.log((this.friend_type=='user')?false:true)
+  //console.log("getting chat sections")
+  //console.log(this.friend_id);
+  //console.log((this.friend_type=='user')?false:true)
   this.chatService.get_chat_sections(this.friend_id,(this.friend_type=='user')?false:true,this.compteur_get_messages).subscribe(m=>{
     let l=m[0];
     if(this.compteur_get_messages==m[1]){
-      console.log(l[0]);
+      //console.log(l[0]);
       if(l[0][0]){
         let compt =0;
         for(let i=0;i<l[0].length;i++){
-          console.log(this.id_chat_section)
-          console.log(l[0][i].id_chat_section)
+          //console.log(this.id_chat_section)
+          //console.log(l[0][i].id_chat_section)
           this.list_of_chat_sections[i+1]=(l[0][i].chat_section_name);
           this.list_of_chat_sections_id[i+1]=(l[0][i].id_chat_section);
           if(this.id_chat_section==l[0][i].id_chat_section && compt==0){
-            console.log(l[0][i].chat_section_name)
+            //console.log(l[0][i].chat_section_name)
             this.chat_section_to_open=l[0][i].chat_section_name;
-            console.log(this.chat_section_to_open)
+            //console.log(this.chat_section_to_open)
             compt+=1;
           } 
         }
 
         if(compt==0){
           this.chat_section_to_open="Discussion principale"
-          console.log( this.chat_section_to_open)
+          //console.log( this.chat_section_to_open)
         }
         let compt_sections=0;
         for(let j=0;j<this.list_of_chat_sections.length;j++){
           this.chatService.get_notifications_section(this.list_of_chat_sections_id[j],this.friend_id,(this.friend_type=='user')?false:true).subscribe(r=>{
-            console.log(r[0])
+            //console.log(r[0])
             if(this.compteur_get_messages==m[1]){
               if(this.list_of_chat_sections_id[j]==1 ){
                 if( this.chat_section_to_open!="Discussion principale"){
@@ -2399,8 +2399,8 @@ get_chat_sections(){
               
               compt_sections++;
               if(compt_sections==this.list_of_chat_sections.length){
-                console.log(this.compteur_chat_section)
-                console.log(this.list_of_chat_sections_notifications)
+                //console.log(this.compteur_chat_section)
+                //console.log(this.list_of_chat_sections_notifications)
                 let compt_unseen=0;
                 for(let k=0;k<this.list_of_chat_sections_notifications.length;k++){
                   if(this.list_of_chat_sections_notifications[k]){
@@ -2419,7 +2419,7 @@ get_chat_sections(){
                 }
                 if(this.compteur_chat_section>0){
                   this.activate_add_chat_section=false;
-                  console.log(this.chat_section_to_open)
+                  //console.log(this.chat_section_to_open)
                   this.cd.detectChanges();
                 }
                 this.compteur_chat_section+=1;
@@ -2432,7 +2432,7 @@ get_chat_sections(){
         
       }
       else{
-        console.log("dans le else"); 
+        //console.log("dans le else"); 
         this.chat_section_to_open="Discussion principale";
         this.cd.detectChanges();
         this.activate_add_chat_section=false;
@@ -2448,17 +2448,17 @@ list_of_chat_sections_found_id:any[]=[];
 
 
 open_section_found(i){
-  console.log("open s")
-  console.log( this.list_of_chat_sections_found_id[i]);
+  //console.log("open s")
+  //console.log( this.list_of_chat_sections_found_id[i]);
   
   this.nothing_selected=false;
   this.trigger_no_more=false;
   this.chat_section_to_open=this.list_of_chat_sections_found[i];
-  console.log(this.chat_section_to_open)
+  //console.log(this.chat_section_to_open)
   this.first_turn_loaded=false;
   let index =this.list_of_chat_sections_id.indexOf(this.list_of_chat_sections_found_id[i])
   this.id_chat_section=this.list_of_chat_sections_found_id[i];
-  console.log(this.id_chat_section)
+  //console.log(this.id_chat_section)
   this.change_section.emit({id_chat_section:this.id_chat_section});
   this.list_of_chat_sections_notifications[index]=false;
   let compt=0;
@@ -2525,7 +2525,7 @@ on_keydown_research(s){
   this.current_list_of_messages_files=this.list_of_messages_files;
   
   this.chatService.get_messages_from_research( s,this.id_chat_section,this.friend_id,this.friend_type).subscribe(l=>{
-    console.log(l[0]);
+    //console.log(l[0]);
     this.list_of_messages_found_complete=l[0];
     this.number_of_messages_found=l[0].length;
     this.message_researched= s;
@@ -2534,48 +2534,48 @@ on_keydown_research(s){
       for(let i=0;i<l[0].length;i++){
         let match=false;
         for(let j=0;j<this.list_of_messages.length;j++){
-          console.log(j)
-          console.log("for loop")
+          //console.log(j)
+          //console.log("for loop")
           if(l[0][i].message==this.list_of_messages[j].message && l[0][i].createdAt==this.list_of_messages[j].createdAt ){
-            console.log("first if")
+            //console.log("first if")
             this.list_of_messages_found.push(true);
             this.index_of_messages_found.push(j);
             match=true;
             second_compt+=1;
-            console.log(second_compt)
-            console.log(l[0].length)
-            console.log(j)
-            console.log(this.list_of_messages.length-1)
+            //console.log(second_compt)
+            //console.log(l[0].length)
+            //console.log(j)
+            //console.log(this.list_of_messages.length-1)
             if(second_compt==l[0].length){
               this.show_research_results=true;
               
               if(this.list_of_messages_found[0]){
-                console.log("first_message_is_loaded")
+                //console.log("first_message_is_loaded")
                 this.first_message_is_loaded();
               }
               else{
-                console.log("first_message_isnt_loaded")
+                //console.log("first_message_isnt_loaded")
                 this.first_message_isnt_loaded();
               }
             }
           }
           else if(j==this.list_of_messages.length-1 && !match){
-            console.log("else if")
+            //console.log("else if")
               this.chatService.get_messages_around(l[0][i].id,this.id_chat_section,this.friend_id,this.friend_type).subscribe(r=>{
                 this.list_of_messages_around[i]=r[0].list_of_messages_to_send;
-                console.log(r[0]);
+                //console.log(r[0]);
                 second_compt+=1;
                 if(second_compt==l[0].length){
-                  console.log( this.list_of_messages_found);
-                  console.log(this.list_of_messages_around);
+                  //console.log( this.list_of_messages_found);
+                  //console.log(this.list_of_messages_around);
                   this.show_research_results=true;
                   
                   if(this.list_of_messages_found[0]){
-                    console.log("first_message_is_loaded")
+                    //console.log("first_message_is_loaded")
                     this.first_message_is_loaded();
                   }
                   else{
-                    console.log("first_message_isnt_loaded")
+                    //console.log("first_message_isnt_loaded")
                     this.first_message_isnt_loaded();
                   }
                 }
@@ -2645,13 +2645,13 @@ compteur_image_research=0;
 show_less_results=false;
 show_next_message_researched(){
   
-  console.log("show_next_message_researched");
-  console.log(this.number_click_top);
-  console.log(this.number_of_messages_found)
+  //console.log("show_next_message_researched");
+  //console.log(this.number_click_top);
+  //console.log(this.number_of_messages_found)
   if(this.number_click_top<this.number_of_messages_found){
     this.number_click_top+=1;
-    console.log(this.list_of_messages_found)
-    console.log(this.list_of_messages_found[this.number_click_top-1])
+    //console.log(this.list_of_messages_found)
+    //console.log(this.list_of_messages_found[this.number_click_top-1])
     if(this.list_of_messages_found[this.number_click_top-1]){
       let ind= this.list_of_messages.length-1-this.index_of_messages_found[this.number_click_top-1];
       this.searched_message = ind;
@@ -2670,7 +2670,7 @@ show_next_message_researched(){
       this.put_messages_visible=false;
       this.list_of_messages_date=[];
       this.list_of_messages=this.list_of_messages_around[this.number_click_top-1];
-      console.log(this.list_of_messages)
+      //console.log(this.list_of_messages)
       for(let i=0;i<this.list_of_messages.length;i++){
         this.list_of_messages_date.push(this.date_of_message(this.list_of_messages[i].createdAt,0));
         if(this.list_of_messages[i].is_an_attachment){
@@ -2695,7 +2695,7 @@ show_next_message_researched(){
           let ind= this.list_of_messages.length-1-i;
           this.searched_message = ind;
           let offset=this.message_children.toArray()[ind].nativeElement.offsetTop;
-          console.log(offset)
+          //console.log(offset)
           this.myScrollContainer.nativeElement.scrollTop=offset-100;
         }
       }
@@ -2704,7 +2704,7 @@ show_next_message_researched(){
 }
 
 show_precedent_message_researched(){
-  console.log("initialisaiton");
+  //console.log("initialisaiton");
   if(this.number_click_top>1){
     this.number_click_top-=1;
     if(this.list_of_messages_found[this.number_click_top-1]){
@@ -2765,7 +2765,7 @@ show_precedent_message_researched(){
       }
       this.cd.detectChanges();
       for(let i=0;i<this.list_of_messages.length;i++){
-        console.log("in loop");
+        //console.log("in loop");
         if(this.list_of_messages[i].id==this.list_of_messages_found_complete[this.number_click_top-1].id){
           let ind= this.list_of_messages.length-1-i;
           this.searched_message = ind;
@@ -2873,7 +2873,7 @@ see_more_messages(){
         }
       }
       else{
-        console.log("no more");
+        //console.log("no more");
         this.show_spinner_for_more=false;
         this.trigger_no_more=true;
       }
@@ -2886,7 +2886,7 @@ see_less_messages(){
   this.searched_message = -1;
   
   this.chatService.get_less_messages(this.friend_id,this.list_of_messages[0].id,this.list_of_messages[this.list_of_messages.length-1].id,this.id_chat_section,this.friend_type).subscribe(r=>{
-    //console.log(r[0][0]);
+    ////console.log(r[0][0]);
     if(r[0]){
       this.searched_message = -1;
       this.put_messages_visible=false;
@@ -2978,7 +2978,7 @@ change_profile_picture() {
 }
 
 add_a_friend() {
-  console.log("adding a friend send emit")
+  //console.log("adding a friend send emit")
   this.add_a_friend_to_the_group.emit({friend_id:this.friend_id});
   // envoyer un message pour prévenir de l'ajout d'un nouvel utilisateur
 }
@@ -3011,7 +3011,7 @@ exit_group(){
           is_an_attachment:false,
           is_a_group_chat:true,
         };
-        console.log("sending exit")
+        //console.log("sending exit")
         this.chatService.messages.next(message_one);
         location.reload();
       })
@@ -3028,7 +3028,7 @@ display_members_of_the_group(){
     return
   }
   this.displaying_members_of_the_group=true;
-  console.log(this.friend_id);
+  //console.log(this.friend_id);
   this.chatService.get_group_chat_information(this.friend_id).subscribe(p=>{
     let list_of_ids=p[0].list_of_receivers_ids;
     let list_of_pseudos=[];
@@ -3057,8 +3057,8 @@ display_members_of_the_group(){
         if(pp_retrieved && data_retrieved){
           compt++;
           if(compt==list_of_ids.length){
-            console.log(list_of_ids);
-            console.log(list_of_names);
+            //console.log(list_of_ids);
+            //console.log(list_of_names);
             const dialogRef = THIS.dialog.open(PopupChatGroupMembersComponent, {
               data: {is_for_emojis:false,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
               panelClass:"popupChatGroupMembersClass"
@@ -3081,7 +3081,7 @@ see_emoji_reaction_by_user(id_message){
   }
   this.emojis_loading=true;
   this.chatService.get_reactions_by_user(id_message).subscribe(r=>{
-    console.log(r[0]);
+    //console.log(r[0]);
     let list_of_ids=[];
     let list_of_emojis={};
     let list_of_pseudos=[];
@@ -3113,8 +3113,8 @@ see_emoji_reaction_by_user(id_message){
             compt++;
             if(compt==r[0].length){
               
-              console.log(list_of_ids);
-              console.log(list_of_names);
+              //console.log(list_of_ids);
+              //console.log(list_of_names);
               const dialogRef = THIS.dialog.open(PopupChatGroupMembersComponent, {
                 data: {is_for_emojis:true,list_of_emojis:list_of_emojis,list_of_ids:list_of_ids,list_of_pseudos:list_of_pseudos,list_of_names:list_of_names,list_of_pictures:list_of_pictures},
                 panelClass:"popupChatGroupMembersClass"
@@ -3166,21 +3166,21 @@ has_user_saw_something_else_after(id,index){
 
 chat_service_managment_function(msg){
   if(msg[0].for_notifications){
-    console.log(msg[0])
+    //console.log(msg[0])
     this.navbar.add_notification_from_chat(msg);
   }
   else{
-    console.log(msg[0])
-    console.log(this.list_of_messages)
+    //console.log(msg[0])
+    //console.log(this.list_of_messages)
     //a person sends a message
     if(msg[0].id_user!="server" && !msg[0].is_from_server){
-      console.log("it's not from server");
-      console.log(msg[0].status)
+      //console.log("it's not from server");
+      //console.log(msg[0].status)
       if(msg[0].is_a_group_chat){
-        console.log("is from a group");
+        //console.log("is from a group");
         //currently in the group talking to my friends
         if(msg[0].id_user==this.friend_id && msg[0].status!='seen' && this.friend_type=='group'){
-          console.log("user currently talking");
+          //console.log("user currently talking");
           this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'group'});
           let message=msg[0];
 
@@ -3192,8 +3192,8 @@ chat_service_managment_function(msg){
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
                 
                 this.list_of_messages.splice(0,0,message);
-                console.log("received first")
-                console.log(this.list_of_messages)
+                //console.log("received first")
+                //console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3209,8 +3209,8 @@ chat_service_managment_function(msg){
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
                 
                 this.list_of_messages.splice(0,0,message);
-                console.log("received first")
-                console.log(this.list_of_messages)
+                //console.log("received first")
+                //console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3227,8 +3227,8 @@ chat_service_managment_function(msg){
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_files.splice(0,0,SafeURL)
                 this.list_of_messages.splice(0,0,message);
-                console.log("received first")
-                console.log(this.list_of_messages)
+                //console.log("received first")
+                //console.log(this.list_of_messages)
                 this.list_of_messages_pictures.splice(0,0,false);
                 if(this.list_of_messages.length==1){
                   this.display_messages=true;
@@ -3239,8 +3239,8 @@ chat_service_managment_function(msg){
           }
           else{
             this.list_of_messages.splice(0,0,message);
-            console.log("received first")
-                console.log(this.list_of_messages)
+            //console.log("received first")
+                //console.log(this.list_of_messages)
             this.list_of_messages_pictures.splice(0,0,false)
             this.list_of_messages_files.splice(0,0,false);
             if(this.list_of_messages.length==1){
@@ -3250,11 +3250,11 @@ chat_service_managment_function(msg){
           message.id_user=msg[0].real_id_user;
           
           // tell the friend I read his message if I am present;
-          console.log(this.user_present);
-          console.log(this.list_of_show_pp_left);
-          console.log(this.index_of_show_pp_right);
+          //console.log(this.user_present);
+          //console.log(this.list_of_show_pp_left);
+          //console.log(this.index_of_show_pp_right);
           if(this.user_present && msg[0].id_chat_section==this.id_chat_section){
-            console.log("i am present")
+            //console.log("i am present")
             let message_to_send ={
               id_user_name:this.current_user_pseudo,
               id_user:this.current_user_id,   
@@ -3270,12 +3270,12 @@ chat_service_managment_function(msg){
               is_a_response:false,
             }
             //function to update status rows to 'seen'
-            console.log("putting this message to seen")
-            console.log("send seen after receiving message")
+            //console.log("putting this message to seen")
+            //console.log("send seen after receiving message")
             this.chatService.messages.next(message_to_send);
             this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,true).subscribe(l=>{ 
-              console.log("11111111111111111111111111111111");
-              console.log(l)
+              //console.log("11111111111111111111111111111111");
+              //console.log(l)
             })
             
           }
@@ -3292,41 +3292,41 @@ chat_service_managment_function(msg){
         }
         // a message from your friend to tell you that he has seen the message
         else if(msg[0].id_receiver==this.friend_id && msg[0].status=='seen' && this.friend_type=='group'){
-          console.log(" from my friend to tell seen")
+          //console.log(" from my friend to tell seen")
           for(let i=0;i<this.list_of_messages.length;i++){
             //on rajoute l'utilisateur qui a vu les messages dans la liste des utilisateur qui ont vu les messages
             if(this.list_of_messages[i].list_of_users_who_saw.indexOf(msg[0].id_user)<0 && this.list_of_messages[i].id_user!=msg[0].id_user && this.list_of_messages[i].id){
               this.list_of_messages[i].list_of_users_who_saw.push(msg[0].id_user);
-              console.log(this.list_of_messages[i])
+              //console.log(this.list_of_messages[i])
               if(this.list_of_messages[i].list_of_users_who_saw.length== this.list_of_messages[i].list_of_users_in_the_group.length){
                 this.list_of_messages[i].status=='seen';
               }
             }
           }
-          console.log("change message status 1")
+          //console.log("change message status 1")
           this.change_message_status.emit({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_receiver,friend_type:'group',spam:false,real_friend_id:msg[0].id_user});
           this.cd.detectChanges();
         }
         else if(msg[0].id_receiver!=this.friend_id && msg[0].status=="seen"){
-          console.log("in the else if seen")
-          console.log("change message status 2")
+          //console.log("in the else if seen")
+          //console.log("change message status 2")
           this.change_message_status.emit({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_receiver,friend_type:'group',spam:false,real_friend_id:msg[0].id_user});
         }
         else{
-          console.log(msg[0].status)
-          console.log("in the else ");
+          //console.log(msg[0].status)
+          //console.log("in the else ");
           this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'group'});
         }
         /***********suuite ******** */
       }
       else{
-        console.log("is from a user ");
+        //console.log("is from a user ");
         //a person I am currently talking to
         if(msg[0].id_user==this.friend_id && msg[0].status!='seen'  && this.friend_type=='user'){
-          console.log("user currently talking");
+          //console.log("user currently talking");
           //if it isnt a message to himmself
           if(msg[0].id_user!=msg[0].id_receiver && msg[0].id_chat_section==this.id_chat_section){
-            console.log("not talking to myself");
+            //console.log("not talking to myself");
             this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
             let message = msg[0];
             this.response_exist=true;
@@ -3337,25 +3337,25 @@ chat_service_managment_function(msg){
                 const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                 this.list_of_messages_pictures.splice(0,0,SafeURL)
                 this.list_of_messages.splice(0,0,message);
-                console.log("received first")
-                console.log(this.list_of_messages)
+                //console.log("received first")
+                //console.log(this.list_of_messages)
                 this.list_of_messages_files.splice(0,0,false)
                 if(this.list_of_messages.length>1){
-                  console.log("list not empty");
+                  //console.log("list not empty");
                   // on décale les photos de profiles selon le dernier message
                   if(this.list_of_messages[0].id_user==this.friend_id){
-                    console.log("on règle les affaires de pp ici")
+                    //console.log("on règle les affaires de pp ici")
                     this.list_of_show_pp_left[0]=false;
                     this.index_of_show_pp_right+=1;
                     this.list_of_show_pp_left.splice(0,0,true);
-                    console.log(this.list_of_show_pp_left);
-                    console.log(this.index_of_show_pp_right);
+                    //console.log(this.list_of_show_pp_left);
+                    //console.log(this.index_of_show_pp_right);
                   }
                   else{
                     this.index_of_show_pp_right-=1;
                     this.list_of_show_pp_left.splice(0,0,true);
-                    console.log(this.list_of_show_pp_left);
-                    console.log(this.index_of_show_pp_right);
+                    //console.log(this.list_of_show_pp_left);
+                    //console.log(this.index_of_show_pp_right);
                   }
                 }
                 else if(this.list_of_messages.length==1){
@@ -3372,25 +3372,25 @@ chat_service_managment_function(msg){
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_pictures.splice(0,0,SafeURL)
                   this.list_of_messages.splice(0,0,message);
-                  console.log("received first")
-                console.log(this.list_of_messages)
+                  //console.log("received first")
+                //console.log(this.list_of_messages)
                   this.list_of_messages_files.splice(0,0,false)
                   if(this.list_of_messages.length>1){
-                    console.log("list not empty");
+                    //console.log("list not empty");
                     // on décale les photos de profiles selon le dernier message
                     if(this.list_of_messages[0].id_user==this.friend_id){
-                      console.log("on règle les affaires de pp ici")
+                      //console.log("on règle les affaires de pp ici")
                       this.list_of_show_pp_left[0]=false;
                       this.index_of_show_pp_right+=1;
                       this.list_of_show_pp_left.splice(0,0,true);
-                      console.log(this.list_of_show_pp_left);
-                      console.log(this.index_of_show_pp_right);
+                      //console.log(this.list_of_show_pp_left);
+                      //console.log(this.index_of_show_pp_right);
                     }
                     else{
                       this.index_of_show_pp_right-=1;
                       this.list_of_show_pp_left.splice(0,0,true);
-                      console.log(this.list_of_show_pp_left);
-                      console.log(this.index_of_show_pp_right);
+                      //console.log(this.list_of_show_pp_left);
+                      //console.log(this.index_of_show_pp_right);
                     }
                   }
                   else if(this.list_of_messages.length==1){
@@ -3410,25 +3410,25 @@ chat_service_managment_function(msg){
                   const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
                   this.list_of_messages_files.splice(0,0,SafeURL)
                   this.list_of_messages.splice(0,0,message);
-                  console.log("received first")
-                console.log(this.list_of_messages)
+                  //console.log("received first")
+                //console.log(this.list_of_messages)
                   this.list_of_messages_pictures.splice(0,0,false);
                   if(this.list_of_messages.length>1){
-                    console.log("list not empty");
+                    //console.log("list not empty");
                     // on décale les photos de profiles selon le dernier message
                     if(this.list_of_messages[0].id_user==this.friend_id){
-                      console.log("on règle les affaires de pp ici")
+                      //console.log("on règle les affaires de pp ici")
                       this.list_of_show_pp_left[0]=false;
                       this.index_of_show_pp_right+=1;
                       this.list_of_show_pp_left.splice(0,0,true);
-                      console.log(this.list_of_show_pp_left);
-                      console.log(this.index_of_show_pp_right);
+                      //console.log(this.list_of_show_pp_left);
+                      //console.log(this.index_of_show_pp_right);
                     }
                     else{
                       this.index_of_show_pp_right-=1;
                       this.list_of_show_pp_left.splice(0,0,true);
-                      console.log(this.list_of_show_pp_left);
-                      console.log(this.index_of_show_pp_right);
+                      //console.log(this.list_of_show_pp_left);
+                      //console.log(this.index_of_show_pp_right);
                     }
                   }
                   else if(this.list_of_messages.length==1){
@@ -3442,25 +3442,25 @@ chat_service_managment_function(msg){
             else{
               this.list_of_messages_files.splice(0,0,false)
               this.list_of_messages.splice(0,0,message);
-              console.log("received first")
-                console.log(this.list_of_messages)
+              //console.log("received first")
+                //console.log(this.list_of_messages)
               this.list_of_messages_pictures.splice(0,0,false);
               if(this.list_of_messages.length>1){
-                console.log("list not empty");
+                //console.log("list not empty");
                 // on décale les photos de profiles selon le dernier message
                 if(this.list_of_messages[0].id_user==this.friend_id){
-                  console.log("on règle les affaires de pp ici")
+                  //console.log("on règle les affaires de pp ici")
                   this.list_of_show_pp_left[0]=false;
                   this.index_of_show_pp_right+=1;
                   this.list_of_show_pp_left.splice(0,0,true);
-                  console.log(this.list_of_show_pp_left);
-                  console.log(this.index_of_show_pp_right);
+                  //console.log(this.list_of_show_pp_left);
+                  //console.log(this.index_of_show_pp_right);
                 }
                 else{
                   this.index_of_show_pp_right-=1;
                   this.list_of_show_pp_left.splice(0,0,true);
-                  console.log(this.list_of_show_pp_left);
-                  console.log(this.index_of_show_pp_right);
+                  //console.log(this.list_of_show_pp_left);
+                  //console.log(this.index_of_show_pp_right);
                 }
               }
               else if(this.list_of_messages.length==1){
@@ -3470,11 +3470,11 @@ chat_service_managment_function(msg){
             }
 
             // tell the friend I read his message if I am present;
-            console.log(this.user_present);
-            console.log(this.list_of_show_pp_left);
-            console.log(this.index_of_show_pp_right);
+            //console.log(this.user_present);
+            //console.log(this.list_of_show_pp_left);
+            //console.log(this.index_of_show_pp_right);
             if(this.user_present && msg[0].id_chat_section==this.id_chat_section){
-              console.log("i am present");
+              //console.log("i am present");
               message.status='seen';
               let message_to_send ={
                 id_user_name:this.current_user_pseudo,
@@ -3491,12 +3491,12 @@ chat_service_managment_function(msg){
                 is_a_response:false,
               }
               //function to update status rows to 'seen'
-                console.log("putting this message to seen")
-                console.log("send seen after receiving message 2")
+                //console.log("putting this message to seen")
+                //console.log("send seen after receiving message 2")
                 this.chatService.messages.next(message_to_send);
                 this.chatService.let_all_friend_messages_to_seen(msg[0].id_user,this.id_chat_section,false).subscribe(l=>{ 
-                  console.log("11111111111111111111111111111111");
-                  console.log(l)
+                  //console.log("11111111111111111111111111111111");
+                  //console.log(l)
                 })
               
             }
@@ -3514,7 +3514,7 @@ chat_service_managment_function(msg){
         }
         // a message from your friend to tell you that he has seen the message
         else if(msg[0].id_user==this.friend_id && msg[0].status=="seen"){
-          console.log(" from my friend to tell seen")
+          //console.log(" from my friend to tell seen")
           let modif_done=false;
           let index=0;
           for(let i=0;i<this.list_of_messages.length;i++){
@@ -3527,7 +3527,7 @@ chat_service_managment_function(msg){
             }
             if(i==this.list_of_messages.length-1){
               this.index_of_show_pp_right=index;
-              console.log(this.index_of_show_pp_right)
+              //console.log(this.index_of_show_pp_right)
               
             }
           }
@@ -3536,8 +3536,8 @@ chat_service_managment_function(msg){
         }
         // not the friend I am talking to but seen
         else if(msg[0].id_user!=this.friend_id && msg[0].status=="seen"){
-          console.log("in the else if seen")
-          console.log("change message status 3")
+          //console.log("in the else if seen")
+          //console.log("change message status 3")
           this.change_message_status.emit({id_chat_section:msg[0].id_chat_section,status:"seen",friend_id:msg[0].id_user,friend_type:'user'});
         }
         // not the friend I am talking to and not seen
@@ -3548,10 +3548,10 @@ chat_service_managment_function(msg){
       
     }
     else if(msg[0].server_message=="received_new"){
-      console.log("received new but not here")
+      //console.log("received new but not here")
       if(msg[0].message.is_a_group_chat){
         if(!this.user_present){
-          console.log("group rec")
+          //console.log("group rec")
           if(this.friend_type=='group' && this.friend_id==msg[0].id_receiver){
             this.change_group();
           }
@@ -3559,13 +3559,13 @@ chat_service_managment_function(msg){
       }
       else{
         if(this.spam=='true'){
-          console.log(msg[0].message.id_receiver)
+          //console.log(msg[0].message.id_receiver)
           this.add_spam_to_contacts.emit({spam_id:msg[0].message.id_receiver,message:msg[0].message});
           this.cd.detectChanges;
-          console.log("in spam with spam");
+          //console.log("in spam with spam");
         }
         else{
-          console.log("not in spam")
+          //console.log("not in spam")
           this.new_sort_friends_list.emit({friend_id:msg[0].message.id_receiver,message:msg[0].message,friend_type:'user'});
         }
       }
@@ -3573,18 +3573,18 @@ chat_service_managment_function(msg){
     //a message from the server to tell that the message has been sent
     else if(msg[0].server_message=="received" ){
       //ajouter une fonction pour récupérer le message qui n'a pas été envoyé sur ce client
-      console.log("it's from server and it's received");
-      console.log(this.user_present)
-      console.log(this.friend_id)
+      //console.log("it's from server and it's received");
+      //console.log(this.user_present)
+      //console.log(this.friend_id)
       if(this.user_present){
         if(msg[0].message.is_a_group_chat){
-          console.log(this.temporary_id);
-          console.log(this.attachments);
+          //console.log(this.temporary_id);
+          //console.log(this.attachments);
           if(msg[0].message.attachment_type=="picture_message" ||msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
             // on ne peut pas envoyer plus de 5 images en même temps dans un message
             for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
               if(this.list_of_messages[i].attachment_name==msg[0].message.attachment_name && !(this.list_of_messages[i].id)){
-                console.log(this.list_of_messages[i]);
+                //console.log(this.list_of_messages[i]);
                 this.list_of_messages[i].status="received";
                 this.list_of_messages[i].id=msg[0].id_message;
                 this.cd.detectChanges();
@@ -3599,7 +3599,7 @@ chat_service_managment_function(msg){
               if(this.list_of_messages[i].temporary_id==msg[0].message.temporary_id  && !(this.list_of_messages[i].id)){
                 this.list_of_messages[i].status="received";
                 this.list_of_messages[i].id=msg[0].id_message;
-                console.log(this.list_of_messages[i]);
+                //console.log(this.list_of_messages[i]);
                 this.cd.detectChanges();
               }
             }
@@ -3609,16 +3609,16 @@ chat_service_managment_function(msg){
           this.list_of_time.pop();
         }
         else{
-          console.log("receiving a ttachment user")
+          //console.log("receiving a ttachment user")
           if(msg[0].message.id_user!=msg[0].message.id_receiver){
-            console.log(this.temporary_id);
-            console.log(msg[0]);
-            console.log(this.list_of_messages)
+            //console.log(this.temporary_id);
+            //console.log(msg[0]);
+            //console.log(this.list_of_messages)
             if(msg[0].message.attachment_type=="picture_message" ||msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
               // on ne peut pas envoyer plus de 5 images en même temps dans un message
               for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
                 if(this.list_of_messages[i].attachment_name==msg[0].message.attachment_name && !(this.list_of_messages[i].id)){
-                  console.log(this.list_of_messages[i]);
+                  //console.log(this.list_of_messages[i]);
                   this.list_of_messages[i].status="received";
                   this.list_of_messages[i].id=msg[0].id_message;
                   this.cd.detectChanges();
@@ -3634,7 +3634,7 @@ chat_service_managment_function(msg){
                 if(this.list_of_messages[i].temporary_id==msg[0].message.temporary_id && !(this.list_of_messages[i].id)){
                   this.list_of_messages[i].status="received";
                   this.list_of_messages[i].id=msg[0].id_message;
-                  console.log(this.list_of_messages[i])
+                  //console.log(this.list_of_messages[i])
                   
                   this.cd.detectChanges();
                 }
@@ -3642,7 +3642,7 @@ chat_service_managment_function(msg){
             }
           }
           else{
-            console.log("it's else and going seen")
+            //console.log("it's else and going seen")
             if(msg[0].message.attachment_type=="picture_message" ||msg[0].message.attachment_type=="picture_attachment" ||msg[0].message.attachment_type=="file_attachment" ){
               // on ne peut pas envoyer plus de 5 images en même temps dans un message
               for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
@@ -3657,14 +3657,14 @@ chat_service_managment_function(msg){
             else{
               for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
                 if(this.list_of_messages[i].message==msg[0].message.message && this.list_of_messages[i].status!="deleted"){
-                  console.log("putting message on seen");
+                  //console.log("putting message on seen");
                   this.list_of_messages[i].status="seen";
                 }
               }
             }
             this.chatService.let_all_friend_messages_to_seen(msg[0].message.id_user,this.id_chat_section,false).subscribe(l=>{ 
-              console.log("11111111111111111111111111111111");
-              console.log(l)
+              //console.log("11111111111111111111111111111111");
+              //console.log(l)
             })
           }
           this.new_sort_friends_list.emit({friend_id:msg[0].id_receiver,message:msg[0].message,friend_type:'user'});
@@ -3673,7 +3673,7 @@ chat_service_managment_function(msg){
       }
       else{
         
-        console.log("user is not here");
+        //console.log("user is not here");
         if(msg[0].message.is_a_group_chat){
           this.new_sort_friends_list.emit({friend_id:msg[0].id_receiver,message:msg[0].message,friend_type:'group'});
           if(this.friend_type=='group' && this.friend_id==msg[0].id_receiver){
@@ -3692,31 +3692,31 @@ chat_service_managment_function(msg){
       
     }
     else if(msg[0].message=="New"){
-      console.log("new");
+      //console.log("new");
       if(msg[0].is_a_group_chat ){
-        console.log("adding new group to contacts")
+        //console.log("adding new group to contacts")
         this.add_group_to_contacts.emit({friend_id:msg[0].id_receiver,message:msg[0]});
         this.cd.detectChanges;
       }
       else{
         if(this.spam=='true'){
-          console.log("add new spam to contact")
+          //console.log("add new spam to contact")
           this.add_spam_to_contacts.emit({spam_id:msg[0].id_user,message:msg[0]});
           this.cd.detectChanges;
-          console.log("in spam with spam");
+          //console.log("in spam with spam");
         }
         else{
-          console.log("not in spam")
+          //console.log("not in spam")
           this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'user'});
         }
       }
     }
     else if(msg[0].server_message=="received_new_friend_in_the_group"){
-      console.log("received_new_friend_in_the_group")
+      //console.log("received_new_friend_in_the_group")
       if(this.user_present){
         this.list_of_messages.splice(0,0,msg[0].message);
-        console.log("received first")
-                console.log(this.list_of_messages)
+        //console.log("received first")
+                //console.log(this.list_of_messages)
         if(this.friend_type=='group' && this.friend_id==msg[0].id_receiver){
           for(let i=0;i<this.list_of_messages.length;i++){
             this.list_of_messages[i].list_of_users_in_the_group=msg[0].list_of_users_in_the_group;
@@ -3729,8 +3729,8 @@ chat_service_managment_function(msg){
       }
     }
     else if(msg[0].message=="New_friend_in_the_group"){
-      console.log("New_friend_in_the_group");
-      console.log("adding new group to contacts")
+      //console.log("New_friend_in_the_group");
+      //console.log("adding new group to contacts")
       let index=-1;
       for(let i=0;i<this.list_of_friends_ids.length;i++){
         if(this.list_of_friends_ids[i]==msg[0].id_user && this.list_of_friends_types[i]=='group'){
@@ -3738,12 +3738,12 @@ chat_service_managment_function(msg){
         }
       }
       if(index>=0){
-        console.log(index)
+        //console.log(index)
         if(this.friend_id==msg[0].id_user && this.friend_type=='group'){
-          console.log('cur tak')
+          //console.log('cur tak')
           this.list_of_messages.splice(0,0,msg[0]);
-          console.log("received first")
-                console.log(this.list_of_messages)
+          //console.log("received first")
+                //console.log(this.list_of_messages)
         }
       }
       this.new_sort_friends_list.emit({friend_id:msg[0].id_user,message:msg[0],friend_type:'group',value:false});
@@ -3751,13 +3751,13 @@ chat_service_managment_function(msg){
       
     }
     else if(msg[0].message=="Exit"){
-      console.log("Exit");
+      //console.log("Exit");
       if(msg[0].is_a_group_chat){
         if(this.friend_id==msg[0].id_user && this.friend_type=='group'){
-          console.log("received first")
+          //console.log("received first")
           this.list_of_messages.splice(0,0,msg[0]);
-          console.log("received first")
-                console.log(this.list_of_messages)
+          //console.log("received first")
+                //console.log(this.list_of_messages)
           for(let i=0;i<this.list_of_messages.length;i++){
             this.list_of_messages[i].list_of_users_in_the_group=msg[0].list_of_users_in_the_group;
           }
@@ -3779,7 +3779,7 @@ chat_service_managment_function(msg){
         if(this.list_of_users_writing.indexOf(msg[0].id_user_writing)<0){
           this.list_of_users_writing.push(msg[0].id_user_writing)
         }
-        console.log(this.list_of_users_writing)
+        //console.log(this.list_of_users_writing)
         this.cd.detectChanges();
       }
       
@@ -3795,17 +3795,17 @@ chat_service_managment_function(msg){
         if(index>=0){
           this.list_of_users_writing.splice(index,1)
         }
-        console.log(this.list_of_users_writing)
+        //console.log(this.list_of_users_writing)
         this.cd.detectChanges();
       }
     }
     else if(msg[0].server_message=="delete_message" ){
-      console.log(" delete_message message")
+      //console.log(" delete_message message")
       let index_mesage=-1;
       if(!msg[0].group_chat_id && this.friend_id==msg[0].id_user_writing && this.id_chat_section==msg[0].message.id_chat_section && this.friend_type=="user"){
         for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
           if(this.list_of_messages[i].id==msg[0].id_message){
-            console.log("putting message on delete");
+            //console.log("putting message on delete");
             index_mesage=i;
             this.list_of_messages[i].status="deleted";
           }
@@ -3815,7 +3815,7 @@ chat_service_managment_function(msg){
       else if(msg[0].group_chat_id && this.friend_id==msg[0].group_chat_id && this.current_user_id!=msg[0].id_user_writing && this.id_chat_section==msg[0].message.id_chat_section && this.friend_type=="group"){
         for(let i=0;i<((this.list_of_messages.length>=50)?50:this.list_of_messages.length);i++){
           if(this.list_of_messages[i].id==msg[0].id_message){
-            console.log("putting message on delete");
+            //console.log("putting message on delete");
             index_mesage=i;
             this.list_of_messages[i].status="deleted";
           }
@@ -3828,15 +3828,15 @@ chat_service_managment_function(msg){
       this.cd.detectChanges
     }
     else if(msg[0].server_message=="block" ){
-      console.log("block")
+      //console.log("block")
       if(this.friend_type=='user' && this.friend_id==msg[0].id_user_blocking){
         location.reload();
       }
       this.blocking_managment.emit({friend_id:msg[0].id_user_blocking})
     }
     else if(msg[0].server_message=="emoji" ){
-      console.log(" emoji change message")
-      console.log(msg[0])
+      //console.log(" emoji change message")
+      //console.log(msg[0])
       if(!msg[0].group_chat_id && this.friend_id==msg[0].real_id_user &&  msg[0].message.id_message>=this.list_of_messages[this.list_of_messages.length-1].id){
         for(let i=0;i<this.list_of_messages.length;i++){
           if(this.list_of_messages[i].id==msg[0].message.id_message){
@@ -3867,17 +3867,17 @@ chat_service_managment_function(msg){
           if(msg[0].message.old_emoji==msg[0].message.new_emoji){
               let index= this.list_of_messages_reactions[msg[0].id_message].indexOf(msg[0].message.old_emoji)
               this.list_of_messages_reactions[msg[0].id_message].splice(index,1)
-              console.log( this.list_of_messages_reactions[msg[0].id_message])
+              //console.log( this.list_of_messages_reactions[msg[0].id_message])
           }
           else{
               let index= this.list_of_messages_reactions[msg[0].id_message].indexOf(msg[0].message.old_emoji)
               this.list_of_messages_reactions[msg[0].id_message].splice(index,1,msg[0].message.new_emoji)
               this.list_of_messages_reactions[msg[0].id_message].sort();
-              console.log( this.list_of_messages_reactions[msg[0].id_message]);
+              //console.log( this.list_of_messages_reactions[msg[0].id_message]);
           }
         }
         else{
-            console.log(this.list_of_messages_reactions[msg[0].id_message])
+            //console.log(this.list_of_messages_reactions[msg[0].id_message])
             if(this.list_of_messages_reactions[msg[0].id_message]){
               this.list_of_messages_reactions[msg[0].id_message].push(msg[0].message.new_emoji);
             }
@@ -3886,7 +3886,7 @@ chat_service_managment_function(msg){
             }
             
             this.list_of_messages_reactions[this.list_of_messages[msg[0].id_message].id].sort();
-            console.log( this.list_of_messages_reactions[msg[0].id_message]);
+            //console.log( this.list_of_messages_reactions[msg[0].id_message]);
         }
       }
     }
@@ -3918,7 +3918,7 @@ remove_spam(){
       if(result){
         this.removing_spam=true;
         this.chatService.remove_spam(this.friend_id).subscribe(m=>{
-          console.log(m);
+          //console.log(m);
           if(m[0].nothing){
             const dialogRef = this.dialog.open(PopupConfirmationComponent, {
               data: {showChoice:false, text:"Il n'y a rien à supprimer..."},
@@ -3940,8 +3940,8 @@ remove_spam(){
 
 
 block_user(){
-  console.log(this.friend_name);
-  console.log(this.friend_id);
+  //console.log(this.friend_name);
+  //console.log(this.friend_id);
   if(this.friend_id>2){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
@@ -3951,11 +3951,11 @@ block_user(){
     dialogRef.afterClosed().subscribe(result => {
       if(result){
           this.Subscribing_service.remove_all_subscribtions_both_sides(this.friend_id).subscribe(s=>{
-            console.log(s)
+            //console.log(s)
             this.chatService.remove_friend(this.friend_id).subscribe(m=>{
-              console.log(m);
+              //console.log(m);
               this.Profile_Edition_Service.block_user(this.friend_id,(m[0].deletion)?m[0].date:null).subscribe(r=>{
-                console.log(r);
+                //console.log(r);
                 let message_to_send ={
                   id_user_name:this.current_user_pseudo,
                   id_user:this.current_user_id,   
@@ -3970,7 +3970,7 @@ block_user(){
                   is_a_group_chat:false,
                   is_a_response:false,
                 }
-                console.log("send usr blocked")
+                //console.log("send usr blocked")
                 this.chatService.messages.next(message_to_send);
                 //this.location.go('/chat');
                 //location.reload();
@@ -3989,11 +3989,11 @@ block_user(){
 
 unblock_user(){
   this.Profile_Edition_Service.unblock_user(this.friend_id).subscribe(r=>{
-    console.log(r[0]);
+    //console.log(r[0]);
     if(r[0].date){
-      console.log(r[0].date)
+      //console.log(r[0].date)
       this.chatService.add_chat_friend(this.friend_id,r[0].date).subscribe(r=>{
-        console.log(r[0])
+        //console.log(r[0])
         //this.location.go('/chat');
         //location.reload()
         this.router.navigateByUrl('/chat');
@@ -4018,7 +4018,7 @@ remove_contact(){
   dialogRef.afterClosed().subscribe(result => {
     if(result){
       this.chatService.remove_friend(this.friend_id).subscribe(r=>{
-        console.log(r[0])
+        //console.log(r[0])
         //this.location.go('/chat');
         //location.reload()
         this.router.navigateByUrl('/chat');
@@ -4031,11 +4031,11 @@ remove_contact(){
   /********************************************* SHOW IMAGES *****************************************/
 
   show_images(indice){
-    console.log(indice)
-    console.log(this.list_of_messages)
-    console.log(this.list_of_messages[indice])
-    console.log(this.list_of_messages_pictures)
-    console.log(this.list_of_messages_pictures[indice])
+    //console.log(indice)
+    //console.log(this.list_of_messages)
+    //console.log(this.list_of_messages[indice])
+    //console.log(this.list_of_messages_pictures)
+    //console.log(this.list_of_messages_pictures[indice])
     let list =this.list_of_messages_pictures
     let new_list=[]
     let new_indice;
@@ -4048,8 +4048,8 @@ remove_contact(){
         new_list.push(list[i]);
       }
     }
-    console.log(new_indice)
-    console.log(new_list)
+    //console.log(new_indice)
+    //console.log(new_list)
     const dialogRef = this.dialog.open(PopupAdPicturesComponent, {
       data: {list_of_pictures:new_list,index_of_picture:new_indice},      
       panelClass:"popupDocumentClass",
@@ -4167,14 +4167,14 @@ remove_contact(){
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.right_container_is_opened = false;
-    console.log(window.innerWidth)
-    console.log(window.innerWidth)
+    //console.log(window.innerWidth)
+    //console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
+      //console.log("can sho ok")
       this.can_show_send_icon=true;
     }
     else{
-      console.log("can show false")
+      //console.log("can show false")
       this.can_show_send_icon=false;
     }
   }
