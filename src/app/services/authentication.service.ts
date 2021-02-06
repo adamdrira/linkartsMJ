@@ -6,7 +6,7 @@ import {HttpClient, HttpHeaders } from '@angular/common/http';
 
 const httpOptions = {
 headers: new HttpHeaders({
-    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Origin':'ipify.org',
 })
 };
 
@@ -83,14 +83,14 @@ export class AuthenticationService {
 
     get_ip(){
         console.log("getting ip")
-        return this.http.get<any>("https://cors-anywhere.herokuapp.com/https://api.ipify.org/?format=json").pipe(map(res => {
+        return this.http.get<any>("https://api.ipify.org/?format=json",{headers:httpOptions.headers}).pipe(map(res => {
             console.log(res)
             return res
         }))
     }
 
-    login(username, password,ip) {
-        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password,ip}).pipe(map(res => {
+    login(username, password) {
+        return this.http.post<any>('api/users/login', { mail_or_username: username, password: password}).pipe(map(res => {
                 console.log(res);
                 if(!res.msg){
                     //console.log("reset cookie")
