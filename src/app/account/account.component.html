@@ -359,7 +359,7 @@
                         </ng-container>
                         <ng-container *ngIf="opened_section==5">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
-                            <span>Qui suis-je</span>
+                            <span>Mon profil</span>
                         </ng-container>
                         <ng-container *ngIf="opened_section==6">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
@@ -399,7 +399,7 @@
                     </mat-option>
                     <mat-option [value]="5">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
-                        <span>Qui suis-je</span>
+                        <span>Mon profil</span>
                     </mat-option>
                     <mat-option [value]="6" *ngIf="!mode_visiteur && !my_profile_is_suspended">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">bookmarks</mat-icon>
