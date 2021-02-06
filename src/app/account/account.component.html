@@ -153,20 +153,20 @@
                         <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
                         <span>Changer de photo de profil</span>
                     </button>-->
-                    <button *ngIf="story_found" class="change-profile-picture" (click)="watch_story();">
+                    <div *ngIf="story_found" class="change-profile-picture" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir ma story</span>
-                    </button>
-                    <button  class="change-story-picture" [ngClass]="{'watch-story':!story_found}" (click)="add_story();">
+                    </div>
+                    <div  class="change-story-picture" [ngClass]="{'watch-story':!story_found}" (click)="add_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">add_circle_outline</mat-icon>
                         <span>Ajouter une story</span>
-                    </button>
+                    </div>
                 </ng-container>
                 <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found">
-                    <button  class="change-story-picture  watch-story" (click)="watch_story();">
+                    <div  class="change-story-picture  watch-story" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir la story</span>
-                    </button>
+                    </div>
                 </ng-container>
                
             </div>

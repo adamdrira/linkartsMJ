@@ -239,9 +239,11 @@
 
     .loading-dots {
       line-height: 6px;
-      span {
+      display: flex;
+      span {    
         font-size: 35px;
-        margin: -25px 0px 0px 0px;
+        line-height: 6px;
+        margin-bottom: 20px;
         animation-name: blink;
         animation-duration: 1.4s;
         animation-iteration-count: infinite;

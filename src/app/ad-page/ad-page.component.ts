@@ -1100,10 +1100,19 @@ export class AdPageComponent implements OnInit {
 
   respond(){
     console.log("tentative de reponse")
-    const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
-      data: {item:this.item},
-      panelClass: 'popupAdWriteReponsesClass',
-    });
+
+    if(this.type_of_account=='account') {
+      const dialogRef = this.dialog.open(PopupAdWriteResponsesComponent, {
+        data: {item:this.item},
+        panelClass: 'popupAdWriteReponsesClass',
+      });
+    }
+    else {
+      const dialogRef = this.dialog.open(LoginComponent, {
+        data: {usage:"login"},
+        panelClass:"loginComponentClass"
+      });
+    }
   }
 
   get_response_author_link(i: number) {

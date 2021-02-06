@@ -64,7 +64,7 @@
                     <span>
                         {{item.title}}
                     </span>
-                    <button *ngIf="visitor_mode_added && visitor_mode && type_of_account=='account'" (click)="respond();" [@enterAnimation]>
+                    <button *ngIf="visitor_mode_added && visitor_mode" (click)="respond();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
                         <span>Répondre à l'offre</span>
                     </button>

@@ -1223,16 +1223,27 @@
   }
 
   .optionsMenu {
-    width: 30px;
-    height: 30px;
+    outline: none;
+    border: none;
+    background: transparent;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 5px;
+    border-radius: 50px;
+    transition: background-color 200ms;
 
     mat-icon{
-
-      max-width:24px;
+      max-width: 24px;
+      margin: auto;
       overflow: hidden;
+      font-size: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: rgb(244,244,244);
+    }
+    &:active {
+      background: rgb(240,240,240);
     }
   }
   

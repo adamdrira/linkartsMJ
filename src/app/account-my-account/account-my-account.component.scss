@@ -24,8 +24,6 @@
         cursor: pointer;
         outline: none;
         border: none;
-        display: flex;
-        flex-direction: column;
         padding: 10px 15px 10px 15px;
         width: 145px;
         height: 145px;
@@ -71,7 +69,6 @@
             color:  #f9f9f9;
           }
           span {
-            font-weight: bold;
             color:  #f9f9f9 !important;
           }
         }
