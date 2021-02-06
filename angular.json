@@ -23,6 +23,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "optimization": false,
+            "outputHashing": "none",
+            "sourceMap": false,
+            "extractCss": true,
+            "namedChunks": false,
+            "showCircularDependencies": false,
+            "extractLicenses": false,
+            "statsJson": false,
+            "progress": false,
+            "vendorChunk": true,
+            "buildOptimizer": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -54,13 +65,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "30mb",
-                  "maximumError": "35mb"
+                  "maximumWarning": "40mb",
+                  "maximumError": "45mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "45kb",
-                  "maximumError": "50kb"
+                  "maximumWarning": "65kb",
+                  "maximumError": "75kb"
                 }
               ]
             }
