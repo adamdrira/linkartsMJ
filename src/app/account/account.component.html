@@ -142,6 +142,10 @@
                     <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
                     <span>Changer ma photo de profil</span>
                 </button>
+                <button  class="account-mat-menu-item" tabIndex="-1" mat-menu-item  (click)="open_section(5,true);">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
+                    <span>Éditer mon profil</span>
+                </button>
             </mat-menu>
 
 
@@ -301,7 +305,7 @@
             <div #buttonSection>
                 <button [ngClass]="{'opened': opened_section == 5 }" (click)="open_section(5,true);">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">help</mat-icon>
-                    <span>Qui suis-je</span>
+                    <span>Mon profil</span>
                 </button>
             </div>
             <div #buttonSection>
