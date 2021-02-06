@@ -205,9 +205,7 @@ export class LoginComponent implements OnInit {
         //console.log(data)
         if(data.user  && data.user.email_checked ){
           //console.log('first if')
-          this.authenticationService.get_ip().subscribe(ip=>{
-            console.log(ip)
-            this.authenticationService.login(this.f.username.value, this.f.password.value,ip.ip).subscribe( data => {
+            this.authenticationService.login(this.f.username.value, this.f.password.value).subscribe( data => {
           
           
               if(data.token){
@@ -243,7 +241,6 @@ export class LoginComponent implements OnInit {
             error => {
                 this.loading = false;
             });
-          })
           
         }
         else if(data.error){
