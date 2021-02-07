@@ -1,0 +1,19 @@
+
+
+@import '../swiper-styles.scss';
+
+
+.invisible{
+    visibility:hidden;
+    pointer-events: none;
+}
+
+::ng-deep {
+
+
+    app-uploader-writting {
+        width:100% !important;
+    }
+    
+}
+

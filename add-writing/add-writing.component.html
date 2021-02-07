@@ -1,0 +1,221 @@
+
+
+
+<div class="form" [ngClass]="{ 'form0' : CURRENT_step == 0 }">
+
+    <div *ngIf="REAL_step>=0 || CURRENT_step==0" [hidden]="CURRENT_step!=0">
+        
+        <button class="step-back-button" (click)="back_home();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+            <span>Retour</span>
+        </button>
+
+
+        <!--Forms : adding cartoon strip-->
+        <div class="steps">
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step == 0 }">
+                <div class="step">
+                    <span>1</span>
+                </div>
+                <span>Présentation du projet</span>
+            </div>
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step == 1 }">
+                <div class="step">
+                    <span>2</span>
+                </div>
+                <span>Téléchargement</span>
+            </div>
+        </div>
+
+
+        <form [formGroup]="fw" novalidate  [ngClass]="{'invisible':!user_retrieved}">
+
+            <div class="form-container">
+                <div class="form-container-name">
+                    <span>Description du projet</span>
+                </div>
+
+
+                <!--*********************************************************-->
+                <!--Titre-->
+                <!--*********************************************************-->
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Titre</mat-label>
+                        <input matInput formControlName="fwTitle" maxLength="30" autocomplete="off">
+                        <mat-error *ngIf="fw.controls['fwTitle'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fw.controls['fwTitle'].value?.length || 0}}/30</div>
+                    </mat-form-field>
+                </div>
+                
+
+                
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Catégorie</mat-label>
+                        <mat-select [compareWith]="compareObjects" panelClass="addArtworkSelectClass" disableOptionCentering formControlName="fwCategory">
+                            <mat-option  *ngFor="let obj of listOfCategories" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="fw.controls['fwCategory'].invalid">Veuillez sélectionner une catégorie</mat-error>
+                    </mat-form-field>
+                </div>
+
+
+              
+                
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-chip-list #chipList formControlName="fwTags" aria-label="Genre selection">
+                        <mat-chip
+                            *ngFor="let genre of genres"
+                            [selectable]="selectable"
+                            [removable]="removable"
+                            (removed)="remove(genre)">
+                            {{genre}}
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                        <input
+                            placeholder="Genres (maximum : 3)"
+                            #genreInput
+                            [formControl]="genreCtrl"
+                            [matAutocomplete]="auto"
+                            matAutocompletePosition="below"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="add($event)">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" class="custom-scroll addArtworkMatautocompleteClass" (optionSelected)="selected($event)">
+                        <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                            {{genre}}
+                        </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+            
+                <div class="form-item input-multiple-lines" style="height:unset !important;">
+                    <mat-form-field floatLabel='never'
+                    matTooltip="Seuls les 300 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
+                    matTooltipClass='tooltip-add-artwork' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-label>Description</mat-label>
+                    
+                        <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="2000" autocomplete="off"></textarea>
+                        <mat-error *ngIf="fw.controls['fwDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/2000</div>
+                    </mat-form-field>
+                </div>
+
+                
+                <div class="form-item" *ngIf="type_of_account=='Artistes' || type_of_account=='Artistes professionnels'
+                || type_of_account=='Artiste professionnelle' || type_of_account=='Artiste professionnel' || type_of_account=='Artiste'" >
+                    <div class="monetisation-container">
+                        <mat-slide-toggle [checked]="monetised" (change)="setMonetisation( $event )" style="font-weight:bold;">
+                            Monétiser mon œuvre et autoriser l'apparition en tendances
+                        </mat-slide-toggle>
+                        <span (click)="read_conditions();" class="read_conditions">(lire les conditions)</span>
+                    </div>
+                    <div *ngIf="monetised" class="monetised-text">
+                        Attention ! Nous vous rappelons que la monétisation d'œuvres plagiées, de fanarts et d'œuvres aux contenus inapproriés sont interdits et susceptibles de se retourner contre vous. 
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            
+            <div class="form-container">
+                <div class="form-container-name">
+                    <span>Edition de la miniature</span>
+                </div>
+                <div class="form-container-data">
+
+
+                    <!--******************************************************-->
+                    <!--Miniature-->
+                    <!--******************************************************-->
+
+                    <div class="form-group">
+
+
+                        <app-uploader-cover-writing
+                            author_name={{author_name}} 
+                            primary_description={{primary_description}}
+                            pseudo={{pseudo}}
+                            [profile_picture]=profile_picture
+                            [writing_id]=writing_id
+                            firsttag={{fw.value.fwTags[0]}}
+                            secondtag={{fw.value.fwTags[1]}}
+                            thirdtag={{fw.value.fwTags[2]}}
+
+                            name={{fw.value.fwTitle}} 
+                            description={{fw.value.fwDescription}}
+                            category={{fw.value.fwCategory}}
+                            format={{fw.value.fwFormat}}>
+                        </app-uploader-cover-writing>
+
+                    </div>
+                </div>
+            </div>
+
+            
+            <button #nextButton class="submit-button style1" (click)="validateForm00()">
+                <span>Suivant</span>
+            </button>
+
+        </form>
+
+    </div>
+
+
+    
+    <div *ngIf=" ( REAL_step==1 || CURRENT_step==1 )" [hidden]="CURRENT_step==0">
+        
+        <button class="step-back-button" (click)="step_back();">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_left</mat-icon>
+            <span>Retour</span>
+        </button>
+
+        
+        <!--Forms : adding cartoon strip-->
+        <div class="steps">
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step ==0 }">
+                <div class="step">
+                    <span>1</span>
+                </div>
+                <span>Présentation du projet</span>
+            </div>
+            <div class="step-container" [ngClass]="{ 'opened' : CURRENT_step ==1 }">
+                <div class="step">
+                    <span>2</span>
+                </div>
+                <span>Téléchargement</span>
+            </div>
+        </div>
+
+        
+    
+        <app-uploader-writting></app-uploader-writting>
+        
+
+
+        
+        <button #validateButton class="submit-button-with-done-all style1" (click)="validate_form_writing();" >
+            <ng-container *ngIf="!display_loading">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                <span>Valider </span>
+            </ng-container>
+            <ng-container *ngIf="display_loading">
+                <mat-spinner diameter="25" style="margin:auto;"></mat-spinner>
+            </ng-container>
+        </button>
+
+    </div>
+
+</div>

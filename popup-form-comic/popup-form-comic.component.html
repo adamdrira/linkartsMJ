@@ -1,0 +1,208 @@
+
+<div class="title">
+    <span>Edition des informations</span>
+    <button [mat-dialog-close]="true">
+        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+    </button>
+</div>
+
+<div class="scrollable-container" (scroll)="onScroll($event)">
+    <div class="component-container popupFormComic">
+        
+
+
+        <form [formGroup]="f00" novalidate>
+            <div class="form-container">
+
+                <div class="form-container-name">
+                    <span>Titre</span>
+                </div>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Titre</mat-label>
+                        <input matInput formControlName="f00Title" maxLength="30" autocomplete="off">
+                        <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/30</div>
+                    </mat-form-field>
+                </div>
+
+
+                <div *ngIf="data.format == 'serie'" formArrayName="chapters">
+                    <ng-container *ngFor="let item of data.chapterList; let i = index">
+                        <div class="form-container-name">
+                            <span>Nom du chapitre {{i+1}}</span>
+                        </div>
+                        <div class="form-item">
+                            <mat-form-field floatLabel='never'>
+                                <mat-label>Nom du chapitre {{i+1}}</mat-label>
+                                <input matInput [formControlName]="i" maxLength="30" autocomplete="off">
+                                <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                                </mat-error>
+                                <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                </div>
+
+
+                <div class="form-container-name">
+                    <span>Style</span>
+                </div>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Style</mat-label>
+                        <mat-select [compareWith]="compareObjects" panelClass="popupFormComicSelectClass" disableOptionCentering formControlName="f00Category">
+                            <mat-option  *ngFor="let obj of listOfStyles" [value]="obj">
+                                {{ obj }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="f00.controls['f00Category'].invalid">Veuillez sélectionner un style</mat-error>
+                        <mat-hint *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</mat-hint>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="form-container-name">
+                    <span>Genres</span>
+                </div>
+                <div class="form-item">
+                    <mat-form-field floatLabel='never'>
+                        <mat-chip-list #chipList formControlName="f00Tags" aria-label="Genre selection">
+                          <mat-chip
+                            *ngFor="let genre of genres"
+                            [selectable]="selectable"
+                            [removable]="removable"
+                            (removed)="remove(genre)">
+                            {{genre}}
+                            <mat-icon [ngClass]="{'invisible': !show_icon }" matChipRemove *ngIf="removable">cancel</mat-icon>
+                          </mat-chip>
+                          <input
+                            placeholder="Genres (maximum : 3)"
+                            #genreInput
+                            [formControl]="genreCtrl"
+                            [matAutocomplete]="auto"
+                            matAutocompletePosition="below"
+                            [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="add($event)">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" class="custom-scroll popupFormComicMatautocompleteClass" (optionSelected)="selected($event)">
+                          <mat-option *ngFor="let genre of filteredGenres | async" [value]="genre">
+                            {{genre}}
+                          </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="form-container-name">
+                    <span>Description</span>
+                </div>
+                <div class="form-item input-multiple-lines">
+                    <mat-form-field floatLabel='never'>
+                        <mat-label>Description</mat-label>
+                    
+                        <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off"></textarea>
+                        <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        </mat-error>
+                        <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/2000</div>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <button class="submit-button" (click)="validateForm00();">
+                <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
+                <span>Valider</span>
+            </button>
+
+        </form>
+
+
+
+        <!--<form [formGroup]="f00" class="form" novalidate>
+            <div class="form-container">
+
+                <div class="form-container-flex">
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Titre</label>
+                        <input type="text" formControlName="f00Title" class="form-control" placeholder="Nom de l'œuvre (30 caractères max)" autocomplete="off" required/>
+                        <p *ngIf="!f00Title.valid  && f00DisplayErrors">Veuillez saisir un titre valide</p>
+                    </div>
+
+                    <div *ngIf="data.format == 'serie'" formArrayName="chapters">
+                        <div class="form-group" *ngFor="let item of data.chapterList; let i = index">
+                            <label>Nom du chapitre {{i+1}}</label>
+                            <input type="text" [formControlName]="i" (keyup)="update_view();" 
+                            class="form-control" placeholder="Nom du chapitre {{i+1}} (30 caractères max)" autocomplete="off" required/>
+                            <p *ngIf="!chapters.controls[i].valid  && f00DisplayErrors">Veuillez saisir un titre valide</p>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Style</label>
+                        
+                        <select formControlName="f00Category" class="f00select0" placeholder="Sélectionner une catégorie" style="height: 100%;">
+                            <option value="" hidden disabled="true">Sélectionner un style</option>
+                            <option> BD </option>
+                            <option> Comics </option>
+                            <option> Manga </option>
+                            <option> Webtoon </option>
+                        </select>
+                        <p *ngIf="f00Category.value == 'Manga'">La lecture se fera de droite à gauche</p>
+                        <p *ngIf="f00Category.value == '' && f00DisplayErrors">Veuillez sélectionner un style</p>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="artworkTitle">
+                            Genres 
+                            <ng-container *ngIf=data.firsttag>( {{data.firsttag}} </ng-container>
+                            <ng-container *ngIf=data.secondtag>, {{data.secondtag}} </ng-container>
+                            <ng-container *ngIf=data.thirdtag>, {{data.thirdtag}} </ng-container>)
+                        </label>
+                        <select formControlName="f00Tags" class="multipleSelect" placeholder="Sélectionner de nouveaux genres (max : 3)" multiple name="language">
+                            <option value="Action">Action</option>
+                            <option value="Aventure">Aventure</option>
+                            <option value="Esotérisme">Esotérisme</option>
+                            <option value="Fantaisie">Fantaisie</option>
+                            <option value="Fantastique">Fantastique</option>
+                            <option value="Histoire">Histoire</option>
+                            <option value="Horreur">Horreur</option>
+                            <option value="Humour">Humour</option>
+                            <option value="Kids">Kids</option>
+                            <option value="Kodomo">Kodomo</option>
+                            <option value="Philosophie">Philosophie</option>
+                            <option value="Policier">Policier</option>
+                            <option value="Religion">Religion</option>
+                            <option value="Science-fiction">Science-fiction</option>
+                            <option value="Seinen">Seinen</option>
+                            <option value="Shojo">Shojo</option>
+                            <option value="Shonen">Shonen</option>
+                            <option value="Thriller">Thriller</option>
+                            <option value="Western">Western</option>
+                        </select>
+                        <p *ngIf="!tagsValidator && f00DisplayErrors">Veuillez sélectionner au moins un genre</p>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="artworkDescription">Description</label>
+                        <textarea type="text" formControlName="f00Description" maxlength="500" style="height: 100px;resize:none;" class="form-control" placeholder="Description de l'œuvre (500 caractères max)" autocomplete="off" required>
+                        </textarea>
+                        <p *ngIf="!f00Description.valid && f00DisplayErrors">Veuillez saisir une description valide</p>
+                    </div>
+
+                </div>
+            </div>
+            <button mat-raised-button class="validate-form-button style1" (click)="validateForm00();">Valider</button>
+        </form>-->
+
+
+    </div>
+</div>
+
+
