@@ -9,9 +9,8 @@ const cookieParser = require('cookie-parser');
 const routes = require('./data_and_routes/routes/routes'); //récupération des routes qui sont entretenus après "/routes"
 var fileUpload = require('express-fileupload');
 const python = require('./data_and_routes/routes/python');
-global.appRoot = __dirname;  //pour testdb
-
-
+var compression = require('compression')
+ global.appRoot = __dirname;  //pour testdb
 
 
   //Middleware
@@ -19,12 +18,13 @@ global.appRoot = __dirname;  //pour testdb
   app.use(session({secret:'zz',resave:true,saveUninitialized:true}))
   app.use(cookieParser());
   app.use(bodyParser.json())
+  app.use(compression())
   //Réglage des headers
   app.set('trust proxy', 'loopback') // specify a single subnet
   app.use(function(req, res, next) {
     
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Origin", ["https://www.linkarts.fr"]); 
+    res.setHeader("Access-Control-Allow-Origin", ["http://localhost:4200","ipify.org"]); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     //pour l'upload de contenus
@@ -32,7 +32,7 @@ global.appRoot = __dirname;  //pour testdb
   });
   //Peut-être que cette partie est un doublons des headers précedents
   const corsOptions = {
-    origin: ['https://www.linkarts.fr'],
+    origin: ['http://localhost:4200',"ipify.org"],
     optionsSuccessStatus: 200
   };
   app.use(cors(corsOptions));
