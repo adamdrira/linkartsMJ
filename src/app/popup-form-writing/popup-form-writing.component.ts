@@ -59,8 +59,15 @@ export class PopupFormWritingComponent implements OnInit {
 
  show_icon=false;
  ngOnInit() {
-   let THIS=this;
-
+   if(this.data.firsttag){
+    this.genres[0]=this.data.firsttag
+    }
+    if(this.data.secondtag){
+    this.genres[1]=this.data.secondtag
+    }
+    if(this.data.thirdtag){
+      this.genres[2]=this.data.thirdtag
+    }
     this.createFormControlsWritings();
     this.createFormWritings();
   }
