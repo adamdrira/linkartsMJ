@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, ElementRef, ChangeDetectorRef, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,6 +15,7 @@ import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
+import { ConstantsService } from '../services/constants.service';
 
 declare var $: any;
 
@@ -27,8 +28,7 @@ export class PopupFormWritingComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<PopupFormWritingComponent>,
-    private cd:ChangeDetectorRef,
-    private rd:Renderer2,
+    private constants:ConstantsService,
     private Writing_Upload_Service:Writing_Upload_Service,
     private navbar: NavbarService,
     public dialog: MatDialog,
@@ -127,8 +127,7 @@ export class PopupFormWritingComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","Science-fiction","Sociologie","Sport","Thriller","Western"];
+  allGenres=this.constants.writings_filters;
     add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

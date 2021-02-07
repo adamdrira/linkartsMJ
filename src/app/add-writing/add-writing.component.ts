@@ -21,8 +21,6 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
 
-declare var Swiper:any;
-declare var $: any;
 
 @Component({
   selector: 'app-add-writing',
@@ -42,7 +40,7 @@ export class AddWritingComponent implements OnInit {
     private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
-    private _constants: ConstantsService, 
+    private constants: ConstantsService, 
     private cd: ChangeDetectorRef,
     private Writing_Upload_Service:Writing_Upload_Service,
     private router: Router,
@@ -79,7 +77,6 @@ export class AddWritingComponent implements OnInit {
 
   @Input('pseudo') pseudo:string;
   visitor_name:string;
-  dropdowns = this._constants.filters.categories[0].dropdowns;
   user_id:number;
   writing_id:number;
 
@@ -347,9 +344,7 @@ export class AddWritingComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-
-  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Western"];
+  allGenres=this.constants.writings_filters;
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

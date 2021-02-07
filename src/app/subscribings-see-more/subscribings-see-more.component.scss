@@ -1,49 +1,9 @@
 
-  /*
-   * Content
-   */
-
-   $number: 1000; 
-  
-
-   @media (min-width: 0px) and (max-width: 1000px) {
-     .category-filter, .subcategory-filter {
-      width:100%;
-     }
-   }
- 
-    @media (min-width:1000px) and (max-width:1300px) {
-      .category-filter, .subcategory-filter {
-       width:85%;
-      }
-    }
- 
-    @media (min-width:1300px) {
-     .category-filter, .subcategory-filter {
-       width:65%;
-     }
-    }
-   
-
-    a {
-      color:#333;
-      cursor:pointer;
-    }
-    
-    a:hover {
-      text-decoration: none;
-    }
- 
-   hr {
-     margin-right:45%;
-     margin-left:45%;
-     margin-top:0px;
-     border: 0;
-     border-top: 1px solid rgb(190, 173, 96);
-   }
- 
-   
 // First section
+
+.see-more-container{
+  overflow:hidden;
+}
 
 .loading-page{
   margin-top:20px;
@@ -53,71 +13,9 @@
   justify-content: center;
 }
 
-.panel-controller {
-  margin-top:30px;
-  width:100%;
-  height:50px;
-  border-radius:7px;
-  background-color:rgb(32,56,100);  
-  box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
-}
-
-.panel-controller .left-container {
-  display:flex;
-  margin-left:5px;
-  float:left;
-  height:100%;
-}
-
-.panel-controller .left-container .controller-category {
-  display: flex;
-  height: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
-  justify-content: center;
-  align-content: center;
-  text-align: center;
-  flex-direction: column;
-  cursor:pointer;
-  color:rgb(192, 209, 241);
-  transition:color 200ms;
-  transition: text-shadow 200ms;
-}
-
-.panel-controller .left-container > .open {
-  color:rgb(255, 255, 255) !important;
-  text-shadow: -0.04ex 0 rgb(255, 255, 255), 0.04ex 0 rgb(255, 255, 255);
-}
-
-.panel-controller .left-container > .controller-category:hover {
-  color:rgb(255, 255, 255) !important;
-  text-shadow: -0.04ex 0 rgb(255, 255, 255), 0.04ex 0 rgb(255, 255, 255);
-}
 
 
-.panel-controller .right-container {
-  display:flex;
-  float:right;
-  height:100%;
-  margin-right:50px;
-}
 
-.panel-controller .right-container .dropdowns-container {
-  display:flex;
-}
-
-.panel-controller .right-container select{
-  display:flex;
-  float:right;
-  height:100%;
-}
-
-
-.panel-controller .right-container select{
-  display:flex;
-  float:right;
-  height:100%;
-}
 
 .highlighted_artwork {
   text-align: center;
@@ -132,86 +30,6 @@
   font-size:17px;
 }
 
-//SumoSelect
-
-::ng-deep .panel-controller .SumoSelect > .CaptionCont > label > i {
-  background-image:none !important;
-  background-color: rgb(218, 227, 243);
-  -webkit-mask:  url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
-  mask: url("../../assets/img/svg/arrow-down-2.svg") no-repeat 50% 50%;
-}
-
-::ng-deep .panel-controller .SumoSelect {
-  width:100%;
-  height:100%;
-  margin-left: 15px;
-}
-
-::ng-deep .panel-controller .SumoSelect .SelectBox{
-  padding: 0 8px;
-}
-
-::ng-deep .panel-controller .SumoSelect > p.CaptionCont > span {
-  color:white;
-  margin: auto 0 auto auto;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
-}
-
-::ng-deep .panel-controller .SumoSelect .optWrapper {
-  width:240px !important;
-  left:unset;
-  right:0 !important;
-}
-
-
-.see-more-container {    
-  text-align: center;
-  margin-bottom: 30px;
-  background-color: rgb(252, 252, 252);
-  box-shadow: 0px 0px 16px 1px #e0e0e075;
-  border: 1px solid #e0e0e0;
-  padding: 25px;
-  cursor:pointer;
-
-  
-  background-image: linear-gradient(to right, transparent 33%, rgb(32 56 100 / 5%) 50%, transparent 66%);
-  background-size: 300% 100%;
-}
-
-.see-more-container:hover {
-  animation: shine 2s;
-}
-
-.see-more-container mat-icon {
-  height: unset;
-  width: unset;
-  font-size: 58px;
-  border-radius: 100px;
-  border: 3px solid rgb(32 56 100 / 24%);
-  color: #20386463;
-  transition:color 400ms;
-  transition:border-color 150ms;
-}
-
-.see-more-container .see-more-text {
-  margin-top: 13px;
-  color: #a6b0c1;
-  font-size: 13px;
-  transition: color 400ms;
-}
-
-
-.see-more-container:hover mat-icon {
-  border: 3px solid rgb(32 56 100);
-  color: rgb(32,56,100);
-}
-.see-more-container:hover .see-more-text {
-  color: rgb(32,56,100);
-}
 
 
 .thumbnail-artwork-skeleton {    
@@ -231,7 +49,4 @@
   0% {
       background-position: right;    
   }
-  /*100% {
-      background-position: left; it's the default value, no need to define it
-  }*/
 }

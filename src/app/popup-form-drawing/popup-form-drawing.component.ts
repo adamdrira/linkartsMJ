@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject,  ElementRef, ViewChild } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 
@@ -18,6 +17,7 @@ import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
+import { ConstantsService } from '../services/constants.service';
 
 declare var $:any;
 
@@ -29,12 +29,11 @@ declare var $:any;
 export class PopupFormDrawingComponent implements OnInit {
 
   constructor(
-    private Profile_Edition_Service:Profile_Edition_Service,
     public dialogRef: MatDialogRef<PopupFormDrawingComponent>,
-    private cd:ChangeDetectorRef,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     public dialog: MatDialog,
+    private constants:ConstantsService,
     private navbar: NavbarService,
 
 
@@ -137,8 +136,7 @@ export class PopupFormDrawingComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Abstrait","Animaux","Caricatural","Culture","Enfants","Fanart","Fanfiction","Fantaisie","Femme","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Homme","Horreur","Humour","Monstre","Paysage","Portrait",
-  "Réaliste","Religion","Romantique","Science-fiction","Sociologie","Sport"];
+  allGenres=this.constants.drawings_filters;
     add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

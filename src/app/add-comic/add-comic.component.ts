@@ -1,12 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, Renderer2, ElementRef, ComponentFactoryResolver, ViewContainerRef, Output, EventEmitter, ViewChild, HostListener, Input, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef,ElementRef, Output, EventEmitter, ViewChild, HostListener, Input, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UploadService } from '../services/upload.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Bd_CoverService } from '../services/comics_cover.service';
-import { Subscribing_service } from '../services/subscribing.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-
+import { ConstantsService } from '../services/constants.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { SafeUrl } from '@angular/platform-browser';
@@ -39,19 +37,14 @@ export class AddComicComponent implements OnInit {
   }
 
   constructor(
-    private Subscribing_service:Subscribing_service,
-    private rd: Renderer2, 
-    private el: ElementRef,
-    private _upload: UploadService,
-    private resolver: ComponentFactoryResolver, 
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private bdOneShotService: BdOneShotService,
     private bdSerieService: BdSerieService,
     private Bd_CoverService: Bd_CoverService,
     public dialog: MatDialog,
+    private constants:ConstantsService,
     private navbar: NavbarService,
     @Inject(DOCUMENT) private document: Document,
   ) { 
@@ -393,8 +386,7 @@ export class AddComicComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  allGenres=this.constants.comics_filters;
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

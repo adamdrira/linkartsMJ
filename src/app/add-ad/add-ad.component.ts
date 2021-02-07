@@ -50,7 +50,7 @@ export class AddAdComponent implements OnInit {
   constructor(
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
-    private _constants: ConstantsService, 
+    private constants:ConstantsService, 
     private cd: ChangeDetectorRef,
     private Ads_service:Ads_service,
     private router:Router,
@@ -89,7 +89,6 @@ export class AddAdComponent implements OnInit {
   
   @Output() stepChanged = new EventEmitter<number>();
 
-  dropdowns = this._constants.filters.categories[0].dropdowns;
   CURRENT_step: number;
 
   status_pictures:boolean=false;
@@ -252,13 +251,12 @@ export class AddAdComponent implements OnInit {
 
 
   //Ajouté par Mokhtar
-  listOfTypes = ["Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
-  "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
-  listOffers=["Offre","Demande","Réinitialiser"]
-  listOfPriceTypes = ["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
-  listOfPriceTypes1 = ["Produits","Services","Réinitialiser"];
-  listOfDescriptions = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
-  
+  listOfTypes = this.constants.ads_types;
+  listOffers=this.constants.offers_or_demands;
+  listOfPriceTypes = this.constants.price_types_remunerated;
+  listOfPriceTypes1 = this.constants.price_types_services;
+  listOfDescriptions = this.constants.ads_descriptions;
+  allGenres=this.constants.ads_targets;
   compareObjects(o1: any, o2: any): boolean {
     return o1 === o2;
   }
@@ -273,7 +271,7 @@ export class AddAdComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+  
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

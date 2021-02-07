@@ -274,6 +274,14 @@ export class NavbarLinkartsComponent implements OnInit {
       THIS.navbar.showfont();
       THIS.show_icon=true;
     }});
+
+    let get_font = setInterval(() => {
+      if(!this.show_icon){
+        console.log("backup font loader")
+        THIS.navbar.showfont();
+      }
+      clearInterval(get_font);
+    }, 5000);
     
     window.addEventListener('scroll', this.scroll, true);
     

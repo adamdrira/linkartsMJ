@@ -1,9 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener, QueryList } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService } from '../services/chat.service';
-import { Trending_service } from '../services/trending.service';
 import {Router} from "@angular/router"
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -26,7 +24,6 @@ import { PopupReportComponent } from '../popup-report/popup-report.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { NotationService } from '../services/notation.service';
 import { Story_service } from '../services/story.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Ads_service } from '../../app/services/ads.service'
@@ -35,9 +32,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import {LoginComponent} from '../login/login.component';
 
 
-declare var Muuri:any;
 declare var $: any;
-declare var masonry:any;
 
 
 @Component({
@@ -66,18 +61,15 @@ declare var masonry:any;
 export class AccountComponent implements OnInit {
   
   constructor(private rd: Renderer2, 
-    private Trending_service:Trending_service,
     private NotificationsService:NotificationsService,
     private Reports_service:Reports_service,
     private chatService:ChatService,
-    private authenticationService: AuthenticationService,
     private router: Router,
     public route: ActivatedRoute, 
     private activatedRoute: ActivatedRoute,
     private Story_service:Story_service,
     public navbar: NavbarService, 
     private location: Location,
-    private NotationService:NotationService,
     private cd: ChangeDetectorRef,
     private Profile_Edition_Service: Profile_Edition_Service,
     private sanitizer:DomSanitizer,
@@ -1291,13 +1283,7 @@ export class AccountComponent implements OnInit {
         return;
       }
     }
-    //this.prevent_shiny=false;
-    /*for(let j=0;j<this.put_album_visible.length;j++){
-      this.put_album_visible[j]=false;
-    }
-    this.put_category_visible[0]=false;
-    this.put_category_visible[1]=false;
-    this.put_category_visible[2]=false;*/
+
     this.category_to_load[i]=true;
     this.add_album_to_load[0]=true;
     this.opened_category=i;
@@ -1364,50 +1350,11 @@ export class AccountComponent implements OnInit {
     this.reset_number_of_drawings_to_show();
     this.opened_album=i;
     this.opened_album_selector=i;
-    /*for(let j=0;j<this.put_album_visible.length;j++){
-      this.put_album_visible[j]=false;
-    }
-    if(this.opened_category==0){
-      this.albums_to_show_comics[i]=true;
-    }
-    if(this.opened_category==1){
-      if(this.albums_to_show_drawings[i] && !this.albums_with_masonry_loaded[i]){
-        this.albums_to_show_drawings[i]=false;
-        this.cd.detectChanges();
-        this.albums_to_show_drawings[i]=true;
-      }
-      else{
-        this.albums_to_show_drawings[i]=true;
-      }
-     
-      
-      
-    }
-    if(this.opened_category==2){
-      this.albums_to_show_writings[i]=true;
-    }*/
+   
     console.log("detect changes")
     this.cd.detectChanges();
    
-    /*let interval = setInterval( () => {
-      console.log("interval")
-      if(this.opened_category==1){
-        if(this.albums_with_masonry_loaded[i]){
-          console.log("load masonry here")
-          this.ini_masonry();
-          
-        }
-      }
-      else{
-        this.put_album_visible[i]=true;
-      }
-     
-      clearInterval(interval);
-      this.cd.detectChanges();
-    },200)
-    console.log(this.opened_album)
-    console.log(this.put_album_visible)
-    console.log("end opened album")*/
+   
   }
 
 
@@ -1653,41 +1600,8 @@ export class AccountComponent implements OnInit {
   /**************ALBUMS FUNCTIONS****************** */
   /************************************************ */
   /************************************************ */
-  
-  
 
-
- /*change_drawing_album_status(i,value){
-    if(value){
-        if(i==0){
-          this.Albums_service.change_drawing_album_status("one-shot","standard","hidden").subscribe(
-            r=>{this.list_drawing_albums_status[0]="hidden";});        
-        }
-        if(i==1){
-          this.Albums_service.change_drawing_album_status("artbook","standard","hidden").subscribe(
-            r=>{this.list_drawing_albums_status[1]="hidden"; });
-        }
-        else if (i>1){
-          this.Albums_service.change_drawing_album_status(this.list_titles_albums_drawings[i],"public","private").subscribe(
-            r=>{ this.list_drawing_albums_status[i-1]="private"; });
-        }
-    }
-    else{
-      if(i==0){
-        this.Albums_service.change_drawing_album_status("one-shot","hidden","standard").subscribe(
-          r=>{ this.list_drawing_albums_status[0]="standard"; }
-        );
-      }
-      if(i==1){
-        this.Albums_service.change_drawing_album_status("artbook","hidden","standard").subscribe(
-          r=>{ this.list_drawing_albums_status[1]="stantard";} );
-      }
-      else if (i>1){
-        this.Albums_service.change_drawing_album_status(this.list_titles_albums_drawings[i],"private","public").subscribe(
-          r=>{this.list_drawing_albums_status[i-1]="public";});
-      }
-    }
-  }*/
+  
     
   remove_drawing_album(i){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -1724,17 +1638,6 @@ export class AccountComponent implements OnInit {
     })
     
   }
-
-  /*change_writing_album_status(i,value){
-    if(value){
-        this.Albums_service.change_writing_album_status(this.list_titles_albums_writings_added[i],"public","private").subscribe(
-          r=>{ this.list_writings_albums_status[i]="private"; });
-    }
-    else{
-        this.Albums_service.change_writing_album_status(this.list_titles_albums_writings_added[i],"private","public").subscribe(
-          r=>{this.list_writings_albums_status[i]="public";});
-    }
-  }*/
 
   remove_writing_album(i){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {

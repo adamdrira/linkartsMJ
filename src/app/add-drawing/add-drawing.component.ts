@@ -1,6 +1,5 @@
-import { Component, OnInit, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, Output, EventEmitter, Input, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit,  ElementRef, ChangeDetectorRef, Output, EventEmitter, Input, ViewChild, Inject } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
-import { UploadService } from '../services/upload.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -44,15 +43,10 @@ export class AddDrawingComponent implements OnInit {
 
   constructor(
     private Subscribing_service:Subscribing_service,
-    private rd: Renderer2, 
     private Drawings_CoverService:Drawings_CoverService,
-    private el: ElementRef,
     private Writing_Upload_Service:Writing_Upload_Service,
-    private _constants: ConstantsService, 
-    private _upload: UploadService,
-    private resolver: ComponentFactoryResolver, 
+    private constants: ConstantsService, 
     private cd: ChangeDetectorRef,
-    private viewref: ViewContainerRef,
     private Profile_Edition_Service:Profile_Edition_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
@@ -88,7 +82,6 @@ export class AddDrawingComponent implements OnInit {
   
   @Output() stepChanged = new EventEmitter<number>();
   drawing_id:number;
-  dropdowns = this._constants.filters.categories[0].dropdowns;
   REAL_step: number;
   CURRENT_step: number;
   modal_displayed: boolean;
@@ -318,9 +311,8 @@ export class AddDrawingComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
+  allGenres = this.constants.drawings_filters;
 
-  allGenres: string[] = ["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Montagnes","Motos","Nature","Nature morte","Paysage","Personnages","Portrait",
-  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"];
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

@@ -1,11 +1,7 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject,ViewChild, ElementRef } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
-
-
-import { Bd_CoverService } from '../services/comics_cover.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 
@@ -13,12 +9,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {MatAutocompleteSelectedEvent, MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
+import { ConstantsService } from '../services/constants.service';
 
 declare var $:any;
 
@@ -30,14 +27,11 @@ declare var $:any;
 export class PopupFormComicComponent implements OnInit {
 
   constructor(
-    private Profile_Edition_Service:Profile_Edition_Service,
     public dialogRef: MatDialogRef<PopupFormComicComponent>,
-    private cd:ChangeDetectorRef,
-
     private BdSerieService:BdSerieService,
     private BdOneShotService:BdOneShotService,
-    private Bd_CoverService: Bd_CoverService,
     private navbar: NavbarService,
+    private constants:ConstantsService,
     public dialog: MatDialog,
 
 
@@ -84,37 +78,7 @@ export class PopupFormComicComponent implements OnInit {
   f00Category: FormControl;
   f00Tags: FormControl;
 
-  /*initialize_selectors_f00() {
-    let THIS = this;
-
-    $(document).ready(function () {
-      $('.f00select0').SumoSelect({});
-      $('.f00select0')[0].sumo.selectItem( THIS.data.style );
-    });
-
-    $(document).ready(function () {
-      $('.f00select2').SumoSelect({});
-    });
-
-    this.cd.detectChanges();
-
-
-    $(".f00select0").change(function(){
-      THIS.f00.controls['f00Category'].setValue( $(this).val() );
-      THIS.cd.detectChanges();
-    });
-
-  };
-
-  initialize_taginputs_f00() {
-    
-    $(document).ready(function () {
-      $('.multipleSelect').fastselect({
-        maxItems: 3
-      });
-    });
-
-  }*/
+ 
 
   createFormControls00() {
     this.f00Title = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
@@ -186,8 +150,7 @@ export class PopupFormComicComponent implements OnInit {
   genreCtrl = new FormControl();
   filteredGenres: Observable<string[]>;
   genres: string[] = [];
-  allGenres: string[] = ["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","Science-fiction","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Western","Yaoi","Yuri"];
+  allGenres=this.constants.comics_filters;
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

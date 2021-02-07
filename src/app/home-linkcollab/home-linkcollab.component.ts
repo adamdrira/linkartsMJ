@@ -8,9 +8,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PopupLinkcollabFiltersComponent } from '../popup-linkcollab-filters/popup-linkcollab-filters.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ConstantsService } from '../services/constants.service';
 
 declare var Swiper: any
-declare var $: any 
 
 @Component({
   selector: 'app-home-linkcollab',
@@ -77,6 +77,7 @@ export class HomeLinkcollabComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
+    private constants:ConstantsService,
     private fb: FormBuilder
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -113,14 +114,12 @@ export class HomeLinkcollabComponent implements OnInit {
   skeleton_array = Array(5);
   now_in_seconds=Math.trunc( new Date().getTime()/1000);
 
-  ads_types = ["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
-  "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
+  ads_types = this.constants.ads_types;
 
-  ads_remuneration_types = ["Tout","Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"];
-  ads_services_types = ["Tout","Produits","Services"];
-  ads_descriptions = ["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"];
-  
-  ads_targets=["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+  ads_remuneration_types =this.constants.price_types_remunerated;
+  ads_services_types=  this.constants.price_types_services;
+  ads_descriptions = this.constants.ads_types;
+  ads_targets=this.constants.ads_targets;
 
   type_of_service='none';
   offer_or_demand='none'; // offre ou demande

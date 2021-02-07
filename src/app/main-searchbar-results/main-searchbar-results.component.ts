@@ -14,6 +14,7 @@ import {Ads_service} from '../services/ads.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { ConstantsService } from '../services/constants.service';
 
 
 declare var Swiper: any;
@@ -37,12 +38,12 @@ declare var $: any;
 export class MainSearchbarResultsComponent implements OnInit {
 
   constructor(
-    private authenticationService: AuthenticationService, 
     private route: ActivatedRoute, 
     private location: Location,
     public navbar: NavbarService,
     private cd:ChangeDetectorRef,
     private sanitizer:DomSanitizer,
+    private constants:ConstantsService,
     private Ads_service:Ads_service,
     private Profile_Edition_Service:Profile_Edition_Service,
     public dialog: MatDialog,
@@ -76,21 +77,17 @@ export class MainSearchbarResultsComponent implements OnInit {
   list_of_real_categories=["Account","Ad","Comic","Drawing","Writing"];
 
 
-  first_filters_accounts=["Artistes","Artistes professionnels", "Artiste", "Artiste professionnel","Artiste professionnelle", "Maison d'édition",
-  "Editeur","Editrice","Professionnels non artistes","Professionnel non artiste","Professionnelle non artiste","Passionné","Passionnée"];
+  first_filters_accounts=this.constants.type_of_accounts;
   first_filters_ads=["B.D.","BD euro.","Comics","Manga","Webtoon","Dessin","Dessin dig.","Dessin trad.","Ecrit","Article","Poésie","Roman","Roman il."];
   first_filters_comics=["Comics", "BD", "Manga","Webtoon"];
   first_filters_drawings=["Traditionnel", "Digital"];
   first_filters_writings=["Article","Poésie", "Roman", "Roman illustré", "Scénario"];
   first_filters=[this.first_filters_accounts,this.first_filters_ads,this.first_filters_comics,this.first_filters_drawings,this.first_filters_writings];
 
-  comics_tags=["Action","Aventure","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kodomo","Nekketsu","Pantso shoto","Philosophie",
-  "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Voyage","Western","Yaoi","Yuri"];
-  drawings_tags=["Abstrait","Animaux","Anime & Manga","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Maisons","Monstre","Montagnes","Motos","Nature","Nature morte","Paysage","Personnages","Portrait",
-  "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"];
-  writings_tags = ["Action","Animation","Aventure","BD","Caricatural","Comics","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Manga","Nature","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Voyage","Webtoon","Western"];;
-  ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+  comics_tags=this.constants.comics_filters;
+  drawings_tags=this.constants.drawings_filters;
+  writings_tags = this.constants.writings_filters;
+  ads_targets=this.constants.ads_targets;
 
 
   accounts_favorites=["Bandes dessinées","Dessins", "Ecrits", "Annonces"];
