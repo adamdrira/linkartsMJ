@@ -146,7 +146,7 @@
                </div>   
             </div>
     
-            <div *ngIf="item.drawng_id">
+            <div *ngIf="item.drawing_id">
                 <div *ngIf="item.pagesnumber > 0 ">
                     <div class="highlighted_artwork">
                         <app-thumbnail-artwork 
@@ -183,6 +183,7 @@
                 [list_of_users]=list_of_users
                 [now_in_seconds]=now_in_seconds
                 [last_timestamp]=last_timestamp
+                (manage_show_more)="show_more_managed( $event );"
                 ></app-subscribings-see-more>
         </ng-container>
     </div>

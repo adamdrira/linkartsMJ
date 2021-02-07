@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChange, HostListener, ChangeDetectorRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit,HostListener, ChangeDetectorRef } from '@angular/core';
 
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -11,7 +11,7 @@ import { Subscribing_service } from '../services/subscribing.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $: any
+
 
 @Component({
   selector: 'app-subscribings',
@@ -65,10 +65,11 @@ export class SubscribingsComponent implements OnInit {
   list_of_new_contents_sorted:boolean=false;
  
   now_in_seconds:number;
+  can_show_more=true;
   last_timestamp:string;
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
-    if((this.list_of_new_contents_sorted && this.list_of_new_contents.length>0) || (this.list_of_contents_sorted && this.list_of_contents.length>0)){
+    if(this.can_show_more && ((this.list_of_new_contents_sorted && this.list_of_new_contents.length>0) || (this.list_of_contents_sorted && this.list_of_contents.length>0))){
       let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
       let max = document.documentElement.scrollHeight;
       let sup=max*0.1;
@@ -90,7 +91,6 @@ export class SubscribingsComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;
@@ -100,7 +100,9 @@ export class SubscribingsComponent implements OnInit {
   }
 
  
-
+  show_more_managed(){
+    this.can_show_more=false;
+  }
 
   get_all_users_subscribed_to_today(){
     this.Subscribing_service.get_all_users_subscribed_to_today(this.user_id).subscribe(info=>{
@@ -400,7 +402,7 @@ export class SubscribingsComponent implements OnInit {
   display_nothing_found=false;
   sort_list_of_contents(list,period){
     console.log(list);
-    console.log(period)
+    console.log(period);
     if(list.length>1){
       for (let i=1; i<list.length; i++){
         let time = this.convert_timestamp_to_number(list[i].createdAt);

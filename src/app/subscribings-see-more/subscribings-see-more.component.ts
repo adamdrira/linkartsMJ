@@ -1,15 +1,14 @@
-import { Component, OnInit, Input, SimpleChange, HostListener } from '@angular/core';
+import { Component, OnInit, Input,  HostListener, Output, EventEmitter } from '@angular/core';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Ads_service } from '../services/ads.service';
-import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { Subscribing_service } from '../services/subscribing.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-declare var $: any
+
 
 @Component({
   selector: 'app-subscribings-see-more',
@@ -32,7 +31,6 @@ export class SubscribingsSeeMoreComponent implements OnInit {
     private Ads_service:Ads_service,
     private BdOneShotService:BdOneShotService,
     private BdSerieService:BdSerieService,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private Subscribing_service:Subscribing_service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
@@ -50,13 +48,14 @@ export class SubscribingsSeeMoreComponent implements OnInit {
 
   @Input() now_in_seconds:number;
   @Input()last_timestamp:string;
+  can_show_more=false;
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll() {
     let pos = (document.documentElement.scrollTop || document.body.scrollTop) + document.documentElement.offsetHeight;
     let max = document.documentElement.scrollHeight;
     let sup=max*0.1;
-    if(pos>= max - sup )   {
+    if(pos>= max - sup && this.can_show_more)   {
       this.show_more=true;
     }
   }
@@ -68,7 +67,11 @@ export class SubscribingsSeeMoreComponent implements OnInit {
 
   }
 
-
+  
+  @Output() manage_show_more = new EventEmitter<object>();
+  function_manage_show_more(){
+    this.manage_show_more.emit({done:"done"});
+  }
   
   sort_more_list_of_contents(list){
     if(list.length>1){
@@ -85,13 +88,20 @@ export class SubscribingsSeeMoreComponent implements OnInit {
           }
         }
       }
+      this.can_show_more=true;
+    }
+    else if(list.length==1){
+      this.list_of_contents_sorted=true;
+      this.last_timestamp=list[0].createdAt;
+      this.can_show_more=false;
     }
     else{
       this.list_of_contents_sorted=true;
-      this.last_timestamp=list[0].createdAt;
+      this.can_show_more=false;
     }
     console.log(list)
     console.log(this.last_timestamp)
+    console.log(this.can_show_more)
 
   }
 
