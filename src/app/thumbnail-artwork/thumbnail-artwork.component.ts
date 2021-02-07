@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef, ViewChildren, QueryList, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -24,7 +24,6 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
-declare var $:any;
 @Component({
   selector: 'app-thumbnail-artwork',
   templateUrl: './thumbnail-artwork.component.html',
@@ -63,7 +62,6 @@ export class ThumbnailArtworkComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Writing_Upload_Service:Writing_Upload_Service,
-    private router:Router,
     public dialog: MatDialog,
     private rd:Renderer2,
     private Reports_service:Reports_service,
@@ -492,7 +490,7 @@ export class ThumbnailArtworkComponent implements OnInit {
               this.chaptersnumber = this.item.chaptersnumber
               this.date_upload = this.item.createdAt
               this.data_retrieved=true;
-              this.NotationService.get_content_marks("comic", 'serie', this.item.bd_id,0).subscribe(r=>{
+              this.NotationService.get_content_marks("comic", 'one-shot', this.item.bd_id,0).subscribe(r=>{
                 //marks
                 this.viewnumber =  number_in_k_or_m(r[0].list_of_views.length);
                 this.likesnumber = number_in_k_or_m(r[0].list_of_likes.length);

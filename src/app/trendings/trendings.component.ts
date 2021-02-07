@@ -222,19 +222,10 @@ export class TrendingsComponent implements OnInit {
               }
             }
             else{
-              if(r[0].status=="public"){
-                this.comics_trendings_sorted[i]=r[0];
-                compteur=compteur+1;
-                if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
-                }
-              }
-              else{
-                compteur=compteur+1;
-                if(compteur == this.comics_trendings_length ){
-                  this.delete_empty_elements(this.comics_trendings_sorted,"comic");
-                 
-                }
+              compteur=compteur+1;
+              if(compteur == this.comics_trendings_length){
+
+                this.delete_empty_elements(this.comics_trendings_sorted,"comic");
               }
             }
             
