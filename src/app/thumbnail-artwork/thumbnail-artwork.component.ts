@@ -12,7 +12,6 @@ import { MatDialog } from '@angular/material/dialog';
 import {get_date_to_show} from '../helpers/dates';
 import {Reports_service} from '../services/reports.service';
 import {NotationService} from '../services/notation.service';
-import { Router  } from '@angular/router';
 
 import { interval, Subscription } from 'rxjs';
 import { PDFDocumentProxy } from 'ng2-pdf-viewer';
