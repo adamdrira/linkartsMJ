@@ -35,6 +35,9 @@ export class Writing_CoverService {
   return this.covername
  }
   
+ remove_covername(){
+  this.covername=null;
+}
 
   send_confirmation_for_addwriting(confirmation:boolean){
       this.confirmation = confirmation

@@ -48,6 +48,9 @@ export class Drawings_CoverService {
     return this.covername;
   }
 
+  remove_covername(){
+    this.covername=null;
+  }
 
   //lorsqu'il valide tout
   add_covername_to_sql(format:string,drawing_id){

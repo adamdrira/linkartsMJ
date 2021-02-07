@@ -35,7 +35,9 @@ export class Bd_CoverService {
  get_cover_name2(){
   return this.covername
  }
-  
+ remove_covername(){
+  this.covername=null;
+}
 
   send_confirmation_for_addartwork(confirmation:boolean){
       this.confirmation = confirmation
