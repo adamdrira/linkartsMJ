@@ -1,0 +1,226 @@
+
+  /*
+   * Content
+   */
+
+   $number: 1000; 
+  
+
+   @media (min-width: 0px) and (max-width: 1000px) {
+     .category-filter, .subcategory-filter {
+      width:100%;
+     }
+   }
+ 
+    @media (min-width:1000px) and (max-width:1300px) {
+      .category-filter, .subcategory-filter {
+       width:85%;
+      }
+    }
+ 
+    @media (min-width:1300px) {
+     .category-filter, .subcategory-filter {
+       width:65%;
+     }
+    }
+   
+
+    a {
+      color:#333;
+      cursor:pointer;
+    }
+    
+    a:hover {
+      text-decoration: none;
+    }
+ 
+   hr {
+     margin-right:45%;
+     margin-left:45%;
+     margin-top:0px;
+     border: 0;
+     border-top: 1px solid rgb(190, 173, 96);
+   }
+ 
+.storiesbar {
+  width:100%;
+  //height:100%;
+  //overflow-y:auto;
+}
+   
+.invisible {
+  visibility: hidden;
+  pointer-events: none;
+}
+// First section
+.panel-controller {
+  margin-top:30px;
+  width:100%;
+  height:50px;
+  border-radius:7px;
+  background-color:rgb(32,56,100);  
+  box-shadow: 0 0 0 1px rgba(32, 56, 100, 0.15), 0 2px 3px rgba(32, 56, 100, 0.2);
+}
+
+.panel-controller .left-container {
+  display:flex;
+  margin-left:5px;
+  float:left;
+  height:100%;
+}
+
+.panel-controller .left-container .controller-category {
+  display: flex;
+  height: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  flex-direction: column;
+  cursor:pointer;
+  color:rgb(192, 209, 241);
+  transition:color 200ms;
+  transition: text-shadow 200ms;
+}
+
+.panel-controller .left-container > .open {
+  color:rgb(255, 255, 255) !important;
+  text-shadow: -0.04ex 0 rgb(255, 255, 255), 0.04ex 0 rgb(255, 255, 255);
+}
+
+.panel-controller .left-container > .controller-category:hover {
+  color:rgb(255, 255, 255) !important;
+  text-shadow: -0.04ex 0 rgb(255, 255, 255), 0.04ex 0 rgb(255, 255, 255);
+}
+
+
+.panel-controller .right-container {
+  display:flex;
+  float:right;
+  height:100%;
+  margin-right:50px;
+}
+
+.panel-controller .right-container .dropdowns-container {
+  display:flex;
+}
+
+.panel-controller .right-container select{
+  display:flex;
+  float:right;
+  height:100%;
+}
+
+.text-lines {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin:15px auto auto auto;
+  color: rgb(25, 44, 80);
+
+  mat-icon {
+    margin: 10px auto 0px auto;
+    width: unset;
+    height: unset;
+    font-size: 26px;
+    cursor:default;
+  }
+  span {
+    cursor:default;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size:14px;
+  }
+
+  &.large {
+    margin: 0px auto 80px auto !important;
+    mat-icon {
+      font-size:36px !important;
+    }
+    span {
+      margin-top: 10px !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.panel-controller .right-container select{
+  display:flex;
+  float:right;
+  height:100%;
+}
+
+.highlighted_artwork {
+  text-align: center;
+  //width: fit-content;
+  margin-left:auto;
+  margin-right:auto;
+  width: 100%;
+  margin-top:25px;
+  margin-bottom: 40px;
+  line-height: 20px;
+}
+.highlighted_artwork span {
+  font-size:17px;
+}
+
+
+mat-spinner {
+  margin: auto;
+  ::ng-deep circle {
+      stroke: rgb(32,56,100);
+  }
+}
+.loading-page{
+  position:relative;
+  margin-top:calc(50vh - 180px);
+  /*top:50%;
+  left:50%;*/
+}
+
+
+.subscribings-global-container {
+  margin-left:auto;
+  margin-right:auto;
+  overflow-x: hidden;
+}
+
+
+.skeleton {    
+  width: 100%;
+  height: 269px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border-radius: 25px;
+  background-color: gainsboro;
+  background-image: linear-gradient(to right, transparent 33%, rgb(255 255 255 / 70%) 50%, transparent 66%);
+  background-size: 300% 100%;
+  animation: shine 1500ms infinite;
+}
+
+@keyframes shine {
+  0% {
+      background-position: right;    
+  }
+  /*100% {
+      background-position: left; it's the default value, no need to define it
+  }*/
+}
+
+
+@media (max-width: 600px) {
+  .skeleton {
+    height: 500px !important;
+  }
+}
+
+@media (max-width: 920px) {
+  .subscribings-global-container {
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
