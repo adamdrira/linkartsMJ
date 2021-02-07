@@ -1,5 +1,5 @@
 
-import { Component, OnInit,  ElementRef, SimpleChanges, Input, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChild, ComponentRef, HostListener } from '@angular/core';
+import { Component, OnInit,  ElementRef, Input, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
 
 import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
@@ -9,7 +9,7 @@ import {Subscribing_service}from '../services/subscribing.service';
 import { Subscription } from 'rxjs';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Router } from '@angular/router';
-
+import { Bd_CoverService } from '../services/comics_cover.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
@@ -18,7 +18,6 @@ import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var $: any;
 
 @Component({
   selector: 'app-form-serie',
@@ -48,6 +47,7 @@ value:string="add";
     private cd: ChangeDetectorRef,
     private bdSerieService: BdSerieService,
     private router:Router,
+    private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
     private navbar: NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
@@ -526,6 +526,7 @@ value:string="add";
               }
               this.chatService.messages.next(message_to_send);
               this.block_cancel=true;
+              this.Bd_CoverService.remove_covername();
               this.router.navigate([`/account/${this.pseudo}/${this.user_id}`]);
               //window.location.href = `/account/${this.pseudo}/${this.user_id}`;
           }); 
