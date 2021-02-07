@@ -343,6 +343,7 @@ export class SwiperUploadOneshotComponent implements OnInit {
         this.componentRef[ step ].instance.sendValidated.subscribe( v => {
           console.log("received validated")
           this.block_cancel=true;
+          this.Bd_CoverService.remove_covername();
           this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
           //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
         });

@@ -214,6 +214,7 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
   sendValidated(event){
       this.block_cancel=true;
+      this.Drawings_CoverService.remove_covername();
       this.router.navigate([`/account/${event.pseudo}/${event.user_id}`]);
       //window.location.href = `/account/${event.pseudo}/${event.user_id}`;
   }
@@ -225,7 +226,6 @@ export class SwiperUploadDessinUniqueComponent implements OnInit{
 
     let errorMsg1 : string = "Le dessin n'a pas été téléchargé";
     let errorMsg2 : string = "La vignette n'a pas été éditée";
-    let errorMsg3 : string = "La couleur du filtre n'a pas été sélectionnée";
 
     if( !this.image_uploaded ) {
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {

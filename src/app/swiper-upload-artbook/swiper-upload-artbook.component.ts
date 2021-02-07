@@ -526,6 +526,7 @@ export class SwiperUploadArtbookComponent implements OnInit {
               console.log("received validated")
               this.block_cancel=true;
               this.display_loading=false
+              this.Drawings_CoverService.remove_covername();
               this.router.navigate([`/account/${v.pseudo}/${v.user_id}`]);
               //window.location.href = `/account/${v.pseudo}/${v.user_id}`;
             });
