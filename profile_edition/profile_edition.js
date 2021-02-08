@@ -2391,20 +2391,20 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
           mail_to_send+= `<p>Nous vous souhaitons la bienvenue sur LinkArts.</p>
             <p><a href="https://linkarts.fr/registration/${user.id}/${password}"> Cliquer ici</a> pour confirmer votre inscription et pouvoir vous connecter.</p>
-            <p>LinkArts est un site dédié à la collaboration éditoriale et à la mise en avant des artistes du monde de l'édition.`
+            <p>LinkArts est un site dédié à la collaboration éditoriale et à la mise en avant des artistes du monde de l'édition. `
 
           if(user.type_of_account.includes("Artiste")){
-            mail_to_send+= `En tant qu'${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            mail_to_send+= `En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
             <ol>
-										<li><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apapritions en tendances.</li>
+										<li><b>Rémunération</b> : Vous pouvez générer des gains proportionnels à votre nombre d'abonnés grâce à vos apparitions en tendances.</li>
 										<li><b>Visibilité</b> : Si vous écrivez, que vous dessinez ou que vous faites les deux, LinkArts vous permet d'organiser et de mettre en avant les œuvres que vous publiez. LinkArts vous offre aussi une visibilité supplémentaire dans les coups de cœur si votre compte a moins de 6 mois d'existence et qu'il commence à gagner en popularité. Si de plus, vous faites partie du top 15 des coups de cœur le premier du mois, vous générez alors des gains bonus !</li>
 										<li><b>Collaboration</b> : LinkArts met à votre disposition linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y retrouver des annonces pour tous types de collaborations principalement en lien avec le monde de l'édition. LinkArts met aussi à votre disposition une messagerie vous permettant d'échanger avec de potentiels collaborateurs ou tout simplement avec vos contacts.</li>
 										<li><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
-										<li><b>Exploration </b>: Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
+										<li><b>Exploration </b>: Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres. </li>
 						</ol>`
           }
           else if(user.type_of_account.includes("non art")){
-            mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            mail_to_send+= `En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
             <ol>
 										<li><b>Visibilité</b> : LinkArts propose actuellement aux professionnels la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux professionnels la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
                     <li><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activitées. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
@@ -2412,18 +2412,26 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 						</ol>`
           }
           else if(user.type_of_account.includes("Maison")){
-            mail_to_send+= `En tant que ${user.type_of_account} LinkArts vous offre les avantages suivants : </p>
+            mail_to_send+= `En tant que ${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
             <ol>
 										<li><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
                     <li><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
                     <li><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
 						</ol>`
           }
+          else if(user.type_of_account.includes("Edit")){
+            mail_to_send+= `En tant qu'${user.type_of_account.toLowerCase()} LinkArts vous offre les avantages suivants : </p>
+            <ol>
+										<li><b>Visibilité</b> : LinkArts propose actuellement aux maisons d'édition et aux éditeurs la mise en avant de leurs produits dans le mode lecture des annonces et des œuvres. LinkArts propose aussi aux maisons d'édition la mise en avant de leur marque en en-tête de la section linkcollab. Par ailleurs, une plateforme de ventes vous permettant de mettre en avant et de vendre vos produits est en cours de construction.   </li>
+                    <li><b>Collaboration</b> : LinkArts met à votre disposition la section linkcollab, une section entièrement adaptée à la collaboration. Vous pourrez y publier des annonces en lien avec vos activités. LinkArts met aussi à votre disposition une messagerie afin de servir vos intérêts.</li>
+                    <li><b>Communauté</b> : LinkArts vous permet de créer une communauté qui peux suivre vos projets de manière régulière que ce soit grâce aux LinkArts Stories ou grâce au fil d'actualité des abonnements dans l'accueil. </li>
+						</ol>`
+          }
           else {
-            mail_to_send+= `Regorgeant d'artistes du monde l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommendant des œuvres qui sont adaptés à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres.</p> `
+            mail_to_send+= `Regorgeant d'artistes du monde de l'édition, LinkArts vous offre le moyen d'explorer cet univers en vous recommandant des œuvres qui sont adaptées à vos préférences. Mais n'hésitez surtout pas à vous perdre dans les différents recoins de ce monde en découvrant d'autres œuvres.</p> `
           }
           mail_to_send+=`<p> Nous vous remercions pour votre inscription et vous souhaitons une très agréable aventure au sein de LinkArts !</p>
-          <p> Très sincérement, l'équipe de LinkArts.</p>`
+          <p> Très sincèrement, l'équipe de LinkArts.</p>`
            
 
           const transport = nodemailer.createTransport({
@@ -2524,7 +2532,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
               
               mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour confirmer ou rejeter votre adhésion au groupe.</p>`
 
-              mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+              mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
 
 
               var mailOptions = {
@@ -2617,7 +2625,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             mail_to_send+=` <p>Vous venez de crééer le groupe <b>${user.firstname}</b>.</p>`
             mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour valider ou annuler la création du groupe. </p>`
 
-            mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+            mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
 
             var mailOptions = {
               from: 'Linkarts <services@linkarts.fr>', // sender address
@@ -2673,7 +2681,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
                 
                 mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}"> Cliquer ici</a> pour valider ou rejeter la proposition de création de groupe. </p>`
 
-                mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+                mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
 
                 var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address
