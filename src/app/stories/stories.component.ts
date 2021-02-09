@@ -132,8 +132,8 @@ export class StoriesComponent implements OnInit {
         el: '.swiper-pagination',
       },
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+        nextEl: '.swiper-button-next.stories-button',
+        prevEl: '.swiper-button-prev.stories-button',
       },
       keyboard: {
         enabled: false,
@@ -738,6 +738,10 @@ export class StoriesComponent implements OnInit {
 
   load_pp(i){
     this.pp_is_loaded[i]=true;
+
+    this.cd.detectChanges();
+    window.dispatchEvent(new Event('resize'));
+
   }
 
   load_cover(i){

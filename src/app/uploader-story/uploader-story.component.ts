@@ -9,9 +9,11 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import domtoimage from 'dom-to-image';
 import { NavbarService } from '../services/navbar.service';
 
+
+const html2canvas = require('../../../node_modules/html2canvas');
+
 declare var Cropper: any;
 declare var $: any;
-
 
 const url = 'https://www.linakrts.fr/routes/upload_story';
 
@@ -275,10 +277,71 @@ export class UploaderStoryComponent implements OnInit {
 
     this.set_activated_popup(-1);
     var THIS = this;
+      
+
+    /*html2canvas( this.image_container.nativeElement , {
+      useCORS: true }).then(function(canvas) {
+
+      canvas.toBlob(function(blob) {
+        // send the blob to server etc.
+        THIS.Story_service.upload_story( blob ).subscribe(res => {
+          console.log(res)
+          if(!res[0].num && !res[0].error && !res[0].msg){
+            //location.reload();
+          }
+          else if(res[0].num){
+            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+              data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
+              panelClass: "popupConfirmationClass",
+            });
+            THIS.loading=false;
+
+          }
+          else{
+            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+              data: { showChoice: false, text: 'Une erreur est survenue' },
+              panelClass: "popupConfirmationClass",
+            });
+            THIS.loading=false;
+          }
+        })
+      }, "image/png", 0.75);
+    });*/
+
+
     
-    setTimeout(() => domtoimage.toBlob(this.image_container.nativeElement)
-    .then(function (blob) {
-        
+    /*canvas.toDataUrl("image/png").toBlob(function(blob) {
+      THIS.Story_service.upload_story( blob ).subscribe(res => {
+        console.log(res)
+        if(!res[0].num && !res[0].error && !res[0].msg){
+          //location.reload();
+        }
+        else if(res[0].num){
+          const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+            data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
+            panelClass: "popupConfirmationClass",
+          });
+          THIS.loading=false;
+
+        }
+        else{
+          const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+            data: { showChoice: false, text: 'Une erreur est survenue' },
+            panelClass: "popupConfirmationClass",
+          });
+          THIS.loading=false;
+        }
+      })
+    });*/
+
+    setTimeout(() => domtoimage.toSvg(this.image_container.nativeElement, {filter: THIS.filter})
+    .then(function (svg) {
+
+        const svg_file = svg.replace(/data:image\/svg\+xml;charset=utf-8,/, '');
+        //console.log(svg_file);
+
+        const blob = new Blob([svg_file], {type: ''});
+
         THIS.Story_service.upload_story( blob ).subscribe(res => {
           console.log(res)
           if(!res[0].num && !res[0].error && !res[0].msg){
@@ -301,13 +364,17 @@ export class UploaderStoryComponent implements OnInit {
           }
           
         })
-        //document.body.appendChild(img);
     })
     .catch(function (error) {
         console.error('oops, something went wrong!', error);
     }), 1000);
 
   }
+
+  filter (node) {
+    return (node.tagName !== 'i');
+  }
+  
 
 
 }

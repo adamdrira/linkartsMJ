@@ -30,6 +30,9 @@ $default-color: rgb(218, 220, 225);
         align-items: center;
 
         .uploaded-image-container {
+            background:white;
+        }
+        .uploaded-image-container {
             display: flex;
             position: relative;
             overflow: hidden;
@@ -424,6 +427,10 @@ $default-color: rgb(218, 220, 225);
         transition: transform 200ms;
         &:active {
             transform: scale(0.98);
+        }
+
+        mat-spinner circle {
+            stroke: rgb(255, 255, 255) !important;
         }
     }
 }

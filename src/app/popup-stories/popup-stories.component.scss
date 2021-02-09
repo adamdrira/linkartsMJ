@@ -1,8 +1,16 @@
 .stories-container {
 
-    height: calc(100vh - 48px);
-    @media (max-width: 700px) {
-        height: 100vh;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 25px;
+    bottom: 25px;
+    width: 100%;
+
+    @media (max-width: 800px) {
+        top: 0px;
+        bottom: 0px;
+        width: 100%;
     }
 
     .close {
@@ -21,7 +29,7 @@
             color: white;
             font-size: 36px;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
             display:none;
         }
     }
@@ -34,7 +42,7 @@
         position: relative;
 
         
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
             padding: 0px 0px;
         }
     }
@@ -68,7 +76,7 @@
         &:after {
             font-size:24px;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
             display:none;
         }
     }
@@ -86,7 +94,7 @@
         &:after {
             font-size:24px;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
             display:none;
         }
     }
@@ -157,7 +165,7 @@
             background: #1a1a1a;
             overflow: hidden;
 
-            @media (max-width: 700px) {
+            @media (max-width: 800px) {
                 padding: 0px 0px;
             }
         }

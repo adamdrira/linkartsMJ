@@ -133,13 +133,19 @@ ngOnInit() {
     
     let k=0;
 
-
     for (let i=0;i<this.list_of_data.length;i++){
 
       this.Story_service.retrieve_story(this.list_of_data[i].file_name).subscribe(info=>{
-        let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
-        const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-        this.list_of_contents[i]=SafeURL;
+
+        var reader = new FileReader()
+        reader.readAsText(info);
+        reader.onload = function(this) {
+            let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+            let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+            const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+            THIS.list_of_contents[i]=SafeURL;
+        }
+        
         k++;
         if(k== this.list_of_data.length ){
 
