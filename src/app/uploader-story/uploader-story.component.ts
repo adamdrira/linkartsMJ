@@ -10,11 +10,6 @@ import domtoimage from 'dom-to-image';
 import { NavbarService } from '../services/navbar.service';
 
 
-const html2canvas = require('../../../node_modules/html2canvas');
-
-declare var Cropper: any;
-declare var $: any;
-
 const url = 'https://www.linakrts.fr/routes/upload_story';
 
 @Component({

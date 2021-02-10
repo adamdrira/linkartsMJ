@@ -1,10 +1,12 @@
 
-<div class="stories-container">
-    <button (click)="close_dialog()" class="close" tabIndex="-1">
-        <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
-    </button>
+<button (click)="close_dialog()" class="close" tabIndex="-1">
+    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+</button>
 
-    <div class="swiper-container-stories">
+<div class="stories-container">
+
+    <div #swiperContainerStories class="swiper-container-stories">
+        
         
         <div class="swiper-wrapper">
     
@@ -21,8 +23,8 @@
             </div>
     
         </div>
-    
-        <div *ngIf="!for_account" class="swiper-button-prev"></div>
-        <div *ngIf="!for_account" class="swiper-button-next"></div>
+
     </div>
+    <div [ngClass]="{'invisible': for_account }" class="swiper-button-prev"></div>
+    <div [ngClass]="{'invisible': for_account }" class="swiper-button-next"></div>
 </div>

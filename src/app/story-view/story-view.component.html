@@ -30,7 +30,7 @@
             </button>
             <mat-menu  #storyOptions="matMenu" class="story-mat-menu">
                 <button *ngIf="!visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="delete_story( swiper.activeIndex )"> 	
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }">delete</mat-icon>
                     <span>Supprimer la story</span>
                 </button>
                 <button *ngIf="visitor_mode" class="story-button-menu-item" tabIndex="-1" mat-menu-item (click)="report( swiper.activeIndex )"> 	
@@ -65,7 +65,7 @@
     
             <div *ngFor="let item of list_of_contents; let i=index" class="swiper-slide" [ngStyle]="{'overflow': show_list_of_viewers ? 'auto' : 'unset'}">
 
-                <img (load)='loaded_image()' [src]=item [ngClass]="{'invisible':!display_images,'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
+                <img (load)='loaded_image(i)' [src]=item [ngClass]="{'invisible':!display_images[i],'really-invisible':show_list_of_viewers || loading_list_of_viewers}">
                 
                 
                 <div class="loading-dots" *ngIf="loading_list_of_viewers">
@@ -109,11 +109,11 @@
                             </div>
                         </div>
             
-                        <button *ngIf="!list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                        <button *ngIf="!list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                             <span>S'abonner</span>
                         </button>
-                        <button *ngIf="list_of_check_subscribtion[k]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                        <button *ngIf="list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
                             
                             <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                             <span>Abonné(e)</span>

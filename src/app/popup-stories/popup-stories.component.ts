@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, ComponentFactoryResolver, ViewContainerRef, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, ComponentFactoryResolver, ViewContainerRef, ViewChild, Renderer2, ElementRef } from '@angular/core';
 
 import { StoryViewComponent } from '../story-view/story-view.component';
 import { Story_service } from '../services/story.service';
@@ -8,7 +8,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 declare var Swiper:any;
-declare var $:any;
 
 @Component({
   selector: 'app-popup-stories',
@@ -32,9 +31,7 @@ export class PopupStoriesComponent implements OnInit {
     public dialogRef: MatDialogRef<PopupStoriesComponent>,
     private cd:ChangeDetectorRef,
     private resolver: ComponentFactoryResolver, 
-    private viewref: ViewContainerRef,
     private rd:Renderer2,
-    private location:Location,
     private navbar: NavbarService,
     private Story_service:Story_service,
     
@@ -52,6 +49,7 @@ export class PopupStoriesComponent implements OnInit {
   @ViewChild('targetUpload', { read: ViewContainerRef }) entry: ViewContainerRef;
   componentRef: any[] = [];
 
+  @ViewChild('swiperContainerStories') swiperContainerStories: ElementRef;
 
   index_debut:number;
   list_index_debut=[];
@@ -89,32 +87,57 @@ export class PopupStoriesComponent implements OnInit {
     }
 
 
-    this.swiper = new Swiper('.swiper-container-stories', {
-      
-      speed: 500,
-      effect: 'cube',
-      //grabCursor: false,
-      //simulateTouch: false,
-      cubeEffect: {
-        shadow: true,
-        slideShadows: true,
-        shadowOffset: 20,
-        shadowScale: 0.94,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      on: {
-        slideChange: function () {
-          THIS.refresh_stories_status();
-          THIS.cd.detectChanges();
-        }
-      },
-      navigation: {
-        nextEl: '.swiper-container-stories .swiper-button-next',
-        prevEl: '.swiper-container-stories .swiper-button-prev',
-      },
-    });
+    this.cd.detectChanges();
+    
+    var ua = navigator.userAgent.toLowerCase(); 
+    if (ua.indexOf('safari') != -1) { 
+      if (ua.indexOf('chrome') > -1) {
+        // Chrome
+        this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
+          effect: 'cube',
+          cubeEffect: {
+            shadow: true,
+            slideShadows: true,
+            shadowOffset: 20,
+            shadowScale: 0.94,
+          },
+          speed: 500,
+          pagination: {
+            el: '.swiper-pagination',
+          },
+          on: {
+            slideChange: function () {
+              THIS.refresh_stories_status();
+              THIS.cd.detectChanges();
+            }
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      } 
+      else {
+        // Safari
+        this.swiper = new Swiper( this.swiperContainerStories.nativeElement, {
+          speed: 500,
+          pagination: {
+            el: '.swiper-pagination',
+          },
+          on: {
+            slideChange: function () {
+              THIS.refresh_stories_status();
+              THIS.cd.detectChanges();
+            }
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      }
+    }
+    
     
 
   let k=0;

@@ -34,7 +34,6 @@ export class StoryViewComponent implements OnInit {
     public dialog: MatDialog,
     private Reports_service:Reports_service,
     private cd:ChangeDetectorRef,
-    private rd:Renderer2,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -305,16 +304,10 @@ ngOnInit() {
   }
 
 
-
-  compteur_loaded_image=0;
-  display_images=false;
+  display_images=[];
   display_pp=false;
-  loaded_image(){
-    this.compteur_loaded_image+=1;
-    if(this.compteur_loaded_image==this.list_of_contents.length){
-      this.display_images=true;
-    }
-    
+  loaded_image(i){
+      this.display_images[i]=true;
   }
 
   loaded_pp(){
@@ -350,7 +343,8 @@ list_of_profile_pictures:SafeUrl[]=[];
 list_of_pp_loaded=[];
 get_list_of_viewers(i){
   
-  this.clickPause();
+  clearInterval(this.interval);
+  this.paused = true;
   
   this.loading_list_of_viewers = true;
 
