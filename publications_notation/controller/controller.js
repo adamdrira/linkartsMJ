@@ -880,6 +880,7 @@ module.exports = (router,
             res.status(500).json({msg: "error", details: err});		
         }).then(view_found => {
             if(view_found[0]){
+                console.log("start add view check time")
                 let now_in_seconds= Math.trunc( new Date().getTime()/1000);
                 
                 let time =(view_found[0].createdAt).toString();
@@ -897,7 +898,7 @@ module.exports = (router,
                 }
             }
             else{
-                res.status(200).send([{id:0}]) 
+                add_view()
             }
         })
 
@@ -964,10 +965,12 @@ module.exports = (router,
         });
 
     router.post('/add_view_time', function (req, res) {
-        //console.log(" adding add_view_time")
+        console.log(" adding add_view_time")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_view_created = req.body.id_view_created;
         const view_time = req.body.view_time;
+        console.log(id_view_created)
+        console.log(view_time)
         if(id_view_created>0){
             List_of_views.findOne({
                 where: {
@@ -1024,9 +1027,9 @@ module.exports = (router,
                                                     "view_time":view_time,
                                                     "monetization":bd.monetization,
                                                 }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(view=>{
+                                                    //console.log(err);	
+                                                    res.status(500).json({msg: "error", details: err});		
+                                                }).then(view=>{
                                                     res.status(200).send([view])
                                                 })
                                             }
@@ -1036,6 +1039,7 @@ module.exports = (router,
                                             } 
                                         }
                                         else{
+                                            console.log("adding view time")
                                             view.update({
                                                 "view_time":view_time,
                                                 "monetization":bd.monetization,
@@ -1502,11 +1506,13 @@ module.exports = (router,
                 
             }
             else if (format === "serie"){
-
+                console.log("comment serie")
+                console.log(publication_id)
+                console.log(chapter_number)
                 Chapters_Bd_Serie.findOne({
                         where: {
                             bd_id: publication_id,
-                            chapter_number:chapter_number + 1,
+                            chapter_number:chapter_number,
                         }
                     })
                     .catch(err => {
@@ -1743,7 +1749,7 @@ module.exports = (router,
                    Chapters_Bd_Serie.findOne({
                         where: {
                             bd_id: publication_id,
-                            chapter_number:chapter_number +1,
+                            chapter_number:chapter_number,
                         }
                         })
                         .catch(err => {
