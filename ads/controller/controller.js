@@ -523,6 +523,31 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
     
 
+ 
+
+  router.post('/check_if_ad_answered', function (req, res) {
+    const id_ad= req.body.ad_id;
+    let current_user = get_current_user(req.cookies.currentUser); 
+      list_of_ads_responses.findOne({
+        where: {
+          id_ad: id_ad,
+          id_user:current_user
+        },
+      })
+      .catch(err => {
+    console.log(err);	
+    res.status(500).json({msg: "error", details: err});		
+  }).then(ad =>  {
+        if(ad){
+          res.status(200).send([{answered:true}]);
+        }
+        else{
+          res.status(200).send([{answered:false}]);
+        }
+        
+      }); 
+  });
+
     router.get('/retrieve_ad_by_id/:id', function (req, res) {
       const id= parseInt(req.params.id);
         list_of_ads.findOne({
@@ -1309,7 +1334,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
 
         mail_to_send+=`<p>${user_name} a répondu à votre annonce <b> ${title}</b>.</p>
             <p><a href="https://linkarts.fr/ad-page/${title}/${ad_id}"> Cliquer ici</a> pour consulter l'annonce et les réponses la concernant.</p>`
-        mail_to_send+=`<p> Très sincérement, l'équipe de LinkArts.</p>`
+        mail_to_send+=`<p> Très sincèrement, l'équipe de LinkArts.</p>`
 
 
         var mailOptions = {
