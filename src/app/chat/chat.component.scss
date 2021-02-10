@@ -14,7 +14,7 @@
         white-space: pre-line;
     }
 
-
+   
   
 
     .main-left-container {
@@ -314,7 +314,7 @@
         }
         .middle-container {
             position: relative;
-            height: calc( 100% - 65px - 112px );
+            height: 5000px;
             overflow-y: auto;
             width: 100%;
 
@@ -356,9 +356,9 @@
         }
 
         .bottom-container {
-            position: absolute;
-            bottom: 0px;
-            width: 100%;
+            position: fixed;
+            bottom:0px;
+            width:100%;
 
             .writing-container {
                 position: absolute;
@@ -412,8 +412,13 @@
             }
             .send-message-container {
                 position: relative;
+                width: 100%;
                 background: #f7f8f9;
                 border-top: 1px solid #dadada;
+                @media (max-width: 850px) {
+                    width: 100% !important;
+                }
+
                 .response {
                     position: relative;
                     display: flex;
@@ -568,7 +573,7 @@
                     display: flex;
                     align-items: center;
 
-                    button.add-file {
+                    div.add-file {
                         cursor: pointer;
                         background: white;
                         height: 45px;
@@ -598,6 +603,10 @@
                             width: unset;
                             color: rgb(32, 56, 100);
                             margin: auto auto;
+                        }
+                        mat-icon.rotate-icon {
+                            transform: rotate(-90deg);
+                            
                         }
 
                         &:hover {

@@ -19,11 +19,11 @@
                 </button>
 
                 <ng-container *ngIf="friend_type=='user'">
-                    <a [routerLink]="open_friend_link()" class="profile-picture-container"
+                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat" class="profile-picture-container"
                         [ngClass]="{'shiny': !top_pp_loaded }">
                         <img [src]="friend_picture" (load)="top_pp_is_loaded()" [ngClass]="{'invisible': !top_pp_loaded }">
                     </a>
-                    <a [routerLink]="open_friend_link()" class="friend-link">
+                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat" class="friend-link">
                         <span>
                             <div>
                                 {{friend_name}}
@@ -193,29 +193,6 @@
                     &nbsp; <span>.</span><span>.</span><span>.</span>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <!--
                     DEBUT DES MESSAGES DE CLASSIQUES
@@ -1412,15 +1389,15 @@
 
                 <div class="send_message">
 
-                    <button class="add-file" *ngIf="spam=='false'">
+                    <div class="add-file" *ngIf="spam=='false'">
                         <label>
                             <div>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="rotate-icon">attachment</mat-icon>
                             </div>
                             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader"
                                 style="display: none;" />
                         </label>
-                    </button>
+                    </div>
 
                     <div class="textarea-container">
                         <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
@@ -1432,7 +1409,7 @@
                         <div class="messages-options-container">
 
                             <div class="icon-messenger-container">
-                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon }">
+                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon || !can_show_send_icon}">
 
                                 </div>
                             </div>
