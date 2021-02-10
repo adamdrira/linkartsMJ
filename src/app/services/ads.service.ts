@@ -37,6 +37,12 @@ export class Ads_service {
     }));
    }
 
+   check_if_ad_answered(ad_id){
+    return this.httpClient.post('routes/check_if_ad_answered', {ad_id:ad_id}, {withCredentials:true}).pipe(map((information)=>{
+      return information;
+    }));
+   }
+
    //thumbnail
 
    send_thumbnail_name(name){
