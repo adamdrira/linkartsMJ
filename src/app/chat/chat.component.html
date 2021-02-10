@@ -194,6 +194,29 @@
                 </div>
             </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <!--
                     DEBUT DES MESSAGES DE CLASSIQUES
                     DEBUT DES MESSAGES DE CLASSIQUES
@@ -1389,15 +1412,15 @@
 
                 <div class="send_message">
 
-                    <div class="add-file" *ngIf="spam=='false'">
+                    <button class="add-file" *ngIf="spam=='false'">
                         <label>
                             <div>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="rotate-icon">attachment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
                             </div>
                             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader"
                                 style="display: none;" />
                         </label>
-                    </div>
+                    </button>
 
                     <div class="textarea-container">
                         <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
@@ -1409,7 +1432,7 @@
                         <div class="messages-options-container">
 
                             <div class="icon-messenger-container">
-                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon || !can_show_send_icon}">
+                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon }">
 
                                 </div>
                             </div>
