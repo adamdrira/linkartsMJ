@@ -136,7 +136,7 @@ export class MainSearchbarResultsComponent implements OnInit {
   display_title_style_and_tags=false;
   category_to_show:string;
   ngOnInit(): void {
-    let THIS=this;
+    window.scroll(0,0);
     this.opened_section = this.route.snapshot.data['section'];
     console.log( this.opened_section )
     console.log(parseInt(this.route.snapshot.paramMap.get('page')))

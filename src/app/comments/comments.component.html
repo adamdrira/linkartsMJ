@@ -30,8 +30,8 @@
 
 <div class="comments-container" *ngIf="user_blocked_retrieved && !user_blocked">
 
-    <div class="create-account" (click)="login();" *ngIf="type_of_account=='visitor'">
-        <span>Connectez-vous pour pouvoir commenter</span>
+    <div class="create-account" (click)="signup();" *ngIf="type_of_account=='visitor'">
+        <span>Créer un compte pour pouvoir commenter</span>
     </div>
 
     <div class="add-comment" *ngIf="type_of_account=='account'">
@@ -50,10 +50,15 @@
             formControlName="comment" 
             type="text" 
             (keydown)="keydown($event)"
+            (input)="check_message_for_phone()"
             (keyup)="keyup($event)"
             placeholder="Ajouter un commentaire ..."
-            autocomplete="off"></textarea>
-
+            autocomplete="off">
+            
+            </textarea>
+            <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon || !can_show_send_icon}">
+                        
+            </div>
         </div>
     </div>
 

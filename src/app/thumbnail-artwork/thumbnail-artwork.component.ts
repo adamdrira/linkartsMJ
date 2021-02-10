@@ -76,12 +76,18 @@ export class ThumbnailArtworkComponent implements OnInit {
 
     }
 
-
+    put_new=false;
   @ViewChild('image') image:ElementRef;
   @ViewChild('image2') image2:ElementRef;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.update_image_size();
+    if( window.innerWidth<500 ) {
+      this.put_new=true;
+    }
+    else{
+      this.put_new=false;
+    }
   }
 
   update_image_size() {
@@ -839,6 +845,12 @@ export class ThumbnailArtworkComponent implements OnInit {
 
    ngAfterViewInit() {
     this.update_image_size();
+    if( window.innerWidth<500 ) {
+      this.put_new=true;
+    }
+    else{
+      this.put_new=false;
+    }
    }
 
   /******************************************** SHOW IMAGES PREVIEW  *******************************************/

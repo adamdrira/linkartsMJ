@@ -30,8 +30,8 @@
                 <span>Voir plus</span>
             </button>
 
-            <div class="comment-in-edition" *ngIf="edit_comment">
-                <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
+            <div class="comment-in-edition" *ngIf="edit_comment" (click)="function_edit_comment()">
+                <mat-icon [ngClass]="{'invisible': !show_icon }" >edit</mat-icon>
             </div>
         </div>
         
@@ -96,7 +96,7 @@
                             <button (click)="see_more_response(i);" class="see-more" *ngIf="item.comment && item.comment.length > 150 && !item.see_more">
                                 <span>Voir plus</span>
                             </button>
-                            <div class="comment-in-edition" *ngIf="editable_response==i">
+                            <div class="comment-in-edition" *ngIf="editable_response==i" (click)="function_edit_response(i)">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">edit</mat-icon>
                             </div>
 
@@ -157,10 +157,13 @@
                     maxlength="1500"
                     type="text" 
                     (keydown)="onKeydownResponseToComment($event)"
+                    (input)="check_message_for_phone()"
                     (keyup)="onKeyupResponseToComment($event)"
                     placeholder="Ajouter une réponse ..."
                     autocomplete="off"></textarea>
-
+                    <div class="icon-messenger" (click)="send_response_phone()" [ngClass]="{'invisible': !show_send_icon || !can_show_send_icon}">
+                        
+                    </div>
                 </div>
             </div>
             

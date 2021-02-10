@@ -278,6 +278,21 @@ $default-color: rgb(218,220,225);
 
             .right-container {
                 width: stretch;
+                position: relative;
+                .icon-messenger{
+                    position: absolute;
+                    right: 30px;
+                    top: 6px;
+                    cursor: pointer;
+                    width: 32px;
+                    height: 14px;
+                    background-color: $default-color;
+                    mask: url("../../assets/img/svg/send3.svg") no-repeat 50% 50%;
+                    transition: mask-size 200ms;
+                    &:active {
+                    animation:transform-mask-size 200ms forwards;
+                    }
+                }
                 textarea {
                     //max-height: 180px;
                     color:$default-color;
@@ -315,15 +330,18 @@ $default-color: rgb(218,220,225);
 
 .comment-in-edition{
     position: absolute;
-    top: 4px;
+    top: 8px;
     right: 10px;
-
+    cursor: pointer;
     mat-icon{
         color: #dadce1;
         font-size: 16px;
         height:16px;
         max-width: 16px;
         overflow: hidden;
+    }
+    &:active {
+        transform:scale(0.96);
     }
 }
 

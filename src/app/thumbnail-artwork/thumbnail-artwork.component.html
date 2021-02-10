@@ -301,7 +301,7 @@
                     <span>{{lovesnumber}}</span>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                 </div>
-                <span>{{date_upload_to_show}} <ng-container *ngIf="recent_chapter"> • Nouveau chapitre !</ng-container></span>
+                <span>{{date_upload_to_show}} <ng-container *ngIf="recent_chapter && !put_new"> • Nouveau chapitre !</ng-container><ng-container *ngIf="recent_chapter && put_new"> • Nouveau !</ng-container></span>
             </div>
 
 

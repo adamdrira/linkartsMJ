@@ -8,7 +8,7 @@
 
         <div class="select-button">
             
-            <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+            <mat-icon [ngClass]="{'invisible': !show_icon }"  class="rotate-icon">attachment</mat-icon>
             <span>Ajouter une pièce jointe</span>
 
             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader" style="display: none;"/>

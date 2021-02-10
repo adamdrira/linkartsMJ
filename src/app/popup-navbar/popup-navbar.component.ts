@@ -632,10 +632,10 @@ indice=0
 get_date(created,i){
   if(created){
     let now=Math.trunc( new Date().getTime()/1000);
-    let date=created
-    date = date.replace("T",' ');
-    date = date.replace("-",'/').replace("-",'/');
-    let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+    let date=created;
+    date = date.replace("Z",'');
+    date=date.slice(0,19)
+    let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
     return get_date_to_show_navbar(now-deco_date);
   }
   else{

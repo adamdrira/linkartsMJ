@@ -139,6 +139,22 @@ export class CommentElementComponent implements OnInit {
   answers_retrieved=false;
   see_responses:boolean = false;
 
+  can_show_send_icon=false;
+  show_send_icon=false;
+  on_phone_screen=false;
+  onResize(event) {
+    console.log(window.innerWidth)
+    if( window.innerWidth<850 ) {
+      console.log("can sho ok")
+      this.can_show_send_icon=true;
+      this.on_phone_screen=true
+    }
+    else{
+      console.log("can show false")
+      this.can_show_send_icon=false;
+      this.on_phone_screen=false;
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if( changes.editable_comment && this.comment_id == this.editable_comment ) {
@@ -253,6 +269,24 @@ export class CommentElementComponent implements OnInit {
     })
 
   }
+
+  ngAfterViewInit() {
+
+    console.log(window.innerWidth)
+    if( window.innerWidth<850 ) {
+      console.log("can sho ok")
+      this.can_show_send_icon=true;
+      this.on_phone_screen=true;
+    }
+    else{
+      console.log("can sho false")
+      this.can_show_send_icon=false;
+      this.on_phone_screen=false;
+    }
+  }
+
+ 
+
 
   see_more_response(i) {
     this.responses_list[i].see_more = true;
@@ -514,17 +548,9 @@ export class CommentElementComponent implements OnInit {
   }
   
  
-
-  SHIFT_1_CLICKED=false;
-  onKeydown(event) {
-    //edit a commentary
-
-    if(event.key=="Shift"){
-      this.SHIFT_1_CLICKED = true;
-    }
-    if (event.key == "Enter" && !this.SHIFT_1_CLICKED && this.edit_comment) {
-      if(this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
-        event.preventDefault();
+  function_edit_comment(){
+    console.log("edit comment")
+      if( this.edit_comment && this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
         this.set_not_editable();
 
         this.changed.emit();
@@ -537,7 +563,33 @@ export class CommentElementComponent implements OnInit {
         });
       }
       
+  }
+
+  SHIFT_1_CLICKED=false;
+  onKeydown(event) {
+    //edit a commentary
+    if(!this.on_phone_screen){
+      if(event.key=="Shift"){
+        this.SHIFT_1_CLICKED = true;
+      }
+      if (event.key == "Enter" && !this.SHIFT_1_CLICKED && this.edit_comment) {
+        if(this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
+          event.preventDefault();
+          this.set_not_editable();
+  
+          this.changed.emit();
+          
+          this.textareaREAD.nativeElement.value = this.textareaREAD.nativeElement.value.trim();
+  
+          this.NotationService.edit_commentary(this.textareaREAD.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.id)
+              .subscribe(l=>{
+                this.comment=l[0].commentary;
+          });
+        }
+        
+      }
     }
+    
   }
   onKeyup(event) {
     if(event.key=="Shift"){
@@ -547,37 +599,62 @@ export class CommentElementComponent implements OnInit {
 
 
 
+  function_edit_response(i ){
+    console.log("edit response " + i);
+    if(this.editable_response == i && this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
 
+      this.set_not_editable_response();
+      
+      this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
+
+      this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
+            console.log(l[0].commentary);
+            this.responses_list.splice(i, 1,
+              {
+                author_id :l[0].author_id_who_replies,
+                id:l[0].id,
+                comment:l[0].commentary,
+                see_more:false,
+                likesnumber:l[0].number_of_likes,
+                date:this.responses_list[i].date,
+              });
+            this.cd.detectChanges();
+      });
+    }
+  }
 
   SHIFT_2_CLICKED=false;
+  
    //edit a response
   onKeydownResponse(event, i: number) {
-    
-    if(event.key=="Shift"){
-      this.SHIFT_2_CLICKED =true;
-    }
-    if(event.key=="Enter" && !this.SHIFT_2_CLICKED && this.editable_response == i){
-      if(this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
-        event.preventDefault();
-        this.set_not_editable_response();
-        
-        this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
-
-        this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
-              console.log(l[0].commentary);
-              this.responses_list.splice(i, 1,
-                {
-                  author_id :l[0].author_id_who_replies,
-                  id:l[0].id,
-                  comment:l[0].commentary,
-                  see_more:false,
-                  likesnumber:l[0].number_of_likes,
-                  date:this.responses_list[i].date,
-                });
-              this.cd.detectChanges();
-        });
+    if(!this.on_phone_screen){
+      if(event.key=="Shift"){
+        this.SHIFT_2_CLICKED =true;
+      }
+      if(event.key=="Enter" && !this.SHIFT_2_CLICKED && this.editable_response == i){
+        if(this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
+          event.preventDefault();
+          this.set_not_editable_response();
+          
+          this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
+  
+          this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
+                console.log(l[0].commentary);
+                this.responses_list.splice(i, 1,
+                  {
+                    author_id :l[0].author_id_who_replies,
+                    id:l[0].id,
+                    comment:l[0].commentary,
+                    see_more:false,
+                    likesnumber:l[0].number_of_likes,
+                    date:this.responses_list[i].date,
+                  });
+                this.cd.detectChanges();
+          });
+        }
       }
     }
+    
     
   }
 
@@ -590,73 +667,42 @@ export class CommentElementComponent implements OnInit {
 
   SHIFT_3_CLICKED = false;
   //respond to a commentary
-  onKeydownResponseToComment(event) {
 
-    if (event.key == "Shift") {
-      this.SHIFT_3_CLICKED = true;
+  check_message_for_phone(){
+    if(this.can_show_send_icon){
+      console.log(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0)
+      if(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0){
+        console.log(1)
+        this.show_send_icon=true;
+      }
+      else{
+        console.log(2)
+        this.show_send_icon=false;
+      }
+      
     }
-    else if (event.key == "Enter" && !this.SHIFT_3_CLICKED) {
-      if (this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0) {
-        event.preventDefault();
+  }
 
-        this.textareaRESPONSEtoCOMMENT.nativeElement.value = this.textareaRESPONSEtoCOMMENT.nativeElement.value.trim();
+  send_response_phone(){
+    console.log("send phone response to comment")
+    this.show_send_icon=false;
+    if (this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0) {
 
-        this.NotationService.add_answer_on_commentary(this.category, this.format, this.style, this.publication_id, this.chapter_number, this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'), this.id)
-          .subscribe(l => {
+      this.textareaRESPONSEtoCOMMENT.nativeElement.value = this.textareaRESPONSEtoCOMMENT.nativeElement.value.trim();
 
-            if (this.visitor_id != this.authorid) {
-              this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).subscribe(r => {
-                let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
-                const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-                this.profile_picture_list.splice(0, 0, SafeURL);
-                this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
-                  this.pseudo_list.splice(0, 0, s[0].nickname);
-                  this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
-                  this.visitor_mode_list.splice(0, 0, false)
-                  this.liked_list.splice(0, 0, false);
-                  this.responses_list.splice(0, 0,
-                    {
-                      author_id: l[0].author_id_who_replies,
-                      id: l[0].id,
-                      comment: l[0].commentary,
-                      see_more: false,
-                      likesnumber: l[0].number_of_likes,
-                      date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
-                    });
+      this.NotationService.add_answer_on_commentary(this.category, this.format, this.style, this.publication_id, this.chapter_number, this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'), this.id)
+        .subscribe(l => {
 
-                  this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).subscribe(l => {
-                    let message_to_send = {
-                      for_notifications: true,
-                      type: "comment_answer",
-                      id_user_name: this.visitor_name,
-                      id_user: this.visitor_id,
-                      id_receiver: this.authorid,
-                      publication_category: this.category,
-                      publication_name: this.title,
-                      format: this.format,
-                      publication_id: this.publication_id,
-                      chapter_number: this.chapter_number,
-                      information: this.comment,
-                      status: "unchecked",
-                      is_comment_answer: true,
-                      comment_id: l[0].id,
-                    }
-                    this.chatService.messages.next(message_to_send);
-                    this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
-                    this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
-                    this.cd.detectChanges()
-                  })
-                });
-              });
-            }
-            else {
-              this.profile_picture_list.splice(0, 0, this.profile_picture);
-              this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
+          if (this.visitor_id != this.authorid) {
+            this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).subscribe(r => {
+              let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+              const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+              this.profile_picture_list.splice(0, 0, SafeURL);
+              this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
                 this.pseudo_list.splice(0, 0, s[0].nickname);
                 this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
-
+                this.visitor_mode_list.splice(0, 0, false)
                 this.liked_list.splice(0, 0, false);
-
                 this.responses_list.splice(0, 0,
                   {
                     author_id: l[0].author_id_who_replies,
@@ -666,15 +712,148 @@ export class CommentElementComponent implements OnInit {
                     likesnumber: l[0].number_of_likes,
                     date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
                   });
-                this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
-                this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
-                this.cd.detectChanges();
-              });
-            }
 
-          });
+                this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).subscribe(l => {
+                  let message_to_send = {
+                    for_notifications: true,
+                    type: "comment_answer",
+                    id_user_name: this.visitor_name,
+                    id_user: this.visitor_id,
+                    id_receiver: this.authorid,
+                    publication_category: this.category,
+                    publication_name: this.title,
+                    format: this.format,
+                    publication_id: this.publication_id,
+                    chapter_number: this.chapter_number,
+                    information: this.comment,
+                    status: "unchecked",
+                    is_comment_answer: true,
+                    comment_id: l[0].id,
+                  }
+                  this.chatService.messages.next(message_to_send);
+                  this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+                  this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+                  this.cd.detectChanges()
+                })
+              });
+            });
+          }
+          else {
+            this.profile_picture_list.splice(0, 0, this.profile_picture);
+            this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
+              this.pseudo_list.splice(0, 0, s[0].nickname);
+              this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+
+              this.liked_list.splice(0, 0, false);
+
+              this.responses_list.splice(0, 0,
+                {
+                  author_id: l[0].author_id_who_replies,
+                  id: l[0].id,
+                  comment: l[0].commentary,
+                  see_more: false,
+                  likesnumber: l[0].number_of_likes,
+                  date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
+                });
+              this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+              this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+              
+              this.cd.detectChanges();
+            });
+          }
+
+        });
+    }
+  }
+
+  onKeydownResponseToComment(event) {
+
+    if(!this.can_show_send_icon){
+      if (event.key == "Shift") {
+        this.SHIFT_3_CLICKED = true;
+      }
+      else if (event.key == "Enter" && !this.SHIFT_3_CLICKED) {
+        if (this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0) {
+          event.preventDefault();
+  
+          this.textareaRESPONSEtoCOMMENT.nativeElement.value = this.textareaRESPONSEtoCOMMENT.nativeElement.value.trim();
+  
+          this.NotationService.add_answer_on_commentary(this.category, this.format, this.style, this.publication_id, this.chapter_number, this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'), this.id)
+            .subscribe(l => {
+  
+              if (this.visitor_id != this.authorid) {
+                this.Profile_Edition_Service.retrieve_profile_picture(l[0].author_id_who_replies).subscribe(r => {
+                  let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
+                  const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+                  this.profile_picture_list.splice(0, 0, SafeURL);
+                  this.Profile_Edition_Service.retrieve_profile_data(l[0].author_id_who_replies).subscribe(s => {
+                    this.pseudo_list.splice(0, 0, s[0].nickname);
+                    this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+                    this.visitor_mode_list.splice(0, 0, false)
+                    this.liked_list.splice(0, 0, false);
+                    this.responses_list.splice(0, 0,
+                      {
+                        author_id: l[0].author_id_who_replies,
+                        id: l[0].id,
+                        comment: l[0].commentary,
+                        see_more: false,
+                        likesnumber: l[0].number_of_likes,
+                        date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
+                      });
+  
+                    this.NotificationsService.add_notification('comment_answer', this.visitor_id, this.visitor_name, this.authorid, this.category, this.title, this.format, this.publication_id, this.chapter_number, this.comment, true, l[0].id).subscribe(l => {
+                      let message_to_send = {
+                        for_notifications: true,
+                        type: "comment_answer",
+                        id_user_name: this.visitor_name,
+                        id_user: this.visitor_id,
+                        id_receiver: this.authorid,
+                        publication_category: this.category,
+                        publication_name: this.title,
+                        format: this.format,
+                        publication_id: this.publication_id,
+                        chapter_number: this.chapter_number,
+                        information: this.comment,
+                        status: "unchecked",
+                        is_comment_answer: true,
+                        comment_id: l[0].id,
+                      }
+                      this.chatService.messages.next(message_to_send);
+                      this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+                      this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+                      this.cd.detectChanges()
+                    })
+                  });
+                });
+              }
+              else {
+                this.profile_picture_list.splice(0, 0, this.profile_picture);
+                this.Profile_Edition_Service.retrieve_profile_data(this.authorid).subscribe(s => {
+                  this.pseudo_list.splice(0, 0, s[0].nickname);
+                  this.author_name_list.splice(0, 0, s[0].firstname + ' ' + s[0].lastname);
+  
+                  this.liked_list.splice(0, 0, false);
+  
+                  this.responses_list.splice(0, 0,
+                    {
+                      author_id: l[0].author_id_who_replies,
+                      id: l[0].id,
+                      comment: l[0].commentary,
+                      see_more: false,
+                      likesnumber: l[0].number_of_likes,
+                      date: get_date_to_show(date_in_seconds(this.now_in_seconds, l[0].createdAt))
+                    });
+                  this.textareaRESPONSEtoCOMMENT.nativeElement.value = "";
+                  this.textareaRESPONSEtoCOMMENT.nativeElement.blur();
+                  this.cd.detectChanges();
+                });
+              }
+  
+            });
+        }
       }
     }
+    
   }
 
   onKeyupResponseToComment(event) {

@@ -176,10 +176,9 @@
   
                           <a (click)="close_notifications();not_using_chat();close_dialog();" [routerLink]="get_my_favorite()">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
-                                [ngClass]="{'invisible':!notification_loaded[i]}">
-                              <div class="notification-icon trendings">
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">local_fire_department</mat-icon>
+                              <img src="../../assets/img/svg/Logo-LA3.svg">
+                              <div class="notification-icon favorites">
+                                <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
                               </div>
                             </div>
                             <div class="right-container">
@@ -195,8 +194,7 @@
   
                           <a (click)="close_notifications();close_dialog();" [routerLink]="get_my_trending(notif.publication_category)">
                             <div class="left-container">
-                              <img [src]="list_of_notifications_profile_pictures[i]" (load)="load_notification_pp(i)"
-                                [ngClass]="{'invisible':!notification_loaded[i]}">
+                              <img src="../../assets/img/svg/Logo-LA3.svg">
                               <div class="notification-icon trendings">
                                 <mat-icon [ngClass]="{'invisible': !show_icon }">local_fire_department</mat-icon>
                               </div>
@@ -434,7 +432,7 @@
                                         *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                         <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                           <b>{{item.id_user_name}}</b> </ng-container>
-                                        <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                        <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                           <b>{{item.id_user_name}}</b> ont aimé votre œuvre :
                                           <b>"{{notif.publication_name}}"</b>, chapitre {{notif.chapter_number+1}}
                                         </ng-container>
@@ -486,7 +484,7 @@
                                         *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                         <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                           <b>{{item.id_user_name}}</b> </ng-container>
-                                        <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                        <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                           <b>{{item.id_user_name}}</b> ont aimé votre œuvre :
                                           <b>"{{notif.publication_name}}"</b>, chapitre {{notif.chapter_number+1}}
                                         </ng-container>
@@ -539,7 +537,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -589,7 +587,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -646,7 +644,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont adoré votre œuvre :
                                         <b>"{{notif.publication_name}}"</b>, chapitre {{notif.chapter_number+1}}
                                       </ng-container>
@@ -695,7 +693,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont adoré votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -745,7 +743,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont adoré votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -795,7 +793,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont adoré votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -852,7 +850,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont commenté votre œuvre :
                                         <b>"{{notif.publication_name}}"</b>, chapitre {{notif.chapter_number+1}}
                                       </ng-container>
@@ -902,7 +900,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont commenté votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -952,7 +950,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont commenté votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -1002,7 +1000,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont commenté votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -1052,7 +1050,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont commenté votre œuvre :
                                         <b>"{{notif.publication_name}}"</b></ng-container>
                                     </ng-container>
@@ -1107,7 +1105,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont répondu à votre commentaire :
                                         {{notif.information}}</ng-container>
                                     </ng-container>
@@ -1154,7 +1152,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont répondu à votre commentaire :
                                         {{notif.information}}</ng-container>
                                     </ng-container>
@@ -1204,7 +1202,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont répondu à votre commentaire :
                                         {{notif.information}}</ng-container>
                                     </ng-container>
@@ -1254,7 +1252,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont répondu à votre commentaire :
                                         {{notif.information}}</ng-container>
                                     </ng-container>
@@ -1304,7 +1302,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont répondu à votre commentaire :
                                         {{notif.information}}</ng-container>
                                     </ng-container>
@@ -1359,7 +1357,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}
                                       </ng-container>
                                     </ng-container>
@@ -1406,7 +1404,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}
                                       </ng-container>
                                     </ng-container>
@@ -1456,7 +1454,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}
                                       </ng-container>
                                     </ng-container>
@@ -1506,7 +1504,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}
                                       </ng-container>
                                     </ng-container>
@@ -1556,7 +1554,7 @@
                                       *ngFor="let item of dictionnary_of_similar_notifications[i];let j=index">
                                       <ng-container *ngIf="dictionnary_of_similar_notifications[i].length>j+1">,
                                         <b>{{item.id_user_name}}</b> </ng-container>
-                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1">et
+                                      <ng-container *ngIf="dictionnary_of_similar_notifications[i].length==j+1"> et
                                         <b>{{item.id_user_name}}</b> ont aimé votre commentaire : {{notif.information}}
                                       </ng-container>
                                     </ng-container>
@@ -1615,10 +1613,11 @@
                             <div *ngIf="list_of_friends_connected[i]" class="connected">
                             </div>
             
-                            <div *ngIf="!list_of_friends_connected[i]" class="last-connection">
-                              <span *ngIf="list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'">
+                            <div *ngIf="!list_of_friends_connected[i] && list_of_last_connection_dates[i] && list_of_last_connection_dates[i]!='0 min'" class="last-connection">
+                              <span >
                                 {{list_of_last_connection_dates[i]}} 
                               </span>
+
                             </div>
                           </ng-container>
             

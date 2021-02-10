@@ -7,7 +7,7 @@
 
                 <mat-select #homeLinkartsSelect panelClass="homeLinkartsSelect" ng-animate-disabled
                 [(value)]="category_index" disableOptionCentering
-                (selectionChange)="sectionChange2($event.value)">
+                (selectionChange)="open_category($event.value)">
                     
                     <mat-select-trigger>
                         <ng-container *ngIf="category_index==0">
@@ -85,7 +85,7 @@
                 <div class="swiper-wrapper">
 
                     <div class="swiper-slide">
-                        <a class="category" [routerLink]=get_category(0) [ngClass]="{'opened': category_index==0 }">
+                        <a class="category" (click)="swipe_to(0);open_category(0)" [ngClass]="{'opened': category_index==0 }">
                             <div class="icon-container">
                                 <div class="icon icon-recommendation">
                                 </div>
@@ -94,7 +94,7 @@
                         </a>
                     </div>
                     <div class="swiper-slide">
-                        <a class="category" [routerLink]=get_category(1) [ngClass]="{'opened': category_index==1 }">
+                        <a class="category" (click)="swipe_to(1);open_category(1)" [ngClass]="{'opened': category_index==1 }">
                             <div class="icon-container">
                                 <div class="icon icon-trendings">
                                 </div>
@@ -103,7 +103,7 @@
                         </a>
                     </div>
                     <div class="swiper-slide" *ngIf="type_of_profile=='account'">
-                        <a class="category" [routerLink]=get_category(2) [ngClass]="{'opened': category_index==2 }">
+                        <a class="category"  (click)="swipe_to(2);open_category(2)" [ngClass]="{'opened': category_index==2 }">
                             <div class="icon-container">
                                 <div class="icon icon-newsfeed">
                                 </div>
@@ -112,7 +112,7 @@
                         </a>
                     </div>
                     <div class="swiper-slide">
-                        <a class="category" [routerLink]=get_category(3) [ngClass]="{'opened': category_index==3 }">
+                        <a class="category" (click)="swipe_to(3);open_category(3)" [ngClass]="{'opened': category_index==3 }">
                             <div class="icon-container">
                                 <div class="icon icon-love">
                                 </div>
@@ -156,16 +156,5 @@
 </ng-container>
 
 
-<!--<div *ngIf="category_index==0" >
-    <app-recommendations></app-recommendations>
-</div>
-<div *ngIf="category_index==1" >
-    <app-trendings></app-trendings>
-</div>
-<div *ngIf="category_index==2" >
-    <app-subscribings></app-subscribings>
-</div>
-<div *ngIf="category_index==3" >
-    <app-favorites></app-favorites>
-</div>-->
+
 

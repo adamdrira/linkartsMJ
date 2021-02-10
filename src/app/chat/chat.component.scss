@@ -14,7 +14,7 @@
         white-space: pre-line;
     }
 
-
+   
   
 
     .main-left-container {
@@ -314,7 +314,7 @@
         }
         .middle-container {
             position: relative;
-            height: calc( 100% - 65px - 112px );
+            height: 5000px;
             overflow-y: auto;
             width: 100%;
 
@@ -356,9 +356,7 @@
         }
 
         .bottom-container {
-            position: absolute;
-            bottom: 0px;
-            width: 100%;
+            position: relative;
 
             .writing-container {
                 position: absolute;
@@ -411,9 +409,15 @@
                 }
             }
             .send-message-container {
-                position: relative;
+                position: absolute;
+                bottom: 0px;
+                width: calc(100% - 360px);
                 background: #f7f8f9;
                 border-top: 1px solid #dadada;
+                @media (max-width: 850px) {
+                    width: 100% !important;
+                }
+
                 .response {
                     position: relative;
                     display: flex;
@@ -568,7 +572,7 @@
                     display: flex;
                     align-items: center;
 
-                    button.add-file {
+                    div.add-file {
                         cursor: pointer;
                         background: white;
                         height: 45px;
@@ -598,6 +602,10 @@
                             width: unset;
                             color: rgb(32, 56, 100);
                             margin: auto auto;
+                        }
+                        mat-icon.rotate-icon {
+                            transform: rotate(-90deg);
+                            
                         }
 
                         &:hover {
@@ -1108,7 +1116,8 @@ button.show-more {
 
 .messages-container {
     width: 100%;
-    height: 100% !important;
+    //height: 100% !important;
+    height: calc(100% - 111px) !important;
     overflow-y: auto;
     padding: 30px 0px;
 

@@ -932,7 +932,7 @@
                                 </ng-container>
                             </ng-container>
 
-                            <ng-container *ngIf="list_titles_albums_writings_added.length>0 &&  opened_album>=0">
+                            <ng-container *ngIf="(list_titles_albums_writings_added.length>0 || show_selector_for_album) &&  opened_album>=0">
                                 <div class="account-album-selector">
                                     <mat-form-field floatLabel='never'  [ngClass]="{'opened': albums_select && albums_select.panelOpen }">
                                         

@@ -109,6 +109,12 @@ export class ArtworkWritingComponent implements OnInit {
   }
 
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log('Back button pressed');
+    this.add_time_of_view();
+  }
+  
   @ViewChild('leftContainer') leftContainer:ElementRef;
   @ViewChildren('swiperSlide') swiperSlides:QueryList<ElementRef>;
   @ViewChildren('thumbnail') thumbnailsRef:QueryList<ElementRef>;

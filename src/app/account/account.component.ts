@@ -2417,7 +2417,7 @@ see_more_writings(album_number,album_section_number){
 
 block_user(){
   console.log(this.user_id);
-  if(this.user_id>1){
+  if(this.user_id!=2 && this.user_id!=25){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir bloquer cet utilisateur ? "},
@@ -2461,6 +2461,13 @@ block_user(){
         
       }
     })
+  }
+  else{
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:false, 
+        text:"Vous ne pouvez pas bloquer cet utilisateur"},
+        panelClass: "popupConfirmationClass",
+    });
   }
  
 }

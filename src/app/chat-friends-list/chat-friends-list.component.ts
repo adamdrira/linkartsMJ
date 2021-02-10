@@ -146,7 +146,6 @@ export class ChatFriendsListComponent implements OnInit {
   list_of_friends_date=[]
   list_of_friends_users_only=[];
   list_of_last_connection_dates=[];
-
   list_of_groups_retrieved=false;
   list_of_groups_ids=[];
   // for chat component
@@ -250,7 +249,7 @@ export class ChatFriendsListComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if( window.innerWidth>850 || this.active_section==2 || this.active_section==3) {
+    if( window.innerWidth>850) {
       //console.log("put chat_right_container_is_opened")
       this.chat_right_container_is_opened = true;
     }
@@ -2835,9 +2834,9 @@ get_connections_status(){
           if(r[0].date_of_webSockets_last_connection[id]){
             let now=Math.trunc( new Date().getTime()/1000);
             let date=r[0].date_of_webSockets_last_connection[id];
-            date = date.replace("T",' ');
-            date = date.replace("-",'/').replace("-",'/');
-            let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+            date = date.replace("Z",'');
+            date=date.slice(0,19)
+            let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
             this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
           }
           compt++;
@@ -2876,10 +2875,11 @@ get_connections_status(){
           if(r[0].date_of_webSockets_last_connection[id]){
             let now=Math.trunc( new Date().getTime()/1000);
             let date=r[0].date_of_webSockets_last_connection[id];
-            date = date.replace("T",' ');
-            date = date.replace("-",'/').replace("-",'/');
-            let deco_date=Math.trunc( new Date(date + ' GMT').getTime()/1000)
+            date = date.replace("Z",'');
+            date=date.slice(0,19)
+            let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
             this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
+
           }
           compt++;
           if(compt==this.list_of_friends_ids.length){

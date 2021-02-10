@@ -1103,7 +1103,12 @@
     .see-more .icon {
       transform: rotate(270deg) !important;
     }
+    overflow-x:scroll;
+    
+    -webkit-overflow-scrolling: auto !important;
 
+    scrollbar-width:thin;
+    scrollbar-color: #0a1c4d #f9f9f9;
     &::-webkit-scrollbar {
         height: 10px;
         background-color: #f9f9f9;

@@ -39,7 +39,7 @@
             </div>
             
             <ng-container *ngIf="opened_category == 0 && !display_add_a_friend_to_a_group">
-                <button (click)="set_category(1,true)" [@enterFromRightAnimation]
+                <div class="options-button" (click)="set_category(1,true)" [@enterFromRightAnimation]
                 matTooltip="Invitations"
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
@@ -57,15 +57,15 @@
                             </div>
                         </div>
                     </div>
-                </button>
+                </div>
 
-                <button (click)="create_group_chat();" *ngIf="!select_group_chat_contacts && !display_add_a_friend_to_a_group" [@enterFromRightAnimation]
+                <div class="options-button" (click)="create_group_chat();" *ngIf="!select_group_chat_contacts && !display_add_a_friend_to_a_group" [@enterFromRightAnimation]
                 matTooltip="Créer un groupe de discussion"
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="100">
                     <mat-icon>group_add</mat-icon>
-                </button>
+                </div>
             </ng-container>
             
             <ng-container *ngIf="opened_category != 0 && !display_add_a_friend_to_a_group">

@@ -47,6 +47,21 @@
     color: #203864;
     border-radius: 30px;
     transition: background-color 200ms;
+
+    mat-icon {
+        width:unset;
+        height:unset;
+        font-size:30px;
+        max-width: 30px;
+        overflow: hidden;
+        color:rgb(32,56,100);
+        margin-right: 10px;
+    }
+
+    mat-icon.rotate-icon {
+        transform: rotate(-90deg);
+        
+    }
 }
 
 .select-button:hover {
@@ -58,16 +73,6 @@
     box-shadow:0px 0px 0px 1px rgb(32,56,100) !important;
 }
 
-
-.select-button mat-icon {
-    width:unset;
-    height:unset;
-    font-size:30px;
-    max-width: 30px;
-        overflow: hidden;
-    color:rgb(32,56,100);
-    margin-right: 10px;
-}
 
 
 /*

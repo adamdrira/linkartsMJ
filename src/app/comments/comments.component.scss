@@ -56,7 +56,6 @@ $default-color: rgb(218,220,225);
         text-align:center;
         cursor:pointer;
         span {
-            color:white;
             font-size:12px;
             font-weight:600;
         }
@@ -88,6 +87,21 @@ $default-color: rgb(218,220,225);
 
         .right-container {
             width: stretch;
+            position: relative;
+            .icon-messenger{
+                position: absolute;
+                right: 30px;
+                top: 6px;
+                cursor: pointer;
+                width: 32px;
+                height: 14px;
+                background-color: $default-color;
+                mask: url("../../assets/img/svg/send3.svg") no-repeat 50% 50%;
+                transition: mask-size 200ms;
+                &:active {
+                  animation:transform-mask-size 200ms forwards;
+                }
+            }
             textarea {
                 //max-height: 180px;
                 min-height: 50px;
@@ -116,6 +130,12 @@ $default-color: rgb(218,220,225);
                     border-radius: 10px;
                     background-color: #122951;
                 }
+
+                @media (max-width: 850px){
+                    padding-right: 35px !important;
+                }
+
+                
             }
         }
     }
@@ -159,6 +179,8 @@ $default-color: rgb(218,220,225);
                     background: #030a1654;
                 }
             }
+
+            
         }
     }
 

@@ -185,7 +185,7 @@
         <!--PARTIE MILIEU DU CHAT-->
         <!-------------------------------------->
         <!-------------------------------------->
-        <div class="middle-container" #middleContainer>
+        <div class="middle-container">
 
 
             <div class="loading-dots-container" *ngIf="!put_messages_visible">
@@ -1335,7 +1335,7 @@
         <!--PARTIE BASSE DU CHAT-->
         <!-------------------------------------->
         <!-------------------------------------->
-        <div *ngIf="!block_chat" [formGroup]="message_group" novalidate class="bottom-container" #bottomContainer (resized)="onResized($event)">
+        <div *ngIf="!block_chat" [formGroup]="message_group" novalidate class="bottom-container">
 
             <div class="writing-container" *ngIf="display_writing" [@enterFromBottomAnimation]>
                 <div class="writing">
@@ -1412,15 +1412,15 @@
 
                 <div class="send_message">
 
-                    <button class="add-file" *ngIf="spam=='false'">
+                    <div class="add-file" *ngIf="spam=='false'">
                         <label>
                             <div>
-                                <mat-icon [ngClass]="{'invisible': !show_icon }">attachment</mat-icon>
+                                <mat-icon [ngClass]="{'invisible': !show_icon }" class="rotate-icon">attachment</mat-icon>
                             </div>
                             <input (click)="onFileClick($event)" type="file" ng2FileSelect [uploader]="uploader"
                                 style="display: none;" />
                         </label>
-                    </button>
+                    </div>
 
                     <div class="textarea-container">
                         <textarea matInput #input cdkTextareaAutosize formControlName="message" maxlength="3000"
@@ -1432,7 +1432,7 @@
                         <div class="messages-options-container">
 
                             <div class="icon-messenger-container">
-                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon }">
+                                <div class="icon-messenger" (click)="send_message_phone()" [ngClass]="{'invisible': !show_send_icon || !can_show_send_icon}">
 
                                 </div>
                             </div>

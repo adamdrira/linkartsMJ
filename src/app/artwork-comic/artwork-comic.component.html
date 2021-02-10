@@ -536,7 +536,7 @@
         <!--Author container-->
         <!--********************-->
         <div class="author-container " [ngClass]="{'really-invisible': !archive_retrieved || !mode_visiteur_added || !subscribtion_retrieved}">
-            <a [routerLink]=open_account() (click)="stop($event)"  [ngClass]="{'dark-shiny':!pp_loaded}"
+            <a [routerLink]=open_account() (click)="stop($event);add_time_of_view()"  [ngClass]="{'dark-shiny':!pp_loaded}"
             class="left-container"
             matTooltip="Voir le profil"
             matTooltipClass='linkarts-tooltip' 
@@ -546,7 +546,7 @@
             </a>
             <div class="right-container">
                 <span class="author-name" *ngIf="user_name!=''">
-                    <a [routerLink]=open_account() (click)="stop($event)"
+                    <a [routerLink]=open_account() (click)="stop($event);add_time_of_view()"
                     matTooltip="Voir le profil"
                     matTooltipClass='linkarts-tooltip' 
                     [matTooltipPosition]="'below'"
@@ -599,7 +599,7 @@
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event)"><span>{{style}}</span></a>
+                    (click)="stop($event);add_time_of_view()"><span>{{style}}</span></a>
                 <div class="type-container" *ngIf="type=='one-shot'">
                     <span>One-shot</span></div>
                 <div class="type-container" *ngIf="type=='serie'">
@@ -684,7 +684,7 @@
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
-                        (click)="stop($event)"><span>{{style}}</span></a>
+                        (click)="stop($event);add_time_of_view()"><span>{{style}}</span></a>
                     <div class="type-container" *ngIf="type=='one-shot'">
                         <span>One-shot</span></div>
                     <div class="type-container" *ngIf="type=='serie'">
@@ -698,21 +698,21 @@
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="firsttag"
-                    (click)="stop($event)"><span>{{firsttag}}</span></a>
+                    (click)="stop($event);add_time_of_view()"><span>{{firsttag}}</span></a>
                     <a class="type-container style" [routerLink]=get_style_link(1)
                     matTooltip="Voir du contenu de ce genre"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="secondtag"
-                    (click)="stop($event)"><span>{{secondtag}}</span></a>
+                    (click)="stop($event);add_time_of_view()"><span>{{secondtag}}</span></a>
                     <a class="type-container style" [routerLink]=get_style_link(2)
                     matTooltip="Voir du contenu de ce genre"
                     matTooltipClass='linkarts-tooltip'
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="200"
                     *ngIf="thirdtag"
-                    (click)="stop($event)"><span>{{thirdtag}}</span></a>
+                    (click)="stop($event);add_time_of_view()"><span>{{thirdtag}}</span></a>
                 </div>
                 <div class="highlight">
                     <span>

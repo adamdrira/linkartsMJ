@@ -240,7 +240,8 @@
                 }
             }
 
-            button {
+            .options-button {
+                cursor:pointer;
                 position:relative;
                 display: flex;
                 width: 38px;

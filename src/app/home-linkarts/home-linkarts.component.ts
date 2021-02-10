@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef, Renderer2, ViewChild} from '@angular/core';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { AuthenticationService } from '../services/authentication.service';
 import { NavbarService } from '../services/navbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -10,8 +9,7 @@ import { LoginComponent } from '../login/login.component';
 import { SignupComponent } from '../signup/signup.component';
 
 
-declare var Swiper: any
-declare var $: any
+declare var Swiper: any;
 
 @Component({
   selector: 'app-home',
@@ -21,7 +19,6 @@ declare var $: any
 export class HomeLinkartsComponent implements OnInit {
   
   constructor(private rd: Renderer2, 
-    private authenticationService: AuthenticationService, 
     private route: ActivatedRoute, 
     public navbar: NavbarService, 
     private location: Location,
@@ -69,7 +66,6 @@ export class HomeLinkartsComponent implements OnInit {
 
   change_profile_number=0;
   ngOnInit() {
-    let THIS=this;
     window.scroll(0,0);
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       
@@ -91,6 +87,7 @@ export class HomeLinkartsComponent implements OnInit {
           this.status[j]=false;
         }
       }
+      
       if(this.category_index==4){
         //après le click du lien envoyé par mail pour confirmer inscription
         let id = parseInt(this.route.snapshot.paramMap.get('id'));
@@ -130,11 +127,6 @@ export class HomeLinkartsComponent implements OnInit {
       this.initialize_swiper();
     })
 
-    /*this.authenticationService.currentUserType.subscribe(r=>{
-      if(r!='' && this.change_profile_number<2){
-        
-      }
-    })*/
     
   }
  
@@ -174,6 +166,8 @@ export class HomeLinkartsComponent implements OnInit {
 
  
 
+    
+
   get_category(i : number) {
     if( i==0 ) {
       return '/recommendations';
@@ -190,6 +184,11 @@ export class HomeLinkartsComponent implements OnInit {
     
   }
 
+  swipe_to(i){
+    console.log("swipe to " + i)
+    console.log(this.swiper.length);
+    this.swiper.slideTo(i,false,false);
+  }
 
   swiper: any;
   @ViewChild("swiperCategories") swiperCategories: ElementRef;
@@ -276,7 +275,10 @@ export class HomeLinkartsComponent implements OnInit {
         })
       }
 
-
+      this.cd.detectChanges();
+      if(this.category_index<4){
+        this.swipe_to(this.category_index)
+      }
     }
   }
   

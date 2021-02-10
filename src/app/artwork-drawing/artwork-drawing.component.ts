@@ -116,6 +116,11 @@ export class ArtworkDrawingComponent implements OnInit {
     this.add_time_of_view();
   }
 
+  @HostListener('window:popstate', ['$event'])
+  onPopState(event) {
+    console.log('Back button pressed');
+    this.add_time_of_view();
+  }
  
 
   @ViewChild('leftContainer') leftContainer:ElementRef;
