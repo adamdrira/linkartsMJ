@@ -40,7 +40,7 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
             res.status(500).send([{error:err}])
         }).then(num=>{
             if(num>15){
-                res.status(500).send([{num:15}])
+                res.status(200).send([{num:15}])
             }
             else{
                 add_story()
@@ -65,9 +65,9 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                 var yyyy = today.getFullYear();
                 let Today = yyyy + mm + dd + hh+ mi + ss + ms;
                 
-                file_name = current_user + '-' + Today + '.png';
+                file_name = current_user + '-' + Today + '.svg';
                 console.log(file_name)
-                cb(null, current_user + '-' + Today + '.png');
+                cb(null, current_user + '-' + Today + '.svg');
                 }
             });
             
@@ -81,7 +81,9 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
                     res.status(500).send([{error:err}])
                 }
                 else{
-                    console.log("else upload cover")
+                    console.log("upload story")
+                    console.log(req.files);
+                    console.log(res.files);
                     (async () => {
                         let filename = "./data_and_routes/stories/" + file_name ;
                         const files = await imagemin([filename], {
