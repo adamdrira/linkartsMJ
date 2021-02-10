@@ -411,14 +411,9 @@
                 }
             }
             .send-message-container {
-                position: absolute;
-                bottom: 0px;
-                width: calc(100% - 360px);
+                width: 100%;
                 background: #f7f8f9;
                 border-top: 1px solid #dadada;
-                @media (max-width: 850px) {
-                    width: 100% !important;
-                }
 
                 .response {
                     position: relative;
