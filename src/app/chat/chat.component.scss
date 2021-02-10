@@ -356,7 +356,9 @@
         }
 
         .bottom-container {
-            position: relative;
+            position: fixed;
+            bottom:0px;
+            width:100%;
 
             .writing-container {
                 position: absolute;
@@ -1116,8 +1118,7 @@ button.show-more {
 
 .messages-container {
     width: 100%;
-    //height: 100% !important;
-    height: calc(100% - 111px) !important;
+    height: 100% !important;
     overflow-y: auto;
     padding: 30px 0px;
 

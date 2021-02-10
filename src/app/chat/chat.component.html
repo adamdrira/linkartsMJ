@@ -185,7 +185,7 @@
         <!--PARTIE MILIEU DU CHAT-->
         <!-------------------------------------->
         <!-------------------------------------->
-        <div class="middle-container">
+        <div class="middle-container" #middleContainer>
 
 
             <div class="loading-dots-container" *ngIf="!put_messages_visible">
@@ -193,29 +193,6 @@
                     &nbsp; <span>.</span><span>.</span><span>.</span>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <!--
                     DEBUT DES MESSAGES DE CLASSIQUES
@@ -1335,7 +1312,7 @@
         <!--PARTIE BASSE DU CHAT-->
         <!-------------------------------------->
         <!-------------------------------------->
-        <div *ngIf="!block_chat" [formGroup]="message_group" novalidate class="bottom-container">
+        <div *ngIf="!block_chat" [formGroup]="message_group" novalidate class="bottom-container" #bottomContainer (resized)="onResized($event)">
 
             <div class="writing-container" *ngIf="display_writing" [@enterFromBottomAnimation]>
                 <div class="writing">

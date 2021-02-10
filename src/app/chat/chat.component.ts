@@ -18,6 +18,7 @@ import { PopupAdPicturesComponent } from '../popup-ad-pictures/popup-ad-pictures
 import { PopupChatSearchComponent } from '../popup-chat-search/popup-chat-search.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { ResizedEvent } from 'angular-resize-event';
 declare var $: any;
 var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 
@@ -4178,6 +4179,23 @@ remove_contact(){
       this.can_show_send_icon=false;
     }
   }
+
+  
+
+@ViewChild("middleContainer", {read: ElementRef, static:false}) middleContainer:ElementRef;
+@ViewChild("bottomContainer", {read: ElementRef, static:false}) bottomContainer:ElementRef;
+update_middle_container_height() {
+  console.log("res3")
+  if( this.middleContainer.nativeElement && this.bottomContainer.nativeElement ) {
+    console.log(this.bottomContainer.nativeElement.offsetHeight)
+    this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px - "+ this.bottomContainer.nativeElement.offsetHeight +"px")
+  }
+}
+
+onResized(event: ResizedEvent) {
+  console.log("res1")
+  this.update_middle_container_height();
+}
 
   
   @Output() arrowBack = new EventEmitter<any>();

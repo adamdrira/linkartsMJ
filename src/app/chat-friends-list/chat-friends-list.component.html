@@ -69,21 +69,21 @@
             </ng-container>
             
             <ng-container *ngIf="opened_category != 0 && !display_add_a_friend_to_a_group">
-                <button class="back-icon" (click)="cancel_create_group_chat();cancel_add_friend_group();set_category(0,true);" [@enterFromRightAnimation]>
+                <div class="back-icon options-button" (click)="cancel_create_group_chat();cancel_add_friend_group();set_category(0,true);" [@enterFromRightAnimation]>
                     <mat-icon>keyboard_arrow_left</mat-icon>
                     <span>retour</span>
-                </button>
+                </div>
             </ng-container>
             <ng-container *ngIf="display_add_a_friend_to_a_group">
-                <button class="back-icon" (click)="cancel_add_friend_group();" [@enterFromRightAnimation]>
+                <div class="back-icon options-button" (click)="cancel_add_friend_group();" [@enterFromRightAnimation]>
                     <mat-icon>keyboard_arrow_left</mat-icon>
                     <span>retour</span>
-                </button>
+                </div>
             </ng-container>
             <ng-container *ngIf="opened_category==1">
-                <button (click)="arrow_right();" class="arrow-right" [@enterAnimation]>
+                <div (click)="arrow_right();" class="arrow-right options-button" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_right</mat-icon>
-                </button>
+                </div>
             </ng-container>
         </div>
 
