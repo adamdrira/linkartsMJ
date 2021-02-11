@@ -20,12 +20,12 @@ export class ConstantsService {
   type_of_accounts=["Artistes","Artistes professionnels", "Artiste", "Artiste professionnel","Artiste professionnelle", "Maison d'édition",
   "Editeur","Editrice","Professionnels non artistes","Professionnel non artiste","Professionnelle non artiste","Passionné","Passionnée"];
   
-  ads_types=["Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
+  ads_types=["Tout","Bandes dessinées","BD européennes","Comics","Manga","Webtoon","Dessins","Dessin digital",
   "Dessin traditionnel","Écrits","Article","Poésie","Roman","Roman illustré","Scénario"];
-  ads_targets=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
-  ads_descriptions=["Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"]
-  price_types_remunerated=["Annuel","CDD","CDI","Journalier","Mensuel","Par mission","Réinitialiser"]
-  price_types_services=["Produits","Services","Réinitialiser"];
-  offers_or_demands=["Offre","Demande","Réinitialiser"];
+  ads_targets=["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste","Tout public"];
+  ads_descriptions=["Tout","Professionnel de l'édition","Professionnel non artiste","Artiste en tout genre","Auteur de bandes dessinées","Ecrivain","Dessinateur","Scénariste"]
+  price_types_remunerated=["Tout","Annuel","CDD","CDI","Journalier","Mensuel","Par mission"]
+  price_types_services=["Tout","Produits","Services"];
+  offers_or_demands=["Tout","Offre","Demande"];
   
 }
