@@ -4162,6 +4162,9 @@ remove_contact(){
   right_container_is_opened:boolean=false;
   change_right_container() {
     this.right_container_is_opened = !this.right_container_is_opened;
+
+    this.cd.detectChanges();
+    this.update_middle_container_height();
   }
 
   width:number;
@@ -4172,13 +4175,11 @@ remove_contact(){
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    console.log(window.innerWidth)
+    this.update_middle_container_height();
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
       this.can_show_send_icon=true;
     }
     else{
-      console.log("can show false")
       this.can_show_send_icon=false;
     }
   }
@@ -4188,15 +4189,13 @@ remove_contact(){
 @ViewChild("middleContainer", {read: ElementRef, static:false}) middleContainer:ElementRef;
 @ViewChild("bottomContainer", {read: ElementRef, static:false}) bottomContainer:ElementRef;
 update_middle_container_height() {
-  console.log("res3")
   if( this.middleContainer.nativeElement && this.bottomContainer.nativeElement ) {
-    console.log(this.bottomContainer.nativeElement.offsetHeight)
-    this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px - "+ this.bottomContainer.nativeElement.offsetHeight +"px")
+    this.renderer.setStyle(  this.bottomContainer.nativeElement, "width", this.middleContainer.nativeElement.offsetWidth +"px" );
+    this.renderer.setStyle(  this.middleContainer.nativeElement, "height", "calc(100% - 65px - "+ this.bottomContainer.nativeElement.offsetHeight +"px" );
   }
 }
 
 onResized(event: ResizedEvent) {
-  console.log("res1")
   this.update_middle_container_height();
 }
 

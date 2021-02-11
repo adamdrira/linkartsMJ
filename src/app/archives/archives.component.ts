@@ -514,13 +514,26 @@ export class ArchivesComponent implements OnInit {
       this.list_of_stories_data_received = true;
       this.cd.detectChanges();
 
+      let THIS = this;
+
       if (r[0].length>0){
         let compt=0
         for (let i=0;i<r[0].length;i++){
           this.Story_service.retrieve_story(r[0][i].file_name).subscribe(info=>{
-            let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
-            const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-            this.list_of_stories[i]=SafeURL;
+
+                
+            var reader = new FileReader()
+            reader.readAsText(info);
+            reader.onload = function(this) {
+                let blob = new Blob([reader.result], {type: 'image/svg+xml'});
+                let url = (window.URL) ? window.URL.createObjectURL(blob) : (window as any).webkitURL.createObjectURL(blob);
+                const SafeURL = THIS.sanitizer.bypassSecurityTrustUrl(url);
+                THIS.list_of_stories[i]=SafeURL;
+            }
+
+            //let url = (window.URL) ? window.URL.createObjectURL(info) : (window as any).webkitURL.createObjectURL(info);
+            //const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
+            //this.list_of_stories[i]=SafeURL;
           });
 
           console.log(r[0][i])

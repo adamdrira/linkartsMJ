@@ -118,8 +118,18 @@
             .user-container {
                 width: 100%;
                 display: flex;
+
+                white-space: nowrap;
+                overflow: hidden !important;
+                text-overflow: ellipsis;
                 a {
                     display: flex;
+                    
+                    max-width: calc(100% - 100px);
+                    white-space: nowrap;
+                    overflow: hidden !important;
+                    text-overflow: ellipsis;
+                    
                     .left-container {
                         margin: auto 10px auto 0px;
                         width: 36px;

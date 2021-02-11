@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="subscribers-container" *ngIf="!loading_list_of_viewers && show_list_of_viewers && viewers_found" [@enterAnimation]>
-                    <a [routerLink]=get_viewer_link(k) *ngFor="let item of list_of_viewers; let k=index" class="subscriber-card">
+                    <a [routerLink]=get_viewer_link(k) *ngFor="let item of list_of_viewers; let k=index" (click)="close_stories();" class="subscriber-card">
                 
                         
                         <div class="subscriber">
@@ -109,15 +109,15 @@
                             </div>
                         </div>
             
-                        <button *ngIf="!list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                        <div *ngIf="!list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id && !loading_subscribtion" class="subscribe-button button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
                             <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
                             <span>S'abonner</span>
-                        </button>
-                        <button *ngIf="list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
+                        </div>
+                        <div *ngIf="list_of_check_subscribtion[k] && current_user!=list_of_viewers[k].id && !loading_subscribtion" class="unsubscribe-button button" (click)="stop($event);subscribtion(k);" [@enterAnimation]>
                             
                             <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
                             <span>Abonné(e)</span>
-                        </button>
+                        </div>
             
                     </a>
                 </div>

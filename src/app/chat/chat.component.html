@@ -19,11 +19,11 @@
                 </button>
 
                 <ng-container *ngIf="friend_type=='user'">
-                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat" class="profile-picture-container"
+                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat()" class="profile-picture-container"
                         [ngClass]="{'shiny': !top_pp_loaded }">
                         <img [src]="friend_picture" (load)="top_pp_is_loaded()" [ngClass]="{'invisible': !top_pp_loaded }">
                     </a>
-                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat" class="friend-link">
+                    <a [routerLink]="open_friend_link()" (click)="set_not_using_chat()" class="friend-link">
                         <span>
                             <div>
                                 {{friend_name}}
@@ -43,7 +43,11 @@
                         <img [src]="friend_picture" (load)="top_pp_is_loaded()" [ngClass]="{'invisible': !top_pp_loaded }">
                     </div>
                     <div class="friend-link">
-                        <span>{{friend_name}} </span>
+                        <span>
+                            <div>
+                                {{friend_name}} 
+                            </div>
+                        </span>
                     </div>
                 </ng-container>
 
@@ -268,21 +272,13 @@
                                             more_horiz</mat-icon>
                                     </button>
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Répondre"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
 
                                     <button (menuClosed)="myMessageOptionsClosed();" (menuOpened)="myMessageOptionsOpened(i);" (click)="show_reactions(i,$event)" [matMenuTriggerFor]="reactions"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Réagir"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             sentiment_satisfied</mat-icon>
                                     </button>
@@ -569,11 +565,7 @@
                                     
 
                                     <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="show_reactions(i,$event)" [matMenuTriggerFor]="reactions"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Réagir"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             sentiment_satisfied</mat-icon>
                                     </button>
@@ -586,11 +578,7 @@
 
 
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Répondre"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
@@ -788,11 +776,7 @@
                                     </button>
                                     
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Répondre"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
@@ -800,11 +784,7 @@
 
 
                                     <button (menuClosed)="myMessageOptionsClosed();" (menuOpened)="myMessageOptionsOpened(i);" (click)="show_reactions(i,$event)" [matMenuTriggerFor]="reactions"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Réagir"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             sentiment_satisfied</mat-icon>
                                     </button>
@@ -1144,11 +1124,7 @@
                                 <div class="options margin-right" [ngClass]="{ 'opacity1': friendMessageOpenedOptions==i }">
 
                                     <button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);" (click)="show_reactions(i,$event)" [matMenuTriggerFor]="reactions"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Réagir"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             sentiment_satisfied</mat-icon>
                                     </button>
@@ -1161,11 +1137,7 @@
 
 
                                     <button (click)="respond_to_message(list_of_messages.length -1 - i)"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'"
-                                        matTooltip="Répondre"
-                                        matTooltipClass='linkarts-tooltip'
-                                        [matTooltipPosition]="'below'"
-                                        [matTooltipShowDelay]="100">
+                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'">
                                         <mat-icon [ngClass]="{'invisible': !show_icon }">
                                             reply</mat-icon>
                                     </button>
