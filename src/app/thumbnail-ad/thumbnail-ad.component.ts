@@ -714,6 +714,7 @@ export class ThumbnailAdComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
+            panelClass:"popupReportClass"
           });
         }
       })

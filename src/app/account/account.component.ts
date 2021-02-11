@@ -2513,6 +2513,7 @@ report(){
     else{
       const dialogRef = this.dialog.open(PopupReportComponent, {
         data: {from_account:true,id_receiver:this.user_id,publication_category:'account',publication_id:this.user_id,format:"unknown",chapter_number:0},
+        panelClass:"popupReportClass"
       });
     }
     this.report_loading=false;

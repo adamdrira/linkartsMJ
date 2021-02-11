@@ -440,6 +440,7 @@ close_list_of_viewers(){
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.user_id,publication_category:'story',publication_id:this.list_of_data[i].id,format:"unknown",chapter_number:0},
+          panelClass:"popupReportClass"
         });
       }
     })

@@ -753,10 +753,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   
 
   swiper:any;
-  swiper2:any;
   @ViewChild("swiperArtworkPreview") swiperArtworkPreview:ElementRef;
   @ViewChild("swiperThumbnails") swiperThumbnails:ElementRef;
-  swiper2_initialized=false;
   swiper_initialized=false;
   initialize_swiper() {
       //console.log("swiper initialized " + this.item.publication_id + ' ' + this.chaptersnumber )

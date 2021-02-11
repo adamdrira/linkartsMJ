@@ -1209,7 +1209,7 @@ export class ArtworkWritingComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'writing',publication_id:this.writing_id,format:"unknown",chapter_number:0},
-          panelClass:'popupReportClass'
+          panelClass:"popupReportClass"
         });
       }
       this.checking_report=false;

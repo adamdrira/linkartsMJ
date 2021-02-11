@@ -2106,7 +2106,7 @@ export class ArtworkComicComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'comic',publication_id:this.bd_id,format:this.type,chapter_number:(this.type=='serie')?(this.current_chapter+1):0},
-          panelClass:'popupReportClass'
+          panelClass:"popupReportClass"
         });
       }
       this.checking_report=false;

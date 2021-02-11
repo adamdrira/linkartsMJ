@@ -307,7 +307,7 @@
 
         </div>
 
-        <div class="preview" *ngIf="subscribing_category!='writing' " (mouseenter)="launch_swiper();">
+        <div class="preview" *ngIf="subscribing_category!='writing' " (mouseenter)="launch_swiper();" (mouseleave)="stop_swiper();">
             <div class="hover-to-preview fade-on-hover">
                 <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                 <span>Voir les premières pages</span>

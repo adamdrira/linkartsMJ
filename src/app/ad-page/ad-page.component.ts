@@ -1458,7 +1458,7 @@ export class AdPageComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.item.id_user,publication_category:'ad',publication_id:this.item.id,format:this.item.type_of_project,chapter_number:0},
-          panelClass:'popupReportClass'
+          panelClass:"popupReportClass"
         });
       }
       this.checking_report=false;

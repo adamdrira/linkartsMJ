@@ -1673,7 +1673,7 @@ export class ArtworkDrawingComponent implements OnInit {
       else{
         const dialogRef = this.dialog.open(PopupReportComponent, {
           data: {from_account:false,id_receiver:this.authorid,publication_category:'drawing',publication_id:this.drawing_id,format:this.type,chapter_number:0},
-          panelClass:'popupReportClass'
+          panelClass:"popupReportClass"
         });
       }
       this.checking_report=false;

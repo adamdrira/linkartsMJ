@@ -81,7 +81,6 @@ export class PopupReportComponent implements OnInit {
      
       message_for_content: ['', 
         Validators.compose([
-          Validators.minLength(3),
           Validators.maxLength(500),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),
@@ -92,8 +91,6 @@ export class PopupReportComponent implements OnInit {
      
       message_for_plagiarism:['', 
         Validators.compose([
-          Validators.required,
-          Validators.minLength(3),
           Validators.maxLength(500),
           Validators.pattern(pattern("text_with_linebreaks")),
         ]),

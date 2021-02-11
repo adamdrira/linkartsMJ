@@ -313,7 +313,7 @@
             margin: 0px 10px auto 5px;
             span.author-name {
                 cursor: default;
-                font-size: 14px;
+                font-size: 13px;
                 line-height: 18px;
                 font-weight: 700;
                 display: -webkit-box;
@@ -326,12 +326,12 @@
                 mat-icon {
                     vertical-align: middle;
                     display: inline-block;
-                    margin: 0px 0px 3px 0px;
+                    margin: 0px 0px 3px -2px;
                     color: #00c0d4;
-                    height: 15px;
+                    height: 13px;
                     overflow: hidden;
                     width: unset;
-                    font-size: 15px;
+                    font-size: 13px;
                     line-height: 1;
                 }
             }
