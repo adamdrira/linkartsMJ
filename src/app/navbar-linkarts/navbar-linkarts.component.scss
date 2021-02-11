@@ -530,14 +530,14 @@
       max-width: calc(100% - 20px);
     }
     mat-icon {
-        vertical-align: middle;
-        display: inline-block;
-        margin: 1px 0px 0px 2px;
-        color: #00c0d4;
-        height: 15px;
-        overflow: hidden;
-        width: unset;
-        font-size: 15px;
+      vertical-align: middle;
+      display: inline-block;
+      margin: 2px 0px 0px 2px;
+      color: #00c0d4;
+      height: 13px;
+      overflow: hidden;
+      width: unset;
+      font-size: 13px;
     }
   }
   .author-container .left-container {
@@ -730,7 +730,7 @@
       background: #f3f3f3;
       //text-shadow: -0.04ex 0 rgb(32,56,100), 0.04ex 0 rgb(32,56,100);
       .name-container {
-        text-shadow: -0.04ex 0 rgb(32, 56, 100), 0.04ex 0 rgb(32, 56, 100);
+        //text-shadow: -0.04ex 0 rgb(32, 56, 100), 0.04ex 0 rgb(32, 56, 100);
       }
     }
   }
@@ -753,7 +753,7 @@
     mat-icon {
       vertical-align: middle;
       display: inline-block;
-      margin: -5px 0px 0px 0px;
+      margin: 0px 0px 2px 0px;
       color: #00c0d4;
       height: 13px;
       overflow: hidden;
