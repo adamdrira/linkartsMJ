@@ -1,13 +1,10 @@
 import { Component, OnInit, Inject,ViewChild, ElementRef } from '@angular/core';
-
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { BdSerieService } from '../services/comics_serie.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
-
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -16,8 +13,8 @@ import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
+import { Location } from '@angular/common';
 
-declare var $:any;
 
 @Component({
   selector: 'app-popup-form-comic',
@@ -31,6 +28,7 @@ export class PopupFormComicComponent implements OnInit {
     private BdSerieService:BdSerieService,
     private BdOneShotService:BdOneShotService,
     private navbar: NavbarService,
+    private location: Location,
     private constants:ConstantsService,
     public dialog: MatDialog,
 
@@ -109,12 +107,19 @@ export class PopupFormComicComponent implements OnInit {
   addChapter() { this.chapters.push(new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ])); }
 
 
+  loading=false;
+
   validateForm00() {
 
+    if(this.loading){
+      return
+    }
+    this.loading=true;
     if ( this.f00.valid && this.data.format == "one-shot" ) {
         this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
-              location.reload();
+          this.location.go(`/artwork-comic/one-shot/${this.f00.value.f00Title}/${this.data.bd_id}`);
+          location.reload();
         });
     }
 
@@ -124,6 +129,7 @@ export class PopupFormComicComponent implements OnInit {
           for( let i = 0 ; i < this.data.chapterList.length; i ++ ) {
             this.BdSerieService.modify_chapter_bd_serie2(this.data.bd_id,i+1,this.chapters.value[i]).subscribe(r=>{
               if(i==this.data.chapterList.length-1){
+                this.location.go(`/artwork-comic/serie/${this.f00.value.f00Title}/${this.data.bd_id}/${this.data.current_chapter}`);
                 location.reload();
               }
             });

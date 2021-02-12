@@ -2242,6 +2242,7 @@ export class ArtworkComicComponent implements OnInit {
         format:this.type, 
         bd_id: this.bd_id, 
         title: this.title, 
+        chapter:this.current_chapter,
         highlight:this.highlight, 
         style:this.style, 
         firsttag:this.firsttag,
@@ -2252,7 +2253,7 @@ export class ArtworkComicComponent implements OnInit {
         profile_picture: this.profile_picture,
         chapterList: this.chapterList,
         thumbnail_color:this.thumbnail_color,
-        current_chapter:this.current_chapter
+        current_chapter:this.current_chapter+1,
       },
       panelClass: 'popupFormComicClass',
     });

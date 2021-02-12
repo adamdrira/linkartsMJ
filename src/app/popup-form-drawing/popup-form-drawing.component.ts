@@ -18,8 +18,8 @@ import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
+import { Location } from '@angular/common';
 
-declare var $:any;
 
 @Component({
   selector: 'app-popup-form-drawing',
@@ -34,6 +34,7 @@ export class PopupFormDrawingComponent implements OnInit {
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     public dialog: MatDialog,
     private constants:ConstantsService,
+    private location: Location,
     private navbar: NavbarService,
 
 
@@ -99,20 +100,26 @@ export class PopupFormDrawingComponent implements OnInit {
   }
 
 
-
+  loading =false;
   validateForm00() {
 
+    if(this.loading){
+      return
+    }
     
+    this.loading=true;
     if ( this.fd.valid && this.data.format == "one-shot" ) {
-        this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.tags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
+          this.location.go(`/artwork-drawing/one-shot/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
               location.reload();
         });
     }
 
     else if ( this.fd.valid && this.data.format == "artbook" ) {
-        this.Drawings_Artbook_Service.ModifyArtbook2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.tags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
+        this.Drawings_Artbook_Service.ModifyArtbook2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
+          this.location.go(`/artwork-drawing/artbook/${this.fd.value.fdTitle}/${this.data.drawing_id}`);
               location.reload();
         })
     }

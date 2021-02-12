@@ -1,13 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
-
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Writing_Upload_Service } from '../services/writing.service';
-
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-
-
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent, MatAutocomplete} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -16,8 +12,8 @@ import {map, startWith} from 'rxjs/operators';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
+import { Location } from '@angular/common';
 
-declare var $: any;
 
 @Component({
   selector: 'app-popup-form-writing',
@@ -32,8 +28,7 @@ export class PopupFormWritingComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private navbar: NavbarService,
     public dialog: MatDialog,
-
-
+    private location: Location,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
       
@@ -99,23 +94,7 @@ export class PopupFormWritingComponent implements OnInit {
 
 
 
-  validateForm00() {
-    
-    if ( this.fw.valid ) {
-      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
-          location.reload();
-        });
-    }
-
-
-    else {
-      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
-        panelClass: "popupConfirmationClass",
-      });
-    }
-
-  }
+  
 
 
   listOfStyles = ["Roman illustré","Roman","Scénario","Article","Poésie"];
@@ -210,5 +189,31 @@ export class PopupFormWritingComponent implements OnInit {
   }
 
 
+  loading =false;
+  validateForm00() {
+    
+
+    if(this.loading){
+      return
+    }
+    
+    this.loading=true;
+
+    if ( this.fw.valid ) {
+      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
+        this.location.go(`/artwork-writing/${this.fw.value.fwTitle}/${this.data.writing_id}`);  
+        location.reload();
+        });
+    }
+
+
+    else {
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
+        panelClass: "popupConfirmationClass",
+      });
+    }
+
+  }
 
 }
