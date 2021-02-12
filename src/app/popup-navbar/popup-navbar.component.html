@@ -1647,19 +1647,19 @@
                                   <div *ngIf="list_of_friends_last_message[i].status=='seen'">
                                     <div *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
                                       <div *ngIf="list_of_friends_last_message[i].id_user==user_id">
-                                        vous avez envoyé une image
+                                        Vous avez envoyé une image
                                       </div>
                                       <div *ngIf="list_of_friends_last_message[i].id_user!=user_id">
-                                        vous a envoyé une image
+                                        Vous a envoyé une image
                                       </div>
                                     </div>
                                     <div
                                       *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                       <div *ngIf="list_of_friends_last_message[i].id_user==user_id">
-                                        vous avez envoyé une pièce jointe
+                                        Vous avez envoyé une pièce jointe
                                       </div>
                                       <div *ngIf="list_of_friends_last_message[i].id_user!=user_id">
-                                        vous a envoyé une pièce jointe
+                                        Vous a envoyé une pièce jointe
                                       </div>
                                     </div>
                                   </div>
@@ -1667,19 +1667,19 @@
                                   <div *ngIf="list_of_friends_last_message[i].status=='received'">
                                     <div *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
                                       <div *ngIf="list_of_friends_last_message[i].id_user==user_id">
-                                        <b> vous avez envoyé une image</b>
+                                        <b> Vous avez envoyé une image</b>
                                       </div>
                                       <div *ngIf="list_of_friends_last_message[i].id_user!=user_id">
-                                        <b> vous a envoyé une image</b>
+                                        <b> Vous a envoyé une image</b>
                                       </div>
                                     </div>
                                     <div
                                       *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                       <div *ngIf="list_of_friends_last_message[i].id_user==user_id">
-                                        <b>vous avez envoyé une pièce jointe </b>
+                                        <b>Vous avez envoyé une pièce jointe </b>
                                       </div>
                                       <div *ngIf="list_of_friends_last_message[i].id_user!=user_id">
-                                        <b>vous a envoyé une pièce jointe </b>
+                                        <b>Vous a envoyé une pièce jointe </b>
                                       </div>
                                     </div>
                                   </div>
@@ -1693,11 +1693,11 @@
                                     <div *ngIf="list_of_friends_last_message[i].attachment_type=='picture_message' ">
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user==user_id && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
-                                        <b> vous avez envoyé une image </b>
+                                        <b> Vous avez envoyé une image </b>
                                       </div>
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user==user_id && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                        vous avez envoyé une image
+                                        Vous avez envoyé une image
                                       </div>
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user!=user_id && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(user_id)>=0)">
@@ -1713,7 +1713,7 @@
                                       *ngIf="list_of_friends_last_message[i].attachment_type=='picture_attachment' || list_of_friends_last_message[i].attachment_type=='file_attachment'">
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user==user_id && !(list_of_friends_last_message[i].list_of_users_who_saw.length>1)">
-                                        <b>vous avez envoyé une pièce jointe </b>
+                                        <b>Vous avez envoyé une pièce jointe </b>
                                       </div>
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user!=user_id && !(list_of_friends_last_message[i].list_of_users_who_saw.indexOf(user_id)>=0)">
@@ -1722,7 +1722,7 @@
                                       </div>
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user==user_id && list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                        vous avez envoyé une pièce jointe
+                                        Vous avez envoyé une pièce jointe
                                       </div>
                                       <div
                                         *ngIf="list_of_friends_last_message[i].id_user!=user_id  && list_of_friends_last_message[i].list_of_users_who_saw.indexOf(user_id)>=0">
@@ -1731,6 +1731,9 @@
                                     </div>
                                   </div>
                                 </ng-container>
+                                <div *ngIf="list_of_friends_last_message[i].status=='deleted'">
+                                  Message supprimé
+                                </div>
                               </div>
             
                               <!--------------------------- NOT AN ATTACHMENT ----------------------------->
@@ -1760,10 +1763,10 @@
                                   <div
                                     *ngIf="list_of_friends_last_message[i].id_user==user_id && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                     <div *ngIf="list_of_friends_last_message[i].status=='seen'">
-                                      moi : {{list_of_friends_last_message[i].message}}
+                                      Vous : {{list_of_friends_last_message[i].message}}
                                     </div>
                                     <div *ngIf="list_of_friends_last_message[i].status=='received'">
-                                      <b>moi : {{list_of_friends_last_message[i].message}}</b>
+                                      <b>Vous : {{list_of_friends_last_message[i].message}}</b>
                                     </div>
                                   </div>
             
@@ -1788,16 +1791,16 @@
                                   <div
                                     *ngIf="list_of_friends_last_message[i].id_user==user_id && !list_of_friends_last_message[i].is_from_server && list_of_friends_last_message[i].status!='deleted'">
                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length>1">
-                                      moi : {{list_of_friends_last_message[i].message}}
+                                      Vous : {{list_of_friends_last_message[i].message}}
                                     </div>
                                     <div *ngIf="list_of_friends_last_message[i].list_of_users_who_saw.length==1">
-                                      <b>moi : {{list_of_friends_last_message[i].message}}</b>
+                                      <b>Vous : {{list_of_friends_last_message[i].message}}</b>
                                     </div>
                                   </div>
                                 </ng-container>
             
                                 <div *ngIf="list_of_friends_last_message[i].status=='deleted'">
-                                  message supprimé
+                                  Message supprimé
                                 </div>
             
                                 <!--------------------------- FROM SERVER ----------------------------->

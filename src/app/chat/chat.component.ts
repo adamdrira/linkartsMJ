@@ -1104,39 +1104,7 @@ export class ChatComponent implements OnInit  {
       status:"writing",
       is_a_group_chat:(this.friend_type=='user')?false:true,
     } 
-    if(this.spam=='true'){
-      //pas de mention vue pour les spams
-      /*console.log("changing status to seen spam")
-      this.chatService.let_all_friend_messages_to_seen(this.friend_id,this.id_chat_section,false).subscribe(l=>{
-        console.log(l[0])
-        if(!(l[0].message)){
-          let message_to_send ={
-            id_user_name:this.current_user_pseudo,
-            id_user:this.current_user_id,   
-            id_receiver:this.friend_id, 
-            message:"",
-            is_from_server:false,
-            status:'seen',
-            id_chat_section:this.id_chat_section,
-            attachment_name:"none",
-            is_an_attachment:false,
-            attachment_type:"none",
-            is_a_group_chat:false,
-            is_a_response:false,
-          }
-          console.log("send seen after activating focus")
-         
-          if(this.list_of_messages[0].id_user!=this.current_user_id){
-            console.log("change message status 7")
-            this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"seen",friend_id:this.friend_id,friend_type:this.friend_type,spam:true});
-          }
-          this.chatService.messages.next(message_to_send);
-        }
-        
-      });*/
-     
-    }
-    else{
+    if(this.spam!='true'){
       this.chatService.messages.next(msg);
     }
     
@@ -1678,20 +1646,37 @@ export class ChatComponent implements OnInit  {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.chatService.delete_message(this.list_of_messages[i].id).subscribe(r=>{
-          this.list_of_messages[i].status="deleted";
-          if(i==0){
-            this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"delete",friend_id:this.friend_id,friend_type:this.friend_type,spam:(this.spam=='false')?false:true});
+        let ok_to_delete=true;
+        let index=-1;
+        
+        for(let j=0;j<4;j++){
+          if(this.list_of_messages[i+j] && this.list_of_messages[i+j].id_user==this.current_user_id && ok_to_delete){
+            index=i+j;
+            ok_to_delete=false;
           }
-         if(this.list_of_messages[i].is_an_attachment && (this.list_of_messages[i].attachment_type=='picture_attachment' || this.list_of_messages[i].attachment_type=='file_attachment')){
+        }
+        console.log("index")
+        console.log(index)
+        let is_an_attachment=this.list_of_messages[index].is_an_attachment;
+        let attachment_type=this.list_of_messages[index].attachment_type;
+        this.list_of_messages[index].status="deleted";
+       
+        let message_to_delete=this.list_of_messages[index]
+        if(index==0){
+          this.change_message_status.emit({id_chat_section:this.id_chat_section,status:"delete",friend_id:this.friend_id,friend_type:this.friend_type,spam:(this.spam=='false')?false:true,id_message:message_to_delete.id});
+        }
+        this.chatService.delete_message(message_to_delete.id).subscribe(r=>{
+          
+          
+         if(is_an_attachment && (attachment_type=='picture_attachment' || attachment_type=='file_attachment')){
           this.reload_list_of_files_subject.next(true)
          }
-          console.log(this.list_of_messages[i])
+          console.log(message_to_delete)
           let message={
             id_user_name:this.current_user_pseudo,
             id_user:this.current_user_id,   
             id_receiver:this.friend_id, 
-            id_message:this.list_of_messages[i].id,
+            id_message:message_to_delete.id,
             message:"delete_message",
             is_an_attachment:false,
             is_from_server:true,

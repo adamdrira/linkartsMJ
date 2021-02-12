@@ -2194,6 +2194,8 @@ sort_friends_groups_chats_list(){
     
     
   })
+  console.log("list_of_friends_last_message1")
+  console.log(this.list_of_friends_last_message)
 }
 
 sort_list_of_groups_and_friends(){
@@ -2218,6 +2220,8 @@ sort_list_of_groups_and_friends(){
     this.sort_list_of_profile_pictures()
   }
   this.get_connections_status();
+  console.log("list_of_friends_last_message")
+  console.log(this.list_of_friends_last_message)
   this.list_of_friends_retrieved=true;
 }
 

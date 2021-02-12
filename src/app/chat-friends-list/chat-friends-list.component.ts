@@ -1108,10 +1108,6 @@ display_exit(event){
 }
 
 change_message_status(event){
-  //console.log(event);
-  //console.log(this.list_of_friends_ids);
-  //console.log(this.list_of_friends_names)
-  //console.log(this.list_of_friends_last_message)
   if(!event.spam){
     
     let index_friend=-1;
@@ -1120,10 +1116,11 @@ change_message_status(event){
         index_friend=i;
       }
     }
-    //console.log(index_friend)
+    console.log(index_friend)
     
     if(index_friend>=0){
       if(event.status=="delete" && this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section && this.list_of_friends_last_message[index_friend].id==event.id_message){
+        console.log("true and delete")
         this.list_of_friends_last_message[index_friend].status="deleted";
       } 
       if(event.status=="seen" &&  this.list_of_friends_last_message[index_friend].id_chat_section==event.id_chat_section){
