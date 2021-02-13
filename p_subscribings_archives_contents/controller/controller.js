@@ -804,12 +804,19 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.post('/emphasize_content', function (req, res) {
+      
         let current_user = get_current_user(req.cookies.currentUser);
       
         const category = req.body.category;
         const format = req.body.format;
         const publication_id = parseInt(req.body.publication_id);
         const chapter_number = req.body.chapter_number;
+        console.log("emphasize contant")
+        console.log(current_user)
+        console.log(category)
+        console.log(publication_id)
+        console.log(format)
+        console.log(chapter_number)
         list_of_contents.findOne({
             where: {
                 id_user:current_user,
@@ -824,48 +831,36 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
                     "emphasize":"no"
                 })
 
-                list_of_contents.findOne({
-                    where: {
-                        id_user:current_user,
-                        publication_category:category,
-                        format: format,
-                        publication_id: publication_id,
-                        chapter_number: chapter_number
-                    },
-                }).catch(err => {
-                    //console.log(err);	
-                    res.status(500).json({msg: "error", details: err});		
-                }).then(content=>{
-                    content.update({
-                         "status":"ok",
-                        "emphasize":"yes"
-                    }).catch(err => {
-                    //console.log(err);	
-                    res.status(500).json({msg: "error", details: err});		
-                }).then(content => {res.status(200).send([content])})
-                })
+                list_of_contents.update( {
+                    "emphasize":"yes"
+                     },
+                     {where: {
+                         id_user:current_user,
+                         publication_category:category,
+                         format: format,
+                         publication_id: publication_id,
+                         status:"ok"
+                     },
+                 }).catch(err => {
+                     //console.log(err);	
+                     res.status(500).json({msg: "error", details: err});		
+                 }).then(content => {res.status(200).send([content])})
             }
             else{
-                list_of_contents.findOne({
-                    where: {
+                list_of_contents.update( {
+                   "emphasize":"yes"
+                    },
+                    {where: {
                         id_user:current_user,
                         publication_category:category,
                         format: format,
                         publication_id: publication_id,
-                        chapter_number: chapter_number
+                        status:"ok"
                     },
                 }).catch(err => {
                     //console.log(err);	
                     res.status(500).json({msg: "error", details: err});		
-                }).then(content=>{
-                    content.update({
-                         "status":"ok",
-                        "emphasize":"yes"
-                    }).catch(err => {
-                    //console.log(err);	
-                    res.status(500).json({msg: "error", details: err});		
                 }).then(content => {res.status(200).send([content])})
-                })
             }
         });
 
