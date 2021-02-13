@@ -789,7 +789,7 @@ exports.login = async (req, res) => {
 	}
 	else{
 		console.log("check login")
-		if(user.gender=="Groupe"){
+		if(user.gender=="Groupe" && user.type_of_account.includes("Artiste")){
 			if(!user.list_of_members_validations){
 				return res.status(200).json({msg: "error_group"});
 			}
@@ -821,7 +821,6 @@ exports.login = async (req, res) => {
 			db.users_connexions.create({
 				"id_user":user.id,
 				"connexion_time":connexion_time,
-				"ip":ip,
 			})
 
 			db.users_ips.findOne({where:{
