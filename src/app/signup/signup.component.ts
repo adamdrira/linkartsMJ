@@ -60,12 +60,10 @@ export class SignupComponent implements OnInit {
       private NotificationsService:NotificationsService,
       private sanitizer:DomSanitizer,
       private Profile_Edition_Service:Profile_Edition_Service,
-      private router: Router,
       private Writing_Upload_Service:Writing_Upload_Service,
       private formBuilder: FormBuilder,
       public navbar: NavbarService,
       private cd: ChangeDetectorRef,
-      private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<SignupComponent,any>,
       private _adapter: DateAdapter<any>,
       public dialog: MatDialog,
@@ -1310,22 +1308,24 @@ export class SignupComponent implements OnInit {
           else{
             this.user.list_of_members;
             this.user.id_admin;
-            //console.log(this.user)
-
+            console.log(this.user)
+            console.log("ok to add")
             this.Profile_Edition_Service.addUser( this.user ).subscribe(r=>{
-              //console.log(r[0]);
+              console.log(r[0]);
               if(!r[0].error){
                 this.display_email_or_pseudo_found=false;
                 let id=r[0].id_user;
                 if( this.links.length > 0 ) {
-                  //console.log(this.links)
+                  console.log(this.links)
                   let compt=0;
                   for(let i=0;i<this.links.length;i++){
                     this.Profile_Edition_Service.add_link(r[0].id_user,this.links_titles[i],this.links[i]).subscribe(l=>{
                       compt+=1;
                       if(this.links.length==compt){
-                        //console.log("c'est bon");
-                        if(this.registerForm1.value.gender=="Groupe" && this.user.id_admin){
+                        console.log("c'est bon");
+                        console.log(this.user.id_admin)
+                        if(this.registerForm1.value.gender=="Groupe" && this.user.type_of_account.includes("Artiste")){
+                            console.log(this.user.id_admin)
                             this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
                               let message_to_send ={
                                 for_notifications:true,
@@ -1344,26 +1344,16 @@ export class SignupComponent implements OnInit {
                                 comment_id:0,
                               }
                               this.ChatService.messages.next(message_to_send);
-                              if(!this.user.type_of_account.includes("Artiste")){
-                                this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                                  //console.log(m)
-                                  this.loading_signup=false;
-                                  location.reload();
-                                })
-                              }
-                              else{
-                                this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                                  //console.log(m)
-                                  this.loading_signup=false;
-                                  location.reload();
-                                })
-                              }
                               
+                              this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
+                                console.log(m)
+                                location.reload();
+                              })
                             }) 
                         }
                         else{
                           this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                            //console.log(m)
+                            console.log(m)
                             this.loading_signup=false;
                             location.reload();
                           })
@@ -1373,8 +1363,8 @@ export class SignupComponent implements OnInit {
                   }
                 }
                 else {
-                  if(this.registerForm1.value.gender=="Groupe"){
-                    //console.log("for groupe")
+                  if(this.registerForm1.value.gender=="Groupe" && this.user.type_of_account.includes("Artiste")){
+                    console.log("for groupe")
                     this.NotificationsService.add_notification_for_group_creation('group_creation',this.list_of_ids[0],this.list_of_pseudos[0],this.list_of_ids,'group_creation',this.registerForm2.value.firstName,'unknown',id,0,"add",false,0).subscribe(l=>{
                       //console.log(l[0])
                       let message_to_send ={
@@ -1394,24 +1384,14 @@ export class SignupComponent implements OnInit {
                         comment_id:0,
                       }
                       this.ChatService.messages.next(message_to_send);
-                      if(!this.user.type_of_account.includes("Artiste")){
-                        this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                          this.loading_signup=false;
-                          location.reload();
-                        })
-                      }
-                      else{
                         this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                          this.loading_signup=false;
                           location.reload();
                         })
-                      }
                     }) 
                   }
                   else{
                     this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
-                      //console.log(m)
-                      this.loading_signup=false;
+                      console.log(m)
                       location.reload();
                     })
                   }
