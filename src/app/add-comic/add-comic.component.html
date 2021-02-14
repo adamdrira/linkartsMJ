@@ -42,7 +42,7 @@
                     <div class="form-item">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre</mat-label>
-                            <input matInput formControlName="f00Title" maxLength="30" autocomplete="off">
+                            <input matInput formControlName="f00Title" maxLength="30" autocomplete="off" (input)="normalize_input(f00, 'f00Title');">
                             <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/30</div>
@@ -66,7 +66,7 @@
                     <div class="form-item" *ngIf="f00Format.value == 'Série'">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre du premier chapitre</mat-label>
-                            <input matInput formControlName="f00SerieFirstChapter" maxLength="30" (keyup)="update_view();" autocomplete="off">
+                            <input matInput formControlName="f00SerieFirstChapter" maxLength="30" (keyup)="update_view();" autocomplete="off" (input)="normalize_input(f00, 'f00SerieFirstChapter');">
                             <mat-error *ngIf="f00.controls['f00SerieFirstChapter'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00SerieFirstChapter'].value?.length || 0}}/30</div>
@@ -131,7 +131,7 @@
                         [matTooltipShowDelay]="100">
                             <mat-label>Description</mat-label>
                         
-                            <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off"></textarea>
+                            <textarea matInput cdkTextareaAutosize formControlName="f00Description" maxLength="2000" autocomplete="off" (input)="normalize_input(f00, 'f00Description');"></textarea>
                             <mat-error *ngIf="f00.controls['f00Description'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                             </mat-error>
                             <div class="length-indicator">{{f00.controls['f00Description'].value?.length || 0}}/2000</div>

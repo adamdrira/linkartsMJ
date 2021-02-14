@@ -21,7 +21,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
 
-declare var $: any;
+import { normalize_to_nfc } from '../helpers/patterns';
+
 
 @Component({
   selector: 'app-add-ad',
@@ -483,5 +484,14 @@ export class AddAdComponent implements OnInit {
       this.Ads_service.remove_thumbnail_ad_from_folder().subscribe();
     }
   }
+
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
+
 
 }

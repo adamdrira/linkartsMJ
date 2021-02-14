@@ -21,6 +21,9 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
 
+
+import { normalize_to_nfc } from '../helpers/patterns';
+
 declare var $: any;
 
 @Component({
@@ -383,5 +386,11 @@ export class AddDrawingComponent implements OnInit {
   }
 
   
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
 
 }

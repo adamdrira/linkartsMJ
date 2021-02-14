@@ -11,14 +11,14 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Identifiant</mat-label>
-                    <input matInput formControlName="mail" autocomplete="off" type="search">
+                    <input matInput formControlName="mail" autocomplete="off" type="search" (input)="normalize_input(loginForm, 'mail');">
                 </mat-form-field>
             </div>
     
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(loginForm, 'password');">
     
                     <div class="remove-red-eye" (click)="change_password_type()"
                     [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"

@@ -824,6 +824,42 @@
     }
   }
 
+  .accountAboutSelectCountryClass.mat-select-panel {
+    position: absolute;
+    top: 37px;
+    left: -5px;
+    border-radius: 10px !important;
+    box-shadow:0px 0px 0px 2px #cce9fb, 0px 0px 2px 4px #b3e0fb;
+    .mat-ripple * {
+        background-color:unset !important;
+    }
+    .mat-option.mat-active {
+        background: rgb(240,244,254);
+    }
+    .mat-option:hover:not(.mat-option-disabled):not(.mat-active), .mat-option:focus:not(.mat-option-disabled):not(.mat-active) {
+        background:#f6fafd !important;
+    }
+    
+    .mat-option {
+        color: rgb(32,56,100) !important;
+        font-weight: 600;
+    }
+    
+    scrollbar-color: #b7e1fb white;
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    &::-webkit-scrollbar-thumb {
+        background-image: linear-gradient(0deg, #ffffff00, #76ccff,#ffffff00);
+        border-radius: 20px;
+    }
+  }
+
   .account-title-mat-menu {
     margin-top:3px !important;
     border-radius: 12px 10px 12px 12px !important;

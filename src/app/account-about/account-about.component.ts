@@ -29,6 +29,7 @@ import { convert_timestamp_to_number, date_in_seconds, get_date_to_show } from '
 import { trigger, transition, style, animate } from '@angular/animations';
 
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 
 declare var $: any;
@@ -3471,6 +3472,14 @@ adding_country(){
    this.registerForm2.controls['city'].updateValueAndValidity();
 
   
-}
+  }
+
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
 
 }

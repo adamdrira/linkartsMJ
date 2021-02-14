@@ -6,7 +6,8 @@ import { NavbarService } from '../services/navbar.service';
 import { pattern } from '../helpers/patterns';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-declare var $: any;
+import { normalize_to_nfc } from '../helpers/patterns';
+
 @Component({
   selector: 'app-login-invited-user',
   templateUrl: './login-invited-user.component.html',
@@ -141,6 +142,13 @@ export class LoginInvitedUserComponent implements OnInit {
         this.loading = false;
         this.display_wrong_data=true;
     });
+  }
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
   }
 
 

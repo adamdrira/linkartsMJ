@@ -3929,7 +3929,7 @@ remove_spam(){
 block_user(){
   console.log(this.friend_name);
   console.log(this.friend_id);
-  if(!(this.friend_id==2 && this.friend_type=="user") && !(this.friend_id==25 && this.friend_type=="user")){
+  if(!(this.friend_id<=3 && this.friend_type=="user")){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, text:'Etes-vous sûr de vouloir bloquer cet utilisateur ?'},
       panelClass: "popupConfirmationClass",

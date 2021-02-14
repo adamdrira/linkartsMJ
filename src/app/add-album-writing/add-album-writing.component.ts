@@ -14,10 +14,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
 import { NavbarService } from '../services/navbar.service';
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 declare var Swiper:any;
 declare var Muuri:any;
-declare var $:any;
 
 
 @Component({
@@ -326,10 +326,12 @@ export class AddAlbumWritingComponent implements OnInit {
   }
 
 
-
-
-
-
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
 
 
 }

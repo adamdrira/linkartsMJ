@@ -21,6 +21,7 @@ import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-at
 import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 
 @Component({
@@ -461,7 +462,12 @@ export class AddComicComponent implements OnInit {
     return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
   }
 
-
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
 
 
 }

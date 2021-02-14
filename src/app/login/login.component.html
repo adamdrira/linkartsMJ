@@ -19,7 +19,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="username" autocomplete="off" type="search">
+                    <input matInput formControlName="username" autocomplete="off" type="search" (input)="normalize_input(loginForm, 'username');">
                     <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -28,7 +28,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(loginForm, 'password');">
 
                     <div class="remove-red-eye" (click)="change_password_type()"
                     [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
@@ -82,7 +82,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="mail_recuperation" autocomplete="off" type="search">
+                    <input matInput formControlName="mail_recuperation" autocomplete="off" type="search" (input)="normalize_input(ResetPasswordForm, 'mail_recuperation');">
                     <mat-error *ngIf="ResetPasswordForm.controls['mail_recuperation'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -101,7 +101,7 @@
         </div>
         <div class="error">
             <span *ngIf="password_reset_problem" [@enterAnimation]>Un problème est survenu. Veuillez vérifier l'e-mail</span>
-            <span *ngIf="password_reset_sent" [@enterAnimation]>Un e-mail a été envoyé à l'adresse indiquée. Veuillez réessayer à nouveau s'il n'est pas reçu pas dans les minutes qui suivent</span>
+            <span *ngIf="password_reset_sent" class="green" [@enterAnimation]>Un e-mail a été envoyé à l'adresse indiquée. Veuillez réessayer à nouveau s'il n'est pas reçu dans les minutes qui suivent</span>
         </div>
 
     </ng-container>
@@ -118,7 +118,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="username" autocomplete="off" type="search">
+                    <input matInput formControlName="username" autocomplete="off" type="search" (input)="normalize_input(loginForm, 'username');">
                     <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -127,7 +127,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(loginForm, 'password');">
 
                     <div class="remove-red-eye" (click)="change_password_type()"
                     [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
@@ -203,7 +203,7 @@
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Détails</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="1000" autocomplete="off"></textarea>
+                    <textarea matInput cdkTextareaAutosize formControlName="description" maxLength="1000" autocomplete="off" (input)="normalize_input(deletionForm, 'description');"></textarea>
                     
                     <mat-error *ngIf="deletionForm.controls['description'].invalid">Veuillez fournir un commentaire valide (minimum : 20 caractères)
                     </mat-error>
@@ -235,7 +235,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="username" autocomplete="off" type="search">
+                    <input matInput formControlName="username" autocomplete="off" type="search" (input)="normalize_input(loginForm, 'username');">
                     <mat-error *ngIf="loginForm.controls['username'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -244,7 +244,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(loginForm, 'password');">
 
                     <div class="remove-red-eye" (click)="change_password_type()"
                     [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"

@@ -258,6 +258,10 @@
     span {
       color: #f44336;
       font-size: 12px;
+
+      &.green {
+        color:rgb(0, 89, 0);
+      }
     }
   }
 

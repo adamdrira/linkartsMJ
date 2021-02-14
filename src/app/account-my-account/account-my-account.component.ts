@@ -27,6 +27,10 @@ import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SignupComponent } from '../signup/signup.component';
 import { NavbarService } from '../services/navbar.service';
+
+
+import { normalize_to_nfc } from '../helpers/patterns';
+
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
@@ -2046,5 +2050,13 @@ export class AccountMyAccountComponent implements OnInit {
       
     })
     
+  }
+  
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
   }
 }

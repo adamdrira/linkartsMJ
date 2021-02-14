@@ -11,7 +11,9 @@ import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 
-declare var $: any;
+import { normalize_to_nfc } from '../helpers/patterns';
+
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -345,5 +347,12 @@ export class LoginComponent implements OnInit {
             }
         })
       }
+    }
+    
+    normalize_input(fg: FormGroup, fc: string) {
+      if(!fg || !fc) {
+        return;
+      }
+      normalize_to_nfc(fg,fc);
     }
   }
