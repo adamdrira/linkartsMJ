@@ -240,7 +240,8 @@
         </button>
 
         <div class="error">
-            <span *ngIf="display_need_information" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
+            <span *ngIf="display_need_information && !display_pseudo_found_1" [@enterAnimation]>Veuillez remplir les champs obligatoires</span>
+            <span *ngIf="display_pseudo_found_1" [@enterAnimation]>Attention ce pseudonyme est déjà utilisé</span>
         </div>
     </ng-container>
 

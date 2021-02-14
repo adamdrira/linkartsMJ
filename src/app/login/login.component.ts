@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, HostListener } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { AuthenticationService } from '../services/authentication.service';
@@ -10,7 +9,6 @@ import { Location } from '@angular/common';
 import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-
 import { normalize_to_nfc } from '../helpers/patterns';
 
 
@@ -35,10 +33,8 @@ export class LoginComponent implements OnInit {
   constructor(
       private formBuilder: FormBuilder,
       private location: Location,
-      private route: ActivatedRoute,
       public navbar:NavbarService,
       private Profile_Edition_Service:Profile_Edition_Service,
-      private router: Router,
       private Community_recommendation:Community_recommendation,
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<LoginComponent>,
@@ -48,25 +44,24 @@ export class LoginComponent implements OnInit {
       @Inject(MAT_DIALOG_DATA) public data: any
   ) {
       dialogRef.disableClose = true;
-      this.usage=this.data.usage;
+      
       if(this.usage=="delete_account" || this.usage=="suspend_account"){
         this.delete_account=true;
       }
-      if(this.usage=="registration"){
-        this.show_welcome=true;
-      }
+     
       navbar.visibility_observer_font.subscribe(font=>{
         if(font){
           this.show_icon=true;
         }
       })
   }
-
+  usage=this.data.usage;
+  temp_pass=this.data.temp_pass;
+  email=this.data.email;
   suspend_account=false;
   delete_account=false;
   show_welcome=false;
   step_deletion=0;
-  usage:string;
   loginForm: FormGroup;
   ResetPasswordForm:FormGroup;
   loading = false;
@@ -90,9 +85,37 @@ export class LoginComponent implements OnInit {
   deletionForm: FormGroup;
 
   hide=true;
+  display_error_reset=false;
+
   ngOnInit() {
     let THIS=this;
     window.scroll(0,0);
+    console.log(this.usage)
+    if(this.usage=="rest_pass" || this.usage=="registration"){
+      console.log("ready to log")
+      this.loading=true;
+      this.authenticationService.login(this.data.email, this.data.temp_pass).subscribe( data => {
+        console.log("data received")
+        console.log(data)
+        if(data.token){
+          console.log("login done")
+          console.log(data.user)
+          this.Community_recommendation.delete_recommendations_cookies();
+          this.Community_recommendation.generate_recommendations().subscribe(r=>{
+            location.reload();
+          })
+        }
+        else{
+          this.display_error_reset=true;
+          this.loading=false;
+        }
+        
+      },
+      error => {
+        this.display_error_reset=true;
+        this.loading=false;
+      });
+    }
       this.loginForm = this.formBuilder.group({
           username: ['', 
             Validators.compose([
@@ -126,6 +149,10 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  reset_loading(){
+    this.usage='';
+  }
+
   show_icon=false;
  
 
@@ -146,9 +173,10 @@ export class LoginComponent implements OnInit {
   password_reset_problem=false;
   onSubmitReset(){
       this.submitted_reset=true;
-      if(this.ResetPasswordForm.invalid){
+      if(this.ResetPasswordForm.invalid || this.loading){
           return;
       }
+      this.loading=true;
 
       this.authenticationService.reset_password(this.g.mail_recuperation.value).subscribe(r=>{
         //console.log(r[0])
@@ -160,6 +188,8 @@ export class LoginComponent implements OnInit {
           this.password_reset_sent=false;
           this.password_reset_problem=true;
         }
+        this.loading=false;
+        this.submitted_reset=false;
         // crééer un mail pro pour gérer ça
       })
   }

@@ -16,6 +16,8 @@ import { Albums_service } from '../services/albums.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { Community_recommendation } from '../services/recommendations.service';
 import { PopupSubscribingsComponent } from '../popup-subscribings/popup-subscribings.component';
 import { PopupSubscribersComponent } from '../popup-subscribers/popup-subscribers.component';
 import { PopupAddStoryComponent } from '../popup-add-story/popup-add-story.component';
@@ -83,6 +85,8 @@ export class AccountComponent implements OnInit {
     public dialog: MatDialog,
     private Emphasize_service:Emphasize_service,
     private Ads_service:Ads_service,
+    private AuthenticationService:AuthenticationService,
+    private Community_recommendation:Community_recommendation,
     ) {
     //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
@@ -349,11 +353,7 @@ export class AccountComponent implements OnInit {
   profile_not_found=false;
   profile_suspended=false;
   my_profile_is_suspended=false;
-
-
   page_not_found=false;
-
-  list_of_sections_to_load=[];
   story_retrieved=false;
   story_found=false;
   /******************************************* START ON INIT ********************************************/
@@ -432,7 +432,7 @@ export class AccountComponent implements OnInit {
       this.visitor_name=s[0].visitor.nickname;
       this.type_of_profile=s[0].visitor.status;
       this.type_of_profile_retrieved=true;
-      
+      this.cd.detectChanges();
   
 
       if( user  && this.visitor_id==user.id){
@@ -441,7 +441,6 @@ export class AccountComponent implements OnInit {
       }
       this.mode_visiteur_added = true;
 
-      this.cd.detectChanges()
       if( !user || user.status=="visitor") {
         console.log("3 not found")
         this.page_not_found=true;
@@ -457,17 +456,13 @@ export class AccountComponent implements OnInit {
 
         this.author_name = user.firstname + ' ' + user.lastname;
         this.cd.detectChanges();
-       
-       
         if(user.status=="suspended"){
           this.gender=user.gender;
           this.firstName=user.firstname;
           this.lastName=user.lastname;
           this.primary_description=user.primary_description;
-         
           this.type_of_account=user.type_of_account;
           this.certified_account=user.certified_account;
-
           this.user_location=user.location;
           this.profile_suspended=true;
          
@@ -487,8 +482,6 @@ export class AccountComponent implements OnInit {
         this.list_drawings_onepage_added=true;
         this.list_bd_series_added=true;
         this.list_bd_oneshot_added=true;
-
-        
         this.cd.detectChanges();
         this.update_background_position( this.opened_section );;
         return
@@ -519,17 +512,10 @@ export class AccountComponent implements OnInit {
         this.primary_description=user.primary_description;
         this.type_of_account=user.type_of_account;
         this.primary_description_extended=user.primary_description_extended;
-        console.log(user)
-        console.log(this.primary_description_extended)
         this.certified_account=user.certified_account;
-
         this.user_location=user.location;
         
-
-        
-          
         if (this.visitor_id==user.id){
-          console.log("in thiiiiiiiiis")
           this.user_blocked=false;
           this.user_blocked_retrieved=true;
           this.cd.detectChanges();
@@ -562,8 +548,6 @@ export class AccountComponent implements OnInit {
         };
 
         this.Profile_Edition_Service.retrieve_number_of_contents(this.user_id).subscribe(r=>{
-          console.log("jgoiphbhbhbhbhbhbhbhbhbr{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{");
-          console.log(r[0]);
           this.number_of_comics=r[0].number_of_comics;
           this.number_of_drawings=r[0].number_of_drawings;
           this.number_of_writings=r[0].number_of_writings;
@@ -596,12 +580,44 @@ export class AccountComponent implements OnInit {
         }
         else if(this.route.snapshot.data['section']>5){
           if(this.mode_visiteur){
-            console.log("5 not found")
-            this.page_not_found=true;
-            return
+            if(this.route.snapshot.data['section']==8){
+              //après le click du lien envoyé par mail pour confirmer inscription
+              let id = parseInt(this.route.snapshot.paramMap.get('id'));
+              let password = this.route.snapshot.paramMap.get('password');
+              console.log(id)
+              console.log(password)
+              
+              this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
+                console.log(r[0])
+               
+                if(r[0].user_found){
+                  console.log("login ready")
+                  console.log(r[0])
+                  console.log(r[0].user_found.id)
+                  console.log(r[0].pass)
+                  this.open_section( 7,true );
+                  const dialogRef = this.dialog.open(LoginComponent, {
+                    data: {usage:"rest_pass",email:r[0].user_found.email,temp_pass:r[0].pass},
+                    panelClass: "loginComponentClass",
+                  });
+
+                  
+                }
+                else{
+                  this.open_section( 1,true );
+                  this.cd.detectChanges();
+                  this.update_background_position(this.opened_section)
+                }
+              })
+            }
+            else{
+              this.open_section( 1,true );
+              this.cd.detectChanges();
+              this.update_background_position(this.opened_section)
+            }
+            
           }
           else{
-            this.list_of_sections_to_load[ this.route.snapshot.data['section']]=true;
             let cat = this.route.snapshot.data['category']
             if(cat>=0){
               this.opened_category=cat;
@@ -617,7 +633,6 @@ export class AccountComponent implements OnInit {
 
         }
         else{
-          this.list_of_sections_to_load[ this.route.snapshot.data['section'] ]=true;
           let cat = this.route.snapshot.data['category']
           if(cat>=0){
             this.opened_category=cat;
@@ -626,9 +641,6 @@ export class AccountComponent implements OnInit {
           else{
             this.open_section( this.route.snapshot.data['section'],true );
           }
-         
-      
-          
           this.cd.detectChanges();
           this.update_background_position(this.opened_section)
         }
@@ -1207,20 +1219,11 @@ export class AccountComponent implements OnInit {
 
 
   open_section(i : number,not_first) {
-    console.log("open section")
-    console.log(i)
-    console.log(this.opened_section)
-    console.log(not_first)
-    console.log(this.list_of_sections_to_load)
-    console.log(this.opened_category)
     if( this.opened_section == i ) {
       this.cd.detectChanges();
       this.update_background_position(i);
       return;
     }
-   
-    //this.opened_category = -1;
-    this.list_of_sections_to_load[i ]=true;
 
     this.opened_section=i;
     this.opened_section_small=i;

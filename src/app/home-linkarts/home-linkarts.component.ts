@@ -101,7 +101,7 @@ export class HomeLinkartsComponent implements OnInit {
           if(r[0].user_found){
             this.location.go('/recommendations')
             const dialogRef = this.dialog.open(LoginComponent, {
-              data: {usage:"registration"},
+              data: {usage:"registration",temp_pass:r[0].pass,email:r[0].user_found.email},
               panelClass: "loginComponentClass",
             });
           }

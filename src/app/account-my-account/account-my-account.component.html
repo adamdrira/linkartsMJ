@@ -118,7 +118,7 @@
 
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe actuel</mat-label>
-                    <input matInput formControlName="old_password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off" (input)="normalize_input(registerForm1, 'old_password');">
+                    <input matInput formControlName="old_password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
                     <mat-error *ngIf="registerForm1.controls['old_password'].invalid ">Mot de passe incorrect
                     </mat-error>
                     <div class="length-indicator">
@@ -128,7 +128,7 @@
 
                 <mat-form-field floatLabel='never'>
                     <mat-label>Nouveau mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off" (input)="normalize_input(registerForm1, 'password');">
+                    <input matInput formControlName="password" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
                     <mat-error *ngIf="registerForm1.controls['password'].invalid ">Mot de passe incorrect
                     </mat-error>
                     <div class="length-indicator">
@@ -138,7 +138,7 @@
 
                 <mat-form-field floatLabel='never'>
                     <mat-label>Confirmation du nouveau mot de passe</mat-label>
-                    <input matInput formControlName="confirmPassword" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off" (input)="normalize_input(registerForm1, 'confirmPassword');">
+                    <input matInput formControlName="confirmPassword" [type]="hide_password ? 'password' : 'text'" maxLength="50" autocomplete="off">
                     <mat-error>Confirmation incorrecte
                     </mat-error>
                     <div class="length-indicator">
@@ -148,8 +148,11 @@
 
                 
                 <button class="validate-form-button" (click)="validate_edit_password();" [@enterAnimation]>
-                    <mat-icon [ngClass]="{'invisible': !show_icon }">done_all</mat-icon>
-                    <span>Changer mon mot de passe</span>
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!checking_password">done_all</mat-icon>
+                    <span *ngIf="!checking_password" >Changer mon mot de passe</span>
+                    <div class="loading-dots" *ngIf="checking_password" >
+                        &nbsp; <span>.</span><span>.</span><span>.</span>
+                    </div>
                 </button>
                 <button class="validate-form-button" (click)="cancel_edit_password();" [@enterAnimation]>
                     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
@@ -215,7 +218,7 @@
             <div class="form-item" *ngIf="registerForm_activated" [@enterAnimation]>
                 <mat-form-field floatLabel='never'>
                     <mat-label>Adresse e-mail</mat-label>
-                    <input matInput formControlName="email" maxLength="100" type="search" autocomplete="off" (input)="normalize_input(registerForm, 'email');">
+                    <input matInput formControlName="email" maxLength="100" type="search" autocomplete="off">
                     <mat-error *ngIf="registerForm.controls['email'].invalid">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm.controls['email'].value?.length || 0}}/100</div>

@@ -27,10 +27,6 @@ import { LoginComponent } from '../login/login.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SignupComponent } from '../signup/signup.component';
 import { NavbarService } from '../services/navbar.service';
-
-
-import { normalize_to_nfc } from '../helpers/patterns';
-
 declare var $: any;
 @Component({
   selector: 'app-account-my-account',
@@ -325,10 +321,11 @@ export class AccountMyAccountComponent implements OnInit {
   }
 
   checking_password=false;
+  loading_new_pass=false;
   validate_edit_password(){
     console.log(this.registerForm1)
     if(this.registerForm1.invalid || this.checking_password){
-      this.checking_password=true;
+      return
     }
     else{
       this.checking_password=true;
@@ -366,7 +363,7 @@ export class AccountMyAccountComponent implements OnInit {
               this.validate_old_password();
             }
             else {
-              this.registerForm1_activated=false;
+              this.checking_password=false;
               
             }
           });
@@ -2050,13 +2047,5 @@ export class AccountMyAccountComponent implements OnInit {
       
     })
     
-  }
-  
-
-  normalize_input(fg: FormGroup, fc: string) {
-    if(!fg || !fc) {
-      return;
-    }
-    normalize_to_nfc(fg,fc);
   }
 }

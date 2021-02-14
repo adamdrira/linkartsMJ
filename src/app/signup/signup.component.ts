@@ -548,9 +548,9 @@ export class SignupComponent implements OnInit {
   check_pseudo(){
     this.index_check++;
     this.Profile_Edition_Service.check_pseudo(this.registerForm3.value.nickname, this.index_check).subscribe(r=>{
-      ////console.log(r)
+      console.log(r)
       if(r[0][0].msg=="found"){
-        ////console.log("display found")
+        console.log("display pseudo found")
         this.display_pseudo_found_1=true;
         this.cd.detectChanges()
       }
@@ -672,7 +672,7 @@ export class SignupComponent implements OnInit {
     console.log("validate step")
     console.log(this.step)
     console.log(this.registerForm2)
-    if(this.step==1 && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
+    if(this.step==1 && this.registerForm2.value.type_of_account && ( this.registerForm2.value.type_of_account=="Artiste professionnel" ||  this.registerForm2.value.type_of_account=="Artiste professionnelle"  || this.registerForm2.value.type_of_account.includes('Maison'))){
         console.log(this.registerForm2.value.siret)
         if(!this.registerForm2.value.siret || (this.registerForm2.value.siret && this.registerForm2.value.siret.length<9)){
           console.log("siret prob")
@@ -740,9 +740,10 @@ export class SignupComponent implements OnInit {
     else{
       console.log("cas 6")
       console.log(this.registerForm3);
-      //console.log(this.display_email_and_password_error)
-      //console.log(this.display_email_and_password_found_1)
-      //console.log(this.display_email_found_1)
+      console.log(this.display_email_and_password_error)
+      console.log(this.display_email_and_password_found_1)
+      console.log(this.display_email_found_1)
+      console.log(this.display_pseudo_found_1)
       if(this.display_email_and_password_error){
         this.display_email_and_password_found_1=true;
         if(this.registerForm1.value.gender && this.registerForm1.value.gender!="Groupe"){
@@ -752,7 +753,7 @@ export class SignupComponent implements OnInit {
           this.display_email_found_1=false;
         }
       }
-      else{
+      else if(!this.display_pseudo_found_1){
         this.display_email_and_password_found_1=false;
         this.display_need_information=true;
         this.display_email_found_1=false;

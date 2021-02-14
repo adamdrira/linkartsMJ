@@ -5,13 +5,38 @@
 
 <div class="popup-login">
     
-    <ng-container *ngIf="!reset_password_menu && !delete_account">
+    <ng-container *ngIf="usage=='rest_pass' || usage=='registration'">
 
         
-        <div *ngIf="show_welcome" class="step-name">
+        <div *ngIf="usage=='rest_pass'" class="step-name">
+            <span>Tentative de connexion</span>
+        </div>
+
+        <div *ngIf="usage=='registration'" class="step-name">
             <span>Bienvenue sur LinkArts !</span>
         </div>
-        <div  *ngIf="!show_welcome" class="step-name">
+
+        <button [disabled]="loading" class="submit-button" (click)="reset_loading()">
+            <div class="loading-dots" *ngIf="loading">
+                &nbsp; <span>.</span><span>.</span><span>.</span>
+            </div>
+            <span *ngIf="!loading">Se connecter</span>
+        </button>
+
+       
+        
+        <div class="error">
+            <span *ngIf="display_error_reset" [@enterAnimation]>Veuillez nous excuser, une erreur est survenue... </span>
+            
+        </div>
+
+
+    </ng-container>
+
+    <ng-container *ngIf="!reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration'">
+
+        
+        <div  class="step-name">
             <span>Connexion</span>
         </div>
 
@@ -68,10 +93,11 @@
 
 
 
-    <ng-container *ngIf="reset_password_menu && !delete_account">
+    <ng-container *ngIf="reset_password_menu && !delete_account && usage!='rest_pass' && usage!='registration'">
 
-        <div class="step-back">
-            <div (click)="open_connexion_menu();" class="left">Retour</div>
+        <div class="back-button" (click)="open_connexion_menu();">
+            <!--<div (click)="open_connexion_menu();">Retour</div>-->
+            <mat-icon [ngClass]="{'invisible': !show_icon }" >keyboard_arrow_left</mat-icon>
         </div>
         
         <div class="step-name">
@@ -96,7 +122,7 @@
             </div>
         </button>
 
-        <div class="loading-span" *ngIf="loading">
+        <div class="loading-span" *ngIf="loading && !submitted_reset">
             <span>Connexion en cours</span>
         </div>
         <div class="error">
@@ -108,7 +134,7 @@
 
 
     
-    <ng-container *ngIf="delete_account && step_deletion==0">
+    <ng-container *ngIf="delete_account && step_deletion==0 ">
 
         <div class="step-name">
             <span>Authentification</span>

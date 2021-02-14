@@ -28,7 +28,7 @@ const routes: Routes = [
   //Category : Oeuvres, posters, annonces, etc.
   //Type : BD, dessin, ou écrit.
   //Step : étape 1, 2 ou 3.
-  {path:'account/:pseudo/:id', component:AccountComponent, data: {section: 0},canActivate: [TempAuthGuard]},
+  {path:'account/:pseudo/:id', component:AccountComponent, data: {section: 0}, canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/artworks', component:AccountComponent, data: {section: 1},canActivate: [TempAuthGuard]},
 
   {path:'account/:pseudo/:id/artworks/comics', component:AccountComponent, data: {section: 1, category:0}},
@@ -37,9 +37,10 @@ const routes: Routes = [
 
   {path:'account/:pseudo/:id/ads', component:AccountComponent,  data: {section: 2},canActivate: [TempAuthGuard]},
   {path:'account/:pseudo/:id/about', component:AccountComponent,  data: {section: 5},canActivate: [TempAuthGuard]},
-  {path:'account/:pseudo/:id/archives', component:AccountComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 6}},
-  {path:'account/:pseudo/:id/my_account', component:AccountComponent,canActivate: [AuthGuard,TempAuthGuard],  data: {section: 7}},
-
+  {path:'account/:pseudo/:id/archives', component:AccountComponent,  data: {section: 6},canActivate: [AuthGuard,TempAuthGuard]},
+  {path:'account/:pseudo/:id/my_account', component:AccountComponent,  data: {section: 7},canActivate: [AuthGuard,TempAuthGuard]},
+  {path:'account/:pseudo/:id/my_account/:password', component:AccountComponent,  data: {section: 8}, canActivate: [TempAuthGuard]},
+  
   //main-searchbar-results
   {path:'main-research/:page/:text/:category', component:MainSearchbarResultsComponent, data: {section: 0},canActivate: [TempAuthGuard]},
   {path:'main-research/:page/:text/:category/:first_filter/:second_filter', component:MainSearchbarResultsComponent, data: {section: 1},canActivate: [TempAuthGuard]},
