@@ -49,7 +49,7 @@ const authentification = require('../../authentication/db.config');
 
 // Cors
 const corsOptions = {
-   origin: ['https://www.linkarts.fr'],
+   origin: ['http://localhost:4200'],
    optionsSuccessStatus: 200
  };
  router.use(cors(corsOptions));
@@ -107,6 +107,7 @@ profile_edition(router,
   authentification.user_groups_managment,
   authentification.users_mailing,
   authentification.users_strikes,
+  authentification.user_passwords,
   authentification.users_cookies,
   authentification.users_remuneration,
   profile_notation_seq.List_of_views,
