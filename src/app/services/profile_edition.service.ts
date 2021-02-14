@@ -376,6 +376,11 @@ export class Profile_Edition_Service {
     }));
   }
 
+  check_password_for_registration2(id,password){
+    return this.httpClient.post('routes/check_password_for_registration2',{id:id,password:password},{withCredentials:true} ).pipe(map((information)=>{
+      return information;
+    }));
+  }
 
   add_artist_in_a_group(id_group,list_of_ids,list_of_shares){
     return this.httpClient.post('routes/add_artist_in_a_group',{id_group:id_group,list_of_ids:list_of_ids,list_of_shares:list_of_shares},{withCredentials:true} ).pipe(map((information)=>{
