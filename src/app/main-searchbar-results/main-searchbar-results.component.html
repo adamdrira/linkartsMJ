@@ -162,10 +162,12 @@
         
         <ng-container *ngIf="(!show_propositions || loading_propositions) && !display_no_propositions">
             
-            <ng-container *ngFor="let item of skeleton_array; let i = index">
-                <div class="skeleton" [@enterAnimation]>
-                </div>
-            </ng-container>
+            <div *ngFor="let item of skeleton_array; let i = index" class="skeleton">
+                <app-thumbnail-artwork [@enterAnimation]
+                [skeleton]="skeleton"
+                page="subscribings">
+                </app-thumbnail-artwork>
+            </div>
         </ng-container>
 
         

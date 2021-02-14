@@ -66,6 +66,9 @@ export class MainSearchbarResultsComponent implements OnInit {
     this.navbar.show();
   }
 
+  
+  skeleton:boolean=true;
+
   type_of_target="Cible";
   shinies=Array(5);
   shinies2=Array(8);
