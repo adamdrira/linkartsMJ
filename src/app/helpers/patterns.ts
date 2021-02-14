@@ -12,7 +12,7 @@ export function pattern(type: string) {
     }
     //Minimum : une minuscule, une majuscule, un chiffre et un caractère spécial.
     if( type == "password" ) {
-        return "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*["+ special_characters +"])[a-zA-Z0-9"+accents+special_characters+"].{7,}";
+        return "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9"+accents+special_characters+"].{7,}";
     }
     //Doit commencer par une lettre (avec accents), doit finir par une lettre.
     //Peut contenir au milieu un espace ou un tiret (max 1).
