@@ -15,6 +15,7 @@ import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 @Component({
   selector: 'app-popup-form-comic',
@@ -238,6 +239,13 @@ export class PopupFormComicComponent implements OnInit {
     return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
   }
 
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
+  }
 
 
 }

@@ -14,6 +14,7 @@ import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 @Component({
   selector: 'app-popup-form-writing',
@@ -214,6 +215,13 @@ export class PopupFormWritingComponent implements OnInit {
       });
     }
 
+  }
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
   }
 
 }

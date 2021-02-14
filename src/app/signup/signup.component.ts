@@ -2,8 +2,6 @@ import { Component, OnInit, ChangeDetectorRef, HostListener, Inject, ViewChild, 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { User } from '../services/user';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '../services/authentication.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { NotificationsService } from '../services/notifications.service';
 import { ChatService } from '../services/chat.service';
@@ -21,7 +19,7 @@ import {Writing_Upload_Service} from '../services/writing.service';
 import { PopupAdAttachmentsComponent } from '../popup-ad-attachments/popup-ad-attachments.component';
 import { DOCUMENT } from '@angular/common';
 
-declare var $: any;
+import { normalize_to_nfc } from '../helpers/patterns';
 
 @Component({
   selector: 'app-signup',
@@ -115,6 +113,7 @@ export class SignupComponent implements OnInit {
   display_need_information=false;
 
   step=0;
+  show_sent_mail:boolean = false;
   maxDate: moment.Moment;
 
   
@@ -1347,7 +1346,12 @@ export class SignupComponent implements OnInit {
                               
                               this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
                                 console.log(m)
-                                location.reload();
+                                this.step = -1;
+                                this.show_sent_mail = true;
+                                this.cd.detectChanges();
+
+
+                                //location.reload();
                               })
                             }) 
                         }
@@ -1355,7 +1359,11 @@ export class SignupComponent implements OnInit {
                           this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
                             console.log(m)
                             this.loading_signup=false;
-                            location.reload();
+                            this.step = -1;
+                            this.show_sent_mail = true;
+                            this.cd.detectChanges();
+
+                            //location.reload();
                           })
                         } 
                       }
@@ -1385,14 +1393,22 @@ export class SignupComponent implements OnInit {
                       }
                       this.ChatService.messages.next(message_to_send);
                         this.Profile_Edition_Service.send_email_for_group_creation(id).subscribe(m=>{
-                          location.reload();
+                          
+                          this.step = -1;
+                          this.show_sent_mail = true;
+                          this.cd.detectChanges();
+                          //location.reload();
                         })
                     }) 
                   }
                   else{
                     this.Profile_Edition_Service.send_email_for_account_creation(id).subscribe(m=>{
                       console.log(m)
-                      location.reload();
+                      
+                      this.step = -1;
+                      this.show_sent_mail = true;
+                      this.cd.detectChanges();
+                      //location.reload();
                     })
                   }
                  
@@ -1412,10 +1428,17 @@ export class SignupComponent implements OnInit {
         
       }
     })
+  }
 
-   
 
-      
+  finish() {
+    location.reload();
+  }
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
   }
 
 }

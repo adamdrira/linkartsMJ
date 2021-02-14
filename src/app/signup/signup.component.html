@@ -1,6 +1,6 @@
 
 
-<button class="close-button" (click)="close_dialog()">
+<button *ngIf="step>=0" class="close-button" (click)="close_dialog()">
     <mat-icon [ngClass]="{'invisible': !show_icon }">close</mat-icon>
 </button>
 
@@ -20,7 +20,7 @@
         <div class="step-form" [formGroup]="registerForm1">
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Type de profil</mat-label>
+                    <mat-label>Type de profil*</mat-label>
                     <mat-select (selectionChange)="change_profile($event)" [compareWith]="compareObjects" disableOptionCentering formControlName="gender" panelClass="signupSelectClass">
                         <mat-option  *ngFor="let obj of listOfGenders" [value]="obj">
                             {{ obj }}
@@ -32,8 +32,8 @@
             
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="check_email_and_password()">
+                    <mat-label>E-mail*</mat-label>
+                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm1, 'email');check_email_and_password();">
                     <mat-error *ngIf="registerForm1.controls['email'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -41,9 +41,9 @@
             
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="check_email_and_password()">
-                    <mat-error *ngIf="registerForm1.controls['password'].invalid">Veuillez saisir au moins 8 caractères, dont une majuscule et un chiffre
+                    <mat-label>Mot de passe*</mat-label>
+                    <input matInput formControlName="password" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm1, 'password');check_email_and_password()">
+                    <mat-error *ngIf="registerForm1.controls['password'].invalid">Veuillez saisir au moins 8 caractères, dont une minuscule, une majuscule et un chiffre
                     </mat-error>
 
                     <div class="remove-red-eye" (click)="change_password_type()"
@@ -59,8 +59,8 @@
             
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Confirmation du mot de passe</mat-label>
-                    <input matInput formControlName="confirmPassword" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="check_email_and_password()">
+                    <mat-label>Confirmation du mot de passe*</mat-label>
+                    <input matInput formControlName="confirmPassword" [type]="hide ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm1, 'confirmPassword');check_email_and_password()">
 
                     <div class="remove-red-eye" (click)="change_password_type()"
                     [matTooltip]="hide ? 'Voir le mot de passe' : 'Cacher le mot de passe'"
@@ -95,13 +95,13 @@
         </div>-->
         
         <div class="step-name">
-            <span>Informations de compte 1</span>
+            <span>Mon identité</span>
         </div>
 
         <div class="step-form" [formGroup]="registerForm2">
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
-                    <mat-label>Type de compte</mat-label>
+                    <mat-label>Type de compte*</mat-label>
                     <mat-select *ngIf="registerForm1.value.gender=='Groupe'" [compareWith]="compareObjects" disableOptionCentering formControlName="type_of_account" panelClass="signupSelectClass">
                         <mat-option  *ngFor="let obj of listOfAccounts_group" [value]="obj">
                             {{ obj }}
@@ -133,8 +133,8 @@
 
             <div class="form-item" *ngIf="registerForm2.value.type_of_account && (registerForm2.value.type_of_account.includes('Artiste professionnel') ||registerForm2.value.type_of_account.includes('Maison'))">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Numéro SIREN</mat-label>
-                    <input matInput formControlName="siret" autocomplete="off" maxLength="9" type="search">
+                    <mat-label>Numéro SIREN*</mat-label>
+                    <input matInput formControlName="siret" autocomplete="off" maxLength="9" type="search" (input)="normalize_input(registerForm2, 'siret');">
                     <mat-error *ngIf="registerForm2.controls['siret'].invalid">Veuillez saisir un numéro SIREN valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm2.controls['siret'].value?.length || 0}}/9</div>
@@ -143,9 +143,9 @@
 
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
-                    <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom</mat-label>
-                    <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe</mat-label>
-                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off">
+                    <mat-label *ngIf="registerForm1.value.gender!='Groupe'">Prénom*</mat-label>
+                    <mat-label *ngIf="registerForm1.value.gender=='Groupe'">Nom du groupe*</mat-label>
+                    <input matInput formControlName="firstName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'firstName');">
                     <mat-error *ngIf="registerForm2.controls['firstName'].invalid">Veuillez effectuer une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm2.controls['firstName'].value?.length || 0}}/20</div>
@@ -154,8 +154,8 @@
 
             <div class="form-item" *ngIf="registerForm1.value.gender!='Groupe'">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Nom (optionnel)</mat-label>
-                    <input matInput formControlName="lastName" maxLength="20" type="search" autocomplete="off">
+                    <mat-label>Nom</mat-label>
+                    <input matInput formControlName="lastName" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm2, 'lastName');">
                     <mat-error *ngIf="registerForm2.controls['lastName'].invalid">Veuillez saisir un nom valide ou laisser le champ vide
                     </mat-error>
                     <div class="length-indicator">{{registerForm2.controls['lastName'].value?.length || 0}}/20</div>
@@ -164,7 +164,7 @@
 
             <div class="form-item" *ngIf="registerForm1.value.gender!='Groupe'">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Date de naissance</mat-label>
+                    <mat-label>Date de naissance* (jj/mm/aaaa)</mat-label>
                     <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday">
                     <mat-datepicker-toggle matSuffix [for]="picker">
                         <mat-icon [ngClass]="{'invisible': !show_icon }" matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
@@ -195,15 +195,15 @@
         </div>-->
         
         <div class="step-name">
-            <span>Informations de compte 2</span>
+            <span>Mon profil</span>
         </div>
 
         <div class="step-form" [formGroup]="registerForm3">
 
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Pseudonyme</mat-label>
-                    <input matInput formControlName="nickname" maxLength="20" type="search" autocomplete="off" (input)="check_pseudo()">
+                    <mat-label>Pseudonyme*</mat-label>
+                    <input matInput formControlName="nickname" maxLength="20" type="search" autocomplete="off" (input)="normalize_input(registerForm3, 'nickname');check_pseudo()">
                     <mat-error *ngIf="registerForm3.controls['nickname'].invalid">Veuillez saisir un pseudonyme valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm3.controls['nickname'].value?.length || 0}}/20</div>
@@ -212,8 +212,8 @@
 
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Bio</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off"></textarea>
+                    <mat-label>Bio*</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description');"></textarea>
                     
                     <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Veuillez saisir une bio valide
                     </mat-error>
@@ -223,8 +223,8 @@
 
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Description principale (optionnel)</mat-label>
-                    <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off"></textarea>
+                    <mat-label>Description principale</mat-label>
+                    <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description_extended');"></textarea>
                     
                     <mat-error *ngIf="registerForm3.controls['primary_description_extended'].invalid">Veuillez saisir une description valide, ou laisser ce champ vide
                     </mat-error>
@@ -404,7 +404,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>E-mail</mat-label>
-                    <input matInput formControlName="email" autocomplete="off" type="search">
+                    <input matInput formControlName="email" autocomplete="off" type="search" (input)="normalize_input(registerForm7, 'email');">
                     <mat-error *ngIf="registerForm7.controls['email'].invalid">Veuillez saisir un e-mail valide
                     </mat-error>
                 </mat-form-field>
@@ -413,7 +413,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Mot de passe</mat-label>
-                    <input matInput formControlName="password" [type]="hide2 ? 'password' : 'text'" autocomplete="off">
+                    <input matInput formControlName="password" [type]="hide2 ? 'password' : 'text'" autocomplete="off" (input)="normalize_input(registerForm7, 'password');">
                     <mat-error *ngIf="registerForm7.controls['password'].invalid">Veuillez saisir un mot de passe valide</mat-error>
 
                     <div class="remove-red-eye" (click)="change_password_type2()"
@@ -459,13 +459,13 @@
         <div class="step-form" [formGroup]="registerForm6">
         
             <div class="step-name">
-                <span>Informations complémentaires</span>
+                <span>Informations optionnelles</span>
             </div>
             
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
                     <mat-label>Pays</mat-label>
-                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectClass">
+                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectCountryClass">
                         <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
                             {{ obj }}
                         </mat-option>
@@ -477,7 +477,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
+                    <input matInput formControlName="city" (input)="normalize_input(registerForm6, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
                     <mat-error *ngIf="registerForm6.controls['city'].invalid ">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm6.controls['city'].value?.length || 0}}/30</div>
@@ -493,7 +493,7 @@
                     <div class="left-container">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre du lien</mat-label>
-                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off">
+                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm6, 'link_title');">
                             <mat-error *ngIf="registerForm6.controls['link_title'].invalid">Veuillez faire une saisie valide
                             </mat-error>
                             <div class="length-indicator">{{registerForm6.controls['link_title'].value?.length || 0}}/15</div>
@@ -502,14 +502,14 @@
                     <div class="right-container">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Lien</mat-label>
-                            <input matInput formControlName="link" maxLength="60" autocomplete="off">
+                            <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm6, 'link');">
                             <mat-error *ngIf="registerForm6.controls['link'].invalid">Saisie invalide. Votre lien doit commencer par 'http://'
                             </mat-error>
                             <div class="length-indicator">{{registerForm6.controls['link'].value?.length || 0}}/60</div>
                         </mat-form-field>
                     </div>
                     <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                     </button>
                 </div>
             </div>
@@ -589,7 +589,7 @@
         </div>-->
 
         <div class="step-name">
-            <span>Informations complémentaires</span>
+            <span>Informations optionnelles</span>
         </div>
             
         <!-- A TERMINER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
@@ -598,7 +598,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Profession</mat-label>
-                    <input matInput formControlName="job" autocomplete="off" maxLength="100" type="search">
+                    <input matInput formControlName="job" autocomplete="off" maxLength="100" type="search" (input)="normalize_input(registerForm4, 'job');">
                     <mat-error *ngIf="registerForm4.controls['job'].invalid ">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['job'].value?.length || 0}}/100</div>
@@ -608,7 +608,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Formation ou compétences</mat-label>
-                    <input matInput formControlName="training" autocomplete="off" maxLength="100" type="search">
+                    <input matInput formControlName="training" autocomplete="off" maxLength="100" type="search" (input)="normalize_input(registerForm4, 'training');">
                     <mat-error *ngIf="registerForm4.controls['training'].invalid ">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['training'].value?.length || 0}}/100</div>
@@ -618,7 +618,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never' class="select-class">
                     <mat-label>Pays</mat-label>
-                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectClass">
+                    <mat-select [(value)]="selected_country" placeholder="Mode" (selectionChange)="adding_country()"  disableOptionCentering formControlName="country" panelClass="signupSelectCountryClass">
                         <mat-option  *ngFor="let obj of list_of_countries" [value]="obj">
                             {{ obj }}
                         </mat-option>
@@ -630,7 +630,7 @@
             <div class="form-item">
                 <mat-form-field floatLabel='never'>
                     <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city" (input)="adding_city();" autocomplete="off" maxLength="30" type="search">
+                    <input matInput formControlName="city" (input)="normalize_input(registerForm4, 'city');adding_city();" autocomplete="off" maxLength="30" type="search">
                     <mat-error *ngIf="registerForm4.controls['city'].invalid ">Veuillez faire une saisie valide
                     </mat-error>
                     <div class="length-indicator">{{registerForm4.controls['city'].value?.length || 0}}/30</div>
@@ -646,7 +646,7 @@
                     <div class="left-container">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Titre du lien</mat-label>
-                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off">
+                            <input matInput formControlName="link_title" maxLength="15" autocomplete="off" (input)="normalize_input(registerForm4, 'link_title');">
                             <mat-error *ngIf="registerForm4.controls['link_title'].invalid">Veuillez faire une saisie valide
                             </mat-error>
                             <div class="length-indicator">{{registerForm4.controls['link_title'].value?.length || 0}}/15</div>
@@ -655,14 +655,14 @@
                     <div class="right-container">
                         <mat-form-field floatLabel='never'>
                             <mat-label>Lien</mat-label>
-                            <input matInput formControlName="link" maxLength="60" autocomplete="off">
+                            <input matInput formControlName="link" maxLength="60" autocomplete="off" (input)="normalize_input(registerForm4, 'link');">
                             <mat-error *ngIf="registerForm4.controls['link'].invalid">Saisie invalide. Votre lien doit commencer par 'http://'
                             </mat-error>
                             <div class="length-indicator">{{registerForm4.controls['link'].value?.length || 0}}/60</div>
                         </mat-form-field>
                     </div>
                     <button class="aboutLinkButton" (click)="add_link();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">done</mat-icon>
                     </button>
                 </div>
             </div>
@@ -732,6 +732,22 @@
 
     </ng-container>
         
+
+
+
+    <div *ngIf="show_sent_mail" [@enterAnimation]>
+        <div class="sent-mail-icon">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
+        </div>
+        <div class="sent-mail-text">
+            <span>Un lien permettant de vérifier votre adresse mail vous a été envoyé à l'adresse suivante :</span>
+            <span>{{registerForm1.value.email.toLowerCase()}}</span>
+        </div>
+
+        <button class="finish-button" (click)="finish();">
+            <span>Continuer</span>
+        </button>
+    </div>
 
 </div>
 

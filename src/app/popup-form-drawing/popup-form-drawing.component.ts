@@ -20,6 +20,7 @@ import { NavbarService } from '../services/navbar.service';
 import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
+import { normalize_to_nfc } from '../helpers/patterns';
 
 @Component({
   selector: 'app-popup-form-drawing',
@@ -223,6 +224,13 @@ export class PopupFormDrawingComponent implements OnInit {
   _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.allGenres.filter(genre => genre.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  normalize_input(fg: FormGroup, fc: string) {
+    if(!fg || !fc) {
+      return;
+    }
+    normalize_to_nfc(fg,fc);
   }
 
 }
