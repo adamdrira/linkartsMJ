@@ -228,7 +228,7 @@ exports.create = (req, res) => {
 							status:"account",
 						},
 						order: [
-							['createdAt', 'ASC']
+							['id', 'ASC']
 						],
 						limit:1}
 				   	).then(first_user=>{
@@ -346,7 +346,101 @@ exports.reset_password = (req, res) => {
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user_found=>{
 		if(user_found){
-			User_passwords.findAll({
+			let password_registration=generate_random_id(user_found.id);
+			console.log(user_found.email)
+			console.log(password_registration)
+			var pass= Math.random().toString(36).slice(-8) + "@8=(AM" + Math.random().toString(36).slice(-8) + "@$=)G";
+			var password;
+			bcrypt.hash(pass,10,function(err,hash){
+				password = hash;
+				const iv = crypto.randomBytes(16);
+				const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+				const encrypted = Buffer.concat([cipher.update(pass), cipher.final()]);
+				const password_hash = {
+					iv: iv.toString('hex'),
+					content: encrypted.toString('hex')
+				}
+				console.log("encrypted pass");
+				console.log(password_hash)
+				user_found.update({
+					"password":password,
+					"password_registration":password_registration,
+					"temp_pass":pass,
+				})
+				User_passwords.create({
+					"id_user":user_found.id,
+					"iv":password_hash.iv,
+					"content":password_hash.content,
+					
+				})
+
+				let mail_to_send='';
+				let name = user_found.firstname + ' ' + user_found.lastname;
+				if(user_found.gender=="Homme"){
+				mail_to_send=`<p>Cher ${name},</p>`
+				}
+				else if(user_found.gender=="Femme"){
+				mail_to_send=`<p>Chere ${name},</p>`
+				}
+				else if(user_found.gender=="Groupe"){
+				mail_to_send=`<p>Chers membres du groupe ${name},</p>`
+				}
+
+				mail_to_send+=`<p>Votre nouveau mot de passe est le suivant : ${pass}.</p>`
+
+				mail_to_send+=`<p><a href="http://localhost:4200/account/${user_found.nickname}/${user_found.id}/my_account/${password_registration}">Cliquer ici</a> pour le modifier.</p>`
+				
+				mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
+
+
+				const transport = nodemailer.createTransport({
+					host: "pro2.mail.ovh.net",
+					port: 587,
+					secure: false, // true for 465, false for other ports
+					auth: {
+						user: "services@linkarts.fr", // compte expéditeur
+						pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+					},
+						tls:{
+							ciphers:'SSLv3'
+					}
+					});
+			
+				var mailOptions = {
+					from: 'Linkarts <services@linkarts.fr>', // sender address
+					//to: user_found.email, // my mail
+					to:"appaloosa-adam@hotmail.fr",
+					//cc:"adam.drira@etu.emse.fr",
+					subject: `Récupération du mot de passe`, // Subject line
+					html:mail_to_send , // html body
+					// attachments: params.attachments
+				};
+				transport.sendMail(mailOptions, (error, info) => {
+					if (error) {
+						console.log('Error while sending mail: ' + error);
+						res.status(200).send([{error:error}])
+					} else {
+						console.log('Message sent: %s', info.messageId);
+						res.status(200).send([{sent:'Message sent ' + info.messageId}])
+					}
+					
+		
+				})
+
+				
+			})
+			function generate_random_id(id){
+				const iv = crypto.randomBytes(16);
+				const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+				const encrypted = Buffer.concat([cipher.update(id.toString()), cipher.final()]);
+				let string_1=encrypted.toString('hex');
+				let string_2=iv.toString('hex');
+				
+				let string_3=Math.random().toString(36).slice(-8) 
+				return string_1 + string_2 + string_3;
+				
+			}
+			/*User_passwords.findAll({
 				where: {
 					id_user: user_found.id,
 				},
@@ -418,84 +512,9 @@ exports.reset_password = (req, res) => {
 					})
 				}
 				else{
-					//res.status(200).send([{error:"user not found"}])
-					
-					var pass= Math.random().toString(36).slice(-8) + "@8=(AM" + Math.random().toString(36).slice(-8) + "@$=)G";
-					var password;
-					bcrypt.hash(pass,10,function(err,hash){
-						password = hash;
-						const iv = crypto.randomBytes(16);
-						const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-						const encrypted = Buffer.concat([cipher.update(pass), cipher.final()]);
-						const password_hash = {
-							iv: iv.toString('hex'),
-							content: encrypted.toString('hex')
-						}
-						console.log("encrypted pass");
-						console.log(password_hash)
-						user_found.update({
-							password:password,
-						})
-						User_passwords.create({
-							"id_user":user_found.id,
-							"iv":password_hash.iv,
-							"content":password_hash.content,
-						})
-
-						let mail_to_send='';
-						let name = user_found.firstname + ' ' + user_found.lastname;
-						if(user_found.gender=="Homme"){
-						mail_to_send=`<p>Cher ${name},</p>`
-						}
-						else if(user_found.gender=="Femme"){
-						mail_to_send=`<p>Chere ${name},</p>`
-						}
-						else if(user_found.gender=="Groupe"){
-						mail_to_send=`<p>Chers membres du groupe ${name},</p>`
-						}
-
-						mail_to_send+=`<p>Votre mot de passe est :${pass}. </p>`
-
-						mail_to_send+=`<p><a href="https://linkarts.fr/account/${user_found.nickname}/${user_found.id}/my_account">Cliquer ici</a> pour le modifier.</p>`
-						
-						mail_to_send+=`<p>Très sincèrement, l'équipe de LinkArts.</p>`
-
-
-						const transport = nodemailer.createTransport({
-							host: "pro2.mail.ovh.net",
-							port: 587,
-							secure: false, // true for 465, false for other ports
-							auth: {
-							  user: "services@linkarts.fr", // compte expéditeur
-							  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
-							},
-								tls:{
-								  ciphers:'SSLv3'
-							}
-						  });
-					
-						var mailOptions = {
-							from: 'Linkarts <services@linkarts.fr>', // sender address
-							to: user_found.email, // my mail
-							//cc:"adam.drira@etu.emse.fr",
-							subject: `Récupération du mot de passe`, // Subject line
-							html:mail_to_send , // html body
-							// attachments: params.attachments
-						};
-						transport.sendMail(mailOptions, (error, info) => {
-							if (error) {
-								console.log('Error while sending mail: ' + error);
-								res.status(200).send([{error:error}])
-							} else {
-								console.log('Message sent: %s', info.messageId);
-								res.status(200).send([{sent:'Message sent ' + info.messageId}])
-							}
-							
-				
-						})
-					})
+					res.status(200).send([{error:"user not found"}])
 				}
-			})
+			})*/
 		}
 		else{
 			res.status(200).send([{error:"user_not_found"}])

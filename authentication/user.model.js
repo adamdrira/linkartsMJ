@@ -41,6 +41,7 @@ module.exports = (sequelize, Sequelize) => {
 		subscribings:Sequelize.ARRAY(Sequelize.INTEGER),
 		status:{type: Sequelize.STRING},
 		password_registration:{type: Sequelize.STRING},
+		temp_pass:{type: Sequelize.STRING},
 		reason:{type: Sequelize.STRING},
 	},
 	{
