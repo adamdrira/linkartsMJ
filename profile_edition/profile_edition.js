@@ -9,7 +9,7 @@ const imageminPngquant = require("imagemin-pngquant");
 var nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const algorithm = 'aes-256-ctr';
-const secretKey = 'vOVH6sdmpNWjRRIqCc78dJBL1awHzfr3';
+const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
 
 module.exports = (router, 
   users,
@@ -19,6 +19,7 @@ module.exports = (router,
   users_groups_managment,
   users_mailing,
   users_strikes,
+  users_passwords,
   users_cookies,
   users_remuneration,
   List_of_views,
@@ -2324,6 +2325,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
     console.log("check_password_for_registration")
     let id = req.body.id;
     let password= req.body.password;
+    let pass='';
     console.log(id);
     console.log(password);
     users.findOne({
@@ -2339,7 +2341,35 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
             "email_checked":true,
             "password_registration":null,
           })
-          res.status(200).send([{user_found:user}])
+          users_passwords.findAll({
+            where: {
+              id_user: user.id,
+            },
+            limit:1,
+            order: [
+              ['createdAt', 'DESC']
+            ],
+          }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(user_found=>{
+            if(user_found.length>0){
+              const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(user_found[0].iv, 'hex'));
+              const decrypted = Buffer.concat([decipher.update(Buffer.from(user_found[0].content, 'hex')), decipher.final()]);
+              console.log(user.email)
+              console.log("check_password_for_registration 2")
+              console.log(user_found[0])
+              console.log(decrypted.toString())
+              console.log(user_found[0].iv)
+              console.log(user_found[0].content)
+              pass=decrypted.toString();
+              res.status(200).send([{user_found:user,pass:pass}])
+            }
+            else{
+              res.status(200).send([{error:"error"}])
+            }
+          })
+         
         }
         else{
           res.status(200).send([{error:"error"}])
@@ -2351,6 +2381,43 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
     })
   })
+
+
+  router.post('/check_password_for_registration2', function (req, res) {
+    console.log("check_password_for_registration2")
+    let id = req.body.id;
+    let password= req.body.password;
+    let pass='';
+    console.log(id);
+    console.log(password);
+    users.findOne({
+      where:{
+        id:id
+      }
+    }).then(user=>{
+      if(user){
+        if(user.password_registration==password){
+          console.log("match")
+          console.log(user.password_registration)
+          pass=user.temp_pass;
+          user.update({
+            "password_registration":null,
+            "temp_pass":null,
+          })
+          res.status(200).send([{user_found:user,pass:pass}])
+        }
+        else{
+          res.status(200).send([{error:"error"}])
+        }
+      }
+      else{
+        res.status(200).send([{error:"error"}])
+      }
+
+    })
+  })
+
+
 
   router.post('/send_email_for_account_creation', function (req, res) {
     console.log("send_email_for_account_creation")
@@ -2390,7 +2457,7 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
           }
 
           mail_to_send+= `<p>Nous vous souhaitons la bienvenue sur LinkArts.</p>
-            <p><a href="https://linkarts.fr/registration/${user.id}/${password}"> Cliquer ici</a> pour confirmer votre inscription et pouvoir vous connecter.</p>
+            <p><a href="https://www.linkarts.fr/registration/${user.id}/${password}"> Cliquer ici</a> pour confirmer votre inscription et pouvoir vous connecter.</p>
             <p>LinkArts est un site dédié à la collaboration éditoriale et à la mise en avant des artistes du monde de l'édition. `
 
           if(user.type_of_account.includes("Artiste")){
@@ -2450,8 +2517,8 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
         
           var mailOptions = {
             from: 'Linkarts <services@linkarts.fr>', // sender address
-            to: user.email, // my mail
-            //to:"appaloosa-adam@hotmail.fr",
+            //to: user.email, // my mail
+            to:"appaloosa-adam@hotmail.fr",
             subject: `Bienvenue sur LinkArts !`, // Subject line
             //text: 'plain text', // plain text body
             html:  mail_to_send,
