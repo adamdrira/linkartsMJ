@@ -1,3 +1,4 @@
+import { FormControl, FormGroup } from "@angular/forms";
 
 
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
@@ -57,5 +58,10 @@ export function pattern(type: string) {
 }
 
 
+export function normalize_to_nfc(fg:FormGroup, fc:string ) {
 
-
+    if(!fg || !fc) {
+        return;
+    }
+    fg.controls[fc].setValue( fg.controls[fc].value.normalize("NFC") );
+}
