@@ -986,10 +986,10 @@ $default-color: #f9f9f9;
             }
         }
 
-        .ad-container {
+        .adad-container {
             width: 100%;
             height: 321px;
-            .ad {
+            .adad {
                 position: relative;
                 width: 100%;
                 max-width: 340px;
@@ -999,7 +999,7 @@ $default-color: #f9f9f9;
                 background-size: cover;
                 background-image: url("/assets/img/svg/donation.svg");
             }
-            .ad-link2 {
+            .adad-link2 {
                 cursor: pointer;
                 font-weight: 600;
                 margin: auto;
@@ -1019,7 +1019,7 @@ $default-color: #f9f9f9;
                     font-size: 13px;
                 }
             }
-            .ad-link {
+            .adad-link {
                 cursor: pointer;
                 font-weight: 600;
                 margin: auto;
@@ -1041,7 +1041,7 @@ $default-color: #f9f9f9;
                         text-shadow: -0.01ex 0 $default-color, 0.01ex 0 $default-color;
                     }
                 }
-                .ad-icon {
+                .adad-icon {
                     width: 16px;
                     height: 16px;
                     background-image: url("/assets/img/svg/ad-arrow.svg");
