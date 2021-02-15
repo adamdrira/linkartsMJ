@@ -5,12 +5,10 @@ import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscribing_service } from '../services/subscribing.service';
-import { WebSocketService } from '../services/websocket.service';
 import { NavbarService } from '../services/navbar.service';
 import {PopupConfirmationComponent} from '../popup-confirmation/popup-confirmation.component'
 import { MatDialog } from '@angular/material/dialog';
-import { FileUploader, FileItem, FileUploaderOptions } from 'ng2-file-upload';
-import { Location } from '@angular/common';
+import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { PopupFormComponent } from '../popup-form/popup-form.component';
 import { PopupChatGroupMembersComponent } from '../popup-chat-group-members/popup-chat-group-members.component';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -81,8 +79,6 @@ var url = 'https://www.linkarts.fr/routes/upload_attachments_for_chat/';
 export class ChatComponent implements OnInit  {
 
   constructor (
-    private elRef: ElementRef,
-    private location:Location,
     private chatService:ChatService,
     private Subscribing_service:Subscribing_service,
     private sanitizer:DomSanitizer,
@@ -91,7 +87,6 @@ export class ChatComponent implements OnInit  {
     public dialog: MatDialog,
     private renderer: Renderer2,
     private navbar :NavbarService,
-    private WebSocketService:WebSocketService,
     private Profile_Edition_Service:Profile_Edition_Service
     ){
       navbar.visibility_observer_font.subscribe(font=>{
@@ -136,7 +131,6 @@ export class ChatComponent implements OnInit  {
   //click lisner for emojis, and research chat
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
-
     if(this.show_emojis){
       console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
@@ -145,10 +139,7 @@ export class ChatComponent implements OnInit  {
         this.show_emojis=false;
       }
     }
-
-
-
- }
+  }
 
 
  // temporary_id_message
@@ -319,8 +310,7 @@ export class ChatComponent implements OnInit  {
       return
     }
     if((this.friend_type!=this.current_friend_type)|| (this.friend_id!=this.current_friend_id)){
-      console.log("changement de friend");
-      
+      console.log("changement de frieeeeeeeeeeeeeeeeeeend");
       if(this.show_research_results){
         this.first_turn_loaded=false;
         this.show_research_results=false;
@@ -334,13 +324,20 @@ export class ChatComponent implements OnInit  {
       else{
           this.change_group();
       }
+      window.dispatchEvent(new Event('resize'));
       return;
     }
     if(changes.spam){
-      console.log("changement de spam value")
+      console.log("changement de spam valuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuue")
       if(this.spam=='false'){
         console.log("value false")
-        this.change_user();
+        if(this.friend_type=='user'){
+          this.change_user();
+        }
+        else{
+            this.change_group();
+        }
+        
       }
     }
     
@@ -3997,21 +3994,24 @@ unblock_user(){
 
 
 remove_contact(){
-  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-    data: {showChoice:true, text:'Etes-vous sûr de vouloir retirer cet utilisateur de votre liste de contacts ? '},
-    panelClass: "popupConfirmationClass",
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if(result){
-      this.chatService.remove_friend(this.friend_id).subscribe(r=>{
-        console.log(r[0])
-        //this.location.go('/chat');
-        //location.reload()
-        this.router.navigateByUrl('/chat');
-      })
-    }
-  })
+  if(!(this.friend_id<=3 && this.friend_type=="user")){
+    const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+      data: {showChoice:true, text:'Etes-vous sûr de vouloir retirer cet utilisateur de votre liste de contacts ? '},
+      panelClass: "popupConfirmationClass",
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.chatService.remove_friend(this.friend_id).subscribe(r=>{
+          console.log(r[0])
+          //this.location.go('/chat');
+          //location.reload()
+          this.router.navigateByUrl('/chat');
+        })
+      }
+    })
+  }
+  
 }
   /********************************************* SHOW IMAGES *****************************************/
   /********************************************* SHOW IMAGES *****************************************/

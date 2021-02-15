@@ -68,7 +68,7 @@
                     </button>
 
                     <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                        <button class="chat-menu-item" *ngIf="spam!='true'" mat-menu-item  (click)="remove_contact()">
+                        <button  class="chat-menu-item" *ngIf="spam!='true' && !(3>=friend_id && friend_type=='user')" mat-menu-item  (click)="remove_contact()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retirer de mes contacts</span>
                         </button>
@@ -76,7 +76,7 @@
                             <mat-icon [ngClass]="{'invisible': !show_icon }">person_off</mat-icon>
                             <span>Retier de mes invitations</span>
                         </button>
-                        <button *ngIf="!block_chat" class="chat-menu-item" mat-menu-item (click)="block_user()">
+                        <button *ngIf="!block_chat && !(3>=friend_id && friend_type=='user')" class="chat-menu-item" mat-menu-item (click)="block_user()">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">block</mat-icon>
                             <span>Bloquer l'utilisateur</span>
                         </button>

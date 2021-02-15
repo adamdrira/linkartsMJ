@@ -153,10 +153,6 @@
                 
                 <img [src]="profile_picture" (load)="pp_loaded()" [ngClass]="{'invisible': !pp_is_loaded }">
                 <ng-container *ngIf="!mode_visiteur && mode_visiteur_added && story_retrieved">
-                    <!--<button  class="change-profile-picture" (click)="change_profile_picture();">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">camera_alt</mat-icon>
-                        <span>Changer de photo de profil</span>
-                    </button>-->
                     <div *ngIf="story_found" class="change-profile-picture" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir ma story</span>
@@ -166,7 +162,7 @@
                         <span>Ajouter une story</span>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found">
+                <ng-container *ngIf="mode_visiteur && mode_visiteur_added && story_retrieved && story_found  && type_of_profile=='account'">
                     <div  class="change-story-picture  watch-story" (click)="watch_story();">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">play_circle_outline</mat-icon>
                         <span>Voir la story</span>

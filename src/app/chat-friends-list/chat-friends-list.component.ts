@@ -1,20 +1,17 @@
 
-import { Component, OnInit, Input, Renderer2, ElementRef, ComponentFactoryResolver, ChangeDetectorRef, ViewContainerRef, ViewChild, HostListener, SimpleChanges, ViewChildren, QueryList, Query } from '@angular/core';
-import { FormControl, Validators, FormGroup, FormsModule,ReactiveFormsModule, FormBuilder, ɵangular_packages_forms_forms_g } from '@angular/forms';
+import { Component, OnInit,  ElementRef,  ChangeDetectorRef, ViewChild, HostListener} from '@angular/core';
+import { FormControl, Validators, FormGroup,  } from '@angular/forms';
 import { NavbarService } from '../services/navbar.service';
 import { ChatService} from '../services/chat.service';
 import { Profile_Edition_Service} from '../services/profile_edition.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
-import { AuthenticationService } from '../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import {get_date_to_show_chat} from '../helpers/dates';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { pattern } from '../helpers/patterns';
-
-declare var $: any;
 
 
 @Component({
@@ -78,7 +75,6 @@ export class ChatFriendsListComponent implements OnInit {
   constructor (
     private location: Location,
     private chatService:ChatService,
-    private FormBuilder:FormBuilder,
     private sanitizer:DomSanitizer,
     public dialog: MatDialog,
     public navbar: NavbarService, 
@@ -87,7 +83,6 @@ export class ChatFriendsListComponent implements OnInit {
     public route: ActivatedRoute, 
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private AuthenticationService:AuthenticationService,
     ){
 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -1017,7 +1012,6 @@ export class ChatFriendsListComponent implements OnInit {
 
       this.set_category(0,false);
       this.createFormAd();
-      //console.log("radio changed")
       this.spam='false';
 
     }
@@ -1208,6 +1202,7 @@ change_message_status(event){
         this.list_of_friends_profile_pictures.splice(0,0,this.list_of_friends_profile_pictures.splice(index,1)[0]);
         this.friend_pp_loaded.splice(0,0,this.friend_pp_loaded.splice(index,1)[0]);
         this.list_of_friends_pseudos.splice(0,0,this.list_of_friends_pseudos.splice(index,1)[0]);
+        this.list_of_friends_connected.splice(0,0,this.list_of_friends_connected.splice(index,1)[0]);
         this.list_of_friends_certifications.splice(0,0,this.list_of_friends_certifications.splice(index,1)[0]);
         //console.log(this.list_of_friends_last_message)
         this.cd.detectChanges();
@@ -1233,6 +1228,7 @@ change_message_status(event){
                 this.list_of_friends_last_message[0].status="received";
                 this.list_of_friends_names.splice(0,0,this.current_user_name);
                 this.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
+                this.list_of_friends_connected.splice(0,0,false);
                 this.list_of_friends_profile_pictures.splice(0,0,this.profile_picture);
                 this.friend_pp_loaded.splice(0,0,false);
                 this.list_of_friends_pseudos.splice(0,0,this.current_user_pseudo);
@@ -1272,6 +1268,7 @@ change_message_status(event){
                     THIS.list_of_friends_users_only.splice(0,0,event.friend_id);
                     THIS.list_of_friends_ids.splice(0,0,event.friend_id);
                     THIS.list_of_friends_last_message.splice(0,0,event.message);
+                    THIS.list_of_friends_connected.splice(0,0,false);
                     THIS.list_of_friends_last_message[0].status="received";
                     THIS.list_of_friends_names.splice(0,0,name);
                     THIS.list_of_chat_friends_ids.splice(0,0,event.message.chat_id);
@@ -2205,7 +2202,7 @@ change_message_status(event){
     this.waiting_friend_picture=this.friend_picture;
     this.waiting_friend_pseudo=this.friend_pseudo;
     this.waiting_id_chat_section=this.id_chat_section;*/
-    //console.log("we open chat spam")
+    console.log("we open chat spaaaaaaaaaaam")
     this.spam='true';
     //console.log(this.list_of_friends_last_message[i]);
     if(this.list_of_friends_last_message[i]){
@@ -2222,6 +2219,7 @@ change_message_status(event){
 
     
     this.chat_right_container_is_opened = true;
+   
   }
 
   display_opened=true;
@@ -2511,21 +2509,68 @@ change_message_status(event){
         
       }
       else {
-          this.id_chat_section =this.waiting_id_chat_section;
-          //console.log(this.id_chat_section);
-          this.friend_type=this.waiting_friend_type;
-          this.friend_id=this.waiting_friend_id;
-          this.chat_friend_id=this.waiting_chat_friend_id;
-          this.waiting_chat_friend_id=this.chat_friend_id;
-          this.friend_name=this.waiting_friend_name;
-          this.friend_picture=this.waiting_friend_picture;
-          this.friend_pseudo=this.waiting_friend_pseudo;
-          this.friend_certification=this.waiting_friend_certification;
+          console.log("on viennnnnt")
+          console.log(this.friend_type)
+          console.log(this.friend_id)
+          console.log(this.friend_pseudo)
+          if(this.friend_id==this.waiting_friend_id && this.friend_type==this.waiting_friend_type){
+            console.log("same")
+            this.id_chat_section =1;
+            this.friend_type=this.list_of_friends_types[0];
+            this.friend_id=this.list_of_friends_ids[0];
+            this.chat_friend_id=this.list_of_chat_friends_ids[0];
+            this.friend_name=this.list_of_friends_names[0];
+            this.friend_picture=this.list_of_friends_profile_pictures[0];
+            this.friend_pseudo=this.list_of_friends_pseudos[0];
+            this.friend_certification=this.list_of_friends_certifications[0];
+
+            this.waiting_friend_type=this.friend_type;
+            this.waiting_friend_id=this.friend_id;
+            this.waiting_friend_name=this.friend_name;
+            this.waiting_friend_picture=this.friend_picture;
+            this.waiting_friend_pseudo=this.friend_pseudo;
+            this.waiting_friend_certification=this.friend_certification;
+            this.waiting_id_chat_section=this.id_chat_section;
+            this.waiting_chat_friend_id=this.chat_friend_id;
+            if(this.friend_type=='group'){
+              this.location.go(`/chat/group/${this.friend_pseudo}/${this.friend_id}`);
+            }
+            else{
+              this.location.go(`/chat/${this.friend_pseudo}/${this.friend_id}`);
+            }
+
+          }
+          else{
+            console.log("not same")
+            this.id_chat_section =this.waiting_id_chat_section;
+            this.friend_type=this.waiting_friend_type;
+            this.friend_id=this.waiting_friend_id;
+            this.chat_friend_id=this.waiting_chat_friend_id;
+            this.friend_name=this.waiting_friend_name;
+            this.friend_picture=this.waiting_friend_picture;
+            this.friend_pseudo=this.waiting_friend_pseudo;
+            this.friend_certification=this.waiting_friend_certification;
+          }
+
+
+          
           this.get_friends=true;
           this.get_spams=false;
           this.spam='false';
           this.cd.detectChanges();
           this.delete_placeholder();
+          
+
+          console.log(this.waiting_id_chat_section)
+          console.log(this.waiting_friend_type)
+          console.log(this.waiting_friend_id)
+          console.log(this.waiting_chat_friend_id)
+          console.log(this.waiting_friend_name)
+          console.log(this.waiting_friend_picture)
+          console.log(this.waiting_friend_pseudo)
+          console.log(this.waiting_friend_certification)
+
+          
       }
       
       
@@ -2959,6 +3004,8 @@ get_connections_status(){
         this.opened_category = i;
       }
     }
+    console.log("resize 4")
+    //window.dispatchEvent(new Event('resize'));
   }
 
   list_scrolled:boolean = false;

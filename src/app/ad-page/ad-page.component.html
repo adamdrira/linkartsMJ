@@ -66,7 +66,7 @@
                     </span>
                     <button *ngIf="visitor_mode_added && visitor_mode" (click)="respond();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">post_add</mat-icon>
-                        <span>Répondre à l'offre</span>
+                        <span>Répondre à l'annonce</span>
                     </button>
                     <button *ngIf="visitor_mode_added && !visitor_mode && see_responses==0" (click)="responses();" [@enterAnimation]>
                         <mat-icon [ngClass]="{'invisible': !show_icon }">keyboard_arrow_down</mat-icon>
@@ -514,7 +514,7 @@
             </div>
             
     
-            <div class="ad-container">
+            <div class="adad-container">
                 <div class="dark-shiny loading-pic">
                 </div>
             </div>
@@ -645,12 +645,15 @@
             </div>
             
     
-            <div class="ad-container">
-                <div class="ad">
+            <div class="adad-container">
+                <div class="adad-link2">
+                    <span>Votre site a besoin de vous !</span>
                 </div>
-                <div class="ad-link">
+                <div class="adad">
+                </div>
+                <div class="adad-link">
                     <span>Soutenez le site en faisant un don </span>
-                    <div class="ad-icon">
+                    <div class="adad-icon">
                     </div>
                 </div>
             </div>
