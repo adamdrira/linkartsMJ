@@ -1326,7 +1326,7 @@ router.post('/send_email_for_ad_answer', function (req, res) {
           mail_to_send=`<p>Cher ${name},</p>`
         }
         else if(user.gender=="Femme"){
-          mail_to_send=`<p>Chere ${name},</p>`
+          mail_to_send=`<p>Chère ${name},</p>`
         }
         else if(user.gender=="Groupe"){
           mail_to_send=`<p>Chers membres du groupe ${name},</p>`
