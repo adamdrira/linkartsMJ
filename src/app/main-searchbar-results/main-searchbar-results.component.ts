@@ -151,7 +151,7 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.category=this.route.snapshot.paramMap.get('category');
       //alert("debut 2")
       if(this.list_of_real_categories.indexOf(this.category)<0 && this.category!='All'){
-        alert("pb 1")
+        //alert("pb 1")
         this.location.go('/');
         location.reload();
         return;
@@ -186,15 +186,13 @@ export class MainSearchbarResultsComponent implements OnInit {
       console.log(this.second_filter)
       console.log(  this.category_to_show)
       if(this.indice_title_selected<0){
-        alert("pb 1");
         this.location.go('/');
         location.reload();
         return;
       }
       let index1=this.first_filters[this.indice_title_selected].indexOf(this.first_filter)
-      console.log()
+      console.log(index1)
       if(index1<0){
-        alert("pb 2");
         this.location.go('/');
         location.reload();
         return;
@@ -916,6 +914,7 @@ export class MainSearchbarResultsComponent implements OnInit {
     if(this.second_filter_selected==i){
       this.second_filter_selected=-1;
       this.second_filter="all";
+     
       this.location.go(`/main-research-style-and-tag/1/${this.category}/${this.first_filter}/all`);
     }
     else{
@@ -1133,7 +1132,16 @@ export class MainSearchbarResultsComponent implements OnInit {
       this.get_number_of_pages_sg1();
     }
   }
-  this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+  console.log("ici on change paaaaaaaaaaage")
+  console.log(this.opened_section)
+  if(this.opened_section==2 ){
+    this.location.go(`/main-research-style-and-tag/${this.current_page}/${this.category}/${this.first_filter}/${this.second_filter}`);
+  }
+  else{
+    this.location.go(`/main-research/${this.current_page}/${this.research_string}/${this.category}/${this.first_filter}/${this.second_filter}`);
+   
+  }
+ 
  }
 
 
