@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef,ElementRef, Output, EventEmitter, ViewChild, HostListener, Input, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef,ElementRef, Output, EventEmitter, ViewChild, HostListener, Input, Inject, Renderer2 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -22,12 +22,23 @@ import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 @Component({
   selector: 'app-add-comic',
   templateUrl: './add-comic.component.html',
-  styleUrls: ['./add-comic.component.scss']
+  styleUrls: ['./add-comic.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('400ms', style({opacity: 1}))
+        ])
+      ],
+    )
+  ],
 })
 
 export class AddComicComponent implements OnInit {
@@ -37,8 +48,10 @@ export class AddComicComponent implements OnInit {
     this.cancel_all();
   }
 
+
   constructor(
     private cd: ChangeDetectorRef,
+    private renderer: Renderer2,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Profile_Edition_Service:Profile_Edition_Service,
     private bdOneShotService: BdOneShotService,
@@ -193,7 +206,7 @@ export class AddComicComponent implements OnInit {
   
   createFormControls00() {
     this.f00Title = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.f00Description = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.f00Category = new FormControl('', Validators.required);
     this.f00Tags = new FormControl( this.genres, [Validators.required]);
     this.f00Format = new FormControl('', [Validators.required]);
@@ -235,6 +248,10 @@ export class AddComicComponent implements OnInit {
     }
     else {
       this.AddValidator();
+    }
+
+    if( ! (this.f00.value.f00Description.replace(/\s/g, '').length>0) ) {
+      this.f00.controls['f00Description'].setValue("");
     }
 
 
@@ -469,5 +486,44 @@ export class AddComicComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
 
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.f00.controls['f00Description'].value;
+    if(data){
+      this.f00.controls['f00Description'].setValue( this.f00.controls['f00Description'].value + $event.emoji.native );
+    }
+    else{
+      this.f00.controls['f00Description'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
+  }
 
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectorRef, Output, EventEmitter, HostListener, ViewChild, Input, Inject, Renderer2 } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import {Writing_Upload_Service} from  '../services/writing.service';
 import { Router } from '@angular/router';
 import { Subscribing_service } from '../services/subscribing.service';
@@ -22,12 +22,23 @@ import { NavbarService } from '../services/navbar.service';
 import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-add-writing',
   templateUrl: './add-writing.component.html',
-  styleUrls: ['./add-writing.component.scss']
+  styleUrls: ['./add-writing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class AddWritingComponent implements OnInit {
 
@@ -39,6 +50,7 @@ export class AddWritingComponent implements OnInit {
 
 
   constructor(
+    private renderer: Renderer2,
     private Subscribing_service:Subscribing_service,
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
@@ -155,7 +167,7 @@ export class AddWritingComponent implements OnInit {
   
   createFormControlsWritings() {
     this.fwTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fwDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fwCategory = new FormControl('', [Validators.required]);
     this.fwTags = new FormControl( this.genres , [Validators.required]);
     //this.fwFormat = new FormControl('', Validators.required);
@@ -171,7 +183,7 @@ export class AddWritingComponent implements OnInit {
     });
   }
 
-
+  
 
   step_back() {
 
@@ -185,6 +197,12 @@ export class AddWritingComponent implements OnInit {
     this.nextButton.nativeElement.disabled = true;
     console.log( this.fw)
     console.log(this.Writing_CoverService.get_confirmation())
+
+    
+    if( ! (this.fw.value.fwDescription.replace(/\s/g, '').length>0) ) {
+      this.fw.controls['fwDescription'].setValue("");
+    }
+
     if ( this.fw.valid  && /*this.Writing_Upload_Service.get_confirmation() &&*/ this.Writing_CoverService.get_confirmation() ) {
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.stepChanged.emit(1);
@@ -423,5 +441,44 @@ export class AddWritingComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
  
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.fw.controls['fwDescription'].value;
+    if(data){
+      this.fw.controls['fwDescription'].setValue( this.fw.controls['fwDescription'].value + $event.emoji.native );
+    }
+    else{
+      this.fw.controls['fwDescription'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
+  }
   
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject,ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject,ViewChild, ElementRef, Renderer2, HostListener, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { BdSerieService } from '../services/comics_serie.service';
@@ -16,15 +16,28 @@ import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-popup-form-comic',
   templateUrl: './popup-form-comic.component.html',
-  styleUrls: ['./popup-form-comic.component.scss']
+  styleUrls: ['./popup-form-comic.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupFormComicComponent implements OnInit {
 
   constructor(
+    private renderer: Renderer2,
+    private cd:ChangeDetectorRef,
     public dialogRef: MatDialogRef<PopupFormComicComponent>,
     private BdSerieService:BdSerieService,
     private BdOneShotService:BdOneShotService,
@@ -88,7 +101,7 @@ export class PopupFormComicComponent implements OnInit {
 
   createFormControls00() {
     this.f00Title = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.f00Description = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.f00Description = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.f00Category = new FormControl(this.data.style, Validators.required);
     this.f00Tags = new FormControl( this.genres, [Validators.required]);
   }
@@ -116,6 +129,12 @@ export class PopupFormComicComponent implements OnInit {
       return
     }
     this.loading=true;
+
+    
+    if( ! (this.f00.value.f00Description.replace(/\s/g, '').length>0) ) {
+      this.f00.controls['f00Description'].setValue("");
+    }
+
     if ( this.f00.valid && this.data.format == "one-shot" ) {
         this.BdOneShotService.ModifyBdOneShot2(this.data.bd_id,this.f00.value.f00Title, this.f00.value.f00Category, this.f00.value.f00Tags, this.f00.value.f00Description.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
@@ -247,5 +266,44 @@ export class PopupFormComicComponent implements OnInit {
     normalize_to_nfc(fg,fc);
   }
 
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.f00.controls['f00Description'].value;
+    if(data){
+      this.f00.controls['f00Description'].setValue( this.f00.controls['f00Description'].value + $event.emoji.native );
+    }
+    else{
+      this.f00.controls['f00Description'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
+  }
 
 }

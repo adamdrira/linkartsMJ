@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject,  ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject,  ElementRef, ViewChild, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -21,15 +21,28 @@ import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-popup-form-drawing',
   templateUrl: './popup-form-drawing.component.html',
-  styleUrls: ['./popup-form-drawing.component.scss']
+  styleUrls: ['./popup-form-drawing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupFormDrawingComponent implements OnInit {
 
   constructor(
+    private cd:ChangeDetectorRef,
+    private renderer:Renderer2,
     public dialogRef: MatDialogRef<PopupFormDrawingComponent>,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
@@ -85,7 +98,7 @@ export class PopupFormDrawingComponent implements OnInit {
 
   createFormControlsDrawings() {
     this.fdTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fdDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fdDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fdCategory = new FormControl(this.data.style, Validators.required);
     this.fdTags = new FormControl( this.genres, [Validators.required]);
   }
@@ -109,6 +122,11 @@ export class PopupFormDrawingComponent implements OnInit {
     }
     
     this.loading=true;
+    
+    if( ! (this.fd.value.fdDescription.replace(/\s/g, '').length>0) ) {
+      this.fd.controls['fdDescription'].setValue("");
+    }
+
     if ( this.fd.valid && this.data.format == "one-shot" ) {
         this.Drawings_Onepage_Service.ModifyDrawingOnePage2(this.data.drawing_id,this.fd.value.fdTitle, this.fd.value.fdCategory, this.fd.value.fdTags, this.fd.value.fdDescription.replace(/\n\s*\n\s*\n/g, '\n\n'))
         .subscribe(inf=>{
@@ -231,6 +249,47 @@ export class PopupFormDrawingComponent implements OnInit {
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.fd.controls['fdDescription'].value;
+    if(data){
+      this.fd.controls['fdDescription'].setValue( this.fd.controls['fdDescription'].value + $event.emoji.native );
+    }
+    else{
+      this.fd.controls['fdDescription'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
   }
 
 }

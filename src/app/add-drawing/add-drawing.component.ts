@@ -1,4 +1,4 @@
-import { Component, OnInit,  ElementRef, ChangeDetectorRef, Output, EventEmitter, Input, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit,  ElementRef, ChangeDetectorRef, Output, EventEmitter, Input, ViewChild, Inject, Renderer2, HostListener } from '@angular/core';
 import { ConstantsService } from '../services/constants.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Drawings_CoverService } from '../services/drawings_cover.service';
@@ -45,6 +45,7 @@ export class AddDrawingComponent implements OnInit {
 
 
   constructor(
+    private renderer:Renderer2,
     private Subscribing_service:Subscribing_service,
     private Drawings_CoverService:Drawings_CoverService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -184,7 +185,7 @@ export class AddDrawingComponent implements OnInit {
   
   createFormControlsDrawings() {
     this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fdCategory = new FormControl('', [Validators.required]);
     this.fdTags = new FormControl( this.genres , [Validators.required]);
     this.fdFormat = new FormControl('', Validators.required);
@@ -206,6 +207,10 @@ export class AddDrawingComponent implements OnInit {
 
 
     this.nextButton.nativeElement.disabled = true;
+
+    if( ! (this.fd.value.fdDescription.replace(/\s/g, '').length>0) ) {
+      this.fd.controls['fdDescription'].setValue("");
+    }
 
     if ( this.fd.valid  && (this.fd.value.fdFormat == "Œuvre unique") ) {
 
@@ -391,6 +396,46 @@ export class AddDrawingComponent implements OnInit {
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.fd.controls['fdDescription'].value;
+    if(data){
+      this.fd.controls['fdDescription'].setValue( this.fd.controls['fdDescription'].value + $event.emoji.native );
+    }
+    else{
+      this.fd.controls['fdDescription'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
   }
 
 }

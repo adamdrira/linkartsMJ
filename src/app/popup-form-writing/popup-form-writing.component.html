@@ -87,9 +87,25 @@
                         <mat-label>Description</mat-label>
                     
                         <textarea matInput cdkTextareaAutosize formControlName="fwDescription" maxLength="2000" autocomplete="off" (input)="normalize_input(fw, 'fwDescription');"></textarea>
-                        <mat-error *ngIf="fw.controls['fwDescription'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="fw.controls['fwDescription'].invalid">Veuillez faire une saisie valide
                         </mat-error>
                         <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/2000</div>
+                        
+                        <div #emojis class="emojis-main-container" [@enterAnimation]>
+                            <div class="emojis-container">
+                                <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
+                                    (emojiSelect)="handleClick($event)">
+                                </emoji-mart>
+                            </div>
+                        </div>
+
+                        <div #emoji_button (click)="open_emojis()" class="emojis-button"
+                        matTooltip="Emojis"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
+                        </div>
                     </mat-form-field>
                 </div>
 

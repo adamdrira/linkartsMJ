@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Inject, HostListener, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Writing_Upload_Service } from '../services/writing.service';
@@ -15,15 +15,28 @@ import { ConstantsService } from '../services/constants.service';
 import { Location } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-popup-form-writing',
   templateUrl: './popup-form-writing.component.html',
-  styleUrls: ['./popup-form-writing.component.scss']
+  styleUrls: ['./popup-form-writing.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class PopupFormWritingComponent implements OnInit {
 
   constructor(
+    private cd:ChangeDetectorRef,
+    private renderer:Renderer2,
     public dialogRef: MatDialogRef<PopupFormWritingComponent>,
     private constants:ConstantsService,
     private Writing_Upload_Service:Writing_Upload_Service,
@@ -78,7 +91,7 @@ export class PopupFormWritingComponent implements OnInit {
 
   createFormControlsWritings() {
     this.fwTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
-    this.fwDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text_with_linebreaks") ) ]);
+    this.fwDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fwCategory = new FormControl(this.data.style, Validators.required);
     this.fwTags = new FormControl( this.genres, [Validators.required]);
   }
@@ -200,6 +213,10 @@ export class PopupFormWritingComponent implements OnInit {
     
     this.loading=true;
 
+    if( ! (this.fw.value.fwDescription.replace(/\s/g, '').length>0) ) {
+      this.fw.controls['fwDescription'].setValue("");
+    }
+
     if ( this.fw.valid ) {
       this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
         this.location.go(`/artwork-writing/${this.fw.value.fwTitle}/${this.data.writing_id}`);  
@@ -222,6 +239,47 @@ export class PopupFormWritingComponent implements OnInit {
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.fw.controls['fwDescription'].value;
+    if(data){
+      this.fw.controls['fwDescription'].setValue( this.fw.controls['fwDescription'].value + $event.emoji.native );
+    }
+    else{
+      this.fw.controls['fwDescription'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
   }
 
 }
