@@ -14,8 +14,8 @@
                     <div class="story" (click)="watch_story(i)">
                         <img class="background-image" [src]="list_of_cover_pictures[i]" (load)="load_cover(i)" [ngClass]="{'invisible': !cover_is_loaded[i]}">
                         
-                       <div class="img-container" [ngClass]="{'new': pp_is_loaded[i] && list_of_state[i],'old':pp_is_loaded[i] &&!list_of_state[i],'new-loading':!pp_is_loaded[i] && list_of_state[i],'old-loading':!pp_is_loaded[i] &&!list_of_state[i] }">
-                                <img class="img" [src]="list_of_profile_pictures[i]"  (load)="load_pp(i)"  [ngClass]="{'invisible': !pp_is_loaded[i]}" >
+                       <div class="img-container" [ngClass]="{'invisible': !pp_is_loaded[i]}">
+                                <img class="img" [src]="list_of_profile_pictures[i]" (load)="load_pp(i)" [ngClass]="{'new': pp_is_loaded[i] && list_of_state[i],'old':pp_is_loaded[i] &&!list_of_state[i],'new-loading':!pp_is_loaded[i] && list_of_state[i],'old-loading':!pp_is_loaded[i] &&!list_of_state[i] }">
                         </div>
                         <div class="author"*ngIf="i==0 && !do_I_have_stories" >
                             Publier une story
