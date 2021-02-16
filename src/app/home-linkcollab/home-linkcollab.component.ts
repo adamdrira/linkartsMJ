@@ -118,7 +118,7 @@ export class HomeLinkcollabComponent implements OnInit {
 
   ads_remuneration_types =this.constants.price_types_remunerated;
   ads_services_types=  this.constants.price_types_services;
-  ads_descriptions = this.constants.ads_types;
+  ads_descriptions = this.constants.ads_descriptions;
   ads_targets=this.constants.ads_targets;
 
   type_of_service='none';
@@ -511,8 +511,10 @@ export class HomeLinkcollabComponent implements OnInit {
     //this.number_of_ads_to_show=10;
     this.list_of_ads_received=false;
     this.list_of_ads=[];
+    console.log(this.target)
 
     this.Ads_service.get_sorted_ads_linkcollab(this.type_of_project,this.author,this.target,this.remuneration,this.service,this.type_of_remuneration,this.type_of_service,this.offer_or_demand,this.sorting,this.offset_ads,this.compteur_ads).subscribe(r=>{
+      console.log("get sorted ads")
       console.log(r);
       console.log(r[0][0]);
       this.number_of_results=r[0][0].number_of_ads;

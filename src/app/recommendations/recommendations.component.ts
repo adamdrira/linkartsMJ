@@ -139,9 +139,30 @@ export class RecommendationsComponent implements OnInit {
       let recommendations= JSON.parse(recommendations_string);
       let info=recommendations[0].sorted_list_category;
       let information=recommendations[0].styles_recommendation;
+      console.log("ici infoooooooooo")
       console.log(info)
       console.log(information)
-      this.manage_styles_recommendation(info,information)
+      if(info && information){
+        this.manage_styles_recommendation(info,information)
+      }
+      else{
+        this.Community_recommendation.generate_recommendations().subscribe(r=>{
+          console.log(r[0])
+          if(r[0].sorted_list_category){
+            // normallement on entre ici que la première fois ou navigation privée première fois
+            console.log("ne pas enter")
+            let info=r[0].sorted_list_category;
+            let information=r[0].styles_recommendation;
+            this.manage_styles_recommendation(info,information)
+          }
+          else{
+            this.manage_bd_recommendations(r[0].list_bd_os_to_send,r[0].list_bd_serie_to_send)
+            this.sorted_category_retrieved=true;
+          }
+    
+        })
+      }
+      
       
       
      
@@ -149,6 +170,7 @@ export class RecommendationsComponent implements OnInit {
     else{
       console.log("generate recommendation")
       this.Community_recommendation.generate_recommendations().subscribe(r=>{
+        console.log(r[0])
         if(r[0].sorted_list_category){
           // normallement on entre ici que la première fois ou navigation privée première fois
           console.log("ne pas enter")

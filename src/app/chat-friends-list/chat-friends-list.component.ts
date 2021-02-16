@@ -2878,7 +2878,9 @@ get_connections_status(){
             let date=r[0].date_of_webSockets_last_connection[id];
             date = date.replace("Z",'');
             date=date.slice(0,19)
-            let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
+            console.log("date deco")
+            console.log(new Date(date + '+00:00'))
+            let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
             this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
           }
           compt++;
@@ -2919,7 +2921,9 @@ get_connections_status(){
             let date=r[0].date_of_webSockets_last_connection[id];
             date = date.replace("Z",'');
             date=date.slice(0,19)
-            let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
+            console.log("date deco 2")
+            console.log(new Date(date + '+00:00'))
+            let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
             this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
 
           }

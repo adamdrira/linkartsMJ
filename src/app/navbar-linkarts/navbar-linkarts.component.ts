@@ -268,6 +268,12 @@ export class NavbarLinkartsComponent implements OnInit {
   current_user_type='';
   change_number=0;
   ngOnInit() {
+
+    let cookies = this.Profile_Edition_Service.get_cookies();
+    if(!cookies){
+      this.show_cookies=true;
+    }
+
     let THIS=this;
     WebFont.load({ google: { families: [ 'Material+Icons' ] } , active: function () {
       console.log("m")
@@ -303,33 +309,21 @@ export class NavbarLinkartsComponent implements OnInit {
       //console.log(r)
 
       if(r!=this.current_user_type &&  this.change_number<1){
-        this.Profile_Edition_Service.get_current_user_and_cookies().subscribe(r=>{
 
-          //console.log(r[0])
+        this.Profile_Edition_Service.get_current_user().subscribe(r=>{
           if(r[0]){
-            let user =r[0].user
-            let cookies =r[0].cookies;
-            if(!cookies){
-              this.show_cookies=true;
-            }
-            //console.log(user);
-            //console.log(cookies)
-            if(user[0] && (user[0].status=="account" || user[0].status=="suspended")){
-              this.type_of_profile=user[0].status;
-              ////console.log(this.type_of_profile)
-              this.retrieve_profile(user);
+            if(r[0].status=="account" || r[0].status=="suspended"){
+              this.type_of_profile=r[0].status;
+              this.retrieve_profile(r);
             }
             else{
-              //console.log("in false")
               this.data_retrieved=true;
               this.using_chat_retrieved=true;
               this.type_of_profile="visitor";
             }
-            ////console.log("in constructor")
             this.type_of_profile_retrieved=true;
             this.initialize_selectors();
           }
-         
           
         });
         this.current_user_type=r;
@@ -691,7 +685,7 @@ export class NavbarLinkartsComponent implements OnInit {
       let date=created
       date = date.replace("Z",'');
       date=date.slice(0,19)
-      let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
+      let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
       return get_date_to_show_navbar(now-deco_date);
     }
     else{
@@ -2279,7 +2273,7 @@ get_connections_status(){
           let date=r[0].date_of_webSockets_last_connection[id];
           date = date.replace("Z",'');
           date=date.slice(0,19)
-          let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
+          let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
           this.list_of_last_connection_dates[i]=get_date_to_show_chat(now-deco_date);
         }
         compt++;

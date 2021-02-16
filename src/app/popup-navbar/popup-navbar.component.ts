@@ -635,7 +635,7 @@ get_date(created,i){
     let date=created;
     date = date.replace("Z",'');
     date=date.slice(0,19)
-    let deco_date=Math.trunc( new Date(date + '+01:00').getTime()/1000)
+    let deco_date=Math.trunc( new Date(date + '+00:00').getTime()/1000)
     return get_date_to_show_navbar(now-deco_date);
   }
   else{
