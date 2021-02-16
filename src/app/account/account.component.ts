@@ -2328,41 +2328,46 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
       this.new_contents_loading=true;
       console.log("see_more_drawings");
-      let num=this.number_of_drawings_to_show_by_album[album_number]
-      if(album_section_number==0){
+      console.log(album_section_number)
+      let num=this.number_of_drawings_to_show_by_album[album_number];
+      console.log(num)
+      //if(album_section_number==0){
         this.number_of_drawings_to_show_by_album[album_number]+=this.number_of_drawings_variable*2;
-      }
+      /*}
       else{
         this.number_of_drawings_to_show_by_album[album_number]+=this.number_of_drawings_variable*4;
-      }
+      }*/
   
       console.log( this.number_of_drawings_to_show_by_album);
       
       this.detect_new_compteur_drawings=true;
       if(album_number==0){
         console.log(this.list_drawings_onepage)
+        console.log(this.total_for_new_compteur)
+        console.log(this.number_of_drawings_to_show_by_album[album_number])
         if(this.number_of_drawings_to_show_by_album[album_number]>this.list_drawings_onepage.length){
           this.total_for_new_compteur=this.list_drawings_onepage.length-num;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        if(this.opened_album>0){
+        /*if(this.opened_album>0){
           this.total_for_new_compteur+= this.total_for_new_compteur;
-        }
+        }*/
         
       }
       else if(album_number==1){
         console.log(this.list_drawings_artbook)
+        console.log(this.number_of_drawings_to_show_by_album[album_number])
         if(this.number_of_drawings_to_show_by_album[album_number]>this.list_drawings_artbook.length){
           this.total_for_new_compteur=this.list_drawings_artbook.length-num;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        if(this.opened_album>0){
+        /*if(this.opened_album>0){
           this.total_for_new_compteur+= this.total_for_new_compteur;
-        }
+        }*/
       }
       else{
         console.log(this.list_albums_drawings[album_number-2])
@@ -2372,12 +2377,13 @@ export class AccountComponent implements OnInit {
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        if(this.opened_album>0){
+        /*if(this.opened_album>0){
           this.total_for_new_compteur+= this.total_for_new_compteur;
-        }
+        }*/
       }
       console.log(this.compteur_drawings_thumbnails)
       console.log( this.total_for_new_compteur)
+      console.log("fin see more drawings")
       this.prevent_see_more=true;
       this.new_contents_loading=false;
       this.cd.detectChanges();

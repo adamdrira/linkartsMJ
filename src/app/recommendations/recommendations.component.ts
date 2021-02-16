@@ -1,16 +1,10 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild} from '@angular/core';
+import {ElementRef,  ViewChild} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
-import { BdOneShotService } from '../services/comics_one_shot.service';
-import { BdSerieService } from '../services/comics_serie.service';
-import { Bd_CoverService } from '../services/comics_cover.service';
-import { ConstantsService } from '../services/constants.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-//import { runInThisContext } from 'vm';
 
-declare var Swiper: any
 declare var $: any
 
 
@@ -43,14 +37,9 @@ declare var $: any
 export class RecommendationsComponent implements OnInit {
 
   constructor(
-    private Bd_CoverService:Bd_CoverService,
-    private rd: Renderer2,
     private cd:ChangeDetectorRef,
     private CookieService:CookieService,
-    private _constants: ConstantsService,
     private Community_recommendation:Community_recommendation,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService
     ) { }
 
   
@@ -116,6 +105,7 @@ export class RecommendationsComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if( changes.status) {
+      console.log("status changed recommendations")
       this.media_visibility=false;
       this.cd.detectChanges();
       if(this.status){
@@ -126,6 +116,7 @@ export class RecommendationsComponent implements OnInit {
           this.media_visibility=true;
           clearInterval(interval);
           this.cd.detectChanges();
+          //window.dispatchEvent(new Event('resize'));
         },200)
       }
       

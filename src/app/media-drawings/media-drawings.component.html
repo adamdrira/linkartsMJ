@@ -18,13 +18,13 @@
                             [item]=item
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
-                            [width]=width
+                            [width]=width_to_send
                             now_in_seconds={{now_in_seconds}}
                         ></app-thumbnail-drawing>
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
-                            [width]=width
+                            [width]=width_to_send
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -44,7 +44,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber == null"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
-                            [width]=width
+                            [width]=width_to_send
                             format='one-shot'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}
@@ -52,7 +52,7 @@
                         <app-thumbnail-drawing *ngIf="item.pagesnumber >=0"
                             (sendLoaded)="sendLoaded( $event );"
                             [item]=item
-                            [width]=width
+                            [width]=width_to_send
                             format='artbook'
                             [prevent_shiny]=prevent_shiny
                             now_in_seconds={{now_in_seconds}}

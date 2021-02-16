@@ -1,6 +1,4 @@
-import { Component, OnInit, Renderer2, HostListener,  Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, SimpleChanges } from '@angular/core';
-
-import { Router } from '@angular/router';
+import { Component, OnInit,  HostListener,  Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
 
 declare var $: any
@@ -24,7 +22,6 @@ export class MediaDrawingsComponent implements OnInit {
   artbooks_per_line: number;
 
   constructor(
-    private router:Router,
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,
     ) { 
@@ -44,21 +41,33 @@ export class MediaDrawingsComponent implements OnInit {
   @Input() sorted_artpieces_traditional_format: string[];
   @Input() sorted_artpieces_digital_format: string[];
   @Input() width: number;
+  width_to_send:number;
 
   @Input() now_in_seconds: number;
   @Output() list_of_drawings_retrieved_emitter = new EventEmitter<object>();
   show_more=[false,false];
   
   
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.width) {
+      console.log("width changed for drawing")
+      console.log(this.width)
+      if(this.width>0){
+        this.width_to_send=this.width
+      }
+    }
+  }
   
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
     }
     else{
        this.get_number_of_drawings_to_show()
+    }
+    if(this.width>0){
+      this.width_to_send=this.width
     }
    
     //this.get_number_of_drawings_to_show();

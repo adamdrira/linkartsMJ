@@ -1,22 +1,14 @@
-import { Component, OnInit, HostListener, QueryList,SimpleChanges, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
 import {Profile_Edition_Service} from '../services/profile_edition.service';
 import {NotationService} from '../services/notation.service';
-
 import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
-
 import {number_in_k_or_m} from '../helpers/fonctions_calculs';
-
-
-import { Router  } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
-
-declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-drawing',
@@ -42,8 +34,6 @@ export class ThumbnailDrawingComponent implements OnInit {
     private Profile_Edition_Service:Profile_Edition_Service,
     private sanitizer:DomSanitizer,
     private NotationService:NotationService,
-    private cd:ChangeDetectorRef,
-    private router:Router,
     private navbar: NavbarService,
     ) {
       navbar.visibility_observer_font.subscribe(font=>{
@@ -106,6 +96,8 @@ export class ThumbnailDrawingComponent implements OnInit {
       this.resize_drawing();
     }
     else{
+      console.log("width thumb draw")
+      console.log(this.width)
       if(this.width<640){
         this.small_thumbnail=true;
         let width=(140*(this.width/640)>110)?140*(this.width/640):110
