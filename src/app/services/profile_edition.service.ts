@@ -123,8 +123,13 @@ export class Profile_Edition_Service {
     }));
   }
 
+  get_cookies(){
+    return this.CookieService.get('a_cookies');
+  }
+  
   agree_on_cookies(){
     return this.httpClient.post('routes/agree_on_cookies',{},{withCredentials:true} ).pipe(map((information)=>{
+      this.CookieService.set('a_cookies', JSON.stringify([{agreement:"ok"}]), 365*10, '/','localhost',undefined,'Lax');
       return information;
     }));
   }
