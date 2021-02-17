@@ -184,10 +184,10 @@ $default-color: rgb(218,220,225);
                         }
                     }
                     
-                    
+                        
                     .emojis-main-container {
                         position: absolute;
-                        top: -356px;
+                        top: -294px;
                         right: 0px;
                         visibility: hidden;
                         z-index: 1;
@@ -199,7 +199,20 @@ $default-color: rgb(218,220,225);
                             display: flex;
                             justify-content: center;
 
+                            section.emoji-mart {
+                                .emoji-mart-bar {
+                                    &:last-of-type {
+                                        display:none !important;
+                                    }
+                                }
+                            }
+                            section.emoji-mart-scroll {
+                                overflow-x: hidden;
+                            }
                             @media (max-width: 400px) {
+                                section.emoji-mart-scroll {
+                                    overflow-x: unset;
+                                }
                                 section.emoji-mart {
                                     width: 100% !important;
                                 }
