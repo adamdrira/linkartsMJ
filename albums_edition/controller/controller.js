@@ -17,6 +17,17 @@ module.exports = (router, list_of_albums) => {
 
   
     router.post('/add_album_comics', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => {
                 const album = req.body.album;
@@ -36,6 +47,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.post('/add_album_drawings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => {
                 const album = req.body.album;
@@ -58,6 +80,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.post('/add_album_writings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => {
                 const album = req.body.album;
@@ -78,6 +111,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.delete('/remove_subscribtion/:id_user_subscribed_to', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => {
                 const id_user_subscribed_to = req.params.id_user_subscribed_to;
@@ -106,6 +150,17 @@ module.exports = (router, list_of_albums) => {
 
 
     /*router.get('/get_albums_comics/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         (async () => {
 
@@ -129,6 +184,17 @@ module.exports = (router, list_of_albums) => {
     });*/
 
     router.get('/get_albums_comics/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         list_of_albums.findAll({
                 where: {
@@ -164,6 +230,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.post('/change_comic_album_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.body.album_name;
         let current_status=req.body.current_status;
@@ -197,6 +274,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.delete('/remove_comic_album/:album_name/:current_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.params.album_name;
         let current_status=req.params.current_status;
@@ -226,6 +314,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     /*router.get('/get_albums_drawings/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         (async () => {
 
@@ -249,6 +348,17 @@ module.exports = (router, list_of_albums) => {
     });*/
 
     router.get('/get_albums_drawings/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         list_of_albums.findAll({
                 where: {
@@ -284,6 +394,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.post('/change_drawing_album_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.body.album_name;
         let current_status=req.body.current_status;
@@ -318,6 +439,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.delete('/remove_drawing_album/:album_name/:current_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.params.album_name;
         let current_status=req.params.current_status;
@@ -354,6 +486,17 @@ module.exports = (router, list_of_albums) => {
     
 
     router.get('/get_albums_writings/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         (async () => {
 
@@ -378,6 +521,17 @@ module.exports = (router, list_of_albums) => {
 
 
     router.post('/change_writing_album_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.body.album_name;
         let current_status=req.body.current_status;
@@ -411,6 +565,17 @@ module.exports = (router, list_of_albums) => {
     });
 
     router.delete('/remove_writing_album/:album_name/:current_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.params.album_name;
         let current_status=req.params.current_status;
