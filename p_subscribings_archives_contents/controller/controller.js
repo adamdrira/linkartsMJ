@@ -16,6 +16,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
         };
 
     router.post('/add_to_archive', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let publication_id=req.body.publication_id;
         let  format = req.body.format;
@@ -33,6 +44,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.post('/unarchive', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let publication_id=req.body.publication_id;
         let  format = req.body.format;
@@ -62,6 +84,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
 
     router.get('/check_if_publication_archived/:publication_category/:format/:publication_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         
         let current_user = get_current_user(req.cookies.currentUser);
         const publication_category=req.params.publication_category;
@@ -93,6 +126,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/list_of_archives_comics', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         
         let current_user = get_current_user(req.cookies.currentUser);
         list_of_archives.findAll({
@@ -114,6 +158,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/list_of_archives_drawings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        
         let current_user = get_current_user(req.cookies.currentUser);
         list_of_archives.findAll({
@@ -135,6 +190,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/list_of_archives_writings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         
         let current_user = get_current_user(req.cookies.currentUser);
         list_of_archives.findAll({
@@ -156,6 +222,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/list_of_archives_ads', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        
         let current_user = get_current_user(req.cookies.currentUser);
         list_of_archives.findAll({
@@ -176,6 +253,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
   
     router.post('/subscribe_to_a_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("subscribe_to_a_user")
         let current_user = get_current_user(req.cookies.currentUser);
         const id_user_to_subscribe = req.body.id_user_to_subscribe;
@@ -320,6 +408,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.delete('/remove_subscribtion/:id_user_subscribed_to', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         
         const id_user_subscribed_to = req.params.id_user_subscribed_to;
@@ -391,6 +490,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.post('/get_all_subscribings_by_user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = req.body.id_user;
         const Op = Sequelize.Op;
         list_of_subscribings.findAll({
@@ -413,6 +523,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     })
 
     router.get('/get_all_users_subscribed_to_today/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         const Op = Sequelize.Op;
         var today = new Date();
@@ -437,6 +558,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.get('/get_all_users_subscribed_to/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         const Op = Sequelize.Op;
         var today = new Date();
@@ -460,6 +592,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_all_subscribed_users/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;
         list_of_subscribings.findAll({
             where: {
@@ -479,6 +622,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/check_if_visitor_susbcribed/:id_user_to_check', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
 
         //console.log("check_if_visitor_susbcribed")
@@ -507,6 +661,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
     
     router.post('/add_content', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
 
         const category = req.body.category;
@@ -531,6 +696,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.post('/validate_content', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);  
         const category = req.body.category;
         const format = req.body.format;
@@ -578,6 +754,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.post('/extend_serie_and_update_content', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser); 
         const number_of_chapters = req.body.number_of_chapters;
         const bd_id = req.body.bd_id;
@@ -620,6 +807,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
 
     router.post('/change_content_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);  
         const category = req.body.category;
         const format = req.body.format;
@@ -699,6 +897,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.delete('/remove_content/:category/:format/:publication_id/:chapter_number', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
        
         const category = req.params.category;
@@ -730,6 +939,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.post('/get_all_subscribings_contents', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let formdata = req.body.formData;  
         
 
@@ -753,6 +973,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_last_contents_of_a_subscribing/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = req.params.id_user;  
        
 
@@ -777,6 +1008,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.post('/see_more_contents', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         const Op = Sequelize.Op;
         let formdata = req.body.formData;  
         let last_timestamp = req.body.last_timestamp;
@@ -804,6 +1046,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.post('/emphasize_content', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       
         let current_user = get_current_user(req.cookies.currentUser);
       
@@ -871,6 +1124,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
 
 
     router.post('/remove_emphasizing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
     (async () => {    
         const category = req.body.category;
@@ -901,6 +1165,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_emphasized_content/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       
         const id_user = parseInt(req.params.id_user);
         list_of_contents.findOne({
@@ -919,6 +1194,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_new_comic_contents/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
          
             const id_user = parseInt(req.params.id_user);
            list_of_contents.findAll({
@@ -939,6 +1225,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_new_writing_contents/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
          
             const id_user = parseInt(req.params.id_user);
             list_of_contents.findAll({
@@ -959,6 +1256,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     });
 
     router.get('/get_new_drawing_contents/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         
             const id_user = parseInt(req.params.id_user);
             list_of_contents.findAll({
@@ -982,6 +1290,17 @@ module.exports = (router, list_of_subscribings, list_of_contents,list_of_archive
     
 
     router.post('/remove_all_subscribtions_both_sides', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const id_friend = req.body.id_friend;
     
