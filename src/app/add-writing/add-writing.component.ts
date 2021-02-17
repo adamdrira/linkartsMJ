@@ -110,7 +110,6 @@ export class AddWritingComponent implements OnInit {
   conditions:any;
 
   ngOnInit() {
-    let THIS=this;
     window.scroll(0,0);
     this.Writing_Upload_Service.retrieve_writing_for_options(5).subscribe(r=>{
       this.conditions=r;
@@ -128,7 +127,12 @@ export class AddWritingComponent implements OnInit {
 
     this.stepChanged.emit(0);
 
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
+  load_emoji=false;
 
   
 

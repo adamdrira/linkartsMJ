@@ -24,7 +24,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { normalize_to_nfc } from '../helpers/patterns';
 
-declare var $: any;
+
 
 @Component({
   selector: 'app-add-drawing',
@@ -109,7 +109,12 @@ export class AddDrawingComponent implements OnInit {
     this.cd.detectChanges();
 
     this.stepChanged.emit(0);
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
+  load_emoji=false;
 
   show_icon=false;
  

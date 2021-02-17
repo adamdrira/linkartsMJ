@@ -111,7 +111,12 @@ export class PopupFormDrawingComponent implements OnInit {
       fdTags: this.fdTags,
 
     });
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
+  load_emoji=false;
 
 
   loading =false;

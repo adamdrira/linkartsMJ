@@ -109,7 +109,7 @@
                         </mat-error>
                         <div class="length-indicator">{{fw.controls['fwDescription'].value?.length || 0}}/2000</div>
                         
-                        <div #emojis class="emojis-main-container" [@enterAnimation]>
+                        <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
                             <div class="emojis-container">
                                 <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
                                     (emojiSelect)="handleClick($event)">

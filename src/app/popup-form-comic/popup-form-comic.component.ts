@@ -85,7 +85,12 @@ export class PopupFormComicComponent implements OnInit {
       this.addChapter();
       (<FormArray>this.f00.get('chapters')).controls[ i ].setValue( this.data.chapterList[i].title );
     }
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
+  load_emoji=false;
 
   
   /********************************* */

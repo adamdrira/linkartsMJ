@@ -115,8 +115,12 @@ export class AddComicComponent implements OnInit {
     this.cd.detectChanges();
     
     this.stepChanged.emit(0);
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
-
+  load_emoji=false;
 
   show_icon=false;
   
@@ -213,6 +217,7 @@ export class AddComicComponent implements OnInit {
     this.f00SerieFirstChapter = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
   }
 
+  
   createForm00() {
     this.f00 = new FormGroup({
         f00Title: this.f00Title,
