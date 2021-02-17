@@ -68,8 +68,12 @@ function genere_random_id(id){
 
 
 router.post('/add_profile_pic', function (req, res) {
+
   //console.log("adding pp")
     let current_user = get_current_user(req.cookies.currentUser);
+    if(!current_user){
+      return res.status(401).json({msg: "error"});
+    }
     var filename = ''
     let PATH = './data_and_routes/profile_pics/';
 
@@ -131,7 +135,11 @@ router.post('/add_profile_pic', function (req, res) {
 });
 
 router.post('/add_cover_pic', function (req, res) {
+
   let current_user = get_current_user(req.cookies.currentUser);
+  if(!current_user){
+    return res.status(401).json({msg: "error"});
+  }
 
     var filename = ''
     let PATH = './data_and_routes/cover_pics/';
@@ -199,6 +207,17 @@ router.post('/add_cover_pic', function (req, res) {
 
 
 router.get('/retrieve_profile_picture/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
  
 
     const user_id = parseInt(req.params.user_id);
@@ -243,6 +262,17 @@ router.get('/retrieve_profile_picture/:user_id', function (req, res) {
 
 
 router.post('/retrieve_my_profile_picture', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
  
   const user_id = get_current_user(req.cookies.currentUser);
 
@@ -285,6 +315,17 @@ router.post('/retrieve_my_profile_picture', function (req, res) {
 
 
 router.get('/retrieve_cover_picture/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
     const user_id = req.params.user_id;
 
@@ -326,6 +367,17 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
 
   router.post('/agree_on_cookies', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("agree_on_cookies")
     const user_id = get_current_user(req.cookies.currentUser);
     console.log(user_id)
@@ -359,6 +411,17 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
 
   router.post('/retrieve_my_cover_picture', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   
     const user_id = get_current_user(req.cookies.currentUser);
 
@@ -400,6 +463,17 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 
 
   router.post('/get_my_remuneration', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     const user_id = get_current_user(req.cookies.currentUser);
     const total_gains = req.body.total_gains;
     if(Number(total_gains)<70){
@@ -437,6 +511,17 @@ router.get('/retrieve_cover_picture/:user_id', function (req, res) {
 });
 
 router.get('/retrieve_profile_data/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
     const user_id = req.params.user_id;
     users.findOne({
@@ -453,6 +538,17 @@ router.get('/retrieve_profile_data/:user_id', function (req, res) {
 });
 
 router.get('/retrieve_profile_data_and_check_visitor/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
   let current_user = get_current_user(req.cookies.currentUser);
   const user_id = req.params.user_id;
@@ -483,6 +579,17 @@ router.get('/retrieve_profile_data_and_check_visitor/:user_id', function (req, r
 });
 
 router.post('/retrieve_number_of_contents', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
     const id = req.body.id;
     let number_of_comics=0;
@@ -576,6 +683,17 @@ router.post('/retrieve_number_of_contents', function (req, res) {
 });
 
 router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
 
     const id_user = req.params.id_user;
@@ -598,6 +716,17 @@ router.get('/retrieve_profile_data_links/:id_user', function (req, res) {
 });
 
 router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
 
     const pseudo = req.params.pseudo;
@@ -617,6 +746,17 @@ router.get('/get_user_id_by_pseudo/:pseudo', function (req, res) {
 });
 
 router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   (async () => {
 
     const user_id = parseInt(req.params.user_id);
@@ -642,6 +782,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   //
   router.post('/edit_account_about_1', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
     const type_of_account=req.body.type_of_account;
@@ -676,6 +827,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/edit_account_about_2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
     const email_about=req.body.email_about;
@@ -702,6 +864,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/edit_account_about_3', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
     const firstname=req.body.firstname;
@@ -731,6 +904,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/block_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     //console.log("block_user");
     var date = req.body.date;
@@ -759,6 +943,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_list_of_users_blocked', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     users_blocked.findAll({
@@ -785,6 +980,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/check_if_user_blocked', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("check_if_user_blocked")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
@@ -812,6 +1018,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
   
   router.post('/unblock_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("unblock user")
     let current_user = get_current_user(req.cookies.currentUser);
     const id_user=req.body.id_user;
@@ -840,6 +1057,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_pseudos_who_match_for_signup', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("get_pseudos_who_match_for_signup")
     let pseudo = req.body.pseudo;
     const Op = Sequelize.Op;
@@ -894,6 +1122,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/edit_primary_description_extended', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("edit_primary_description_extended")
     const id_user = req.body.id_user;
     const primary_description_extended = req.body.primary_description_extended;
@@ -926,6 +1165,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/edit_profile_information', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("edit_profile_information")
     const id_user = req.body.id_user;
     const email = req.body.email;
@@ -960,6 +1210,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_information_privacy', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("get_information_privacy")
     let id_user = req.body.id_user;
     //console.log(id_user)
@@ -1009,6 +1270,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/change_information_privacy_public', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("change_information_privacy_public")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
@@ -1091,6 +1363,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/change_information_privacy_private', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("change_information_privacy_private")
     let id_user = req.body.id_user;
     let indice = req.body.indice;
@@ -1175,6 +1458,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/get_my_list_of_groups_from_users', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("get_my_list_of_groups_from_users")
     let current_user = req.body.id_user;
     const Op = Sequelize.Op;
@@ -1200,6 +1494,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_group_information_by_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("get_group_information_by_id")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group
@@ -1231,6 +1536,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
     
   router.post('/add_artist_in_a_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     console.log("add_artist_in_a_group")
     const list_of_ids=req.body.list_of_ids
@@ -1293,6 +1609,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   })
   
   router.post('/validate_group_creation_and_shares', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("validate_group_creation_and_shares")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
@@ -1420,6 +1747,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/abort_group_creation', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("abort_group_creation")
     let current_user = get_current_user(req.cookies.currentUser);
     let id_group=req.body.id_group;
@@ -1451,6 +1789,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/exit_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("exit_group")
     let id_user=req.body.id_user;
     let id_group=req.body.id_group;
@@ -1522,6 +1871,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/delete_account', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("delete_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
@@ -1780,6 +2140,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/suspend_account', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("suspend_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
@@ -2032,6 +2403,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_back_suspended_account', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("get_back_suspended_account")
     let current_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
@@ -2235,6 +2617,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
   
   router.post('/change_mailing_managment', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("change_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
     let value=req.body.value
@@ -2294,6 +2687,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/get_mailing_managment', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("get_mailing_managment")
     let current_user = get_current_user(req.cookies.currentUser);
 
@@ -2322,6 +2726,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   
 
   router.post('/check_password_for_registration', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("check_password_for_registration")
     let id = req.body.id;
     let password= req.body.password;
@@ -2384,6 +2799,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/check_password_for_registration2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("check_password_for_registration2")
     let id = req.body.id;
     let password= req.body.password;
@@ -2420,6 +2846,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
 
 
   router.post('/send_email_for_account_creation', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("send_email_for_account_creation")
     let id = req.body.id;
     console.log(id)
@@ -2548,6 +2985,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
 
   router.post('/send_email_for_group_edition', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("send_email_for_group_edition")
     let id =req.body.id;
     const list_of_ids=req.body.list_of_ids;
@@ -2646,6 +3094,17 @@ router.get('/get_pseudo_by_user_id/:user_id', function (req, res) {
   });
   
   router.post('/send_email_for_group_creation', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("send_email_for_group_creation")
     let id =req.body.id;
     let admin_name='';
