@@ -36,58 +36,30 @@ python_router.get('/', (request, response) => {
   response.json({ info: 'python files' })
 })
 
-/*****************Partie recupération python files ********************/
 
-/*
-python_router.post('/python_recommendations', function(req, res) {
-
-  const user_id = (JSON.stringify(req.headers.user_id)).substring(1,JSON.stringify(req.headers.user_id).length - 1);
-
-  //const PATH = `./data_and_routes/routes/python_files/recommendations-${user_id}.json`;
-  //const json =require("./python_files/recommendations.json");
-  if (!req.files){
-    return res.status(400).send({some:'No files were uploaded.'});
-  }
-  
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
-  let sampleFile = req.files.upload_file;
-  let json = JSON.stringify(sampleFile);
-  res.send(json);
-
-  //Use the mv() method to place the file somewhere on your server 
-  sampleFile.mv(PATH, function(err) {
-    if (err){
-      //console.log(err);
-      return res.status(500).send(err);
-      
-    }
-    //console.log("json received");
-    res.send(json);
+function get_current_user(token){
+  var user = 0
+  jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
   });
-});
-
-python_router.post('/python_artpieces', function(req, res) {
-
-  const user_id = (JSON.stringify(req.headers.user_id)).substring(1,JSON.stringify(req.headers.user_id).length - 1);
-
-  if (!req.files){
-    return res.status(400).send({some:'No files were uploaded.'});
-  }
-  
-
-  let sampleFile = req.files.upload_file;
-  let json = JSON.stringify(sampleFile);
-  res.send(json);
-
-});
-
-
-*/
+  return user;
+};
 
 
 
 python_router.get('/sorted_favourite_type_list', function(req, res) {
   //console.log("sorted_category_list")
+  console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+        }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+                return res.status(401).json({msg: "error"});
+            }
+        }
   var user=0;
   jwt.verify(req.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
     user=decoded.id;
@@ -103,6 +75,17 @@ python_router.get('/sorted_favourite_type_list', function(req, res) {
 
 python_router.post('/receive_comics_trendings', function(req, res) {
 
+  console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+        }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+                return res.status(401).json({msg: "error"});
+            }
+        }
   let date =(JSON.stringify(req.headers.date)).substring(1,JSON.stringify(req.headers.date).length - 1);
   //console.log(date);
   const PATH = `./data_and_routes/routes/python_files/bd_rankings_for_trendings-${date}.json`;
@@ -148,7 +131,17 @@ python_router.post('/receive_comics_trendings', function(req, res) {
 
 python_router.get('/get_comics_trendings', function(req, res) {
   
-
+  console.log("checking current: " + req.headers['authorization'] );
+  if( ! req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+  }
+  else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+          return res.status(401).json({msg: "error"});
+      }
+  }
   let today = new Date();
   let dd = String(today.getDate()).padStart(2, '0');
   let mm = String(today.getMonth() + 1).padStart(2, '0'); 
@@ -166,6 +159,17 @@ python_router.get('/get_comics_trendings', function(req, res) {
 
 python_router.post('/receive_drawings_trendings', function(req, res) {
 
+  console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+        }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+                return res.status(401).json({msg: "error"});
+            }
+        }
   let date =(JSON.stringify(req.headers.date)).substring(1,JSON.stringify(req.headers.date).length - 1);
   //console.log(date);
   const PATH = `./data_and_routes/routes/python_files/drawings_rankings_for_trendings-${date}.json`;
@@ -208,6 +212,17 @@ python_router.post('/receive_drawings_trendings', function(req, res) {
 });
 
 python_router.post('/receive_writings_trendings', function(req, res) {
+  console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
+        }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+                return res.status(401).json({msg: "error"});
+            }
+        }
   let date =(JSON.stringify(req.headers.date)).substring(1,JSON.stringify(req.headers.date).length - 1);
   //console.log(date);
   const PATH = `./data_and_routes/routes/python_files/writings_rankings_for_trendings-${date}.json`;

@@ -12,22 +12,22 @@ const favorites_seq= require('../../favorites/model/sequelize');
 var nodemailer = require('nodemailer');
 const Sequelize = require('sequelize');
 const Pool = require('pg').Pool;
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -42,8 +42,27 @@ pool.connect((err, client, release) => {
 })
 
 
-  const generate_or_get_favorites = (request, response) => {
+function get_current_user(token){
+  var user = 0
+  jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
+  });
+  return user;
+};
 
+
+  const generate_or_get_favorites = (request, response) => {
+    console.log("checking current: " + request.headers['authorization'] );
+    if( ! request.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
     console.log("stat generating favorites")
     var today = new Date();
   
@@ -66,7 +85,7 @@ pool.connect((err, client, release) => {
         ],
     }).catch(err => {
 			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
+			response.status(500).json({msg: "error", details: err});		
 		}).then(resu=>{
       if(resu[0]){
         console.log("result favo ok")
@@ -97,8 +116,8 @@ pool.connect((err, client, release) => {
                 console.log(e)
             })
             .on("finish", function() {
-              const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
-                //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
+              //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/favorites.py', date]);
+                const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/favorites.py', date]);
                 //console.log(pythonProcess)
                 pythonProcess.stderr.pipe(process.stderr);
                 pythonProcess.stdout.on('data', (data) => {
@@ -154,7 +173,7 @@ pool.connect((err, client, release) => {
           }
         }).catch(err => {
           console.log(err);	
-          res.status(500).json({msg: "error", details: err});		
+          response.status(500).json({msg: "error", details: err});		
         }).then(user=>{
           if(user){
             list_of_users[i]=user;
@@ -212,7 +231,7 @@ pool.connect((err, client, release) => {
               "type_of_account":list_of_users[i].type_of_account
             }).catch(err => {
               console.log(err);	
-              res.status(500).json({msg: "error", details: err});		
+              response.status(500).json({msg: "error", details: err});		
             }).then(favorites=>{
               compteur_done++;
               if(compteur_done==list_of_users.length){
@@ -278,7 +297,7 @@ pool.connect((err, client, release) => {
             }
           }).catch(err => {
             console.log(err);	
-            res.status(500).json({msg: "error", details: err});		
+            response.status(500).json({msg: "error", details: err});		
           }).then(members=>{
             
             if(members[0]){
@@ -296,7 +315,7 @@ pool.connect((err, client, release) => {
                 "shares":[shares],
               }).catch(err => {
                 console.log(err);	
-                res.status(500).json({msg: "error", details: err});		
+                response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
@@ -315,7 +334,7 @@ pool.connect((err, client, release) => {
                 "type_of_account":list_of_users[i].type_of_account,
               }).catch(err => {
                 console.log(err);	
-                res.status(500).json({msg: "error", details: err});		
+                response.status(500).json({msg: "error", details: err});		
               }).then(favorites=>{
                 compteur_done++;
                 if(compteur_done==list_of_users.length){
@@ -359,12 +378,14 @@ pool.connect((err, client, release) => {
 										<li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top <b>coups de cœurs</b> du jour</li>
 										<li><a href="https://linkarts.fr/account/${list_of_users[i].nickname}/${list_of_users[i].id}/my_account"> Cliquer ici</a> pour consuler mon compte.</li>
                 </ul>
-                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
+                  <p>L'équipe de LinkArts.</p>`
               }
               else{
                 html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
                  <p>Vous avez atteint le top <b>coups de cœurs</b> du jour. Si vous atteignez ce top le premier du mois vous en serez recevrez un gain bonus. Continuez ainsi !</p>
-                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>`
+                  <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
+                  <p>L'équipe de LinkArts.</p>`
               }
               var mailOptions = {
                   from: 'Linkarts <services@linkarts.fr>', // sender address

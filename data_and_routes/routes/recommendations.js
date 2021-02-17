@@ -16,22 +16,22 @@ const Sequelize = require('sequelize');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'adamdrira',
   password: 'E273adamZ9Qvps',
   host: 'localhost',
   //dialect: 'postgres'
-});
+});*/
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -46,10 +46,28 @@ pool.connect((err, client, release) => {
   })
 
 
-
+  function get_current_user(token){
+    var user = 0
+    jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+      user=decoded.id;
+    });
+    return user;
+  };
 
 
 const generate_recommendations = (request, response) => {
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
@@ -80,10 +98,10 @@ const generate_recommendations = (request, response) => {
         if(jsonData.length>=1){
           
           //pour ubuntu
-          const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
+          //const pythonProcess = spawn('python3',['/usr/local/lib/python3.8/dist-packages/list_of_views.py', user]);
           
           //pour angular
-          //const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
+          const pythonProcess = spawn('C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/python',['C:/Users/Utilisateur/AppData/Local/Programs/Python/Python38-32/Lib/site-packages/list_of_views.py', user]);
           pythonProcess.stderr.pipe(process.stderr);
           pythonProcess.stdout.on('data', (data) => {
            // console.log("python res")
@@ -253,6 +271,17 @@ const generate_recommendations = (request, response) => {
 
 const get_first_recommendation_bd_os_for_user = (request, response) => {
   console.log("get first recommendations bd")
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
 
   const index_bd = request.body.index_bd;
 
@@ -468,6 +497,18 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
 
 const get_first_recommendation_bd_serie_for_user = (request, response) => {
   console.log("get first recommendations serie")
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
   const index_bd = request.body.index_bd;
 
   //on récupère la liste des oeuvres
@@ -684,6 +725,17 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
 }
 
 const get_first_recommendation_drawing_artbook_for_user = (request, response) => {
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
 
   const index_drawing =request.body.index_drawing;
   //on récupère la liste des oeuvres
@@ -854,6 +906,17 @@ const get_first_recommendation_drawing_artbook_for_user = (request, response) =>
 }
 
 const get_first_recommendation_drawing_os_for_user = (request, response) => {
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
 
   const index_drawing =request.body.index_drawing;
   //on récupère la liste des oeuvres
@@ -1026,6 +1089,17 @@ const get_first_recommendation_drawing_os_for_user = (request, response) => {
 }
 
 const get_first_recommendation_writings_for_user = (request, response) => {
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
 
   const index_writing =request.body.index_writing;
 
@@ -1377,6 +1451,18 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
   }
 
   const see_more_recommendations_bd = (request, response) => {
+    console.log("checking current: " + request.headers['authorization'] );
+    if( ! request.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+  
     var user=0;
     jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
@@ -1579,6 +1665,18 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
  }
 
  const see_more_recommendations_drawings = (request, response) => {
+  console.log("checking current: " + request.headers['authorization'] );
+  if( ! request.headers['authorization'] ) {
+    return res.status(401).json({msg: "error"});
+  }
+  else {
+    let val=request.headers['authorization'].replace(/^Bearer\s/, '')
+    let user= get_current_user(val)
+    if(!user){
+      return res.status(401).json({msg: "error"});
+    }
+  }
+
   var user=0;
   jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
     user=decoded.id;
