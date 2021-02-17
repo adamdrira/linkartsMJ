@@ -21,6 +21,17 @@ module.exports = (router, favorites,users) => {
 
     
     router.post('/get_all_favorites_by_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_all_favorites_by_user")
         
         const Op = Sequelize.Op;
@@ -90,6 +101,17 @@ module.exports = (router, favorites,users) => {
  
 
     router.post('/get_total_favorites_gains_by_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_total_favorites_gains_by_user")
         
         let current_user = get_current_user(req.cookies.currentUser);
@@ -118,6 +140,17 @@ module.exports = (router, favorites,users) => {
     });
 
     router.post('/get_total_favorites_gains_by_users_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_total_favorites_gains_by_users_group")
         const Op = Sequelize.Op;
         let current_user = get_current_user(req.cookies.currentUser);
