@@ -694,7 +694,7 @@ export class ChatComponent implements OnInit  {
         if(this.can_show_send_icon){
           this.show_send_icon=true;
         }
-        file.withCredentials = false; 
+        file.withCredentials = true; 
         
       }
       console.log(this.attachments_name)
