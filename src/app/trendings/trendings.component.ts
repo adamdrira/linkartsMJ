@@ -1,8 +1,6 @@
 import { Component, OnInit, Input,ChangeDetectorRef } from '@angular/core';
-import {Renderer2} from '@angular/core';
 import { SimpleChanges } from '@angular/core';
 import { ChatService } from '../services/chat.service';
-import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
 import { BdSerieService } from '../services/comics_serie.service';
 import { Drawings_Onepage_Service } from '../services/drawings_one_shot.service';
@@ -10,7 +8,6 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { ConstantsService } from '../services/constants.service';
 import { Trending_service } from '../services/trending.service';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -54,6 +51,7 @@ export class TrendingsComponent implements OnInit {
     private Writing_Upload_Service:Writing_Upload_Service,
     private Trending_service:Trending_service,
     private cd:ChangeDetectorRef,
+    private Profile_Edition_Service:Profile_Edition_Service,
 
     ) { }
 
@@ -88,6 +86,14 @@ export class TrendingsComponent implements OnInit {
   
 
   ngOnInit() {
+
+    this.Profile_Edition_Service.get_current_user().subscribe(r=>{
+      if(r[0].id==1){
+        this.Trending_service.get_trendings_for_tomorrow().subscribe(r=>{
+          console.log(r)
+        })
+      }
+    })
 
     console.log(this.route.snapshot.data['section'])
     this.subcategory = (this.route.snapshot.data['section'])?this.route.snapshot.data['section']:0;
