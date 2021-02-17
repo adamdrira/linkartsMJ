@@ -1697,10 +1697,15 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_comics_variable = (n<6)?n:6;
-        this.number_of_lines_comics=1;
       }
       else{
         this.number_of_comics_variable = 6;
+      }
+
+      if(this.list_titles_albums_bd_added.length>3){
+        this.number_of_lines_comics=1;
+      }
+      else{
         this.number_of_lines_comics=2;
       }
       
@@ -1815,10 +1820,15 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/210);
       if(n>3){
         this.number_of_drawings_variable = (n<6)?n:6;
-        this.number_of_lines_drawings=1;
       }
       else{
         this.number_of_drawings_variable = 6;
+      }
+
+      if(this.list_titles_albums_drawings_added.length>3){
+        this.number_of_lines_drawings=1;
+      }
+      else{
         this.number_of_lines_drawings=2;
       }
       
@@ -2095,12 +2105,20 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_writings_variable = (n<6)?n:6;
-        this.number_of_lines_writings=1;
+        
       }
       else{
         this.number_of_writings_variable = 6;
+       
+      }
+
+      if(this.list_titles_albums_writings_added.length>3){
+        this.number_of_lines_writings=1;
+      }
+      else{
         this.number_of_lines_writings=2;
       }
+      
       this.got_number_of_writings_to_show=true;
      
       
