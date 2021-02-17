@@ -30,6 +30,17 @@ function get_current_user(token){
 };
 
 router.post('/add_primary_information_report', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let current_user = get_current_user(req.cookies.currentUser);
   console.log("add_primary_information_report")
 
@@ -322,6 +333,17 @@ router.post('/add_primary_information_report', function (req, res) {
 
 
 router.post('/check_if_content_reported', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   console.log("check_if_content_reported")
   let current_user = get_current_user(req.cookies.currentUser);
   const publication_category = req.body.publication_category;
@@ -390,6 +412,17 @@ router.post('/check_if_content_reported', function (req, res) {
 
 
 router.post('/cancel_report', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   console.log("cancel_report")
   let current_user = get_current_user(req.cookies.currentUser);
   const publication_category = req.body.publication_category;
@@ -642,7 +675,11 @@ router.post('/cancel_report', function (req, res) {
 
 
 router.post('/upload_attachments_reports/:attachment_number/:id_report/:file_name', function (req, res) {
+
   var current_user = get_current_user(req.cookies.currentUser);
+  if(!current_user){
+    return res.status(401).json({msg: "error"});
+  }
   var id_report = parseInt(req.params.id_report);
   var attachment_number=parseInt(req.params.attachment_number)+1;
   
