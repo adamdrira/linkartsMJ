@@ -31,6 +31,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_drawing_one_page', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     const highlight = req.body.highlight;
     const title = req.body.Title;
@@ -84,6 +95,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     
     router.post('/change_oneshot_drawing_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.body.drawing_id;
       let status=req.body.status;
@@ -112,6 +134,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   });
 
   router.get('/retrieve_private_oneshot_drawings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
          drawings_one_page.findAll({
@@ -134,6 +167,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     
   router.post('/update_filter_color_drawing_onepage', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     let color = req.body.color;
     let drawing_id = req.body.drawing_id;
@@ -165,6 +209,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
   //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_drawing_one_page', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
 
@@ -202,6 +257,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     });
 
     router.post('/modify_drawing_one_page2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
   
   
@@ -294,7 +360,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     //on post l'image uploadée
     router.post('/upload_drawing_onepage/:drawing_id',  function (req, res) {
+
       let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var drawing_name ='';
       const PATH1= './data_and_routes/drawings_one_page';
       let storage = multer.diskStorage({
@@ -369,6 +439,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_drawing_from_data/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let drawing_id = req.params.drawing_id
         drawings_one_page.findOne({
@@ -404,6 +485,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
       //on supprime le fichier du dossier date/pages_bd_onshot
       router.delete('/remove_drawing_onepage_from_folder/:drawing_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         fs.access('./data_and_routes/drawings_one_page' + req.params.name, fs.F_OK, (err) => {
           if(err){
             //console.log('suppression already done');
@@ -426,6 +518,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     
       
     router.post('/send_drawing_height_one_shot', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.body.drawing_id;
       let height=req.body.height;
@@ -454,8 +557,11 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
     //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/add_cover_drawing_onepage_tofolder', function (req, res) {
-      console.log("add_cover_drawing_onepage_tofolder")
+
     let current_user = get_current_user(req.cookies.currentUser);
+    if(!current_user){
+      return res.status(401).json({msg: "error"});
+    }
     var filename = ''
     let PATH = './data_and_routes/covers_drawings/';
     var storage = multer.diskStorage({
@@ -508,6 +614,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
       //on ajoute le nom de la coverpage dans la base de donnée
   router.post('/add_cover_drawing_onepage_todatabase', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     const name = req.body.name;
@@ -549,6 +666,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
       //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
       router.delete('/remove_cover_drawing_from_folder/:name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         fs.access('./data_and_routes/covers_drawings/' + req.params.name, fs.F_OK, (err) => {
           if(err){
             //console.log('suppression already done');
@@ -573,6 +701,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
       //on valide l'upload
   router.post('/validation_upload_drawing_onepage', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     (async () => {
@@ -614,6 +753,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     
                    //on valide l'upload
   router.get('/retrieve_drawing_onepage_info_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
    
 
@@ -638,6 +788,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
 
 
    router.post('/get_number_of_drawings_oneshot', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
      //console.log("get_number_of_drawings_oneshot")
     const id_user= req.body.id_user;
     let date_format=req.body.date_format;
@@ -685,6 +846,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   });
  
     router.get('/retrieve_drawing_info_onepage_by_id/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
      
   
@@ -746,6 +918,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
       
 
     router.get('/retrieve_drawing_info_onepage_by_id2/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       let current_user = get_current_user(req.cookies.currentUser);
   
@@ -806,6 +989,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
     });
     
   router.get('/retrieve_drawing_thumbnail_picture/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       let filename = "./data_and_routes/covers_drawings/" + req.params.file_name ;
       fs.readFile( path.join(process.cwd(),filename), function(e,data){
@@ -823,6 +1017,17 @@ module.exports = (router, drawings_one_page,list_of_users,trendings_contents) =>
   });
 
   router.get('/retrieve_drawing_onepage_by_name/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         let filename = "./data_and_routes/drawings_one_page/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
