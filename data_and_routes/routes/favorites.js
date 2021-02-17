@@ -72,7 +72,8 @@ function get_current_user(token){
     console.log(Number(dd))
     const date = yyyy.toString() + '-' +  mm  + '-' + dd;
     
-
+    var six_months = new Date();
+    six_months.setDate(six_months.getDate() - 180);
 
   
     console.log(date)
@@ -96,9 +97,11 @@ function get_current_user(token){
       }
     })
 
+   
+
     function generate_favorites(){
       console.log("generate favorites")
-      pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels"], (error, results) => {
+      pool.query(' SELECT * FROM users WHERE type_of_account=$1 OR type_of_account=$2 OR type_of_account=$3 OR type_of_account=$4 OR type_of_account=$5 AND "createdAt" ::date >= $6 ORDER BY subscribings_number DESC',["Artiste","Artistes","Artiste professionnel","Artiste professionnelle","Artistes professionnels",six_months], (error, results) => {
         if (error) {
           console.log(err)
           response.status(500).send([{error:err}])
@@ -372,10 +375,10 @@ function get_current_user(token){
               let html=''
               if(Number(dd)==1){
                 html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
-                <p> Vous avez atteint le top <b>coups de cœurs</b> du jour. Et puisque nous sommes le 1er du mois vous recevrai un gain bonus ! Le montant de ce gain est disponible dans la section "rémunération" de votre compte</p>
+                <p> Vous avez atteint le top <b>coups de cœur</b> du jour. Et puisque nous sommes le 1er du mois vous recevrai un gain bonus ! Le montant de ce gain est disponible dans la section "rémunération" de votre compte</p>
                   
                 <ul>
-										<li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top <b>coups de cœurs</b> du jour</li>
+										<li><a href="https://linkarts.fr/favorites"> Cliquer ici</a> pour voir le top <b>coups de cœur</b> du jour</li>
 										<li><a href="https://linkarts.fr/account/${list_of_users[i].nickname}/${list_of_users[i].id}/my_account"> Cliquer ici</a> pour consuler mon compte.</li>
                 </ul>
                   <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
@@ -383,7 +386,7 @@ function get_current_user(token){
               }
               else{
                 html = `<p> Félicitation ${list_of_users[i].firstname} !</p>
-                 <p>Vous avez atteint le top <b>coups de cœurs</b> du jour. Si vous atteignez ce top le premier du mois vous en serez recevrez un gain bonus. Continuez ainsi !</p>
+                 <p>Vous avez atteint le top <b>coups de cœur</b> du jour. Si vous atteignez ce top le premier du mois vous en serez recevrez un gain bonus. Continuez ainsi !</p>
                   <p><a href="https://linkarts.fr/trendings/comics"> Cliquer ici pour voir les tendances</a></p>
                   <p>L'équipe de LinkArts.</p>`
               }
