@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
-const multer = require('multer');
-const fs = require('fs');
-var path = require('path');
+
 
 
 
@@ -21,6 +19,17 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
 
     
     router.post('/check_if_user_has_trendings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         const Op = Sequelize.Op;
         const  id_user = req.body.id_user;
         trendings_contents.findAll({
@@ -90,6 +99,17 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
     })
 
     router.post('/get_all_trendings_by_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_all_trendings_by_user")
         
         const Op = Sequelize.Op;
@@ -253,6 +273,17 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
     
 
     router.post('/get_total_trendings_gains_by_user', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_total_trendings_gains_by_user")
         
         let current_user = get_current_user(req.cookies.currentUser);
@@ -281,6 +312,17 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
     });
 
     router.post('/get_total_trendings_gains_by_users_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_total_trendings_gains_by_users_group")
         
         let current_user = get_current_user(req.cookies.currentUser);
@@ -314,6 +356,17 @@ module.exports = (router, trendings_comics,trendings_drawings,trendings_writings
     
 
     router.post('/get_date_of_trendings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         var today = new Date();
   
         var dd = String(today.getDate()).padStart(2, '0');
