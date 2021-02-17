@@ -1,9 +1,4 @@
 
-<!--<div class="loading-page" *ngIf="!comics_trendings_sorted_confirmation && !drawings_trendings_sorted_confirmation && !writings_trendings_sorted_confirmation">
-    <mat-spinner diameter="50" ></mat-spinner>
-</div>-->
-
-
 
 <div class="panel-background">
     <div class="logos-container" [@enterFromTopAnimation]>
@@ -26,6 +21,15 @@
 <div class="trendings-global-container">
         
 
+    <div class="account-form-container">
+        <div class="form-item"  [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>{{explication}}</mat-label>
+                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{explication}}</textarea>
+            </mat-form-field>
+        </div>
+        
+    </div>
 
     <ng-container *ngIf=" (!comics_trendings_sorted_confirmation && subcategory==0) || (!drawings_trendings_sorted_confirmation && subcategory==1) || ( !writings_trendings_sorted_confirmation && subcategory==2)">
         <div class="ranked-thumbnail-container" *ngFor="let item of skeleton_array; let i = index">

@@ -84,6 +84,10 @@ export class UploaderBdCoverComponent implements OnInit {
   @Input('thumbnail_picture') thumbnail_picture: string;
   ngOnChanges(changes: SimpleChanges) {
 
+    if(changes.description && this.description){
+      this.description = this.description.slice(0,290);
+      this.cd.detectChanges();
+    }
     if( changes.category && this.category && !this.for_edition ) {
 
       this.cd.detectChanges();
@@ -101,6 +105,7 @@ export class UploaderBdCoverComponent implements OnInit {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg,#8051a7,#d262a5)" );
       }
 
+      
       this.cd.detectChanges();
 
     }

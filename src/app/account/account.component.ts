@@ -1697,13 +1697,15 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_comics_variable = (n<6)?n:6;
+        this.number_of_lines_comics=1;
       }
       else{
         this.number_of_comics_variable = 6;
+        this.number_of_lines_comics=2;
       }
       
       this.got_number_of_comics_to_show=true;
-      this.number_of_lines_comics=1;
+     
     
       
       this.compteur_number_of_comics= this.number_of_comics_variable*this.number_of_lines_comics;
@@ -1813,13 +1815,15 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/210);
       if(n>3){
         this.number_of_drawings_variable = (n<6)?n:6;
+        this.number_of_lines_drawings=1;
       }
       else{
         this.number_of_drawings_variable = 6;
+        this.number_of_lines_drawings=2;
       }
       
       this.got_number_of_drawings_to_show=true;
-      this.number_of_lines_drawings=1;
+      
       
       
       this.compteur_number_of_drawings= this.number_of_drawings_variable*this.number_of_lines_drawings;
@@ -2091,12 +2095,14 @@ export class AccountComponent implements OnInit {
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_writings_variable = (n<6)?n:6;
+        this.number_of_lines_writings=1;
       }
       else{
         this.number_of_writings_variable = 6;
+        this.number_of_lines_writings=2;
       }
       this.got_number_of_writings_to_show=true;
-      this.number_of_lines_writings=1;
+     
       
       
       this.compteur_number_of_writings= this.number_of_writings_variable*this.number_of_lines_writings;

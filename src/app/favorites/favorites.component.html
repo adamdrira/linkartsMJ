@@ -1,5 +1,15 @@
 <div class="trendings-global-container">
+
+    
+    <div class="account-form-container">
+        <div class="form-item"  [@enterAnimation]>
+            <mat-form-field floatLabel='never'>
+                <mat-label>{{explication_favorites}}</mat-label>
+                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{explication_favorites}}</textarea>
+            </mat-form-field>
+        </div>
         
+    </div>
 
     <ng-container *ngIf="!favorites_retrieved">
         <ng-container *ngFor="let item of skeleton_array; let i = index">

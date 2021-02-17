@@ -125,7 +125,7 @@
                                     
                     <div class="form-item input-multiple-lines">
                         <mat-form-field floatLabel='never'
-                        matTooltip="Seuls les 300 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
+                        matTooltip="Seuls les 290 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
                         matTooltipClass='tooltip-add-artwork' 
                         [matTooltipPosition]="'below'"
                         [matTooltipShowDelay]="100">
@@ -191,19 +191,19 @@
 
                             <app-uploader-bd-cover
 
-                                author_name={{author_name}}
-                                pseudo={{pseudo}}
+                                [author_name]="author_name"
+                                [pseudo]="pseudo"
                                 primary_description={{primary_description}}
                                 [profile_picture]=profile_picture
                                 [bd_id]=bd_id
-                                firsttag={{f00.value.f00Tags[0]}}
-                                secondtag={{f00.value.f00Tags[1]}}
-                                thirdtag={{f00.value.f00Tags[2]}}
+                                [firsttag]="f00.value.f00Tags[0]"
+                                [secondtag]="f00.value.f00Tags[1]"
+                                [thirdtag]="f00.value.f00Tags[2]"
 
-                                name={{f00.value.f00Title}} 
-                                description={{f00.value.f00Description}}
-                                category={{f00.value.f00Category}}
-                                format={{f00.value.f00Format}}
+                                [name]="f00.value.f00Title" 
+                                [description]="f00.value.f00Description"
+                                [category]="f00.value.f00Category"
+                                [format]="f00.value.f00Format"
                             ></app-uploader-bd-cover>
 
                         </div>

@@ -98,7 +98,7 @@
             
                 <div class="form-item input-multiple-lines" style="height:unset !important;">
                     <mat-form-field floatLabel='never'
-                    matTooltip="Seuls les 300 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
+                    matTooltip="Seuls les 290 premiers caractères seront visibles dans votre miniature. Le rendu est visible ci-dessous." 
                     matTooltipClass='tooltip-add-artwork' 
                     [matTooltipPosition]="'below'"
                     [matTooltipShowDelay]="100">
@@ -164,18 +164,18 @@
                         <app-uploader-cover-writing
                             author_name={{author_name}} 
                             primary_description={{primary_description}}
-                            pseudo={{pseudo}}
+                            pseudo=pseudo}}
                             [profile_picture]=profile_picture
                             [writing_id]=writing_id
-                            firsttag={{fw.value.fwTags[0]}}
-                            secondtag={{fw.value.fwTags[1]}}
-                            thirdtag={{fw.value.fwTags[2]}}
+                            [firsttag]="fw.value.fwTags[0]"
+                            [secondtag]="fw.value.fwTags[1]"
+                            [thirdtag]="fw.value.fwTags[2]"
 
-                            name={{fw.value.fwTitle}} 
-                            description={{fw.value.fwDescription}}
-                            category={{fw.value.fwCategory}}
-                            format={{fw.value.fwFormat}}>
-                        </app-uploader-cover-writing>
+                            [name]="fw.value.fwTitle" 
+                            [description]="fw.value.fwDescription"
+                            [category]="fw.value.fwCategory"
+                            [format]="fw.value.fwFormat"
+                        ></app-uploader-cover-writing>
 
                     </div>
                 </div>

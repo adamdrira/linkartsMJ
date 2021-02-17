@@ -1,9 +1,5 @@
-import { Component, OnInit, Input, SimpleChange, ChangeDetectorRef } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
-import { SimpleChanges } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
+import { Renderer2} from '@angular/core';
 import { ChatService } from '../services/chat.service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { BdOneShotService } from '../services/comics_one_shot.service';
@@ -13,7 +9,6 @@ import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Writing_Upload_Service } from '../services/writing.service';
 import { NotificationsService } from '../services/notifications.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
-import { Subscribing_service } from '../services/subscribing.service';
 import { Trending_service } from '../services/trending.service';
 import { Favorites_service } from '../services/favorites.service';
 import { ActivatedRoute } from '@angular/router';
@@ -39,20 +34,11 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class FavoritesComponent implements OnInit {
 
   constructor(
-    private rd: Renderer2,
     public route: ActivatedRoute, 
     private Trending_service:Trending_service,
     private NotificationsService:NotificationsService,
-    private Community_recommendation:Community_recommendation,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService,
-    private Profile_Edition_Service:Profile_Edition_Service,
     private ChatService:ChatService,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Writing_Upload_Service:Writing_Upload_Service,
     private Favorites_service:Favorites_service,
-    private cd:ChangeDetectorRef,
     ) { }
 
   subcategory: number = 0; 
@@ -63,6 +49,7 @@ export class FavoritesComponent implements OnInit {
   list_of_users=[];
   favorites_retrieved=false;
   skeleton:boolean=true;
+  explication_favorites="Bienvenue dans la section Coups de cœur ! Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque premier jour du mois une rémunération bonus est attribuée aux 15 premiers artistes de ce classement. Si vous êtres un arites et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faie parti de ce classement !"
 
   ngOnInit() {
 

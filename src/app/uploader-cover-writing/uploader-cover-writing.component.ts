@@ -88,7 +88,10 @@ export class UploaderCoverWritingComponent implements OnInit {
   pp_loaded=false;
   ngOnChanges(changes: SimpleChanges) {
     
-
+    if(changes.description && this.description){
+      this.description = this.description.slice(0,290);
+      this.cd.detectChanges();
+    }
     if( changes.category && this.category  && !this.for_edition) {
       console.log(this.category )
       this.cd.detectChanges();
@@ -108,7 +111,7 @@ export class UploaderCoverWritingComponent implements OnInit {
       else if( this.category == "Poetry" || this.category == "Poésie" ) {
         this.rd.setStyle( this.thumbnailVerso.nativeElement, "background", "linear-gradient(-220deg, #fd3c59, #e6a483)" );
       }
-
+      
       this.cd.detectChanges();
 
     }
