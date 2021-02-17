@@ -18,13 +18,13 @@ var compression = require('compression')
   app.use(session({secret:'zz',resave:true,saveUninitialized:true}))
   app.use(cookieParser());
   app.use(bodyParser.json())
-  app.use(compression())
+  //app.use(compression())
   //Réglage des headers
   app.set('trust proxy', 'loopback') // specify a single subnet
   app.use(function(req, res, next) {
     
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("Access-Control-Allow-Origin", ["http://localhost:4200","ipify.org"]); 
+    res.setHeader("Access-Control-Allow-Origin", ["http://localhost:4200"]); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     //pour l'upload de contenus
@@ -32,11 +32,11 @@ var compression = require('compression')
   });
   //Peut-être que cette partie est un doublons des headers précedents
   const corsOptions = {
-    origin: ['http://localhost:4200',"ipify.org"],
+    origin: ['http://localhost:4200'],
     optionsSuccessStatus: 200
   };
   app.use(cors(corsOptions));
-
+  
   console.log("lancement prod");
   app.use(express.static(path.join(__dirname, 'dist'))); //pour lancer angular en mode production
   app.use('/routes', routes); //le fichier routes.js va s'occuper de gérer les routes à partir d'ici 
@@ -55,6 +55,8 @@ var compression = require('compression')
     else{
       return res.sendFile(path.join(__dirname, 'dist/linkarts/index.html'))
     }
+    
+  
    
   })
 
