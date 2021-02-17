@@ -6,22 +6,22 @@ var path = require('path');
 const jwt = require('jsonwebtoken');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
-const pool = new Pool({
+/*const pool = new Pool({
     port: 5432,
     database: 'linkarts',
     user: 'adamdrira',
     password: 'E273adamZ9Qvps',
     host: 'localhost',
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   port: 5432,
   database: 'linkarts',
   user: 'postgres',
   password: 'test',
   host: 'localhost',
   //dialect: 'postgres'
-});*/
+});
 
 pool.connect((err, client, release) => {
     if (err) {
@@ -50,6 +50,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
       }
 
     router.get('/get_most_researched_navbar/:category/:status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let category = req.params.category;
         let status1 = req.params.status;
         let status2="clicked_after_research";
@@ -91,6 +102,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     
 
     router.get('/get_last_researched_navbar/:category', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let category = req.params.category;
         let status="clicked_after_research"
         let id_user = get_current_user(req.cookies.currentUser);
@@ -130,6 +152,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
   
      
     router.get('/get_specific_propositions_navbar/:category/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        
         let id_user = get_current_user(req.cookies.currentUser);
         let category = req.params.category;
@@ -171,6 +204,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
     
     router.get('/get_global_propositions_navbar/:category/:text/:limit', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let category = req.params.category;
         let limit = parseInt(req.params.limit);
@@ -211,6 +255,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
     router.get('/get_global_tags_propositions_navbar/:category/:text/:limit', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let category = req.params.category;
         let limit = req.params.limit;
@@ -278,6 +333,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     })
 
     router.get('/get_number_of_results_for_categories/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let text=(req.params.text).toLowerCase();
@@ -316,6 +382,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('get_styles_and_tags/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let text=(req.params.text).toLowerCase();
@@ -338,6 +415,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_number_of_results_by_category/:category/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let category =req.params.category;
@@ -359,6 +447,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_number_of_results_by_category1/:category/:text/:first_filter', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
@@ -383,6 +482,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_number_of_results_by_category2/:category/:text/:second_filter/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let second_filter =req.params.second_filter;
@@ -440,6 +550,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_number_of_results_by_category3/:category/:text/:first_filter/:second_filter/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
@@ -499,6 +620,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
     router.get('/get_propositions_after_research_navbar/:category/:text/:limit/:offset', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -524,6 +656,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_propositions_after_research_navbar1/:category/:text/:limit/:offset/:first_filter', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -551,6 +694,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
     router.get('/get_propositions_after_research_navbar2/:category/:text/:limit/:offset/:second_filter/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -664,6 +818,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_propositions_after_research_navbar3/:category/:text/:limit/:offset/:first_filter/:second_filter/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -786,6 +951,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     // research by style and tage
 
     router.get('/get_number_of_results_by_category_sg/:category/:first_filter', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
@@ -807,6 +983,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_number_of_results_by_category_sg1/:category/:first_filter/:second_filter/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let first_filter = (req.params.first_filter=== "Poésie") ? "Poetry": (req.params.first_filter === "Scénario") ? "Scenario" : (req.params.first_filter === "Roman illustré") ? "Illustrated novel" : req.params.first_filter;
@@ -910,6 +1097,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.get('/get_propositions_after_research_navbar_sg/:category/:first_filter/:limit/:offset', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -934,6 +1132,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
 
 
     router.get('/get_propositions_after_research_navbar_sg1/:category/:first_filter/:second_filter/:limit/:offset/:type_of_target', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let status="clicked";
         let limit = parseInt(req.params.limit);
@@ -1047,6 +1256,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
    
     //add,delete check
     router.post('/add_main_research_to_history', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let publication_category = req.body.publication_category;
         let format = req.body.format;
@@ -1436,6 +1656,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     
 
     router.post('/delete_research_from_navbar', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let publication_category = req.body.publication_category;
         let format = req.body.format;
         let target_id = req.body.target_id;
@@ -1458,6 +1689,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     })
 
     router.post('/check_if_research_exists', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let publication_category = req.body.publication_category;
         let format = req.body.format;
@@ -1494,6 +1736,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     
 
     router.delete('/delete_click_after_ressearch_from_history/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let text = (req.params.text).toLowerCase();
         list_of_navbar_researches.destroy({
@@ -1511,6 +1764,17 @@ module.exports = (router, list_of_navbar_researches,list_of_subscribings, list_o
     });
 
     router.delete('/delete_publication_from_research/:publication_category/:format/:target_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let publication_category=req.params.publication_category;
         let format=req.params.format;
