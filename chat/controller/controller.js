@@ -23,6 +23,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
     
     router.get('/get_list_of_users_I_talk_to', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
         list_of_chat_friends.findAll({
@@ -235,6 +246,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      })
 
      router.get('/get_list_of_spams', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
         list_of_chat_spams.findAll({
@@ -260,6 +282,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
      
      router.get('/get_first_messages/:id_1/:id_2/:id_chat_section/:is_a_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         const id_user= parseInt(req.params.id_1);
         const id_friend= parseInt(req.params.id_2);
         const id_chat_section= parseInt(req.params.id_chat_section);
@@ -337,6 +370,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      
 
      router.post('/get_last_friends_message', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const list_of_friends_ids= req.body.data;
         const Op = Sequelize.Op;
@@ -372,6 +416,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
     
     router.post('/let_all_friend_messages_to_seen', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const id_friend=req.body.id_user;
         const id_chat_section =req.body.id_chat_section;
@@ -496,6 +551,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
     
     router.post('/get_my_real_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let data = req.body.data;
         const Op = Sequelize.Op;
@@ -527,6 +593,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      
 
      router.post('/check_if_is_related', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let id_user = get_current_user(req.cookies.currentUser);
         let id_friend = req.body.id;
         const Op = Sequelize.Op;
@@ -571,6 +648,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      
 
      router.post('/check_if_response_exist', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_chat_section= req.body.id_chat_section;
       let id_friend = req.body.id;
@@ -625,6 +713,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
      
    
    router.post('/add_to_chat_searchbar_history', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     const id_receiver=req.body.id_receiver;
@@ -668,6 +767,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
    })
 
      router.get('/get_first_searching_propositions', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       var list_of_users_to_send=[];
@@ -740,6 +850,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
    });
 
    router.get('/get_chat_history', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     const Op = Sequelize.Op;
     let list_of_history=[];
@@ -799,6 +920,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
    
    router.get('/get_searching_propositions/:text/:is_for_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let text = (req.params.text).toLowerCase();
     let is_for_chat=req.params.is_for_chat;
@@ -954,6 +1086,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
   router.get('/get_all_searching_propositions/:text/:is_for_chat/:limit/:offset', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let text = (req.params.text).toLowerCase();
     let is_for_chat=req.params.is_for_chat;
@@ -1258,6 +1401,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   });
 
   router.get('/get_searching_propositions_group/:text', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let text = (req.params.text).toLowerCase();
     const Op = Sequelize.Op;
@@ -1287,6 +1441,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   
 
   router.get('/research_chat_sections/:text/:id_friend/:is_a_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let text = (req.params.text).toLowerCase();
     let id_friend =parseInt(req.params.id_friend);
@@ -1332,6 +1497,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   });
   
   router.post('/add_spam_to_contacts', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend= req.body.id;
     const Op = Sequelize.Op;
@@ -1365,6 +1541,14 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
   });
 
   router.post('/chat_sending_images', function (req, res) {
+
+    let current_user = get_current_user(req.cookies.currentUser);
+    console.log("cookies curre")
+    if(!current_user){
+      console.log(current_user)
+      console.log(req.cookies)
+      return res.status(401).json({msg: "error"});
+    }
     let file_name = req.headers.file_name;
     const PATH2= './data_and_routes/chat_images';
     let storage2 = multer.diskStorage({
@@ -1400,6 +1584,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
     router.get('/get_picture_sent_by_msg/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       let file_name=req.params.file_name;
 
@@ -1419,6 +1614,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
     router.get('/get_attachment/:file_name/:friend_type/:friend_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let file_name=req.params.file_name;
       let friend_type=req.params.friend_type;
       let friend_id=parseInt(req.params.friend_id);
@@ -1439,6 +1645,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     });
 
     router.get('/check_if_file_exists/:friend_type/:friend_id/:attachment_name/:value', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       let attachment_name=req.params.attachment_name;
       let value=parseInt(req.params.value);
@@ -1495,6 +1712,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
     router.post('/upload_attachments_for_chat/:friend_type/:friend_id/:name', function (req, res) {
+
       var attachment_name=req.headers.attachment_name;
       //console.log(" we are uploading a file");
       //console.log(attachment_name)
@@ -1507,7 +1725,10 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
       console.log(attachment_name)
       console.log(friend_type)
       console.log(friend_id)
-      const PATH= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/${name}/`;
+      var current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
       console.log(PATH2)
       let storage = multer.diskStorage({
@@ -1557,6 +1778,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
     
 
     router.get('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend = parseInt(req.params.friend_id);
       let id_chat_section = parseInt(req.params.id_chat_section);
@@ -1601,6 +1833,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
    });
 
    router.get('/get_size_of_pictures/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = parseInt(req.params.friend_id);
     let id_chat_section = parseInt(req.params.id_chat_section);
@@ -1645,6 +1888,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
     router.get('/get_all_files/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend = parseInt(req.params.friend_id);
       let id_chat_section = parseInt(req.params.id_chat_section);
@@ -1710,6 +1964,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
    });
 
    router.get('/get_all_pictures/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = parseInt(req.params.friend_id);
     let id_chat_section = parseInt(req.params.id_chat_section);
@@ -1775,6 +2040,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
  router.post('/delete_message/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   console.log("delete_message")
   let id=parseInt(req.params.id);
   console.log(id);
@@ -1906,6 +2182,17 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
 
 router.post('/add_emoji_reaction', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let current_user = get_current_user(req.cookies.currentUser).toString();
   let type_of_user=req.body.type_of_user;
   let id = req.body.id;
@@ -1984,6 +2271,17 @@ router.post('/add_emoji_reaction', function (req, res) {
 });
 
 router.post('/delete_emoji_reaction', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let current_user = get_current_user(req.cookies.currentUser);
   let id = req.body.id;
   let type_of_user=req.body.type_of_user;
@@ -2030,6 +2328,17 @@ router.post('/delete_emoji_reaction', function (req, res) {
 
 
 router.post('/get_other_messages', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   const id_user = get_current_user(req.cookies.currentUser);
   const id_friend= req.body.id_friend;
   const id_chat_section= req.body.id_chat_section;
@@ -2125,6 +2434,17 @@ router.post('/get_reactions_by_user',function(req,res){
 })
 
 router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   const id_user = get_current_user(req.cookies.currentUser);
   const id_friend= parseInt(req.params.id_friend);
   const id_chat_section= parseInt(req.params.id_chat_section);
@@ -2179,6 +2499,17 @@ router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_sectio
 
 
 router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   const id_user = get_current_user(req.cookies.currentUser);
   const id_friend= parseInt(req.params.id_friend);
   const id_first_message= parseInt(req.params.id_first_message);
@@ -2282,6 +2613,17 @@ router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id
         
 
 router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend= parseInt(req.params.id_friend);
   let id_chat_section= parseInt(req.params.id_chat_section);
@@ -2335,6 +2677,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
   
   router.get('/get_messages_around/:id_message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend= parseInt(req.params.id_friend);
     let id_chat_section= parseInt(req.params.id_chat_section);
@@ -2458,6 +2811,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     
 
     router.get('/get_chat_sections/:id_friend/:is_a_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend= parseInt(req.params.id_friend);
       let is_a_group_chat=(req.params.is_a_group_chat=='true')?true:false;
@@ -2499,6 +2863,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       });
 
     router.post('/add_chat_section', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend= req.body.id_friend;
       let chat_section= req.body.chat_section;
@@ -2625,6 +3000,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
       
     router.delete('/delete_chat_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_chat_section = parseInt(req.params.id_chat_section);
       let id_friend=parseInt(req.params.id_friend);
@@ -2742,6 +3128,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     
 
     router.get('/get_notifications_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       console.log("get_notifications_section")
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend= parseInt(req.params.id_friend);
@@ -2809,6 +3206,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
     
     router.post('/create_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let name= req.body.name;
       let list_of_ids= req.body.list_of_ids;
@@ -2855,6 +3263,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     });
 
     router.get('/retrieve_chat_profile_picture/:chat_profile_pic_name/:origin', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         const chat_profile_pic_name = req.params.chat_profile_pic_name;
         const origin =req.params.origin;
@@ -2894,6 +3313,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     });
 
     router.get('/get_group_chat_name/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id= req.params.id;
       list_of_chat_groups.findOne({
           where:{
@@ -2908,6 +3338,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       });
 
     router.post('/get_group_chat_as_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_receiver= req.body.id_receiver;
       //console.log(id_receiver)
       //console.log("get_group_chat_as_friend")
@@ -2925,6 +3366,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
       });
 
     router.get('/get_the_group_creator/:id_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id= parseInt(req.params.id_friend);
       list_of_chat_groups.findOne({
           where:{
@@ -2941,6 +3393,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
      
       
     router.post('/exit_group_chat', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let id_user = get_current_user(req.cookies.currentUser);
       let id_receiver= req.body.id_receiver;
       const Op = Sequelize.Op;
@@ -3077,6 +3540,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
 
     router.get('/get_my_list_of_groups', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       list_of_chat_groups.findAll({
@@ -3098,6 +3572,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
     
 
     router.post('/get_list_of_groups_I_am_in', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let list_of_ids=req.body.list_of_ids;
       let friends=[];
@@ -3131,6 +3616,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
    });
 
    router.post('/get_last_friends_groups_message', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     const list_of_friends_ids= req.body.data;
     const Op = Sequelize.Op;
@@ -3166,6 +3662,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
  
 
  router.post('/get_my_last_real_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let list_of_groups_ids = req.body.list_of_groups_ids;
         let friend_id = req.body.friend_id;
@@ -3245,10 +3752,14 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
 
    router.post('/modify_chat_profile_pic/:id_receiver', function (req, res) {
+
     //console.log("adding pp")
-      let current_user = get_current_user(req.cookies.currentUser);
+      
       let id_receiver=parseInt(req.params.id_receiver);
-      //console.log(id_receiver)
+      let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var filename = ''
       let PATH = './data_and_routes/chat_profile_pics/';
       //console.log(PATH)
@@ -3310,6 +3821,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
   
   router.post('/get_chat_first_propositions_add_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     const friend_id= req.body.friend_id;
     const Op = Sequelize.Op;
@@ -3384,6 +3906,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
   
 
   router.post('/get_chat_propositions_add_friend', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_user = get_current_user(req.cookies.currentUser);
     const text= (req.body.text).toLowerCase();
     let list_of_words=text.split(" ");
@@ -3489,6 +4022,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
  
  
   router.post('/add_new_friends_to_a_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log("add_new_friends_to_a_group");
     let current_user = get_current_user(req.cookies.currentUser);
     let list_of_friends = req.body.list_of_friends;
@@ -3538,6 +4082,17 @@ router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:fr
 
 
 router.get('/get_chat_first_propositions_group', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let id_user = get_current_user(req.cookies.currentUser);
   const Op = Sequelize.Op;
   let list=[]
@@ -3615,6 +4170,17 @@ router.get('/get_chat_first_propositions_group', function (req, res) {
 
 
  router.get('/get_group_chat_information/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   let id_user = get_current_user(req.cookies.currentUser);
   const Op = Sequelize.Op;
   let id=parseInt(req.params.id);
