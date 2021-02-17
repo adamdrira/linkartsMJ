@@ -53,6 +53,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
     const highlight = req.body.highlight;
@@ -112,6 +123,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     });
 
     router.post('/add_total_pages_for_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       //console.log("add_total_pages_for_writing")
       const writing_id = req.body.writing_id;
@@ -150,6 +172,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
     //on supprime le fichier de la base de donnée postgresql
     router.delete('/remove_writing/:writing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     const writing_id=parseInt(req.params.writing_id);
     Liste_Writings.findOne({
@@ -188,6 +221,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
 
@@ -275,7 +319,11 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
       
     router.post('/upload_cover_writing', function (req, res) {
+
       let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var file_name='';
       const PATH2= './data_and_routes/covers_writings';
       let storage2 = multer.diskStorage({
@@ -325,9 +373,13 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
         //on ajoute la cover uploadée dans le dossier et on créer un cookie
     router.post('/upload_writing', function (req, res) {
+
       //console.log(req.headers.type);
       //console.log("pistache");
       let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var file_name='';
       const PATH1= './data_and_routes/writings';
       
@@ -376,6 +428,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
 
     router.post('/add_cover_writing_todatabase', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       
       const name = req.body.name;
@@ -405,6 +468,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
   
 
     router.post('/change_writing_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let writing_id=req.body.writing_id;
       let status=req.body.status;
@@ -435,6 +509,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
   });
 
   router.get('/retrieve_private_writings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     
           Liste_Writings.findAll({
@@ -457,6 +542,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
  
   
   router.delete('/remove_writing_cover_from_folder/:name_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("remove_writing_cover_from_folder");
     fs.access('./data_and_routes/covers_writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
@@ -479,6 +575,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
   //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
   router.delete('/remove_writing_from_folder/:name_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log('./data_and_routes/writings/' + req.params.name_writing);
     fs.access('./data_and_routes/writings/' + req.params.name_writing, fs.F_OK, (err) => {
       if(err){
@@ -501,6 +608,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
                      //on valide l'upload
   router.post('/validation_upload_writing', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     (async () => {
@@ -541,6 +659,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
                      //récupère toutes les bd selon l'auteur
   router.get('/retrieve_writings_information_by_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
     
 
@@ -565,6 +694,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     });
 
     router.post('/get_number_of_writings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       //console.log("get_number_of_writings")
       const id_user= req.body.id_user;
       let date_format=req.body.date_format;
@@ -614,6 +754,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
  
     router.get('/retrieve_writing_information_by_id/:writing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
      
   
@@ -671,6 +822,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
       });
 
       router.get('/retrieve_writing_information_by_id2/:writing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         let current_user = get_current_user(req.cookies.currentUser);
   
@@ -729,6 +891,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     
       
   router.get('/retrieve_writing_by_name/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         let filename = "./data_and_routes/writings/" + req.params.file_name;
         fs.readFile( path.join(process.cwd(),filename), function(e,data){
@@ -751,6 +924,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
   
 
   router.get('/retrieve_writing_for_options/:index', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("retrieve_writing_for_options")
     
     //0 conditions d'utilisation
@@ -760,10 +944,13 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
     //4cookies
     //5 précisions pour la monetization
     let index= parseInt(req.params.index)
-    let filename = "./data_and_routes/conditions/conditions_utilisation.pdf" ;
-    /*if(index==0){
-      filename += 'conditions_utilisation'
-    }*/
+    let filename = "./data_and_routes/conditions/" ;
+    if(index==0){
+      filename += 'only_conditions.pdf'
+    }
+    else if(index==5){
+      filename += 'only_for_remuneration.pdf'
+    }
     console.log(path.join(process.cwd(),filename))
     fs.readFile( path.join(process.cwd(),filename), function(e,data){
      
@@ -782,6 +969,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
   });
 
   router.get('/retrieve_thumbnail_writing_picture/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       const file_name = req.params.file_name;
       let filename = "./data_and_routes/covers_writings/" + file_name ;
@@ -802,6 +1000,17 @@ module.exports = (router, Liste_Writings,list_of_users,trendings_contents) => {
 
    //on supprime la cover du dossier data_and_routes/covers_bd_oneshot
    router.delete('/remove_last_cover_from_folder/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     
   
     const name_coverpage=req.params.file_name;
