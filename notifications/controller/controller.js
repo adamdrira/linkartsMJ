@@ -40,6 +40,17 @@ module.exports = (router,
         };
 
     router.get('/get_list_of_notifications', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("get_list_of_notifications")
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
@@ -64,6 +75,17 @@ module.exports = (router,
 
     
     router.post('/get_notifications_information', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("get_notifications_information")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
@@ -99,6 +121,17 @@ module.exports = (router,
 
     
     router.post('/add_notification', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("add_notification")
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
@@ -256,6 +289,17 @@ module.exports = (router,
 
 
     router.post('/add_notification_trendings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("add_notification_trendings")
         let current_user = get_current_user(req.cookies.currentUser);
         const type = req.body.type;
@@ -326,7 +370,18 @@ module.exports = (router,
     
 
     router.post('/add_notification_for_group_creation', function (req, res) {
-        //console.log("add_notification_for_group_creation")
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+        console.log("add_notification_for_group_creation")
         const type = req.body.type;
         const id_user = req.body.id_user;
         const publication_name=req.body.publication_name;
@@ -336,15 +391,15 @@ module.exports = (router,
         const id_user_name=req.body.id_user_name;
         const chapter_number = req.body.chapter_number;
         let list_of_receivers=req.body.list_of_receivers;
-        //console.log(type)
-        //console.log(id_user)
-        //console.log(publication_category)
-        //console.log(publication_name)
-        //console.log(format)
-        //console.log(publication_id)
-        //console.log(id_user_name)
-        //console.log(chapter_number)
-        //console.log(list_of_receivers)
+        console.log(type)
+        console.log(id_user)
+        console.log(publication_category)
+        console.log(publication_name)
+        console.log(format)
+        console.log(publication_id)
+        console.log(id_user_name)
+        console.log(chapter_number)
+        console.log(list_of_receivers)
         let compt=0;
         for(let i=0;i<list_of_receivers.length;i++){
             list_of_notifications.create({
@@ -380,6 +435,17 @@ module.exports = (router,
 
 
     router.post('/remove_notification', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("remove_notification")
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
@@ -414,6 +480,17 @@ module.exports = (router,
     
 
     router.post('/change_all_notifications_status_to_checked', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("change_all_notifications_status_to_checked");
         let current_user = req.body.user_id;
         //console.log(current_user)
@@ -453,6 +530,17 @@ module.exports = (router,
 
     
     router.post('/change_notification_status_to_seen', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         //console.log("change_notification_status_to_seen")
         //console.log(req.cookies.currentUser)
         let current_user = get_current_user(req.cookies.currentUser);
