@@ -21,14 +21,36 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     return user;
   };
 
-  router.post('/setcookies_cover_bd_serie/:name', (req, res)=>{ 
+  router.post('/setcookies_cover_bd_serie/:name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      } 
     let value = req.params.name;
     res.statuts(200).send(value)
     });
 
 
 
-  router.get('/get_cookies_cover_bd_serie', (req, res)=>{ 
+  router.get('/get_cookies_cover_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      } 
     //console.log('get it')
     //console.log(req.cookies)
     let value = req.cookies
@@ -38,6 +60,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
   //on poste les premières informations du formulaire et on récupère l'id de la bd
   router.post('/add_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     const highlight = req.body.highlight;
@@ -93,6 +126,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
      //on supprime le fichier de la base de donnée postgresql
      router.delete('/remove_bd_serie/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       (async () => {
         const bd_id=req.params.bd_id
@@ -140,6 +184,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
   //on modifie les informations du formulaire de la bd qu'on upload
   router.post('/modify_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     
@@ -178,6 +233,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     });
 
     router.post('/modify_bd_serie2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
   
      
@@ -268,6 +334,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       });
 
     router.post('/change_serie_comic_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let bd_id=req.body.bd_id;
       let status=req.body.status;
@@ -299,6 +376,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
     //on ajoute les infos du chapitre ajouté
     router.post('/add_chapter_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       //console.log("add_chapter_bd_serie")
       const title = req.body.Title;
@@ -349,6 +437,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
   //on modifie le nom du chapitre après modification
   router.post('/modify_chapter_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
   
@@ -381,6 +480,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/delete_chapter_bd_serie/:chapter_number/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         const chapter_number = parseInt(req.params.chapter_number);
         const bd_id = parseInt(req.params.bd_id);
@@ -413,7 +523,11 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on post l'image uploadée
     router.post('/upload_page_bd_serie/:page/:chapter/:bd_id', function (req, res) {
+
       let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var file_name ='';
       //console.log("ici" + file_name);
 
@@ -492,6 +606,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_page_bdserie_from_data/:page/:chapter/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         (async () => {
           const pagebd = await pages_bd_serie.findOne({
             where: {
@@ -522,6 +647,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
       //on supprime le fichier du dossier date/pages_bd_onshot
       router.delete('/remove_page_bdserie_from_folder/:name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         fs.access('./data_and_routes/pages_bd_serie' + req.params.name, fs.F_OK, (err) => {
           if(err){
             //console.log('suppression already done');
@@ -544,6 +680,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       
       //on ajoute le nom de la coverpage dans la base de donnée
   router.post('/add_cover_bd_serie_todatabase', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     const name = req.body.name;
@@ -584,6 +731,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     });
 
     router.post('/add_cover_bd_serie_todatabase2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
   
       const name = req.body.name;
@@ -628,6 +786,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
  
                   //on valide l'upload
   router.post('/validation_bd_upload_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     var average_page_by_chapter=0;
     (async () => {
@@ -698,6 +867,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     });
 
     router.post('/validation_chapter_upload_bd_serie', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       //console.log("validation_chapter_upload_bd_serie")
     
@@ -735,6 +915,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
                    //on valide l'upload
   router.get('/retrieve_bd_serie_by_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        const user_id= parseInt(req.params.user_id);
         Liste_bd_serie.findAll({
             where: {
@@ -757,6 +948,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
 
     router.post('/get_number_of_bd_series', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       const id_user= req.body.id_user;
       let date_format=req.body.date_format;
       const Op = Sequelize.Op;
@@ -802,6 +1004,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
    });
 
     router.get('/retrieve_private_serie_bd', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
     
            Liste_bd_serie.findAll({
@@ -823,6 +1036,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
     });
 
     router.get('/retrieve_bd_serie_by_id/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
   
   
@@ -881,6 +1105,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       });
  
     router.get('/retrieve_bd_serie_by_id2/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
       let current_user = get_current_user(req.cookies.currentUser);
   
@@ -939,6 +1174,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
       });
 
   router.get('/retrieve_chapters_by_id/:bd_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
 
 
@@ -963,6 +1209,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
 
 
   router.get('/retrieve_chapter_by_number/:bd_id/:chapter_number', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     //console.log('tentativee de récupération');
 
     (async () => {
@@ -988,6 +1245,17 @@ module.exports = (router, Liste_bd_serie, chapters_bd_serie, pages_bd_serie,list
   });
 
   router.get('/retrieve_bd_chapter_page/:bd_id/:chapter_number/:bd_page', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
 
 
