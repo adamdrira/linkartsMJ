@@ -1,13 +1,12 @@
 let WSServer = require('ws').Server;
 let server = require('http').createServer();
-let multer= require('multer');
 let app = require('./serverexpress');
 const url = require('url');
 const chat_seq= require('./chat/model/sequelize');
-const notifications_seq= require('./notifications/model/sequelize');
 const subscribings_seq= require('./p_subscribings_archives_contents/model/sequelize');
 const Sequelize = require('sequelize');
-
+const jwt = require('jsonwebtoken');
+const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 // Create web socket server on top of a regular http server
 let wss = new WSServer({
   server: server,
@@ -30,13 +29,16 @@ wss.on('connection', (ws, req)=>{
   if(!webSockets[userID] || !(webSockets[userID].length>0) ){
     console.log("create list and ws")
     webSockets[userID] = [ws];
+    
   }
   else{
     console.log("push ws")
     webSockets[userID].push(ws);
+    
+
+    
   }
 
-  console.log(webSockets[userID].length)
   console.log(Object.keys(webSockets))
   //console.log(webSockets[userID])
   
@@ -869,6 +871,7 @@ wss.on('connection', (ws, req)=>{
       webSockets[userID].splice(index,1);
       if(webSockets[userID].length==0){
         delete webSockets[userID];
+        
       }
     }
     clearInterval(interval);
@@ -901,8 +904,36 @@ wss.on('connection', (ws, req)=>{
   
 });
 
+function get_current_user(token){
+  var user = 0
+  jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
+  });
+  return user;
+};
+
 
 app.post('/get_users_connected_in_the_chat', function(req, res) {
+  console.log("checking current: " + req.headers['authorization'] );
+  let current_user = get_current_user(req.cookies.currentUser);
+  let send_web=false;
+  if(current_user!=1 && current_user!=2){
+    if( !req.headers['authorization'] ) {
+      return res.status(401).json({msg: "error"});
+    }
+    else {
+      let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+      let user= get_current_user(val)
+      if(!user){
+        return res.status(401).json({msg: "error"});
+      }
+    }
+  }
+  else{
+    send_web=true
+   
+  }
+  
   let list_of_friends=req.body.list_of_friends
   let list_of_users_connected=[];
   for(let i=0;i<list_of_friends.length;i++){
@@ -913,7 +944,13 @@ app.post('/get_users_connected_in_the_chat', function(req, res) {
       list_of_users_connected[i]=false;
     }
   }
-  res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection}])
+  if(send_web){
+    res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection,list:Object.keys(webSockets)}])
+  }
+  else{
+    res.status(200).send([{list_of_users_connected:list_of_users_connected,date_of_webSockets_last_connection:date_of_webSockets_last_connection}])
+  }
+ 
 })
 
 
