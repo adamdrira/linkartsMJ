@@ -21,7 +21,9 @@ export class Trending_service {
     httpClient.options
   }
   
- 
+  get_trendings_for_tomorrow(){
+    return new Observable<[{true:"true"}]>();
+  }
 
   send_rankings_and_get_trendings_comics(){
     return this.httpClient.post('routes/send_rankings_and_get_trendings_comics', {}).pipe(map((information)=>{
