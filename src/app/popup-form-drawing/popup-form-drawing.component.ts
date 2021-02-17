@@ -87,7 +87,12 @@ export class PopupFormDrawingComponent implements OnInit {
     this.createFormControlsDrawings();
     this.createFormDrawings();
 
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
   }
+  load_emoji=false;
 
   fd: FormGroup;
   fdTitle: FormControl;
@@ -111,12 +116,7 @@ export class PopupFormDrawingComponent implements OnInit {
       fdTags: this.fdTags,
 
     });
-    let inter= setInterval(() => {
-      this.load_emoji=true;
-      clearInterval(inter)
-    }, 1000);
   }
-  load_emoji=false;
 
 
   loading =false;
