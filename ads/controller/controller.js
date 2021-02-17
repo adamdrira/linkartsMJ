@@ -20,9 +20,33 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     };
 
 
-    
+    /*router.post('*',(req,res)=>{
+      console.log("reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeq")
+      console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
+    })*/
 
     router.post('/check_if_ad_is_ok', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       var today = new Date();
@@ -124,56 +148,72 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
          
     router.post('/upload_thumbnail_ad', function (req, res) {
-             console.log("upload_thumbnail_ad")
-             
-            let current_user = get_current_user(req.cookies.currentUser);
-            var file_name='';
-            console.log(current_user)
-            const PATH2= './data_and_routes/thumbnails_ads';
-            let storage = multer.diskStorage({
-              destination: (req, file, cb) => {
-                cb(null, PATH2);
-              },
-            
-              filename: (req, file, cb) => {
-                var today = new Date();
-                var ms = String(today.getMilliseconds()).padStart(2, '0');
-                var ss = String(today.getSeconds()).padStart(2, '0');
-                var mi = String(today.getMinutes()).padStart(2, '0');
-                var hh = String(today.getHours()).padStart(2, '0');
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-                var yyyy = today.getFullYear();
-                let Today = yyyy + mm + dd + hh+ mi + ss + ms;
-                file_name = current_user + '-' + Today + path.extname(file.originalname);
-                cb(null, current_user + '-' + Today + path.extname(file.originalname));
-                
-              }
-            });
-            
-            let upload_cover = multer({
-              storage: storage
-            }).any();
+      let current_user = get_current_user(req.cookies.currentUser);
+      console.log("upload_thumbnail_ad")
+        console.log(req.cookies)
+      if(!current_user){
+        console.log("upload_thumbnail_ad")
+        console.log(req.cookies)
+        return res.status(401).json({msg: "error"});
+      }
+      var file_name='';
+      console.log(current_user)
+      const PATH2= './data_and_routes/thumbnails_ads';
+      let storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+          cb(null, PATH2);
+        },
       
-            upload_cover(req, res, function(err){
-              let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
-              (async () => {
-                const files = await imagemin([filename], {
-                  destination: './data_and_routes/thumbnails_ads',
-                  plugins: [
-                    imageminPngquant({
-                      quality: [0.7, 0.8]
-                  })
-                  ]
-                });
-                console.log("respond name_thumbnail_ad")
-                list_covers_by_id[current_user]=file_name;
-                res.status(200).send([{file_name:file_name}]);
-               })();
-            });
+        filename: (req, file, cb) => {
+          var today = new Date();
+          var ms = String(today.getMilliseconds()).padStart(2, '0');
+          var ss = String(today.getSeconds()).padStart(2, '0');
+          var mi = String(today.getMinutes()).padStart(2, '0');
+          var hh = String(today.getHours()).padStart(2, '0');
+          var dd = String(today.getDate()).padStart(2, '0');
+          var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+          var yyyy = today.getFullYear();
+          let Today = yyyy + mm + dd + hh+ mi + ss + ms;
+          file_name = current_user + '-' + Today + path.extname(file.originalname);
+          cb(null, current_user + '-' + Today + path.extname(file.originalname));
+          
+        }
+      });
+      
+      let upload_cover = multer({
+        storage: storage
+      }).any();
+
+      upload_cover(req, res, function(err){
+        let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
+        (async () => {
+          const files = await imagemin([filename], {
+            destination: './data_and_routes/thumbnails_ads',
+            plugins: [
+              imageminPngquant({
+                quality: [0.7, 0.8]
+            })
+            ]
+          });
+          console.log("respond name_thumbnail_ad")
+          list_covers_by_id[current_user]=file_name;
+          res.status(200).send([{file_name:file_name}]);
+          })();
+      });
     });
 
     router.post('/add_thumbnail_ad_to_database', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
             const name = req.body.name;
             const id = req.body.id;
@@ -199,6 +239,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
 
     router.delete('/remove_thumbnail_ad_from_folder/:name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       console.log("remove_thumbnail_ad_from_folder")
             fs.access('./data_and_routes/thumbnails_ads/' + req.params.name, fs.F_OK, (err) => {
               if(err){
@@ -237,6 +288,7 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
 
     router.post('/upload_attachments_ad/:attachment_number/:id_ad/:file_name/:number_of_attachments', function (req, res) {
+
       
       var id_ad = parseInt(req.params.id_ad);
       console.log(id_ad);
@@ -247,6 +299,11 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
       var number_of_attachments=parseInt(req.params.number_of_attachments);
       var attachment_number=parseInt(req.params.attachment_number)+1;
       var current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        console.log("cookies upload attachment")
+        console.log(req.cookies)
+        return res.status(401).json({msg: "error"});
+      }
       var file_name='';
       var name='';
       const PATH= './data_and_routes/attachments_ads';
@@ -463,6 +520,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
 
   router.get('/get_ads_by_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        const user_id= parseInt(req.params.user_id);
          list_of_ads.findAll({
             where: {
@@ -484,6 +552,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     
 
     router.get('/get_all_my_ads', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
         list_of_ads.findAll({
            where: {
@@ -503,6 +582,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
    });
 
    router.get('/get_all_responses/:id_ad', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let id_ad = parseInt(req.params.id_ad);
       list_of_ads_responses.findAll({
          where: {
@@ -526,6 +616,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
  
 
   router.post('/check_if_ad_answered', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     const id_ad= req.body.ad_id;
     let current_user = get_current_user(req.cookies.currentUser); 
       list_of_ads_responses.findOne({
@@ -549,6 +650,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
   });
 
     router.get('/retrieve_ad_by_id/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       const id= parseInt(req.params.id);
         list_of_ads.findOne({
            where: {
@@ -564,6 +676,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
    });
 
     router.get('/retrieve_ad_thumbnail_picture/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/thumbnails_ads/" + file_name ;
@@ -584,6 +707,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
 
     router.get('/retrieve_ad_picture/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/pictures_ads/" + file_name ;
@@ -602,6 +736,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
 
     router.get('/retrieve_ad_attachment/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
         const file_name = req.params.file_name;
         let filename = "./data_and_routes/attachments_ads/" + file_name ;
@@ -620,6 +765,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
     });
 
     router.delete('/delete_ad/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser); 
           const id = parseInt(req.params.id);
           list_of_ads.findOne({
@@ -653,6 +809,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
   });
 
   router.post('/get_sorted_ads_linkcollab', function (req, res) {
+      console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("get_sorted_ads_linkcollab ");
     const remuneration = req.body.remuneration;
     const service = req.body.service;
@@ -826,6 +993,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
   });
 
   router.get('/get_sorted_ads/:remuneration/:type_of_project/:author/:target/:sorting', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     console.log("get_sorted_ads ads");
       const remuneration = req.params.remuneration;
       const type_of_project = req.params.type_of_project;
@@ -972,6 +1150,17 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
 
   router.post('/add_ad_response', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
     const id_ad = req.body.id_ad;
     const description = req.body.description;
@@ -1011,15 +1200,19 @@ module.exports = (router, list_of_ads,list_of_ads_responses,list_of_users) => {
 
 router.post('/upload_attachments_ad_response/:attachment_number/:id_ad_response/:file_name/:number_of_attachments', function (req, res) {
 
-var id_ad_response = parseInt(req.params.id_ad_response);
-var number_of_attachments_retrieved=0;
-var number_of_attachments=parseInt(req.params.number_of_attachments);
-var attachment_number=parseInt(req.params.attachment_number)+1;
-var current_user = get_current_user(req.cookies.currentUser);
-var file_name='';
-var name='';
-const PATH= './data_and_routes/attachments_ads';
-let storage = multer.diskStorage({
+
+  var id_ad_response = parseInt(req.params.id_ad_response);
+  var number_of_attachments_retrieved=0;
+  var number_of_attachments=parseInt(req.params.number_of_attachments);
+  var attachment_number=parseInt(req.params.attachment_number)+1;
+  var current_user = get_current_user(req.cookies.currentUser);
+  if(!current_user){
+    return res.status(401).json({msg: "error"});
+  }
+  var file_name='';
+  var name='';
+  const PATH= './data_and_routes/attachments_ads';
+  let storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, PATH);
   },
@@ -1222,6 +1415,17 @@ upload_attachment(req, res, function(err){
 
 
 router.post('/get_number_of_ads_and_responses', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
   console.log("get_number_of_ads_and_responses")
   let id_user = req.body.id_user;
   let number_of_ads_answers=0;
