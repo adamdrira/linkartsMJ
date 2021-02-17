@@ -14,7 +14,6 @@
 
     cursor: pointer;
     border-radius: 25px;
-    overflow: hidden;
     border: 1px solid #e8e8e8;
     background: rgb(251, 251, 251);
     box-shadow: 0 1px 6px 1px #ececec, 0px 0px 1px rgba(0, 0, 0, 0.2);
@@ -23,6 +22,66 @@
         visibility:hidden;
     }
     
+
+    .background-filter {
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right: 0;
+        background-image: linear-gradient(0turn, rgb(2 18 54 / 54%), rgb(19 51 100 / 35%), rgb(44 114 164 / 0%));
+        border-radius: 25px;
+        z-index: 1;
+    }
+    .rank-container {
+        position: absolute;
+        display: flex;
+        right: 14px;
+        bottom: -120px;
+        z-index: 1;
+        border-radius: 100px;
+        span {
+            font-weight: 600;
+            margin: auto;
+            font-size: 230px;
+            padding-bottom: 2px;
+            color: #efefef;
+            -webkit-text-stroke: 5px #203864;
+            text-shadow: -1px -1px 5px #203864, 1px 1px 5px #203864;
+        }
+
+        @media (max-width: 900px) {
+            right: 6px;
+            bottom: -95px;
+            span {
+                font-size: 160px;
+            }
+        }
+        @media (max-width: 730px) {
+            bottom: -70px;
+            span {
+                font-size: 120px;
+                -webkit-text-stroke: 4px #203864;
+                text-shadow: -1px -1px 3px #203864, 1px 1px 3px #203864;
+            }
+        }
+        @media (max-width: 620px) {
+            bottom: -50px;
+            span {
+                font-size: 80px;
+                -webkit-text-stroke: 3px #203864;
+            }
+        }
+        @media (max-width: 440px) {
+            bottom: 0px;
+            right: 20px;
+            span {
+                font-size: 40px;
+                -webkit-text-stroke: 2px #203864;
+            }
+        }
+
+    }
     
     .cover-picture {
         position:absolute;
@@ -30,6 +89,7 @@
         top:0;
         left:0;
         right:0;
+        border-radius: 25px;
 
         height: 100%;
         width:100%;
@@ -41,7 +101,8 @@
         }
     }
 
-    .absolute-profile-data {    
+    .absolute-profile-data {  
+        z-index: 2;  
         position: absolute;
         display: flex;
         background-image: linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));

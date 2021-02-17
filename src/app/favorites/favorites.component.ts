@@ -49,7 +49,7 @@ export class FavoritesComponent implements OnInit {
   list_of_users=[];
   favorites_retrieved=false;
   skeleton:boolean=true;
-  explication_favorites="Bienvenue dans la section Coups de cœur ! Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque premier jour du mois une rémunération bonus est attribuée aux 15 premiers artistes de ce classement. Si vous êtres un arites et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faie parti de ce classement !"
+  //explication_favorites="Bienvenue dans la section Coups de cœur ! Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque premier jour du mois une rémunération bonus est attribuée aux 15 premiers artistes de ce classement. Si vous êtres un arites et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faie parti de ce classement !"
 
   ngOnInit() {
 

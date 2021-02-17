@@ -53,6 +53,7 @@ export class ThumbnailUserComponent implements OnInit {
 
   /*Inputs*/
   @Input() item:any;
+  @Input() rank:number;
   @Input() format: string;
   @Input() now_in_seconds: number;
   @Input() skeleton: boolean;

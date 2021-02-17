@@ -21,15 +21,18 @@
 <div class="trendings-global-container">
         
 
-    <div class="account-form-container">
-        <div class="form-item"  [@enterAnimation]>
-            <mat-form-field floatLabel='never'>
-                <mat-label>{{explication}}</mat-label>
-                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{explication}}</textarea>
-            </mat-form-field>
-        </div>
-        
+    <div class="trendings-container">
+        <span>
+            Bienvenue dans la section Tendances !
+            <br>
+            <br>
+            Vous trouverez ici la liste des meilleures œuvres du jour pour chaque catégorie. Seules les œuvres monétisées seront affichées.
+            <br>
+            <br>
+            Une rémunération sera attribuée à chaque artiste pour chacune de ses œuvres classée dans le top 15 des tendances et en fonction de son nombre d'abonnés.
+        </span>
     </div>
+
 
     <ng-container *ngIf=" (!comics_trendings_sorted_confirmation && subcategory==0) || (!drawings_trendings_sorted_confirmation && subcategory==1) || ( !writings_trendings_sorted_confirmation && subcategory==2)">
         <div class="ranked-thumbnail-container" *ngFor="let item of skeleton_array; let i = index">

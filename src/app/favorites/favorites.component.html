@@ -1,14 +1,16 @@
 <div class="trendings-global-container">
 
     
-    <div class="account-form-container">
-        <div class="form-item"  [@enterAnimation]>
-            <mat-form-field floatLabel='never'>
-                <mat-label>{{explication_favorites}}</mat-label>
-                <textarea matInput cdkTextareaAutosize readonly class="readonly">{{explication_favorites}}</textarea>
-            </mat-form-field>
-        </div>
-        
+    <div class="favorites-container">
+        <span>
+            Bienvenue dans la section Coups de cœur !
+            <br>
+            <br>
+            Vous trouverez ici la liste des meilleurs nouveaux artistes du jour. Chaque premier jour du mois une rémunération bonus est attribuée aux 15 premiers artistes de ce classement.
+            <br>
+            <br>
+            Si vous êtres un artiste et que vous avez créé un compte il y a moins de 6 mois alors vous pouvez faire partie de ce classement !
+        </span>
     </div>
 
     <ng-container *ngIf="!favorites_retrieved">
@@ -28,6 +30,7 @@
             <div class="ranked-thumbnail-container" [@enterAnimation]>
                 <app-thumbnail-user 
                     [item]=item
+                    [rank]="i+1"
                     now_in_seconds={{now_in_seconds}}
                 ></app-thumbnail-user> 
             </div>

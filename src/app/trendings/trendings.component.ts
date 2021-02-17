@@ -76,7 +76,6 @@ export class TrendingsComponent implements OnInit {
   now_in_seconds:number= Math.trunc( new Date().getTime()/1000);
   section_chosen=false;
 
-  explication="Bienvenue dans la section Tendances ! Vous trouverez ici la liste des meilleures œuvres du jour pour chaque catégorie. Seules les œuvres monétisées seront affichée. Une rémunération sera attribuée à chaque artiste pour chacune de ses œuvres classée dans le top 15 des tendances et en fonction de son nombre d'abonnés."
   @Input('status') status: any;
   ngOnChanges(changes: SimpleChanges) {
     if( changes.status) {
