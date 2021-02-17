@@ -21,7 +21,11 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
 
     router.post('/upload_story', function (req, res) {
+
         let current_user = get_current_user(req.cookies.currentUser);
+        if(!current_user){
+            return res.status(401).json({msg: "error"});
+          }
         console.log("current user stry");
         console.log(current_user)
         var file_name='';
@@ -125,6 +129,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
     
     router.post('/check_stories_for_account', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("check_stories_for_account")
       
         const current_user = get_current_user(req.cookies.currentUser);
@@ -197,6 +212,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     })
     
     router.post('/get_stories_and_list_of_users', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         console.log("get_stories_and_list_of_users")
       
         const current_user = get_current_user(req.cookies.currentUser);
@@ -357,6 +383,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     });
 
     router.get('/get_stories_by_user_id/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         
       
         const current_user = get_current_user(req.cookies.currentUser);
@@ -447,6 +484,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     });
 
     router.get('/get_all_my_stories', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let limit= req.params.limit;
         let offset= req.params.offset;
@@ -468,6 +516,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     });
 
     router.post('/hide_story', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         let id=req.body.id;
         list_of_stories.findOne({
@@ -488,6 +547,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     });
 
     router.get('/check_if_all_stories_seen/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         const current_user = get_current_user(req.cookies.currentUser);
         const Op = Sequelize.Op;
         var yesterday = new Date();
@@ -532,6 +602,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
     });
 
         router.get('/get_total_number_of_views/:authorid', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             const current_user = get_current_user(req.cookies.currentUser);
             const Op = Sequelize.Op;
             //let last_timestamp =  '2020-04-28T06:40:24.000Z';
@@ -561,6 +642,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
             });
 
         router.get('/retrieve_story/:file_name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let filename = "./data_and_routes/stories/" + req.params.file_name ;
             fs.readFile( path.join(process.cwd(),filename), function(e,data){
                 if(e){
@@ -577,6 +669,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         });
 
         router.post('/check_if_story_already_seen', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
             
             const  id_story = req.body.id_story;
@@ -596,6 +699,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         });
 
         router.post('/add_view', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
             
             const  id_story = req.body.id_story;
@@ -667,6 +781,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
 
 
         router.post('/get_last_seen_story', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
             const Op = Sequelize.Op;
             var yesterday = new Date();
@@ -720,6 +845,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         });
 
         router.delete('/delete_story/:id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
            
                 const id = parseInt(req.params.id);
@@ -744,6 +880,17 @@ module.exports = (router, list_of_stories,list_of_views,Users,list_of_subscribin
         });
 
         router.post('/get_list_of_viewers_for_story', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
             let current_user = get_current_user(req.cookies.currentUser);
             let id_story=req.body.id_story
             const Op = Sequelize.Op;
