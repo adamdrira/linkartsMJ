@@ -21,6 +21,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
   
 
   router.post('/add_drawings_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     const highlight = req.body.highlight;
@@ -80,6 +91,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
   //on modifie les informations du formulaire de la  qu'on upload
   router.post('/modify_drawings_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     
@@ -117,6 +139,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
     });
 
     router.post('/modify_drawings_artbook2', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
   
       
@@ -207,6 +240,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       });
 
     router.post('/update_filter_color_drawing_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let color = req.body.color;
       let drawing_id = req.body.drawing_id;
@@ -234,6 +278,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       });
 
     router.delete('/remove_drawings_artbook/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.params.drawing_id;
       Liste_artbook.findOne({
@@ -271,6 +326,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
         });
 
         router.post('/change_artbook_drawing_status', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
           let current_user = get_current_user(req.cookies.currentUser);
           let drawing_id=req.body.drawing_id;
           let status=req.body.status;
@@ -300,6 +366,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       });
 
       router.get('/retrieve_private_artbook_drawings', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         (async () => {
              artbooks = await Liste_artbook.findAll({
@@ -322,7 +399,11 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
     //on post l'image uploadée
     router.post('/upload_drawing_artbook/:page/:drawing_id', function (req, res) {
+
       let current_user = get_current_user(req.cookies.currentUser);
+      if(!current_user){
+        return res.status(401).json({msg: "error"});
+      }
       var file_name='';
       const PATH1= './data_and_routes/drawings_pages_artbook';
 
@@ -390,6 +471,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
       //on supprime le fichier de la base de donnée postgresql
       router.delete('/remove_artbook_page_from_data/:page/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         (async () => {
           const pageartbook = await pages_artbook.findOne({
             where: {
@@ -415,6 +507,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
       //on supprime le fichier du dossier date/drawings_pages_artbook
       router.delete('/remove_artbook_page_from_folder/:name', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         fs.access('./data_and_routes/drawings_pages_artbook' + req.params.name, fs.F_OK, (err) => {
           if(err){
             //console.log('suppression already done');
@@ -437,6 +540,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
      //on ajoute le nom de la coverpage dans la base de donnée
       router.post('/add_cover_drawing_artbook_todatabase', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
         let current_user = get_current_user(req.cookies.currentUser);
         console.log("add_cover_drawing_artbook_todatabase")
         const name = req.body.name;
@@ -466,6 +580,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
  
 //on valide l'upload
   router.post('/validation_upload_drawing_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
     let current_user = get_current_user(req.cookies.currentUser);
 
     (async () => {
@@ -511,6 +636,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
 
 
     router.post('/send_drawing_height_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       console.log("send_drawing_height_artbook")
       let current_user = get_current_user(req.cookies.currentUser);
       let drawing_id=req.body.drawing_id;
@@ -538,6 +674,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
     
 
   router.get('/retrieve_drawing_artbook_info_by_userid/:user_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
        const user_id= parseInt(req.params.user_id);
         Liste_artbook.findAll({
             where: {
@@ -560,6 +707,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
     });
 
     router.post('/get_number_of_drawings_artbook', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
       const id_user= req.body.id_user;
       let date_format=req.body.date_format;
       let list_of_drawings=[];
@@ -607,6 +765,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
  
  
     router.get('/retrieve_drawing_artbook_by_id/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
   
   
@@ -665,6 +834,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
       });
       
   router.get('/retrieve_drawing_artbook_by_id2/:drawing_id', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
     let current_user = get_current_user(req.cookies.currentUser);
 
@@ -723,6 +903,17 @@ module.exports = (router, Liste_artbook, pages_artbook,list_of_users,trendings_c
     });
 
   router.get('/retrieve_drawing_page_ofartbook/:drawing_id/:drawing_page', function (req, res) {
+console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 
 
 
