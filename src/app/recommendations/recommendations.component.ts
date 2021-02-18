@@ -468,134 +468,162 @@ export class RecommendationsComponent implements OnInit {
 
 
   load_bd_recommendations(){
-    //console.log("load bd comic")
+    console.log("load bd comic")
     this.comics_loading=true;
     this.Community_recommendation.get_first_recommendation_bd_os_for_user(this.index_bd).subscribe(information=>{
-      var list_bd_os = information[0].list_bd_os_to_send;
-      this.styles_with_contents_already_seen_comics_os=information[0].styles_with_contents_already_seen;
+     
+      console.log("answer")
       console.log(information)
       console.log(list_bd_os)
-      if(list_bd_os.length>0){
-        for (let i=0; i<list_bd_os.length;i++){
-          if(list_bd_os[i][0]){
-            if(list_bd_os[i][0].category =="Manga"){
-              if(  list_bd_os[i][0].status=='public'){
-                this.sorted_artpieces_manga.push(list_bd_os[i][0]);
-                this.sorted_artpieces_manga_format.push("one-shot");
-              }                 
-              if(i==list_bd_os.length-1){
-                this.bd_os_is_loaded=true;
-                this.load_all_comics(1)
-              }
-            }
-            if(list_bd_os[i][0].category =="Comics" ){
-              if(  list_bd_os[i][0].status=='public'){
-                this.sorted_artpieces_comics.push(list_bd_os[i][0]);
-                this.sorted_artpieces_comics_format.push("one-shot");
-              }
-              if(i==list_bd_os.length-1){
-                this.bd_os_is_loaded=true;
-                this.load_all_comics(1)
-              }
-            }
-            if(list_bd_os[i][0].category =="Webtoon" ){
-              if(  list_bd_os[i][0].status=='public'){
-                this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
-                this.sorted_artpieces_webtoon_format.push("one-shot");
-              }
-              if(i==list_bd_os.length-1){
-                this.bd_os_is_loaded=true;
-                this.load_all_comics(1)
-              }
-            }
-            if(list_bd_os[i][0].category =="BD" ){
-              if(  list_bd_os[i][0].status=='public'){
-                this.sorted_artpieces_bd.push(list_bd_os[i][0]);
-                this.sorted_artpieces_bd_format.push("one-shot");
-              }
-              if(i==list_bd_os.length-1){
-                this.bd_os_is_loaded=true;
-                this.load_all_comics(1)
-              }
-            }
-          }
-          else{
-            if(i==list_bd_os.length-1){
-              this.bd_os_is_loaded=true;
-              this.load_all_comics(1)
-            }
-          }
-          
-        }
-      }  
-      else{
-        this.bd_os_is_loaded=true;
-        this.load_all_comics(1)
-      }
-    });
-
-    this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd).subscribe(information=>{
-      console.log(information)
-      this.styles_with_contents_already_seen_comics_serie=information[0].styles_with_contents_already_seen;
-      var list_bd_serie= information[0].list_bd_serie_to_send;
-      console.log(list_bd_serie)
-      if(list_bd_serie.length>0){
-        for (let i=0; i<list_bd_serie.length;i++){
-            if(list_bd_serie[i][0]){
-              if(list_bd_serie[i][0].category =="Comics"){
-                if(  list_bd_serie[i][0].status=='public'){
-                  this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
-                  this.sorted_artpieces_comics_format.push("serie");
-                }
-                if(i==list_bd_serie.length-1){
-                  this.bd_serie_is_loaded=true;
-                  this.load_all_comics(1)
-                }
-                
-              }
-              if(list_bd_serie[i][0].category =="Manga"){
-                if(  list_bd_serie[i][0].status=='public'){
-                  this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
-                  this.sorted_artpieces_manga_format.push("serie");
-                }
-                if(i==list_bd_serie.length-1){
-                  this.bd_serie_is_loaded=true;
+      if(information[0].list_bd_os_to_send){
+        var list_bd_os = information[0].list_bd_os_to_send;
+        this.styles_with_contents_already_seen_comics_os=information[0].styles_with_contents_already_seen;
+        if(list_bd_os.length>0){
+          for (let i=0; i<list_bd_os.length;i++){
+            if(list_bd_os[i][0]){
+              if(list_bd_os[i][0].category =="Manga"){
+                if(  list_bd_os[i][0].status=='public'){
+                  this.sorted_artpieces_manga.push(list_bd_os[i][0]);
+                  this.sorted_artpieces_manga_format.push("one-shot");
+                }                 
+                if(i==list_bd_os.length-1){
+                  this.bd_os_is_loaded=true;
                   this.load_all_comics(1)
                 }
               }
-              if(list_bd_serie[i][0].category =="Webtoon"){
-                if(  list_bd_serie[i][0].status=='public'){
-                  this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
-                  this.sorted_artpieces_webtoon_format.push("serie");
+              if(list_bd_os[i][0].category =="Comics" ){
+                if(  list_bd_os[i][0].status=='public'){
+                  this.sorted_artpieces_comics.push(list_bd_os[i][0]);
+                  this.sorted_artpieces_comics_format.push("one-shot");
                 }
-                if(i==list_bd_serie.length-1){
-                  this.bd_serie_is_loaded=true;
+                if(i==list_bd_os.length-1){
+                  this.bd_os_is_loaded=true;
                   this.load_all_comics(1)
                 }
               }
-              if(list_bd_serie[i][0].category =="BD"){
-                if(  list_bd_serie[i][0].status=='public'){
-                  this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
-                  this.sorted_artpieces_bd_format.push("serie");
+              if(list_bd_os[i][0].category =="Webtoon" ){
+                if(  list_bd_os[i][0].status=='public'){
+                  this.sorted_artpieces_webtoon.push(list_bd_os[i][0]);
+                  this.sorted_artpieces_webtoon_format.push("one-shot");
                 }
-                if(i==list_bd_serie.length-1){
-                  this.bd_serie_is_loaded=true;
+                if(i==list_bd_os.length-1){
+                  this.bd_os_is_loaded=true;
+                  this.load_all_comics(1)
+                }
+              }
+              if(list_bd_os[i][0].category =="BD" ){
+                if(  list_bd_os[i][0].status=='public'){
+                  this.sorted_artpieces_bd.push(list_bd_os[i][0]);
+                  this.sorted_artpieces_bd_format.push("one-shot");
+                }
+                if(i==list_bd_os.length-1){
+                  this.bd_os_is_loaded=true;
                   this.load_all_comics(1)
                 }
               }
             }
             else{
-              if(i==list_bd_serie.length-1){
-                this.bd_serie_is_loaded=true;
+              if(i==list_bd_os.length-1){
+                this.bd_os_is_loaded=true;
                 this.load_all_comics(1)
               }
             }
+            
+          }
+        }  
+        else{
+          this.bd_os_is_loaded=true;
+          this.load_all_comics(1)
         }
       }
       else{
-        this.bd_serie_is_loaded=true;
-        this.load_all_comics(1)
+        console.log("in else ready to generate")
+        this.Community_recommendation.generate_recommendations().subscribe(r=>{
+          console.log("response to generate")
+          console.log(r[0])
+          if(r[0].sorted_list_category){
+            // normallement on entre ici que la première fois ou navigation privée première fois
+            console.log("ne pas enter")
+            let info=r[0].sorted_list_category;
+            let information=r[0].styles_recommendation;
+            this.manage_styles_recommendation(info,information)
+          }
+          else{
+            this.manage_bd_recommendations(r[0].list_bd_os_to_send,r[0].list_bd_serie_to_send)
+            this.sorted_category_retrieved=true;
+          }
+    
+        })
       }
+      
+    });
+
+    this.Community_recommendation.get_first_recommendation_bd_serie_for_user(this.index_bd).subscribe(information=>{
+      console.log(information)
+      console.log("respone serie get first")
+      if(information[0].list_bd_serie_to_send){
+        this.styles_with_contents_already_seen_comics_serie=information[0].styles_with_contents_already_seen;
+        var list_bd_serie= information[0].list_bd_serie_to_send;
+        console.log(list_bd_serie)
+        if(list_bd_serie.length>0){
+          for (let i=0; i<list_bd_serie.length;i++){
+              if(list_bd_serie[i][0]){
+                if(list_bd_serie[i][0].category =="Comics"){
+                  if(  list_bd_serie[i][0].status=='public'){
+                    this.sorted_artpieces_comics.push(list_bd_serie[i][0]);
+                    this.sorted_artpieces_comics_format.push("serie");
+                  }
+                  if(i==list_bd_serie.length-1){
+                    this.bd_serie_is_loaded=true;
+                    this.load_all_comics(1)
+                  }
+                  
+                }
+                if(list_bd_serie[i][0].category =="Manga"){
+                  if(  list_bd_serie[i][0].status=='public'){
+                    this.sorted_artpieces_manga.push(list_bd_serie[i][0]);
+                    this.sorted_artpieces_manga_format.push("serie");
+                  }
+                  if(i==list_bd_serie.length-1){
+                    this.bd_serie_is_loaded=true;
+                    this.load_all_comics(1)
+                  }
+                }
+                if(list_bd_serie[i][0].category =="Webtoon"){
+                  if(  list_bd_serie[i][0].status=='public'){
+                    this.sorted_artpieces_webtoon.push(list_bd_serie[i][0]);
+                    this.sorted_artpieces_webtoon_format.push("serie");
+                  }
+                  if(i==list_bd_serie.length-1){
+                    this.bd_serie_is_loaded=true;
+                    this.load_all_comics(1)
+                  }
+                }
+                if(list_bd_serie[i][0].category =="BD"){
+                  if(  list_bd_serie[i][0].status=='public'){
+                    this.sorted_artpieces_bd.push(list_bd_serie[i][0]);
+                    this.sorted_artpieces_bd_format.push("serie");
+                  }
+                  if(i==list_bd_serie.length-1){
+                    this.bd_serie_is_loaded=true;
+                    this.load_all_comics(1)
+                  }
+                }
+              }
+              else{
+                if(i==list_bd_serie.length-1){
+                  this.bd_serie_is_loaded=true;
+                  this.load_all_comics(1)
+                }
+              }
+          }
+        }
+        else{
+          this.bd_serie_is_loaded=true;
+          this.load_all_comics(1)
+        }
+      }
+      
         
     });
 
