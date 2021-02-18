@@ -1776,7 +1776,6 @@ export class NavbarLinkartsComponent implements OnInit {
   disconnecting = false;
 
   logout() {
-    console.log("logout")
     if (this.disconnecting) {
       return
     }
@@ -1785,21 +1784,33 @@ export class NavbarLinkartsComponent implements OnInit {
 
     this.AuthenticationService.logout().subscribe(r => {
       let recommendations_string = this.CookieService.get('recommendations');
-      //console.log(recommendations_string)
-      if (recommendations_string) {
-        this.disconnecting = false;
-        this.location.go('/')
-        location.reload();
-
-      }
-      else {
-        this.Community_recommendation.generate_recommendations().subscribe(r => {
+      if(r[0].ok){
+        if (recommendations_string) {
           this.disconnecting = false;
-          this.cd.detectChanges();
           this.location.go('/')
           location.reload();
+  
+        }
+        else {
+          this.Community_recommendation.generate_recommendations().subscribe(r => {
+            this.disconnecting = false;
+            this.cd.detectChanges();
+            this.location.go('/')
+            location.reload();
+          })
+        }
+      }
+      else{
+        this.AuthenticationService.create_visitor().subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().subscribe(r => {
+            this.disconnecting = false;
+            this.cd.detectChanges();
+            this.location.go('/')
+            location.reload();
+          })
         })
       }
+     
     });
   }
 

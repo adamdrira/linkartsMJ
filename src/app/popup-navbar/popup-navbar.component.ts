@@ -241,31 +241,42 @@ export class PopupNavbarComponent implements OnInit {
 
 
   disconnecting=false;
-  logout(){
-    if(this.disconnecting){
+  logout() {
+    if (this.disconnecting) {
       return
     }
-    this.disconnecting=true;
-    
-    this.AuthenticationService.logout().subscribe(r=>{
+    this.disconnecting = true;
+
+    this.AuthenticationService.logout().subscribe(r => {
       let recommendations_string = this.CookieService.get('recommendations');
-      console.log(recommendations_string)
-      if(recommendations_string){
-        this.disconnecting=false;
-        this.location.go('/')
-        location.reload();
-       
-      }
-      else{
-        this.Community_recommendation.generate_recommendations().subscribe(r=>{
-          this.disconnecting=false;
-          this.cd.detectChanges();
+      if(r[0].ok){
+        if (recommendations_string) {
+          this.disconnecting = false;
           this.location.go('/')
           location.reload();
+  
+        }
+        else {
+          this.Community_recommendation.generate_recommendations().subscribe(r => {
+            this.disconnecting = false;
+            this.cd.detectChanges();
+            this.location.go('/')
+            location.reload();
+          })
+        }
+      }
+      else{
+        this.AuthenticationService.create_visitor().subscribe(r=>{
+          this.Community_recommendation.generate_recommendations().subscribe(r => {
+            this.disconnecting = false;
+            this.cd.detectChanges();
+            this.location.go('/')
+            location.reload();
+          })
         })
       }
+     
     });
-    
   }
 
   pp_is_loaded=false;
