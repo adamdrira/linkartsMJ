@@ -3,16 +3,10 @@ const comics_serie = require('../../comics_serie/models/sequelize');
 const drawings_artbook = require('../../drawings_artbook/models/sequelize');
 const drawings_one_shot = require('../../drawings_one_shot_and_cover/models/sequelize');
 const writings = require('../../writings/models/sequelize');
-const fetch = require("node-fetch");
 var {spawn} = require("child_process")
-var path = require('path');
-var {PythonShell} = require('python-shell');
-const usercontroller = require('../../authentication/user.controller');
-var Request = require('request');
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 var fastcsv = require("fast-csv");
-const Sequelize = require('sequelize');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Pool = require('pg').Pool;
 
@@ -151,11 +145,8 @@ const generate_recommendations = (request, response) => {
               "drawing": index_drawing,
             }
 
-            //let json2 = fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`); 
-            //console.log("reading to send 1")
-            //console.log(JSON.parse(json2))
             response.status(200).send([{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}])
-            //response.cookie("recommendations",[{styles_recommendation:styles_recommendation,sorted_list_category:sorted_list_category}]).send([{sorted_list_category:sorted_list_category,styles_recommendation:styles_recommendation}]);  
+           
           });
 
           
@@ -287,13 +278,25 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
 
   //on récupère la liste des oeuvres
   var user=0;
-    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
-      user=decoded.id;
-    });
-  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
-  get_it();
+  jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
+  });
+  var list_bd_os;
+  var test;
+  fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+    if(err){
+      console.log(err)
+      console.log("not found")
+      response.status(200).send([{reset:true}])
+    }  
+    else{
+      test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
+      get_it();
+    }
+  })
  
- var list_bd_os
+ 
+  
   function get_it(){
     if(index_bd<0){
       list_bd_os=null;
@@ -513,13 +516,23 @@ const get_first_recommendation_bd_serie_for_user = (request, response) => {
 
   //on récupère la liste des oeuvres
   var user=0;
-    jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
-      user=decoded.id;
-    });
-  var test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
-  get_it();
+  jwt.verify(request.cookies.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
+    user=decoded.id;
+  });
+  var list_bd;
+  var test;
+  fs.access(__dirname + `/python_files/recommendations_artpieces-${user}.json`, fs.F_OK, (err) => {
+    if(err){
+      console.log(err)
+      console.log("not found")
+      response.status(200).send([{reset:true}])
+    }  
+    else{
+      test=JSON.parse(fs.readFileSync( __dirname + `/python_files/recommendations_artpieces-${user}.json`));
+      get_it();
+    }
+  })
 
-  var list_bd
   function get_it(){
     if(index_bd<0){
       list_bd=null;
