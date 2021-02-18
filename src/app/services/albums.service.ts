@@ -25,8 +25,8 @@ export class Albums_service {
       }));
   }
 
-  add_album_drawings(title,album,number_cover){
-    return this.httpClient.post('routes/add_album_drawings', {title:title, album:album, number_cover:number_cover}, {withCredentials:true}).pipe(map((information)=>{
+  add_album_drawings(title,album){
+    return this.httpClient.post('routes/add_album_drawings', {title:title, album:album}, {withCredentials:true}).pipe(map((information)=>{
         return information;
       }));
   }
