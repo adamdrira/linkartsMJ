@@ -329,7 +329,6 @@
         margin-bottom: 20px;
         font-weight: 600;
         font-size: 15px;
-        word-break: break-all;
         padding:0px 5px;
 
         @media (max-width: 400px) {
@@ -1016,4 +1015,8 @@
 
 .really-invisible{
   display:none !important;
+}
+
+.invisible{
+  visibility: hidden;
 }

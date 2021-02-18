@@ -342,7 +342,7 @@
                                 Rechercher un artiste
                              </div>-->
                              
-                            <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'really-invisible':!pp_found_loaded}" [@enterAnimation]>
+                            <div class="subscriber-card" *ngIf="pseudo_found" [ngClass]="{'invisible':!pp_found_loaded}" [@enterAnimation]>
                                 <div class="subscriber">
                                     <div class="user-container">
                                         <div>
@@ -736,13 +736,20 @@
 
 
 
-    <div *ngIf="show_sent_mail" [@enterAnimation]>
-        <div class="sent-mail-icon">
+    <div *ngIf="show_sent_email" [@enterAnimation]>
+        <div class="sent-mail-icon" *ngIf="!registerForm2.value.type_of_account.includes('Artistes')">
             <mat-icon [ngClass]="{'invisible': !show_icon }">mail_outline</mat-icon>
         </div>
-        <div class="sent-mail-text">
+        <div class="sent-mail-icon" *ngIf="registerForm2.value.type_of_account.includes('Artistes')">
+            <mat-icon [ngClass]="{'invisible': !show_icon }">people</mat-icon>
+        </div>
+        <div class="sent-mail-text" *ngIf="!registerForm2.value.type_of_account.includes('Artistes')">
             <span>Un lien permettant de vérifier votre adresse mail vous a été envoyé à l'adresse suivante :</span>
             <span>{{registerForm1.value.email.toLowerCase()}}</span>
+        </div>
+        <div class="sent-mail-text" *ngIf="registerForm2.value.type_of_account.includes('Artistes')">
+            <span>La création du groupe a été réalisée avec succès !</span>
+             <span>Veillez désormais à ce que chacun des membres valide la création du groupe pour pouvoir l'utiliser librement.</span>
         </div>
 
         <button class="finish-button" (click)="finish();">

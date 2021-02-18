@@ -202,7 +202,7 @@ export class SignupComponent implements OnInit {
           Validators.required,
         ]),
       ],
-      siret: ['', 
+      siret: [null, 
         Validators.compose([
           Validators.pattern(pattern("siret")),
           Validators.minLength(9),
