@@ -1644,13 +1644,18 @@ console.log("checking current: " + req.headers['authorization'] );
         }
 
         if(list_of_members_validations.indexOf(current_user)<0 ||  created_list){
-          //console.log("first if")
+          console.log("first if validation group")
           if(list_of_members_validations.indexOf(current_user)<0){
             list_of_members_validations.push(current_user);
           }
-          user.update({
+          users.update({
             "list_of_members_validations":list_of_members_validations
-          })
+          },{
+            where: {
+              id:id_group,
+            }
+          });
+         
           let compt=0;
           for( let i=0;i<list_of_ids.length;i++){
             users_groups_managment.findOne({
