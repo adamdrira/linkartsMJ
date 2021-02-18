@@ -1643,6 +1643,11 @@ export class AccountComponent implements OnInit {
   }
 
   remove_writing_album(i){
+    console.log(i)
+    console.log(this.list_titles_albums_writings_added[i])
+    console.log(this.list_writings_albums_status[i])
+    console.log(this.list_titles_albums_writings_added)
+    console.log(this.list_writings_albums_status)
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir supprimer cette section ? "},
@@ -1651,7 +1656,7 @@ export class AccountComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.Albums_service.remove_writing_album(this.list_titles_albums_writings_added[i],this.list_writings_albums_status[i]).subscribe(r=>{
+        this.Albums_service.remove_writing_album(this.list_titles_albums_writings[i],this.list_writings_albums_status[i-1]).subscribe(r=>{
           location.reload();
         })
       }
@@ -1774,10 +1779,10 @@ export class AccountComponent implements OnInit {
      
       }
 
-      this.number_of_comics_to_show_by_album[0]=this.compteur_number_of_comics;
-      this.number_of_comics_to_show_by_album[1]=this.compteur_number_of_comics;
+      this.number_of_comics_to_show_by_album[0]=this.compteur_number_of_comics*this.number_of_lines_comics;
+      this.number_of_comics_to_show_by_album[1]=this.compteur_number_of_comics*this.number_of_lines_comics;
       for(let i=0;i<this.list_titles_albums_bd_added.length;i++){
-        this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics;
+        this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics*this.number_of_lines_comics;
       }
       console.log(this.number_of_comics_to_show_by_album)
     }
@@ -1983,10 +1988,10 @@ export class AccountComponent implements OnInit {
        
       }
 
-      this.number_of_drawings_to_show_by_album[0]=this.compteur_number_of_drawings;
-      this.number_of_drawings_to_show_by_album[1]=this.compteur_number_of_drawings;
+      this.number_of_drawings_to_show_by_album[0]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
+      this.number_of_drawings_to_show_by_album[1]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
       for(let i=0;i<this.list_titles_albums_drawings_added.length;i++){
-        this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings;
+        this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
         
        
         
@@ -2118,7 +2123,8 @@ export class AccountComponent implements OnInit {
       else{
         this.number_of_lines_writings=2;
       }
-      
+      console.log("number_of_lines_writings")
+      console.log(this.number_of_lines_writings)
       this.got_number_of_writings_to_show=true;
      
       
@@ -2152,6 +2158,7 @@ export class AccountComponent implements OnInit {
       else{
         variable = 6;
       }
+      console.log("update num")
       console.log(variable)
       console.log(this.number_of_writings_variable)
       if(variable!=this.number_of_writings_variable && variable>0){
@@ -2183,12 +2190,9 @@ export class AccountComponent implements OnInit {
         
       }
 
-      this.number_of_writings_to_show_by_album[0]=this.compteur_number_of_writings;
+      this.number_of_writings_to_show_by_album[0]=this.compteur_number_of_writings*this.number_of_lines_writings;
       for(let i=0;i<this.list_titles_albums_writings_added.length;i++){
-        this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings;
-        
-       
-        
+        this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings*this.number_of_lines_writings;
       }
       console.log(this.number_of_writings_to_show_by_album)
     }

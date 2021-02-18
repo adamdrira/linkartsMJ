@@ -208,6 +208,7 @@ export class AddAlbumComicComponent implements OnInit {
     this.album_list[ this.album_list.length - 1 ].instance.profile_picture = this.profile_picture;
     this.album_list[ this.album_list.length - 1 ].instance.primary_description = this.primary_description;
     this.album_list[ this.album_list.length - 1 ].instance.author_name = this.author_name;
+    this.album_list[ this.album_list.length - 1 ].instance.pseudo = this.pseudo;
     this.album_list[ this.album_list.length - 1 ].instance.now_in_seconds = this.now_in_seconds;
     
 
@@ -306,7 +307,16 @@ export class AddAlbumComicComponent implements OnInit {
           this.album_list_to_send.push(this.album_list[ solution[i] ].instance.bd_element);
           if(i==solution.length-1){
             this.Albums_service.add_album_comics(this.albumForm.value.formName,this.album_list_to_send).subscribe(information=>{
-              location.reload();
+              if(information[0].found){
+                const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                  data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
+                  panelClass: "popupConfirmationClass",
+                });
+                this.loading=false;
+              }
+              else{
+                location.reload();
+              }
             });
 
           }

@@ -57,7 +57,6 @@ export class AddAlbumDrawingComponent implements OnInit {
   
 
 
-  cover_album_number;
   gridAlbum:any;
   now_in_seconds:number;
 
@@ -212,6 +211,7 @@ export class AddAlbumDrawingComponent implements OnInit {
     this.album_list[ this.album_list.length - 1 ].instance.profile_picture = this.profile_picture;
     this.album_list[ this.album_list.length - 1 ].instance.primary_description = this.primary_description;
     this.album_list[ this.album_list.length - 1 ].instance.author_name = this.author_name;
+    this.album_list[ this.album_list.length - 1 ].instance.pseudo = this.pseudo;
     this.album_list[ this.album_list.length - 1 ].instance.now_in_seconds = this.now_in_seconds;
     
 
@@ -326,8 +326,17 @@ export class AddAlbumDrawingComponent implements OnInit {
         console.log( this.album_list[ solution[i] ].instance.item.title );
         this.album_list_to_send.push(this.album_list[ solution[i] ].instance.item);
         if(i==solution.length-1){
-          this.Albums_service.add_album_drawings(this.albumForm.value.formName,this.album_list_to_send,0).subscribe(information=>{
-            location.reload();
+          this.Albums_service.add_album_drawings(this.albumForm.value.formName,this.album_list_to_send).subscribe(information=>{
+            if(information[0].found){
+              const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                data: {showChoice:false, text:'Ce titre est déjà utilisé.'},
+                panelClass: "popupConfirmationClass",
+              });
+              this.loading=false;
+            }
+            else{
+              location.reload();
+            }
           });
 
         }
@@ -396,12 +405,6 @@ export class AddAlbumDrawingComponent implements OnInit {
     }
     return res;
   }
-
-
-  set_cover_album(i: number) {
-    this.cover_album_number = i;
-  }
-
 
 
   scroll(el: HTMLElement) {

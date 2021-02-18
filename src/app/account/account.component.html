@@ -953,7 +953,7 @@
                                         </mat-select>
                                     </mat-form-field>
 
-                                    <ng-container *ngIf="!mode_visiteur && opened_album>2">
+                                    <ng-container *ngIf="!mode_visiteur && opened_album>0">
                                         <button class="optionsMenu opened"  (menuClosed)="menuClosed();" (menuOpened)="menuOpened(opened_album,'album_name');" [matMenuTriggerFor]="albumOptions1">
                                             <mat-icon [ngClass]="{'invisible': !show_icon }" class="optionsButton">more_vert</mat-icon>
                                         </button>
