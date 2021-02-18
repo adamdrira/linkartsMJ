@@ -29,21 +29,31 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
-                const album = req.body.album;
-                const title = req.body.title;
-                list_of_albums.create({
-                        "id_user": current_user,
-                        "album_name":title,
-                        "album_category":"comics",
-                        "album_content":album,
-                        "status":"public"
-                    })
-                    .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(album=>{res.status(200).send([album])})  
-        })();
+        const album = req.body.album;
+        const title = req.body.title;
+        list_of_albums.findOne({
+          where:{
+            album_name:title,
+            album_category:"comics",
+          }
+        }).then(album_found=>{
+          if(album_found){
+            res.status(200).send([{found:true}])
+          }
+          else{
+            list_of_albums.create({
+              "id_user": current_user,
+              "album_name":title,
+              "album_category":"comics",
+              "album_content":album,
+              "status":"public"
+            })
+            .catch(err => {
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(album=>{res.status(200).send([album])})  
+          }
+        })
     });
 
     router.post('/add_album_drawings', function (req, res) {
@@ -59,24 +69,31 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
-                const album = req.body.album;
-                const title = req.body.title;
-                const number_cover=req.body.number_cover;
-                list_of_albums.create({
-                        "id_user": current_user,
-                        "album_name":title,
-                        "album_category":"drawings",
-                        "album_content":album,
-                        "thumbnail_cover_drawing":number_cover,
-                        "status":"public"
-                    })
-                    .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(album=>{res.status(200).send([album])})        
-
-        })();
+        const album = req.body.album;
+        const title = req.body.title;
+        list_of_albums.findOne({
+          where:{
+            album_name:title,
+            album_category:"drawings",
+          }
+        }).then(album_found=>{
+          if(album_found){
+            res.status(200).send([{found:true}])
+          }
+          else{
+            list_of_albums.create({
+              "id_user": current_user,
+              "album_name":title,
+              "album_category":"drawings",
+              "album_content":album,
+              "status":"public"
+            })
+            .catch(err => {
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(album=>{res.status(200).send([album])})  
+          }
+        })
     });
 
     router.post('/add_album_writings', function (req, res) {
@@ -92,22 +109,34 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let current_user = get_current_user(req.cookies.currentUser);
-        (async () => {
-                const album = req.body.album;
-                const title = req.body.title;
-                list_of_albums.create({
-                        "id_user": current_user,
-                        "album_name":title,
-                        "album_category":"writings",
-                        "album_content":album,
-                        "status":"public"
-                    })
-                    .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(album=>{res.status(200).send([album])})        
+        
+        const album = req.body.album;
+        const title = req.body.title;
 
-        })();
+        list_of_albums.findOne({
+          where:{
+            album_name:title,
+            album_category:"writings",
+          }
+        }).then(album_found=>{
+          if(album_found){
+            res.status(200).send([{found:true}])
+          }
+          else{
+            list_of_albums.create({
+              "id_user": current_user,
+              "album_name":title,
+              "album_category":"writings",
+              "album_content":album,
+              "status":"public"
+            })
+            .catch(err => {
+              console.log(err);	
+              res.status(500).json({msg: "error", details: err});		
+            }).then(album=>{res.status(200).send([album])})  
+          }
+        })
+              
     });
 
     router.delete('/remove_subscribtion/:id_user_subscribed_to', function (req, res) {
@@ -498,9 +527,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
         let id_user = req.params.id_user;
-        (async () => {
-
-            albums = await list_of_albums.findAll({
+        list_of_albums.findAll({
                 where: {
                     id_user:id_user,
                     album_category:"writings",
@@ -511,12 +538,11 @@ console.log("checking current: " + req.headers['authorization'] );
                 ],
             })
             .catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(albums =>  {
+                console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+              }).then(albums =>  {
                 res.status(200).send(albums)
-            }); 
-        })();     
+            });    
     });
 
 
@@ -536,9 +562,7 @@ console.log("checking current: " + req.headers['authorization'] );
         let album_name=req.body.album_name;
         let current_status=req.body.current_status;
         let new_status=req.body.new_status;
-        (async () => {
-
-            albums = await list_of_albums.findOne({
+        list_of_albums.findOne({
                 where: {
                     id_user:current_user,
                     album_category:"writings",
@@ -560,8 +584,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 )
                 
-            }); 
-        })();     
+            });   
     });
 
     router.delete('/remove_writing_album/:album_name/:current_status', function (req, res) {
@@ -579,32 +602,28 @@ console.log("checking current: " + req.headers['authorization'] );
         let current_user = get_current_user(req.cookies.currentUser);
         let album_name=req.params.album_name;
         let current_status=req.params.current_status;
-        (async () => {
-
-
-            albums = await list_of_albums.findOne({
+        console.log(album_name);
+        list_of_albums.findOne({
+            where: {
+                id_user:current_user,
+                album_category:"writings",
+                album_name:album_name,
+                status:current_status,
+            },
+        }).catch(err => {
+            console.log(err);	
+            res.status(500).json({msg: "error", details: err});		
+          }).then(albums => {
+            albums.destroy({
                 where: {
                     id_user:current_user,
                     album_category:"writings",
-                    album_name:album_name,
-                    status:current_status,
-                },
-            }).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(albums => {
-                albums.destroy({
-                    where: {
-                        id_user:current_user,
-                        album_category:"writings",
-                        album_name: album_name
-                     },
-                    truncate: false
-                  });
-                  res.status(200).send(albums);
-            })
-           
-        })();     
+                    album_name: album_name
+                  },
+                truncate: false
+              });
+              res.status(200).send(albums);
+        }) 
     });
 
 
