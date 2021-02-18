@@ -20,25 +20,47 @@ var nodemailer = require('nodemailer');
 const algorithm = 'aes-256-ctr';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdJBL1lwHzfr3';
 var geoip = require('geoip-lite');
+
+
+
+
+
 // Post a User
 exports.create = (req, res) => {
 	// Save to PostgreSQL database
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	const Op = Sequelize.Op;
 
-	User.findOne({
-		where:{
-			[Op.or]:[{email:{[Op.iLike]: req.body.email}},{nickname:req.body.nickname}],
-			
-		}
-	}).then(user=>{
-		if(user){
-			res.status(200).json([{error: "similar user found"}])
-		}
-		else{
-			start_creation();
-		}
-	})
-
+	if(req.body.gender=="Groupe" && req.body.type_of_account.includes("Artiste")){
+		start_creation();
+	}
+	else{
+		User.findOne({
+			where:{
+				[Op.or]:[{email:{[Op.iLike]: req.body.email}},{nickname:req.body.nickname}],
+				
+			}
+		}).then(user=>{
+			if(user){
+				res.status(200).json([{error: "similar user found"}])
+			}
+			else{
+				start_creation();
+			}
+		})
+	
+	}
+	
 	function start_creation(){
 		var passwordhash;
 
@@ -291,7 +313,7 @@ exports.create = (req, res) => {
 };
 
 function get_current_user(token){
-    var user = 0
+    var user
     jwt.verify(token, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{		
       user=decoded.id;
     });
@@ -302,6 +324,17 @@ function get_current_user(token){
 
 //decrypt password
 exports.decrypt_password = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	console.log("decrypt_password")
 	let id_user= get_current_user(req.cookies.currentUser)
 
@@ -334,6 +367,17 @@ exports.decrypt_password = (req, res) => {
 
 // reset_password
 exports.reset_password = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	console.log("reset_password")
 	let email=req.body.email;
 
@@ -527,6 +571,17 @@ exports.reset_password = (req, res) => {
 
 //modify password
 exports.edit_password = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	console.log("modify_password")
 	let id_user= get_current_user(req.cookies.currentUser)
 	var passwordhash;
@@ -569,6 +624,17 @@ exports.edit_password = (req, res) => {
 
 //modify password
 exports.edit_email = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	console.log("edit_email")
 	let id_user= get_current_user(req.cookies.currentUser);
 	User.update({
@@ -587,6 +653,17 @@ exports.edit_email = (req, res) => {
 };
 // Post a add_link
 exports.add_link = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	// Save to PostgreSQL database
 		console.log("add_link")
 		User_links.create({
@@ -610,6 +687,17 @@ exports.add_link = (req, res) => {
 
 // Post a User
 exports.remove_link = (req, res) => {
+	console.log("checking current: " + req.headers['authorization'] );
+      if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+      }
+      else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+          return res.status(401).json({msg: "error"});
+        }
+      }
 	// Save to PostgreSQL database
 		console.log("remove_link")
 
@@ -634,29 +722,6 @@ exports.remove_link = (req, res) => {
 };
 
 
-
-
-exports.get_password = (req, res) => {
-	// Save to PostgreSQL database
-	id=req.body.id;
-	User.findOne({
-		where:{
-			id:id
-		}
-	}).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(user=>{
-		if(user){
-
-		}
-		else{
-			res.status(200).send([{nothing:"nothing"}])
-		}
-	})
-	
-
-};
 
 exports.check_pseudo=(req,res)=>{
 	console.log("check_pseudo")
@@ -733,6 +798,8 @@ exports.check_email=(req,res)=>{
 }
 
 
+
+
 exports.create_visitor = (req, res) => {
 		console.log("creation visitor");
 		User.create({
@@ -742,6 +809,8 @@ exports.create_visitor = (req, res) => {
 			console.log(err);	
 			res.status(200).json({msg: "error registering the visitor", details: err});		
 		}).then(user=>{
+			console.log("user created")
+			console.log(user)
 			const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
 			return res.status(200).json( { token:token } );
 		})
@@ -835,6 +904,9 @@ exports.login = async (req, res) => {
 			//var geo = geoip.lookup(ip);
 			//console.log(geo)
 			
+
+			
+
 			let now = new Date();
 			let connexion_time = now.toString();
 			db.users_connexions.create({
@@ -870,14 +942,16 @@ exports.login = async (req, res) => {
 						list_of_regions.push(geo.region);
 						
 						
-						user_ips.update({
+						db.users_ips.update({
 							"list_of_ips":list_of_ips,
 							"list_of_latitudes":list_of_latitudes,
 							"list_of_longitudes":list_of_longitudes,
 							"list_of_areas":list_of_areas,
 							"list_of_countries":list_of_countries,
 							"list_of_regions":list_of_regions,
-						});
+						},{where:{
+							id_user:user.id,
+						}});
 
 						if(distance>100){
 							const transport = nodemailer.createTransport({
@@ -1194,7 +1268,22 @@ exports.check_invited_user =async(req,res)=>{
 
 // to have current user's identifications
 exports.getCurrentUser = async (req, res) => {
+
+	console.log("checking current: " + req.headers['authorization'] );
 	let value = req.cookies;
+	
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+	}
+	else {
+		let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+		let user= get_current_user(val)
+		if(!user){
+			return res.status(401).json({msg: "error"});
+		}
+	}
+
+	
 
 	jwt.verify(value.currentUser, SECRET_TOKEN, {ignoreExpiration:true}, async (err, decoded)=>{
 		if(err){
