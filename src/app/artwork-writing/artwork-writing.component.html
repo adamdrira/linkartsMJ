@@ -453,7 +453,12 @@
                 matTooltipClass='linkarts-tooltip'
                 [matTooltipPosition]="'below'"
                 [matTooltipShowDelay]="200"
-                    (click)="stop($event);add_time_of_view()"><span>{{style}}</span></a>
+                    (click)="stop($event);add_time_of_view()">
+                    <span *ngIf="style=='Poetry'">Poésie</span>
+                    <span *ngIf="style=='Illustrated novel'">Roman illustré</span>
+                    <span *ngIf="style=='Scenario'">Scénario</span>
+                    <span *ngIf="style!='Poetry' && style!='Illustrated novel' && style!='Scenario'">{{style}}</span>
+                </a>
                 
                 <a class="type-container open-description" (click)="see_description();">
                     <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
