@@ -12,8 +12,8 @@ export class ConstantsService {
 
   drawings_filters=["Abstrait","Animaux","Animés","Art","BD","Campagne","Caricatural","Cartoons","Cinéma","Comics","Culture","Décoration","Design","Enfants","Fanart","Fanfiction","Fantaisie","Femmes","Fête","Fresque","Guerre","Guerrier","Graffiti","Héroïque","Histoire","Hommes","Horreur","Humour","Immeubles","Intérieur","Kawaii","Maisons","Manga","Monstre","Montagnes","Motos","Nature","Nature morte","Paysage","Personnages","Photographie","Portrait",
   "Réaliste","Religion","Retro","Romantique","Rural","SF","Sociologie","Sport","Transports","Urbanisme","Véhicules","Villes","Voitures","Voyage","Western"]
-  writings_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Philosophie",
-  "Policier","Réaliste","Religion","Romantique","Satirique","SF","Sociologie","Sport","Thriller","Voyage","Western"];
+  writings_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Enfants","Epique","Epistolaire","Esotérisme","Fanfiction","Fantaisie","Guerre","Héroïque","Histoire","Horreur","Humour","Journalisme","Pensées","Philosophie",
+  "Policier","Réaliste","Réflexions","Religion","Romantique","Satirique","SF","Sociologie","Spiritualité","Sport","Thriller","Voyage","Western"];
   comics_filters=["Action","Animaux","Art","Aventure","Biographie","Caricatural","Enfants","Epique","Esotérisme","Fanfiction","Fantaisie","Fantastique","Guerre","Héroïque","Histoire","Horreur","Humour","Josei","Journalisme","Kawaii","Kodomo","Nekketsu","Pantso shoto","Philosophie","Photographie",
   "Policier","Religion","Romantique","Satirique","SF","Seinen","Shojo","Shonen","Sociologie","Sport","Thriller","Voyage","Western","Yaoi","Yuri"];
   
