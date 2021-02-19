@@ -359,6 +359,7 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
 
                   if(number_of_contents_by_category[0]<6){
                     complete_recommendation_bd(list_of_bd_os_already_seen,response,user,'Manga',"one-shot", (req)=>{
+                      
                       if(req[1]){
                         styles_with_contents_already_seen[0]=true;
                       }
@@ -374,6 +375,8 @@ const get_first_recommendation_bd_os_for_user = (request, response) => {
                       if(req[1]){
                         styles_with_contents_already_seen[1]=true;
                       }
+                      console.log("other comics to complete")
+                      console.log(req[0])
                       sort_os_styles(req[0])
                     })
                   }
@@ -1343,7 +1346,7 @@ const get_first_recommendation_writings_for_user = (request, response) => {
 
 function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,format,callback){
 
-  
+  console.log("compelte reacommendation bddddddddddddd")  
   var _today = new Date();
   var last_week = new Date();
   last_week.setDate(last_week.getDate() - 350);
@@ -1359,7 +1362,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
         let i=0;
         if(format=="one-shot" && result1.length!=0){
           for (let item of result1){
-            pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_one_shot WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'one-shot'], (error, results2) => {
+            pool.query('SELECT * FROM liste_bd_one_shot WHERE bd_id = $1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_one_shot WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 AND publication_category=$4))', [item.publication_id,user,'one-shot','comic'], (error, results2) => {
               if (error) {
                 console.log(error)
                 response.status(500).send([{"error":error}]);
@@ -1407,7 +1410,7 @@ function complete_recommendation_bd(list_of_bd_already_seen,response,user,style,
         }
         else if(format=="serie" && result1.length!=0){
           for (let item of result1){
-            pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_serie WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3))', [item.publication_id,user,'serie'], (error, results2) => {
+            pool.query('SELECT * FROM liste_bd_serie WHERE bd_id=$1 AND authorid NOT IN (SELECT id_user_blocked as authorid FROM users_blocked WHERE id_user=$2) AND authorid NOT IN (SELECT id_receiver as authorid from reports where id_user=$2) AND authorid != $2 AND authorid NOT IN (SELECT authorid FROM liste_bd_serie WHERE bd_id IN (SELECT DISTINCT publication_id FROM list_of_views  WHERE author_id_who_looks = $2 AND format=$3 AND publication_category=$4))', [item.publication_id,user,'serie','comic'], (error, results2) => {
               if (error) {
                 console.log(error)
                 response.status(500).send([{"error":error}]);
