@@ -190,24 +190,29 @@
       height:0px !important;
     }
 
+    
     .paginator {
 
       display:flex;
-      margin-top:50px;
-      margin-bottom:50px;
-
+      margin-top:30px;
+      margin-bottom:60px;
+      padding-bottom: 60px;
+  
       .button-all {
         cursor: pointer;
         outline: none;
         border: none;
         background: #fbfbfb;
         display: flex;
-        color: #a2a2a2;
-        box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 1px rgba(0, 0, 0, 0.12);
+        color: #717171;
+        box-shadow: 0px 0px 1px 1px rgb(0,0,0,0.2), 0px 1px 3px 1px rgb(0 0 0 / 39%), 0px 1px 5px 1px rgb(0 0 0 / 0%);
         border-radius: 30px;
-        height: 40px;
-        width: 40px;
-
+        height: 42px;
+        width: 42px;
+  
+        user-select: none;
+        transition: color 200ms, background-color 200ms;
+  
         mat-icon {
           margin: auto;
           width: unset;
@@ -215,10 +220,13 @@
         }
         &:hover {
           color:rgb(32,56,100);
-          box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 0.3), 0px 2px 2px 0px rgb(0 0 0 / 0.25), 0px 1px 5px 1px rgb(0 0 0 / 0.25);
+          background: rgb(240, 240, 240);
+        }
+        &:active {
+          transform:scale(0.98);
         }
       }
-
+  
       
       .disabled{   
         cursor:default !important;
@@ -226,7 +234,7 @@
         box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 7%), 0px 2px 2px 0px rgb(0 0 0 / 1%), 0px 1px 5px 1px rgb(0 0 0 / 15%) !important;
       }
       .button-first-page {
-        margin:auto 7px auto auto;
+        margin:auto 4px auto auto;
         mat-icon {
           font-size: 26px;
           max-width:26px ;
@@ -234,7 +242,7 @@
         }
       }
       .button-last-page {
-        margin:auto auto auto 7px;
+        margin:auto auto auto 4px;
         mat-icon {
           font-size: 26px;
           max-width:26px ;
@@ -242,18 +250,18 @@
         }
       }
       .button-previous-page {
-        margin:auto 30px auto 7px;
+        margin:auto 27px auto 4px;
         mat-icon {
           font-size: 26px;
         }
       }
       .button-next-page {
-        margin:auto 7px auto 30px;
+        margin:auto 4px auto 27px;
         mat-icon {
           font-size: 26px;
         }
       }
-
+  
       .input-page {    
         border-radius: 6px;
         margin: auto 10px auto 0px;
@@ -271,9 +279,11 @@
       .total-pages {
         cursor:default;
         align-self: center;
-        color: #8b758b;
+        color: rgb(32,56,100);
       }
     }
+
+
   }
 
   
