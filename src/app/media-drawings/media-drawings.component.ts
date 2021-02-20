@@ -68,9 +68,14 @@ export class MediaDrawingsComponent implements OnInit {
       console.log("width changed for drawing")
       console.log(this.width)
       if(this.width>0){
-        this.width_to_send=this.width
+        this.width_to_send=this.width;
+        if(this.current_number_of_drawings_to_show!= this.number_of_drawings_to_show){
+          this.get_history_recommendation();
+        }
       }
-      this.get_history_recommendation();
+      this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
+      
+     
     }
   }
   
@@ -86,12 +91,13 @@ export class MediaDrawingsComponent implements OnInit {
     if(this.width>0){
       this.width_to_send=this.width;
     }
+    this.current_number_of_drawings_to_show= this.number_of_drawings_to_show;
     this.get_history_recommendation();
     
   }
 
 
-
+  current_number_of_drawings_to_show:number;
   get_history_recommendation(){
     if(this.width>0){
       var n = Math.floor(this.width/250);

@@ -36,6 +36,7 @@ export class MediaComicsComponent implements OnInit {
     this.cancelled = 0;
   }
 
+  current_number_of_comics_to_show:number;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     var n = Math.floor(this.width/250);
@@ -45,7 +46,10 @@ export class MediaComicsComponent implements OnInit {
     else{
       this.number_of_comics_to_show=6;
     }
-    this.get_history_recommendation();
+    if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
+      this.get_history_recommendation();
+    }
+    this.current_number_of_comics_to_show=this.number_of_comics_to_show;
     this.cd.detectChanges()
   }
 
@@ -87,7 +91,7 @@ export class MediaComicsComponent implements OnInit {
     else{
       this.number_of_comics_to_show=6;
     }
-    
+    this.current_number_of_comics_to_show=this.number_of_comics_to_show;
     this.get_history_recommendation()
       
   }

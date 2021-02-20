@@ -39,6 +39,7 @@ export class MediaWritingsComponent implements OnInit {
     this.cancelled = 0;
   }
 
+  current_number_of_writings_to_show:number;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     //var width = $('.media-container').width();
@@ -49,7 +50,11 @@ export class MediaWritingsComponent implements OnInit {
     else{
       this.number_of_writings_to_show=6;
     }
-    this.get_history_recommendation();
+
+    if(this.current_number_of_writings_to_show!= this.number_of_writings_to_show){
+      this.get_history_recommendation();
+    }
+    this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
     this.cd.detectChanges()
   }
   
@@ -86,6 +91,7 @@ export class MediaWritingsComponent implements OnInit {
     else{
       this.number_of_writings_to_show=6;
     }
+    this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
     this.get_history_recommendation();
 
   }
@@ -93,6 +99,7 @@ export class MediaWritingsComponent implements OnInit {
   
   get_history_recommendation(){
     console.log("get history recommendation writin")
+    
     this.last_consulted_writings_retrieved=false;
     this.number_of_skeletons_per_line=this.number_of_writings_to_show;
     this.can_show_more_history=true;

@@ -164,6 +164,9 @@
     margin: 30px 0px 30px 0px;
   }
   
+  .no-cursor{
+    cursor: default;
+  }
 
   ::ng-deep {
     .newDrawings .drawing-container {
