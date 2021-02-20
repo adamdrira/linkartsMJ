@@ -99,6 +99,37 @@ console.log("checking current: " + req.headers['authorization'] );
        
      });
 
+
+     router.get('/get_last_researched_navbar_for_recommendations/:category/:offset/:limit', function (req, res) {
+        console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+        }
+        else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+            return res.status(401).json({msg: "error"});
+        }
+        }
+        let category = req.params.category;
+        let offset = parseInt(req.params.offset)
+        let limit = parseInt(req.params.limit)
+        let status="clicked_after_research"
+        let status2="clicked"
+        let id_user = get_current_user(req.cookies.currentUser);
+        
+        pool.query('SELECT  publication_category,format,target_id,research_string,max("createdAt")  FROM list_of_navbar_researches WHERE publication_category=$1 AND id_user=$3   AND ( status=$2 OR  status=$4) GROUP BY publication_category,format,target_id,research_string ORDER BY max("createdAt") DESC LIMIT $6 OFFSET $5', [category,status,id_user,status2,offset,limit], (error, results) => {
+            if (error) {
+                console.log(error)
+                res.status(500).send([{error:error}]);
+            }
+            else{
+                let result = JSON.parse(JSON.stringify(results.rows));
+                res.status(200).send([result]);
+            }
+        })
+    });
     
 
     router.get('/get_last_researched_navbar/:category', function (req, res) {
