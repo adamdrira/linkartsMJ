@@ -677,6 +677,99 @@
   .thumbnail {
     padding-bottom: 30px;
   }
+  
+  .paginator {
+
+    display:flex;
+    margin-top:30px;
+    margin-bottom:60px;
+    padding-bottom: 60px;
+
+    .button-all {
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: #fbfbfb;
+      display: flex;
+      color: #717171;
+      box-shadow: 0px 0px 1px 1px rgb(0,0,0,0.2), 0px 1px 3px 1px rgb(0 0 0 / 39%), 0px 1px 5px 1px rgb(0 0 0 / 0%);
+      border-radius: 30px;
+      height: 42px;
+      width: 42px;
+
+      user-select: none;
+      transition: color 200ms, background-color 200ms;
+
+      mat-icon {
+        margin: auto;
+        width: unset;
+        height: unset;
+      }
+      &:hover {
+        color:rgb(32,56,100);
+        background: rgb(240, 240, 240);
+      }
+      &:active {
+        transform:scale(0.98);
+      }
+    }
+
+    
+    .disabled{   
+      cursor:default !important;
+      color: #e0e0e0 !important;
+      box-shadow: 0px 0px 1px 1px rgb(0 0 0 / 7%), 0px 2px 2px 0px rgb(0 0 0 / 1%), 0px 1px 5px 1px rgb(0 0 0 / 15%) !important;
+    }
+    .button-first-page {
+      margin:auto 4px auto auto;
+      mat-icon {
+        font-size: 26px;
+        max-width:26px ;
+        overflow: hidden;
+      }
+    }
+    .button-last-page {
+      margin:auto auto auto 4px;
+      mat-icon {
+        font-size: 26px;
+        max-width:26px ;
+        overflow: hidden;
+      }
+    }
+    .button-previous-page {
+      margin:auto 27px auto 4px;
+      mat-icon {
+        font-size: 26px;
+      }
+    }
+    .button-next-page {
+      margin:auto 4px auto 27px;
+      mat-icon {
+        font-size: 26px;
+      }
+    }
+
+    .input-page {    
+      border-radius: 6px;
+      margin: auto 10px auto 0px;
+      height: 30px;
+      font-size: 14px;
+      width: 40px;
+      background: #fbfbfb;
+      padding: 0px 10px 0px 10px;
+      color: #203864;
+      outline: none;
+      box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 1px rgba(0, 0, 0, 0.12);
+      border: unset;
+      text-align: center;
+    }
+    .total-pages {
+      cursor:default;
+      align-self: center;
+      color: rgb(32,56,100);
+    }
+  }
+
 }
 
 .no-proposition-container {

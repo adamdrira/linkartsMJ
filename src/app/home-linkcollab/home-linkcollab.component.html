@@ -299,23 +299,25 @@
                 </div>
             </ng-container>
         </div>
+        
         <div class="paginator" *ngIf="!display_no_propositions && number_of_pages > 1">
-            <button class="button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+            <div  class=" button-all button-first-page" (click)="first_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">first_page</mat-icon>
-            </button>
-            <button class="button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
+            </div>
+            <div class="button-all button-previous-page" (click)="previous_page();scroll(target);" [ngClass]="{'disabled': current_page==1 }" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_before</mat-icon>
-            </button>
+            </div>
 
             <input type="text" class="input-page" aria-label="" role="navigation" size="5" (keydown.enter)="page_clicked($event)" [placeholder]=current_page #input>
             <span class="total-pages"> / {{number_of_pages}}</span>
             
-            <button class="button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+            <div class="button-all button-next-page" (click)="next_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">navigate_next</mat-icon>
-            </button>
-            <button class="button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
+            </div>
+            <div class="button-all button-last-page" (click)="last_page();scroll(target);" [ngClass]="{'disabled': current_page==number_of_pages }" #target>
                 <mat-icon [ngClass]="{'invisible': !show_icon }">last_page</mat-icon>
-            </button>
+            </div>
         </div>
+
     </ng-container>
 </div>
