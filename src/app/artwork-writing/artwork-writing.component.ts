@@ -1363,7 +1363,7 @@ pdf_is_loaded(){
   set_private() {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
       panelClass: "popupConfirmationClass",
     });
     if(this.archive_loading){
@@ -1388,7 +1388,7 @@ pdf_is_loaded(){
   }
   set_public() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir désarchiver cette œuvre ? Elle sera visible par tous les utilisateurs.'},
       panelClass: "popupConfirmationClass",
     });
     if(this.archive_loading){

@@ -511,7 +511,7 @@
             
 
 
-            <ng-container *ngIf="!new_contents_added">
+            <!--<ng-container *ngIf="!new_contents_added">-->
 
                 <div class="account-title medium-icon">
                     <span>
@@ -537,7 +537,7 @@
                         [@enterAnimation]>
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container"
-                                *ngIf="number_of_skeletons_per_line>i"
+                                *ngIf="number_of_new_contents_to_show>i"
                                 (send_number_of_skeletons)="send_number_of_skeletons( $event );"
                                 type_of_skeleton="new-drawing"></app-thumbnail-skeleton>
                         </ng-container>
@@ -547,7 +547,7 @@
                         [@enterAnimation]>
                         <ng-container *ngFor="let item of skeleton_array; let i = index">
                             <app-thumbnail-skeleton class="thumbnail-component-container"
-                                *ngIf="number_of_skeletons_per_line>i"
+                                *ngIf="number_of_new_contents_to_show>i"
                                 (send_number_of_skeletons)="send_number_of_skeletons( $event );"
                                 type_of_skeleton="writing"></app-thumbnail-skeleton>
                         </ng-container>
@@ -556,7 +556,7 @@
                    
                 </div>
 
-            </ng-container >
+            <!--</ng-container >-->
 
           
             

@@ -1,9 +1,5 @@
-import { Component, OnInit, Input, HostListener, EventEmitter, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
-import {QueryList} from '@angular/core';
+import { Component, OnInit, Input,EventEmitter, Output, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { Community_recommendation } from '../services/recommendations.service';
-import { BdOneShotService } from '../services/comics_one_shot.service';
-import { BdSerieService } from '../services/comics_serie.service';
 
 declare var $: any
 
@@ -17,10 +13,7 @@ export class MediaSeeMoreWritingsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private rd: Renderer2,
-    private Community_recommendation:Community_recommendation,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService) { 
+    private Community_recommendation:Community_recommendation,) { 
 
     this.cancelled = 0;
   }

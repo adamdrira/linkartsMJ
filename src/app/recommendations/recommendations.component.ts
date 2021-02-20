@@ -4,7 +4,12 @@ import { SimpleChanges } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { NavbarService } from '../services/navbar.service';
+import {BdOneShotService} from '../services/comics_one_shot.service';
+import {BdSerieService} from '../services/comics_serie.service';
+import {Drawings_Artbook_Service} from '../services/drawings_artbook.service';
+import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
+import {Writing_Upload_Service} from '../services/writing.service';
 declare var $: any
 
 
@@ -40,6 +45,12 @@ export class RecommendationsComponent implements OnInit {
     private cd:ChangeDetectorRef,
     private CookieService:CookieService,
     private Community_recommendation:Community_recommendation,
+    private navbar:NavbarService,
+    private BdOneShotService:BdOneShotService,
+    private BdSerieService:BdSerieService,
+    private Drawings_Artbook_Service:Drawings_Artbook_Service,
+    private Drawings_Onepage_Service:Drawings_Onepage_Service,
+    private Writing_Upload_Service:Writing_Upload_Service,
     ) { }
 
   
@@ -103,25 +114,6 @@ export class RecommendationsComponent implements OnInit {
     this.width=this.artwork_container.nativeElement.offsetWidth*0.9-20;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if( changes.status) {
-      console.log("status changed recommendations")
-      this.media_visibility=false;
-      this.cd.detectChanges();
-      if(this.status){
-        
-        this.cd.detectChanges();
-        let interval = setInterval( () => {
-          console.log("interval")
-          this.media_visibility=true;
-          clearInterval(interval);
-          this.cd.detectChanges();
-          //window.dispatchEvent(new Event('resize'));
-        },200)
-      }
-      
-    }
-  }
 
 
  
@@ -224,12 +216,6 @@ export class RecommendationsComponent implements OnInit {
         this.cd.detectChanges()
         this.load_writing_recommendations();
       }
-      let interval = setInterval( () => {
-        console.log("interval")
-        this.media_visibility=true;
-        clearInterval(interval);
-        this.cd.detectChanges();
-      },200)
       
       //sort styles
       var i = 0;
@@ -290,7 +276,6 @@ export class RecommendationsComponent implements OnInit {
     }
     else if(this.sorted_category_retrieved){
       console.log("open new subategory " + i)
-      this.media_visibility=false;
       if(i==0){
         this.subcategory=i;
         this.type_of_skeleton="comic";
@@ -321,12 +306,7 @@ export class RecommendationsComponent implements OnInit {
        
       }
 
-      let interval = setInterval( () => {
-        console.log("interval")
-        this.media_visibility=true;
-        clearInterval(interval);
-        this.cd.detectChanges();
-      },200)
+     
 
     }
    
@@ -632,6 +612,7 @@ export class RecommendationsComponent implements OnInit {
 
 
   can_see_more_comics=[true,true,true,true]; // Manga,comics,bd,webtoon
+
   load_all_comics(j){
     console.log(j);
     console.log(this.bd_os_is_loaded)
@@ -681,6 +662,7 @@ export class RecommendationsComponent implements OnInit {
       }
       console.log(this.can_see_more_comics)
     
+      
       console.log("in if")
       this.bd_is_loaded=true;
       this.cd.detectChanges()
@@ -689,7 +671,16 @@ export class RecommendationsComponent implements OnInit {
   }
 
 
-
+  delete_null_elements_of_list(list){
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(!list[len-i-1]){
+        list.splice(len-i-1,1);
+      }
+    }
+    console.log("show last consulted after all")
+    console.log(list);
+  }
 
 
 
@@ -737,13 +728,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_artbook.length-1){
                       this.drawing_artbook_is_loaded=true;
-                      //console.log("on valide artbook")
-                      if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        //console.log(this.sorted_artpieces_traditional);
-                        //console.log("on valide tout dans artbook")
-                        this.drawing_is_loaded=true;
-                        this.cd.detectChanges()
-                      }
+                      this.load_all_drawing()
                     }
                   }
                   if(list_artbook[i][0].category =="Digital"){
@@ -753,13 +738,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_artbook.length-1){
                       this.drawing_artbook_is_loaded=true;
-                      //console.log("on valise artbook")
-                      if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        //console.log(this.sorted_artpieces_traditional);
-                        //console.log("on valide tout dans artbook")
-                        this.drawing_is_loaded=true;
-                        this.cd.detectChanges()
-                      }
+                      this.load_all_drawing()
                     }
                   }
                 }
@@ -767,13 +746,7 @@ export class RecommendationsComponent implements OnInit {
                   //console.log("on est dans le else if")
                   if(i==list_artbook.length-1){
                     this.drawing_artbook_is_loaded=true;
-                    //console.log("on valide artbook")
-                    if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                      //console.log(this.sorted_artpieces_traditional);
-                      //console.log("on valide tout dans artbook")
-                      this.drawing_is_loaded=true;
-                      this.cd.detectChanges()
-                    }
+                    this.load_all_drawing()
                   }
                 }
                 
@@ -781,11 +754,7 @@ export class RecommendationsComponent implements OnInit {
             }
             else{
                 this.drawing_artbook_is_loaded=true;
-                //console.log("on valise artbook")
-                if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                  this.drawing_is_loaded=true;
-                  this.cd.detectChanges()
-                }
+                this.load_all_drawing()
             }
             
           });
@@ -807,13 +776,7 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_drawing_os.length-1){
                       this.drawing_onepage_is_loaded=true;
-                      //console.log("on valise onepage")
-                      if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        //console.log(this.sorted_artpieces_traditional);
-                        //console.log("on valide tout dans artbook")
-                        this.drawing_is_loaded=true;
-                        this.cd.detectChanges()
-                      }
+                      this.load_all_drawing()
                     }
                   }
                   if(list_drawing_os[i][0].category =="Digital"){
@@ -823,26 +786,14 @@ export class RecommendationsComponent implements OnInit {
                     }
                     if(i==list_drawing_os.length-1){
                       this.drawing_onepage_is_loaded=true;
-                      //console.log("on valise onepage")
-                      if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                        //console.log(this.sorted_artpieces_traditional);
-                        //console.log("on valide tout dans artbook")
-                        this.drawing_is_loaded=true;
-                        this.cd.detectChanges()
-                      }
+                      this.load_all_drawing()
                     }
                   }
                 }
                 else if(!list_drawing_os[i][0]){
                   if(i==list_drawing_os.length-1){
                     this.drawing_onepage_is_loaded=true;
-                    //console.log("on valise onepage")
-                    if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                      //console.log(this.sorted_artpieces_traditional);
-                      //console.log("on valide tout dans artbook")
-                      this.drawing_is_loaded=true;
-                      this.cd.detectChanges()
-                    }
+                    this.load_all_drawing()
                   }
                 }
                 
@@ -850,17 +801,21 @@ export class RecommendationsComponent implements OnInit {
             }
             else{
                 this.drawing_onepage_is_loaded=true;
-                //console.log("on valise onepage")
-                if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
-                  this.drawing_is_loaded=true;
-                  this.cd.detectChanges()
-                }
+                this.load_all_drawing()
             }
           });
   }
 
   
 
+  load_all_drawing(){
+    console.log("laod all drawing")
+    if(this.drawing_artbook_is_loaded && this.drawing_onepage_is_loaded){
+      console.log("drawing is loaded")
+      this.drawing_is_loaded=true;
+      this.cd.detectChanges()
+    }
+  }
 
 
 
@@ -961,6 +916,7 @@ export class RecommendationsComponent implements OnInit {
 
 
   can_see_more_writings=[true,true,true,true,true]; //Article,Roman,Illustrated novel,Poetry,Scenario
+
   load_all_writings(){
       for( let i=0;i<5;i++){
         if(this.styles_with_contents_already_seen_writings[i]){
@@ -983,6 +939,8 @@ export class RecommendationsComponent implements OnInit {
         }
       }
       console.log(this.can_see_more_writings)
+
+      
   }
 
   

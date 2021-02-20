@@ -1,8 +1,7 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import {Renderer2} from '@angular/core';
-
-import { Router } from '@angular/router';
+import {Writing_Upload_Service} from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
 
 
@@ -28,7 +27,7 @@ export class MediaWritingsComponent implements OnInit {
 
 
   constructor(private rd: Renderer2,
-    private router:Router,
+    private Writing_Upload_Service:Writing_Upload_Service,
     private cd: ChangeDetectorRef,
     private navbar: NavbarService,
     ) { 
@@ -44,7 +43,13 @@ export class MediaWritingsComponent implements OnInit {
   onResize(event) {
     //var width = $('.media-container').width();
     var n = Math.floor(this.width/250);
-    this.number_of_writings_to_show=n;
+    if(n>3){
+      this.number_of_writings_to_show=(n<6)?n:6;
+    }
+    else{
+      this.number_of_writings_to_show=6;
+    }
+    this.get_history_recommendation();
     this.cd.detectChanges()
   }
   
@@ -62,33 +67,72 @@ export class MediaWritingsComponent implements OnInit {
   @Input() sorted_artpieces_article: any[];
   @Input() sorted_artpieces_poetry: any[];
   @Input() can_see_more_writings: any[];
-  
+  last_consulted_writings: any[]=[];
+  last_consulted_writings_retrieved: boolean;
   @Input() width: number;
   @Input() now_in_seconds: number;
 
   number_of_writings_to_show=0;
   show_more=[false,false,false,false];
   list_of_contents_sorted:boolean=false;
-  number_of_thumbnails=0;
- 
   show_icon=false;
+  number_of_writings_for_history=5;
   ngOnInit() {
-    let THIS=this;
-    //var width = $('.media-container').width();
+    window.scroll(0,0);
     var n = Math.floor(this.width/250);
-    this.number_of_writings_to_show=(n<6)?n:6;
-    this.number_of_thumbnails=this.sorted_artpieces_illustrated_novel.length +
-      this.sorted_artpieces_roman.length +
-      this.sorted_artpieces_scenario.length +
-      this.sorted_artpieces_article.length +
-      this.sorted_artpieces_poetry.length;
+    if(n>3){
+      this.number_of_writings_to_show=(n<6)?n:6;
+    }
+    else{
+      this.number_of_writings_to_show=6;
+    }
+    this.get_history_recommendation();
 
   }
 
   
- 
+  get_history_recommendation(){
+    console.log("get history recommendation writin")
+    this.last_consulted_writings_retrieved=false;
+    this.number_of_skeletons_per_line=this.number_of_writings_to_show;
+    this.can_show_more_history=true;
+    this.last_consulted_writings=[];
+    this.number_of_writings_for_history= this.number_of_writings_to_show;
+    this.navbar.get_last_researched_navbar_for_recommendations("Writing",0,this.number_of_writings_for_history).subscribe(m=>{
+      console.log("result consulteds researched writings")
+      console.log(m[0]);
+      if(m[0].length>0){
+        let list=m[0];
+        let compteur=0;
+        for(let i=0;i<m[0].length;i++){
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(list[i].target_id).subscribe(writing=>{
+              
+            if(writing[0] && writing[0].status=="public"){
+              this.last_consulted_writings[i]=writing[0]
+            }
+            compteur++
+            if(compteur==list.length){
+              this.delete_null_elements_of_list(this.last_consulted_writings)
+              if(list.length>0){
+                this.last_consulted_writings_retrieved=true;
+              }
+            }
+          })
+        }
+      }
+    })
+  }
 
 
+  skeleton_array = Array(6);
+  number_of_skeletons_per_line = 1;
+  type_of_skeleton:string="writing";
+  send_number_of_skeletons(object) {
+    console.log("skeleton resp")
+    console.log(object.number)
+    this.number_of_skeletons_per_line=object.number;
+    this.cd.detectChanges();
+  }
 
  //Other
  see_more(item) {
@@ -124,6 +168,71 @@ export class MediaWritingsComponent implements OnInit {
 
   open_research(item:any) {
     return "/main-research-style-and-tag/1/Writing/"+item+"/all";
+  }
+
+
+  offset=0;
+  show_more_loading=false;
+  can_show_more_history=true;
+  new_last_consulted_writings=[];
+  show_more_history(){
+    console.log("start show more history")
+    console.log(this.last_consulted_writings)
+    console.log(this.offset)
+    
+    if(this.show_more_loading){
+      return
+    }
+    this.show_more_loading=true;
+    
+    this.new_last_consulted_writings=[];
+    
+    this.offset+=this.number_of_writings_for_history;
+    this.navbar.get_last_researched_navbar_for_recommendations("Writing",this.offset,this.number_of_writings_for_history).subscribe(m=>{
+      console.log("result new consulteds researched writings")
+      console.log(m[0]);
+      if(m[0].length>0){
+        let list=m[0];
+        let compteur=0;
+        for(let i=0;i<m[0].length;i++){
+          this.Writing_Upload_Service.retrieve_writing_information_by_id(list[i].target_id).subscribe(writing=>{
+              
+            if(writing[0] && writing[0].status=="public"){
+              this.new_last_consulted_writings[i]=writing[0]
+            }
+            compteur++
+            if(compteur==list.length){
+              this.delete_null_elements_of_list(this.new_last_consulted_writings)
+              if(list.length>0){
+                this.last_consulted_writings=this.last_consulted_writings.concat(this.new_last_consulted_writings);
+                this.show_more_loading=false;
+              }
+              else{
+                this.show_more_loading=false;
+                this.can_show_more_history=false;
+              }
+            }
+          })
+         
+        }
+      }
+      else{
+        this.show_more_loading=false;
+        this.can_show_more_history=false;
+      }
+    })
+  }
+
+
+  delete_null_elements_of_list(list){
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(!list[len-i-1]){
+        list.splice(len-i-1,1);
+      }
+    }
+    console.log("show new last consulted after all")
+    console.log(list);
   }
 
 }

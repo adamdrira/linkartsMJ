@@ -28,8 +28,7 @@
                 <div class="category">
                     <div class="category-title shiny"></div>
                 </div>
-                <div class="container-skeletons d-flex flex-wrap skeleton"
-                    [@enterAnimation]>
+                <div class="container-skeletons d-flex flex-wrap skeleton"  [@enterAnimation]>
                     <ng-container *ngFor="let item of skeleton_array; let i = index">
                         <app-thumbnail-skeleton class="thumbnail-component-container"
                             *ngIf="number_of_skeletons_per_line>i"
@@ -43,7 +42,7 @@
 
 
 
-        <div class="media-container"  *ngIf="bd_is_loaded && sorted_category_retrieved" [ngClass]="{'really-invisible': !(subcategory==0 ),'invisible':!media_visibility}" >
+        <div class="media-container"  *ngIf="bd_is_loaded && sorted_category_retrieved && subcategory==0 " >
             <app-media-comics 
                 [sorted_style_list]=sorted_style_list_bd
                 [sorted_artpieces_manga_format]=sorted_artpieces_manga_format
@@ -58,7 +57,7 @@
                 [now_in_seconds]=now_in_seconds
                 [width]=width></app-media-comics>
         </div>
-        <div class="media-container" *ngIf="drawing_is_loaded && sorted_category_retrieved" [ngClass]="{'really-invisible': !( subcategory==1),'invisible':!media_visibility}" >
+        <div class="media-container" *ngIf="drawing_is_loaded && sorted_category_retrieved  && subcategory==1 " >
             <app-media-drawings 
                 [sorted_style_list]=sorted_style_list_drawing
                 [sorted_artpieces_traditional]=sorted_artpieces_traditional
@@ -69,7 +68,7 @@
                 [width]=width
                 (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"></app-media-drawings>
         </div>
-        <div class="media-container" *ngIf="writing_is_loaded && sorted_category_retrieved" [ngClass]="{'really-invisible': !( subcategory==2),'invisible':!media_visibility}" >
+        <div class="media-container" *ngIf="writing_is_loaded && sorted_category_retrieved && subcategory==2" >
             <app-media-writings 
                 [sorted_style_list]=sorted_style_list_writing
                 [sorted_artpieces_illustrated_novel]=sorted_artpieces_illustrated_novel

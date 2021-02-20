@@ -8,6 +8,10 @@
   .thumbnail-component-container {
     overflow:hidden;
   }
+
+  .thumbnail-component-container2 {
+    overflow:hidden;
+  }
   
   a{
     color: unset;
@@ -15,6 +19,13 @@
     background-color: none;
     cursor:pointer;
   }
+
+  .center-spinner{
+    margin: auto;
+    display: flex;
+    justify-content: center;
+  }
+
   
   //CODE COMMUN
   .category {
@@ -92,7 +103,42 @@
   }
  
 
-
+  .see-more2 {
+    display: flex;
+    width: 90%;
+    height: 40px;
+    border-radius: 4px 4px 0px 0px;
+    border-top: unset;
+    border-left: unset;
+    border-right: unset;
+    border-bottom: 4px solid rgb(230 230 230);
+    text-align: center;
+    margin: 10px auto 30px auto;
+    cursor: pointer;
+    outline: none;
+    background: unset;
+    transition: background-color 100ms, border-color 100ms;
+    
+  
+    &:hover {
+      border-bottom: 4px solid rgb(56, 81, 129);
+      background-color: rgb(235, 235, 235);
+      mat-icon {
+        color: rgb(56, 81, 129);
+      }
+    }
+    &:active {
+      background-color: rgb(228, 228, 228);
+    }
+    mat-icon {
+      margin: auto;
+      width: unset;
+      height: unset;
+      font-size: 36px;
+      color: #b1b1b1;
+    }
+  }
+ 
  
 
   //CODE POUR LA PAGE D'ACCUEIL
@@ -100,6 +146,76 @@
     padding:0px;
     padding-top:30px;
     justify-content: center;
+  }
+
+  .container-homepage2 {
+    padding:0px;
+    flex-wrap: wrap ;
+    display:flex;
+    transition:opacity 500ms;
+    justify-content: center;
+  }
+
+  .newDrawings div {
+    margin: 40px 0px 30px 0px;
+  }
+
+  .drawing-container {
+    margin: 30px 0px 30px 0px;
+  }
+  
+
+  ::ng-deep {
+    .newDrawings .drawing-container {
+      height: 200px !important;
+    }
+  }
+  
+
+  @media (max-width: 1135px) {
+
+    .see-more2 {
+      width: unset;
+      height: unset;
+      border-bottom: unset;
+    }
+
+    .see-more2:hover {
+      border-bottom:unset;
+      background-color:rgb(235, 235, 235);
+    }
+
+    .see-more2 .icon {
+      transform: rotate(270deg);
+    }
+
+    .container-homepage2 {
+      justify-content: left !important;
+      overflow-x: auto ;
+      flex-wrap: unset !important;
+
+      scrollbar-width: thin;
+      scrollbar-color: #0a1c4d #f9f9f9;
+      &::-webkit-scrollbar {
+          height: 10px;
+          background-color: #f9f9f9;
+      }
+      &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 11%);
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 11%);
+        background-color: #0a1c4d;
+      }
+    }
+
+    .thumbnail-component-container2{
+      overflow: visible !important;
+    }
+    
   }
 
   .container-drawings {

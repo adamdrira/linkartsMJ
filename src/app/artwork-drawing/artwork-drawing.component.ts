@@ -501,6 +501,8 @@ export class ArtworkDrawingComponent implements OnInit {
         this.navbar.add_main_research_to_history("Drawing",this.type,this.drawing_id,this.title,null,"clicked",0,0,0,0,this.style,this.firsttag,this.secondtag,this.thirdtag,this.visitor_status).subscribe();
         this.NotationService.add_view('drawing', 'one-shot',this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
           this.id_view_created = r[0].id;
+          console.log("id view created")
+          console.log(this.id_view_created)
           if(r[0].id>0){
             this.Community_recommendation.delete_recommendations_cookies();
             this.Community_recommendation.generate_recommendations().subscribe(r=>{})
@@ -1540,12 +1542,15 @@ export class ArtworkDrawingComponent implements OnInit {
   
   add_time_of_view(){
     if(this.mode_visiteur){
+      console.log("add view time")
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - this.begining_time_of_view;
       if(this.type=='one-shot' && ending_time_of_view>3){
+        console.log("one shot and id : " + this.id_view_created)
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
       if(this.type=='artbook' && ending_time_of_view>3){
+        console.log("artbook and id : " + this.id_view_created)
         this.NotationService.add_view_time(ending_time_of_view, this.id_view_created).subscribe(r=>{
         });
       }
@@ -1832,7 +1837,7 @@ export class ArtworkDrawingComponent implements OnInit {
   set_private() {
 
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en privé ? Elle ne sera visible que par vous dans les archives'},
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir archiver cette œuvre ? Elle ne sera visible que par vous dans les archives.'},
       panelClass: "popupConfirmationClass",
     });
     if(this.archive_loading){
@@ -1873,7 +1878,7 @@ export class ArtworkDrawingComponent implements OnInit {
   }
   set_public() {
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-      data: {showChoice:true, text:'Êtes-vous sûr de passer cette œuvre en public ? Elle sera visible par tous les utilisateurs'},
+      data: {showChoice:true, text:'Êtes-vous sûr de vouloir désarchiver cette œuvre ? Elle sera visible par tous les utilisateurs.'},
       panelClass: "popupConfirmationClass",
     });
     if(this.archive_loading){

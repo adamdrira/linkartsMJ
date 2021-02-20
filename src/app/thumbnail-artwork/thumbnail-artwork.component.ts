@@ -130,8 +130,8 @@ export class ThumbnailArtworkComponent implements OnInit {
   pdfSrc:SafeUrl;
   total_pages_for_writing:number;
   profile_picture:SafeUrl;
-  author_name:string;
-  author_pseudo:string;
+  author_name:string='';
+  author_pseudo:string='';
   primary_description:string;
   pseudo:string='';
   type_of_profile:string;

@@ -502,6 +502,7 @@ export class HomeLinkcollabComponent implements OnInit {
   get_sorted_ads(){
     console.log("get sorteds ads")
     this.offset_ads = (this.current_page-1)*5;
+    console.log(this.offset_ads)
     this.compteur_ads++;
     this.loading_ads=true;
     this.number_of_pages=1;

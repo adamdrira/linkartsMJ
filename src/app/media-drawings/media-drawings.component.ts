@@ -1,12 +1,24 @@
 import { Component, OnInit,  HostListener,  Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges} from '@angular/core';
 import { NavbarService } from '../services/navbar.service';
-
+import {Drawings_Artbook_Service} from '../services/drawings_artbook.service';
+import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 declare var $: any
 
 @Component({
   selector: 'app-media-drawings',
   templateUrl: './media-drawings.component.html',
-  styleUrls: ['./media-drawings.component.scss']
+  styleUrls: ['./media-drawings.component.scss'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(0)', opacity: 0}),
+          animate('400ms', style({transform: 'translateX(0px)', opacity: 1}))
+        ])
+      ]
+    ),
+  ],
 })
 export class MediaDrawingsComponent implements OnInit {
 
@@ -23,6 +35,8 @@ export class MediaDrawingsComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
+    private Drawings_Artbook_Service:Drawings_Artbook_Service,
+    private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private navbar: NavbarService,
     ) { 
       navbar.visibility_observer_font.subscribe(font=>{
@@ -37,7 +51,7 @@ export class MediaDrawingsComponent implements OnInit {
 
   @Input() sorted_artpieces_traditional: any[];
   @Input() sorted_artpieces_digital: any[];
-
+  
   @Input() sorted_artpieces_traditional_format: string[];
   @Input() sorted_artpieces_digital_format: string[];
   @Input() width: number;
@@ -47,7 +61,8 @@ export class MediaDrawingsComponent implements OnInit {
   @Output() list_of_drawings_retrieved_emitter = new EventEmitter<object>();
   show_more=[false,false];
   
-  
+  last_consulted_drawings: any[]=[];
+  last_consulted_drawings_retrieved: boolean;
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
       console.log("width changed for drawing")
@@ -55,10 +70,12 @@ export class MediaDrawingsComponent implements OnInit {
       if(this.width>0){
         this.width_to_send=this.width
       }
+      this.get_history_recommendation();
     }
   }
   
   show_icon=false;
+  number_of_drawings_to_show=5;
   ngOnInit() {
     if(this.sorted_artpieces_digital.length==0 && this.sorted_artpieces_traditional.length==0){
       this.list_of_drawings_retrieved_emitter.emit({retrieved:true})
@@ -67,15 +84,81 @@ export class MediaDrawingsComponent implements OnInit {
        this.get_number_of_drawings_to_show()
     }
     if(this.width>0){
-      this.width_to_send=this.width
+      this.width_to_send=this.width;
     }
-   
-    //this.get_number_of_drawings_to_show();
+    this.get_history_recommendation();
+    
   }
 
 
 
+  get_history_recommendation(){
+    if(this.width>0){
+      var n = Math.floor(this.width/250);
+      if(n>3){
+        this.number_of_drawings_to_show=(n<6)?n:6;
+      }
+      else{
+        this.number_of_drawings_to_show=6;
+      
+      }
+    }
+    this.number_of_skeletons_per_line=this.number_of_drawings_to_show;
+    this.can_show_more_history=true;
+    this.last_consulted_drawings_retrieved=false;
+    this.last_consulted_drawings=[];
+    this.navbar.get_last_researched_navbar_for_recommendations("Drawing",0, this.number_of_drawings_to_show).subscribe(m=>{
+      console.log("result consulteds researched drawings")
+      console.log(m[0]);
+      if(m[0].length>0){
+        let list=m[0];
+        let compteur=0;
+        for(let i=0;i<m[0].length;i++){
+          if(list[i].format=="one-shot"){
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list[i].target_id).subscribe(drawing=>{
+                
+              if(drawing[0] && drawing[0].status=="public"){
+                this.last_consulted_drawings[i]=drawing[0]
+              }
+              compteur++
+              if(compteur==list.length){
+                this.delete_null_elements_of_list(this.last_consulted_drawings)
+                if(list.length>0){
+                  this.last_consulted_drawings_retrieved=true;
+                }
+              }
+            })
+          }
+          else{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list[i].target_id).subscribe(drawing=>{
+              if(drawing[0] && drawing[0].status=="public"){
+                this.last_consulted_drawings[i]=drawing[0]
+              }
+              compteur++
+              if(compteur==list.length){
+                this.delete_null_elements_of_list(this.last_consulted_drawings)
+                if(list.length>0){
+                  this.last_consulted_drawings_retrieved=true;
+                }
+                
+              }
+            })
+          }
+        }
+      }
+    })
+  }
 
+  show_other_one=true;
+  skeleton_array = Array(6);
+  number_of_skeletons_per_line = 1;
+  type_of_skeleton:string="new-drawing";
+  send_number_of_skeletons(object) {
+    console.log("skeleton resp")
+    console.log(object.number)
+    this.number_of_skeletons_per_line=object.number;
+    this.cd.detectChanges();
+  }
 
   open_research(item:any) {
     return "/main-research-style-and-tag/1/Drawing/"+item+"/all";
@@ -181,9 +264,6 @@ export class MediaDrawingsComponent implements OnInit {
       this.number_of_drawings_to_show_by_category[1]=this.compteur_number_of_drawings;
 
       console.log(this.number_of_drawings_to_show_by_category)
-      //console.log(this.number_of_lines_drawings)
-      //console.log(this.number_of_drawings_to_show_by_category)
-      //console.log(this.number_of_private_contents_drawings)
     }
   }
 
@@ -263,15 +343,6 @@ export class MediaDrawingsComponent implements OnInit {
             this.number_of_drawings_variable=variable;
             this.detect_new_compteur_drawings=true;
             this.cd.detectChanges();
-            //console.log(this.number_of_lines_drawings)
-            //console.log(this.compteur_drawings_thumbnails)
-            //console.log(this.total_for_new_compteur)
-            //console.log( this.number_of_drawings_to_show_by_category)
-            //console.log("update number of drawing end")
-            /*$('.grid').masonry('reloadItems');
-            this.cd.detectChanges();
-            this.reload_masonry();
-            this.cd.detectChanges();*/
             
           }
         }
@@ -378,4 +449,92 @@ export class MediaDrawingsComponent implements OnInit {
   }
 
 
+
+
+  offset=0;
+  show_more_loading=false;
+  can_show_more_history=true;
+  new_last_consulted_drawings=[];
+  show_more_history(){
+    console.log("start show more history")
+    console.log(this.last_consulted_drawings)
+    console.log(this.offset)
+    
+    if(this.show_more_loading){
+      return
+    }
+    this.show_more_loading=true;
+    
+    this.new_last_consulted_drawings=[];
+    
+    this.offset+= this.number_of_drawings_to_show;
+    this.navbar.get_last_researched_navbar_for_recommendations("Drawing",this.offset, this.number_of_drawings_to_show).subscribe(m=>{
+      console.log("result new consulteds researched drawings")
+      console.log(m[0]);
+      if(m[0].length>0){
+        let list=m[0];
+        let compteur=0;
+        for(let i=0;i<m[0].length;i++){
+          if(list[i].format=="one-shot"){
+            this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(list[i].target_id).subscribe(drawing=>{
+                
+              if(drawing[0] && drawing[0].status=="public"){
+                this.new_last_consulted_drawings[i]=drawing[0]
+              }
+              compteur++
+              if(compteur==list.length){
+                this.delete_null_elements_of_list(this.new_last_consulted_drawings)
+                if(list.length>0){
+                  this.last_consulted_drawings=this.last_consulted_drawings.concat(this.new_last_consulted_drawings);
+                  this.show_more_loading=false;
+                }
+                else{
+                  this.show_more_loading=false;
+                  this.can_show_more_history=false;
+                }
+              }
+            })
+          }
+          else{
+            this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(list[i].target_id).subscribe(drawing=>{
+              if(drawing[0] && drawing[0].status=="public"){
+                this.new_last_consulted_drawings[i]=drawing[0]
+              }
+              compteur++
+              if(compteur==list.length){
+                this.delete_null_elements_of_list(this.new_last_consulted_drawings)
+                if(list.length>0){
+                  this.last_consulted_drawings=this.last_consulted_drawings.concat(this.new_last_consulted_drawings);
+                  this.show_more_loading=false;
+                }
+                else{
+                  this.show_more_loading=false;
+                  this.can_show_more_history=false;
+                }
+                
+              }
+            })
+          }
+        }
+      }
+      else{
+        this.show_more_loading=false;
+        this.can_show_more_history=false;
+      }
+    })
+  }
+
+
+  delete_null_elements_of_list(list){
+    console.log("rady to delete")
+    console.log(list)
+    let len=list.length;
+    for(let i=0;i<len;i++){
+      if(!list[len-i-1]){
+        list.splice(len-i-1,1);
+      }
+    }
+    console.log("show new last consulted after all")
+    console.log(list);
+  }
 }

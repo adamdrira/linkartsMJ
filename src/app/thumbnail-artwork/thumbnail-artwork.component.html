@@ -280,7 +280,7 @@
                         [matTooltipShowDelay]="200">verified</mat-icon>
 
                     </span>
-                    <span class="author-description">@{{author_pseudo}}</span>
+                    <span class="author-description" *ngIf="author_pseudo!=''">@{{author_pseudo}}</span>
                 </div>
             </div>
 

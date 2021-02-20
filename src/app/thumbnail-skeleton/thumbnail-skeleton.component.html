@@ -1,6 +1,6 @@
 
 
-<div class="skeleton-container">
+<div class="skeleton-container" *ngIf="!show_other_one">
 
     <div class="col-book text-center" [ngClass]="{'new-drawing':type_of_skeleton=='new-drawing','story':type_of_skeleton=='story','drawing':type_of_skeleton=='drawing','writing':type_of_skeleton=='writing'}">
         
@@ -8,5 +8,15 @@
     </div>
 
 </div>
+
+<div class=" skeleton-container2" *ngIf="show_other_one">
+
+    <div class="col-book text-center" [ngClass]="{'new-drawing':type_of_skeleton=='new-drawing','story':type_of_skeleton=='story','drawing':type_of_skeleton=='drawing','writing':type_of_skeleton=='writing'}">
+        
+
+    </div>
+
+</div>
+
 
 
