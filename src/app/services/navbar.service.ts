@@ -126,6 +126,12 @@ export class NavbarService {
       }));
     }
 
+    get_last_researched_navbar_for_recommendations(category,offset,limit){
+      return this.httpClient.get(`routes/get_last_researched_navbar_for_recommendations/${category}/${offset}/${limit}`, {withCredentials:true}).pipe(map(information=>{
+          return information;
+        }));
+    };
+    
 
     get_specific_propositions_navbar(category,text,compteur){
         return this.httpClient.get(`routes/get_specific_propositions_navbar/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{
