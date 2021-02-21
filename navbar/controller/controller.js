@@ -130,6 +130,68 @@ console.log("checking current: " + req.headers['authorization'] );
             }
         })
     });
+
+
+    router.get('/check_if_contents_clicked', function (req, res) {
+        console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+        return res.status(401).json({msg: "error"});
+        }
+        else {
+        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+        let user= get_current_user(val)
+        if(!user){
+            return res.status(401).json({msg: "error"});
+        }
+        }
+        let id_user = get_current_user(req.cookies.currentUser);
+        let list_of_comics=[];
+        let list_of_drawings=[];
+        let list_of_writings=[];
+
+        let compteur=0;
+        list_of_navbar_researches.findAll({
+            where:{
+                id_user:id_user,
+                publication_category:"Comic",
+                status:["clicked_after_research","clicked"]
+            }
+        }).then(comics=>{
+            list_of_comics=comics;
+            compteur++;
+            if(compteur==3){
+                res.status(200).send([{list_of_comics:list_of_comics,list_of_drawings:list_of_drawings,list_of_writings:list_of_writings}])
+            }
+        })
+
+        list_of_navbar_researches.findAll({
+            where:{
+                id_user:id_user,
+                publication_category:"Writing",
+                status:["clicked_after_research","clicked"]
+            }
+        }).then(writings=>{
+            list_of_writings=writings;
+            compteur++;
+            if(compteur==3){
+                res.status(200).send([{list_of_comics:list_of_comics,list_of_drawings:list_of_drawings,list_of_writings:list_of_writings}])
+            }
+        })
+
+        list_of_navbar_researches.findAll({
+            where:{
+                id_user:id_user,
+                publication_category:"Drawing",
+                status:["clicked_after_research","clicked"]
+            }
+        }).then(drawings=>{
+            list_of_drawings=drawings;
+            compteur++;
+            if(compteur==3){
+                res.status(200).send([{list_of_comics:list_of_comics,list_of_drawings:list_of_drawings,list_of_writings:list_of_writings}])
+            }
+        })
+    });
     
 
     router.get('/get_last_researched_navbar/:category', function (req, res) {
