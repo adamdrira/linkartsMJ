@@ -132,6 +132,11 @@ export class NavbarService {
         }));
     };
     
+    check_if_contents_clicked(){
+      return this.httpClient.get(`routes/check_if_contents_clicked`, {withCredentials:true}).pipe(map(information=>{
+          return information;
+        }));
+    };
 
     get_specific_propositions_navbar(category,text,compteur){
         return this.httpClient.get(`routes/get_specific_propositions_navbar/${category}/${text}`, {withCredentials:true}).pipe(map((information)=>{
