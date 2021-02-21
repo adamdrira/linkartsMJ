@@ -72,58 +72,62 @@
 </div>
 
 
-<div *ngIf="!last_consulted_drawings_retrieved">
-    <div class="category no-cursor">
-            <span>Récemment consultés</span>
+<ng-container *ngIf="check_drawings_history">
+    <div *ngIf="!last_consulted_drawings_retrieved">
+        <div class="category no-cursor">
+                <span>Récemment consultés</span>
+        </div>
+        
+        <div class="container-homepage2 newDrawings container-skeletons2 " style="transition:opacity 1s;"   [@enterAnimation] >
+    
+                <ng-container *ngFor="let item of skeleton_array; let i = index">
+                    <app-thumbnail-skeleton class="thumbnail-component-container2"
+                        *ngIf="number_of_skeletons_per_line>i"
+                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                        [type_of_skeleton]=type_of_skeleton
+                        [show_other_one]="show_other_one"></app-thumbnail-skeleton>
+                </ng-container>
+            
+             
+        </div>
     </div>
     
-    <div class="container-homepage2 newDrawings container-skeletons2 " style="transition:opacity 1s;"   [@enterAnimation] >
-
-            <ng-container *ngFor="let item of skeleton_array; let i = index">
-                <app-thumbnail-skeleton class="thumbnail-component-container2"
-                    *ngIf="number_of_skeletons_per_line>i"
-                    (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                    [type_of_skeleton]=type_of_skeleton
-                    [show_other_one]="show_other_one"></app-thumbnail-skeleton>
-            </ng-container>
+    
+    <div *ngIf="last_consulted_drawings_retrieved">
+        <div class="category no-cursor">
+                <span>Récemment consultés</span>
+        </div>
         
-         
-    </div>
-</div>
-
-
-<div *ngIf="last_consulted_drawings_retrieved">
-    <div class="category no-cursor">
-            <span>Récemment consultés</span>
+        <div class="container-homepage2 newDrawings" style="transition:opacity 1s;" >
+    
+            
+                <div *ngFor="let item of last_consulted_drawings; let i = index" class="drawing-container">
+                    <app-thumbnail-drawing class="thumbnail-component-container2" 
+                        *ngIf="item.pagesnumber == null"
+                        [item]=item
+                        for_news="yes"
+                        [width]=width
+                        format='one-shot'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                    <app-thumbnail-drawing  class="thumbnail-component-container2" 
+                        *ngIf="item.pagesnumber >=0"
+                        [item]=item 
+                        for_news="yes"
+                        [width]=width
+                        format='artbook'
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-drawing>
+                </div>
+    
+                <div *ngIf="can_show_more_history" class="see-more2" (click)="show_more_history()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
+                    <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+                </div>
+        </div>
     </div>
     
-    <div class="container-homepage2 newDrawings" style="transition:opacity 1s;" >
-
-        
-            <div *ngFor="let item of last_consulted_drawings; let i = index" class="drawing-container">
-                <app-thumbnail-drawing class="thumbnail-component-container2" 
-                    *ngIf="item.pagesnumber == null"
-                    [item]=item
-                    for_news="yes"
-                    [width]=width
-                    format='one-shot'
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing>
-                <app-thumbnail-drawing  class="thumbnail-component-container2" 
-                    *ngIf="item.pagesnumber >=0"
-                    [item]=item 
-                    for_news="yes"
-                    [width]=width
-                    format='artbook'
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-drawing>
-            </div>
-
-            <div *ngIf="can_show_more_history" class="see-more2" (click)="show_more_history()">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
-                <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
-            </div>
-    </div>
-</div>
+    
+</ng-container>
 
 

@@ -65,7 +65,7 @@ export class MediaWritingsComponent implements OnInit {
   cancelled: number;
 
   @Input() sorted_style_list: any[];
-
+  @Input() check_writings_history: any;
   @Input() sorted_artpieces_illustrated_novel: any[];
   @Input() sorted_artpieces_roman: any[];
   @Input() sorted_artpieces_scenario: any[];

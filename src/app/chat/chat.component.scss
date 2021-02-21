@@ -1302,8 +1302,8 @@ button.show-more {
                 }
             }
             .friend-picture {
-                width: 21px;
-                height: 21px;
+                width: 18px;
+                height: 18px;
                 margin-left: 10px;
                 margin: auto auto;
                 img {
@@ -1318,7 +1318,7 @@ button.show-more {
                 }
             }
             .state {
-                margin: auto 6px 5px 0px;
+                margin: auto 6px 5px 2px;
             }
             &.padding-for-no-state {
                 padding-right: 26px;
@@ -1399,8 +1399,8 @@ button.show-more {
 .state {
     cursor: default;
     > div {
-        height: 21px;
-        width: 21px;
+        height: 18px;
+        width: 18px;
         display: flex;
         border-radius: 50px;
         background: rgb(32, 56, 100);
@@ -1412,7 +1412,7 @@ button.show-more {
     mat-icon {
         height: unset;
         width: unset;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: bold;
         margin: auto auto;
         color: white;

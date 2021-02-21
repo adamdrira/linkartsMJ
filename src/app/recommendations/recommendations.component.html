@@ -55,6 +55,7 @@
                 [sorted_artpieces_bd]=sorted_artpieces_bd
                 [can_see_more_comics]=can_see_more_comics
                 [now_in_seconds]=now_in_seconds
+                [check_comics_history]=check_comics_history
                 [width]=width></app-media-comics>
         </div>
         <div class="media-container" *ngIf="drawing_is_loaded && sorted_category_retrieved  && subcategory==1 " >
@@ -65,6 +66,7 @@
                 [sorted_artpieces_digital]=sorted_artpieces_digital
                 [sorted_artpieces_digital_format]=sorted_artpieces_digital_format 
                 [now_in_seconds]=now_in_seconds
+                [check_drawings_history]=check_drawings_history
                 [width]=width
                 (list_of_drawings_retrieved_emitter)="list_of_drawings_retrieved_receiver($event)"></app-media-drawings>
         </div>
@@ -78,6 +80,7 @@
                 [sorted_artpieces_poetry]=sorted_artpieces_poetry
                 [can_see_more_writings]=can_see_more_writings
                 [now_in_seconds]=now_in_seconds
+                [check_writings_history]=check_writings_history
                 [width]=width></app-media-writings>
         </div>
     </div>

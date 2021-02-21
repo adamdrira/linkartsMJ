@@ -69,6 +69,7 @@ export class MediaComicsComponent implements OnInit {
   @Input() sorted_artpieces_webtoon_format: string[];
   @Input() sorted_artpieces_bd_format: string[];
   @Input() width: number;
+  @Input() check_comics_history: any;
   @Input() now_in_seconds: number;
   last_consulted_comics: any[]=[];
   last_consulted_comics_retrieved: boolean;

@@ -1,15 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectorRef, HostListener } from '@angular/core';
 import {ElementRef,  ViewChild} from '@angular/core';
-import { SimpleChanges } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-import {BdOneShotService} from '../services/comics_one_shot.service';
-import {BdSerieService} from '../services/comics_serie.service';
-import {Drawings_Artbook_Service} from '../services/drawings_artbook.service';
-import {Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
-import {Writing_Upload_Service} from '../services/writing.service';
 declare var $: any
 
 
@@ -46,11 +40,6 @@ export class RecommendationsComponent implements OnInit {
     private CookieService:CookieService,
     private Community_recommendation:Community_recommendation,
     private navbar:NavbarService,
-    private BdOneShotService:BdOneShotService,
-    private BdSerieService:BdSerieService,
-    private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Drawings_Onepage_Service:Drawings_Onepage_Service,
-    private Writing_Upload_Service:Writing_Upload_Service,
     ) { }
 
   
@@ -119,9 +108,24 @@ export class RecommendationsComponent implements OnInit {
  
   
  
-
+  check_comics_history=false;
+  check_writings_history=false;
+  check_drawings_history=false;
   ngOnInit() {
 
+    this.navbar.check_if_contents_clicked().subscribe(r=>{
+      console.log("check uf contents clicke")
+      console.log(r[0]);
+      if(r[0].list_of_comics && r[0].list_of_comics.length>0){
+        this.check_comics_history=true;
+      }
+      if(r[0].list_of_writings && r[0].list_of_writings.length>0){
+        this.check_writings_history=true;
+      }
+      if(r[0].list_of_drawings && r[0].list_of_drawings.length>0){
+        this.check_drawings_history=true;
+      }
+    })
     
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
     let recommendations_string = this.CookieService.get('recommendations');

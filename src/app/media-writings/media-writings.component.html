@@ -93,43 +93,45 @@
 
 </div>
 
-<div *ngIf="!last_consulted_writings_retrieved">
-    <div class="category no-cursor">
-            <span>Récemment consultés</span>
+<ng-container *ngIf="check_writings_history">
+    <div *ngIf="!last_consulted_writings_retrieved">
+        <div class="category no-cursor">
+                <span>Récemment consultés</span>
+        </div>
+        
+        <div class="container-homepage container-writings container-skeletons " style="transition:opacity 1s;"   [@enterAnimation] >
+    
+                <ng-container *ngFor="let item of skeleton_array; let i = index">
+                    <app-thumbnail-skeleton class="thumbnail-component-container"
+                        *ngIf="number_of_skeletons_per_line>i"
+                        (send_number_of_skeletons)="send_number_of_skeletons( $event );"
+                        [type_of_skeleton]=type_of_skeleton></app-thumbnail-skeleton>
+                </ng-container>
+            
+             
+        </div>
     </div>
     
-    <div class="container-homepage container-writings container-skeletons " style="transition:opacity 1s;"   [@enterAnimation] >
-
-            <ng-container *ngFor="let item of skeleton_array; let i = index">
-                <app-thumbnail-skeleton class="thumbnail-component-container"
-                    *ngIf="number_of_skeletons_per_line>i"
-                    (send_number_of_skeletons)="send_number_of_skeletons( $event );"
-                    [type_of_skeleton]=type_of_skeleton></app-thumbnail-skeleton>
-            </ng-container>
+    <div *ngIf="last_consulted_writings_retrieved">
+        <div class="category no-cursor">
+                <span>Récemment consultés</span>
+        </div>
         
-         
-    </div>
-</div>
-
-<div *ngIf="last_consulted_writings_retrieved">
-    <div class="category no-cursor">
-            <span>Récemment consultés</span>
-    </div>
+        <div class="container-homepage container-writings " style="transition:opacity 1s;" >
     
-    <div class="container-homepage container-writings " style="transition:opacity 1s;" >
-
-        
-            <ng-container *ngFor="let item of last_consulted_writings; let i = index">
-                <app-thumbnail-writing class="thumbnail-component-container" 
-                    [item]=item
-                    [width]=width
-                    now_in_seconds={{now_in_seconds}}
-                ></app-thumbnail-writing>
-            </ng-container>
-
-            <div *ngIf="can_show_more_history" class="see-more" (click)="show_more_history()">
-                <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
-                <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
-            </div>
+            
+                <ng-container *ngFor="let item of last_consulted_writings; let i = index">
+                    <app-thumbnail-writing class="thumbnail-component-container" 
+                        [item]=item
+                        [width]=width
+                        now_in_seconds={{now_in_seconds}}
+                    ></app-thumbnail-writing>
+                </ng-container>
+    
+                <div *ngIf="can_show_more_history" class="see-more" (click)="show_more_history()">
+                    <mat-icon [ngClass]="{'invisible': !show_icon }" *ngIf="!show_more_loading" class="icon">expand_more</mat-icon>
+                    <mat-spinner class="center-spinner"  *ngIf="show_more_loading" diameter="20"></mat-spinner>
+                </div>
+        </div>
     </div>
-</div>
+</ng-container>

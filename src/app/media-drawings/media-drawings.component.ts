@@ -55,6 +55,7 @@ export class MediaDrawingsComponent implements OnInit {
   @Input() sorted_artpieces_traditional_format: string[];
   @Input() sorted_artpieces_digital_format: string[];
   @Input() width: number;
+  @Input() check_drawings_history: any;
   width_to_send:number;
 
   @Input() now_in_seconds: number;
@@ -77,6 +78,7 @@ export class MediaDrawingsComponent implements OnInit {
       
      
     }
+
   }
   
   show_icon=false;

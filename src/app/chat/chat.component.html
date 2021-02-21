@@ -583,19 +583,7 @@
                                             reply</mat-icon>
                                     </button>
 
-                                    <!--<button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" [matMenuTriggerFor]="artworkOptions">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">
-                                            more_horiz</mat-icon>
-                                    </button>
-                                    <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                                        <button class="chat-menu-item" mat-menu-item
-                                            (click)="respond_to_message(list_of_messages.length -1 - i)">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">
-                                                reply</mat-icon>
-                                            <span>Répondre</span>
-                                        </button>
-                                    </mat-menu>-->
+                                  
                                 </div>
 
                             </div>
@@ -1142,24 +1130,6 @@
                                             reply</mat-icon>
                                     </button>
 
-                                    <!--<button (menuClosed)="friendMessageOptionsClosed();" (menuOpened)="friendMessageOptionsOpened(i);"
-                                        *ngIf="list_of_messages[list_of_messages.length -1 - i].status!='sent' && list_of_messages[list_of_messages.length -1 - i].status!='deleted'" [matMenuTriggerFor]="artworkOptions">
-                                        <mat-icon [ngClass]="{'invisible': !show_icon }">
-                                            more_horiz</mat-icon>
-                                    </button>
-                                    <mat-menu #artworkOptions="matMenu" class="chat-mat-menu">
-                                        <button class="chat-menu-item" mat-menu-item
-                                            (click)="respond_to_message(list_of_messages.length -1 - i)">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">
-                                                reply</mat-icon>
-                                            <span>Répondre</span>
-                                        </button>
-                                        <button class="chat-menu-item" mat-menu-item (click)="show_reactions(i,$event)">
-                                            <mat-icon [ngClass]="{'invisible': !show_icon }">
-                                                sentiment_satisfied</mat-icon>
-                                            <span>Réagir</span>
-                                        </button>
-                                    </mat-menu>-->
                                 </div>
 
 
@@ -1319,7 +1289,8 @@
 
                 <div *ngIf="respond_to_a_message" class="response">
                     <div class="left-container" *ngIf="friend_type=='user'" [@enterFromBottomAnimation]>
-                        <span>Réponse à <b>{{friend_name}}</b></span>
+                        <span *ngIf="id_user_message_responding_to!=current_user_id">Réponse à <b>{{friend_name}}</b></span>
+                        <span *ngIf="id_user_message_responding_to==current_user_id">Réponse à <b>{{current_user_name}}</b></span>
                         <span>{{message_responding_to}}</span>
                     </div>
                     <div class="left-container"  *ngIf="friend_type!='user'" [@enterFromBottomAnimation]>
