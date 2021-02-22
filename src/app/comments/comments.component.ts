@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef, SimpleChanges } from '@angular/core';
-import {ElementRef, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import { Component, OnInit, Input, HostListener, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import {ElementRef, ViewChild} from '@angular/core';
 import { NotationService } from '../services/notation.service';
 import { Profile_Edition_Service } from '../services/profile_edition.service';
 import { ChatService } from '../services/chat.service';
@@ -13,8 +13,6 @@ import {get_date_to_show} from '../helpers/dates';
 import {date_in_seconds} from '../helpers/dates';
 import { MatDialog } from '@angular/material/dialog';
 import { NavbarService } from '../services/navbar.service';
-
-declare var $: any;
 
 export interface comment {
   comment_id: number;
@@ -33,7 +31,6 @@ export class CommentsComponent implements OnInit {
   constructor(
     private chatService:ChatService,
     private NotificationsService:NotificationsService,
-    private router:Router,
     private cd: ChangeDetectorRef,
     private NotationService:NotationService,
     private Profile_Edition_Service:Profile_Edition_Service,
@@ -125,7 +122,6 @@ export class CommentsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    let THIS=this;
     if(this.format=="serie"){
       this.chapter_number+=1;
     }

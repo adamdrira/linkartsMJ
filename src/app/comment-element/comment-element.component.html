@@ -146,7 +146,7 @@
                 
                 <div class="left-container">
                     <div class="profile-picture" [ngClass]="{ 'dark-shiny': !pp_is_loaded }">
-                        <img [src]="profile_picture" (load)="load_pp()"
+                        <img [src]="visitor_profile_picture" (load)="load_pp()"
                         [ngClass]="{'invisible': !pp_is_loaded}">
                     </div>
                 </div>

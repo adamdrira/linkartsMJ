@@ -167,7 +167,7 @@ export class CommentElementComponent implements OnInit {
   
 
   ngOnInit(): void {
-    let THIS=this;
+    console.log(this.visitor_profile_picture)
     this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
     console.log(this.date_upload_to_show)
     this.comment=this.comment_information.commentary;
@@ -182,6 +182,7 @@ export class CommentElementComponent implements OnInit {
 
     
     this.NotationService.get_commentary_answers_by_id(this.comment_information.id).subscribe(info=>{
+      
       if(info[0].length!=0){
         for(let i=0;i<info[0].length;i++){
           let info_comment =info[0][i];
@@ -197,45 +198,49 @@ export class CommentElementComponent implements OnInit {
             this.Profile_Edition_Service.retrieve_profile_picture(info[0][i].author_id_who_replies ).subscribe(r=> {
               let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
               const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
-              this.profile_picture_list.push(SafeURL);
-              this.Profile_Edition_Service.retrieve_profile_data(info[0][i].author_id_who_replies).subscribe(l=> {
-                this.pseudo_list.push(l[0].nickname);
-                this.author_name_list.push(l[0].firstname + ' ' + l[0].lastname);
-                this.Profile_Edition_Service.get_current_user().subscribe(s=>{
-                  if(info_comment.author_id_who_replies==s[0].id){
-                    this.visitor_mode_list.push(false);
-                  }
-                  else{
-                    this.visitor_mode_list.push(true);
-                  };
-                  let user = s[0]
-                  this.NotationService.get_commentary_answers_likes_by_id(info_comment.id).subscribe(t=>{
-                    if(t[0].length!=0){
-                      for (let j=0;j<t[0].length;j++){
-                        if(t[0][j].author_id_who_likes==user.id){
-                          this.liked_list.push(true);
-                        }
-                        else{
-                          this.liked_list.push(false);
-                        }
-                        if (i==info[0].length-1){
-                          this.answers_retrieved=true;
-                        }
-                      }
+              this.profile_picture_list[i]=SafeURL;
+              
+            });
+
+            this.Profile_Edition_Service.retrieve_profile_data(info[0][i].author_id_who_replies).subscribe(l=> {
+              this.pseudo_list[i]=(l[0].nickname);
+              this.author_name_list[i]=(l[0].firstname + ' ' + l[0].lastname);
+              
+              
+            });
+
+            this.Profile_Edition_Service.get_current_user().subscribe(s=>{
+              if(info_comment.author_id_who_replies==s[0].id){
+                this.visitor_mode_list[i]=false;
+              }
+              else{
+                this.visitor_mode_list[i]=true;
+              };
+              let user = s[0]
+              this.NotationService.get_commentary_answers_likes_by_id(info_comment.id).subscribe(t=>{
+                if(t[0].length!=0){
+                  for (let j=0;j<t[0].length;j++){
+                    if(t[0][j].author_id_who_likes==user.id){
+                      this.liked_list[i]=true;
                     }
                     else{
-                      this.liked_list.push(false);
+                      this.liked_list[i]=false;
                     }
                     if (i==info[0].length-1){
                       this.answers_retrieved=true;
                     }
-                  })
-                })
-                
-              });
-            });
+                  }
+                }
+                else{
+                  this.liked_list[i]=false;
+                }
+               
+              })
+            })
           
         }
+        this.answers_retrieved=true;
+        
       };
       this.answers_retrieved=true;
     })
