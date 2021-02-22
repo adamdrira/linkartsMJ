@@ -845,35 +845,42 @@ console.log("checking current: " + req.headers['authorization'] );
         });
 
         router.delete('/delete_story/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
-        }
-      }
+            console.log("checking current: " + req.headers['authorization'] );
+                if( ! req.headers['authorization'] ) {
+                    return res.status(401).json({msg: "error"});
+                }
+                else {
+                    let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+                    let user= get_current_user(val)
+                    if(!user){
+                    return res.status(401).json({msg: "error"});
+                    }
+                }
             let current_user = get_current_user(req.cookies.currentUser);
-           
-                const id = parseInt(req.params.id);
-                list_of_stories.findOne({
-                    where: {
-                        id:id,
-                        id_user:current_user,
-        
-                    },
-                })
-                .catch(err => {
+          
+            const id = parseInt(req.params.id);
+            console.log("delete story")
+            console.log(id)
+            console.log(current_user)
+            list_of_stories.findOne({
+                where: {
+                    id:id,
+                    id_user:current_user,
+    
+                },
+            })
+            .catch(err => {
 			console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(story=>{
-                    story.update({
+		}).then(story_found=>{
+            console.log("story found")
+            console.log(story_found)
+            story_found.update({
                         status: "deleted"
-                    })});
-                res.status(200).send([story]);
+            })
+            res.status(200).send([story_found]);
+        });
+            
                     
            
             
