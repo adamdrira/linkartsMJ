@@ -269,29 +269,7 @@
                         </div>
                     </div>
     
-                    <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_drawings.length>0 && list_of_author_recommendations_drawings_retrieved">
-                        <div class="title">Dessins</div>
-                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
-    
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"    [item]=item[0] page='subscribings'
-                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="artbook">
-                            </app-thumbnail-artwork>
-    
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"    [item]=item[0] page='subscribings'
-                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="one-shot">
-                            </app-thumbnail-artwork>
-                        </div>
-                    </div>
-    
-                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 && list_of_author_recommendations_writings_retrieved">
-                        <div class="title">Écrits</div>
-                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
-                            <app-thumbnail-artwork [item]=item[0]    page='subscribings' now_in_seconds={{now_in_seconds}}
-                                subscribing_category='writing'></app-thumbnail-artwork>
-                        </div>
-                    </div>-->
-                    
-                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
+                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length">
                         <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
@@ -307,7 +285,7 @@
                 <!--******************-->
                 <ng-container *ngIf="left_container_category_index==1  ">
     
-                    <div class="recommendation-group">
+                    <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
                             <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0"    [item]=item page='subscribings'
@@ -318,7 +296,9 @@
                             </app-thumbnail-artwork>
             
                         </div>
-                        <div class="no-recommendation" *ngIf="!list_of_recommendations_by_tag.length">
+                    </div>
+                    <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length==0">
+                        <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
                         </div>
@@ -801,29 +781,9 @@
                         </div>
                     </div>
     
-                    <!--<div class="recommendation-group" *ngIf="list_of_author_recommendations_drawings.length>0 ">
-                        <div class="title">Dessins</div>
-                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_drawings; let i=index">
-    
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber >=0"    [item]=item[0] page='subscribings'
-                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="artbook">
-                            </app-thumbnail-artwork>
-    
-                            <app-thumbnail-artwork *ngIf="item[0].pagesnumber == null"    [item]=item[0] page='subscribings'
-                                now_in_seconds={{now_in_seconds}} subscribing_category='drawing' subscribing_format="one-shot">
-                            </app-thumbnail-artwork>
-                        </div>
-                    </div>
-    
-                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_writings.length>0 ">
-                        <div class="title">Écrits</div>
-                        <div class="thumbnail-container" *ngFor="let item of list_of_author_recommendations_writings; let i=index">
-                            <app-thumbnail-artwork [item]=item[0]    page='subscribings' now_in_seconds={{now_in_seconds}}
-                                subscribing_category='writing'></app-thumbnail-artwork>
-                        </div>
-                    </div>-->
+                   
                     
-                    <div class="recommendation-group" *ngIf="!list_of_author_recommendations_comics.length && !list_of_author_recommendations_drawings.length && !list_of_author_recommendations_writings.length">
+                    <div class="recommendation-group" *ngIf="list_of_author_recommendations_comics.length==0">
                         <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
@@ -839,7 +799,7 @@
                 <!--******************-->
                 <ng-container *ngIf="left_container_category_index==1  ">
     
-                    <div class="recommendation-group">
+                    <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length>0">
                         <div class="thumbnail-container" *ngFor="let item of list_of_recommendations_by_tag; let i=index">
     
                             <app-thumbnail-artwork *ngIf="item.chaptersnumber >=0"    [item]=item page='subscribings'
@@ -850,7 +810,9 @@
                             </app-thumbnail-artwork>
             
                         </div>
-                        <div class="no-recommendation" *ngIf="!list_of_recommendations_by_tag.length">
+                    </div>
+                    <div class="recommendation-group" *ngIf="list_of_recommendations_by_tag.length==0">
+                        <div class="no-recommendation">
                             <mat-icon [ngClass]="{'invisible': !show_icon }">info_outline</mat-icon>
                             <span>Aucune recommendation disponible</span>
                         </div>
