@@ -1,4 +1,4 @@
-import { Component, OnInit,  ElementRef,  ViewChild, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit,  ElementRef,  ViewChild, Renderer2, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { Story_service } from '../services/story.service';
@@ -62,6 +62,8 @@ export class UploaderStoryComponent implements OnInit {
 
   }
 
+  load_emoji=false;
+
 
   imageSource: SafeUrl = "";
   uploader: FileUploader;
@@ -81,6 +83,11 @@ export class UploaderStoryComponent implements OnInit {
 
   show_icon=false;
   ngOnInit() {
+
+    let inter= setInterval(() => {
+      this.load_emoji=true;
+      clearInterval(inter)
+    }, 1000);
 
     this.uploader.onAfterAddingFile = async (file) => {
 
@@ -371,5 +378,44 @@ export class UploaderStoryComponent implements OnInit {
   }
   
 
+
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+
+  handleClick($event, i : number) {
+    //this.selectedEmoji = $event.emoji;
+
+    let data = this.texts[i];
+    if(data){
+      this.texts[i].text = this.texts[i].text + $event.emoji.native;
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
+  }
 
 }

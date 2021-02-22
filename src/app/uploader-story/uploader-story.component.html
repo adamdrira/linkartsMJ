@@ -142,6 +142,25 @@
                     <textarea matInput cdkTextareaAutosize maxLength="2000" [(ngModel)]="item.text"
                         autocomplete="off"></textarea>
                     <div class="length-indicator">{{item.text?.length || 0}}/2000</div>
+                    
+                    
+                    <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
+                        <div class="emojis-container">
+                            <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
+                                (emojiSelect)="handleClick($event,i)">
+                            </emoji-mart>
+                        </div>
+                    </div>
+
+                    <div #emoji_button (click)="open_emojis()" class="emojis-button"
+                    matTooltip="Emojis"
+                    matTooltipClass='linkarts-tooltip'
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
+                    </div>
+
+
                 </mat-form-field>
             </div>
             <button class="submit-button no-margin-top" (click)="reset_style(i);">

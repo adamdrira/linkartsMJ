@@ -30,6 +30,7 @@
     position: fixed;
     z-index:1010;
     left: 50%;
+    width:85%;
     transform: translateX(-50%);
     top: 25px;
     bottom: 25px;
@@ -80,7 +81,7 @@
 
     .swiper-container-stories {
         height: 100%;
-        max-width: 700px;
+        max-width: 1000px;
         padding: 0px 0px;
         overflow: hidden;
         margin-left: auto;
