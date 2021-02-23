@@ -202,7 +202,8 @@ export class LoginComponent implements OnInit {
   signup() {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(SignupComponent, {
-      panelClass:"signupComponentClass",
+      data:{for_group_creation:false},
+      panelClass:"signupComponentClass"
     });
   }
 
