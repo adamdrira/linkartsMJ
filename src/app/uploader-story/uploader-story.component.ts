@@ -10,7 +10,7 @@ import domtoimage from 'dom-to-image';
 import { NavbarService } from '../services/navbar.service';
 
 
-const url = 'https://www.linakrts.fr/routes/upload_story';
+const url = 'http://localhost:4600/routes/upload_story';
 
 @Component({
   selector: 'app-uploader-story',
@@ -281,60 +281,6 @@ export class UploaderStoryComponent implements OnInit {
     var THIS = this;
       
 
-    /*html2canvas( this.image_container.nativeElement , {
-      useCORS: true }).then(function(canvas) {
-
-      canvas.toBlob(function(blob) {
-        // send the blob to server etc.
-        THIS.Story_service.upload_story( blob ).subscribe(res => {
-          console.log(res)
-          if(!res[0].num && !res[0].error && !res[0].msg){
-            //location.reload();
-          }
-          else if(res[0].num){
-            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-              data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
-              panelClass: "popupConfirmationClass",
-            });
-            THIS.loading=false;
-
-          }
-          else{
-            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-              data: { showChoice: false, text: 'Une erreur est survenue' },
-              panelClass: "popupConfirmationClass",
-            });
-            THIS.loading=false;
-          }
-        })
-      }, "image/png", 0.75);
-    });*/
-
-
-    
-    /*canvas.toDataUrl("image/png").toBlob(function(blob) {
-      THIS.Story_service.upload_story( blob ).subscribe(res => {
-        console.log(res)
-        if(!res[0].num && !res[0].error && !res[0].msg){
-          //location.reload();
-        }
-        else if(res[0].num){
-          const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-            data: { showChoice: false, text: 'Vous ne pouvez pas ajouer plus de 15 stories par jour' },
-            panelClass: "popupConfirmationClass",
-          });
-          THIS.loading=false;
-
-        }
-        else{
-          const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
-            data: { showChoice: false, text: 'Une erreur est survenue' },
-            panelClass: "popupConfirmationClass",
-          });
-          THIS.loading=false;
-        }
-      })
-    });*/
 
     setTimeout(() => domtoimage.toSvg(this.image_container.nativeElement, {filter: THIS.filter})
     .then(function (svg) {
@@ -365,10 +311,21 @@ export class UploaderStoryComponent implements OnInit {
             THIS.loading=false;
           }
           
+        },
+        error => {
+          THIS.loading = false;
+            const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+              data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+              panelClass: "popupConfirmationClass",
+            });
         })
     })
     .catch(function (error) {
-        console.error('oops, something went wrong!', error);
+      const dialogRef = THIS.dialog.open(PopupConfirmationComponent, {
+        data: { showChoice: false, text: 'Une erreur est survenue' },
+        panelClass: "popupConfirmationClass",
+      });
+      THIS.loading=false;
     }), 1000);
 
   }

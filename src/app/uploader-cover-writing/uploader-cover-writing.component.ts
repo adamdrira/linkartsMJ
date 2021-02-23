@@ -200,7 +200,7 @@ export class UploaderCoverWritingComponent implements OnInit {
       
     };
 
-      this.uploader.onCompleteItem = (file) => {
+    this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
       if(this.for_edition){
         this.Writing_CoverService.get_cover_name().subscribe(r=>{
@@ -237,7 +237,13 @@ export class UploaderCoverWritingComponent implements OnInit {
      
     }
 
-    $('.ColorChoice').SumoSelect({});
+    this.uploader.onErrorItem = (item, response, status, headers) => {
+      this.cover_loading=false;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+        panelClass: "popupConfirmationClass",
+      });
+    };
 
 
   };

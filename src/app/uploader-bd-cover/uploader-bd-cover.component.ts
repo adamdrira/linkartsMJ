@@ -188,7 +188,7 @@ export class UploaderBdCoverComponent implements OnInit {
       }
     };
 
-      this.uploader.onCompleteItem = (file) => {
+    this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
       console.log(file._file.name)
       if(this.for_edition){
@@ -235,7 +235,15 @@ export class UploaderBdCoverComponent implements OnInit {
      
     }
 
-    $('.ColorChoice').SumoSelect({});
+    this.uploader.onErrorItem = (item, response, status, headers) => {
+      this.cover_loading=false;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+        panelClass: "popupConfirmationClass",
+      });
+    };
+
+
 
 
   };

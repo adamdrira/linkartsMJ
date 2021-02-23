@@ -149,6 +149,13 @@ export class UploaderChatProfilePictureComponent implements OnInit {
     canvas.toBlob(blob => {
       this.ChatService.modify_chat_profile_pic(blob,this.id_receiver).subscribe(res=>{
         location.reload();
+      },
+      error => {
+          this.loading = false;
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+            panelClass: "popupConfirmationClass",
+          });
       })
     }, "image/png");
     

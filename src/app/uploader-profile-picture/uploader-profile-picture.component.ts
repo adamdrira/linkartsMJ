@@ -170,6 +170,13 @@ export class UploaderProfilePictureComponent implements OnInit {
     canvas.toBlob(blob => {
       this.Profile_Edition_Service.send_profile_pic_todata(blob).subscribe(res=>{
         location.reload();
+      },
+      error => {
+          this.loading = false;
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+            panelClass: "popupConfirmationClass",
+          });
       })
     }, "image/png");
     

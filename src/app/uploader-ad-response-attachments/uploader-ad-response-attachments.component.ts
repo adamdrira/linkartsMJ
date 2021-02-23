@@ -8,7 +8,7 @@ import { NavbarService } from '../services/navbar.service';
 
 declare var $:any;
 
-const url = 'https://www.linkarts.fr/routes/upload_attachments_ad_response/';
+const url = 'http://localhost:4600/routes/upload_attachments_ad_response/';
 
 @Component({
   selector: 'app-uploader-ad-response-attachments',

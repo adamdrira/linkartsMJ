@@ -155,7 +155,7 @@ export class UploaderThumbnailAdComponent implements OnInit {
       }
     };
 
-      this.uploader.onCompleteItem = (file) => {
+    this.uploader.onCompleteItem = (file) => {
       this.confirmation = true; 
       
       if(!this.for_edition){
@@ -202,6 +202,13 @@ export class UploaderThumbnailAdComponent implements OnInit {
     }
 
 
+    this.uploader.onErrorItem = (item, response, status, headers) => {
+      this.cover_loading=false;
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+        panelClass: "popupConfirmationClass",
+      });
+    };
 
   };
 

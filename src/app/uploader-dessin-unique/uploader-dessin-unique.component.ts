@@ -11,7 +11,7 @@ import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirma
 import { Subscribing_service } from '../services/subscribing.service';
 import { NavbarService } from '../services/navbar.service';
 
-const url = 'https://www.linkarts.fr/routes/upload_drawing_onepage';
+const url = 'http://localhost:4600/routes/upload_drawing_onepage';
 declare var $:any;
 @Component({
   selector: 'app-uploader-dessin-unique',
@@ -187,7 +187,13 @@ export class UploaderDessinUniqueComponent implements OnInit {
         
       }
 
-
+      this.uploader.onErrorItem = (item, response, status, headers) => {
+        this.remove_beforeupload(item);
+        const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+          data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+          panelClass: "popupConfirmationClass",
+        });
+      };
 
     };
 

@@ -152,12 +152,7 @@ export class UploaderCoverPictureComponent implements OnInit {
 
   }
 
-  /*sliderEvent(event: MatSliderChange) {
-    this.slideVal = event.value;
-    let zoomRatio = Math.round(( this.slideVal - this.slideValGlobal)*100)/100;
-    this.cropper.zoom(zoomRatio);
-    this.slideValGlobal = this.slideVal;
-  }*/
+
 
   step_back() {
     this.slideValGlobal = 0.5;
@@ -178,6 +173,13 @@ export class UploaderCoverPictureComponent implements OnInit {
     canvas.toBlob(blob => {
       this.Profile_Edition_Service.send_cover_pic_todata(blob).subscribe(res=>{
         location.reload();
+      },
+      error => {
+          this.loading = false;
+          const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+            data: {showChoice:false, text:"Une erreure s'est produite. Veuillez vérifier que votre connexion est optimale et réessayer ultérieurement."},
+            panelClass: "popupConfirmationClass",
+          });
       })
   }, "image/png");
   }
