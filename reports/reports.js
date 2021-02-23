@@ -351,14 +351,14 @@ console.log("checking current: " + req.headers['authorization'] );
   const format = req.body.format;
   const chapter_number = req.body.chapter_number;
 
-  if(!(format=="serie" && chapter_number==0)){
+  console.log(publication_category)
+  //if(!(format=="serie" && chapter_number==0)){
     reports.findOne({
       where:{
         id_user:current_user,
         publication_category: publication_category,
         publication_id:publication_id,
         format:format,
-        chapter_number: chapter_number,
       }
           
       })
@@ -378,7 +378,7 @@ console.log("checking current: " + req.headers['authorization'] );
         
       
       }); 
-  }
+  /*}
   else{
     reports.findOne({
       where:{
@@ -405,7 +405,7 @@ console.log("checking current: " + req.headers['authorization'] );
         
       
       }); 
-  }
+  }*/
  
 
 });
