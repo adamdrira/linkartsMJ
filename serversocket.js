@@ -55,7 +55,7 @@ wss.on('connection', (ws, req)=>{
   let now = new Date();
 	let connexion_time = now.toString();
   db.users_connexions.create({
-    "id_user":user.userID,
+    "id_user":userID,
     "connexion_time":connexion_time,
     "deconnexion_time":"websocket",
   })
