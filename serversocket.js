@@ -3,6 +3,7 @@ let server = require('http').createServer();
 let app = require('./serverexpress');
 const url = require('url');
 const chat_seq= require('./chat/model/sequelize');
+const db = require('./authentication/db.config');
 const subscribings_seq= require('./p_subscribings_archives_contents/model/sequelize');
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
@@ -51,7 +52,13 @@ wss.on('connection', (ws, req)=>{
   //console.log(webSockets[userID])
   
   console.log('connected: ' + userID + ' number ' + webSockets[userID].length + ' in ' + Object.getOwnPropertyNames(webSockets));
-
+  let now = new Date();
+	let connexion_time = now.toString();
+  db.users_connexions.create({
+    "id_user":user.userID,
+    "connexion_time":connexion_time,
+    "deconnexion_time":"websocket",
+  })
  
   ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     
