@@ -25,6 +25,14 @@ wss.on('connection', (ws, req)=>{
   });
   console.log("user is connected")
   console.log(url.parse(req.url))
+  console.log(req.headers.origin )
+  if(req.headers.origin !='http://localhost:4200'){
+    return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
+  }
+  if(req.headers.origin !='https://www.linkarts.fr'){
+    return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
+  }
+  //console.log(req.headers.origin[0] )
   var userID = parseInt(url.parse(req.url).query.substring(3));
   if(!webSockets[userID] || !(webSockets[userID].length>0) ){
     console.log("create list and ws")
@@ -914,7 +922,6 @@ function get_current_user(token){
 
 
 app.post('/get_users_connected_in_the_chat', function(req, res) {
-  console.log("checking current: " + req.headers['authorization'] );
   let current_user = get_current_user(req.cookies.currentUser);
   let send_web=false;
   if(current_user!=1 && current_user!=2){
