@@ -1084,14 +1084,19 @@ export class ThumbnailArtworkComponent implements OnInit {
   }
 
 
+  loading_report=false;
   report(){
-    //console.log("reporting")
-    //console.log(this.category)
-    //console.log(this.user_id)
+    if(this.loading_report){
+      return
+    }
+    this.loading_report=true;
+    console.log("reporting")
+    console.log(this.category)
+    console.log(this.user_id)
     if(this.category=="comic"){
       this.Reports_service.check_if_content_reported('comic',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,this.format,0).subscribe(r=>{
-        //console.log(r[0])
-        if(r[0]){
+        console.log(r[0])
+        if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
             panelClass: "popupConfirmationClass",
@@ -1106,7 +1111,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else if(this.category=="drawing"){
       this.Reports_service.check_if_content_reported('drawing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,this.format,0).subscribe(r=>{
-        //console.log(r[0])
+        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
@@ -1122,7 +1127,7 @@ export class ThumbnailArtworkComponent implements OnInit {
     }
     else{
       this.Reports_service.check_if_content_reported('writing',(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,"unknown",0).subscribe(r=>{
-        //console.log(r[0])
+        console.log(r[0])
         if(r[0].nothing){
           const dialogRef = this.dialog.open(PopupConfirmationComponent, {
             data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},

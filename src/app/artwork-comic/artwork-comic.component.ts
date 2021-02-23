@@ -2098,7 +2098,7 @@ export class ArtworkComicComponent implements OnInit {
     this.checking_report=true;
     this.Reports_service.check_if_content_reported('comic',this.bd_id,this.type,(this.type=='serie')?(this.current_chapter+1):0).subscribe(r=>{
       console.log(r[0])
-      if(r[0]){
+      if(r[0].nothing){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Vous ne pouvez pas signaler deux fois la même publication'},
         });
