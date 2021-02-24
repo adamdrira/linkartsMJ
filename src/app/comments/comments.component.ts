@@ -94,13 +94,10 @@ export class CommentsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
       this.can_show_send_icon=true;
     }
     else{
-      console.log("can show false")
       this.can_show_send_icon=false;
     }
   }
@@ -108,13 +105,10 @@ export class CommentsComponent implements OnInit {
   show_icon=false;
   ngAfterViewInit() {
 
-    console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
       this.can_show_send_icon=true;
     }
     else{
-      console.log("can sho false")
       this.can_show_send_icon=false;
     }
     this.skeleton_array = Array(5);
@@ -125,16 +119,13 @@ export class CommentsComponent implements OnInit {
     if(this.format=="serie"){
       this.chapter_number+=1;
     }
-    console.log(this.type_of_account);
     this.comment = new FormControl('', [Validators.required, Validators.maxLength(1500) ]);
     this.comment_container = new FormGroup({
       comment: this.comment,
     });
     this.now_in_seconds= Math.trunc( new Date().getTime()/1000);
 
-    console.log(this.authorid)
     this.Profile_Edition_Service.check_if_user_blocked(this.authorid).subscribe(r=>{
-      console.log(r)
       if(r[0].nothing){
         this.user_blocked=false;
       }
@@ -171,7 +162,6 @@ export class CommentsComponent implements OnInit {
     this.NotationService.get_commentaries(this.category,this.format,this.publication_id,this.chapter_number).subscribe(l=>{
 
       this.comments_list=l[0];
-      console.log(this.comments_list);
       if(this.comments_list.length>0){
         this.sort_comments(this.comments_list,"other");  
       }
@@ -248,13 +238,13 @@ export class CommentsComponent implements OnInit {
   show_send_icon=false;
   check_message_for_phone(){
     if(this.can_show_send_icon){
-      console.log(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0)
+    
       if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
-        console.log(1)
+       
         this.show_send_icon=true;
       }
       else{
-        console.log(2)
+        
         this.show_send_icon=false;
       }
       
@@ -262,19 +252,14 @@ export class CommentsComponent implements OnInit {
   }
 
   send_message_phone(){
-    console.log("send phone")
-    console.log(this.chapter_number)
     if(this.comment_container.valid && this.comment_container.value.comment && this.comment_container.value.comment!='' && this.comment_container.value.comment.replace(/\s/g, '').length>0){
     //event.preventDefault();
 
       this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
-        console.log(r[0])
-        console.log(this.visitor_id)
-        console.log(this.authorid)
-        console.log(get_date_to_show(date_in_seconds(this.now_in_seconds,r[0].createdAt) ));
+
         if(this.visitor_id!=this.authorid){
           this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).subscribe(l=>{
-            console.log(l[0])
+           
             let message_to_send ={
               for_notifications:true,
               type:"comment",
@@ -302,16 +287,12 @@ export class CommentsComponent implements OnInit {
             //$('textarea.textarea-add-comment').height(totalHeight + 10);
             })
             this.cd.detectChanges();
-            console.log(this.my_comments_list)
         }
         else{
           this.my_comments_list.splice(0, 0, r[0]);
           this.new_comment.emit();
           this.display_my_comments=true;
           this.comment.reset();
-          //var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
-          //$('textarea.textarea-add-comment').height(totalHeight + 10);
-          console.log(this.my_comments_list)
           this.cd.detectChanges();
         }
           
@@ -337,11 +318,8 @@ export class CommentsComponent implements OnInit {
             event.preventDefault();
   
             this.NotationService.add_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.comment_container.value.comment.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
-              console.log(r[0])
-              console.log(get_date_to_show(date_in_seconds(this.now_in_seconds,r[0].createdAt) ));
               if(this.visitor_id!=this.authorid){
                 this.NotificationsService.add_notification('comment',this.visitor_id,this.visitor_name,this.authorid,this.category,this.title,this.format,this.publication_id,this.chapter_number,this.comment_container.value.comment,false,r[0].id).subscribe(l=>{
-                  console.log(l[0])
                   let message_to_send ={
                     for_notifications:true,
                     type:"comment",
@@ -361,24 +339,17 @@ export class CommentsComponent implements OnInit {
                   this.chatService.messages.next(message_to_send);
                   this.my_comments_list.splice(0, 0, r[0]);
                   this.display_my_comments=true;
-                  
                   this.new_comment.emit();
                   this.comment.reset();
                   this.cd.detectChanges();
-                  //var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
-                  //$('textarea.textarea-add-comment').height(totalHeight + 10);
                   })
                   this.cd.detectChanges();
-                  console.log(this.my_comments_list)
               }
               else{
                 this.my_comments_list.splice(0, 0, r[0]);
                 this.new_comment.emit();
                 this.display_my_comments=true;
                 this.comment.reset();
-                //var totalHeight = $('textarea.textarea-add-comment').prop('scrollHeight') - parseInt($('textarea.textarea-add-comment').css('padding-top')) - parseInt($('textarea.textarea-add-comment').css('padding-bottom'));
-                //$('textarea.textarea-add-comment').height(totalHeight + 10);
-                console.log(this.my_comments_list)
                 this.cd.detectChanges();
               }
                
@@ -400,7 +371,6 @@ export class CommentsComponent implements OnInit {
       this.loading_remove=true;
       this.NotationService.remove_commentary(this.my_comments_list[i].publication_category,this.my_comments_list[i].format,this.my_comments_list[i].style,this.my_comments_list[i].publication_id,this.my_comments_list[i].chapter_number,this.my_comments_list[i].id).subscribe(l=>{
         let index=-1;
-        console.log(l[0]);
         for (let i=0;i<this.my_comments_list.length;i++){
           if(this.my_comments_list[i].id==l[0].id){
             index=i;
@@ -479,7 +449,6 @@ export class CommentsComponent implements OnInit {
   
   load_pp(){
     this.pp_is_loaded=true;
-    console.log("pp_is_laoded")
     this.cd.detectChanges;
   }
   

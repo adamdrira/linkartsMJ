@@ -143,14 +143,11 @@ export class CommentElementComponent implements OnInit {
   show_send_icon=false;
   on_phone_screen=false;
   onResize(event) {
-    console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
       this.can_show_send_icon=true;
       this.on_phone_screen=true
     }
     else{
-      console.log("can show false")
       this.can_show_send_icon=false;
       this.on_phone_screen=false;
     }
@@ -167,9 +164,7 @@ export class CommentElementComponent implements OnInit {
   
 
   ngOnInit(): void {
-    console.log(this.visitor_profile_picture)
     this.date_upload_to_show = get_date_to_show(date_in_seconds(this.now_in_seconds,this.comment_information.createdAt) );
-    console.log(this.date_upload_to_show)
     this.comment=this.comment_information.commentary;
     this.category=this.comment_information.publication_category;
     this.id=this.comment_information.id;
@@ -276,15 +271,11 @@ export class CommentElementComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-
-    console.log(window.innerWidth)
     if( window.innerWidth<850 ) {
-      console.log("can sho ok")
       this.can_show_send_icon=true;
       this.on_phone_screen=true;
     }
     else{
-      console.log("can sho false")
       this.can_show_send_icon=false;
       this.on_phone_screen=false;
     }
@@ -312,8 +303,6 @@ export class CommentElementComponent implements OnInit {
     this.loading_remove=true;
     this.NotationService.remove_commentary_answer(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.responses_list[i].id).subscribe(l=>{
       let index=-1;
-      console.log(l[0])
-      console.log(this.responses_list)
       for (let i=0;i<this.responses_list.length;i++){
         if(this.responses_list[i].id==l[0].id){
           index=i;
@@ -354,7 +343,6 @@ export class CommentElementComponent implements OnInit {
 
 
   add_or_remove_like(){
-    console.log(this.comment)
     this.like_in_progress=true;
     if(this.liked){
       this.NotationService.remove_like_on_commentary(this.category,this.format,this.style,this.publication_id,this.chapter_number,this.id).subscribe(r=>{
@@ -433,7 +421,6 @@ export class CommentElementComponent implements OnInit {
   }
 
   add_or_remove_answer_like(i){
-    console.log(this.responses_list[i].comment)
     this.answer_like_in_progress[i]=true;
     if(this.liked_list[i]){
       this.NotationService.remove_like_on_commentary_answer(this.responses_list[i].id).subscribe(r=>{
@@ -554,7 +541,6 @@ export class CommentElementComponent implements OnInit {
   
  
   function_edit_comment(){
-    console.log("edit comment")
       if( this.edit_comment && this.textareaREAD.nativeElement.value && this.textareaREAD.nativeElement.value!='' && this.textareaREAD.nativeElement.value.replace(/\s/g, '').length>0){
         this.set_not_editable();
 
@@ -605,7 +591,6 @@ export class CommentElementComponent implements OnInit {
 
 
   function_edit_response(i ){
-    console.log("edit response " + i);
     if(this.editable_response == i && this.textareaRESPONSE.toArray()[i].nativeElement.value && this.textareaRESPONSE.toArray()[i].nativeElement.value!='' && this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\s/g, '').length>0){
 
       this.set_not_editable_response();
@@ -613,7 +598,6 @@ export class CommentElementComponent implements OnInit {
       this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
 
       this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
-            console.log(l[0].commentary);
             this.responses_list.splice(i, 1,
               {
                 author_id :l[0].author_id_who_replies,
@@ -644,7 +628,6 @@ export class CommentElementComponent implements OnInit {
           this.textareaRESPONSE.toArray()[i].nativeElement.value = this.textareaRESPONSE.toArray()[i].nativeElement.value.trim();
   
           this.NotationService.edit_answer_on_commentary(this.textareaRESPONSE.toArray()[i].nativeElement.value.replace(/\n\s*\n\s*\n/g, '\n\n'),this.responses_list[i].id).subscribe(l=>{
-                console.log(l[0].commentary);
                 this.responses_list.splice(i, 1,
                   {
                     author_id :l[0].author_id_who_replies,
@@ -675,13 +658,12 @@ export class CommentElementComponent implements OnInit {
 
   check_message_for_phone(){
     if(this.can_show_send_icon){
-      console.log(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0)
+     
       if(this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0){
-        console.log(1)
+
         this.show_send_icon=true;
       }
       else{
-        console.log(2)
         this.show_send_icon=false;
       }
       
@@ -689,7 +671,6 @@ export class CommentElementComponent implements OnInit {
   }
 
   send_response_phone(){
-    console.log("send phone response to comment")
     this.show_send_icon=false;
     if (this.textareaRESPONSEtoCOMMENT.nativeElement.value && this.textareaRESPONSEtoCOMMENT.nativeElement.value != '' && this.textareaRESPONSEtoCOMMENT.nativeElement.value.replace(/\s/g, '').length > 0) {
 

@@ -67,10 +67,6 @@ export class PopupFormDrawingComponent implements OnInit {
   }
 
 
-  onScroll(e: Event) {
-    window.dispatchEvent(new Event('resize'));
- }
-
 
 
  show_icon=false;
@@ -288,9 +284,7 @@ export class PopupFormDrawingComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
     if(this.show_emojis){
-      console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
-        console.log('on est ailleurs');
         this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
       }
