@@ -16,8 +16,9 @@ let wss = new WSServer({
 // Also mount the app here
 server.on('request', app);
 webSockets = {} // userID: webSocket
-date_of_webSockets_last_connection={}
-
+date_of_webSockets_last_connection={};
+date_of_webSockets_last_connection_ddos={};
+date_of_webSockets_last_message={};
 wss.on('connection', (ws, req)=>{
   
   ws.isAlive = true;
@@ -30,11 +31,14 @@ wss.on('connection', (ws, req)=>{
   if(req.headers.origin !='http://localhost:4200'){
     return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
   }
-  if(req.headers.origin !='https://www.linkarts.fr'){
-    return   ws.send(JSON.stringify([{not_allowed:"you are not allowed to connect here"}]));
-  }
   //console.log(req.headers.origin[0] )
   var userID = parseInt(url.parse(req.url).query.substring(3));
+  let date1 = new Date();
+  let speed_limit1=10;
+  if(date_of_webSockets_last_connection_ddos[userID] && (date1.getTime() - date_of_webSockets_last_connection_ddos[userID].getTime())<speed_limit1){
+    return false;
+  }
+  date_of_webSockets_last_connection_ddos[userID]=date1;
   if(!webSockets[userID] || !(webSockets[userID].length>0) ){
     console.log("create list and ws")
     webSockets[userID] = [ws];
@@ -67,6 +71,12 @@ wss.on('connection', (ws, req)=>{
 
     console.log('received from ' + userID + ': ' + message)
     var messageArray = JSON.parse(message);
+    let date = new Date();
+    let speed_limit=10;
+    if(date_of_webSockets_last_message[userID] && (date.getTime() - date_of_webSockets_last_message[userID].getTime())<speed_limit){
+      return false;
+    }
+    date_of_webSockets_last_message[userID]=date;
     console.log("messageArray")
     ws.send(JSON.stringify([{id_user:"server",id_receiver:userID, message:'Hi there'}]));
     if(messageArray.for_notifications){
