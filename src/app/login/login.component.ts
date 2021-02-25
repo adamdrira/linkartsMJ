@@ -10,6 +10,7 @@ import { pattern } from '../helpers/patterns';
 import { Community_recommendation } from '../services/recommendations.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { normalize_to_nfc } from '../helpers/patterns';
+import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 
 
 @Component({
@@ -74,7 +75,7 @@ export class LoginComponent implements OnInit {
   display_error_group=false;
   wrong_email_reset_password=false;
   
-
+  number_of_connexions_tried=0;
   motifs:string[] = ["J'ai créé un second compte","Problème d'utilisation","Trop de publicités","Prend trop de temps","J'ai seulement besoin d'une pause","Je ne trouve aucun compte à suivre","Autre chose"];
   selected_motif = -1;
   select_motif(i:number) {
@@ -221,11 +222,42 @@ export class LoginComponent implements OnInit {
    
   }
 
+  time_between_connexions:any;
+  display_connexion_not_allowed=false;
   recommendation_done=false;
+  time_first_connexion_not_allowed:any;
   login() {
     if(this.loading) {
       return;
     }
+
+    if(this.display_connexion_not_allowed){
+      let time = 30 - (Math.trunc(new Date().getTime()/1000)  - this.time_first_connexion_not_allowed)
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:`3 tentatives échouées. Veuillez patienter ${time} secondes`},
+        panelClass: "popupConfirmationClass",
+      });
+      return
+    }
+
+    if(this.number_of_connexions_tried==3){
+      const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+        data: {showChoice:false, text:'3 tentatives échouées. Veuillez patienter 30 secondes'},
+        panelClass: "popupConfirmationClass",
+      });
+      this.display_connexion_not_allowed=true;
+      this.time_first_connexion_not_allowed= Math.trunc(new Date().getTime()/1000);
+      this.time_between_connexions= setInterval(() => {
+        this.number_of_connexions_tried=0;
+        this.display_connexion_not_allowed=false;
+        clearInterval(this.time_between_connexions)
+      }, 30000);
+
+      return
+    }
+
+   
+    this.number_of_connexions_tried++;
     
     this.submitted = true;
 

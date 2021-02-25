@@ -47,7 +47,7 @@
                         (keyup.enter)="validate_name(i);"
                         [formControlName]="i"
                         />
-                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (attention aux espaces)
                         </mat-error>
                         <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -101,7 +101,7 @@
                         (keyup.enter)="validate_name(i);"
                         [formControlName]="i"
                         />
-                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
+                        <mat-error *ngIf="chapters.controls[i].invalid">Veuillez faire une saisie valide (attention aux espaces)
                         </mat-error>
                         <div class="length-indicator">{{chapters.controls[i].value?.length || 0}}/30</div>
                     </mat-form-field>
@@ -135,14 +135,14 @@
 <div class="pages-controller" *ngIf="form_number==0">
 
     <ng-container *ngFor="let element of componentRef; let i = index" >
-        <app-swiper-upload-serie *ngIf=element.swiperInitialized type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
+        <app-swiper-upload-serie *ngIf="element.swiperInitialized" type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="i" (validated)="validated_chapter(i);" [hidden]="current_chapter!=i"></app-swiper-upload-serie>
     </ng-container>
 
 </div>
 
 <div class="pages-controller" *ngIf="form_number==1 && chapter_creation_in_progress">
-    <ng-container  >
-        <app-swiper-upload-serie type="Série" [disabled]=!display_swiper [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
+    <ng-container *ngIf="display_swiper">
+        <app-swiper-upload-serie type="Série" [disabled]="!display_swiper" [bd_id]="bd_id" [chapter]="current_chapter" (validated)="validated_chapter(current_chapter);"></app-swiper-upload-serie>
     </ng-container>
     
 

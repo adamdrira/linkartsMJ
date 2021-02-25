@@ -771,7 +771,7 @@
         }
 
         scrollbar-width:thin;
-        scrollbar-color: #b7e1fb white;
+        scrollbar-color: #243b63 white;
         &::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -781,7 +781,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         &::-webkit-scrollbar-thumb {
-            background: #4bc7ff75;
+            background: #243b63;
             border-radius: 20px;
         }
       }

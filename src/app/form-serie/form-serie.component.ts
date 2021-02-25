@@ -8,7 +8,7 @@ import {ChatService}from '../services/chat.service';
 import {Subscribing_service}from '../services/subscribing.service';
 import { Subscription } from 'rxjs';
 import { BdSerieService } from '../services/comics_serie.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Bd_CoverService } from '../services/comics_cover.service';
 
 import { MatDialog } from '@angular/material/dialog';
@@ -49,6 +49,7 @@ value:string="add";
     private router:Router,
     private Bd_CoverService:Bd_CoverService,
     public dialog: MatDialog,
+    private activatedRoute: ActivatedRoute,
     private navbar: NavbarService,
     private Profile_Edition_Service:Profile_Edition_Service
 
@@ -103,11 +104,13 @@ value:string="add";
   ngOnInit() {
     let THIS=this;
     window.scroll(0,0);
+    console.log("on init form serie")
     console.log(this.form_number);
     console.log(this.list_of_chapters);
     console.log(this.bd_id)
     if(this.form_number==1){
       this.current_chapter==this.list_of_chapters[this.list_of_chapters.length-1].chapter_number-1;
+      this.bd_id= this.bd_id_add_comics
     }
     this.Profile_Edition_Service.get_current_user().subscribe(r=>{
       this.user_id = r[0].id;

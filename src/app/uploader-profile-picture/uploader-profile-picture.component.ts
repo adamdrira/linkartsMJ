@@ -93,11 +93,11 @@ export class UploaderProfilePictureComponent implements OnInit {
 
       let sufix =re.exec(file._file.name)[1].toLowerCase()
 
-      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg"){
+      if(sufix!="jpeg" && sufix!="png" && sufix!="jpg" && sufix!="gif"){
         console.log(re.exec(file._file.name)[1])
         this.uploader.queue.pop();
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
-          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png'},
+          data: {showChoice:false, text:'Veuillez sélectionner un fichier .jpg, .jpeg, .png, .gif'},
           panelClass: "popupConfirmationClass",
         });
       }

@@ -76,6 +76,8 @@
  .chapters-list .chapter {
     display:flex;
     flex-wrap: wrap;
+    position: relative;
+    margin-bottom: 5px;
     padding-top:10px;
     padding-bottom:10px;
     border-top:1px solid rgb(230,230,230);
@@ -124,8 +126,9 @@
  .chapters-list .chapter .chapter-name {
     display:flex;
     min-width:200px;
-    padding-left:5px;
-    margin: auto auto;
+    padding-left: 5px;
+    margin-right: 50px;
+    margin-left: 10px;
     width:calc(100% - 40px - 110px - 140px);
 }
 
@@ -142,12 +145,14 @@
 
 
  .chapters-list .chapter .chapter-icons {
-    width:95px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
     height: 100%;
-    display:flex;
-    margin: auto auto auto auto;
-    cursor:pointer;
-    //background:grey;
+    display: -webkit-box;
+    display: flex;
+    margin: auto;
+    cursor: pointer;
 }
 
 
@@ -333,7 +338,7 @@
 }
 
 
-@media (max-width:420px) { 
+@media (max-width:600px) { 
     .chapters-title {
         flex-direction: column !important;
     }

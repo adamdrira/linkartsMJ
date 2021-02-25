@@ -479,7 +479,7 @@
                         section.emoji-mart-scroll {
                             overflow-x: hidden;
                         }
-                        @media (max-width: 400px) {
+                        @media (max-width: 600px) {
                             section.emoji-mart-scroll {
                                 overflow-x: unset;
                             }
@@ -727,7 +727,7 @@
                 }
             }
         }
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
             padding-left: 0px !important;
             padding-right: 0px !important;
             .categories-container {
@@ -754,7 +754,7 @@
                 margin: auto 2px auto auto;
             }
         }
-        @media (min-width: 500px) {
+        @media (min-width: 600px) {
             .form,
             .form0 {
                 padding-left: 50px !important;
