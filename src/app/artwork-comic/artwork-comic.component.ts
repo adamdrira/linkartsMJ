@@ -1349,25 +1349,25 @@ export class ArtworkComicComponent implements OnInit {
   change_chapter_filter_bottom_to_top(direction){
     let THIS=this;
 
-    if(direction=='up' && this.current_chapter==this.chapterList.length-1){
+    if(direction=='up' && THIS.current_chapter==THIS.chapterList.length-1){
       return
     }
-    if(direction=='down' && this.current_chapter==0){
+    if(direction=='down' && THIS.current_chapter==0){
       return
     }
     
     if(direction=='up'){
-      this.chapter_filter_bottom_to_top=false;
+      THIS.chapter_filter_bottom_to_top=false;
     }
     if(direction=='down'){
-      this.chapter_filter_bottom_to_top=true;
+      THIS.chapter_filter_bottom_to_top=true;
     }
     
     THIS.display_comics_pages=[];
     THIS.display_pages=false;
     
 
-    let chapter_number =(this.chapter_filter_bottom_to_top)?0:this.chapterList.length-1;
+    let chapter_number =(THIS.chapter_filter_bottom_to_top)?0:THIS.chapterList.length-1;
     let last_chapter = THIS.current_chapter;
     let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
     
@@ -1377,11 +1377,11 @@ export class ArtworkComicComponent implements OnInit {
     
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
     THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-    this.chapter_name_control.reset();
-    this.cd.detectChanges();
+    THIS.chapter_name_control.reset();
+    THIS.cd.detectChanges();
     $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
     $('.chapterSelector')[0].sumo.reload();
-    this.cd.detectChanges();
+    THIS.cd.detectChanges();
     
     
 
@@ -1429,39 +1429,39 @@ export class ArtworkComicComponent implements OnInit {
 
   change_chapter(direction){
     let THIS=this;
-
-    if(direction=='next' && this.current_chapter==this.chapterList.length-1){
+    if(direction=='next' && THIS.current_chapter==THIS.chapterList.length-1){
       return
     }
-    if(direction=='before' && this.current_chapter==0){
+    if(direction=='before' && THIS.current_chapter==0){
       return
     }
-    
-    
-    
     THIS.display_comics_pages=[];
     THIS.display_pages=false;
     
 
-    let chapter_number =(direction=='next')?(this.current_chapter+1):(this.current_chapter-1);
+    let chapter_number =(direction=='next')?(THIS.current_chapter+1):(THIS.current_chapter-1);
     let last_chapter = THIS.current_chapter;
     let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
     
 
     
     THIS.current_chapter= chapter_number;// le chapitre 1 vaut 0 
-    
     THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
     THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-    this.chapter_name_control.reset();
-    this.cd.detectChanges();
-    $('.chapterSelector').attr("placeholder",this.chapter_name_to_show);
+    THIS.chapter_name_control.reset();
+    THIS.cd.detectChanges();
+    $('.chapterSelector').attr("placeholder",THIS.chapter_name_to_show);
     if((THIS.current_chapter+1)>THIS.chapterList.length/2){
       THIS.chapter_filter_bottom_to_top=false;
     }
     else{
       THIS.chapter_filter_bottom_to_top=true;
     }
+    //THIS.sumo_ready=false;
+    $('.chapterSelector')[0].sumo.unload();
+    this.cd.detectChanges()
+    $('.chapterSelector').SumoSelect({});
+    this.cd.detectChanges()
     $('.chapterSelector')[0].sumo.reload();
     this.cd.detectChanges();
     
@@ -1522,13 +1522,14 @@ export class ArtworkComicComponent implements OnInit {
 
     $('.chapterSelector').change(function(){
 
+      console.log("change sumo")
       if(parseInt($(".chapterSelector").val())==THIS.current_chapter){
         return
       }
       THIS.display_comics_pages=[];
       THIS.display_pages=false;
       
-
+      console.log( $(".chapterSelector").val())
       let chapter_number = $(".chapterSelector").val();
       let last_chapter = THIS.current_chapter;
       let ending_time_of_view = Math.trunc(new Date().getTime()/1000)  - THIS.begining_time_of_view;
@@ -1543,21 +1544,24 @@ export class ArtworkComicComponent implements OnInit {
         THIS.chapter_filter_bottom_to_top=true;
       }
       
-      THIS.cd.detectChanges();
-      $('.chapterSelector')[0].sumo.reload();
+     
+
+     
 
       THIS.current_chapter_title=THIS.chapterList[chapter_number].title;
       THIS.chapter_name_to_show=`Chapitre ${THIS.chapterList[THIS.current_chapter].chapter_number} : ${ THIS.current_chapter_title}`;
-
-
+      THIS.chapter_name_control.reset();
+      THIS.cd.detectChanges();
+      $('.chapterSelector').attr("placeholder",THIS.chapter_name_to_show);
+      
+      $('.chapterSelector')[0].sumo.reload();
+      THIS.cd.detectChanges();
+      console.log(THIS.current_chapter_title);
+      console.log(THIS.chapter_name_to_show)
       if (THIS.mode_visiteur){
         THIS.NotationService.add_view_time(ending_time_of_view, THIS.id_view_created).subscribe();
         THIS.NotationService.add_view("comic", 'serie',THIS.style, THIS.bd_id,(parseInt(chapter_number) + 1),THIS.firsttag,THIS.secondtag,THIS.thirdtag,THIS.authorid).subscribe(r=>{
           THIS.id_view_created = r[0].id;
-          if(r[0].id>0){
-            THIS.Community_recommendation.delete_recommendations_cookies();
-            THIS.Community_recommendation.generate_recommendations().subscribe(r=>{})
-          }
           THIS.begining_time_of_view =  Math.trunc(new Date().getTime()/1000);
         });
       }
