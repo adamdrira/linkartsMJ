@@ -946,8 +946,11 @@ export class ArtworkComicComponent implements OnInit {
   }
 
 
+
   check_likes_after_current_serie(){
+    console.log("check_likes_after_current_serie")
     if(this.current_user_retrieved && this.likes_retrieved_but_not_checked){
+      console.log("in if check likes")
       for (let i=0;i< this.list_of_likes.length;i++){
         this.list_of_users_ids_likes[this.chapter_to_check_for_view-1].push( this.list_of_likes[i].author_id_who_likes);
         if ( this.list_of_likes[i].author_id_who_likes == this.visitor_id){
@@ -1407,12 +1410,12 @@ export class ArtworkComicComponent implements OnInit {
     }
     else{
       for (let i=0;i<THIS.list_of_users_ids_likes[THIS.current_chapter].length;i++){
-        if (THIS.list_of_users_ids_likes[THIS.current_chapter][i].author_id_who_likes == THIS.visitor_id){
+        if (THIS.list_of_users_ids_likes[THIS.current_chapter][i] == THIS.visitor_id){
           THIS.liked = true;
         }
       }
       for (let i=0;i<THIS.list_of_users_ids_loves[THIS.current_chapter].length;i++){
-        if (THIS.list_of_users_ids_loves[THIS.current_chapter][i].author_id_who_loves == THIS.visitor_id){
+        if (THIS.list_of_users_ids_loves[THIS.current_chapter][i]== THIS.visitor_id){
           THIS.loved = true;
         }
       }
@@ -1423,6 +1426,14 @@ export class ArtworkComicComponent implements OnInit {
       console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
     }
+    THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
+    if(THIS.style=="Manga"){
+      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
+    }
+    else{
+      THIS.swiper.slideTo(0,false,false);
+    }
+    THIS.refresh_swiper_pagination();
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
   }
 
@@ -1489,12 +1500,12 @@ export class ArtworkComicComponent implements OnInit {
     }
     else{
       for (let i=0;i<THIS.list_of_users_ids_likes[THIS.current_chapter].length;i++){
-        if (THIS.list_of_users_ids_likes[THIS.current_chapter][i].author_id_who_likes == THIS.visitor_id){
+        if (THIS.list_of_users_ids_likes[THIS.current_chapter][i]== THIS.visitor_id){
           THIS.liked = true;
         }
       }
       for (let i=0;i<THIS.list_of_users_ids_loves[THIS.current_chapter].length;i++){
-        if (THIS.list_of_users_ids_loves[THIS.current_chapter][i].author_id_who_loves == THIS.visitor_id){
+        if (THIS.list_of_users_ids_loves[THIS.current_chapter][i] == THIS.visitor_id){
           THIS.loved = true;
         }
       }
@@ -1505,6 +1516,14 @@ export class ArtworkComicComponent implements OnInit {
       console.log("pages déjà existantes")
       THIS.initialize_thumbnails();
     }
+    THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
+    if(THIS.style=="Manga"){
+      THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
+    }
+    else{
+      THIS.swiper.slideTo(0,false,false);
+    }
+    THIS.refresh_swiper_pagination();
     THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${chapter_number + 1}`);
   }
 
@@ -1577,13 +1596,15 @@ export class ArtworkComicComponent implements OnInit {
       else{
         
         console.log("pages déjà existantes");
+        console.log(THIS.list_of_users_ids_likes)
+        console.log(THIS.list_of_users_ids_likes[THIS.current_chapter])
         for (let i=0;i<THIS.list_of_users_ids_likes[THIS.current_chapter].length;i++){
-          if (THIS.list_of_users_ids_likes[THIS.current_chapter][i].author_id_who_likes == THIS.visitor_id){
+          if (THIS.list_of_users_ids_likes[THIS.current_chapter][i] == THIS.visitor_id){
             THIS.liked = true;
           }
         }
         for (let i=0;i<THIS.list_of_users_ids_loves[THIS.current_chapter].length;i++){
-          if (THIS.list_of_users_ids_loves[THIS.current_chapter][i].author_id_who_loves == THIS.visitor_id){
+          if (THIS.list_of_users_ids_loves[THIS.current_chapter][i] == THIS.visitor_id){
             THIS.loved = true;
           }
         }
@@ -1593,7 +1614,15 @@ export class ArtworkComicComponent implements OnInit {
         THIS.lovesnumber =THIS.chapterList[chapter_number].lovesnumber ;
         THIS.initialize_thumbnails();
       }
-     
+
+      THIS.pagesnumber=THIS.chapterList[chapter_number].pagesnumber;
+      if(THIS.style=="Manga"){
+        THIS.swiper.slideTo(THIS.chapterList[chapter_number].pagesnumber,false,false);
+      }
+      else{
+        THIS.swiper.slideTo(0,false,false);
+      }
+      THIS.refresh_swiper_pagination();
       THIS.location.go(`/artwork-comic/${THIS.type}/${THIS.title}/${THIS.bd_id}/${parseInt(chapter_number) + 1}`);
     });
 
@@ -1616,7 +1645,8 @@ export class ArtworkComicComponent implements OnInit {
       if(this.list_of_users_ids_likes_retrieved){
         console.log("list_of_users_ids_likes_retrieved")
         this.like_in_progress=true;
-        if(this.liked) {    
+        if(this.liked) {  
+          console.log("remove like")  
           this.liked=false;
           this.likesnumber-=1;
           if(this.type=='one-shot'){
@@ -1691,6 +1721,7 @@ export class ArtworkComicComponent implements OnInit {
           }
         }
         else {
+          console.log("add like")
           this.liked=true;
           this.likesnumber+=1;
           if(this.type=='one-shot'){  

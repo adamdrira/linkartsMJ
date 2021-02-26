@@ -7,6 +7,7 @@ $default-color: rgb(218,220,225);
     padding: 8px;
     text-align: left;
     display: flex;
+    //background: #162644;
     background: #162644;
     span {
         cursor:default;
@@ -56,6 +57,7 @@ $default-color: rgb(218,220,225);
     overflow: auto;
     height: 100%;
     padding: 10px 20px 100px 20px;
+    background: rgba(2, 18, 54, 0.9);
 
     .component-container {
 
@@ -106,7 +108,7 @@ $default-color: rgb(218,220,225);
             padding: 10px 15px;
             width: 100%;
     
-            background: #203864;
+            background: #162644;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
 
             border-radius: 15px;
@@ -162,40 +164,19 @@ $default-color: rgb(218,220,225);
                             mat-icon {
                                 vertical-align: middle;
                                 display: inline-block;
-                                margin: 3px 0px 1px 3px;
+                                margin: 0px 0px 5px 3px;
                                 color: #4bc7ff;
-                                height: 15px;
+                                height: 13px;
                                 overflow: hidden;
                                 width: unset;
-                                font-size: 15px;
+                                font-size: 13px;
                             }
                         }
                     }
                 }
         
                 
-                /*.certifications {
-                    display: flex;
-                    margin: auto 5px auto auto;
-        
-                    span {
-                        cursor:default;
-                        background: #00c7d0;
-                        color: #203864;
-                        font-weight: 800;
-                        font-size: 11px;
-                        border-radius: 4px;
-                        margin: auto 2px auto auto;
-                        padding: 1px 3px 1px 3px;
-                    }
-                    mat-icon {
-                        cursor:default;
-                        width: unset;
-                        height:unset;
-                        font-size: 24px;
-                        color: #00c7d0;
-                    }
-                }*/
+              
             }
     
             button {
@@ -205,14 +186,14 @@ $default-color: rgb(218,220,225);
                 outline: none !important;
                 border: unset;
                 display: flex;
-                padding: 6px 10px;
+                padding: 8px 10px;
                 min-width: fit-content;
     
                 mat-icon {
-                    margin: auto 2px auto auto;
+                    margin: 1px 5px auto auto;
                     width: unset;
                     height: unset;
-                    font-size: 18px;
+                    font-size: 13px;
                     font-weight: 600;
                 }
                 span {
@@ -237,10 +218,8 @@ $default-color: rgb(218,220,225);
                 }
                 &.subscribe-button {
                     color:white;
-                    background-image:linear-gradient(0.02turn, rgba(2, 18, 54, 0.9), rgba(19, 51, 100, 0.9), rgba(44, 114, 164, 0.9));
-                    &:hover {
-                        background-image:linear-gradient(0.02turn, rgba(2, 18, 54, 0.95), rgba(19, 51, 100, 0.95), rgba(44, 114, 164, 0.95));
-                    }
+                    background:rgba(2, 18, 54, 0.9);
+                    
                     &:active {
                         transform: scale(.96);
                     }

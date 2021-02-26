@@ -54,7 +54,7 @@
     
                 <ng-container *ngIf="type_of_account=='account' && list_of_users_ids[i]!=visitor_id">
                     <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
+                        <mat-icon [ngClass]="{'invisible': !show_icon }">person_add</mat-icon>
                         <span>S'abonner</span>
                     </button>
                     <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="stop($event);subscribtion(i);" [@enterAnimation]>
