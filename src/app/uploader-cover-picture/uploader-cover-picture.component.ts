@@ -138,7 +138,7 @@ export class UploaderCoverPictureComponent implements OnInit {
       
       viewMode: 1,
       dragMode: 'move',
-      aspectRatio: 6/2,
+      aspectRatio: 5/2,
       autoCropArea: 1,
       center: false,
       zoomOnWheel: false,
