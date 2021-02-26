@@ -321,9 +321,9 @@ console.log("checking current: " + req.headers['authorization'] );
                             "likesnumber":(likes>=0)?likes:0,
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(destroy(bd))
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(destroy(bd))
                         }); 
                         
                     }
@@ -354,18 +354,16 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_serie =>  {  
+                                    //console.log(err);	
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(bd_serie =>  {  
                                     const likes = bd_serie.likesnumber - 1;
                                     bd_serie.update({
                                     "likesnumber":(likes>=0)?likes:0,
-                                    })
+                                    });
+                                    destroy(bd_serie)
                                 })                   
-                                .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(destroy(bd_serie))
+                            
                             
                             })
                         })
@@ -516,17 +514,17 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd =>  {
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(bd =>  {
                             const loves = bd.lovesnumber + 1;
                             bd.update({
                                 "lovesnumber":loves,
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(create(bd))
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(create(bd))
                             }); 
                         
                     }
@@ -539,17 +537,17 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(chapter =>  {
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(chapter =>  {
                             const loves = chapter.lovesnumber + 1;
                             chapter.update({
                                 "lovesnumber":loves,
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(chapter =>  { 
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(chapter =>  { 
                             
                                   Liste_Bd_Serie.findOne({
                                         where: {
@@ -557,16 +555,16 @@ console.log("checking current: " + req.headers['authorization'] );
                                         }
                                     })
                                     .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_serie =>  {  
+                                            //console.log(err);	
+                                            res.status(500).json({msg: "error", details: err});		
+                                    }).then(bd_serie =>  {  
                                         const loves = bd_serie.lovesnumber + 1;
                                         bd_serie.update({
                                         "lovesnumber":loves,
                                         }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_serie=>{create(bd_serie)})
+                                            //console.log(err);	
+                                            res.status(500).json({msg: "error", details: err});		
+                                        }).then(bd_serie=>{create(bd_serie)})
                                     })                   
                                     
                                 
