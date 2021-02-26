@@ -92,11 +92,81 @@
                         </div>
 
                     </div>
+
+                    <div class="sub-title">
+                        Miniature usuelle 
+                    </div>
+
+                </div>
+
+                <div class="img-preview">
+
+                    <div class="final-thumbnail for_news" (mouseenter) ="showDetails();"  (mouseleave) ="hideDetails();">
+
+                        <img  [src]="imageDestination">
+                        <div #thumbnail class="display-on-hover" [ngClass]="{'visible':showDrawingDetails}" style="cursor:default;">
+                            
+                            <!--********************-->
+                            <!--Title container-->
+                            <!--********************-->
+                            <div class="title-container">
+                                <span class="title">{{name}}</span>
+                            </div>
+                            <!--********************-->
+                            <!--Author container-->
+                            <!--********************-->
+                            <div class="author-container">
+                                <div class="left-container">
+                                    <img [src]="profile_picture">
+                                </div>
+                                <div class="right-container">
+                                    <span class="author-name">{{author_name}}</span>
+                                    <span class="author-description" *ngIf="pseudo!=null">@{{pseudo}}</span>
+                                </div>
+                            </div>
+                            <!--********************-->
+                            <!--Data container-->
+                            <!--********************-->
+                            <div class="stats-container">
+                                <div class="figure-container views">
+                                    <div>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">visibility</mat-icon>
+                                        <span>&nbsp;</span>
+                                        <!--<div class="view-logo"></div>-->
+                                    </div>
+                                </div>
+                                <div class="figure-container likes">
+                                    <div>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">thumb_up</mat-icon>
+                                        <span>&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div class="figure-container loves">
+                                    <div>
+                                        <mat-icon [ngClass]="{'invisible': !show_icon }">favorite</mat-icon>
+                                        <span>&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--********************-->
+                            <!--Date container-->
+                            <!--********************-->
+                            <div class="date-container">
+                                <span>Date de publication</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="sub-title">
+                        Nouveautés et historique 
+                    </div>
                 </div>
 
                 
 
             </div>
+
+
 
 
 

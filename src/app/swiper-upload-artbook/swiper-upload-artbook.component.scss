@@ -65,15 +65,33 @@
 }
 
 
+
+.for_news{
+  height:200px !important;
+  overflow: hidden;
+}
+
+
+.sub-title{
+  position: absolute;
+  top: -25px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  color: #203864;
+}
+
 .form-container-data .img-preview {
   display:flex;
   width:200px !important;
-  margin: auto auto;
+  position: relative;
+  margin: auto auto 30px auto;
   border-radius: 12px;
   color: black;
   background: white;
 }
-
 
 
 
