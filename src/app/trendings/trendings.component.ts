@@ -191,11 +191,15 @@ export class TrendingsComponent implements OnInit {
 
  
   load_comics_trendings(info){
+    console.log("trendings comics")
     console.log(info)
     let compteur=0;
+    
     this.comics_trendings_length= Object.keys(info[0].comics_trendings.format).length;
     if(this.comics_trendings_length>0){
-      for(let i=0; i < Object.keys(info[0].comics_trendings.format).length;i++){
+      let length=(this.comics_trendings_length<30)?this.comics_trendings_length:30;
+      this.comics_trendings_length=length;
+      for(let i=0; i <this.comics_trendings_length;i++){
         if(info[0].comics_trendings.format[i] =="one-shot"){
           
           this.BdOneShotService.retrieve_bd_by_id(info[0].comics_trendings.publication_id[i]).subscribe(r=>{
@@ -266,74 +270,78 @@ export class TrendingsComponent implements OnInit {
 
   load_drawing_trendings(info){
     this.drawings_trendings_length= Object.keys(info[0].drawings_trendings.format).length;
-        let compteur=0;
-        if(this.drawings_trendings_length>0){
-          for(let i=0; i < Object.keys(info[0].drawings_trendings.format).length;i++){
-            if(info[0].drawings_trendings.format[i] =="one-shot"){
-              this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
-        
-                if(r[0]){
-                  if(r[0].status=="public"){
-                    this.drawings_trendings_sorted[i]=r[0];
-                    compteur = compteur +1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
-                  }
-                  else{
-                    compteur=compteur+1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
-                  }
+    let compteur=0;
+    if(this.drawings_trendings_length>0){
+      let length=(this.drawings_trendings_length<30)?this.drawings_trendings_length:30;
+      this.drawings_trendings_length=length;
+      for(let i=0; i < this.drawings_trendings_length;i++){
+        if(info[0].drawings_trendings.format[i] =="one-shot"){
+          this.Drawings_Onepage_Service.retrieve_drawing_information_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+    
+            if(r[0]){
+              if(r[0].status=="public"){
+                this.drawings_trendings_sorted[i]=r[0];
+                compteur = compteur +1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
                 }
-                else{
-                  compteur=compteur+1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
+              }
+              else{
+                compteur=compteur+1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
                 }
-              })
+              }
             }
-            if(info[0].drawings_trendings.format[i] =="artbook"){
-              this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
-               
-                if(r[0]){
-                  if(r[0].status=="public"){
-                    this.drawings_trendings_sorted[i]=r[0];
-                    compteur = compteur +1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
-                  }
-                  else{
-                    compteur=compteur+1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
-                  }
+            else{
+              compteur=compteur+1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
                 }
-                else{
-                  compteur=compteur+1;
-                    if(compteur == this.drawings_trendings_length){
-                      this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
-                    }
-                }
-                
-              })
             }
-          }
+          })
         }
-        else{
-          console.log("no drawings trends")
+        if(info[0].drawings_trendings.format[i] =="artbook"){
+          this.Drawings_Artbook_Service.retrieve_drawing_artbook_by_id(info[0].drawings_trendings.publication_id[i]).subscribe(r=>{
+            
+            if(r[0]){
+              if(r[0].status=="public"){
+                this.drawings_trendings_sorted[i]=r[0];
+                compteur = compteur +1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                }
+              }
+              else{
+                compteur=compteur+1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                }
+              }
+            }
+            else{
+              compteur=compteur+1;
+                if(compteur == this.drawings_trendings_length){
+                  this.delete_empty_elements(this.drawings_trendings_sorted,"drawings");
+                }
+            }
+            
+          })
         }
+      }
+    }
+    else{
+      console.log("no drawings trends")
+    }
   }
 
   load_writing_trendings(info){
     this.writings_trendings_length= Object.keys(info[0].writings_trendings.format).length;
     let compteur=0;
     if(this.writings_trendings_length>0){
-      for(let i=0; i < Object.keys(info[0].writings_trendings.format).length;i++){
+      let length=(this.writings_trendings_length<30)?this.writings_trendings_length:30;
+      this.writings_trendings_length=length;
+      for(let i=0; i <this.writings_trendings_length;i++){
         this.Writing_Upload_Service.retrieve_writing_information_by_id(info[0].writings_trendings.publication_id[i]).subscribe(r=>{
           
           if(r[0]){
