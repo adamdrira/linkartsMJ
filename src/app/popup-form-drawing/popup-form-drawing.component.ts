@@ -86,7 +86,7 @@ export class PopupFormDrawingComponent implements OnInit {
     let inter= setInterval(() => {
       this.load_emoji=true;
       clearInterval(inter)
-    }, 1000);
+    }, 2000);
   }
   load_emoji=false;
 
@@ -149,6 +149,7 @@ export class PopupFormDrawingComponent implements OnInit {
         data: {showChoice:false, text:'Le formulaire est incomplet. Veillez à saisir toutes les informations nécessaires.'},
         panelClass: "popupConfirmationClass",
       });
+      this.loading=false;
     }
   }
 
