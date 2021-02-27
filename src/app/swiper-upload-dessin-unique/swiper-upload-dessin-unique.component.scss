@@ -41,6 +41,7 @@ app-uploader-dessin-unique {
 .form-container-data .crop {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   width: 100%;
   height: fit-content;
   margin: auto auto;
@@ -95,7 +96,7 @@ app-uploader-dessin-unique {
   display:flex;
   width:200px !important;
   position: relative;
-  margin: auto auto 30px auto;
+  margin: auto 5px 30px 5px;
   border-radius: 12px;
   color: black;
   background: white;
