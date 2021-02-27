@@ -9,8 +9,9 @@
     width: 220px !important;
     height: 220px !important;
     margin-top: auto !important;
+    overflow: hidden;
     img {
-      height: 100% !important;
+      min-height: 220px !important;
     }
   }
 }
