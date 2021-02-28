@@ -200,6 +200,10 @@ export class AccountAboutComponent implements OnInit {
     
     let THIS=this;
    
+      let inter= setInterval(() => {
+        this.load_emoji=true;
+        clearInterval(inter)
+      }, 1000);
 
       console.log(this.id_user);
       console.log("open accout about");
@@ -314,8 +318,10 @@ export class AccountAboutComponent implements OnInit {
       this.get_drawings_stats()
       this.get_writings_stats()
       this.get_profile_stats()
+      
   }
 
+  load_emoji=false;
   show_icon=false;
  
   
@@ -2658,9 +2664,9 @@ export class AccountAboutComponent implements OnInit {
       ],
       primary_description_extended:[this.primary_description_extended, 
         Validators.compose([
+          Validators.required,
           Validators.minLength(3),
           Validators.maxLength(1000),
-          Validators.pattern(pattern("text_with_linebreaks")),
         ]),
       ],
       job:[this.job, 
@@ -3480,6 +3486,47 @@ adding_country(){
       return;
     }
     normalize_to_nfc(fg,fc);
+  }
+
+
+  show_emojis=false;
+  set = 'native';
+  native = true;
+  @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emoji_button') emoji_button:ElementRef;
+  open_emojis(){
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+    }
+  }
+  handleClick($event) {
+    //this.selectedEmoji = $event.emoji;
+    let data = this.registerForm1.controls['primary_description_extended'].value;
+    if(data){
+      this.registerForm1.controls['primary_description_extended'].setValue( this.registerForm1.controls['primary_description_extended'].value + $event.emoji.native );
+    }
+    else{
+      this.registerForm1.controls['primary_description_extended'].setValue( $event.emoji.native )
+    }
+    this.cd.detectChanges();
+  }
+  
+  //click lisner for emojis, and research chat
+  @HostListener('document:click', ['$event.target'])
+  clickout(btn) {
+    if(this.show_emojis){
+      console.log("emoji shown");
+      if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
+        console.log('on est ailleurs');
+        this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+        this.show_emojis=false;
+      }
+    }
   }
 
 }

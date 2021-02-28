@@ -479,6 +479,72 @@
             padding-bottom: 27px !important;
           }
         }
+        
+        .emojis-main-container {
+          position: absolute;
+          top: -210px;
+          right: 13px;
+          visibility: hidden;
+          z-index: 1;
+          .emojis-container {
+              background-color: white;
+              border-radius: 10px;
+              //padding: 2px 2px 0px 2px;
+              //width: 369px;
+              display: flex;
+              justify-content: center;
+
+              section.emoji-mart {
+                  .emoji-mart-bar {
+                      &:last-of-type {
+                          display:none !important;
+                      }
+                  }
+              }
+              section.emoji-mart-scroll {
+                  overflow-x: hidden;
+              }
+              @media (max-width: 600px) {
+                  section.emoji-mart-scroll {
+                      overflow-x: unset;
+                  }
+                  section.emoji-mart {
+                      width: 100% !important;
+                  }
+              }
+          }
+        }
+        div.emojis-button {
+            position: absolute;
+            cursor:pointer;
+            bottom: 8px;
+            right: 5px;
+            display: flex;
+            outline: none;
+            padding: 5px;
+            background: white;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+            border-radius: 50px;
+            border: unset;
+            margin: auto 8px 0px 8px;
+            transition: transform 200ms;
+
+            mat-icon {
+                height: unset;
+                width: unset;
+                color: rgb(32, 56, 100);
+                font-size: 24px;
+                margin: auto auto;
+            }
+
+            &:hover {
+                background: #f3f3f3;
+            }
+            &:active {
+                transform: scale(0.96);
+            }
+        }
       }
 
       .mat-input-element {

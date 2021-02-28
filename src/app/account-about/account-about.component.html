@@ -205,13 +205,31 @@
                         </button>
                     </mat-menu>
                 </div>
-                <div class="form-item" *ngIf="registerForm1_activated" [@enterAnimation]>
+                <div class="form-item input-multiple-lines" *ngIf="registerForm1_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'>
                         <mat-label>Description principale</mat-label>
                         <textarea matInput cdkTextareaAutosize formControlName="primary_description_extended" maxLength="1000" autocomplete="off" (input)="normalize_input(registerForm1, 'primary_description_extended');"></textarea>
                         <mat-error *ngIf="registerForm1.controls['primary_description_extended'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                         </mat-error>
                         <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
+
+                        
+                        <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
+                            <div class="emojis-container">
+                                <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
+                                    (emojiSelect)="handleClick($event)">
+                                </emoji-mart>
+                            </div>
+                        </div>
+
+                        <div #emoji_button (click)="open_emojis()" class="emojis-button"
+                        matTooltip="Emojis"
+                        matTooltipClass='linkarts-tooltip'
+                        [matTooltipPosition]="'below'"
+                        [matTooltipShowDelay]="100">
+                            <mat-icon [ngClass]="{'invisible': !show_icon }">sentiment_satisfied</mat-icon>
+                        </div>
+
                     </mat-form-field>
                 </div>
                 <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
