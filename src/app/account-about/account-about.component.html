@@ -214,6 +214,11 @@
                         <div class="length-indicator">{{registerForm1.controls['primary_description_extended'].value?.length || 0}}/1000</div>
 
                         
+                        <div #emojisSpinner class="emojis-spinner" [@enterAnimation]>
+                            <mat-spinner diameter="20"></mat-spinner>
+                        </div>
+                        
+
                         <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
                             <div class="emojis-container">
                                 <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
@@ -221,6 +226,7 @@
                                 </emoji-mart>
                             </div>
                         </div>
+
 
                         <div #emoji_button (click)="open_emojis()" class="emojis-button"
                         matTooltip="Emojis"

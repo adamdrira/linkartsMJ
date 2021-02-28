@@ -199,11 +199,6 @@ export class AccountAboutComponent implements OnInit {
   ngOnInit(): void {
     
     let THIS=this;
-   
-      let inter= setInterval(() => {
-        this.load_emoji=true;
-        clearInterval(inter)
-      }, 1000);
 
       console.log(this.id_user);
       console.log("open accout about");
@@ -3493,15 +3488,30 @@ adding_country(){
   set = 'native';
   native = true;
   @ViewChild('emojis') emojis:ElementRef;
+  @ViewChild('emojisSpinner') emojisSpinner:ElementRef;
   @ViewChild('emoji_button') emoji_button:ElementRef;
+  
+  
+
   open_emojis(){
+
+    if( !this.show_emojis ) {
+      this.rd.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.rd.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'hidden');
+    }
+
+    this.load_emoji=true;
     if( !this.show_emojis ) {
       this.show_emojis=true;
+      this.cd.detectChanges();
       this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
     }
     else {
       this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
       this.show_emojis=false;
+      this.cd.detectChanges();
     }
   }
   handleClick($event) {
@@ -3523,6 +3533,7 @@ adding_country(){
       console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
         console.log('on est ailleurs');
+        this.rd.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'hidden');
         this.rd.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
       }
