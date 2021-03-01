@@ -1955,7 +1955,6 @@ handleClick($event) {
   this.cd.detectChanges();
 }
 
-show_emojis=false;
 open_emojis(){
 
   if( this.emojis_button_clicked == true ) {
