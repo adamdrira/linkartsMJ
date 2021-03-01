@@ -66,24 +66,42 @@ console.log("checking current: " + req.headers['authorization'] );
             const author_id_liked=parseInt(req.params.author_id_liked);
             //console.log(firsttag);
 
-            Liste_of_likes.findOne({
+            Liste_of_loves.findOne({
                 where:{
-                    author_id_who_likes: current_user,
+                    author_id_who_loves: current_user,
                     publication_category:category,
                     format: format,
                     publication_id: publication_id,
                     chapter_number: chapter_number,
-                    author_id_liked:author_id_liked,
                 }
             }).catch(err => {
                 //console.log(err);	
                 res.status(500).json({msg: "error", details: err});		
-            }).then(like=>{
-                if(!like){
-                    add_like()
+            }).then(love=>{
+                if(!love){
+                    Liste_of_likes.findOne({
+                        where:{
+                            author_id_who_likes: current_user,
+                            publication_category:category,
+                            format: format,
+                            publication_id: publication_id,
+                            chapter_number: chapter_number,
+                            author_id_liked:author_id_liked,
+                        }
+                    }).catch(err => {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(like=>{
+                        if(!like){
+                            add_like()
+                        }
+                        else{
+                            res.status(200).send([{error:"already_liked"}])
+                        }
+                    })
                 }
                 else{
-                    res.status(200).send([{error:"already_liked"}])
+                    res.status(200).send([{error:"loved"}])
                 }
             })
             
@@ -290,9 +308,9 @@ console.log("checking current: " + req.headers['authorization'] );
                     chapter_number:chapter_number,
                 }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(like=>{
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(like=>{
                 if(like){
                     like.destroy({
                         truncate: false
@@ -461,17 +479,17 @@ console.log("checking current: " + req.headers['authorization'] );
         
 
     router.post('/add_love/:category/:format/:style/:publication_id/:chapter_number/:firsttag/:secondtag/:thirdtag/:author_id_loved', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
-      if( ! req.headers['authorization'] ) {
-        return res.status(401).json({msg: "error"});
-      }
-      else {
-        let val=req.headers['authorization'].replace(/^Bearer\s/, '')
-        let user= get_current_user(val)
-        if(!user){
-          return res.status(401).json({msg: "error"});
+        console.log("checking current: " + req.headers['authorization'] );
+        if( ! req.headers['authorization'] ) {
+            return res.status(401).json({msg: "error"});
         }
-      }
+        else {
+            let val=req.headers['authorization'].replace(/^Bearer\s/, '')
+            let user= get_current_user(val)
+            if(!user){
+            return res.status(401).json({msg: "error"});
+            }
+        }
         let current_user = get_current_user(req.cookies.currentUser);
         
             const category = req.params.category;
@@ -484,26 +502,46 @@ console.log("checking current: " + req.headers['authorization'] );
             const thirdtag=req.params.thirdtag;
             const author_id_loved=parseInt(req.params.author_id_loved);
 
-            Liste_of_loves.findOne({
+            Liste_of_likes.findOne({
                 where:{
-                    author_id_who_loves: current_user,
+                    author_id_who_likes: current_user,
                     publication_category:category,
                     format: format,
                     publication_id: publication_id,
                     chapter_number: chapter_number,
-                    author_id_loved:author_id_loved,
                 }
             }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(love=>{
-                if(!love){
-                    add_love()
+                //console.log(err);	
+                res.status(500).json({msg: "error", details: err});		
+            }).then(like=>{
+                if(!like){
+                    Liste_of_loves.findOne({
+                        where:{
+                            author_id_who_loves: current_user,
+                            publication_category:category,
+                            format: format,
+                            publication_id: publication_id,
+                            chapter_number: chapter_number,
+                            author_id_loved:author_id_loved,
+                        }
+                    }).catch(err => {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(love=>{
+                        if(!love){
+                            add_love()
+                        }
+                        else{
+                            res.status(200).send([{error:"already_loved"}])
+                        }
+                    })
                 }
                 else{
-                    res.status(200).send([{error:"already_loved"}])
+                    res.status(200).send([{error:"liked"}])
                 }
             })
+
+            
 
             function add_love(){
                 if (category === "comic" ) {
