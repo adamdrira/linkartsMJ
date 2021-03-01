@@ -2659,7 +2659,6 @@ export class AccountAboutComponent implements OnInit {
       ],
       primary_description_extended:[this.primary_description_extended, 
         Validators.compose([
-          Validators.required,
           Validators.minLength(3),
           Validators.maxLength(1000),
         ]),
