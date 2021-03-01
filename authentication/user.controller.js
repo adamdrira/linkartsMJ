@@ -10,8 +10,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const SECRET_TOKEN = "(çà(_ueçe'zpuer$^r^$('^$ùepzçufopzuçro'ç";
 const Sequelize = require('sequelize');
-let list_of_invited_mails=["adam.drira","mokhtar.meghaichi","Samar_Kanoun","nacima.connaissance","invitation.invité"]
-let list_of_invited_passwords=["Adam_@d@m_4d4m_1996","Mokhtar_m°kht@r_m0kht4r_1996","SaM4r_Sam0urti^","Nacim4_The_B3st","4nInV1t@tiion"]
+let list_of_invited_mails=["adam.drira","mokhtar.meghaichi","Samar_Kanoun","nacima.connaissance","invitation"]
+let list_of_invited_passwords=["Adam_@d@m_4d4m_1996","Mokhtar_m°kht@r_m0kht4r_1996","SaM4r_Sam0urti^","Nacim4_The_B3st","invitation"]
 const chat_seq = require('../chat/model/sequelize');
 const List_of_subscribings = require('../p_subscribings_archives_contents/model/sequelize').list_of_subscribings;
 const albums_seq = require('../albums_edition/model/sequelize');
@@ -817,15 +817,57 @@ exports.create_visitor = (req, res) => {
 };
 
 exports.login = async (req, res) => {
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+	}
+	else {
+			let val=req.headers['authorization'].replace(/^Bearer\s/, '');
+			let user= get_current_user(val);
+			if(!user){
+					return res.status(401).json({msg: "error"});
+			}
+	}
 	const Op = Sequelize.Op;
-	const user = await User.findOne( {
+	let ip;
+	/*if( req.rawHeaders && req.rawHeaders[1]){
+			ip=req.rawHeaders[1]
+			console.log("her is the ip")
+			console.log(ip)
+	}*/
+
+	const users = await User.findAll( {
+		where: { 
+		   [Op.or]:[{status:"account"},{status:"suspended"}],
+		   email:{[Op.iLike]: req.body.mail_or_username},
+		   } 
+	   });
+
+	let user;
+	let indice_found=-1;
+	if(users.length==0){
+		return res.status(200).json({msg: "error"});
+	}
+	else{
+		
+		for (let i=0;i<users.length;i++){
+			let user_found=users[i];
+			let passwordCorrect = (user_found === null) ? false : await bcrypt.compare( String(req.body.password), String(user_found.password)  );
+			if(passwordCorrect){
+				indice_found=i;
+				user=user_found;
+			}
+		}
+	}
+
+	/*const user = await User.findOne( {
 		 where: { 
+			gender:{[Op.ne]: "Groupe"},
 			[Op.or]:[{status:"account"},{status:"suspended"}],
 			email:{[Op.iLike]: req.body.mail_or_username},
 			} 
 		});
 	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
-
+	
 	if( !user || !passwordCorrect ) {
 		
 		if(user){
@@ -874,186 +916,215 @@ exports.login = async (req, res) => {
 		}
 		
 		
+	}*/
+	if(indice_found<0){
+		return res.status(200).json({msg: "error"});
 	}
 	else{
 		console.log("check login")
 		if(user.gender=="Groupe" && user.type_of_account.includes("Artiste")){
 			if(!user.list_of_members_validations){
-				return res.status(200).json({msg: "error_group"});
+					return res.status(200).json({msg: "error_group"});
 			}
 			else{
-				let similar=true;
-				for(let i=0;i<user.list_of_members_validations.lenght;i++){
-					if(user.list_of_members.indexOf(user.list_of_members_validations[i])<0){
-						similar=false;	
+					let similar=true;
+					for(let i=0;i<user.list_of_members_validations.lenght;i++){
+							if(user.list_of_members.indexOf(user.list_of_members_validations[i])<0){
+									similar=false;
+							}
 					}
-				}
-				if(similar){
-					const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
-					return res.status(200).json( { token:token,user:user } );
-				}
-				else{
-					return res.status(200).json({msg: "error_group"});	
-				}
+					if(similar){
+							const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
+							return res.status(200).json( { token:token,user:user } );
+					}
+					else{
+							return res.status(200).json({msg: "error_group"});
+					}
 			}
-			
+
 		}
 		else{
 			//console.log(user.list_of_ips)
-			console.log("ip")
-			//var geo = geoip.lookup(ip);
-			//console.log(geo)
+			var geo;
 			
+			if(ip && !ip.includes("linkarts")){
+					geo = geoip.lookup(ip);
+					console.log(geo)
 
-			
+			}
+			else{
+					ip=null;
+			}
+
+			console.log(ip)
+
 
 			let now = new Date();
 			let connexion_time = now.toString();
 			db.users_connexions.create({
-				"id_user":user.id,
-				"connexion_time":connexion_time,
+					"id_user":user.id,
+					"connexion_time":connexion_time,
+					"ip":ip?ip:null,
 			})
 
 			db.users_ips.findOne({where:{
-				id_user:user.id
+					id_user:user.id
 			}}).then(user_ips=>{
-				/*if(user_ips){
-					if(user_ips.list_of_ips.indexOf(ip)<0){
-						// send email with geo
-						let list_of_ips =user_ips.list_of_ips;
-						let list_of_latitudes =user_ips.list_of_latitudes;
-						let list_of_longitudes =user_ips.list_of_longitudes;
-						let list_of_areas =user_ips.list_of_areas;
-						let list_of_countries =user_ips.list_of_countries;
-						let list_of_regions =user_ips.list_of_regions;
+					if(user_ips){
+							console.log("in first if")
+							if(ip && user_ips.list_of_ips.indexOf(ip)<0){
+									// send email with geo
+									console.log("in second if " + ip)
+									let list_of_ips =user_ips.list_of_ips;
+									let list_of_latitudes =user_ips.list_of_latitudes;
+									let list_of_longitudes =user_ips.list_of_longitudes;
+									let list_of_areas =user_ips.list_of_areas;
+									let list_of_countries =user_ips.list_of_countries;
+									let list_of_regions =user_ips.list_of_regions;
 
-						let lat=Number(list_of_latitudes[list_of_latitudes.length-1])
-						let long =Number(list_of_longitudes[list_of_longitudes.length-1])
-					
-						
-						let distance =calcCrow(geo.ll[0],geo.ll[1],lat,long);
-	
-						
-						list_of_ips.push(ip);
-						list_of_latitudes.push(geo.ll[0]);
-						list_of_longitudes.push(geo.ll[1]);
-						list_of_areas.push(geo.area);
-						list_of_countries.push(geo.country);
-						list_of_regions.push(geo.region);
-						
-						
-						db.users_ips.update({
-							"list_of_ips":list_of_ips,
-							"list_of_latitudes":list_of_latitudes,
-							"list_of_longitudes":list_of_longitudes,
-							"list_of_areas":list_of_areas,
-							"list_of_countries":list_of_countries,
-							"list_of_regions":list_of_regions,
-						},{where:{
-							id_user:user.id,
-						}});
+									let lat=Number(list_of_latitudes[list_of_latitudes.length-1])
+									let long =Number(list_of_longitudes[list_of_longitudes.length-1])
 
-						if(distance>100){
-							const transport = nodemailer.createTransport({
-								host: "pro2.mail.ovh.net",
-								port: 587,
-								secure: false, // true for 465, false for other ports
-								auth: {
-								  user: "services@linkarts.fr", // compte expéditeur
-								  pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
-								},
-									tls:{
-									  ciphers:'SSLv3'
+
+									let distance =calcCrow(geo.ll[0],geo.ll[1],lat,long);
+
+									console.log("first list of ips")
+									console.log(list_of_ips)
+									list_of_ips.push(ip);
+									list_of_latitudes.push(geo.ll[0].toString());
+									list_of_longitudes.push(geo.ll[1].toString());
+									list_of_areas.push(geo.area.toString());
+									list_of_countries.push(geo.country);
+									list_of_regions.push(geo.region);
+									console.log(list_of_ips)
+
+									db.users_ips.update({
+											"list_of_ips":list_of_ips,
+											"list_of_latitudes":list_of_latitudes,
+											"list_of_longitudes":list_of_longitudes,
+											"list_of_areas":list_of_areas,
+											"list_of_countries":list_of_countries,
+											"list_of_regions":list_of_regions,
+									},{where:{
+											id_user:user.id,
+									}});
+
+									db.users_ips.findOne({where:{
+										id_user:user.id,
+									}}).then(r=>{
+										console.log("fin myrooooooo")
+										console.log(r)
+									});
+									if(distance>100){
+										const transport = nodemailer.createTransport({
+												host: "pro2.mail.ovh.net",
+												port: 587,
+												secure: false, // true for 465, false for other ports
+												auth: {
+												user: "services@linkarts.fr", // compte expéditeur
+												pass: "Le-Site-De-Mokhtar-Le-Pdg" // mot de passe du compte expéditeur
+												},
+														tls:{
+														ciphers:'SSLv3'
+												}
+										});
+
+										var mailOptions = {
+												from: 'Linkarts <services@linkarts.fr>', // sender address
+												to: user.email, // my mail
+												//to:"appaloosa-adam@hotmail.fr",
+												subject: `Fraude potentielle !`, // Subject line
+												//text: decrypted.toString(), // plain text body
+												html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel.</p>
+														<ul>
+																<li>pays : ${geo.country}</li>
+																<li>région : ${geo.region}</li>
+																<li>ville : ${geo.city}</li>
+																<li>latitude : ${geo.ll[0]}</li>
+																<li>longitude: ${geo.ll[1]}</li>
+																<li>fuseau horaire : ${geo.timezone}</li>
+														</ul>
+												<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer vot>
+														<ul>
+																<li><a href="https://www.linkarts.fr/account/${user.nickname}/${user.id}/my_account"> C>
+
+														</ul>
+												<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à réc>
+														<ul>
+																<li><a href="https://www.linkarts.fr/login"> Cliquer ici</a> pour me connecter et rense>
+
+														</ul>
+														<p>Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons>
+														<ul>
+																<li><a href="https://www.linkarts.fr/chat"> Cliquer ici</a> pour regoindre la messageri>
+
+														</ul>
+												<p>Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>
+												<p>Très sincèrement, l'équipe de LinkArts.</p>`, // html body
+
+										};
+
+										transport.sendMail(mailOptions, (error, info) => {
+												if (error) {
+														console.log('Error while sending mail: ' + error);
+														const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
+														return res.status(200).json( { token:token,user:user } );
+												} else {
+														console.log('Message sent: %s', info.messageId);
+														const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
+														return res.status(200).json( { token:token,user:user } );
+												}
+
+
+										})
 								}
-							  });
-						
-							var mailOptions = {
-								from: 'Linkarts <services@linkarts.fr>', // sender address
-								to: user.email, // my mail
-								//to:"appaloosa-adam@hotmail.fr",
-								subject: `Fraude potentielle !`, // Subject line
-								//text: decrypted.toString(), // plain text body
-								html:  `<p >Attention une connexion à votre compte a été réalisée à un endroit inhabituel.</p>
-									<ul>
-										<li>pays : ${geo.country}</li>
-										<li>région : ${geo.region}</li>
-										<li>latitude : ${geo.ll[0]}</li>
-										<li>longitude: ${geo.ll[1]}</li>
-										<li>fuseau horaire : ${geo.timezone}</li>
-									</ul>
-								<p> Si vous n'êtes pas le responsable de cette connexion nous vous conseillons de tenter de changer votre mot de passe imédiatement.</p> 
-									<ul>
-										<li><a href="https://www.linkarts.fr/account/${user.nickname}/${user.id}/my_account"> Cliquer ici</a> pour changer mon mot de passe. </li>
-					
-									</ul> 
-								<p> Si le mot de passe a été modifié par l'individu malveillant nous vous conseillons de demander à récupérer le nouveau mot de passe et puis de le changer soigneusement. </p>
-									<ul>
-										<li><a href="https://www.linkarts.fr/login"> Cliquer ici</a> pour me connecter et renseigner un mot de passe oublié.</li>
-					
-									</ul>
-								<p>Si le problème ne se règle pas vous pouvez toujours nous écrire dans la messagerie et nous tâcherons de régler votre problème dans les plus brefs délais. </p>
-									<ul>
-										<li><a href="https://www.linkarts.fr/chat"> Cliquer ici</a> pour regoindre la messagerie</li>
-						
-									</ul>
-								<p>Si vous êtes le responsable de ce changement il n'y a pas de crainte à avoir. </p>
-								<p>Très sincèrement, l'équipe de LinkArts.</p>`, // html body
-							
-							};
-							
-							transport.sendMail(mailOptions, (error, info) => {
-								if (error) {
-									console.log('Error while sending mail: ' + error);
-									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30  } );
-									return res.status(200).json( { token:token,user:user } );
-								} else {
-									console.log('Message sent: %s', info.messageId);
-									const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 } );
-									return res.status(200).json( { token:token,user:user } );
+								else{
+										const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
+										return res.status(200).json( { token:token,user:user } );
 								}
-								
-					
-							})
+
+
 						}
 						else{
-							const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30  } );
-							return res.status(200).json( { token:token,user:user } );
+								const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } )
+								return res.status(200).json( { token:token,user:user } );
 						}
-						
-						
-					}
-					else{
-						const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 } );
-						return res.status(200).json( { token:token,user:user } );
-					}
-				}*/
-				//else{
+				}
+				else{
+					console.log("in other else pb")
+
 					db.users_ips.create({
-						"id_user":user.id,
+							"id_user":user.id,
+							"list_of_ips":ip?[ip]:null,
+							"list_of_latitudes":ip?[geo.ll[0]]:null,
+							"list_of_longitudes":ip?[geo.ll[1]]:null,
+							"list_of_areas":ip?[geo.area]:null,
+							"list_of_countries":ip?[geo.country]:null,
+							"list_of_regions":ip?[geo.region]:null,
 					});
 					const token = jwt.sign( {nickname: user.nickname, id: user.id}, SECRET_TOKEN, {expiresIn: 30 /*expires in 30 seconds*/ } );
 					return res.status(200).json( { token:token,user:user } );
-				//}
+				}
 			})
-			
-			function calcCrow(lat1, lon1, lat2, lon2) {
-				var R = 6371; // km
-				var dLat = toRad(lat2-lat1);
-				var dLon = toRad(lon2-lon1);
-				var lat1 = toRad(lat1);
-				var lat2 = toRad(lat2);
 
-				var a = Math.sin(dLat/2) * Math.sin(dLat/2) +Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-				
-				var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-				var d = R * c;
-				return d;
+			function calcCrow(lat1, lon1, lat2, lon2) {
+					var R = 6371; // km
+					var dLat = toRad(lat2-lat1);
+					var dLon = toRad(lon2-lon1);
+					var lat1 = toRad(lat1);
+					var lat2 = toRad(lat2);
+
+					var a = Math.sin(dLat/2) * Math.sin(dLat/2) +Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+
+					var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+					var d = R * c;
+					return d;
 			}
 
 			// Converts numeric degrees to radians
-			function toRad(Value) 
+			function toRad(Value)
 			{
-				return Value * Math.PI / 180;
+					return Value * Math.PI / 180;
 			}
 		}
 		
@@ -1098,23 +1169,49 @@ exports.logout = (req,res) =>{
 }
 
 exports.check_email_and_password = async (req, res) => {
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+	}
+	else {
+			let val=req.headers['authorization'].replace(/^Bearer\s/, '');
+			let user= get_current_user(val);
+			if(!user){
+					return res.status(401).json({msg: "error"});
+			}
+	}
 	const Op = Sequelize.Op;
-	const user = await User.findOne( {
-		 where: { 
+	const users = await User.findAll( {
+		where: { 
 			[Op.or]:[{status:"account"},{status:"suspended"}],
-			email:{[Op.iLike]: req.body.email},
+			email:{[Op.iLike]: req.body.mail_or_username},
 			} 
 		});
-	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
 
-	if( !user || !passwordCorrect ) {
-		if(user && !passwordCorrect){
+	let user;
+	let indice_found=-1;
+	if(users.length==0){
+		return res.status(200).json({ok: "ok_to_signup"});
+	}
+	else{
+		for (let i=0;i<users.length;i++){
+			let user_found=users[i];
+			let passwordCorrect = (user_found === null) ? false : await bcrypt.compare( String(req.body.password), String(user_found.password)  );
+			if(passwordCorrect){
+				indice_found=i;
+				user=user_found;
+			}
+		}
+	}
+
+
+	if( indice_found<0) {
+		/*if(user && !passwordCorrect){
 			return res.status(200).json({ok: "ok_to_signup",email:"just_email_match"});
 		}
 		else {
 			return res.status(200).json({ok: "ok_to_signup"});
-		}
-		
+		}*/
+		return res.status(200).json({ok: "ok_to_signup",email:"just_email_match"});
 	}
 	else{
 		return res.status(200).json({found: "not_ok_to_signup",user:user});
@@ -1125,62 +1222,44 @@ exports.check_email_and_password = async (req, res) => {
 };
 
 exports.check_email_checked = async (req, res) => {
+	if( ! req.headers['authorization'] ) {
+		return res.status(401).json({msg: "error"});
+	}
+	else {
+			let val=req.headers['authorization'].replace(/^Bearer\s/, '');
+			let user= get_current_user(val);
+			if(!user){
+					return res.status(401).json({msg: "error"});
+			}
+	}
+
 	const Op = Sequelize.Op;
-	var user = await User.findOne( {
-		 where: { 
+	const users = await User.findAll( {
+		where: { 
 			[Op.or]:[{status:"account"},{status:"suspended"}],
 			email:{[Op.iLike]: req.body.mail_or_username},
 			} 
 		});
-	const passwordCorrect = (user === null) ? false : await bcrypt.compare( String(req.body.password), String(user.password)  );
 
-	if( !user || !passwordCorrect ) {
-		
-		if(user){
-			const Op = Sequelize.Op;
-			var last_year = new Date();
-        	last_year.setDate(last_year.getDate() - 365);
-			User_passwords.findAll( {
-				where: { 
-					id_user:user.id,
-					createdAt: {[Op.gte]: last_year}
-				} ,
-				order: [
-					['createdAt', 'DESC']
-				],
-				}).catch(err => {
-			console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(pass=>{
-					if(pass.length>0){
-						let exist=false;
-						for(let i=0;i<pass.length;i++){
-							let decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(pass[i].iv, 'hex'));
-							let decrypted = Buffer.concat([decipher.update(Buffer.from(pass[i].content, 'hex')), decipher.final()]);
-							console.log("")
-							if(decrypted.toString()==req.body.password){
-								exist=true
-							}
-						}
-						if(exist){
-							return res.status(200).json({msg: "error_old_value"});
-						}
-						else{
-							return res.status(200).json({msg: "error"});
-						}
-						
-					}
-					else{
-						return res.status(200).json({msg: "error"});
-					}
-				})
+	let user;
+	let indice_found=-1;
+	if(users.length==0){
+		return res.status(200).json({ok: "ok_to_signup"});
+	}
+	else{
+		for (let i=0;i<users.length;i++){
+			let user_found=users[i];
+			let passwordCorrect = (user_found === null) ? false : await bcrypt.compare( String(req.body.password), String(user_found.password)  );
+			if(passwordCorrect){
+				indice_found=i;
+				user=user_found;
+			}
 		}
-		else{
-			
-			return res.status(200).json({msg: "error"});
-		}
-		
-		
+	}
+
+
+	if( indice_found<0) {
+		return res.status(200).json({msg: "error"});
 	}
 	else{
 		console.log("check login")
