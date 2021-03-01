@@ -1265,70 +1265,106 @@ export class ArtworkDrawingComponent implements OnInit {
           this.likesnumber+=1;
           if(this.type=='one-shot'){  
             this.NotationService.add_like('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-              this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
+              if(!r[0].error){
+                this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
               
-              if(this.authorid==this.visitor_id){
-                
-                this.like_in_progress=false;
-                this.cd.detectChanges();
-              }
-              else{
-                this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
-                  let message_to_send ={
-                    for_notifications:true,
-                    type:"publication_like",
-                    id_user_name:this.visitor_name,
-                    id_user:this.visitor_id, 
-                    id_receiver:this.authorid,
-                    publication_category:'drawing',
-                    publication_name:this.title,
-                    format:'one-shot',
-                    publication_id:this.drawing_id,
-                    chapter_number:0,
-                    information:"add",
-                    status:"unchecked",
-                    is_comment_answer:false,
-                    comment_id:0,
-                  }
-                  this.chatService.messages.next(message_to_send);
+                if(this.authorid==this.visitor_id){
+                  
                   this.like_in_progress=false;
                   this.cd.detectChanges();
-                })
+                }
+                else{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
+                    let message_to_send ={
+                      for_notifications:true,
+                      type:"publication_like",
+                      id_user_name:this.visitor_name,
+                      id_user:this.visitor_id, 
+                      id_receiver:this.authorid,
+                      publication_category:'drawing',
+                      publication_name:this.title,
+                      format:'one-shot',
+                      publication_id:this.drawing_id,
+                      chapter_number:0,
+                      information:"add",
+                      status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
+                    }
+                    this.chatService.messages.next(message_to_send);
+                    this.like_in_progress=false;
+                    this.cd.detectChanges();
+                  })
+                }
               }
+              else{
+                this.liked=false;
+                this.likesnumber-=1;
+                if(r[0].error="loved"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
+                  });
+                }
+                else if(r[0].error="already_liked"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
+                  });
+                }
+                this.like_in_progress=false;
+              }
+             
               
             });
           }
           else if(this.type=='artbook'){
-          
+            
             this.NotationService.add_like('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
-              if(this.authorid==this.visitor_id){
-                this.like_in_progress=false;
-                this.cd.detectChanges();
-              }
-              else{
-                this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
-                  let message_to_send ={
-                    for_notifications:true,
-                    type:"publication_like",
-                    id_user_name:this.visitor_name,
-                    id_user:this.visitor_id, 
-                    id_receiver:this.authorid,
-                    publication_category:'drawing',
-                    publication_name:this.title,
-                    format:'artbook',
-                    publication_id:this.drawing_id,
-                    chapter_number:0,
-                    information:"add",
-                    status:"unchecked",
-                    is_comment_answer:false,
-                    comment_id:0,
-                  }
-                  this.chatService.messages.next(message_to_send);
+              if(!r[0].error){
+                this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
+                if(this.authorid==this.visitor_id){
                   this.like_in_progress=false;
                   this.cd.detectChanges();
-                })
-              } 
+                }
+                else{
+                  this.NotificationsService.add_notification('publication_like',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
+                    let message_to_send ={
+                      for_notifications:true,
+                      type:"publication_like",
+                      id_user_name:this.visitor_name,
+                      id_user:this.visitor_id, 
+                      id_receiver:this.authorid,
+                      publication_category:'drawing',
+                      publication_name:this.title,
+                      format:'artbook',
+                      publication_id:this.drawing_id,
+                      chapter_number:0,
+                      information:"add",
+                      status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
+                    }
+                    this.chatService.messages.next(message_to_send);
+                    this.like_in_progress=false;
+                    this.cd.detectChanges();
+                  })
+                }
+              }
+              else{
+                this.liked=false;
+                this.likesnumber-=1;
+                if(r[0].error="loved"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
+                  });
+                }
+                else if(r[0].error="already_liked"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous avez déjà aimé cette œuvre"},
+                  });
+                }
+                this.like_in_progress=false;
+              }
+               
             });
           }
         }
@@ -1429,72 +1465,109 @@ export class ArtworkDrawingComponent implements OnInit {
           this.lovesnumber+=1;
           if(this.type=='one-shot'){  
             this.NotationService.add_love('drawing', 'one-shot', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{        
-              this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
-             
-                            
-              if(this.authorid==this.visitor_id){
-                
-                this.love_in_progress=false; 
-                this.cd.detectChanges();
-              }
-              else{
-                this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
-                  let message_to_send ={
-                    for_notifications:true,
-                    type:"publication_love",
-                    id_user_name:this.visitor_name,
-                    id_user:this.visitor_id, 
-                    id_receiver:this.authorid,
-                    publication_category:'drawing',
-                    publication_name:this.title,
-                    format:'one-shot',
-                    publication_id:this.drawing_id,
-                    chapter_number:0,
-                    information:"add",
-                    status:"unchecked",
-                    is_comment_answer:false,
-                    comment_id:0,
-                  }
-                  this.chatService.messages.next(message_to_send);
+              if(!r[0].error){
+                this.list_of_users_ids_loves.splice(0,0,this.visitor_id);
+                if(this.authorid==this.visitor_id){
+                  
                   this.love_in_progress=false; 
                   this.cd.detectChanges();
-                }) 
+                }
+                else{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'one-shot',this.drawing_id,0,"add",false,0).subscribe(l=>{
+                    let message_to_send ={
+                      for_notifications:true,
+                      type:"publication_love",
+                      id_user_name:this.visitor_name,
+                      id_user:this.visitor_id, 
+                      id_receiver:this.authorid,
+                      publication_category:'drawing',
+                      publication_name:this.title,
+                      format:'one-shot',
+                      publication_id:this.drawing_id,
+                      chapter_number:0,
+                      information:"add",
+                      status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
+                    }
+                    this.chatService.messages.next(message_to_send);
+                    this.love_in_progress=false; 
+                    this.cd.detectChanges();
+                  }) 
+                }
               }
+              else{
+                this.loved=false;
+                this.lovesnumber-=1;
+                if(r[0].error="liked"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
+                  });
+                }
+                else if(r[0].error="already_loved"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
+                  });
+                }
+                this.love_in_progress=false;
+              }
+              
+              
               
             });
           }
           else if(this.type=='artbook'){
           
             this.NotationService.add_love('drawing', 'artbook', this.style, this.drawing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
+              if(!r[0].error){
+                this.list_of_users_ids_loves.splice(0,0,this.visitor_id)
                             
-              if(this.authorid==this.visitor_id){
-                this.love_in_progress=false; 
-                this.cd.detectChanges();
-              }
-              else{
-                this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
-                  let message_to_send ={
-                    for_notifications:true,
-                    type:"publication_love",
-                    id_user_name:this.visitor_name,
-                    id_user:this.visitor_id, 
-                    id_receiver:this.authorid,
-                    publication_category:'drawing',
-                    publication_name:this.title,
-                    format:'artbook',
-                    publication_id:this.drawing_id,
-                    chapter_number:0,
-                    information:"add",
-                    status:"unchecked",
-                    is_comment_answer:false,
-                    comment_id:0,
-                  }
-                  this.chatService.messages.next(message_to_send);
+                if(this.authorid==this.visitor_id){
                   this.love_in_progress=false; 
                   this.cd.detectChanges();
-                }) 
-              } 
+                }
+                else{
+                  this.NotificationsService.add_notification('publication_love',this.visitor_id,this.visitor_name,this.authorid,'drawing',this.title,'artbook',this.drawing_id,0,"add",false,0).subscribe(l=>{
+                    let message_to_send ={
+                      for_notifications:true,
+                      type:"publication_love",
+                      id_user_name:this.visitor_name,
+                      id_user:this.visitor_id, 
+                      id_receiver:this.authorid,
+                      publication_category:'drawing',
+                      publication_name:this.title,
+                      format:'artbook',
+                      publication_id:this.drawing_id,
+                      chapter_number:0,
+                      information:"add",
+                      status:"unchecked",
+                      is_comment_answer:false,
+                      comment_id:0,
+                    }
+                    this.chatService.messages.next(message_to_send);
+                    this.love_in_progress=false; 
+                    this.cd.detectChanges();
+                  }) 
+                } 
+              }
+              else{
+                this.loved=false;
+                this.lovesnumber-=1;
+                if(r[0].error="liked"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
+                  });
+                }
+                else if(r[0].error="already_loved"){
+                  const dialogRef = this.dialog.open(PopupConfirmationComponent, {
+                    data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
+                  });
+                }
+                this.love_in_progress=false;
+              }
+              
+              
+              
             });
           }
         }
