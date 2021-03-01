@@ -1323,8 +1323,8 @@ button.show-more {
                 }
             }
             .friend-picture {
-                width: 18px;
-                height: 18px;
+                width: 16px;
+                height: 16px;
                 margin-left: 10px;
                 margin: auto auto;
                 img {
@@ -1339,7 +1339,7 @@ button.show-more {
                 }
             }
             .state {
-                margin: auto 6px 5px 2px;
+                margin: auto 8px 5px 2px;
             }
             &.padding-for-no-state {
                 padding-right: 26px;
@@ -1420,8 +1420,8 @@ button.show-more {
 .state {
     cursor: default;
     > div {
-        height: 18px;
-        width: 18px;
+        height: 16px;
+        width: 16px;
         display: flex;
         border-radius: 50px;
         background: rgb(32, 56, 100);
