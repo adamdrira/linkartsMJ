@@ -183,12 +183,14 @@ $default-color: rgb(218,220,225);
                             padding-bottom: 27px !important;
                         }
                     }
-                        
+                                    
                     .emojis-main-container {
                         position: absolute;
-                        top: -294px;
-                        right: 0px;
+                        bottom: 50px;
+                        right: 13px;
                         visibility: hidden;
+                        border: 4px solid rgb(3, 7, 17);
+                        border-radius: 12px;
                         z-index: 1;
                         .emojis-container {
                             background-color: white;
@@ -197,7 +199,7 @@ $default-color: rgb(218,220,225);
                             //width: 369px;
                             display: flex;
                             justify-content: center;
-
+            
                             section.emoji-mart {
                                 .emoji-mart-bar {
                                     &:last-of-type {
@@ -208,7 +210,7 @@ $default-color: rgb(218,220,225);
                             section.emoji-mart-scroll {
                                 overflow-x: hidden;
                             }
-                            @media (max-width: 400px) {
+                            @media (max-width: 600px) {
                                 section.emoji-mart-scroll {
                                     overflow-x: unset;
                                 }
@@ -216,6 +218,27 @@ $default-color: rgb(218,220,225);
                                     width: 100% !important;
                                 }
                             }
+                        }
+                    }
+                    .emojis-spinner {
+                        visibility: hidden;
+                        position: absolute;
+                        cursor:default;
+                        bottom: 50px;
+                        right: 15px;
+                        height: 100px;
+                        width: 100px;
+                        display:flex;
+            
+                        border-radius: 13px;
+                        border: 1px solid #d2e0e6;
+                        background:white;
+            
+                        mat-spinner{
+                        margin:auto auto;
+                        circle {
+                            stroke: rgb(32,56,100);
+                        }
                         }
                     }
                     div.emojis-button {

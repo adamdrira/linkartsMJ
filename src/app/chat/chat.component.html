@@ -1277,7 +1277,11 @@
                 </div>
             </div>
 
-            <div #emojis class="emojis-main-container" [@enterAnimation]>
+            <div #emojisSpinner class="emojis-spinner" [@enterAnimation]>
+                <mat-spinner diameter="20"></mat-spinner>
+            </div>
+
+            <div *ngIf="load_emoji" #emojis class="emojis-main-container" [@enterAnimation]>
                 <div class="emojis-container">
                     <emoji-mart [set]="set" [isNative]="native" [hideRecent]="false"
                         (emojiSelect)="handleClick($event)">

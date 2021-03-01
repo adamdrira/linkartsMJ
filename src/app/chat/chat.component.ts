@@ -132,9 +132,8 @@ export class ChatComponent implements OnInit  {
   @HostListener('document:click', ['$event.target'])
   clickout(btn) {
     if(this.show_emojis){
-      console.log("emoji shown");
       if (!(this.emojis.nativeElement.contains(btn) || this.emoji_button.nativeElement.contains(btn))){
-        console.log('on est ailleurs');
+        this.renderer.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'hidden');
         this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
         this.show_emojis=false;
       }
@@ -1924,9 +1923,14 @@ export class ChatComponent implements OnInit  {
 /*************************************Partie gestion des emojis***********************************/
 
 selectedEmoji:any;
+load_emoji=false;
+show_emojis=false;
+emojis_already_loaded=false;
+emojis_button_clicked=false;
 set = 'native';
 native = true;
 @ViewChild('emojis') emojis:ElementRef;
+@ViewChild('emojisSpinner') emojisSpinner:ElementRef;
 @ViewChild('emoji_button') emoji_button:ElementRef;
 
 
@@ -1953,13 +1957,50 @@ handleClick($event) {
 
 show_emojis=false;
 open_emojis(){
+
+  if( this.emojis_button_clicked == true ) {
+    return;
+  }
+
+  this.emojis_button_clicked = true;
   if( !this.show_emojis ) {
-    this.show_emojis=true;
-    this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    this.renderer.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'visible');
   }
   else {
-    this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
-    this.show_emojis=false;
+    this.renderer.setStyle(this.emojisSpinner.nativeElement, 'visibility', 'hidden');
+  }
+
+  this.load_emoji=true;
+  
+  if( !this.emojis_already_loaded ) {
+    let THIS = this;
+    setTimeout(function () {
+      if( !THIS.show_emojis ) {
+        THIS.show_emojis=true;
+        THIS.cd.detectChanges();
+        THIS.renderer.setStyle(THIS.emojis.nativeElement, 'visibility', 'visible');
+      }
+      else {
+        THIS.renderer.setStyle(THIS.emojis.nativeElement, 'visibility', 'hidden');
+        THIS.show_emojis=false;
+        THIS.cd.detectChanges();
+      }
+      THIS.emojis_already_loaded = true;
+      THIS.emojis_button_clicked = false;
+    }, 2000);
+  }
+  else {
+    if( !this.show_emojis ) {
+      this.show_emojis=true;
+      this.cd.detectChanges();
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'visible');
+    }
+    else {
+      this.renderer.setStyle(this.emojis.nativeElement, 'visibility', 'hidden');
+      this.show_emojis=false;
+      this.cd.detectChanges();
+    }
+    this.emojis_button_clicked = false;
   }
 }
 

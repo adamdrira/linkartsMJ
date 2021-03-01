@@ -394,6 +394,27 @@
                     }
                 }
             }
+            .emojis-spinner {
+                visibility: hidden;
+                position: absolute;
+                cursor:default;
+                bottom: 112px;
+                right: 24px;
+                height: 110px;
+                width: 200px;
+                display:flex;
+    
+                border-radius: 13px 13px 0px 0px;
+                border: 1px solid #d2e0e6;
+                background:white;
+    
+                mat-spinner{
+                margin:auto auto;
+                circle {
+                    stroke: rgb(32,56,100);
+                }
+                }
+            }
             .emojis-main-container {
                 position: absolute;
                 top: -356px;
