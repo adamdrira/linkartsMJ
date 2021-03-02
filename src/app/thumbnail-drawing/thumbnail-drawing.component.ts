@@ -205,7 +205,7 @@ export class ThumbnailDrawingComponent implements OnInit {
       }
     }
     else{
-      this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
+      //this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
     }
 
     if( this.for_news == "yes" ) {

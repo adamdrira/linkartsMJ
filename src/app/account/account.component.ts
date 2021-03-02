@@ -1834,7 +1834,7 @@ export class AccountComponent implements OnInit {
         this.number_of_lines_drawings=1;
       }
       else{
-        this.number_of_lines_drawings=2;
+        this.number_of_lines_drawings=1;
       }
       
       this.got_number_of_drawings_to_show=true;
