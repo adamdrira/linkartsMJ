@@ -373,13 +373,15 @@ export class MediaDrawingsComponent implements OnInit {
         $('.grid').masonry('reloadItems');
         this.cd.detectChanges;
         if(this.compteur_drawings_thumbnails==this.total_for_new_compteur){
-          this.detect_new_compteur_drawings=false;
+          
           
           this.total_for_new_compteur=0;
           this.compteur_drawings_thumbnails=0;
           
           //console.log("start reload after count end")
           this.reload_masonry();
+          this.detect_new_compteur_drawings=false;
+          this.category_clicked_for_see_more=-1;
           this.prevent_see_more=false;
           this.cd.detectChanges();
         }
@@ -403,6 +405,7 @@ export class MediaDrawingsComponent implements OnInit {
 
   new_contents_loading=false;
   prevent_shiny=false;
+  category_clicked_for_see_more=-1;
   see_more_drawings(category_number){
     //console.log(category_number)
     this.updating_drawings_for_zoom=false;
@@ -417,6 +420,7 @@ export class MediaDrawingsComponent implements OnInit {
       return
     }
     else{
+      this.category_clicked_for_see_more=category_number;
       this.prevent_shiny=true;
       this.new_contents_loading=true;
       //console.log("see_more_drawings");

@@ -450,6 +450,10 @@
       margin-top:10px;
 
 
+      .mat-form-field-appearance-legacy .mat-form-field-label {
+        color: rgb(32 56 100) !important;
+      }
+
       .first-link-message {
         margin-bottom: 5px;
         span {
@@ -581,14 +585,19 @@
       .mat-form-field {
         width:100%;
         line-height: 1.4;
-
+        font-size: 15px !important;
         textarea {
           max-height:180px;
           min-height:50px;
 
           &.readonly {
-            font-size: 16px !important;
-            color: rgb(136, 136, 136) !important;
+            font-size: 15px !important;
+
+            color: rgb(32 56 100) !important;
+          }
+
+          &.italic{
+            font-style: italic;
           }
           
           scrollbar-width:thin;

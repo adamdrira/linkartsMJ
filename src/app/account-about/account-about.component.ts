@@ -76,24 +76,16 @@ export class AccountAboutComponent implements OnInit {
     private rd: Renderer2, 
     private NavbarService:NavbarService,
     private NotationService:NotationService,
-    private authenticationService: AuthenticationService,
-    private router: Router,
     public route: ActivatedRoute, 
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute,
-    private Story_service:Story_service,
-    private location: Location,
     private cd: ChangeDetectorRef,
     private Trending_service:Trending_service,
     private Profile_Edition_Service: Profile_Edition_Service,
-    private sanitizer:DomSanitizer,
     private BdOneShotService: BdOneShotService,
     private BdSerieService:BdSerieService,
     private Writing_Upload_Service:Writing_Upload_Service,
     private Drawings_Onepage_Service:Drawings_Onepage_Service,
     private Drawings_Artbook_Service:Drawings_Artbook_Service,
-    private Subscribing_service:Subscribing_service,
-    private Albums_service:Albums_service,
     private Ads_service:Ads_service,
     public dialog: MatDialog,
   ) { 
@@ -2651,7 +2643,6 @@ export class AccountAboutComponent implements OnInit {
       ],
       primary_description: [this.primary_description, 
         Validators.compose([
-          Validators.required,
           Validators.minLength(3),
           Validators.maxLength(100),
           Validators.pattern(pattern("text")),
@@ -2737,11 +2728,13 @@ export class AccountAboutComponent implements OnInit {
         console.log("in else if ok")
         this.display_error_validator_1=false;
         let siret = form.siret
-        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret, form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'),form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'),form.job,form.training).subscribe(l=>{
+        let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+        this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,siret,primary ,secondary,form.job,form.training).subscribe(l=>{
           console.log(l);
           this.type_of_account=form.type_of_account;
-          this.primary_description=form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');
-          this.primary_description_extended=form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
+          this.primary_description=primary;
+          this.primary_description_extended=secondary;
           this.job=form.job;
           this.training=form.training;
           this.loading_validation_form_1=false;
@@ -2754,11 +2747,13 @@ export class AccountAboutComponent implements OnInit {
     else{
       //this.loading_validation_form_1=false;
       this.display_error_validator_1=false;
-      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null, form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'),form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'),form.job,form.training).subscribe(l=>{
+      let primary=form.primary_description?form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+        let secondary=form.primary_description_extended?form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n'):'';
+      this.Profile_Edition_Service.edit_account_about_1(form.type_of_account,null,primary,secondary,form.job,form.training).subscribe(l=>{
         console.log(l);
         this.type_of_account=form.type_of_account;
-        this.primary_description=form.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');
-        this.primary_description_extended=form.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
+        this.primary_description=primary;
+        this.primary_description_extended=secondary;
         this.job=form.job;
         this.training=form.training;
         this.loading_validation_form_1=false;

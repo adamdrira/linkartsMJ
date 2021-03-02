@@ -249,7 +249,7 @@
                             <textarea matInput cdkTextareaAutosize readonly class="readonly">{{primary_description_extended}}</textarea>
                         </ng-container>
                         <ng-container *ngIf=" ( primary_description_extended==undefined || primary_description_extended=='' )">
-                            <textarea matInput cdkTextareaAutosize readonly class="readonly">Non renseignée</textarea>
+                            <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
                         </ng-container>
                     </mat-form-field>
                 </div>
@@ -356,7 +356,7 @@
                         <div class="length-indicator">{{registerForm1.controls['training'].value?.length || 0}}/100</div>
                     </mat-form-field>
                 </div>
-                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
+                <!--<div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
                     <mat-form-field floatLabel='never'
                     [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
                     matTooltipClass='tooltip-account-about-profile' 
@@ -365,6 +365,21 @@
                         <mat-label *ngIf="!( training==undefined || training=='' )">{{training}}</mat-label>
                         <mat-label *ngIf=" ( training==undefined || training=='' )"><i>Non renseignées</i></mat-label>
                         <input matInput readonly>
+                    </mat-form-field>
+                </div>-->
+                <div class="form-item" *ngIf="!registerForm1_activated" [@enterAnimation]>
+                    <mat-form-field floatLabel='never'
+                    [matTooltip]="( training==undefined || training=='' ) ? 'Ce champ non renseigné ne sera pas visible' : null"
+                    matTooltipClass='tooltip-account-about-profile' 
+                    [matTooltipPosition]="'below'"
+                    [matTooltipShowDelay]="100">
+                        <mat-label>{{primary_description_extended}}</mat-label>
+                        <ng-container *ngIf="!( training==undefined || training=='' )">
+                            <textarea matInput cdkTextareaAutosize readonly class="readonly">{{training}}</textarea>
+                        </ng-container>
+                        <ng-container *ngIf=" ( training==undefined || training=='' )">
+                            <textarea matInput cdkTextareaAutosize readonly class="readonly italic">Non renseignée</textarea>
+                        </ng-container>
                     </mat-form-field>
                 </div>
             </ng-container>

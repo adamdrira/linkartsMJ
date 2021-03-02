@@ -212,7 +212,7 @@
 
             <div class="form-item" style="height:unset !important;">
                 <mat-form-field floatLabel='never'>
-                    <mat-label>Bio*</mat-label>
+                    <mat-label>Bio</mat-label>
                     <textarea matInput cdkTextareaAutosize formControlName="primary_description" maxLength="100" autocomplete="off" (input)="normalize_input(registerForm3, 'primary_description');"></textarea>
                     
                     <mat-error *ngIf="registerForm3.controls['primary_description'].invalid">Veuillez saisir une bio valide

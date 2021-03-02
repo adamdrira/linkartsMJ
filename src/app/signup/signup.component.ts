@@ -248,7 +248,6 @@ export class SignupComponent implements OnInit {
       ],
       primary_description: ['', 
         Validators.compose([
-          Validators.required,
           Validators.minLength(3),
           Validators.maxLength(100),
           Validators.pattern(pattern("text")),
@@ -1243,7 +1242,7 @@ export class SignupComponent implements OnInit {
     
     //form3
     this.user.nickname = this.registerForm3.value.nickname;
-    this.user.primary_description = this.registerForm3.value.primary_description;
+    this.user.primary_description = this.registerForm3.value.primary_description.replace(/\n\s*\n\s*\n/g, '\n\n');;
     this.user.primary_description_extended = this.registerForm3.value.primary_description_extended.replace(/\n\s*\n\s*\n/g, '\n\n');
 
     this.loading_signup=true;
