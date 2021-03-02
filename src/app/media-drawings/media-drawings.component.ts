@@ -383,6 +383,7 @@ export class MediaDrawingsComponent implements OnInit {
           this.detect_new_compteur_drawings=false;
           this.category_clicked_for_see_more=-1;
           this.prevent_see_more=false;
+          this.prevent_shiny=false;
           this.cd.detectChanges();
         }
       }

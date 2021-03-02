@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef, Renderer2, ViewChild, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Drawings_Artbook_Service } from '../services/drawings_artbook.service';
 import { Drawings_Onepage_Service} from '../services/drawings_one_shot.service';
@@ -121,7 +121,29 @@ export class ThumbnailDrawingComponent implements OnInit {
     
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if(this.final_thumbnail && changes.prevent_shiny){
+      console.log("change prev")
+      console.log(this.prevent_shiny)
+      if(!this.prevent_shiny ){
+        console.log("in first if")
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "0px 0px 20px 3px #3055812e");
+        if( this.for_news == "yes" ) {
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", "100%");
+        }
+        else if(this.height){
+          this.rd.setStyle(this.final_thumbnail.nativeElement, "height", this.height + "px");
+        }
+      }
+      else{
+        console.log("in else prev")
+        this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
+      }
+  
+    }
+    
 
+  }
 
   show_icon=false;
   ngOnInit() {
@@ -205,7 +227,7 @@ export class ThumbnailDrawingComponent implements OnInit {
       }
     }
     else{
-      //this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
+      this.rd.setStyle(this.final_thumbnail.nativeElement, "box-shadow", "unset");
     }
 
     if( this.for_news == "yes" ) {

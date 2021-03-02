@@ -2020,7 +2020,9 @@ export class AccountComponent implements OnInit {
           this.total_for_new_compteur=0;
           this.compteur_drawings_thumbnails=0;
           console.log("start reload after count end")
+          console.log(this.prevent_shiny)
           this.reload_masonry();
+          this.prevent_shiny=false;
           this.cd.detectChanges();
         }
       }
@@ -2352,6 +2354,7 @@ export class AccountComponent implements OnInit {
       console.log("in see more drawings")
       console.log(this.list_drawings_onepage)
       console.log(this.number_of_drawings_to_show_by_album)
+      console.log(this.prevent_shiny)
       this.prevent_shiny=true;
       this.cd.detectChanges();
       this.new_contents_loading=true;
