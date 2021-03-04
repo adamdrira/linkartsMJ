@@ -1052,17 +1052,18 @@ export class ThumbnailArtworkComponent implements OnInit {
 
       const dialogRef = this.dialog.open(PopupEditCoverComponent, {
         data: {type:"edit_comic_thumbnail",
-        format:this.format,
-        bd_id: (this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,
-        title: this.title,
-        style:this.style, 
-        firsttag:this.firsttag,
-        author_name: this.user_name,
-        primary_description: this.primary_description, 
-        profile_picture: this.profile_picture,
-        thumbnail_picture:this.file_name,
-        category:"comic",
-      },
+          format:this.format,
+          bd_id: (this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,
+          title: this.title,
+          style:this.style, 
+          firsttag:this.firsttag,
+          author_name: this.user_name,
+          primary_description: this.primary_description, 
+          profile_picture: this.profile_picture,
+          thumbnail_picture:this.file_name,
+          category:"comic",
+        },
+        panelClass: "popupReportClass",
       });
     }
     else if(this.category=="writing"){
@@ -1076,7 +1077,8 @@ export class ThumbnailArtworkComponent implements OnInit {
         primary_description: this.primary_description, 
         profile_picture: this.profile_picture,
         thumbnail_picture:this.thumbnail_picture,
-        category:"writing"
+        category:"writing",
+        panelClass: "popupReportClass",
       },
       }); 
     }
@@ -1105,6 +1107,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'comic',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.bd_id,format:this.format,chapter_number:0},
+            panelClass: "popupReportClass",
           });
         }
       })
@@ -1121,6 +1124,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'drawing',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.drawing_id,format:this.format,chapter_number:0},
+            panelClass: "popupReportClass",
           });
         }
       })
@@ -1137,6 +1141,7 @@ export class ThumbnailArtworkComponent implements OnInit {
         else{
           const dialogRef = this.dialog.open(PopupReportComponent, {
             data: {from_account:false,id_receiver:this.author_id,publication_category:'writing',publication_id:(this.type_of_thumbnail==0)?this.item.publication_id:this.item.writing_id,format:"unknown",chapter_number:0},
+            panelClass: "popupReportClass",
           });
         }
       })
