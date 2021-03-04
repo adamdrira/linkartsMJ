@@ -39,6 +39,8 @@ export class MediaComicsComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if( changes.width) {
+      console.log("change width")
+      console.log(this.width)
       if(this.width>0){
         var n = Math.floor(this.width/250);
         if(n>3){
@@ -47,6 +49,8 @@ export class MediaComicsComponent implements OnInit {
         else{
           this.number_of_comics_to_show=6;
         }
+        console.log("number of comics to show")
+        console.log(this.number_of_comics_to_show)
         if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
           this.get_history_recommendation();
         }
@@ -61,6 +65,8 @@ export class MediaComicsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if(this.width>0){
+      console.log("resize width")
+      console.log(this.width)
       var n = Math.floor(this.width/250);
       if(n>3){
         this.number_of_comics_to_show=(n<6)?n:6;
@@ -68,6 +74,9 @@ export class MediaComicsComponent implements OnInit {
       else{
         this.number_of_comics_to_show=6;
       }
+      console.log("number of comics to show")
+      console.log(this.number_of_comics_to_show)
+      
       if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
         this.get_history_recommendation();
       }
