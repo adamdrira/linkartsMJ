@@ -1,5 +1,5 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, EventEmitter, Output, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import {Renderer2} from '@angular/core';
 import {Writing_Upload_Service} from '../services/writing.service';
 import { NavbarService } from '../services/navbar.service';
@@ -37,6 +37,28 @@ export class MediaWritingsComponent implements OnInit {
         }
       })
     this.cancelled = 0;
+  }
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.width) {
+      if(this.width>0){
+        var n = Math.floor(this.width/250);
+        if(n>3){
+          this.number_of_writings_to_show=(n<6)?n:6;
+        }
+        else{
+          this.number_of_writings_to_show=6;
+        }
+
+        if(this.current_number_of_writings_to_show!= this.number_of_writings_to_show){
+          this.get_history_recommendation();
+        }
+        this.current_number_of_writings_to_show!= this.number_of_writings_to_show;
+        this.cd.detectChanges()
+      }
+    }
+
   }
 
   current_number_of_writings_to_show:number;

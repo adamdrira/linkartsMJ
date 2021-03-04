@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 import {BdOneShotService} from '../services/comics_one_shot.service';
@@ -36,21 +36,45 @@ export class MediaComicsComponent implements OnInit {
     this.cancelled = 0;
   }
 
+
+  ngOnChanges(changes: SimpleChanges) {
+    if( changes.width) {
+      if(this.width>0){
+        var n = Math.floor(this.width/250);
+        if(n>3){
+          this.number_of_comics_to_show=(n<6)?n:6;
+        }
+        else{
+          this.number_of_comics_to_show=6;
+        }
+        if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
+          this.get_history_recommendation();
+        }
+        this.current_number_of_comics_to_show=this.number_of_comics_to_show;
+        this.cd.detectChanges()
+      }
+    }
+
+  }
+
   current_number_of_comics_to_show:number;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    var n = Math.floor(this.width/250);
-    if(n>3){
-      this.number_of_comics_to_show=(n<6)?n:6;
+    if(this.width>0){
+      var n = Math.floor(this.width/250);
+      if(n>3){
+        this.number_of_comics_to_show=(n<6)?n:6;
+      }
+      else{
+        this.number_of_comics_to_show=6;
+      }
+      if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
+        this.get_history_recommendation();
+      }
+      this.current_number_of_comics_to_show=this.number_of_comics_to_show;
+      this.cd.detectChanges()
     }
-    else{
-      this.number_of_comics_to_show=6;
-    }
-    if(this.current_number_of_comics_to_show!= this.number_of_comics_to_show){
-      this.get_history_recommendation();
-    }
-    this.current_number_of_comics_to_show=this.number_of_comics_to_show;
-    this.cd.detectChanges()
+    
   }
 
 
