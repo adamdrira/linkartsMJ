@@ -215,7 +215,8 @@ export class PopupFormWritingComponent implements OnInit {
     }
 
     if ( this.fw.valid ) {
-      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, this.fw.value.fwCategory, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
+      let category=(this.fw.value.fwCategory === "Poésie") ? "Poetry": (this.fw.value.fwCategory === "Scénario") ? "Scenario" : (this.fw.value.fwCategory === "Roman illustré") ? "Illustrated novel" : this.fw.value.fwCategory;
+      this.Writing_Upload_Service.Modify_writing(this.data.writing_id,this.fw.value.fwTitle, category, this.fw.value.fwTags, this.fw.value.fwDescription.replace(/\n\s*\n\s*\n/g, '\n\n')).subscribe(r=>{
         this.location.go(`/artwork-writing/${this.fw.value.fwTitle}/${this.data.writing_id}`);  
         location.reload();
         });

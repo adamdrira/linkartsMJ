@@ -1635,12 +1635,19 @@ export class ArtworkComicComponent implements OnInit {
   /****************** RIGHT CONTROLLER ******************* */
   /******************************************************* */
   /******************************************************* */
-  
+  from_like=false;
+  from_love=false;
   click_like() {
     console.log("click like")
     if(this.type_of_account=="account"){
-      if(this.like_in_progress){
+      if(this.like_in_progress  ||this.love_in_progress){
         return
+      }
+      if(this.loved && !this.from_love){
+        this.from_like=true;
+        this.click_love();
+        this.from_like=false;
+        return;
       }
       if(this.list_of_users_ids_likes_retrieved){
         console.log("list_of_users_ids_likes_retrieved")
@@ -1845,14 +1852,20 @@ export class ArtworkComicComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
-      if(this.love_in_progress){
+      if(this.love_in_progress   || this.like_in_progress){
+        return
+      }
+      if(this.liked && !this.from_like){
+        this.from_love=true;
+        this.click_like();
+        this.from_love=false;
         return
       }
       if(this.list_of_users_ids_loves_retrieved){
         this.love_in_progress=true;
         if(this.loved) {   
           this.loved=false;  
-          this.lovesnumber+=1;
+          this.lovesnumber-=1;
           if(this.type=='one-shot'){
             this.NotationService.remove_love("comic", 'one-shot', this.style, this.bd_id,0).subscribe(r=>{
               let index=this.list_of_users_ids_loves[0].indexOf(this.visitor_id);
@@ -1961,7 +1974,7 @@ export class ArtworkComicComponent implements OnInit {
               else{
                 this.loved=false;
                 this.lovesnumber-=1;
-                if(r[0].error="liked"){
+                /*if(r[0].error="liked"){
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous ne pouvez pas aimer et adorer la même œuvre"},
                   });
@@ -1970,7 +1983,7 @@ export class ArtworkComicComponent implements OnInit {
                   const dialogRef = this.dialog.open(PopupConfirmationComponent, {
                     data: {showChoice:false, text:"Vous avez déjà adoré cette œuvre"},
                   });
-                }
+                }*/
                 this.love_in_progress=false;
               }
               

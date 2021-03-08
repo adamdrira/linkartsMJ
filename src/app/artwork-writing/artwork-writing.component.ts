@@ -870,11 +870,18 @@ export class ArtworkWritingComponent implements OnInit {
   /****************** RIGHT CONTROLLER ******************* */
   /******************************************************* */
   /******************************************************* */
- 
+  from_like=false;
+  from_love=false;
   click_like() {
     if(this.type_of_account=="account"){
       if(this.like_in_progress){
         return
+      }
+      if(this.loved && !this.from_love){
+        this.from_like=true;
+        this.click_love();
+        this.from_like=false;
+        return;
       }
       if(this.list_of_users_ids_likes_retrieved){
         this.like_in_progress=true;
@@ -983,6 +990,12 @@ export class ArtworkWritingComponent implements OnInit {
   click_love() {
     if(this.type_of_account=="account"){
       if(this.love_in_progress){
+        return
+      }
+      if(this.liked && !this.from_like){
+        this.from_love=true;
+        this.click_like();
+        this.from_love=false;
         return
       }
       if(this.list_of_users_ids_loves_retrieved){
