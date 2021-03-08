@@ -812,20 +812,15 @@ console.log("checking current: " + req.headers['authorization'] );
                                     }
                                 })
                                 .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(bd_serie =>  {  
+                                    //console.log(err);	
+                                    res.status(500).json({msg: "error", details: err});		
+                                }).then(bd_serie =>  {  
                                     const loves = bd_serie.lovesnumber - 1;
                                     bd_serie.update({
                                     "lovesnumber":(loves>=0)?loves:0,
                                     })
-                                })                   
-                                .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(destroy(bd_serie))
-                           
-                            
+                                    destroy(bd_serie)
+                                })     
                             })
                         })
     
