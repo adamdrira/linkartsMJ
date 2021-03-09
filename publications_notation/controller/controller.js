@@ -620,18 +620,18 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
                             drawing.update({
                             "lovesnumber":loves,
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(create(drawing))
-                        }); 
+                                //console.log(err);	
+                                res.status(500).json({msg: "error", details: err});		
+                            }).then(create(drawing))
+                                            }); 
                     }
     
                     else if(format === "artbook"){
@@ -641,17 +641,17 @@ console.log("checking current: " + req.headers['authorization'] );
                             }
                         })
                         .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(drawing =>  {
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(drawing =>  {
                             const loves = drawing.lovesnumber + 1;
                             drawing.update({
                             "lovesnumber":loves,
                             })
                             .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(create(drawing))
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(create(drawing))
                         }); 
                     }
                     }
@@ -663,17 +663,17 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                     })
                     .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(writing =>  {
+                        //console.log(err);	
+                        res.status(500).json({msg: "error", details: err});		
+                    }).then(writing =>  {
                         const loves = writing.lovesnumber + 1;
                         writing.update({
                         "lovesnumber":loves,
                         })
                         .catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(create(writing))
+                            //console.log(err);	
+                            res.status(500).json({msg: "error", details: err});		
+                        }).then(create(writing))
                     }); 
                     
                     }
@@ -889,7 +889,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     .catch(err => {
 			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
-		}).then(destroy(drawing))
+		}).then(destroy(writing))
                 }); }
         }
             
