@@ -1184,7 +1184,7 @@ export class ArtworkDrawingComponent implements OnInit {
   from_love=false;
   click_like() {
     if(this.type_of_account=="account"){
-      if(this.like_in_progress){
+      if(this.like_in_progress || this.love_in_progress){
         return
       }
       if(this.loved && !this.from_love){
@@ -1391,7 +1391,7 @@ export class ArtworkDrawingComponent implements OnInit {
 
   click_love() {
     if(this.type_of_account=="account"){
-      if(this.love_in_progress){
+      if(this.love_in_progress || this.like_in_progress){
         return
       }
       if(this.liked && !this.from_like){
