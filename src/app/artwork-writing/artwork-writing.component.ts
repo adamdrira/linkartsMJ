@@ -926,7 +926,7 @@ export class ArtworkWritingComponent implements OnInit {
           this.liked=true;
           this.likesnumber+=1;
             this.NotationService.add_like('writing', "unknown", this.style, this.writing_id,0,this.firsttag,this.secondtag,this.thirdtag,this.authorid).subscribe(r=>{
-              if(r[0].error){
+              if(!r[0].error){
                 this.list_of_users_ids_likes.splice(0,0,this.visitor_id)
               
                 if(this.authorid==this.visitor_id){
