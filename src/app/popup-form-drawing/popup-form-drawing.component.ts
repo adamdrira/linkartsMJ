@@ -93,7 +93,7 @@ export class PopupFormDrawingComponent implements OnInit {
 
 
   createFormControlsDrawings() {
-    this.fdTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fdTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fdDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fdCategory = new FormControl(this.data.style, Validators.required);
     this.fdTags = new FormControl( this.genres, [Validators.required]);

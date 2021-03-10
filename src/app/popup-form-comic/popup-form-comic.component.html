@@ -20,10 +20,10 @@
                 <div class="form-item">
                     <mat-form-field floatLabel='never'>
                         <mat-label>Titre</mat-label>
-                        <input matInput formControlName="f00Title" maxLength="30" autocomplete="off" (input)="normalize_input(f00, 'f00Title');">
+                        <input matInput formControlName="f00Title" maxLength="40" autocomplete="off" (input)="normalize_input(f00, 'f00Title');">
                         <mat-error *ngIf="f00.controls['f00Title'].invalid">Veuillez faire une saisie valide (votre saisie ne doit pas commencer ni terminer par un espace)
                         </mat-error>
-                        <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/30</div>
+                        <div class="length-indicator">{{f00.controls['f00Title'].value?.length || 0}}/40</div>
                     </mat-form-field>
                 </div>
 

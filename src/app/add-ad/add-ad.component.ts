@@ -144,7 +144,7 @@ export class AddAdComponent implements OnInit {
   volunteer:boolean = true;
   for_service:boolean = false;
   createFormControlsAds() {
-    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fdMydescription = new FormControl('', Validators.required);
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000), Validators.pattern( pattern("text") ) ]);
     this.fdPrice = new FormControl('', [Validators.minLength(1), Validators.maxLength(9), Validators.pattern( pattern("share") ) ]);

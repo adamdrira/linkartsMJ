@@ -185,7 +185,7 @@ export class AddDrawingComponent implements OnInit {
   monetised:boolean = false;
   
   createFormControlsDrawings() {
-    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fdTitle = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fdDescription = new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fdCategory = new FormControl('', [Validators.required]);
     this.fdTags = new FormControl( this.genres , [Validators.required]);

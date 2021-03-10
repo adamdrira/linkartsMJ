@@ -87,7 +87,7 @@ export class PopupFormWritingComponent implements OnInit {
   
 
   createFormControlsWritings() {
-    this.fwTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern( pattern("text") ) ]);
+    this.fwTitle = new FormControl(this.data.title, [Validators.required, Validators.minLength(2), Validators.maxLength(40), Validators.pattern( pattern("text") ) ]);
     this.fwDescription = new FormControl(this.data.highlight, [Validators.required, Validators.minLength(2), Validators.maxLength(2000) ]);
     this.fwCategory = new FormControl(this.data.style, Validators.required);
     this.fwTags = new FormControl( this.genres, [Validators.required]);
