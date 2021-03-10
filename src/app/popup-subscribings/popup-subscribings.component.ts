@@ -61,6 +61,7 @@ export class PopupSubscribingsComponent implements OnInit {
   subscribtion_info_added=false;
   type_of_profile=this.data.type_of_profile;
   visitor_id=this.data.visitor_id;
+  author_id=this.data.author_id;
   visitor_name=this.data.visitor_name;
   show_icon=false;
   ngOnInit() {

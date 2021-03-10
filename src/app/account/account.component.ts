@@ -85,10 +85,7 @@ export class AccountComponent implements OnInit {
     public dialog: MatDialog,
     private Emphasize_service:Emphasize_service,
     private Ads_service:Ads_service,
-    private AuthenticationService:AuthenticationService,
-    private Community_recommendation:Community_recommendation,
     ) {
-    //this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
 
     navbar.visibility_observer_font.subscribe(font=>{
       if(font){
@@ -234,24 +231,15 @@ export class AccountComponent implements OnInit {
   education: string;
   user_location:string;
   now_in_seconds:number=Math.trunc( new Date().getTime()/1000);
-
   subscribed_users_list:any[]=[];
   users_subscribed_to_list:any[]=[];
   number_of_artpieces:number=0;
   artpieces_received=false;
-
   number_of_archives:number;
-
-
-
   gridAlbum:any;
-  
   archives_ads:any[]=[];
   list_of_ads:any[]=[];
   list_of_ads_added:boolean=false;
-  
-
-
   /***************************************** */
   /****************    BD    *************** */
   /***************************************** */
@@ -1071,7 +1059,8 @@ export class AccountComponent implements OnInit {
         type_of_profile:this.type_of_profile,
         visitor_name:this.visitor_name,
         author_gender:this.gender,
-        visitor_id:this.visitor_id
+        author_id:this.user_id,
+        visitor_id:this.visitor_id,
       }, 
       panelClass: 'popupViewUsersClass',
     });
@@ -1086,7 +1075,8 @@ export class AccountComponent implements OnInit {
         subscribings:this.users_subscribed_to_list,
         type_of_profile:this.type_of_profile,
         visitor_name:this.visitor_name,
-        visitor_id:this.visitor_id
+        visitor_id:this.visitor_id,
+        author_id:this.user_id,
       },
       panelClass: 'popupViewUsersClass',
     });
