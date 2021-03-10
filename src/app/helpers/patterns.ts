@@ -2,7 +2,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 
 
 let accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇÅåÆæœ";
-let special_characters = "\\\\,\;\:\!\?\.\/\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
+let special_characters = "\,\;\:\!\?\.\§\%\>\<\^\$\£\*\&\~\#\{\}\'\’\"\(\)\\[\\]\|\`\@\°\+\=_-";
 
 export function pattern(type: string) {
     
