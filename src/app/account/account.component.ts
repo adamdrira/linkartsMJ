@@ -122,7 +122,6 @@ export class AccountComponent implements OnInit {
   show_selector_for_album=false;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    console.log("resize")
     if(this.width!=this.main_container.nativeElement.offsetWidth*0.9){
       if(this.main_container.nativeElement.offsetWidth<570){
         this.show_selector_for_album=true;
@@ -132,11 +131,8 @@ export class AccountComponent implements OnInit {
       }
       this.width=this.main_container.nativeElement.offsetWidth*0.9;
       this.update_background_position(this.opened_section);
-  
       this.update_number_of_comics_to_show();
       if(this.list_visibility_albums_drawings){
-       
-        console.log(this.width);
         this.prevent_shiny=true;
         this.update_number_of_drawings_to_show();
       }
@@ -370,7 +366,6 @@ export class AccountComponent implements OnInit {
     this.pseudo = this.activatedRoute.snapshot.paramMap.get('pseudo');
     this.user_id = parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
     if(!(this.user_id && this.user_id>0) || !( this.pseudo && this.pseudo.length>0)){
-      console.log("1 not found")
       this.page_not_found=true;
       return
     }
@@ -389,20 +384,16 @@ export class AccountComponent implements OnInit {
     })
 
     this.Profile_Edition_Service.get_information_privacy(this.user_id).subscribe(l=>{
-    
       this.primary_description_extended_privacy=l[0].primary_description_extended;
-      console.log( this.primary_description_extended_privacy)
     })
 
     this.Profile_Edition_Service.retrieve_profile_picture( this.user_id ).subscribe(r=> {
-      console.log(r)
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.profile_picture = SafeURL;
     });
 
     this.Story_service.check_stories_for_account(this.user_id).subscribe(r=>{
-      console.log(r[0]);
       if(r[0] && r[0].story_found){
         this.list_of_stories[0]=r[0].stories_retrieved;
         this.story_state=r[0].status;
@@ -416,7 +407,6 @@ export class AccountComponent implements OnInit {
     })
 
     this.Profile_Edition_Service.retrieve_cover_picture( this.user_id ).subscribe(r=> {
-      console.log(r)
       let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
       const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
       this.cover_picture = SafeURL;
@@ -425,8 +415,6 @@ export class AccountComponent implements OnInit {
    
 
     this.Profile_Edition_Service.retrieve_profile_data_and_check_visitor( this.user_id ).subscribe( s => {
-      console.log("data retrieved")
-      console.log(s)
       let user=s[0].user;
       this.visitor_id=s[0].visitor.id
       this.visitor_name=s[0].visitor.nickname;
@@ -436,13 +424,11 @@ export class AccountComponent implements OnInit {
   
 
       if( user  && this.visitor_id==user.id){
-        console.log("visitor data retrieved")
         this.mode_visiteur = false;
       }
       this.mode_visiteur_added = true;
 
       if( !user || user.status=="visitor") {
-        console.log("3 not found")
         this.page_not_found=true;
         return
       }
@@ -468,9 +454,7 @@ export class AccountComponent implements OnInit {
          
         }
         else{
-          //deleted
           this.navbar.delete_research_from_navbar("Account","unknown",this.user_id).subscribe(l=>{
-            console.log(l);
           });
         }
         this.mode_visiteur_added = true;
@@ -488,22 +472,16 @@ export class AccountComponent implements OnInit {
       }
       
       else if( this.pseudo != user.nickname ) {
-        console.log("4 not found")
         this.page_not_found=true;
         return
       }
       
       else{
-        // (not a visitor and account ok or suspended) or a visitor and account ok
         if(user && user.status=='suspended' && this.visitor_id==user.id){
           this.my_profile_is_suspended=true;
-
           this.cd.detectChanges();
-          //this.update_background_position( this.opened_section );
           
         }
-        console.log(this.user_id)
-
         this.author=user;
         this.author_name = user.firstname + ' ' + user.lastname;
         this.gender=user.gender;
@@ -524,7 +502,6 @@ export class AccountComponent implements OnInit {
         else{
           // check if the user author blocked the visitor
           this.Profile_Edition_Service.check_if_user_blocked(this.user_id).subscribe(r=>{
-            console.log(r)
             if(r[0].nothing){
               this.user_blocked=false;
             }
@@ -584,24 +561,13 @@ export class AccountComponent implements OnInit {
               //après le click du lien envoyé par mail pour confirmer inscription
               let id = parseInt(this.route.snapshot.paramMap.get('id'));
               let password = this.route.snapshot.paramMap.get('password');
-              console.log(id)
-              console.log(password)
-              
               this.Profile_Edition_Service.check_password_for_registration2(id,password).subscribe(r=>{
-                console.log(r[0])
-               
                 if(r[0].user_found){
-                  console.log("login ready")
-                  console.log(r[0])
-                  console.log(r[0].user_found.id)
-                  console.log(r[0].pass)
                   this.open_section( 7,true );
                   const dialogRef = this.dialog.open(LoginComponent, {
                     data: {usage:"rest_pass",email:r[0].user_found.email,temp_pass:r[0].pass},
                     panelClass: "loginComponentClass",
                   });
-
-                  
                 }
                 else{
                   this.open_section( 1,true );
@@ -653,7 +619,6 @@ export class AccountComponent implements OnInit {
     /**************************************  CONTENTS  **********************************/
 
     this.Emphasize_service.get_emphasized_content(this.user_id).subscribe(r=>{
-      console.log(r[0])
       if (r[0]!=null){
         this.emphasized_artwork=r[0];
         this.emphasized_artwork_added=true;
@@ -663,7 +628,6 @@ export class AccountComponent implements OnInit {
     });
 
     this.Subscribing_service.get_new_comic_contents(this.user_id).subscribe(r=>{
-      console.log(r)
       if (r[0].length>0){
         let compteur=0;
         for (let i=0;i<r[0].length;i++){
@@ -674,7 +638,6 @@ export class AccountComponent implements OnInit {
               }
               compteur++;
               if(compteur==r[0].length){
-                console.log(  this.new_comic_contents)
                 this.delete_null_elements_of_a_list( this.new_comic_contents)
                 this.new_comic_contents_added=true;
                 this.display_new_comic_contents=true;
@@ -767,7 +730,6 @@ export class AccountComponent implements OnInit {
             }
             compteur++;
             if(compteur==r[0].length){
-              console.log(this.new_writing_contents)
               this.delete_null_elements_of_a_list( this.new_writing_contents)
               this.new_writing_contents_added=true;
               this.display_new_writing_contents=true;
@@ -904,7 +866,6 @@ export class AccountComponent implements OnInit {
                 if(i==Object.keys(information).length -1){
                   this.list_albums_writings_added = true;
                   this.get_number_of_writings_to_show();
-                  console.log(this.list_titles_albums_writings_added)
                 }
               }
               
@@ -918,7 +879,6 @@ export class AccountComponent implements OnInit {
           this.get_number_of_writings_to_show();
         }
         if( this.opened_section == 1 && this.route.snapshot.data['category']==2) {
-          console.log(this.route.snapshot.data['category'] )
           this.open_category( this.route.snapshot.data['category'],true );
         }
       })
@@ -971,7 +931,6 @@ export class AccountComponent implements OnInit {
             if(i==(information).length -1){
               this.list_albums_bd_added = true;
               this.get_number_of_comics_to_show()
-              console.log( this.list_albums_bd)
             }
           }
         }
@@ -980,7 +939,6 @@ export class AccountComponent implements OnInit {
           this.get_number_of_comics_to_show()
         }
         if( this.opened_section == 1 && this.route.snapshot.data['category']==0) {
-          console.log(this.route.snapshot.data['category'] )
           this.open_category( this.route.snapshot.data['category'],true );
         }
       });
@@ -994,15 +952,11 @@ export class AccountComponent implements OnInit {
 
         this.list_drawing_albums_status[0]=info[0].standard_albums[0].status;        
         this.list_drawing_albums_status[1]=info[0].standard_albums[1].status;
-  
-        console.log( this.list_drawing_albums_status)
         let information =info[0].albums;
-        console.log(information)
         if(information.length!=0){   
           for (let i=0; i <(information).length;i++){
               this.list_titles_albums_drawings_added.push(information[i].album_name);
               this.list_titles_albums_drawings.push(information[i].album_name);
-              console.log(information[i].album_name)
               let album=information[i].album_content;
               this.list_drawing_albums_status.push(information[i].status);
               let length =(information[i].album_content).length
@@ -1013,10 +967,8 @@ export class AccountComponent implements OnInit {
                   }
                 } 
                 if(j==length-1){
-                  console.log(album)
                   this.list_albums_drawings.push(album);
                   if(i==(information).length-1){
-                    console.log("list_albums_drawings_added")
                     this.list_albums_drawings_added = true;
                     this.get_number_of_drawings_to_show();
                   }
@@ -1026,12 +978,10 @@ export class AccountComponent implements OnInit {
           }
         }
         else{
-          console.log("list_albums_drawings_added")
           this.list_albums_drawings_added = true;
           this.get_number_of_drawings_to_show();
         }
         if( this.opened_section == 1 && this.route.snapshot.data['category']==1) {
-          console.log(this.route.snapshot.data['category'] )
           this.open_category( this.route.snapshot.data['category'],true);
         }
       });
@@ -1071,9 +1021,6 @@ export class AccountComponent implements OnInit {
 
  
   onCategoryChange(e:any) {
-    console.log(e.value)
-    console.log(this.opened_section)
-    
     if( e.value == 3 ) {
       this.see_subscribers();
     }
@@ -1092,10 +1039,7 @@ export class AccountComponent implements OnInit {
   }
 
   update_new_contents() {
-    console.log("main_container")
-    console.log(this.main_container.nativeElement.offsetWidth*0.9)
     let width = this.main_container.nativeElement.offsetWidth*0.9;
-    console.log(width)
     if(width>0){
       let n=Math.floor(width/250);
       if(n>3){
@@ -1108,7 +1052,6 @@ export class AccountComponent implements OnInit {
       this.cd.detectChanges();
     }
 
-    console.log(this.number_of_new_contents_to_show)
 
 
 
@@ -1127,6 +1070,7 @@ export class AccountComponent implements OnInit {
         subscribers:this.subscribed_users_list,
         type_of_profile:this.type_of_profile,
         visitor_name:this.visitor_name,
+        author_gender:this.gender,
         visitor_id:this.visitor_id
       }, 
       panelClass: 'popupViewUsersClass',
@@ -1209,7 +1153,6 @@ export class AccountComponent implements OnInit {
 
   @ViewChildren("buttonSection", {read: ElementRef}) buttonSection:QueryList<ElementRef>;
   update_background_position(i:number) {
-    console.log("update background position")
     if( this.absoluteBackgroundColor && this.buttonSection.toArray()[i] ) {
       this.rd.setStyle( this.absoluteBackgroundColor.nativeElement, "width", this.buttonSection.toArray()[i].nativeElement.offsetWidth +"px" );
       this.rd.setStyle( this.absoluteBackgroundColor.nativeElement, "transform", "translate("+ this.buttonSection.toArray()[i].nativeElement.offsetLeft +"px,-50%)" );
@@ -1263,10 +1206,6 @@ export class AccountComponent implements OnInit {
   category_to_load:boolean[]=[];
   add_album_to_load=[];
   open_category(i : number,first) {
-    console.log("open cat ")
-    console.log(i)
-    console.log(this.category_to_load)
-    console.log(this.opened_category)
     if( !first && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
@@ -1293,19 +1232,9 @@ export class AccountComponent implements OnInit {
     if( this.opened_category==0 && this.opened_section==1) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/comics`); }
     else if(this.opened_category==1 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/drawings`); }
     else if( this.opened_category==2 && this.opened_section==1 ) { this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks/writings`); }
-   
- 
-    console.log("category changed")
     this.add_album=-1;
     this.opened_album=-1;
-   
     this.open_album( 0,true);
-   
-   
-    console.log("end opened cat")
-    console.log(this.opened_category)
-    console.log(this.put_category_visible)
-    
     
   }
 
@@ -1316,7 +1245,6 @@ export class AccountComponent implements OnInit {
   albums_to_show_writings=[false];
   albums_with_masonry_loaded=[];
   open_album(i : number,from_category) {
-    console.log("open album " + i)
     if( this.opened_album == i || this.add_album != -1 ) {
       if(this.add_album!=-1){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -1353,8 +1281,6 @@ export class AccountComponent implements OnInit {
     this.reset_number_of_drawings_to_show();
     this.opened_album=i;
     this.opened_album_selector=i;
-   
-    console.log("detect changes")
     this.cd.detectChanges();
    
    
@@ -1363,18 +1289,14 @@ export class AccountComponent implements OnInit {
 
   opened_album_selector=-1;
   albumChange(event){
-    console.log(this.opened_album)
-    console.log(this.opened_album_selector)
     if(this.opened_album_selector==this.opened_album){
       return
     }
-
     this.open_album(this.opened_album_selector,false)
   }
 
   current_opened_album=-1;
   start_add_album(i : number) {
-    
     if(this.opened_category==0 && this.list_titles_albums_bd_added.length==10){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Vous ne pouvez pas créer plus de 10 sections'},
@@ -1413,50 +1335,29 @@ export class AccountComponent implements OnInit {
     this.add_album = i;
   }
 
-  // number of grid/number of albums
   reload_masonry(){
-    console.log("reaload masonry")
      var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
-      //columnWidth: 200,
       gutter:10,
-      //isInitLayout:true,
       initLayout:false,
       fitWidth: true,
-      //horizontalOrder: true,
-      
     });
     
   }
   compteur_visibility_drawings=0
   ini_masonry() {
-    console.log("mansour")
     let THIS=this;
    
     var $grid = $('.grid').masonry({
       itemSelector: '.grid-item',
-      //columnWidth: 200,
       gutter:10,
-      //isInitLayout:true,
       initLayout:false,
       fitWidth: true,
-      //horizontalOrder: true,
-      
     });
-
-    //console.log($grid)
-
     $grid.on( 'layoutComplete', function() {
-      //console.log($grid)
-      console.log("layout complete")
-      
       $grid.masonry('reloadItems');
-      
-      
-      
       THIS.compteur_visibility_drawings+=1;
       let total=0;
-    
       if(THIS.opened_album==0){
         total+=THIS.list_titles_albums_drawings.length-1;
         if(!(THIS.list_drawings_artbook.length>0)){
@@ -1470,11 +1371,8 @@ export class AccountComponent implements OnInit {
         total+=1;
       }
       if(THIS.compteur_visibility_drawings==total){
-        console.log("put drawing v")
         THIS.contents_loading=false;
         THIS.list_visibility_albums_drawings=true;
-        //THIS.albums_with_masonry_loaded[THIS.opened_album]=true;
-        //THIS.put_album_visible[THIS.opened_album]=true;
       }
       
       THIS.prevent_see_more=false;
@@ -1527,10 +1425,7 @@ export class AccountComponent implements OnInit {
       if(!this.already_subscribed){
         this.already_subscribed=true;
         this.Subscribing_service.subscribe_to_a_user(this.user_id).subscribe(information=>{
-          
-          console.log(information)
           if(information[0].subscribtion){
-           
             this.loading_subscribtion=false;
             this.cd.detectChanges();
           }
@@ -1563,8 +1458,6 @@ export class AccountComponent implements OnInit {
       else{
         this.already_subscribed=false;
         this.Subscribing_service.remove_subscribtion(this.user_id).subscribe(information=>{
-         
-          console.log(information)
           this.NotificationsService.remove_notification('subscribtion',this.user_id.toString(),'none',this.visitor_id,0,false,0).subscribe(l=>{
             let message_to_send ={
               for_notifications:true,
@@ -1643,11 +1536,6 @@ export class AccountComponent implements OnInit {
   }
 
   remove_writing_album(i){
-    console.log(i)
-    console.log(this.list_titles_albums_writings_added[i])
-    console.log(this.list_writings_albums_status[i])
-    console.log(this.list_titles_albums_writings_added)
-    console.log(this.list_writings_albums_status)
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
         text:"Etes-vous sûr de vouloir supprimer cette section ? "},
@@ -1690,15 +1578,8 @@ export class AccountComponent implements OnInit {
   got_number_of_comics_to_show=false;
   number_of_lines_comics:number;
   get_number_of_comics_to_show(){
-    console.log("get number of comics to show by albums")
     let width=this.main_container.nativeElement.offsetWidth*0.9;
-    console.log(width)
-    console.log(this.list_titles_albums_bd)
-    console.log(this.list_albums_bd_added)
-    console.log(!this.got_number_of_comics_to_show)
-    console.log(this.list_titles_albums_bd_added)
     if(this.list_albums_bd_added && !this.got_number_of_comics_to_show ){
-      console.log("in it")
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_comics_variable = (n<6)?n:6;
@@ -1712,14 +1593,9 @@ export class AccountComponent implements OnInit {
       }
       else{
         this.number_of_lines_comics=2;
-      }
-      
+      };
       this.got_number_of_comics_to_show=true;
-     
-    
-      
       this.compteur_number_of_comics= this.number_of_comics_variable*this.number_of_lines_comics;
-
       this.number_of_comics_to_show_by_album[0]=this.compteur_number_of_comics;
       this.number_of_comics_to_show_by_album[1]=this.compteur_number_of_comics;
       if(this.list_titles_albums_bd_added.length>0){
@@ -1727,10 +1603,8 @@ export class AccountComponent implements OnInit {
           this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics;
         }
       }
-      
       this.display_comics_thumbnails=true;
       this.cd.detectChanges();
-      console.log(this.number_of_comics_to_show_by_album)
     }
   }
 
@@ -1745,8 +1619,6 @@ export class AccountComponent implements OnInit {
       else{
         variable= 6;
       }
-      
-      console.log(width)
       if(variable!=this.number_of_comics_variable && variable>0 ){
         for(let i=0;i<this.list_titles_albums_bd.length-1;i++){
           this.number_of_comics_to_show_by_album[i]/=this.number_of_comics_variable;
@@ -1754,7 +1626,6 @@ export class AccountComponent implements OnInit {
          
           if(i==this.list_titles_albums_bd.length-2){
             this.number_of_comics_variable=variable;
-            console.log( this.number_of_comics_to_show_by_album)
             this.cd.detectChanges();
           }
         }
@@ -1767,9 +1638,6 @@ export class AccountComponent implements OnInit {
   }
 
   reset_number_of_comics_to_show(){
-    console.log("rest number of comics")
-    console.log("main_container")
-    console.log(this.main_container.nativeElement.offsetWidth*0.9)
     if(this.got_number_of_comics_to_show){
       if(this.opened_album>0){
         this.compteur_number_of_comics= this.number_of_comics_variable*2;
@@ -1778,13 +1646,11 @@ export class AccountComponent implements OnInit {
         this.compteur_number_of_comics=this.number_of_comics_variable;
      
       }
-
       this.number_of_comics_to_show_by_album[0]=this.compteur_number_of_comics*this.number_of_lines_comics;
       this.number_of_comics_to_show_by_album[1]=this.compteur_number_of_comics*this.number_of_lines_comics;
       for(let i=0;i<this.list_titles_albums_bd_added.length;i++){
         this.number_of_comics_to_show_by_album[i+2]=this.compteur_number_of_comics*this.number_of_lines_comics;
       }
-      console.log(this.number_of_comics_to_show_by_album)
     }
     else{
       this.get_number_of_comics_to_show()
@@ -1815,13 +1681,8 @@ export class AccountComponent implements OnInit {
   updating_drawings_for_zoom=false;
   prevent_see_more=false;
   get_number_of_drawings_to_show(){
-    console.log("get_number_of_drawings_to_show")
     let width=this.main_container.nativeElement.offsetWidth*0.9;
-    console.log(width)
-    console.log(this.list_albums_drawings_added)
-    console.log(this.got_number_of_drawings_to_show)
     if(this.list_albums_drawings_added && !this.got_number_of_drawings_to_show){
-      console.log("in it")
       let n=Math.floor(width/210);
       if(n>3){
         this.number_of_drawings_variable = (n<6)?n:6;
@@ -1835,12 +1696,8 @@ export class AccountComponent implements OnInit {
       }
       else{
         this.number_of_lines_drawings=1;
-      }
-      
+      };
       this.got_number_of_drawings_to_show=true;
-      
-      
-      
       this.compteur_number_of_drawings= this.number_of_drawings_variable*this.number_of_lines_drawings;
       this.number_of_drawings_to_show_by_album[0]=this.compteur_number_of_drawings;
       this.number_of_drawings_to_show_by_album[1]=this.compteur_number_of_drawings;
@@ -1848,24 +1705,14 @@ export class AccountComponent implements OnInit {
         for(let i=0;i<this.list_titles_albums_drawings_added.length;i++){
           this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings;
         }
-      }
-      
-      console.log(this.number_of_drawings_variable)
-      console.log(this.number_of_lines_drawings)
-      console.log(this.list_albums_drawings)
-      console.log(this.number_of_drawings_to_show_by_album)
+      };
     }
   }
 
   
   update_number_of_drawings_to_show(){
     if(this.got_number_of_drawings_to_show){
-      console.log("update_number of drawings")
-      console.log(this.got_number_of_drawings_to_show)
-      console.log(this.main_container.nativeElement)
-      
         let width=this.main_container.nativeElement.offsetWidth*0.9;
-        console.log(width)
         let variable;
         let n=Math.floor(width/210);
         if(n>3){
@@ -1873,63 +1720,45 @@ export class AccountComponent implements OnInit {
         }
         else{
           variable = 6;
-        }
-        console.log(this.number_of_drawings_variable)
-        console.log(variable)
+        };
         if(variable!=this.number_of_drawings_variable && variable>0){
-          console.log("prevent see more")
           this.prevent_see_more=true;
           this.detect_new_compteur_drawings=false;
-          
           let total=0;
           let change=false;
-          console.log(this.list_albums_drawings)
           for(let i=0;i<this.list_titles_albums_drawings.length-1;i++){
             let old_value=this.number_of_drawings_to_show_by_album[i];
             this.number_of_drawings_to_show_by_album[i]/=this.number_of_drawings_variable;
             this.number_of_drawings_to_show_by_album[i]*=variable;
-            
             if(this.number_of_drawings_to_show_by_album[i]>old_value){
               this.updating_drawings_for_zoom=false;
               this.compteur_drawings_thumbnails=0;
               this.total_for_new_compteur=0;
               change=true;
               if(i==0 ){
-                console.log(this.number_of_drawings_to_show_by_album[i])
-                console.log(this.list_drawings_onepage.length)
-                console.log(old_value)
                 if(this.number_of_drawings_to_show_by_album[i]>this.list_drawings_onepage.length){
                   total+=this.list_drawings_onepage.length-old_value;
                 }
                 else{
                   let res=this.number_of_drawings_to_show_by_album[i]-old_value;
-                  console.log('+ ' +res)
                   total+=this.number_of_drawings_to_show_by_album[i]-old_value;
                 }
               }
               else if(i==1){
-                console.log(this.number_of_drawings_to_show_by_album[i])
-                console.log(this.list_drawings_artbook.length)
-                console.log(old_value)
                 if(this.number_of_drawings_to_show_by_album[i]>this.list_drawings_artbook.length){
                   total+=this.list_drawings_artbook.length-old_value;
                 }
                 else{
                   let res=this.number_of_drawings_to_show_by_album[i]-old_value;
-                  console.log('+ ' +res)
                   total+=this.number_of_drawings_to_show_by_album[i]-old_value;
                 }
               }
               else{
-                console.log(this.number_of_drawings_to_show_by_album[i])
-                console.log(this.list_albums_drawings[i-2])
-                console.log(old_value)
                 if(this.number_of_drawings_to_show_by_album[i]>this.list_albums_drawings[i-2].length){
                   total+=this.list_albums_drawings[i-2].length-old_value;
                 }
                 else{
                   let res=this.number_of_drawings_to_show_by_album[i]-old_value;
-                  console.log('+ ' +res)
                   total+=this.number_of_drawings_to_show_by_album[i]-old_value;
                 }
               }
@@ -1944,23 +1773,11 @@ export class AccountComponent implements OnInit {
                 this.total_for_new_compteur=total;
               }
               if(this.updating_drawings_for_zoom){
-                console.log("prevent see more false")
                 this.prevent_see_more=false;
               }
               this.number_of_drawings_variable=variable;
               this.detect_new_compteur_drawings=true;
               this.cd.detectChanges();
-              console.log(this.number_of_drawings_variable)
-              console.log(this.number_of_lines_drawings)
-              console.log(this.compteur_drawings_thumbnails)
-              console.log(this.total_for_new_compteur)
-              console.log( this.number_of_drawings_to_show_by_album)
-              console.log("update number of drawing end")
-              /*$('.grid').masonry('reloadItems');
-              this.cd.detectChanges();
-              this.reload_masonry();
-              this.cd.detectChanges();*/
-              
             }
           }
         }
@@ -1973,12 +1790,9 @@ export class AccountComponent implements OnInit {
   }
 
   reset_number_of_drawings_to_show(){
-    console.log("rest number of drawings")
     this.detect_new_compteur_drawings=false;
     this.total_for_new_compteur=0;
     this.updating_drawings_for_zoom=false;
-    console.log(this.number_of_drawings_variable)
-    console.log(this.opened_album)
     if(this.got_number_of_drawings_to_show){
       if(this.opened_album>0){
         this.compteur_number_of_drawings= this.number_of_drawings_variable*2;
@@ -1987,16 +1801,11 @@ export class AccountComponent implements OnInit {
         this.compteur_number_of_drawings=this.number_of_drawings_variable;
        
       }
-
       this.number_of_drawings_to_show_by_album[0]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
       this.number_of_drawings_to_show_by_album[1]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
       for(let i=0;i<this.list_titles_albums_drawings_added.length;i++){
         this.number_of_drawings_to_show_by_album[i+2]=this.compteur_number_of_drawings*this.number_of_lines_drawings;
-        
-       
-        
       }
-      console.log(this.number_of_drawings_to_show_by_album)
     }
     else{
       this.get_number_of_drawings_to_show()
@@ -2006,21 +1815,15 @@ export class AccountComponent implements OnInit {
 
   
   sendLoaded(event){
-    console.log("load")
     if(!this.updating_drawings_for_zoom){
       this.compteur_drawings_thumbnails++;
       if(this.detect_new_compteur_drawings){
-        console.log("detect_new_compteur_drawings")
-        console.log(this.compteur_drawings_thumbnails + '/ '+ this.total_for_new_compteur)
         $('.grid').masonry('reloadItems');
         this.cd.detectChanges;
         if(this.compteur_drawings_thumbnails==this.total_for_new_compteur){
           this.detect_new_compteur_drawings=false;
-          
           this.total_for_new_compteur=0;
           this.compteur_drawings_thumbnails=0;
-          console.log("start reload after count end")
-          console.log(this.prevent_shiny)
           this.reload_masonry();
           this.prevent_shiny=false;
           this.cd.detectChanges();
@@ -2035,11 +1838,6 @@ export class AccountComponent implements OnInit {
           }
           if(this.compteur_drawings_thumbnails==total){
             this.compteur_drawings_thumbnails=0;
-            console.log(this.number_of_drawings_variable)
-            console.log(this.number_of_lines_drawings)
-            console.log(this.compteur_drawings_thumbnails)
-            console.log(this.total_for_new_compteur)
-            console.log( this.number_of_drawings_to_show_by_album)
             this.ini_masonry();
           }
         }
@@ -2047,11 +1845,6 @@ export class AccountComponent implements OnInit {
           let total=this.list_drawings_onepage.slice(0,this.number_of_drawings_to_show_by_album[0]).length
           if(this.compteur_drawings_thumbnails==total){
             this.compteur_drawings_thumbnails=0;
-            console.log(this.number_of_drawings_variable)
-            console.log(this.number_of_lines_drawings)
-            console.log(this.compteur_drawings_thumbnails)
-            console.log(this.total_for_new_compteur)
-            console.log( this.number_of_drawings_to_show_by_album)
             this.ini_masonry();
           }
         }
@@ -2059,11 +1852,6 @@ export class AccountComponent implements OnInit {
           let total=this.list_drawings_artbook.slice(0,this.number_of_drawings_to_show_by_album[1]).length
           if(this.compteur_drawings_thumbnails==total){
             this.compteur_drawings_thumbnails=0;
-            console.log(this.number_of_drawings_variable)
-            console.log(this.number_of_lines_drawings)
-            console.log(this.compteur_drawings_thumbnails)
-            console.log(this.total_for_new_compteur)
-            console.log( this.number_of_drawings_to_show_by_album)
             this.ini_masonry();
           }
         }
@@ -2071,11 +1859,6 @@ export class AccountComponent implements OnInit {
           let total=this.list_albums_drawings[this.opened_album-3].slice(0,this.number_of_drawings_to_show_by_album[this.opened_album-1]).length;
           if(this.compteur_drawings_thumbnails==total){
             this.compteur_drawings_thumbnails=0;
-            console.log(this.number_of_drawings_variable)
-            console.log(this.number_of_lines_drawings)
-            console.log(this.compteur_drawings_thumbnails)
-            console.log(this.total_for_new_compteur)
-            console.log( this.number_of_drawings_to_show_by_album)
             this.ini_masonry();
           }
         }
@@ -2087,12 +1870,6 @@ export class AccountComponent implements OnInit {
     
     
   }
-
-  /**********************************************DISplay writings thumbnails******************** */
-/**********************************************DISplay writings thumbnails******************** */
-/**********************************************DISplay writings thumbnails******************** */
-/**********************************************DISplay writings thumbnails******************** */
-/**********************************************DISplay writings thumbnails******************** */
 /**********************************************DISplay writings thumbnails******************** */
 /**********************************************DISplay writings thumbnails******************** */
 /**********************************************DISplay writings thumbnails******************** */
@@ -2104,19 +1881,14 @@ export class AccountComponent implements OnInit {
   got_number_of_writings_to_show=false;
   number_of_lines_writings:number;
   get_number_of_writings_to_show(){
-    console.log("get number of writings to _show")
     let width=this.main_container.nativeElement.offsetWidth*0.9;
-    console.log(width)
     if(this.list_albums_writings_added && !this.got_number_of_writings_to_show){
-      console.log("in it")
       let n=Math.floor(width/250);
       if(n>3){
         this.number_of_writings_variable = (n<6)?n:6;
-        
       }
       else{
         this.number_of_writings_variable = 6;
-       
       }
 
       if(this.list_titles_albums_writings_added.length>3){
@@ -2125,33 +1897,22 @@ export class AccountComponent implements OnInit {
       else{
         this.number_of_lines_writings=2;
       }
-      console.log("number_of_lines_writings")
-      console.log(this.number_of_lines_writings)
       this.got_number_of_writings_to_show=true;
-     
-      
-      
       this.compteur_number_of_writings= this.number_of_writings_variable*this.number_of_lines_writings;
       this.number_of_writings_to_show_by_album[0]=this.compteur_number_of_writings;
-      console.log(this.list_titles_albums_writings_added.length)
       if(this.list_titles_albums_writings_added.length>0){
         for(let i=0;i<this.list_titles_albums_writings_added.length;i++){
           this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings;
         }
       }
-      
       this.display_writings_thumbnails=true;
-      this.cd.detectChanges()
-      console.log(this.list_albums_writings)
-      console.log(this.list_writings)
-      console.log(this.number_of_writings_to_show_by_album)
+      this.cd.detectChanges();
     }
   }
 
   update_number_of_writings_to_show(){
     if(this.got_number_of_writings_to_show){
       let width=this.main_container.nativeElement.offsetWidth*0.9;
-      console.log(width)
       let variable;
       let n=Math.floor(width/250);
       if(n>3){
@@ -2160,20 +1921,12 @@ export class AccountComponent implements OnInit {
       else{
         variable = 6;
       }
-      console.log("update num")
-      console.log(variable)
-      console.log(this.number_of_writings_variable)
       if(variable!=this.number_of_writings_variable && variable>0){
-        console.log(this.number_of_writings_variable)
-        console.log(variable);
         for(let i=0;i<this.list_titles_albums_writings.length;i++){
-         
           this.number_of_writings_to_show_by_album[i]/=this.number_of_writings_variable;
           this.number_of_writings_to_show_by_album[i]*=variable;
-          
         }
         this.number_of_writings_variable=variable;
-        console.log( this.number_of_writings_to_show_by_album)
         this.cd.detectChanges();
       }
     }
@@ -2182,21 +1935,18 @@ export class AccountComponent implements OnInit {
   }
 
   reset_number_of_writings_to_show(){
-    console.log("rest number of writings")
     if(this.got_number_of_writings_to_show){
       if(this.opened_album>0){
         this.compteur_number_of_writings= this.number_of_writings_variable*2;
       }
       else{
         this.compteur_number_of_writings=this.number_of_writings_variable;
-        
       }
 
       this.number_of_writings_to_show_by_album[0]=this.compteur_number_of_writings*this.number_of_lines_writings;
       for(let i=0;i<this.list_titles_albums_writings_added.length;i++){
         this.number_of_writings_to_show_by_album[i+1]=this.compteur_number_of_writings*this.number_of_lines_writings;
       }
-      console.log(this.number_of_writings_to_show_by_album)
     }
     else{
       this.get_number_of_writings_to_show();
@@ -2312,17 +2062,12 @@ export class AccountComponent implements OnInit {
     } 
     else{
       this.new_contents_loading=true;
-      console.log("see_more_comics")
       if(album_section_number==0){
         this.number_of_comics_to_show_by_album[album_number]+=this.number_of_comics_variable*2;
       }
       else{
         this.number_of_comics_to_show_by_album[album_number]+=this.number_of_comics_variable*4;
       }
-  
-    
-      console.log( this.number_of_comics_to_show_by_album);
-      
       this.new_contents_loading=false;
       this.cd.detectChanges();
     }
@@ -2351,70 +2096,37 @@ export class AccountComponent implements OnInit {
        return
     } 
     else{
-      console.log("in see more drawings")
-      console.log(this.list_drawings_onepage)
-      console.log(this.number_of_drawings_to_show_by_album)
-      console.log(this.prevent_shiny)
       this.prevent_shiny=true;
       this.cd.detectChanges();
       this.new_contents_loading=true;
-      console.log("see_more_drawings");
-      console.log(album_section_number)
       let num=this.number_of_drawings_to_show_by_album[album_number];
-      console.log(num)
-      //if(album_section_number==0){
-        this.number_of_drawings_to_show_by_album[album_number]+=this.number_of_drawings_variable*2;
-      /*}
-      else{
-        this.number_of_drawings_to_show_by_album[album_number]+=this.number_of_drawings_variable*4;
-      }*/
-  
-      console.log( this.number_of_drawings_to_show_by_album);
-      
+      this.number_of_drawings_to_show_by_album[album_number]+=this.number_of_drawings_variable*2;
       this.detect_new_compteur_drawings=true;
       if(album_number==0){
-        console.log(this.list_drawings_onepage)
-        console.log(this.total_for_new_compteur)
-        console.log(this.number_of_drawings_to_show_by_album[album_number])
         if(this.number_of_drawings_to_show_by_album[album_number]>this.list_drawings_onepage.length){
           this.total_for_new_compteur=this.list_drawings_onepage.length-num;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        /*if(this.opened_album>0){
-          this.total_for_new_compteur+= this.total_for_new_compteur;
-        }*/
         
       }
       else if(album_number==1){
-        console.log(this.list_drawings_artbook)
-        console.log(this.number_of_drawings_to_show_by_album[album_number])
         if(this.number_of_drawings_to_show_by_album[album_number]>this.list_drawings_artbook.length){
           this.total_for_new_compteur=this.list_drawings_artbook.length-num;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        /*if(this.opened_album>0){
-          this.total_for_new_compteur+= this.total_for_new_compteur;
-        }*/
       }
       else{
-        console.log(this.list_albums_drawings[album_number-2])
         if(this.number_of_drawings_to_show_by_album[album_number]>this.list_albums_drawings[album_number-2].length){
           this.total_for_new_compteur=this.list_albums_drawings[album_number-2].length-num;
         }
         else{
           this.total_for_new_compteur=this.number_of_drawings_to_show_by_album[album_number]-num;
         }
-        /*if(this.opened_album>0){
-          this.total_for_new_compteur+= this.total_for_new_compteur;
-        }*/
       }
-      console.log(this.compteur_drawings_thumbnails)
-      console.log( this.total_for_new_compteur)
-      console.log("fin see more drawings")
       this.prevent_see_more=true;
       this.new_contents_loading=false;
       this.cd.detectChanges();
@@ -2422,15 +2134,11 @@ export class AccountComponent implements OnInit {
     
   }
 
-
-
-    /***********************************************see more writings*************************** */
+/***********************************************see more writings*************************** */
 /***********************************************see more writings*************************** */
 /***********************************************see more writings*************************** */
 
 see_more_writings(album_number,album_section_number){
-  console.log(album_section_number)
-  console.log(album_number)
   if(album_number==0 && this.number_of_writings_to_show_by_album[album_number]>=this.list_writings.length){
     return
   }
@@ -2439,7 +2147,6 @@ see_more_writings(album_number,album_section_number){
   } 
   else{
     this.new_contents_loading=true;
-    console.log("see_more_writings");
     let num=this.number_of_writings_to_show_by_album[album_number]
     if(album_section_number==0){
       this.number_of_writings_to_show_by_album[album_number]+=this.number_of_writings_variable*2;
@@ -2447,8 +2154,6 @@ see_more_writings(album_number,album_section_number){
     else{
       this.number_of_writings_to_show_by_album[album_number]+=this.number_of_writings_variable*4;
     }
-
-    console.log( this.number_of_writings_to_show_by_album);
     this.cd.detectChanges();
   }
   
@@ -2456,7 +2161,6 @@ see_more_writings(album_number,album_section_number){
 
 
 block_user(){
-  console.log(this.user_id);
   if(this.user_id>3){
     const dialogRef = this.dialog.open(PopupConfirmationComponent, {
       data: {showChoice:true, 
@@ -2467,12 +2171,8 @@ block_user(){
     dialogRef.afterClosed().subscribe(result => {
       if(result){
           this.Subscribing_service.remove_all_subscribtions_both_sides(this.user_id).subscribe(s=>{
-            console.log(s)
             this.chatService.remove_friend(this.user_id).subscribe(m=>{
-              console.log(m);
-              console.log(m[0].date)
               this.Profile_Edition_Service.block_user(this.user_id,(m[0].date)?(m[0].date):null).subscribe(r=>{
-                console.log(r);
                 let message_to_send ={
                   id_user_name:this.visitor_name,
                   id_user:this.visitor_id,   
@@ -2487,11 +2187,9 @@ block_user(){
                   is_a_group_chat:false,
                   is_a_response:false,
                 }
-                console.log("send usr blocked")
                 this.chatService.messages.next(message_to_send);
                 this.user_blocked=true;
                 this.user_who_blocked="me";
-
                 this.cd.detectChanges();
                 this.update_background_position( this.opened_section );;
               })
@@ -2514,11 +2212,8 @@ block_user(){
 
 unblock_user(){
   this.Profile_Edition_Service.unblock_user(this.user_id).subscribe(r=>{
-    console.log(r[0]);
     if(r[0].date){
-      console.log(r[0].date)
       this.chatService.add_chat_friend(this.user_id,r[0].date).subscribe(r=>{
-        console.log(r[0])
         location.reload()
       })
     }
@@ -2543,7 +2238,6 @@ report(){
 
   this.report_loading=true;
   this.Reports_service.check_if_content_reported('account',this.user_id,"unknown",0).subscribe(r=>{
-    console.log(r[0])
     if(r[0].nothing){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:true, text:'Vous ne pouvez pas signaler deux fois le même compte'},
@@ -2576,17 +2270,12 @@ report(){
   list_of_stories=[]
   story_state=false;
   watch_story(){
-    console.log([this.user_id]);
-    console.log(this.list_of_stories)
     if(this.story_found){
       const dialogRef = this.dialog.open(PopupStoriesComponent, {
         data: { for_account:true, list_of_users: [this.user_id], index_id_of_user: 0, list_of_data:this.list_of_stories,current_user:this.visitor_id,current_user_name:this.visitor_name},
         panelClass: 'popupStoriesClass'
       });
-
       dialogRef.afterClosed().subscribe(result => {
-        console.log("closed");
-        console.log(result.list_of_users_to_end);
         let list_to_end = result.list_of_users_to_end;
         if(list_to_end.length>0){
             this.story_state=false;
@@ -2594,7 +2283,6 @@ report(){
         if(result.event=="end-swiper"){
           this.story_state=false;
         }
-        console.log(this.story_state)
       })
     }
   }

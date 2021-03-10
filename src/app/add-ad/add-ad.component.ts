@@ -113,8 +113,7 @@ export class AddAdComponent implements OnInit {
 
 
   back_home() {
-    let name = this.Ads_service.get_thumbnail_name2()
-    console.log(name)
+    let name = this.Ads_service.get_thumbnail_name2();
     this.stepChanged.emit(0);
     this.cancelled.emit({ad_cover:name});
     
@@ -177,7 +176,6 @@ export class AddAdComponent implements OnInit {
 
   all_attachments_uploaded( event: boolean) {
     this.attachments_uploaded = event;
-    console.log("done")
     this.NotificationsService.add_notification("add_publication",this.id,this.author_name,null,'ad',this.fd.value.fdTitle,this.fd.value.fdProject_type,this.ad_id,0,"add",false,0).subscribe(l=>{
       let message_to_send ={
         for_notifications:true,
@@ -353,7 +351,6 @@ export class AddAdComponent implements OnInit {
     else{
       this.price_type=this.fd.value.fdPrice_type;
     }
-    console.log(this.price_type)
   }
 
   change_price_type_service(event){
@@ -365,7 +362,6 @@ export class AddAdComponent implements OnInit {
     else{
       this.price_type1=this.fd.value.fdPrice_type1;
     }
-    console.log(this.price_type1)
   }
 
   change_offer_and_demand(event){
@@ -377,7 +373,6 @@ export class AddAdComponent implements OnInit {
     else{
       this.offer_or_demand=this.fd.value.fdOffer_demand;
     }
-    console.log(this.offer_or_demand)
   }
 
   validate_form_ads() {
@@ -388,7 +383,6 @@ export class AddAdComponent implements OnInit {
     if(this.remuneration && !this.fd.valid){
       if(this.fd.value.fdPrice.length==0){
         this.price_value ="0";
-        console.log(this.price_value);
       }
     }
     else if(this.remuneration && this.fd.valid){
@@ -402,7 +396,6 @@ export class AddAdComponent implements OnInit {
     if(this.for_service && !this.fd.valid){
       if(this.fd.value.fdPrice1.length==0){
         this.price_value1 ="0";
-        console.log(this.price_value1);
       }
     }
     else if(this.for_service && this.fd.valid){
@@ -413,13 +406,6 @@ export class AddAdComponent implements OnInit {
     }
 
     if ( this.fd.valid && this.Ads_service.get_thumbnail_confirmation() && !(this.remuneration && this.for_service)) {
-        console.log(this.price_value);
-        console.log(this.price_value1);
-        console.log(this.price_type);
-        console.log(this.price_type1);
-        console.log("ok");
-        console.log(this.fd.value.fdDescription);
-
         this.display_loading=true;
         this.Ads_service.check_if_ad_is_ok(this.fd.value.fdProject_type,this.fd.value.fdMydescription,this.fd.value.fdTargets).subscribe(r=>{
           if(r[0].result=="ok"){
@@ -430,7 +416,6 @@ export class AddAdComponent implements OnInit {
                 this.Subscribing_service.add_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(m=>{
                   this.Subscribing_service.validate_content("ad",this.fd.value.fdProject_type,this.id_ad,0).subscribe(n=>{
                     this.status_pictures=true;
-                    console.log(n);
                   })
                 })
               })           
@@ -451,8 +436,6 @@ export class AddAdComponent implements OnInit {
 
 
     else if(!this.fd.valid){
-      console.log(this.fd.value.fdTargets)
-      console.log(this.fd)
       if(this.fd.controls.fdTargets.status=='INVALID' && this.fd.controls.fdTitle.status=='VALID' && this.fd.controls.fdMydescription.status=='VALID' && this.fd.controls.fdPreferential_location.status=='VALID' &&  this.fd.controls.fdProject_type.status=='VALID'){
         const dialogRef = this.dialog.open(PopupConfirmationComponent, {
           data: {showChoice:false, text:'Le formulaire est incorrect. Veillez à saisir des cibles valides'},

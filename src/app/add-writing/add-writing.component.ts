@@ -194,10 +194,6 @@ export class AddWritingComponent implements OnInit {
   validateForm00() {
 
     this.nextButton.nativeElement.disabled = true;
-    console.log( this.fw)
-    console.log(this.Writing_CoverService.get_confirmation())
-
-    
     if( ! (this.fw.value.fwDescription.replace(/\s/g, '').length>0) ) {
       this.fw.controls['fwDescription'].setValue("");
     }
@@ -206,7 +202,6 @@ export class AddWritingComponent implements OnInit {
       if( this.CURRENT_step < (this.REAL_step) ) {
         this.stepChanged.emit(1);
         this.CURRENT_step++;
-
         this.nextButton.nativeElement.disabled = false;
         this.cd.detectChanges();
         window.scroll(0, 0);
@@ -241,14 +236,10 @@ export class AddWritingComponent implements OnInit {
 
   confirmation_writing_uploaded=false;
   validate_form_writing() {
-
     this.validateButton.nativeElement.disabled = true;
-    console.log(this.Writing_Upload_Service.get_confirmation())
     let list =this.Writing_Upload_Service.get_confirmation()
     this.confirmation_writing_uploaded =list[0];
     let total_pages=list[1];
-
- 
     if(total_pages>=50){
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
         data: {showChoice:false, text:'Votre écrit ne peut faire plus de 50 pages'},
@@ -257,10 +248,7 @@ export class AddWritingComponent implements OnInit {
       this.validateButton.nativeElement.disabled = false;
     }
     else if ( this.fw.valid  && [0] && this.confirmation_writing_uploaded ) {
-
-      
        this.display_loading=true;
-
        this.Writing_Upload_Service.CreateWriting(
           this.fw.value.fwTitle,
           this.fw.value.fwCategory, 
@@ -272,9 +260,7 @@ export class AddWritingComponent implements OnInit {
           this.writing_id=v[0].writing_id;
           this.Writing_CoverService.add_covername_to_sql(v[0].writing_id).subscribe(s=>{
             this.Writing_Upload_Service.validate_writing(this.writing_id).subscribe(r=>{
-              console.log(r[0])
               this.Subscribing_service.validate_content("writing","unknown",r[0].writing_id,0).subscribe(l=>{
-                console.log(l)
                 this.NotificationsService.add_notification('add_publication',this.user_id,this.visitor_name,null,'writing',this.title,'unknown',v[0].writing_id,0,"add",false,0).subscribe(l=>{
                   let message_to_send ={
                     for_notifications:true,

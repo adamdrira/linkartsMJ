@@ -58,13 +58,11 @@
                 
     
                 <ng-container *ngIf="type_of_profile=='account' && list_of_subscribings_information[i].id!=visitor_id">
-                    <button *ngIf="!list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="subscribe-button" (click)="subscribtion(i)">
-                        <mat-icon [ngClass]="{'invisible': !show_icon }">add</mat-icon>
-                        <span>S'abonner</span>
-                    </button>
                     <button *ngIf="list_of_check_subscribtion[i]"  [disabled]="loading_subscribtion" class="unsubscribe-button" (click)="subscribtion(i)">
                         <mat-icon [ngClass]="{'invisible': !show_icon }">notifications_active</mat-icon>
-                        <span>Abonné(e)</span>
+                        <span *ngIf="list_of_subscribings_information[i].gender=='Homme'">Abonné</span>
+                        <span *ngIf="list_of_subscribings_information[i].gender=='Femme'">Abonnée</span>
+                        <span *ngIf="list_of_subscribings_information[i].gender=='Groupe'">Abonnés</span>
                     </button>
                 </ng-container>
                 

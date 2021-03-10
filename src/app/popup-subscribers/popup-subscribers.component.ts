@@ -12,7 +12,6 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $: any;
 
 @Component({
   selector: 'app-popup-subscribers',
@@ -34,16 +33,13 @@ export class PopupSubscribersComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<PopupSubscribersComponent>,
     private cd:ChangeDetectorRef,
-    private rd:Renderer2,
     private NotificationsService:NotificationsService,
     private chatService:ChatService,
     private sanitizer:DomSanitizer,
     private Subscribing_service:Subscribing_service,
     public dialog: MatDialog,
     private Profile_Edition_Service:Profile_Edition_Service,
-
     private navbar: NavbarService,
-
     @Inject(MAT_DIALOG_DATA) public data: any) {
       dialogRef.disableClose = true;
     
@@ -55,7 +51,6 @@ export class PopupSubscribersComponent implements OnInit {
   }
 
   list_of_subscribers=this.data.subscribers;
-  
   list_of_subscribers_information:any[]=[];
   list_of_check_subscribtion:any[]=[];
   list_of_profile_pictures:SafeUrl[]=[];
@@ -63,11 +58,10 @@ export class PopupSubscribersComponent implements OnInit {
   type_of_profile=this.data.type_of_profile;
   visitor_id=this.data.visitor_id;
   visitor_name=this.data.visitor_name;
-
+  author_gender=this.data.author_gender;
   show_icon=false;
+
   ngOnInit() {
-    let THIS=this;
-    console.log(this.list_of_subscribers);
     let n=this.list_of_subscribers.length;
     let compt=0;
     if(n>0){
@@ -75,7 +69,6 @@ export class PopupSubscribersComponent implements OnInit {
         let  sub_retrieved=false;
         let data_retrieved=false;
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_subscribers[i].id_user).subscribe(r=>{
-          console.log(r[0])
           this.list_of_subscribers_information[i]=r[0];
           data_retrieved=true;
           check_all(this)
@@ -89,27 +82,17 @@ export class PopupSubscribersComponent implements OnInit {
             this.list_of_check_subscribtion[i]=false;
           }
           sub_retrieved=true;
-          check_all(this)
-          console.log(this.list_of_subscribers_information[i])
-         
-          
+          check_all(this);
         });
-
         this.Profile_Edition_Service.retrieve_profile_picture( this.list_of_subscribers[i].id_user).subscribe(r=> {
           let url = (window.URL) ? window.URL.createObjectURL(r) : (window as any).webkitURL.createObjectURL(r);
           const SafeURL = this.sanitizer.bypassSecurityTrustUrl(url);
           this.list_of_profile_pictures[i] = SafeURL;
-         
         });
-
-
         function check_all(THIS){
           if(sub_retrieved && data_retrieved){
             compt++;
-            console.log(compt)
-            console.log(n)
             if(compt==n){
-              console.log(THIS.list_of_subscribers_information)
               THIS.subscribtion_info_added=true;
               THIS.cd.detectChanges()
             }
@@ -118,8 +101,6 @@ export class PopupSubscribersComponent implements OnInit {
         
       }
     }
-    
-    
   }
 
   loading_subscribtion=false;
@@ -131,10 +112,7 @@ export class PopupSubscribersComponent implements OnInit {
         if(!this.list_of_check_subscribtion[i]){
           this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribers_information[i].id).subscribe(information=>{
-            
-            console.log(information)
             if(information[0].subscribtion){
-              
               this.loading_subscribtion=false;
               this.cd.detectChanges();
             }
@@ -167,8 +145,6 @@ export class PopupSubscribersComponent implements OnInit {
         else{
           this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_subscribers_information[i].id).subscribe(information=>{
-           
-            console.log(information)
             this.NotificationsService.remove_notification('subscribtion',this.list_of_subscribers_information[i].id.toString(),'none',this.data.visitor_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
@@ -186,7 +162,6 @@ export class PopupSubscribersComponent implements OnInit {
                 is_comment_answer:false,
                 comment_id:0,
               }
-              
               this.loading_subscribtion=false;
               this.chatService.messages.next(message_to_send);
               this.cd.detectChanges();
@@ -194,7 +169,6 @@ export class PopupSubscribersComponent implements OnInit {
           });
         }
       }
-     
     }
     else{
       const dialogRef = this.dialog.open(PopupConfirmationComponent, {
@@ -202,7 +176,6 @@ export class PopupSubscribersComponent implements OnInit {
         panelClass: "popupConfirmationClass",
       });
     }
-  
   }
 
   get_user_link(i:number) {

@@ -64,12 +64,7 @@ export class PopupSubscribingsComponent implements OnInit {
   visitor_name=this.data.visitor_name;
   show_icon=false;
   ngOnInit() {
-    let THIS=this;
-    console.log(this.data.visitor_id)
-    console.log(this.data.visitor_name)
-    console.log(this.data.type_of_profile)
     let n=this.list_of_subscribings.length;
-    console.log(this.list_of_subscribings);
     let compt=0;
     if(n>0){
       for (let i=0;i<n;i++){
@@ -106,7 +101,6 @@ export class PopupSubscribingsComponent implements OnInit {
           if(sub_retrieved && data_retrieved){
             compt++;
             if(compt==n){
-              console.log(THIS.list_of_subscribings_information);
               THIS.subscribtion_info_added=true;
               THIS.cd.detectChanges()
             }
@@ -128,8 +122,6 @@ export class PopupSubscribingsComponent implements OnInit {
         if(!this.list_of_check_subscribtion[i]){
           this.list_of_check_subscribtion[i]=true;
           this.Subscribing_service.subscribe_to_a_user(this.list_of_subscribings_information[i].id).subscribe(information=>{
-            
-            console.log(information)
             if(information[0].subscribtion){
               
               this.loading_subscribtion=false;
@@ -164,8 +156,6 @@ export class PopupSubscribingsComponent implements OnInit {
         else{
           this.list_of_check_subscribtion[i]=false;
           this.Subscribing_service.remove_subscribtion(this.list_of_subscribings_information[i].id).subscribe(information=>{
-           
-            console.log(information)
             this.NotificationsService.remove_notification('subscribtion',this.list_of_subscribings_information[i].id.toString(),'none',this.data.visitor_id,0,false,0).subscribe(l=>{
               let message_to_send ={
                 for_notifications:true,
