@@ -10,7 +10,6 @@ import {number_in_k_or_m} from '../helpers/fonctions_calculs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
 
-declare var $:any;
 
 @Component({
   selector: 'app-thumbnail-album-drawing',

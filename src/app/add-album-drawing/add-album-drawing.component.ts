@@ -1,26 +1,17 @@
 import { Component, OnInit, Input, ViewChild, ViewContainerRef, ChangeDetectorRef, ComponentFactoryResolver, Renderer2, ViewChildren, QueryList, ElementRef, SimpleChange, SimpleChanges } from '@angular/core';
-
-
 import { Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
-
 import { ThumbnailAlbumDrawingComponent } from '../thumbnail-album-drawing/thumbnail-album-drawing.component'
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Albums_service } from '../services/albums.service';
-
 import { pattern } from '../helpers/patterns';
-
 import { MatDialog } from '@angular/material/dialog';
 import { PopupConfirmationComponent } from '../popup-confirmation/popup-confirmation.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { NavbarService } from '../services/navbar.service';
-
 import { normalize_to_nfc } from '../helpers/patterns';
-
 declare var Swiper:any;
 declare var Muuri:any;
-declare var $:any;
-
 
 @Component({
   selector: 'app-add-album-drawing',
@@ -44,7 +35,6 @@ export class AddAlbumDrawingComponent implements OnInit {
     private resolver: ComponentFactoryResolver,
     private rd:Renderer2,
     private Albums_service:Albums_service,
-    private router:Router,
     public dialog: MatDialog,
     private navbar: NavbarService, 
   ) { 
@@ -284,6 +274,7 @@ export class AddAlbumDrawingComponent implements OnInit {
         data: {showChoice:false, text:'Veuillez sélectionner au moins une œuvre'},
         panelClass: "popupConfirmationClass",
       });
+      this.loading=false;
       return;
     }
     if( !(this.album_list.length > 0) ) {
@@ -291,6 +282,7 @@ export class AddAlbumDrawingComponent implements OnInit {
         data: {showChoice:false, text:'Veuillez sélectionner au moins une œuvre'},
         panelClass: "popupConfirmationClass",
       });
+      this.loading=false;
       return;
     }
     if( !this.formName.valid ) {
@@ -298,6 +290,7 @@ export class AddAlbumDrawingComponent implements OnInit {
         data: {showChoice:false, text:'Veuillez sélectionner un titre valide'},
         panelClass: "popupConfirmationClass",
       });
+      this.loading=false;
       return;
     }
    
@@ -323,7 +316,6 @@ export class AddAlbumDrawingComponent implements OnInit {
 
     
       for( let i = 0; i < solution.length; i++) {
-        console.log( this.album_list[ solution[i] ].instance.item.title );
         this.album_list_to_send.push(this.album_list[ solution[i] ].instance.item);
         if(i==solution.length-1){
           this.Albums_service.add_album_drawings(this.albumForm.value.formName,this.album_list_to_send).subscribe(information=>{
