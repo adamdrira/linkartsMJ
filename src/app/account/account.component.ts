@@ -1954,9 +1954,10 @@ export class AccountComponent implements OnInit {
   /*************************************check if content public *****************************/
   /*************************************check if content public *****************************/
 
-  check_if_artbook_public(id){
+  check_if_artbook_public(item){
     for(let i=0;i<this.list_drawings_artbook.length;i++){
-      if(this.list_drawings_artbook[i].drawing_id==id){
+      if(this.list_drawings_artbook[i].drawing_id==item.drawing_id){
+        item.title=this.list_drawings_artbook[i].title;
         return true;
       }
       else if(i==this.list_drawings_artbook.length-1){
@@ -1965,9 +1966,10 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  check_if_onepage_public(id){
+  check_if_onepage_public(item){
     for(let i=0;i<this.list_drawings_onepage.length;i++){
-      if(this.list_drawings_onepage[i].drawing_id==id){
+      if(this.list_drawings_onepage[i].drawing_id==item.drawing_id){
+        item.title=this.list_drawings_artbook[i].title;
         return true;
       }
       else if(i==this.list_drawings_onepage.length-1){
@@ -1979,18 +1981,19 @@ export class AccountComponent implements OnInit {
   check_if_drawing_public(item){
     
     if(item.pagesnumber >=0){
-      return this.check_if_artbook_public(item.drawing_id)
+      return this.check_if_artbook_public(item)
     }
     else{
-      return this.check_if_onepage_public(item.drawing_id)
+      return this.check_if_onepage_public(item)
     }
   }
 
 
 
-  check_if_oneshot_public(id){
+  check_if_oneshot_public(item){
     for(let i=0;i<this.list_bd_oneshot.length;i++){
-      if(this.list_bd_oneshot[i].bd_id==id){
+      if(this.list_bd_oneshot[i].bd_id==item.bd_id){
+        item.title=this.list_bd_series[i].title;
         return true;
       }
       else if(i==this.list_bd_oneshot.length-1){
@@ -1999,9 +2002,10 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  check_if_serie_public(id){
+  check_if_serie_public(item){
     for(let i=0;i<this.list_bd_series.length;i++){
-      if(this.list_bd_series[i].bd_id==id){
+      if(this.list_bd_series[i].bd_id==item.bd_id){
+        item.title=this.list_bd_series[i].title;
         return true;
       }
       else if(i==this.list_bd_series.length-1){
@@ -2013,10 +2017,10 @@ export class AccountComponent implements OnInit {
   check_if_comic_public(item){
     
     if(item.chaptersnumber >=0){
-      return this.check_if_serie_public(item.bd_id)
+      return this.check_if_serie_public(item)
     }
     else{
-      return this.check_if_oneshot_public(item.bd_id)
+      return this.check_if_oneshot_public(item)
     }
   }
 
@@ -2024,6 +2028,7 @@ export class AccountComponent implements OnInit {
     let writing_id=item.writing_id;
     for(let i=0;i<this.list_writings.length;i++){
       if(this.list_writings[i].writing_id==writing_id){
+        item.title=this.list_writings[i].title;
         return true;
       }
       else if(i==this.list_writings.length-1){
