@@ -23,7 +23,7 @@ module.exports = (router, list_of_messages,list_of_chat_friends,list_of_chat_spa
 
     
     router.get('/get_list_of_users_I_talk_to', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -46,7 +46,6 @@ console.log("checking current: " + req.headers['authorization'] );
                ],
            })
            .catch(err => {
-              //console.log(err);	
               res.status(500).json({msg: "error", details: err});		
             }).then(friends =>  {
                res.status(200).send([{friends:friends,current_user:current_user}])
@@ -54,7 +53,6 @@ console.log("checking current: " + req.headers['authorization'] );
      });
 
      router.get('/get_number_of_unseen_messages',function(req,res){
-      //console.log("get_number_of_unseen_messages")
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -70,7 +68,6 @@ console.log("checking current: " + req.headers['authorization'] );
              ],
          })
          .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends =>  {
               if(friends.length>0){
@@ -90,7 +87,6 @@ console.log("checking current: " + req.headers['authorization'] );
                       ['createdAt', 'DESC']
                     ],
                 }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(groups=>{
                   if(groups.length>0){
@@ -99,8 +95,6 @@ console.log("checking current: " + req.headers['authorization'] );
                     }
                   }
                   let compt1=0;
-                  //console.log("get_number_of_unseen_messages list_of_users")
-                  //console.log(list_of_users)
                   if(list_of_users.length>0){
                     for(let i=0;i<list_of_users.length;i++){
                       list_of_messages.findOne({
@@ -112,20 +106,16 @@ console.log("checking current: " + req.headers['authorization'] );
                         }
                         
                       }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
                         if(r){
                           number_of_unseen_messages+=1;
                         }
                         compt1+=1;
-                        //console.log("number_of_unseen_messages users")
-                        //console.log(number_of_unseen_messages)
                         if(compt1==list_of_users.length){
                           let compt2=0;
                           if(list_of_groups.length>0){
                             for(let k=0;k<list_of_groups.length;k++){
-                              //console.log("finding list_of_users_who_saw length")
                               list_of_messages.findAll({
                                 where:{
                                   id_user:{[Op.ne]:current_user},
@@ -140,7 +130,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                 ],
                                 
                               }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
                                   if(r.length>0){
@@ -148,8 +137,6 @@ console.log("checking current: " + req.headers['authorization'] );
                                   }
                                   compt2+=1;
                                   if(compt2==list_of_groups.length){
-                                    //console.log("number_of_unseen_messages end")
-                                    //console.log(number_of_unseen_messages)
                                     res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
                                   }
                                 })
@@ -179,7 +166,6 @@ console.log("checking current: " + req.headers['authorization'] );
      })
 
      router.get('/get_number_of_unseen_messages_spams',function(req,res){
-      //console.log("get_number_of_unseen_messages_spams")
       let current_user = get_current_user(req.cookies.currentUser);
       const Op = Sequelize.Op;
       let list_of_users=[];
@@ -193,7 +179,6 @@ console.log("checking current: " + req.headers['authorization'] );
              ],
          })
          .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends =>  {
               if(friends.length>0){
@@ -220,15 +205,12 @@ console.log("checking current: " + req.headers['authorization'] );
                     ],
                     
                   }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
                     if(r.length>0){
                       number_of_unseen_messages+=1;
                     }
                     compt1+=1;
-                    //console.log("get_number_of_unseen_messages_spams spams")
-                    //console.log(number_of_unseen_messages)
                     if(compt1==list_of_users.length){
                       res.status(200).send([{number_of_unseen_messages:number_of_unseen_messages}])
                     }
@@ -246,7 +228,7 @@ console.log("checking current: " + req.headers['authorization'] );
      })
 
      router.get('/get_list_of_spams', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -262,14 +244,12 @@ console.log("checking current: " + req.headers['authorization'] );
         list_of_chat_spams.findAll({
              where: {
                 [Op.or]:[{id_user: current_user},{id_receiver:current_user}],
-                //is_a_group_chat:{[Op.not]: true},
              },
              order: [
                  ['date', 'DESC']
                ],
            })
            .catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends =>  {
                res.status(200).send([friends])
@@ -282,7 +262,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
      
      router.get('/get_first_messages/:id_1/:id_2/:id_chat_section/:is_a_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -313,7 +293,7 @@ console.log("checking current: " + req.headers['authorization'] );
            limit:50,
           })
           .catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(messages =>  {
               let list_of_messages_reactions={};
@@ -325,7 +305,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     id_message:{[Op.gte]: messages[messages.length-1].id},
                   }
                 }).catch(err => {
-                    //console.log(err);	
+                    
                     res.status(500).json({msg: "error", details: err});		
                   }).then(reacts=>{
                   for(let i=0;i<reacts.length;i++){
@@ -358,7 +338,7 @@ console.log("checking current: " + req.headers['authorization'] );
            limit:50,
           })
           .catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(messages =>  {
               res.status(200).send([messages])
@@ -370,7 +350,7 @@ console.log("checking current: " + req.headers['authorization'] );
      
 
      router.post('/get_last_friends_message', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -398,7 +378,7 @@ console.log("checking current: " + req.headers['authorization'] );
                limit:1,
               })
               .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
                  list_of_friends_messages[i]=messages[0];
@@ -416,7 +396,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/let_all_friend_messages_to_seen', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -431,10 +411,6 @@ console.log("checking current: " + req.headers['authorization'] );
         const id_friend=req.body.id_user;
         const id_chat_section =req.body.id_chat_section;
         const is_a_group_chat =req.body.is_a_group_chat;
-        console.log("lets see messages seen")
-        console.log(id_friend);
-        console.log(id_chat_section);
-        console.log(current_user);
         const Op = Sequelize.Op;
         let compt=0;
         if(is_a_group_chat){
@@ -451,7 +427,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-                //console.log(err);	
+                
                 res.status(500).json({msg: "error", details: err});		
               }).then(messages =>  {
               if(messages.length>0){
@@ -470,7 +446,6 @@ console.log("checking current: " + req.headers['authorization'] );
                             id: messages[i].id
                           }
                         });
-                        console.log(messages[i].list_of_users_who_saw)
                       }
                       else{
                         messages[i].update({
@@ -507,11 +482,9 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(messages =>  {
-            //console.log("here he is")
-              //console.log(messages)
               if(messages.length>0){
 
                 list_of_messages.update({
@@ -551,7 +524,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/get_my_real_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -577,7 +550,7 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:1,
             })
             .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message =>  {
                 if(message.length>0){
@@ -585,7 +558,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 else{
                   res.status(200).send([{message:null}])
-                    // ajouter message du site pour expliquer fonctionnement messagerie
                 }
             });
      });
@@ -593,7 +565,6 @@ console.log("checking current: " + req.headers['authorization'] );
      
 
      router.post('/check_if_is_related', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -607,6 +578,8 @@ console.log("checking current: " + req.headers['authorization'] );
         let id_user = get_current_user(req.cookies.currentUser);
         let id_friend = req.body.id;
         const Op = Sequelize.Op;
+        
+        
         if(id_friend==id_user){
             res.status(200).send([{value:true}])
           } 
@@ -617,7 +590,7 @@ console.log("checking current: " + req.headers['authorization'] );
               [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
             }
           }).catch(err => {
-			//console.log(err);	
+				
 			res.status(500).json({msg: "error", details: err});		
 		}).then( friend=>{
             if(friend){
@@ -629,9 +602,9 @@ console.log("checking current: " + req.headers['authorization'] );
                   [Op.and]:[{[Op.or]:[{id_user: id_user},{id_user_subscribed_to:id_user}]},{[Op.or]:[{id_user: id_friend},{id_user_subscribed_to:id_friend}]}],
                 }
               }).catch(err => {
-			//console.log(err);	
-			res.status(500).json({msg: "error", details: err});		
-		}).then(sub=>{
+                
+                res.status(500).json({msg: "error", details: err});		
+              }).then(sub=>{
                 if(sub){
                   res.status(200).send([{value:true}])
                 }
@@ -648,7 +621,7 @@ console.log("checking current: " + req.headers['authorization'] );
      
 
      router.post('/check_if_response_exist', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -676,7 +649,7 @@ console.log("checking current: " + req.headers['authorization'] );
             is_a_group_chat:{[Op.not]: true},
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then( message=>{
           if(message){
@@ -695,7 +668,7 @@ console.log("checking current: " + req.headers['authorization'] );
             is_a_group_chat:true,
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then( message=>{
           if(message){
@@ -713,7 +686,7 @@ console.log("checking current: " + req.headers['authorization'] );
      
    
    router.post('/add_to_chat_searchbar_history', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -735,7 +708,7 @@ console.log("checking current: " + req.headers['authorization'] );
           is_a_group_chat:friend_type,
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(result=>{
       var date= new Date();
@@ -743,7 +716,7 @@ console.log("checking current: " + req.headers['authorization'] );
         result.update({
           "date":date,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
           res.status(200).send([r]);
@@ -756,7 +729,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "is_a_group_chat":friend_type,
           "date":date,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
           res.status(200).send([r]);
@@ -767,7 +740,7 @@ console.log("checking current: " + req.headers['authorization'] );
    })
 
      router.get('/get_first_searching_propositions', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -794,7 +767,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
         limit:10,
       }).catch(err => {
-        //console.log(err);	
+        
         res.status(500).json({msg: "error", details: err});		
       }).then(friends =>  {
        
@@ -813,7 +786,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   id:friends[j].id_receiver
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(l=>{
                 list_of_users_to_send[j]=l;
@@ -829,7 +802,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   id:friends[j].id_user
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(l=>{
                 list_of_users_to_send[j]=l;
@@ -850,7 +823,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
    router.get('/get_chat_history', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -874,7 +847,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
       limit:10,
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(searchs=>{
       if(searchs.length>0){
@@ -892,7 +865,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id:searchs[i].id_receiver
               }
             }).catch(err => {
-                //console.log(err);	
+                
                 res.status(500).json({msg: "error", details: err});		
               }).then(history=>{
               list_of_history[i]=history;
@@ -920,7 +893,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
    
    router.get('/get_searching_propositions/:text/:is_for_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -936,11 +909,8 @@ console.log("checking current: " + req.headers['authorization'] );
     let is_for_chat=req.params.is_for_chat;
     const Op = Sequelize.Op;
     var list_of_related_users=[];
-    //var list_of_history=[];
     var list_of_other_users=[];
     let list_of_words=text.split(" ");
-    //console.log("list_of_words");
-    //console.log(list_of_words);
     
     list_of_users.findAll({
       where:{
@@ -959,7 +929,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ['subscribers_number', 'DESC']
       ],
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users=>{
         list_of_related_users= users;
@@ -984,15 +954,13 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:25,
           })
           .catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(friends =>  {
             if(friends.length>0){
               let compte=0;
               for(let j=0;j<friends.length;j++){
                 if(friends[j].id_user==id_user){
-                  //console.log("find friend 1");
-                  //console.log(friends[j].id_receiver)
                   list_of_users.findOne({
                     where:{
                       [Op.and]:[
@@ -1004,7 +972,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       ]
                     }
                   }).catch(err => {
-                    //console.log(err);	
+                    
                     res.status(500).json({msg: "error", details: err});		
                   }).then(us=>{
                     if(us){
@@ -1017,12 +985,8 @@ console.log("checking current: " + req.headers['authorization'] );
                   })
                 }
                 else{
-                  //console.log("find friend 2");
-                  //console.log(friends[j].id_user)
                   list_of_users.findOne({
                     where:{
-                      //[Op.or]:[{firstname:{[Op.iLike]:'%'+ text + '%' }},{lastname:{[Op.iLike]:'%'+ text + '%' }},{nickname:{[Op.iLike]:'%'+ text + '%' }}],
-                      //id:friends[j].id_user
                       [Op.and]:[
                         {[Op.or]:[ 
                           {[Op.or]:[{firstname:{[Op.iLike]:'%'+ list_of_words[0] + '%' }},{lastname:{[Op.iLike]:'%'+ list_of_words[0] + '%' }},{nickname:{[Op.iLike]:'%'+ list_of_words[0] + '%' }}]},
@@ -1032,7 +996,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       ]
                     }
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
                     if(us){
@@ -1073,7 +1037,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ['subscribers_number', 'DESC']
         ],
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users=>{
           list_of_other_users= users;
@@ -1086,7 +1050,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
   router.get('/get_all_searching_propositions/:text/:is_for_chat/:limit/:offset', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1105,9 +1069,6 @@ console.log("checking current: " + req.headers['authorization'] );
     const offset = parseInt(req.params.offset);
     var list_of_related_users=[];
     let list_of_words=text.split(" ");
-    //console.log("is_for_chat see")
-    //console.log(is_for_chat)
-    //console.log(typeof(is_for_chat))
     list_of_users.findAll({
       where:{
         [Op.and]:[
@@ -1124,52 +1085,33 @@ console.log("checking current: " + req.headers['authorization'] );
         ['subscribers_number', 'DESC']
       ],
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users=>{
         if(users.length>offset){
-          //console.log("first if users")
           if((users.length-offset)>=limit){
-            //console.log(limit);
-            //console.log(users.length);
-            //console.log(offset);
-            //console.log("(users.length-offset)>=limit")
-            //on en prend un peu de la liste et on part
             list=users.slice(offset,offset+limit);
             res.status(200).send([{list:list,"search_more":true}])
           }
           else{
-            //on prend un peu de la liste et un peu de l'autre
-            //console.log(limit);
-            //console.log(users.length);
-            //console.log(offset);
-            //console.log("(users.length-offset)<limit")
             let len=users.length
             list_of_related_users=users.slice(offset,len);
             if(is_for_chat=='false'){
-              //console.log("getting other friends")
               get_other_users(0,limit-(len-offset));
             }
             else{
-              //console.log("getting other friends for group")
-              //console.log(list_of_related_users.length);
               get_friends_for_groups(0,limit-(len-offset),true);
             }
             
           }
         }
         else{
-          //console.log("first user else")
-          // on prend tout de l'autre;
           let len=users.length
           if(is_for_chat=='false'){
-            //console.log("getting other friends")
             get_other_users((offset-len),limit);
           }
           else{
             list_of_related_users=users;
-            //console.log("getting other friends for group")
-            //console.log(list_of_related_users.length)
             get_friends_for_groups((offset-len),limit,false);
           }
           
@@ -1182,11 +1124,6 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     function get_friends_for_groups(offset,limit,value){
-      //console.log("group starts like this")
-      //console.log(offset);
-      //console.log(limit)
-      //console.log(value);
-      // si on crééer un groupe on va aussi chercher les utilisateurs amis.
       let list_of_users_ids=[];
       if(list_of_related_users.length>0){
         for(let i=0;i<list_of_related_users.length;i++){
@@ -1194,7 +1131,6 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       list_of_users_ids.push(id_user);
-      //console.log(list_of_users_ids.length)
       list_of_chat_friends.findAll({
         where: {
             [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -1205,18 +1141,15 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends =>  {
-        //console.log(friends.length);
         if(friends.length>0){
           let list2=[];
           let compte=0;
           for(let j=0;j<friends.length;j++){
               let pass=true;
               if(friends[j].id_user==id_user && pass){
-                //console.log("friends[j].id_user==id_user")
-                //console.log(friends[j].id_receiver)
                 list_of_users.findOne({
                   where:{
                     [Op.and]:[
@@ -1228,21 +1161,15 @@ console.log("checking current: " + req.headers['authorization'] );
                     ]
                   }
                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
                   if(us){
                     list2[j]=us;
                   }
                   compte++;
-                  //console.log("compt firt if");
-                  //console.log(compte)
                   if(compte==friends.length){
                     pass=false;
-                    //console.log(compte-offset)
-                    //console.log(compte)
-                    //console.log(limit)
-                    //console.log(friends.length)
                     if(list2.length-offset>=limit){
                       if(list_of_related_users.length>0 && value){
                         list=list_of_related_users.concat(list2.slice(offset,offset+limit));
@@ -1273,8 +1200,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 })
               }
               else{
-                //console.log("friends[j].id_user!=id_user")
-                //console.log(friends[j].id_user)
                 list_of_users.findOne({
                   where:{
                     [Op.and]:[
@@ -1286,20 +1211,14 @@ console.log("checking current: " + req.headers['authorization'] );
                     ]
                   }
                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
                   if(us){
                     list2[j]=us;
                   }
                   compte++;
-                  //console.log("compt second if");
-                  //console.log(compte)
                   if(compte==friends.length){
-                    //console.log(compte-offset)
-                    //console.log(compte)
-                    //console.log(limit)
-                    //console.log(friends.length)
                     if(list2.length-offset>=limit){
                       if(list_of_related_users.length>0 && value){
                         list=list_of_related_users.concat(list2.slice(offset,offset+limit));
@@ -1366,7 +1285,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ['subscribers_number', 'DESC']
         ],
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(users=>{
           if(users.length>0){
@@ -1401,7 +1320,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
 
   router.get('/get_searching_propositions_group/:text', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1427,7 +1346,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
       limit:50,
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(groups=>{
       res.status(200).send([groups])
@@ -1441,7 +1360,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.get('/research_chat_sections/:text/:id_friend/:is_a_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1468,7 +1387,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ['chat_section_name', 'ASC']
         ],
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(sections=>{
           res.status(200).send([sections])
@@ -1485,7 +1404,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ['chat_section_name', 'ASC']
         ],
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(sections=>{
           res.status(200).send([sections])
@@ -1497,7 +1416,7 @@ console.log("checking current: " + req.headers['authorization'] );
   });
   
   router.post('/add_spam_to_contacts', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1517,20 +1436,19 @@ console.log("checking current: " + req.headers['authorization'] );
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],        
       }
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then( spam=>{
         spam.destroy({
           truncate: false
         })
-        //console.log("spam deleted 2");
         var now = new Date();
         list_of_chat_friends.create({
           "id_user":id_user,
           "id_receiver":id_friend,
           "date":now,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
           friend=>{
@@ -1543,10 +1461,7 @@ console.log("checking current: " + req.headers['authorization'] );
   router.post('/chat_sending_images', function (req, res) {
 
     let current_user = get_current_user(req.cookies.currentUser);
-    console.log("cookies curre")
     if(!current_user){
-      console.log(current_user)
-      console.log(req.cookies)
       return res.status(401).json({msg: "error"});
     }
     let file_name = req.headers.file_name;
@@ -1584,7 +1499,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_picture_sent_by_msg/:file_name', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1614,7 +1529,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_attachment/:file_name/:friend_type/:friend_id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1645,7 +1560,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/check_if_file_exists/:friend_type/:friend_id/:attachment_name/:value', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1662,29 +1577,19 @@ console.log("checking current: " + req.headers['authorization'] );
       let friend_type = req.params.friend_type
       let friend_id = parseInt(req.params.friend_id);
       const PATH= '/data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
-      //console.log("checking if file exists");
-      //console.log(process.cwd() + PATH + attachment_name.split('.')[0])
-      //console.log(value)
-      //value =0 : on donne la valeur du nom à crééer
-      //value=1 : one donne la valeur du dernier fihier créée
       glob(process.cwd() + PATH + attachment_name, function (er, files) {
         if(er){
-          //console.log("there is no file with name "+attachment_name.split('.')[0]);
+          res.status(200).send([{"value":attachment_name}])
         }
         else{
-          //console.log(files);
-          //console.log(files.length);
           if(files.length>0){
-            //console.log(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'[0-9]*'+').'+ attachment_name.split('.')[1])
             glob(process.cwd() + PATH + attachment_name.split('.')[0] +'(' +'*([0-9])'+').'+ attachment_name.split('.')[1], function (er, files2) {
               if(er){
-                //console.log("there is no file with name "+attachment_name.split('.')[0]);
+                res.status(200).send([{"value":attachment_name}])
               }
               else{
-                //console.log(files2);
                 if(files2.length>0){
                   let num =files2.length+1;
-                  //console.log(num);
                   if(value==1){
                     num-=1;
                   }
@@ -1714,28 +1619,18 @@ console.log("checking current: " + req.headers['authorization'] );
     router.post('/upload_attachments_for_chat/:friend_type/:friend_id/:name', function (req, res) {
 
       var attachment_name=req.headers.attachment_name;
-      //console.log(" we are uploading a file");
-      //console.log(attachment_name)
-      console.log("upload_attachments_for_chat")
-      console.log(req.headers)
       let friend_type = req.params.friend_type
       let friend_id = req.params.friend_id;
       let name = req.params.name;
-      console.log(name)
-      console.log(attachment_name)
-      console.log(friend_type)
-      console.log(friend_id)
       var current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
         return res.status(401).json({msg: "error"});
       }
       const PATH2= './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/`;
-      console.log(PATH2)
       let storage = multer.diskStorage({
         destination: (req, file, cb) => {
 
           mkdirp(PATH2, err => {
-            //console.log(err)
             cb(err, PATH2)
           })
           
@@ -1753,8 +1648,6 @@ console.log("checking current: " + req.headers['authorization'] );
       
       upload_attachment(req, res, function(err){
         (async () => {
-          console.log("path.extname(attachment_name)")
-          console.log(path.extname(name))
           let sufix=path.extname(name).toLowerCase();
           if(sufix==".jpg" || sufix==".png" || sufix==".jpeg"){
             let file_name = './data_and_routes/chat_attachments' + `/${friend_type}/${friend_id}/` + name ;
@@ -1767,7 +1660,6 @@ console.log("checking current: " + req.headers['authorization'] );
             ]
             });
           }
-          console.log("image downloaded " + name)
           res.status(200).send([{ok:"ok"}])
         })();
             
@@ -1778,7 +1670,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.get('/get_size_of_files/:friend_id/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1794,7 +1686,6 @@ console.log("checking current: " + req.headers['authorization'] );
       let id_chat_section = parseInt(req.params.id_chat_section);
       let friend_type=req.params.friend_type;
       const Op = Sequelize.Op;
-      //console.log("get_size_of_files")
       if(friend_type=='group'){
         list_of_messages.findAll({
           attributes: [[Sequelize.fn('SUM', Sequelize.cast(Sequelize.col('size'), 'decimal')), 'total']],
@@ -1806,7 +1697,7 @@ console.log("checking current: " + req.headers['authorization'] );
           }
          })
          .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
              res.status(200).send([files])
@@ -1823,7 +1714,7 @@ console.log("checking current: " + req.headers['authorization'] );
           }
          })
          .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
              res.status(200).send([files])
@@ -1833,7 +1724,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
    router.get('/get_size_of_pictures/:friend_id/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1860,7 +1751,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
        })
        .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
            res.status(200).send([files])
@@ -1877,7 +1768,7 @@ console.log("checking current: " + req.headers['authorization'] );
         }
        })
        .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
            res.status(200).send([files])
@@ -1888,7 +1779,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.get('/get_all_files/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -1930,7 +1821,7 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:15,
            })
            .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
                res.status(200).send([files])
@@ -1954,7 +1845,7 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:15,
            })
            .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
                res.status(200).send([files])
@@ -1964,7 +1855,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
    router.get('/get_all_pictures/:date/:friend_id/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2005,7 +1896,7 @@ console.log("checking current: " + req.headers['authorization'] );
        limit:15,
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
           res.status(200).send([files])
@@ -2028,7 +1919,7 @@ console.log("checking current: " + req.headers['authorization'] );
        limit:15,
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(files =>  {
           res.status(200).send([files])
@@ -2040,7 +1931,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
  router.post('/delete_message/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2051,21 +1942,19 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-  console.log("delete_message")
   let id=parseInt(req.params.id);
-  console.log(id);
   const Op = Sequelize.Op;
   list_of_messages.findOne({
     where:
     {id:id}
   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message=>{
     message.update({
       "status": "deleted"
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message=>{
       if(message.is_an_attachment){
@@ -2077,16 +1966,13 @@ console.log("checking current: " + req.headers['authorization'] );
           if(message.attachment_type=="picture_message"){
             fs.access('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name, fs.F_OK, (err) => {
               if(err){
-                //console.log('suppression already done');
                 return res.status(200).send([{"ok":"ok"}]);
               }
               fs.unlink('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
                 if (err) {
-                  //console.log(err);
-                  //return res.status(200).send([{"ok":"ok"}]);
+                  return res.status(200).send([{"ok":"ok"}]);
                 }  
                 else {
-                  //console.log( 'fichier supprimé');
                   return res.status(200).send([{"ok":"ok"}]);
                 }
               });
@@ -2095,16 +1981,13 @@ console.log("checking current: " + req.headers['authorization'] );
           else{
             fs.access('./data_and_routes/chat_attachments/'  +`/${friend_type}/${friend_id}/`+ message.attachment_name, fs.F_OK, (err) => {
               if(err){
-                //console.log('suppression already done');
-                return res.status(200)
+                return res.status(200).send([{"ok":"ok"}]);
               }
               fs.unlink('./data_and_routes/chat_attachments/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
                 if (err) {
-                  //console.log(err);
-                  //return res.status(200).send([{"ok":"ok"}]);
+                  return res.status(200).send([{"ok":"ok"}]);
                 }  
                 else {
-                  //console.log( 'fichier supprimé');
                   return res.status(200).send([{"ok":"ok"}]);
                 }
               });
@@ -2118,10 +2001,10 @@ console.log("checking current: " + req.headers['authorization'] );
               [Op.or]:[ {[Op.and]:[{id_user:message.id_user},{id_receiver:message.id_receiver} ]},{[Op.and]:[{id_receiver:message.id_user}, {id_user:message.id_receiver}]}],      
             }
           }).catch(err => {
-            //console.log(err);	
+            
             res.status(500).json({msg: "error", details: err});		
           }).then(friend=>{
-            //console.log(friend)
+            
             if(friend){
               let friend_type="user";
               let friend_id=friend.id;
@@ -2130,16 +2013,13 @@ console.log("checking current: " + req.headers['authorization'] );
               if(message.attachment_type=="picture_message"){
                 fs.access('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name, fs.F_OK, (err) => {
                   if(err){
-                    //console.log('suppression already done');
                     return res.status(200).send([{"ok":"ok"}]);
                   }
                   fs.unlink('./data_and_routes/chat_images/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
                     if (err) {
-                      //console.log(err);
-                      //return res.status(200).send([{"ok":"ok"}]);
+                      return res.status(200).send([{"ok":"ok"}]);
                     }  
                     else {
-                      //console.log( 'fichier supprimé');
                       return res.status(200).send([{"ok":"ok"}]);
                     }
                   });
@@ -2148,16 +2028,13 @@ console.log("checking current: " + req.headers['authorization'] );
               else{
                 fs.access('./data_and_routes/chat_attachments/'  +`/${friend_type}/${friend_id}/`+ message.attachment_name, fs.F_OK, (err) => {
                   if(err){
-                    //console.log('suppression already done');
-                    return res.status(200)
+                    return res.status(200).send([{"ok":"ok"}]);
                   }
                   fs.unlink('./data_and_routes/chat_attachments/' +`/${friend_type}/${friend_id}/` + message.attachment_name,  function (err) {
                     if (err) {
-                      //console.log(err);
-                      //return res.status(200).send([{"ok":"ok"}]);
+                      return res.status(200).send([{"ok":"ok"}]);
                     }  
                     else {
-                      //console.log( 'fichier supprimé');
                       return res.status(200).send([{"ok":"ok"}]);
                     }
                   });
@@ -2182,7 +2059,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.post('/add_emoji_reaction', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2198,10 +2075,6 @@ console.log("checking current: " + req.headers['authorization'] );
   let id = req.body.id;
   let emoji = req.body.emoji;
   let is_a_group_chat=req.body.is_a_group_chat;
-  //console.log(id)
-  //console.log(emoji)
-  //console.log(is_a_group_chat)
-  //console.log("add_emoji_reaction")
   if(is_a_group_chat){
     if(type_of_user=="create"){
       list_of_messages.findOne({
@@ -2210,7 +2083,7 @@ console.log("checking current: " + req.headers['authorization'] );
           is_a_group_chat:true,
         }
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message=>{
         list_of_chat_groups_reactions.create({
@@ -2219,7 +2092,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "id_group_chat":message.id_receiver,
           "emoji_reaction":emoji,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(react=>{
           res.status(200).send([react])
@@ -2234,7 +2107,7 @@ console.log("checking current: " + req.headers['authorization'] );
       {where:{
         id:id,
       }}).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(react=>{
         res.status(200).send([react])
@@ -2249,7 +2122,7 @@ console.log("checking current: " + req.headers['authorization'] );
       },
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message =>  {
       
@@ -2271,7 +2144,7 @@ console.log("checking current: " + req.headers['authorization'] );
 });
 
 router.post('/delete_emoji_reaction', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2292,7 +2165,7 @@ console.log("checking current: " + req.headers['authorization'] );
         id:id
       }
     },{truncate:false}).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
       res.status(200).send([{done:"done"}])
@@ -2305,7 +2178,7 @@ console.log("checking current: " + req.headers['authorization'] );
       },
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message =>  {
      if(type_of_user=="user"){
@@ -2328,7 +2201,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.post('/get_other_messages', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2362,7 +2235,7 @@ console.log("checking current: " + req.headers['authorization'] );
      limit:50,
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
        res.status(200).send([messages,{list_of_messages_reactions:list_of_messages_reactions}])
@@ -2384,7 +2257,7 @@ console.log("checking current: " + req.headers['authorization'] );
      limit:50,
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
       if(messages.length>1){
@@ -2394,7 +2267,7 @@ console.log("checking current: " + req.headers['authorization'] );
            [Op.and]:[{id_message:{[Op.gte]: messages[messages.length-1].id}},{id_message:{[Op.lt]: id_last_message}}],          
          }
        }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(reacts=>{
          for(let i=0;i<reacts.length;i++){
@@ -2426,7 +2299,7 @@ router.post('/get_reactions_by_user',function(req,res){
       id_message:id_message
     }
   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(reacts=>{
     res.status(200).send([reacts])
@@ -2434,7 +2307,7 @@ router.post('/get_reactions_by_user',function(req,res){
 })
 
 router.get('/get_other_messages_more/:id_friend/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2466,7 +2339,7 @@ console.log("checking current: " + req.headers['authorization'] );
      limit:15,
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
         res.status(200).send([messages])
@@ -2487,7 +2360,7 @@ console.log("checking current: " + req.headers['authorization'] );
      limit:15,
     })
     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
         res.status(200).send([messages])
@@ -2499,7 +2372,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.get('/get_less_messages/:id_friend/:id_first_message/:id_last_message/:id_chat_section/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2531,7 +2404,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
       limit:15,
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(msg=>{
       id_born_sup=msg[msg.length-1].id;
@@ -2547,7 +2420,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
         if(msg[msg.length-1].id!=id_first_message){
@@ -2573,7 +2446,7 @@ console.log("checking current: " + req.headers['authorization'] );
       ],
       limit:15,
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(msg=>{
       id_born_sup=msg[msg.length-1].id;
@@ -2590,7 +2463,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
         if(msg[msg.length-1].id!=id_first_message){
@@ -2613,7 +2486,7 @@ console.log("checking current: " + req.headers['authorization'] );
         
 
 router.get('/get_messages_from_research/:message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2629,12 +2502,6 @@ console.log("checking current: " + req.headers['authorization'] );
   let id_chat_section= parseInt(req.params.id_chat_section);
   let friend_type= req.params.friend_type;
   let message = (req.params.message).toLowerCase();
-
-  console.log(id_user)
-  console.log(id_friend)
-  console.log(id_chat_section)
-  console.log(friend_type)
-  console.log(message)
   const Op = Sequelize.Op;
   if(friend_type=='group'){
     list_of_messages.findAll({
@@ -2648,7 +2515,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ['createdAt', 'DESC']
       ],
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
       res.status(200).send([messages])
@@ -2666,7 +2533,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ['createdAt', 'DESC']
       ],
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
       res.status(200).send([messages])
@@ -2677,7 +2544,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   
   router.get('/get_messages_around/:id_message/:id_chat_section/:id_friend/:friend_type', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2709,7 +2576,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ],
         limit:5,
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
@@ -2725,7 +2592,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
           limit:5,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
           list_of_messages_to_send=messages;
@@ -2741,7 +2608,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
             limit:6,
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
@@ -2763,7 +2630,7 @@ console.log("checking current: " + req.headers['authorization'] );
         ],
         limit:5,
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(mess=>{
          id_born_sup=mess[mess.length-1].id;
@@ -2779,7 +2646,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
           limit:5,
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
           list_of_messages_to_send=messages;
@@ -2795,7 +2662,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ],
             limit:6,
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(msg=>{
             list_of_messages_to_send=list_of_messages_to_send.concat(msg);
@@ -2811,7 +2678,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.get('/get_chat_sections/:id_friend/:is_a_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2837,7 +2704,7 @@ console.log("checking current: " + req.headers['authorization'] );
             ['chat_section_name', 'ASC']
           ],
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(section=>{
           res.status(200).send([section])
@@ -2854,7 +2721,6 @@ console.log("checking current: " + req.headers['authorization'] );
             ['chat_section_name', 'ASC']
           ],
         }).catch(err => {
-          console.log(err);	
           res.status(500).json({msg: "error", details: err});		
         }).then(section=>{
               res.status(200).send([section])
@@ -2863,7 +2729,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
     router.post('/add_chat_section', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -2888,7 +2754,7 @@ console.log("checking current: " + req.headers['authorization'] );
               id_receiver:id_friend,
             },
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(sections=>{
           if(sections.length>0){
@@ -2913,7 +2779,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     "chat_section_name":chat_section,
                     "is_a_group_chat": true,
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(cr=>{
                     res.status(200).json([{ "is_ok":true,"id_chat_section":list_of_id[0]}])
@@ -2930,7 +2796,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "chat_section_name":chat_section,
               "is_a_group_chat": true,
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(cr=>{
               res.status(200).json([{ "is_ok":true,"id_chat_section":2}])
@@ -2945,7 +2811,7 @@ console.log("checking current: " + req.headers['authorization'] );
               [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
           },
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(sections=>{
           if(sections.length>0){
@@ -2970,7 +2836,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     "chat_section_name":chat_section,
                     "is_a_group_chat": false,
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(cr=>{
                     res.status(200).json([{ "is_ok":true,"id_chat_section":list_of_id[0]}])
@@ -2987,7 +2853,7 @@ console.log("checking current: " + req.headers['authorization'] );
               "chat_section_name":chat_section,
               "is_a_group_chat": false,
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(cr=>{
               res.status(200).json([{ "is_ok":true,"id_chat_section":2}])
@@ -3000,7 +2866,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
       
     router.delete('/delete_chat_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3025,7 +2891,7 @@ console.log("checking current: " + req.headers['authorization'] );
           },
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chat_section =>  {
           if(chat_section.id_user==id_user){
@@ -3039,7 +2905,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 id_receiver:id_friend,
               },
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
               if(messages.length>0){
@@ -3047,7 +2913,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   messages[i].destroy({
                     truncate: false
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(des=>{
                     if(i==messages.length-1){
@@ -3078,7 +2944,7 @@ console.log("checking current: " + req.headers['authorization'] );
           },
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(chat_section =>  {
           if(chat_section.id_user==id_user){
@@ -3092,7 +2958,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 [Op.and]:[ {[Op.or]:[(id_friend!=id_user) ? {id_user:id_friend}:{id_user:id_user},(id_friend!=id_user) ? {id_receiver:id_friend}:{id_user:id_user} ]},{[Op.or]:[(id_friend!=id_user) ? {id_user:id_user}:{id_receiver:id_user},(id_friend!=id_user) ? {id_receiver:id_user}:{id_receiver:id_user}]}],         
               },
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
               if(messages.length>0){
@@ -3100,7 +2966,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   messages[i].destroy({
                     truncate: false
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(des=>{
                     if(i==messages.length-1){
@@ -3128,7 +2994,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.get('/get_notifications_section/:id_chat_section/:id_friend/:is_a_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3139,7 +3005,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-      console.log("get_notifications_section")
       let id_user = get_current_user(req.cookies.currentUser);
       let id_friend= parseInt(req.params.id_friend);
       let id_chat_section= parseInt(req.params.id_chat_section);
@@ -3159,9 +3024,8 @@ console.log("checking current: " + req.headers['authorization'] );
                 },
               },
           },
-          //where:Sequelize.where(Sequelize.fn('array_length', Sequelize.col('list_of_users_who_saw'), 1), 1),
+        
         }).catch(err => {
-          console.log(err);	
           res.status(500).json({msg: "error", details: err});		
         }).then(messages=>{
           if(messages.length>0){
@@ -3173,9 +3037,6 @@ console.log("checking current: " + req.headers['authorization'] );
         })
       }
       else{
-        console.log("look for id chat section " + id_chat_section)
-        console.log(id_friend)
-        console.log(id_user)
         list_of_messages.findAll({
           where:{
                is_a_group_chat:{[Op.not]: true},
@@ -3184,7 +3045,7 @@ console.log("checking current: " + req.headers['authorization'] );
               [Op.and]:[ {id_user:id_friend},{id_receiver:id_user}],         
           },
         }).catch(err => {
-          //console.log(err);	
+          
           res.status(500).json({msg: "error", details: err});		
         }).then(messages=>{
           if(messages.length>0){
@@ -3206,7 +3067,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
     
     router.post('/create_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3227,7 +3088,7 @@ console.log("checking current: " + req.headers['authorization'] );
           id:id_user,
         }
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
         chat_profile_pic_name=user.profile_pic_file_name;
@@ -3237,7 +3098,7 @@ console.log("checking current: " + req.headers['authorization'] );
           "list_of_receivers_ids":list_of_ids,
           
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
             var now = new Date();
@@ -3249,7 +3110,7 @@ console.log("checking current: " + req.headers['authorization'] );
             "chat_profile_pic_name":chat_profile_pic_name,
               "date":now,
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(
               friend=>{
@@ -3263,7 +3124,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/retrieve_chat_profile_picture/:chat_profile_pic_name/:origin', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3313,7 +3174,7 @@ console.log("checking current: " + req.headers['authorization'] );
     });
 
     router.get('/get_group_chat_name/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3330,7 +3191,7 @@ console.log("checking current: " + req.headers['authorization'] );
             id:id
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
           res.status(200).send([group]);
@@ -3338,7 +3199,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
     router.post('/get_group_chat_as_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3350,15 +3211,13 @@ console.log("checking current: " + req.headers['authorization'] );
         }
       }
       let id_receiver= req.body.id_receiver;
-      //console.log(id_receiver)
-      //console.log("get_group_chat_as_friend")
       list_of_chat_friends.findOne({
           where:{
             id_receiver:id_receiver,
             is_a_group_chat:true,
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
           res.status(200).send([friend]);
@@ -3366,7 +3225,7 @@ console.log("checking current: " + req.headers['authorization'] );
       });
 
     router.get('/get_the_group_creator/:id_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3383,7 +3242,7 @@ console.log("checking current: " + req.headers['authorization'] );
             id:id
           }
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
           res.status(200).send([group]);
@@ -3393,7 +3252,7 @@ console.log("checking current: " + req.headers['authorization'] );
      
       
     router.post('/exit_group_chat', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3412,14 +3271,10 @@ console.log("checking current: " + req.headers['authorization'] );
           id:id_receiver,
         }
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
-        //console.log("finding group exit")
-        //console.log(group.id_user);
-        //console.log(id_user)
         if(group.id_user==id_user){
-          //console.log("in first if exit")
           let list_of_receivers_ids=group.list_of_receivers_ids;
           if(list_of_receivers_ids.length==1){
             list_of_chat_groups.destroy({
@@ -3428,7 +3283,7 @@ console.log("checking current: " + req.headers['authorization'] );
               }
             },
             {truncate: false}).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(()=>{
               list_of_chat_friends.destroy({
@@ -3438,7 +3293,7 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
               },
               {truncate: false}).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(()=>{
                 list_of_messages.destroy(
@@ -3449,10 +3304,9 @@ console.log("checking current: " + req.headers['authorization'] );
                   {truncate: false}
                 )
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(()=>{
-                //console.log("sending done")
                 res.status(200).send([{"supression":"done"}])
               })
             })
@@ -3460,14 +3314,11 @@ console.log("checking current: " + req.headers['authorization'] );
           else{
             let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index);
-            //console.log("going to update group");
-            //console.log(list_of_receivers_ids);
-            //console.log(list_of_receivers_ids[0])
             group.update({
                 "id_user":list_of_receivers_ids[0],
                 "list_of_receivers_ids":list_of_receivers_ids,
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(grp=>{
               list_of_chat_friends.findOne({
@@ -3476,16 +3327,15 @@ console.log("checking current: " + req.headers['authorization'] );
                   is_a_group_chat:true,
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends=>{
                 friends.update({
                   "id_user":list_of_receivers_ids[0]
                 }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
-                  //console.log("sending friend")
                   list_of_messages.update({
                     "list_of_users_in_the_group":list_of_receivers_ids},
                     {where:{
@@ -3493,7 +3343,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       is_a_group_chat:true,
                     }
                   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
                     res.status(200).send([friend])
@@ -3507,16 +3357,14 @@ console.log("checking current: " + req.headers['authorization'] );
           }
         }
         else{
-          //console.log("in second if exit")
           let index=list_of_receivers_ids.indexOf(id_user);
             list_of_receivers_ids.splice(index);
             group.update({
                 "list_of_receivers_ids":list_of_receivers_ids,
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
-              //console.log("sending grp")
               list_of_messages.update({
                 "list_of_users_in_the_group":list_of_receivers_ids},
                 {where:{
@@ -3524,7 +3372,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   is_a_group_chat:true,
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages=>{
                 res.status(200).send([group])
@@ -3540,7 +3388,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
     router.get('/get_my_list_of_groups', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3562,7 +3410,7 @@ console.log("checking current: " + req.headers['authorization'] );
               ],
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(groups =>  {
               res.status(200).send([groups])
@@ -3572,7 +3420,7 @@ console.log("checking current: " + req.headers['authorization'] );
     
 
     router.post('/get_list_of_groups_I_am_in', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3600,7 +3448,7 @@ console.log("checking current: " + req.headers['authorization'] );
          limit:1,
         })
         .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend =>  {
             friends[i]=friend[0]
@@ -3616,7 +3464,7 @@ console.log("checking current: " + req.headers['authorization'] );
    });
 
    router.post('/get_last_friends_groups_message', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3644,7 +3492,7 @@ console.log("checking current: " + req.headers['authorization'] );
            limit:1,
           })
           .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(messages =>  {
              list_of_friends_messages[i]=messages[0];
@@ -3662,7 +3510,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
 
  router.post('/get_my_last_real_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3689,7 +3537,7 @@ console.log("checking current: " + req.headers['authorization'] );
             limit:1,
             })
             .catch(err => {
-              //console.log(err);	
+              
               res.status(500).json({msg: "error", details: err});		
             }).then(message =>  {
                 if(message.length>0){
@@ -3706,7 +3554,7 @@ console.log("checking current: " + req.headers['authorization'] );
                       limit:1,
                       })
                       .catch(err => {
-                        console.log(err);	
+                        	
                         res.status(500).json({msg: "error", details: err});		
                       }).then(message2=>{
                         if(message2.length>0){
@@ -3735,7 +3583,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     limit:1,
                     })
                     .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(message2=>{
                       if(message2.length>0){
@@ -3752,9 +3600,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
    router.post('/modify_chat_profile_pic/:id_receiver', function (req, res) {
-
-    //console.log("adding pp")
-      
       let id_receiver=parseInt(req.params.id_receiver);
       let current_user = get_current_user(req.cookies.currentUser);
       if(!current_user){
@@ -3762,7 +3607,6 @@ console.log("checking current: " + req.headers['authorization'] );
       }
       var filename = ''
       let PATH = './data_and_routes/chat_profile_pics/';
-      //console.log(PATH)
   
       var storage = multer.diskStorage({
           destination: (req, file, cb) => {
@@ -3809,7 +3653,7 @@ console.log("checking current: " + req.headers['authorization'] );
                     "chat_profile_pic_name":filename,
                     "profile_pic_origin":'group',
                   }).catch(err => {
-                    //console.log(err);	
+                    
                     res.status(500).json({msg: "error", details: err});		
                   }).then(res.status(200).send(([{ "chat_profile_pic_name": filename}])))
                 }); 
@@ -3821,7 +3665,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
   
   router.post('/get_chat_first_propositions_add_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3837,17 +3681,15 @@ console.log("checking current: " + req.headers['authorization'] );
     const Op = Sequelize.Op;
     let compt=0;
     let list=[];
-    //console.log("get_chat_first_propositions_add_friend")
     list_of_chat_groups.findOne({
       where:{
         id:friend_id
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
       let list_of_users_ids=group.list_of_receivers_ids;
-      //console.log("get_chat_first_propositions_add_friend 2")
       list_of_chat_friends.findAll({
         where:{
           [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -3857,19 +3699,17 @@ console.log("checking current: " + req.headers['authorization'] );
           ['date', 'DESC']
         ],
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends=>{
         for(let i=0;i<friends.length;i++){
           if(friends[i].id_user==id_user){
-            //console.log("friends[i].id_receiver")
-            //console.log(friends[i].id_receiver)
             list_of_users.findOne({
               where:{
                 id:friends[i].id_receiver
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               list[i]=user;
@@ -3880,14 +3720,12 @@ console.log("checking current: " + req.headers['authorization'] );
             })
           }
           else{
-            //console.log("friends[i].id_user")
-            //console.log(friends[i].id_user)
             list_of_users.findOne({
               where:{
                 id:friends[i].id_user
               }
             }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(user=>{
               list[i]=user;
@@ -3906,7 +3744,7 @@ console.log("checking current: " + req.headers['authorization'] );
   
 
   router.post('/get_chat_propositions_add_friend', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -3923,17 +3761,15 @@ console.log("checking current: " + req.headers['authorization'] );
     const friend_id=req.body.friend_id;
     const Op = Sequelize.Op;
     let list=[];
-    //console.log("get_chat_propositions_add_friend")
     list_of_chat_groups.findOne({
       where:{
         id:friend_id
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
       let list_of_users_ids=group.list_of_receivers_ids;
-      //console.log("get_chat_propositions_add_friend 2")
       list_of_chat_friends.findAll({
         where: {
             [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:{[Op.notIn]: list_of_users_ids}} ]},{[Op.and]:[{id_receiver:id_user},{id_user:{[Op.notIn]: list_of_users_ids}} ]}],      
@@ -3944,15 +3780,13 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
       })
       .catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friends =>  {
         if(friends.length>0){
           let compte=0;
           for(let j=0;j<friends.length;j++){
             if(friends[j].id_user==id_user){
-              //console.log("find friend 1");
-              //console.log(friends[j].id_receiver)
               list_of_users.findOne({
                 where:{
                   [Op.and]:[
@@ -3964,7 +3798,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   ]
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
                 if(us){
@@ -3978,8 +3812,6 @@ console.log("checking current: " + req.headers['authorization'] );
               })
             }
             else{
-              //console.log("find friend 2");
-              //console.log(friends[j].id_user)
               list_of_users.findOne({
                 where:{
                   [Op.and]:[
@@ -3991,7 +3823,7 @@ console.log("checking current: " + req.headers['authorization'] );
                   ]
                 }
               }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(us=>{
                 if(us){
@@ -3999,8 +3831,6 @@ console.log("checking current: " + req.headers['authorization'] );
                 }
                 compte++;
                 if(compte==friends.length){
-                  //console.log("list of friends");
-                  //console.log(list)
                   res.status(200).send([{"list":list}])
                 }
               })
@@ -4022,7 +3852,7 @@ console.log("checking current: " + req.headers['authorization'] );
  
  
   router.post('/add_new_friends_to_a_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -4033,7 +3863,6 @@ console.log("checking current: " + req.headers['authorization'] );
           return res.status(401).json({msg: "error"});
         }
       }
-    //console.log("add_new_friends_to_a_group");
     let current_user = get_current_user(req.cookies.currentUser);
     let list_of_friends = req.body.list_of_friends;
     let friend_id = req.body.friend_id;
@@ -4043,7 +3872,7 @@ console.log("checking current: " + req.headers['authorization'] );
         id:friend_id
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(group=>{
       list_of_receivers_ids=group.list_of_receivers_ids;
@@ -4055,7 +3884,7 @@ console.log("checking current: " + req.headers['authorization'] );
         group.update({
           "list_of_receivers_ids":list_of_receivers_ids
         }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(l=>{
           list_of_messages.update({
@@ -4065,7 +3894,7 @@ console.log("checking current: " + req.headers['authorization'] );
               is_a_group_chat:true,
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(m=>{
             
@@ -4082,7 +3911,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
 router.get('/get_chat_first_propositions_group', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -4108,7 +3937,7 @@ console.log("checking current: " + req.headers['authorization'] );
     ],
     limit:5,
   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(searchs=>{
     if(searchs.length>0){
@@ -4121,7 +3950,7 @@ console.log("checking current: " + req.headers['authorization'] );
               id:searchs[i].id_receiver
             }
           }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(history=>{
             list_of_history[i]=history;
@@ -4150,7 +3979,7 @@ console.log("checking current: " + req.headers['authorization'] );
           ],
         limit:limit
       }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(groups=>{
         if(groups.length>0){
@@ -4170,7 +3999,7 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
  router.get('/get_group_chat_information/:id', function (req, res) {
-console.log("checking current: " + req.headers['authorization'] );
+
       if( ! req.headers['authorization'] ) {
         return res.status(401).json({msg: "error"});
       }
@@ -4190,7 +4019,7 @@ console.log("checking current: " + req.headers['authorization'] );
       list_of_receivers_ids: { [Op.contains]: [id_user] },
     }
   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
     res.status(200).send([r])
@@ -4212,7 +4041,7 @@ console.log("checking current: " + req.headers['authorization'] );
       id_message:id_message,
     }
   }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(react=>{
     if(react){
@@ -4230,10 +4059,6 @@ console.log("checking current: " + req.headers['authorization'] );
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.friend_id;
   let is_a_group_chat=req.body.is_a_group_chat;
-  //console.log("get chat friend")
-  //console.log(id_user)
-  //console.log(id_friend)
-  //console.log(is_a_group_chat)
   const Op = Sequelize.Op;
   if(is_a_group_chat){
     list_of_chat_friends.findOne({
@@ -4242,10 +4067,10 @@ console.log("checking current: " + req.headers['authorization'] );
         id_receiver:id_friend,      
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
-      //console.log(friend)
+      
       if(friend){
         res.status(200).send([friend])
       }
@@ -4262,10 +4087,10 @@ console.log("checking current: " + req.headers['authorization'] );
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
-      //console.log(friend)
+      
       if(friend){
         res.status(200).send([friend])
       }
@@ -4280,10 +4105,8 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
  router.post('/remove_friend',function(req,res){
-    //console.log("remove_friend")
     let id_user = get_current_user(req.cookies.currentUser);
     let id_friend = req.body.id_friend;
-    //console.log(id_friend)
     const Op = Sequelize.Op;
     list_of_chat_friends.findOne({
       where:{
@@ -4291,14 +4114,11 @@ console.log("checking current: " + req.headers['authorization'] );
         [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
       }
     }).catch(err => {
-			//console.log(err);	
+			
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
-      //console.log(friend)
-      
       if(friend){
         let date=friend.date;
-        //console.log(date)
         friend.destroy({
           truncate: false
         })
@@ -4313,25 +4133,19 @@ console.log("checking current: " + req.headers['authorization'] );
  })
 
  router.post('/remove_spam',function(req,res){
-  console.log("remove_spam")
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
-  console.log(id_friend)
-  console.log(id_user)
   const Op = Sequelize.Op;
   list_of_chat_spams.findOne({
     where:{
       [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
     }
   }).catch(err => {
-    //console.log(err);	
+    
     res.status(500).json({msg: "error", details: err});		
   }).then(friend=>{
-    console.log(friend)
-    
     if(friend){
       let date=friend.date;
-      //console.log(date)
       friend.destroy({
         truncate: false
       })
@@ -4347,7 +4161,6 @@ console.log("checking current: " + req.headers['authorization'] );
 
 
  router.post('/add_chat_friend',function(req,res){
-  //console.log("add_chat_friend")
   let id_user = get_current_user(req.cookies.currentUser);
   let id_friend = req.body.id_friend;
   let date = req.body.date;
@@ -4355,7 +4168,6 @@ console.log("checking current: " + req.headers['authorization'] );
   date = date.replace("T",' ');
   date = date.replace("-",'/').replace("-",'/');
   let final_date= new Date(date + ' GMT');
-  //console.log(id_friend)
   const Op = Sequelize.Op;
   list_of_chat_friends.findOne({
     where:{
@@ -4363,10 +4175,8 @@ console.log("checking current: " + req.headers['authorization'] );
       [Op.or]:[ {[Op.and]:[{id_user:id_user},{id_receiver:id_friend} ]},{[Op.and]:[{id_receiver:id_user}, {id_user:id_friend}]}],      
     }
   }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(friend=>{
-    //console.log(friend)
     if(friend){
       res.status(200).send([{add:'done'}])
     }
@@ -4376,7 +4186,6 @@ console.log("checking current: " + req.headers['authorization'] );
         "id_receiver":id_friend,
         "date":final_date,
       }).catch(err => {
-			//console.log(err);	
 			res.status(500).json({msg: "error", details: err});		
 		}).then(r=>{
         res.status(200).send([r])
