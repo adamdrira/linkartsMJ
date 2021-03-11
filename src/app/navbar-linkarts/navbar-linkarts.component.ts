@@ -1300,7 +1300,9 @@ export class NavbarLinkartsComponent implements OnInit {
 
   //WORDS
   open_research_style_and_tags(i: number) {
-    return "/main-research-style-and-tag/1/Comic/"+ this.first_filters[this.indice_title_selected][i] + "/all";
+    return "/main-research-style-and-tag/1/" + this.list_of_real_categories[this.indice_title_selected] + "/" + this.first_filters[this.indice_title_selected][i] + "/all";
+    
+    
   }
   open_main_research(s: string) {
     this.router.navigate([`/main-research/1/${s}/All`]);
