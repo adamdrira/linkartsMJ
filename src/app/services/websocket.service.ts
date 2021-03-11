@@ -35,7 +35,6 @@ export class WebSocketService {
 
 public check_state(){
   return this.ws.readyState
-  //console.log(this.ws.readyState);
 }
 
 
@@ -45,7 +44,6 @@ public check_state(){
   connect(url):Subject<MessageEvent>{
       if(!this.subject){
           this.subject=this.create(url);
-          console.log("connect to " + url);
       }
       return this.subject;
 
