@@ -1163,6 +1163,24 @@ export class AccountComponent implements OnInit {
     this.cd.detectChanges();
     this.update_background_position(i);
     if(not_first){
+      if(this.opened_category<0 && this.opened_section==1){
+        console.log("in there")
+        let interval = setInterval(() => {
+          if(this.number_of_comics>=this.number_of_drawings && this.number_of_comics>=this.number_of_writings && this.number_of_comics>0){
+            this.open_category(0,false)
+          }
+          else if(this.number_of_drawings>=this.number_of_comics && this.number_of_drawings>=this.number_of_writings && this.number_of_drawings>0){
+            this.open_category(1,false)
+          }
+          else if(this.number_of_writings>=this.number_of_comics && this.number_of_writings>=this.number_of_drawings && this.number_of_writings>0){
+            this.open_category(2,false)
+          }
+          clearInterval(interval)
+        },500)
+      }
+      
+      
+
       if( (i == 0) ) { this.location.go(`/account/${this.pseudo}/${this.user_id}`); }
       else if( i == 1 ) { 
         this.location.go(`/account/${this.pseudo}/${this.user_id}/artworks`); 
@@ -1196,12 +1214,14 @@ export class AccountComponent implements OnInit {
   category_to_load:boolean[]=[];
   add_album_to_load=[];
   open_category(i : number,first) {
+    console.log("open ct " + i)
     if( !first && this.opened_category == i || (i==0 && this.number_of_comics==0) || (i==1 && this.number_of_drawings==0) || (i==2 && this.number_of_writings==0) ) {
       return;
     }
     this.contents_loading=false;
    
     if(this.opened_section==1){
+
       if((this.mode_visiteur && this.number_of_comics==0 && i==0) || (!this.mode_visiteur && this.number_of_comics==0 && i==0)){
         this.opened_category=i;
         return;
@@ -1810,6 +1830,8 @@ export class AccountComponent implements OnInit {
       if(this.detect_new_compteur_drawings){
         $('.grid').masonry('reloadItems');
         this.cd.detectChanges;
+        this.reload_masonry();
+        this.cd.detectChanges();
         if(this.compteur_drawings_thumbnails==this.total_for_new_compteur){
           this.detect_new_compteur_drawings=false;
           this.total_for_new_compteur=0;
