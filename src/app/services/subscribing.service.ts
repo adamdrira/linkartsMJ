@@ -70,6 +70,12 @@ export class Subscribing_service {
       }));
   };
  
+  check_if_susbcribed_to_visitor(id_user_to_check){
+    return this.httpClient.get(`routes/check_if_susbcribed_to_visitor/${id_user_to_check}`, {withCredentials:true}).pipe(map(information=>{
+        return information;
+      }));
+  };
+
   add_content(category, format, publication_id,chapter_number){
     return this.httpClient.post(`routes/add_content`,{category:category, format:format, publication_id:publication_id, chapter_number:chapter_number}, {withCredentials:true}).pipe(map((information)=>{
       return information;

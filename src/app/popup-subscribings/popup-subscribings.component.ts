@@ -75,10 +75,15 @@ export class PopupSubscribingsComponent implements OnInit {
 
         this.Profile_Edition_Service.retrieve_profile_data(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(r=>{
           this.list_of_subscribings_information[i]=r[0];
+          console.log("user info")
+          console.log(this.list_of_subscribings_information)
           data_retrieved=true;
           check_all(this);
         })
-        this.Subscribing_service.check_if_visitor_susbcribed(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(information=>{
+        this.Subscribing_service.check_if_susbcribed_to_visitor(this.list_of_subscribings[i].id_user_subscribed_to).subscribe(information=>{
+          console.log("res check")
+          console.log(information)
+          console.log(this.list_of_subscribings[i])
           if(information[0].value){
             this.list_of_check_subscribtion[i]=true;
           }
